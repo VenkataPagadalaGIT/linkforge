@@ -1207,6 +1207,9 @@ h1, h2, h3, h4, h5, h6 {
 .min-h-svh{
   min-height: 100svh;
 }
+.min-h-\[60vh\]{
+  min-height: 60vh;
+}
 .w-0{
   width: 0px;
 }
@@ -1738,6 +1741,9 @@ h1, h2, h3, h4, h5, h6 {
 .overflow-visible{
   overflow: visible;
 }
+.overflow-x-auto{
+  overflow-x: auto;
+}
 .overflow-y-auto{
   overflow-y: auto;
 }
@@ -1751,6 +1757,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .whitespace-nowrap{
   white-space: nowrap;
+}
+.whitespace-pre-wrap{
+  white-space: pre-wrap;
 }
 .break-words{
   overflow-wrap: break-word;
@@ -2074,6 +2083,15 @@ h1, h2, h3, h4, h5, h6 {
 .bg-emerald-400\/5{
   background-color: rgb(52 211 153 / 0.05);
 }
+.bg-card\/30{
+  background-color: hsl(var(--card) / 0.3);
+}
+.bg-card\/20{
+  background-color: hsl(var(--card) / 0.2);
+}
+.bg-muted\/10{
+  background-color: hsl(var(--muted) / 0.1);
+}
 .bg-gradient-to-b{
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
@@ -2359,6 +2377,10 @@ h1, h2, h3, h4, h5, h6 {
 .py-5{
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+}
+.py-24{
+  padding-top: 6rem;
+  padding-bottom: 6rem;
 }
 .pb-12{
   padding-bottom: 3rem;
@@ -2734,6 +2756,9 @@ h1, h2, h3, h4, h5, h6 {
 .text-emerald-400{
   --tw-text-opacity: 1;
   color: rgb(52 211 153 / var(--tw-text-opacity, 1));
+}
+.text-destructive-foreground\/90{
+  color: hsl(var(--destructive-foreground) / 0.9);
 }
 .underline{
   text-decoration-line: underline;
@@ -3212,6 +3237,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: hsl(var(--foreground));
 }
 
+.hover\:border-destructive\/50:hover{
+  border-color: hsl(var(--destructive) / 0.5);
+}
+
 .hover\:bg-\[\#004182\]:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(0 65 130 / var(--tw-bg-opacity, 1));
@@ -3286,6 +3315,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--sidebar-accent));
 }
 
+.hover\:bg-foreground\/5:hover{
+  background-color: hsl(var(--foreground) / 0.05);
+}
+
 .hover\:text-accent-foreground:hover{
   color: hsl(var(--accent-foreground));
 }
@@ -3321,6 +3354,10 @@ h1, h2, h3, h4, h5, h6 {
 .hover\:text-white:hover{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-destructive-foreground:hover{
+  color: hsl(var(--destructive-foreground));
 }
 
 .hover\:underline:hover{
@@ -4414,6 +4451,10 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
   }
 
+  .sm\:items-end{
+    align-items: flex-end;
+  }
+
   .sm\:items-center{
     align-items: center;
   }
@@ -4595,6 +4636,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .md\:grid-cols-5{
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-6{
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .md\:pl-20{

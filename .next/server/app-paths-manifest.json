@@ -1,8 +1,7 @@
 {
-  "/ai-updates/page": "app/ai-updates/page.js",
-  "/robots.txt/route": "app/robots.txt/route.js",
   "/page": "app/page.js",
-  "/notebook/page": "app/notebook/page.js",
   "/notebook/ai/page": "app/notebook/ai/page.js",
-  "/notebook/ai/roadmap/page": "app/notebook/ai/roadmap/page.js"
+  "/notebook/ai/roadmap/page": "app/notebook/ai/roadmap/page.js",
+  "/ai-contributors/[id]/page": "app/ai-contributors/[id]/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js"
 }

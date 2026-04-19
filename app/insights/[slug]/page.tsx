@@ -1,25 +1,53 @@
 import type { Metadata } from "next";
 import PillarPage from "@/pages/PillarPage";
+import { getPillar, articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const title = params.slug
-    .split("-")
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(" ");
+  const pillar = await getPillar(params.slug);
+  if (!pillar) {
+    const t = params.slug.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join(" ");
+    return { title: t, alternates: { canonical: `/insights/${params.slug}` } };
+  }
   return {
-    title,
-    description: `Pillar content on ${title} — Venkata Pagadala's in-depth guide with linked cluster posts.`,
+    title: pillar.metaTitle || pillar.title,
+    description: pillar.metaDescription,
     alternates: { canonical: `/insights/${params.slug}` },
     openGraph: {
-      url: `/insights/${params.slug}`,
       type: "article",
-      title,
+      url: `/insights/${params.slug}`,
+      title: pillar.title,
+      description: pillar.metaDescription,
     },
+    twitter: { card: "summary_large_image", title: pillar.title, description: pillar.metaDescription },
   };
 }
 
-export default function Page() {
-  return <PillarPage />;
+export default async function Page({ params }: { params: Params }) {
+  const pillar = await getPillar(params.slug);
+  const url = `${SITE_URL}/insights/${params.slug}`;
+  const jsonLd = pillar
+    ? [
+        articleJsonLd({
+          headline: pillar.title,
+          description: pillar.metaDescription,
+          url,
+          section: "Insights",
+        }),
+        breadcrumbJsonLd([
+          { name: "Insights", url: `${SITE_URL}/insights` },
+          { name: pillar.title, url },
+        ]),
+      ]
+    : [];
+  return (
+    <>
+      {jsonLd.map((j, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
+      ))}
+      <PillarPage />
+    </>
+  );
 }

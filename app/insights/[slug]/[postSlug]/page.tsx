@@ -1,25 +1,72 @@
 import type { Metadata } from "next";
 import BlogPostPage from "@/pages/BlogPostPage";
+import { getPost, articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string; postSlug: string };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const title = params.postSlug
-    .split("-")
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(" ");
+  const post = await getPost(params.postSlug);
+  if (!post) {
+    const t = params.postSlug.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join(" ");
+    return {
+      title: t,
+      alternates: { canonical: `/insights/${params.slug}/${params.postSlug}` },
+    };
+  }
   return {
-    title,
-    description: `${title} — essay in the ${params.slug} cluster by Venkata Pagadala.`,
+    title: post.metaTitle || post.title,
+    description: post.metaDescription || post.excerpt,
+    keywords: post.tags,
+    authors: [{ name: "Venkata Pagadala", url: SITE_URL }],
     alternates: { canonical: `/insights/${params.slug}/${params.postSlug}` },
     openGraph: {
-      url: `/insights/${params.slug}/${params.postSlug}`,
       type: "article",
-      title,
+      url: `/insights/${params.slug}/${params.postSlug}`,
+      title: post.title,
+      description: post.metaDescription || post.excerpt,
+      publishedTime: post.date,
+      authors: ["Venkata Pagadala"],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.metaDescription || post.excerpt,
     },
   };
 }
 
-export default function Page() {
-  return <BlogPostPage />;
+export default async function Page({ params }: { params: Params }) {
+  const post = await getPost(params.postSlug);
+  const url = `${SITE_URL}/insights/${params.slug}/${params.postSlug}`;
+  const jsonLd = post
+    ? [
+        articleJsonLd({
+          headline: post.title,
+          description: post.metaDescription || post.excerpt,
+          url,
+          datePublished: post.date,
+          keywords: post.tags,
+          section: params.slug,
+        }),
+        breadcrumbJsonLd([
+          { name: "Insights", url: `${SITE_URL}/insights` },
+          { name: params.slug, url: `${SITE_URL}/insights/${params.slug}` },
+          { name: post.title, url },
+        ]),
+      ]
+    : [];
+  return (
+    <>
+      {jsonLd.map((j, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }}
+        />
+      ))}
+      <BlogPostPage />
+    </>
+  );
 }
