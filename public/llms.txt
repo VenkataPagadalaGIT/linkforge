@@ -1,0 +1,60 @@
+# Venkata Pagadala — Portfolio
+
+> AI Product Manager — Search (SEO, GEO) at AT&T
+> Building & Enhancing Existing Systems using AI, Automation Workflows, Gen AI, Agentic AI Agents, LLMs, MCP, A2A, RAG, Enterprise SEO, Technical SEO & Growth
+
+## About
+
+Venkata Pagadala is the Lead Technical Product Manager (Automation, AI & SEO) at AT&T. He specializes in enterprise-scale AI systems, knowledge graphs, RAG engines, and technical SEO infrastructure managing 50M+ pages.
+
+## Expertise
+
+- AI Product Management
+- Enterprise SEO & Technical SEO
+- Answer Engine Optimization (AEO)
+- AI Agents & Workflow Automation
+- RAG Engines & Knowledge Graphs
+- MCP Server Integrations
+- A2A Agent Pipelines
+- Programmatic SEO at Scale
+- Editorial SEO & Content Strategy
+- Performance Analytics & Growth Forecasting
+
+## Education
+
+- Disruptive Strategy — Harvard Business School
+- Cybersecurity — MIT
+- MSCS — New England College
+
+## Solutions
+
+- AI Product: AI Agents, Custom AI/ML Pipelines, RAG Engines, Knowledge Graphs, MCP Servers, A2A Pipelines
+- AEO: AI Visibility Tracking, AI Search Prioritization, AI-Focused Content Strategy
+- Technical SEO: Visibility Audits, Internal Linking, Architecture & Crawlability, International SEO, Site Migrations
+- Programmatic SEO: Scalable Page Templates, High-Volume Page Generation, Indexation Logic
+- Editorial SEO: Topical Authority, Persona Mapping, User Intent Research, Content Briefs
+- Performance: Growth Forecasting, Custom Reporting, KPI Tracking, CRO Audits
+
+## AI Notebook — Curated Knowledge Hub
+
+### Top 100 AI Contributors 2026
+The authoritative directory of 100 AI pioneers shaping the field in 2026. Explore profiles, research timelines, glossary, and curated reading lists.
+- URL: https://venkatapagadala.com/notebook/ai
+
+### AI Learning Roadmap — Zero to Hero (2026)
+A structured 18-week curriculum with 24 topics, 67+ videos, 71+ courses, 62+ repos, 43+ books, and pro tips. Your complete path from beginner to advanced.
+- URL: https://venkatapagadala.com/notebook/ai/roadmap
+
+### AI Concepts Encyclopedia (2026)
+110 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide.
+- URL: https://venkatapagadala.com/notebook/ai/encyclopedia
+
+## Contact
+
+- Email: vdepagadala@gmail.com
+- Location: Atlanta, Georgia
+
+## Links
+
+- Website: https://venkatapagadala.com
+- LinkedIn: https://linkedin.com/in/venkatapagadala
