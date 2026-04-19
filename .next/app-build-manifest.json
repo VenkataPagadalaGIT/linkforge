@@ -45,6 +45,21 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/ai-updates/page.js"
+    ],
+    "/notebook/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/page.js"
+    ],
+    "/notebook/ai/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/ai/page.js"
+    ],
+    "/notebook/ai/roadmap/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/ai/roadmap/page.js"
     ]
   }
 }

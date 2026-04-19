@@ -1,8 +1,8 @@
 {
-  "/contact/page": "app/contact/page.js",
-  "/ai-contributors/page": "app/ai-contributors/page.js",
   "/ai-updates/page": "app/ai-updates/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
-  "/sitemap.xml/[[...__metadata_id__]]/route": "app/sitemap.xml/[[...__metadata_id__]]/route.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/notebook/page": "app/notebook/page.js",
+  "/notebook/ai/page": "app/notebook/ai/page.js",
+  "/notebook/ai/roadmap/page": "app/notebook/ai/roadmap/page.js"
 }
