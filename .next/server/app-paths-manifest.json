@@ -3,5 +3,8 @@
   "/notebook/ai/page": "app/notebook/ai/page.js",
   "/notebook/ai/roadmap/page": "app/notebook/ai/roadmap/page.js",
   "/ai-contributors/[id]/page": "app/ai-contributors/[id]/page.js",
-  "/robots.txt/route": "app/robots.txt/route.js"
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/ai-contributors/page": "app/ai-contributors/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/page": "app/admin/page.js"
 }
