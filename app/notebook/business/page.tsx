@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import BusinessNotebook from "@/pages/BusinessNotebook";
+import BusinessNotebook from "@/views/BusinessNotebook";
 
 export const metadata: Metadata = {
   title: "Business Notebook",

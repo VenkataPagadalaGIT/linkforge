@@ -81,11 +81,12 @@ export const useNavigate = () => {
 
 export const useLocation = () => {
   const pathname = usePathname() || "/";
-  const searchParams = useNextSearchParams();
-  const search = searchParams && searchParams.toString() ? `?${searchParams.toString()}` : "";
+  // NOTE: we intentionally do NOT call useSearchParams() here because it forces
+  // client-side rendering bail-out during static generation. All callers only
+  // consume `pathname`; `search`/`hash` are best-effort client-only values.
   return {
     pathname,
-    search,
+    search: typeof window !== "undefined" ? window.location.search : "",
     hash: typeof window !== "undefined" ? window.location.hash : "",
     state: null,
     key: "default",

@@ -21,70 +21,35 @@
       "static/chunks/main-app.js",
       "static/chunks/app/contact/page.js"
     ],
-    "/ai-contributors/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/ai-contributors/page.js"
-    ],
-    "/insights/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/insights/page.js"
-    ],
-    "/about/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/about/page.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
-    ],
-    "/ai-updates/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/ai-updates/page.js"
-    ],
-    "/notebook/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/notebook/page.js"
-    ],
-    "/notebook/ai/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/notebook/ai/page.js"
-    ],
-    "/notebook/ai/roadmap/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/notebook/ai/roadmap/page.js"
-    ],
     "/admin/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/admin/login/page.js"
     ],
-    "/admin/page": [
+    "/ai-contributors/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/page.js"
-    ],
-    "/insights/[slug]/[postSlug]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/insights/[slug]/[postSlug]/page.js"
+      "static/chunks/app/ai-contributors/[id]/page.js"
     ],
     "/ai-updates/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/ai-updates/[slug]/page.js"
     ],
-    "/ai-contributors/[id]/page": [
+    "/insights/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/ai-contributors/[id]/page.js"
+      "static/chunks/app/insights/[slug]/page.js"
+    ],
+    "/insights/[slug]/[postSlug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/insights/[slug]/[postSlug]/page.js"
+    ],
+    "/solutions/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/solutions/[slug]/page.js"
     ]
   }
 }

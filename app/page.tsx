@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Home from "@/pages/Home";
+import Home from "@/views/Home";
 
 export const metadata: Metadata = {
   title: "Venkata Pagadala — AI Systems Architect · Mono Mind",

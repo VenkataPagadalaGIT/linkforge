@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
-import AIContributorProfilePage from "@/pages/AIContributorProfilePage";
-import { getContributor, personJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { Suspense } from "react";
+import AIContributorProfilePage from "@/views/AIContributorProfilePage";
+import { getContributor, personJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
 
 type Params = { id: string };
+
+// Re-build this page at most once per hour; unknown IDs still render on demand.
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+export async function generateStaticParams(): Promise<Params[]> {
+  const data = await getSitemapData();
+  if (!data?.contributors) return [];
+  return data.contributors.map((c) => ({ id: c.id }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const c = await getContributor(params.id);
@@ -42,7 +53,9 @@ export default async function Page({ params }: { params: Params }) {
       {jsonLd.map((j, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
       ))}
-      <AIContributorProfilePage />
+      <Suspense fallback={null}>
+        <AIContributorProfilePage />
+      </Suspense>
     </>
   );
 }

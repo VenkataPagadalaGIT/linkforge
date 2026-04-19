@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
-import PillarPage from "@/pages/PillarPage";
-import { getPillar, articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { Suspense } from "react";
+import PillarPage from "@/views/PillarPage";
+import { getPillar, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string };
+
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+export async function generateStaticParams(): Promise<Params[]> {
+  const data = await getSitemapData();
+  if (!data?.pillars) return [];
+  return data.pillars.map((p) => ({ slug: p.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const pillar = await getPillar(params.slug);
@@ -47,7 +57,9 @@ export default async function Page({ params }: { params: Params }) {
       {jsonLd.map((j, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
       ))}
-      <PillarPage />
+      <Suspense fallback={null}>
+        <PillarPage />
+      </Suspense>
     </>
   );
 }

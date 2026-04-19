@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
-import BlogPostPage from "@/pages/BlogPostPage";
-import { getPost, articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { Suspense } from "react";
+import BlogPostPage from "@/views/BlogPostPage";
+import { getPost, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string; postSlug: string };
+
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+export async function generateStaticParams(): Promise<Params[]> {
+  const data = await getSitemapData();
+  if (!data?.posts) return [];
+  return data.posts.map((p) => ({ slug: p.pillarSlug, postSlug: p.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = await getPost(params.postSlug);

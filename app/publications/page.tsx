@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Publications from "@/pages/Publications";
+import Publications from "@/views/Publications";
 
 export const metadata: Metadata = {
   title: "Publications",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AIUpdatesIndex from "@/pages/AIUpdates";
+import AIUpdatesIndex from "@/views/AIUpdates";
 
 export const metadata: Metadata = {
   title: "AI Updates",

@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
-import AIUpdateDetail from "@/pages/AIUpdateDetail";
-import { getUpdate, articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
+import { Suspense } from "react";
+import AIUpdateDetail from "@/views/AIUpdateDetail";
+import { getUpdate, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string };
+
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+export async function generateStaticParams(): Promise<Params[]> {
+  const data = await getSitemapData();
+  if (!data?.updates) return [];
+  return data.updates.map((u) => ({ slug: u.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const upd = await getUpdate(params.slug);
@@ -51,7 +61,9 @@ export default async function Page({ params }: { params: Params }) {
       {jsonLd.map((j, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
       ))}
-      <AIUpdateDetail />
+      <Suspense fallback={null}>
+        <AIUpdateDetail />
+      </Suspense>
     </>
   );
 }

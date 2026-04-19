@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Experience from "@/pages/Experience";
+import Experience from "@/views/Experience";
 
 export const metadata: Metadata = {
   title: "Experience",

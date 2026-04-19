@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AIContributors from "@/pages/AIContributors";
+import AIContributors from "@/views/AIContributors";
 
 export const metadata: Metadata = {
   title: "AI Contributors",

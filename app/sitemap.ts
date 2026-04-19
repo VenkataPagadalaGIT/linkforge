@@ -2,6 +2,10 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 
+// Re-generate the sitemap at most once per hour so new content appears
+// without a rebuild.
+export const revalidate = 3600;
+
 const STATIC_ROUTES = [
   "",
   "/about",

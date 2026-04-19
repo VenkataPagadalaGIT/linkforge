@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import Providers from "./providers";
 import Navbar from "@/components/Navbar";
@@ -112,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Navbar />
           <main id="main" className="min-h-[calc(100vh-8rem)]">
-            {children}
+            <Suspense fallback={null}>{children}</Suspense>
           </main>
           <Footer />
         </Providers>
