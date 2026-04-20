@@ -1,10 +1,7 @@
 {
   "/page": "app/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/ai-contributors/[id]/page": "app/ai-contributors/[id]/page.js",
-  "/ai-updates/[slug]/page": "app/ai-updates/[slug]/page.js",
-  "/insights/[slug]/page": "app/insights/[slug]/page.js",
-  "/insights/[slug]/[postSlug]/page": "app/insights/[slug]/[postSlug]/page.js",
-  "/solutions/[slug]/page": "app/solutions/[slug]/page.js"
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/publications/page": "app/publications/page.js",
+  "/sitemap.xml/[[...__metadata_id__]]/route": "app/sitemap.xml/[[...__metadata_id__]]/route.js",
+  "/insights/[slug]/[postSlug]/page": "app/insights/[slug]/[postSlug]/page.js"
 }
