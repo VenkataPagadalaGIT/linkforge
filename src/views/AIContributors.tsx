@@ -15,7 +15,7 @@ import { aiContributors } from "@/data/aiContributors";
 import { encyclopediaConcepts } from "@/data/aiEncyclopedia";
 import { Link, useNavigate, useLocation } from "@/lib/router-shim";
 import { ArrowLeft, ArrowRight, Linkedin, Mail } from "lucide-react";
-import authorPhoto from "@/assets/venkata-pagadala.jpeg";
+const authorPhoto = "/venkata-pagadala.jpeg";
 
 const pageTocSections = [
   { label: "Database", id: "explorer" },

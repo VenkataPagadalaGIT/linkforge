@@ -12,13 +12,6 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(jpe?g|png|gif|svg)$/i,
-      type: "asset/resource",
-    });
-    return config;
-  },
 };
 
 export default nextConfig;

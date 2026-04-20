@@ -1,7 +1,7 @@
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
 import PageSidebar from "@/components/PageSidebar";
-import venkatPhoto from "@/assets/venkata-pagadala.jpeg";
+const venkatPhoto = "/venkata-pagadala.jpeg";
 
 const stats = [
   { value: "10+", label: "Years Experience" },

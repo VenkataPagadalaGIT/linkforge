@@ -1,7 +1,7 @@
 "use client";
 import { Linkedin, Mail, ArrowRight } from "lucide-react";
 import { Link } from "@/lib/router-shim";
-import authorPhoto from "@/assets/venkata-pagadala.jpeg";
+const authorPhoto = "/venkata-pagadala.jpeg";
 
 const AuthorSidebar = () => (
   <aside className="hidden lg:block lg:w-52 shrink-0">
