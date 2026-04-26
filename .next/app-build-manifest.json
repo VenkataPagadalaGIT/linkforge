@@ -16,25 +16,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/notebook/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/notebook/page.js"
-    ],
     "/notebook/conference/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/notebook/conference/page.js"
     ],
-    "/ai-updates/page": [
+    "/notebook/conference/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/ai-updates/page.js"
+      "static/chunks/app/notebook/conference/[slug]/page.js"
     ],
-    "/solutions/[slug]/page": [
+    "/notebook/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/solutions/[slug]/page.js"
+      "static/chunks/app/notebook/page.js"
+    ],
+    "/admin/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/login/page.js"
+    ],
+    "/admin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/page.js"
     ]
   }
 }

@@ -1,7 +1,6 @@
 {
   "/page": "app/page.js",
-  "/notebook/page": "app/notebook/page.js",
-  "/notebook/conference/page": "app/notebook/conference/page.js",
-  "/ai-updates/page": "app/ai-updates/page.js",
-  "/solutions/[slug]/page": "app/solutions/[slug]/page.js"
+  "/notebook/conference/[slug]/page": "app/notebook/conference/[slug]/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/page": "app/admin/page.js"
 }
