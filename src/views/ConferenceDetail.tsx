@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import axios from "axios";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import { Link } from "@/lib/router-shim";
@@ -22,10 +23,18 @@ import {
   Clock,
   Save,
   Lock,
+  Globe2,
+  LayoutList,
+  LayoutGrid,
+  ArrowUpRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
+import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
+import { BACKEND_URL } from "@/lib/site";
 
 const statusStyles: Record<string, string> = {
   attended: "border-foreground/20 text-foreground/70",
@@ -69,6 +78,7 @@ interface NoteRecord {
   note: string;
   takeaways: string[];
   status: string;
+  is_public: boolean;
   updated_at: string;
 }
 
@@ -128,6 +138,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const speakers = React.useMemo(() => buildSpeakers(c), [c]);
   const totalSessions = c.days.reduce((n, d) => n + d.sessions.length, 0);
   const [activeDay, setActiveDay] = React.useState(0);
+  const [agendaView, setAgendaView] = React.useState<"timeline" | "grid">("timeline");
 
   // ===== Auth-gated notes =====
   const [authed, setAuthed] = React.useState(false);
@@ -138,6 +149,19 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
     let cancelled = false;
     const run = async () => {
       const token = getToken();
+      // Always try public notes first (works for any visitor)
+      try {
+        const { data } = await axios.get<NoteRecord[]>(
+          `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
+        );
+        if (cancelled) return;
+        const map: Record<string, NoteRecord> = {};
+        data.forEach((n) => (map[n.session_id] = n));
+        setNotesById(map);
+      } catch {
+        /* ignore */
+      }
+
       if (!token) {
         setAuthChecked(true);
         return;
@@ -148,7 +172,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
         if (cancelled) return;
         const map: Record<string, NoteRecord> = {};
         data.forEach((n) => (map[n.session_id] = n));
-        setNotesById(map);
+        setNotesById((prev) => ({ ...prev, ...map }));
         setAuthed(true);
       } catch {
         // silent — public visitor
@@ -171,6 +195,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
         note: "",
         takeaways: [],
         status: "",
+        is_public: false,
         updated_at: new Date().toISOString(),
         ...prev[sessionId],
         ...patch,
@@ -392,9 +417,42 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
           {/* Agenda — sticky day tabs + chronological timeline */}
           <section id="agenda" className="scroll-mt-28 mb-14">
             <ScrollReveal>
-              <div className="flex items-center gap-2 mb-5">
-                <CalendarDays size={14} className="text-muted-foreground/50" />
-                <h2 className="font-display text-xl font-bold text-foreground">Agenda · 4-Day Timeline</h2>
+              <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} className="text-muted-foreground/50" />
+                  <h2 className="font-display text-xl font-bold text-foreground">
+                    Agenda · 4-Day Timeline
+                  </h2>
+                </div>
+
+                {/* View toggle */}
+                <div
+                  className="inline-flex border border-border"
+                  data-testid="agenda-view-toggle"
+                >
+                  <button
+                    onClick={() => setAgendaView("timeline")}
+                    className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 transition-colors ${
+                      agendaView === "timeline"
+                        ? "bg-foreground/[0.04] text-foreground"
+                        : "text-muted-foreground/70 hover:text-foreground"
+                    }`}
+                    data-testid="agenda-view-timeline"
+                  >
+                    <LayoutList size={11} /> Timeline
+                  </button>
+                  <button
+                    onClick={() => setAgendaView("grid")}
+                    className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 border-l border-border transition-colors ${
+                      agendaView === "grid"
+                        ? "bg-foreground/[0.04] text-foreground"
+                        : "text-muted-foreground/70 hover:text-foreground"
+                    }`}
+                    data-testid="agenda-view-grid"
+                  >
+                    <LayoutGrid size={11} /> Grid
+                  </button>
+                </div>
               </div>
 
               {/* Day tabs (sticky) */}
@@ -442,32 +500,53 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                       )}
                     </div>
 
-                    <div className="space-y-2">
-                      {d.sessions.map((s, j) => {
-                        const id = sessionKey(d.date, s);
-                        return (
-                          <SessionCard
-                            key={id}
-                            id={id}
-                            session={s}
-                            authed={authed}
-                            authChecked={authChecked}
-                            note={notesById[id]}
-                            conferenceSlug={c.slug}
-                            onLocalUpdate={(patch) => updateLocalNote(id, patch)}
-                            anchor={id}
-                            isFirst={j === 0}
-                          />
-                        );
-                      })}
-                    </div>
+                    {agendaView === "timeline" ? (
+                      <div className="space-y-2">
+                        {d.sessions.map((s, j) => {
+                          const id = sessionKey(d.date, s);
+                          return (
+                            <SessionCard
+                              key={id}
+                              id={id}
+                              session={s}
+                              authed={authed}
+                              authChecked={authChecked}
+                              note={notesById[id]}
+                              conferenceSlug={c.slug}
+                              onLocalUpdate={(patch) => updateLocalNote(id, patch)}
+                              anchor={id}
+                              isFirst={j === 0}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div
+                        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                        data-testid={`day-grid-${i}`}
+                      >
+                        {d.sessions
+                          .filter((s) => s.speaker)
+                          .map((s) => {
+                            const id = sessionKey(d.date, s);
+                            return (
+                              <GridSpeakerCard
+                                key={id}
+                                session={s}
+                                anchor={id}
+                                hasNote={!!notesById[id]?.note}
+                              />
+                            );
+                          })}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             </ScrollReveal>
           </section>
 
-          {/* Speakers — chip cloud, links to inline session anchors */}
+          {/* Speakers — photo cards linking to dedicated speaker profiles */}
           <section id="speakers" className="scroll-mt-28 mb-14">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-5">
@@ -477,40 +556,63 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                 </h2>
               </div>
               <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mb-5 max-w-3xl">
-                Every speaker appears once below. Click any name to jump straight to their session inside the timeline.
+                Tap any speaker to open their profile — bio, every talk, and the notes once they go live.
               </p>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2" data-testid="conference-speakers-grid">
-                {speakers.map((sp) => (
-                  <a
-                    key={sp.name}
-                    href={`#${sp.anchor}`}
-                    className="group flex items-start gap-3 border border-border p-3 hover:border-foreground/30 transition-all"
-                    data-testid={`conference-speaker-${sp.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  >
-                    <div className="w-9 h-9 border border-border bg-foreground/[0.03] flex items-center justify-center font-mono text-[11px] text-foreground/70 group-hover:border-foreground/40 group-hover:text-foreground transition-colors shrink-0">
-                      {initials(sp.name)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <p className="font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
-                          {sp.name}
-                        </p>
-                        {sp.speakerUrl && (
-                          <Linkedin size={10} className="text-muted-foreground/40 shrink-0" />
+              <div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                data-testid="conference-speakers-grid"
+              >
+                {speakers.map((sp) => {
+                  const profile = getSpeakerByName(sp.name);
+                  return (
+                    <Link
+                      key={sp.name}
+                      to={
+                        profile
+                          ? `/notebook/conference/speakers/${profile.slug}`
+                          : `#${sp.anchor}`
+                      }
+                      className="group flex items-start gap-3 border border-border p-3 hover:border-foreground/30 transition-all"
+                      data-testid={`conference-speaker-${sp.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    >
+                      <div className="w-12 h-12 border border-border bg-foreground/[0.03] overflow-hidden shrink-0 group-hover:border-foreground/40 transition-colors">
+                        {profile?.photo ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={profile.photo}
+                            alt={sp.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center font-mono text-[11px] text-foreground/70">
+                            {initials(sp.name)}
+                          </div>
                         )}
                       </div>
-                      {sp.affiliation && (
-                        <p className="font-mono text-[10px] text-muted-foreground/70 truncate">
-                          {sp.affiliation}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
+                            {sp.name}
+                          </p>
+                          <ArrowUpRight
+                            size={11}
+                            className="text-muted-foreground/30 group-hover:text-foreground transition-colors shrink-0"
+                          />
+                        </div>
+                        {sp.affiliation && (
+                          <p className="font-mono text-[10px] text-muted-foreground/70 truncate">
+                            {sp.affiliation}
+                          </p>
+                        )}
+                        <p className="font-mono text-[9px] text-muted-foreground/50 mt-1 truncate">
+                          <Clock size={9} className="inline mr-1" />
+                          {sp.start} · {sp.dayLabel}
                         </p>
-                      )}
-                      <p className="font-mono text-[9px] text-muted-foreground/50 mt-1 truncate">
-                        <Clock size={9} className="inline mr-1" />
-                        {sp.start} · {sp.dayLabel}
-                      </p>
-                    </div>
-                  </a>
-                ))}
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </ScrollReveal>
           </section>
@@ -615,33 +717,67 @@ const SessionCard: React.FC<SessionCardProps> = ({
               {s.title}
             </h4>
 
-            {/* Speaker chip — inline within session */}
-            {s.speaker && (
-              <div className="flex items-start gap-2.5 mb-3" data-testid={`session-speaker-${anchor}`}>
-                <div className="w-7 h-7 border border-border bg-foreground/[0.03] flex items-center justify-center font-mono text-[10px] text-foreground/70 shrink-0">
-                  {initials(s.speaker)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-mono text-[11px] text-foreground/90">{s.speaker}</span>
-                    {s.speakerUrl && (
-                      <a
-                        href={s.speakerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground/50 hover:text-foreground transition-colors"
-                        aria-label={`${s.speaker} on LinkedIn`}
-                      >
-                        <Linkedin size={10} />
-                      </a>
+            {/* Speaker chip — inline within session, links to full profile */}
+            {s.speaker && (() => {
+              const profile = getSpeakerByName(s.speaker);
+              return (
+                <div
+                  className="flex items-start gap-2.5 mb-3"
+                  data-testid={`session-speaker-${anchor}`}
+                >
+                  <Link
+                    to={
+                      profile
+                        ? `/notebook/conference/speakers/${profile.slug}`
+                        : "#"
+                    }
+                    className="w-9 h-9 border border-border bg-foreground/[0.03] overflow-hidden shrink-0 hover:border-foreground/40 transition-colors"
+                  >
+                    {profile?.photo ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={profile.photo}
+                        alt={s.speaker}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="w-full h-full flex items-center justify-center font-mono text-[10px] text-foreground/70">
+                        {initials(s.speaker)}
+                      </span>
+                    )}
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {profile ? (
+                        <Link
+                          to={`/notebook/conference/speakers/${profile.slug}`}
+                          className="font-mono text-[11px] text-foreground/90 hover:text-glow hover:underline underline-offset-4 transition-all"
+                        >
+                          {s.speaker}
+                        </Link>
+                      ) : (
+                        <span className="font-mono text-[11px] text-foreground/90">{s.speaker}</span>
+                      )}
+                      {s.speakerUrl && (
+                        <a
+                          href={s.speakerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground/50 hover:text-foreground transition-colors"
+                          aria-label={`${s.speaker} on LinkedIn`}
+                        >
+                          <Linkedin size={10} />
+                        </a>
+                      )}
+                    </div>
+                    {s.affiliation && (
+                      <p className="font-mono text-[10px] text-muted-foreground/60">{s.affiliation}</p>
                     )}
                   </div>
-                  {s.affiliation && (
-                    <p className="font-mono text-[10px] text-muted-foreground/60">{s.affiliation}</p>
-                  )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {s.description && (
               <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-2">{s.description}</p>
@@ -659,6 +795,36 @@ const SessionCard: React.FC<SessionCardProps> = ({
                   </li>
                 ))}
               </ul>
+            )}
+
+            {/* Public field notes (rendered for everyone if note.is_public) */}
+            {note?.is_public && note.note && (
+              <div
+                className="mt-4 border-l-2 border-foreground/30 pl-4 py-1"
+                data-testid={`session-public-note-${anchor}`}
+              >
+                <div className="flex items-center gap-1.5 mb-2">
+                  <NotebookIcon size={10} className="text-foreground/60" />
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                    Field notes
+                  </span>
+                </div>
+                <p className="font-mono text-[12px] text-foreground/85 leading-relaxed whitespace-pre-wrap">
+                  {note.note}
+                </p>
+                {note.takeaways && note.takeaways.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {note.takeaways.map((tk, i) => (
+                      <span
+                        key={i}
+                        className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-0.5"
+                      >
+                        {tk}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
 
             {s.room && (
@@ -709,18 +875,20 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
   const [text, setText] = React.useState(note?.note || "");
   const [takeaways, setTakeaways] = React.useState<string[]>(note?.takeaways || []);
   const [statusFlag, setStatusFlag] = React.useState<NoteStatus>((note?.status as NoteStatus) || "");
+  const [isPublic, setIsPublic] = React.useState<boolean>(!!note?.is_public);
   const [chip, setChip] = React.useState("");
   const [saveState, setSaveState] = React.useState<"idle" | "saving" | "saved" | "error">("idle");
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const persist = React.useCallback(
-    async (next: { note?: string; takeaways?: string[]; status?: string }) => {
+    async (next: { note?: string; takeaways?: string[]; status?: string; is_public?: boolean }) => {
       setSaveState("saving");
       try {
         const body = {
           note: next.note ?? text,
           takeaways: next.takeaways ?? takeaways,
           status: next.status ?? statusFlag,
+          is_public: next.is_public ?? isPublic,
         };
         await adminApi.put(`/notebook/notes/${conferenceSlug}/${sessionId}`, body);
         onLocalUpdate(body);
@@ -730,7 +898,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
         setSaveState("error");
       }
     },
-    [conferenceSlug, sessionId, text, takeaways, statusFlag, onLocalUpdate],
+    [conferenceSlug, sessionId, text, takeaways, statusFlag, isPublic, onLocalUpdate],
   );
 
   const onTextChange = (v: string) => {
@@ -760,9 +928,15 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
     persist({ status: next });
   };
 
+  const togglePublish = () => {
+    const next = !isPublic;
+    setIsPublic(next);
+    persist({ is_public: next });
+  };
+
   return (
     <div className="border-t border-border bg-foreground/[0.015] p-5" data-testid={`note-editor-${sessionId}`}>
-      {/* Status flags */}
+      {/* Status flags + publish */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
           Status
@@ -782,6 +956,30 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
             {s}
           </button>
         ))}
+
+        <span className="ml-auto inline-flex items-center gap-2">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+            Visibility
+          </span>
+          <button
+            onClick={togglePublish}
+            className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] border px-2 py-1 transition-colors ${
+              isPublic
+                ? "border-emerald-400/50 text-emerald-300/90 bg-emerald-400/[0.04]"
+                : "border-border text-muted-foreground/70 hover:border-foreground/30"
+            }`}
+            data-testid={`publish-toggle-${sessionId}`}
+            title={
+              isPublic
+                ? "Public — visible on the conference + speaker profile pages"
+                : "Private — only you can see this"
+            }
+          >
+            {isPublic ? <Globe2 size={10} /> : <Lock size={10} />}
+            {isPublic ? "Public" : "Private"}
+            {isPublic ? <Eye size={10} /> : <EyeOff size={10} />}
+          </button>
+        </span>
       </div>
 
       {/* Note textarea */}
@@ -850,3 +1048,75 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
 };
 
 export default ConferenceDetail;
+
+// ===== Grid view — speaker-centric card per session =====
+const GridSpeakerCard = ({
+  session,
+  anchor,
+  hasNote,
+}: {
+  session: Session;
+  anchor: string;
+  hasNote: boolean;
+}) => {
+  const profile = session.speaker ? getSpeakerByName(session.speaker) : undefined;
+  return (
+    <Link
+      to={
+        profile
+          ? `/notebook/conference/speakers/${profile.slug}`
+          : `#${anchor}`
+      }
+      className="group flex flex-col border border-border hover:border-foreground/30 transition-all"
+      data-testid={`grid-speaker-${anchor}`}
+    >
+      <div className="aspect-square bg-foreground/[0.02] overflow-hidden border-b border-border relative">
+        {profile?.photo ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={profile.photo}
+            alt={session.speaker || ""}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center font-display text-3xl text-foreground/30">
+            {session.speaker
+              ? session.speaker
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((n) => n[0])
+                  .join("")
+              : "—"}
+          </div>
+        )}
+        {hasNote && (
+          <span
+            className="absolute top-2 right-2 font-mono text-[8px] uppercase tracking-[0.15em] border border-emerald-400/50 text-emerald-300/95 bg-background/80 backdrop-blur px-1.5 py-0.5"
+            title="Has notes"
+          >
+            Notes
+          </span>
+        )}
+      </div>
+      <div className="p-4 flex-1 flex flex-col">
+        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+          {session.start} · {session.type}
+        </p>
+        <p className="font-display text-sm font-bold text-foreground leading-tight mb-1.5 group-hover:text-glow transition-all line-clamp-2">
+          {session.title}
+        </p>
+        {session.speaker && (
+          <p className="font-mono text-[11px] text-foreground/85 mt-auto">
+            {session.speaker}
+          </p>
+        )}
+        {session.affiliation && (
+          <p className="font-mono text-[10px] text-muted-foreground/60 truncate">
+            {session.affiliation}
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+};
