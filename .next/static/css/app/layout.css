@@ -1949,6 +1949,12 @@ h1, h2, h3, h4, h5, h6 {
 .border-yellow-500\/30{
   border-color: rgb(234 179 8 / 0.3);
 }
+.border-amber-400\/40{
+  border-color: rgb(251 191 36 / 0.4);
+}
+.border-emerald-400\/40{
+  border-color: rgb(52 211 153 / 0.4);
+}
 .border-l-transparent{
   border-left-color: transparent;
 }
@@ -2759,6 +2765,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 .text-yellow-500\/50{
   color: rgb(234 179 8 / 0.5);
+}
+.text-amber-300\/90{
+  color: rgb(252 211 77 / 0.9);
+}
+.text-emerald-300\/90{
+  color: rgb(110 231 183 / 0.9);
 }
 .underline{
   text-decoration-line: underline;
@@ -4441,6 +4453,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .sm\:grid-cols-\[40px_1fr_1fr_140px_100px_24px\]{
     grid-template-columns: 40px 1fr 1fr 140px 100px 24px;
+  }
+
+  .sm\:grid-cols-4{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .sm\:flex-row{

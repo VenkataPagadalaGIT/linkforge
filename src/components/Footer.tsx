@@ -17,6 +17,8 @@ const Footer = () => {
     { label: "Top 100 Contributors", to: "/notebook/ai" },
     { label: "Learning Roadmap", to: "/notebook/ai/roadmap" },
     { label: "Concepts Encyclopedia", to: "/notebook/ai/encyclopedia" },
+    { label: "Business Notebook", to: "/notebook/business" },
+    { label: "Conference Notebook", to: "/notebook/conference" },
   ];
 
   const files = [

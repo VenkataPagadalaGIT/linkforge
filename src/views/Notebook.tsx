@@ -1,6 +1,6 @@
 "use client";
 import { Link } from "@/lib/router-shim";
-import { Brain, Briefcase, ArrowRight, Users, BookOpen, Clock, Map, Library } from "lucide-react";
+import { Brain, Briefcase, ArrowRight, Users, BookOpen, Clock, Map, Library, Mic, CalendarDays } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
@@ -28,11 +28,22 @@ const notebooks = [
       { label: "Case Studies", value: "Soon", icon: BookOpen },
     ],
   },
+  {
+    title: "Conference Notebook",
+    description: "Field notes, talks, and takeaways from AI, SEO, and engineering conferences — a live notebook of what survives the flight home.",
+    icon: Mic,
+    to: "/notebook/conference",
+    stats: [
+      { label: "Conferences", value: "5", icon: CalendarDays },
+      { label: "Field Notes", value: "Live", icon: BookOpen },
+    ],
+  },
 ];
 
 const tocSections = [
   { label: "AI Notebook", id: "ai-notebook" },
   { label: "Business Notebook", id: "business-notebook" },
+  { label: "Conference Notebook", id: "conference-notebook" },
 ];
 
 const Notebook = () => {
@@ -68,7 +79,7 @@ const Notebook = () => {
               const Icon = nb.icon;
               return (
                 <ScrollReveal key={nb.to}>
-                  <div id={nb.title === "AI Notebook" ? "ai-notebook" : "business-notebook"} className="scroll-mt-28">
+                  <div id={nb.title === "AI Notebook" ? "ai-notebook" : nb.title === "Business Notebook" ? "business-notebook" : "conference-notebook"} className="scroll-mt-28">
                     <Link
                       to={nb.to}
                       className="block border border-border p-8 sm:p-10 group hover:border-foreground/30 transition-all border-glow-hover"
