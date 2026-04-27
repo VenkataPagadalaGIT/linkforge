@@ -78,10 +78,33 @@ export interface SessionDetailContext {
   next?: { sessionId: string; title: string; start: string };
 }
 
+const sessionKey = (dayDate: string, s: Session) =>
+  `${dayDate}__${s.start}__${s.title}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 120);
+
 const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
-  const { conference: c, session: s, sessionId, dayDate, dayTheme, prev, next } = ctx;
+  const { conference: c, session: s, sessionId, dayDate, dayIndex, dayTheme, prev, next } = ctx;
   const profile = s.speaker ? getSpeakerByName(s.speaker) : undefined;
   const Icon = sessionIcon[s.type];
+
+  // Build the same-day time-jump list (skip break/meal/registration noise)
+  const sameDay = c.days[dayIndex];
+  const dayJumpSessions = React.useMemo(
+    () =>
+      sameDay
+        ? sameDay.sessions
+            .filter((x) => x.type !== "registration" && x.type !== "break" && x.type !== "meal")
+            .map((x) => ({
+              id: sessionKey(sameDay.date, x),
+              start: x.start,
+              title: x.title,
+            }))
+        : [],
+    [sameDay],
+  );
 
   const [authed, setAuthed] = React.useState(false);
   const [note, setNote] = React.useState<NoteRecord | undefined>(undefined);
@@ -178,6 +201,38 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
             >
               <ArrowLeft size={12} /> Back to {c.name} {c.edition || c.year} agenda
             </Link>
+
+            {/* Time-jump strip — sticky, jump between sibling sessions same-day */}
+            {dayJumpSessions.length > 0 && (
+              <div
+                className="sticky top-20 z-20 -mx-2 px-2 py-3 mb-8 bg-background/85 backdrop-blur border-b border-border/40"
+                data-testid="session-time-jump"
+              >
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mr-2">
+                    <Clock size={9} /> {dayTheme || dayDate}
+                  </span>
+                  {dayJumpSessions.map((j) => {
+                    const isCurrent = j.id === sessionId;
+                    return (
+                      <Link
+                        key={j.id}
+                        to={`/notebook/conference/${c.slug}/sessions/${j.id}`}
+                        className={`shrink-0 font-mono text-[10px] tracking-wider px-2 py-1 border transition-all ${
+                          isCurrent
+                            ? "border-foreground/60 text-foreground bg-foreground/[0.05]"
+                            : "border-border/60 text-muted-foreground/75 hover:border-foreground/40 hover:text-foreground"
+                        }`}
+                        title={j.title}
+                        data-testid={`session-jump-${j.id}`}
+                      >
+                        {j.start}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Session hero */}
             <section id="session-hero" className="scroll-mt-28 mb-12">

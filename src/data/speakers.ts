@@ -677,6 +677,116 @@ export const speakers: Speaker[] = [
     linkedin: "https://www.linkedin.com/in/frankvitovitch/",
     bio: "Chief Revenue Officer at Botify. Predictions for an AGI-search world — share of voice, brand mentions, and AI-bot governance as the new SEO KPIs.",
   },
+
+  // ===== Tech SEO Connect 2024 (Raleigh, NC) =====
+  {
+    slug: "aleyda-solis",
+    name: "Aleyda Solis",
+    role: "Founder & International SEO Consultant",
+    company: "Orainti",
+    photo: "https://static.wixstatic.com/media/7416ca_b3084c78f7164d8b97bea7440e6198bf~mv2.png",
+    linkedin: "https://www.linkedin.com/in/aleyda/",
+    bio: "Founder of Orainti. International SEO authority. Closing keynote on the State of Technical SEO 2024 — what's working, what's broken, and where the discipline is heading.",
+  },
+  {
+    slug: "rick-viscomi",
+    name: "Rick Viscomi",
+    role: "Core Web Vitals DevRel",
+    company: "Google",
+    photo: "https://static.wixstatic.com/media/7416ca_24141f5dc7614b0f85cc7621ffbcd275~mv2.png",
+    linkedin: "https://www.linkedin.com/in/rviscomi/",
+    bio: "Core Web Vitals DevRel at Google. Drove the FID→INP transition that lifted mobile pass rates from 65% to 76%. Champions RUM over Lab data and BFCache-style instant nav.",
+  },
+  {
+    slug: "jr-oakes",
+    name: "JR Oakes",
+    role: "VP of Strategy",
+    company: "LOCOMOTIVE Agency",
+    photo: "https://static.wixstatic.com/media/7416ca_b6c76d5631314bf99717470dfb4818a9~mv2.png",
+    linkedin: "https://www.linkedin.com/in/jr-oakes-3660546/",
+    bio: "VP of Strategy at LOCOMOTIVE. Built Empath + NPath to extract sequence patterns from GA4 events with LLM-powered alerts — open-source SEO infrastructure.",
+  },
+  {
+    slug: "kevin-indig",
+    name: "Kevin Indig",
+    role: "Growth Advisor",
+    company: "Hims · Dropbox · Reddit",
+    photo: "https://static.wixstatic.com/media/7416ca_e90519693ad14a4c93273738d6f8d5ee~mv2.png",
+    linkedin: "https://www.linkedin.com/in/kevinindig/",
+    bio: "Growth advisor for Hims, Dropbox, Reddit, and others. Argues SEO recommendations don't fail because of the data — they fail because of the pitch. Story-based pitching ships work.",
+  },
+  {
+    slug: "rachel-anderson",
+    name: "Rachel Anderson",
+    role: "Senior SEO Manager",
+    company: "Weedmaps",
+    photo: "https://static.wixstatic.com/media/7416ca_c38db6b85c354d7d8317742d7b797058~mv2.png",
+    linkedin: "https://www.linkedin.com/in/rachel-anderson-a5b0a460/",
+    bio: "Senior SEO Manager at Weedmaps. Embedded automated SEO tests into the CI/CD pipeline + JIRA tag-based gating, cutting high-impact regression bugs in half.",
+  },
+  {
+    slug: "fili-wiese",
+    name: "Fili Wiese",
+    role: "SEO Consultant · Ex-Google Engineer",
+    company: "SearchBrothers",
+    photo: "https://static.wixstatic.com/media/7416ca_513ff44db20e4c459999cb10573db7a5~mv2.png",
+    linkedin: "https://www.linkedin.com/in/filiwiese/",
+    bio: "Independent consultant, ex-Google search engineer. Maps the cloud-environment SEO traps — staging subdomains, CDN canonical mishaps, serverless cold starts, and how to defuse them.",
+  },
+  {
+    slug: "kristin-tynski",
+    name: "Kristin Tynski",
+    role: "Co-Founder & SVP, Creative",
+    company: "Fractl",
+    photo: "https://static.wixstatic.com/media/7416ca_3bb04511968640d4887d0bf53d87de99~mv2.png",
+    linkedin: "https://www.linkedin.com/in/kristintynski/",
+    bio: "Co-Founder of Fractl. Champion of data journalism at scale and AI-driven content automation — the future of SEO is original, data-backed, and produced at near-zero cost.",
+  },
+  {
+    slug: "dan-hinckley",
+    name: "Dan Hinckley",
+    role: "CTO & Co-Founder",
+    company: "Go Fish Digital",
+    photo: "https://static.wixstatic.com/media/7416ca_1b6919d8a4a8442ea0034cc3a22a3583~mv2.png",
+    linkedin: "https://www.linkedin.com/in/danielhinckley/",
+    bio: "CTO and Co-Founder of Go Fish Digital. Built Barracuda — a SERP-scraping + LLM-scoring tool that turns 4-hour content audits into 4-minute ones.",
+  },
+  {
+    slug: "lazarina-stoy",
+    name: "Lazarina Stoy",
+    role: "Founder",
+    company: "MLOpsSEO",
+    photo: "https://static.wixstatic.com/media/7416ca_ed8aae8b697d4d368e03c7cd521e5796~mv2.png",
+    linkedin: "https://www.linkedin.com/in/lazarinastoy/",
+    bio: "Founder of MLOpsSEO. Practical machine learning for daily SEO work — entity recognition, fuzzy matching, content moderation, and why ChatGPT loses to fine-tuned models on precision tasks.",
+  },
+  {
+    slug: "victor-pan",
+    name: "Victor Pan",
+    role: "Principal SEO",
+    company: "HubSpot",
+    photo: "https://static.wixstatic.com/media/7416ca_51521f8dc55d421d8dc36d162955ef65~mv2.png",
+    linkedin: "https://www.linkedin.com/in/victorpan/",
+    bio: "Principal SEO at HubSpot. Argues cloaking isn't binary evil — strategic, ethical bot-side cloaking can reduce server load, save crawl budget, and protect Core Web Vitals.",
+  },
+  {
+    slug: "serge-bezborodov",
+    name: "Serge Bezborodov",
+    role: "CTO",
+    company: "JetOctopus",
+    photo: "https://static.wixstatic.com/media/7416ca_781c7d1d18e5446ea5340cee50ef66d6~mv2.png",
+    linkedin: "https://www.linkedin.com/in/sergebezborodov/",
+    bio: "CTO of JetOctopus. Forensic analysis of GSC data limits — why aggregation discrepancies and longtail anonymization make GSC unreliable as a sole source of truth.",
+  },
+  {
+    slug: "patrick-stox",
+    name: "Patrick Stox",
+    role: "Product Advisor",
+    company: "Ahrefs",
+    photo: "https://static.wixstatic.com/media/7416ca_816b57a443524211922e805ba8eed99e~mv2.png",
+    linkedin: "https://www.linkedin.com/in/patrickstox/",
+    bio: "Product Advisor at Ahrefs. After auditing 1M+ websites: most flagged 'issues' don't matter. Focus on impact-effort ROI, automate the rest, embrace Edge SEO.",
+  },
 ];
 
 // ===== Helpers =====
@@ -759,6 +869,19 @@ const localPhotoFiles: Record<string, string> = {
   "ray-grieselhuber": "ray-grieselhuber.png",
   "tim-resnik": "tim-resnik.png",
   "frank-vitovitch": "frank-vitovitch.png",
+  // ===== Tech SEO Connect 2024 — sourced from 6xmedia.wixstudio.com =====
+  "rick-viscomi": "rick-viscomi.png",
+  "jr-oakes": "jr-oakes.png",
+  "kevin-indig": "kevin-indig.png",
+  "rachel-anderson": "rachel-anderson.png",
+  "fili-wiese": "fili-wiese.png",
+  "kristin-tynski": "kristin-tynski.png",
+  "dan-hinckley": "dan-hinckley.png",
+  "lazarina-stoy": "lazarina-stoy.png",
+  "victor-pan": "victor-pan.png",
+  "serge-bezborodov": "serge-bezborodov.png",
+  "patrick-stox": "patrick-stox.png",
+  "aleyda-solis": "aleyda-solis.png",
 };
 
 // All SEO Week 2026 speakers — sourced from seoweek.org/speakers
@@ -783,11 +906,19 @@ const botifySourcedSlugs = new Set([
   "ray-grieselhuber","tim-resnik","frank-vitovitch",
 ]);
 
-export type PhotoSource = "seoweek" | "botify" | "fallback";
+// Tech SEO Connect 2024 speakers — sourced from 6xmedia.wixstudio.com
+const techseoSourcedSlugs = new Set([
+  "rick-viscomi","jr-oakes","kevin-indig","rachel-anderson","fili-wiese",
+  "kristin-tynski","dan-hinckley","lazarina-stoy","victor-pan","serge-bezborodov",
+  "patrick-stox","aleyda-solis",
+]);
+
+export type PhotoSource = "seoweek" | "botify" | "techseo" | "fallback";
 
 export const photoSourceFor = (slug: string): PhotoSource => {
   if (seoweekSourcedSlugs.has(slug)) return "seoweek";
   if (botifySourcedSlugs.has(slug)) return "botify";
+  if (techseoSourcedSlugs.has(slug)) return "techseo";
   return "fallback";
 };
 
