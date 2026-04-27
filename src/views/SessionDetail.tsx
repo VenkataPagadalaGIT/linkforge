@@ -445,6 +445,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 <NoteEditorFull
                   conferenceSlug={c.slug}
                   sessionId={sessionId}
+                  session={s}
                   initial={note}
                   onSaved={(n) => setNote(n)}
                 />
@@ -520,15 +521,57 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
 const NoteEditorFull = ({
   conferenceSlug,
   sessionId,
+  session: s,
   initial,
   onSaved,
 }: {
   conferenceSlug: string;
   sessionId: string;
+  session: Session;
   initial?: NoteRecord;
   onSaved: (n: NoteRecord) => void;
 }) => {
-  const [text, setText] = React.useState(initial?.note || "");
+  // Default field-notes scaffold so a fresh note opens with structure ready to fill.
+  const buildDefault = React.useCallback(() => {
+    const heading = s.speaker ? `${s.speaker} — ${s.title}` : s.title;
+    const first = s.speaker ? s.speaker.split(" ")[0] : "the speaker";
+    return `## ${heading}
+
+**Key thesis:** _What's the core argument in one sentence?_
+
+### Context that matters
+
+_What's the backdrop / why does this matter right now…_
+
+### What ${first} actually said
+
+_The key claim, with the data or example they used…_
+
+### Key takeaways
+
+- takeaway one
+- takeaway two
+- takeaway three
+
+### Quotes worth keeping
+
+> "..." — ${s.speaker || "speaker"}
+
+### My take
+
+_Where I agree, push back, or extend with my own context…_
+
+### Open questions
+
+- [ ] What I want to dig into next
+- [ ] People to follow up with — DM / coffee
+- [ ] Action item — me — by when
+`;
+  }, [s.speaker, s.title]);
+
+  const seedIfEmpty = (raw?: string) => (raw && raw.trim().length > 0 ? raw : buildDefault());
+
+  const [text, setText] = React.useState(() => seedIfEmpty(initial?.note));
   const [takeaways, setTakeaways] = React.useState<string[]>(initial?.takeaways || []);
   const [statusFlag, setStatusFlag] = React.useState<NoteStatus>((initial?.status as NoteStatus) || "");
   const [isPublic, setIsPublic] = React.useState<boolean>(!!initial?.is_public);
@@ -539,10 +582,11 @@ const NoteEditorFull = ({
   // Sync when notes load asynchronously
   React.useEffect(() => {
     if (!initial) return;
-    setText(initial.note || "");
+    setText(seedIfEmpty(initial.note));
     setTakeaways(initial.takeaways || []);
     setStatusFlag((initial.status as NoteStatus) || "");
     setIsPublic(!!initial.is_public);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initial]);
 
   const persist = React.useCallback(
@@ -679,45 +723,9 @@ const NoteEditorFull = ({
     debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
   };
 
-  const buildTemplate = () => {
-    const heading = s.speaker ? `${s.speaker} — ${s.title}` : s.title;
-    const first = s.speaker ? s.speaker.split(" ")[0] : "the speaker";
-    return `## ${heading}
-
-**Key thesis:** _What's the core argument in one sentence?_
-
-### Context that matters
-
-_What's the backdrop / why does this matter right now…_
-
-### What ${first} actually said
-
-_The key claim, with the data or example they used…_
-
-### Key takeaways
-
-- takeaway one
-- takeaway two
-- takeaway three
-
-### Quotes worth keeping
-
-> "..." — ${s.speaker || "speaker"}
-
-### My take
-
-_Where I agree, push back, or extend with my own context…_
-
-### Open questions
-
-- [ ] What I want to dig into next
-- [ ] People to follow up with — DM / coffee
-- [ ] Action item — me — by when
-`;
-  };
   const applyTemplate = () => {
-    if (text.trim().length > 0 && !window.confirm("Replace current note with the field-notes template?")) return;
-    const tmpl = buildTemplate();
+    if (text.trim().length > 0 && text.trim() !== buildDefault().trim() && !window.confirm("Replace current note with the field-notes template?")) return;
+    const tmpl = buildDefault();
     setText(tmpl);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => persist({ note: tmpl }), 600);

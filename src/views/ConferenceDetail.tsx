@@ -950,7 +950,12 @@ _Where I agree, push back, or extend with my own context…_
 };
 
 const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, session, note, onLocalUpdate }) => {
-  const [text, setText] = React.useState(note?.note || "");
+  // Auto-seed the field-notes template into empty notes so users get structure
+  // immediately on first open — no extra click required.
+  const initialText = note?.note && note.note.trim().length > 0
+    ? note.note
+    : buildNoteTemplate(session);
+  const [text, setText] = React.useState(initialText);
   const [takeaways, setTakeaways] = React.useState<string[]>(note?.takeaways || []);
   const [statusFlag, setStatusFlag] = React.useState<NoteStatus>((note?.status as NoteStatus) || "");
   const [isPublic, setIsPublic] = React.useState<boolean>(!!note?.is_public);
