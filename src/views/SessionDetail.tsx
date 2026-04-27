@@ -31,7 +31,7 @@ import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
 import NoteContent from "@/components/NoteContent";
-import { type Conference, type Session, type SessionType } from "@/data/conferences";
+import { type Conference, type Session, type SessionType, getSessionId, getSessionUrlSlug } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
@@ -71,11 +71,12 @@ interface NoteRecord {
 export interface SessionDetailContext {
   conference: Conference;
   session: Session;
-  sessionId: string;
+  sessionId: string;        // internal long id (note storage key)
+  urlSlug: string;          // short slug used in URLs and conference-page anchors
   dayDate: string;
   dayIndex: number;
   dayTheme?: string;
-  prev?: { sessionId: string; title: string; start: string };
+  prev?: { sessionId: string; title: string; start: string };  // sessionId here is the prev urlSlug for routing
   next?: { sessionId: string; title: string; start: string };
 }
 
@@ -87,7 +88,7 @@ const sessionKey = (dayDate: string, s: Session) =>
     .slice(0, 120);
 
 const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
-  const { conference: c, session: s, sessionId, dayDate, dayIndex, dayTheme, prev, next } = ctx;
+  const { conference: c, session: s, sessionId, urlSlug, dayDate, dayIndex, dayTheme, prev, next } = ctx;
   const profile = s.speaker ? getSpeakerByName(s.speaker) : undefined;
   const Icon = sessionIcon[s.type];
 
@@ -99,12 +100,13 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
         ? sameDay.sessions
             .filter((x) => x.type !== "registration" && x.type !== "break" && x.type !== "meal")
             .map((x) => ({
-              id: sessionKey(sameDay.date, x),
+              id: getSessionId(sameDay.date, x),
+              urlSlug: getSessionUrlSlug(c, sameDay.date, x),
               start: x.start,
               title: x.title,
             }))
         : [],
-    [sameDay],
+    [sameDay, c],
   );
 
   const [authed, setAuthed] = React.useState(false);
@@ -164,8 +166,8 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       eventStatus: "https://schema.org/EventScheduled",
       description: s.description || s.title,
-      url: `https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${sessionId}`,
-      location: { "@type": "Place", name: c.venues[0]?.name || c.city, address: c.city },
+      url: `https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${urlSlug}`,
+      location: { "@type": "Place", name: c.venues?.[0]?.name || c.city, address: c.city },
       superEvent: {
         "@type": "Event",
         name: `${c.name} ${c.edition || c.year}`,
@@ -175,7 +177,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
         ? { "@type": "Person", name: s.speaker, affiliation: s.affiliation, url: s.speakerUrl }
         : undefined,
     }),
-    [c, s, sessionId, dayDate],
+    [c, s, urlSlug, dayDate],
   );
 
   return (
@@ -184,7 +186,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
       <SEO
         title={`${s.title} · ${c.name} ${c.edition || c.year}`}
         description={s.description || s.title}
-        canonical={`https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${sessionId}`}
+        canonical={`https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${urlSlug}`}
       />
       <script
         type="application/ld+json"
@@ -196,7 +198,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
         <div className="flex-1 min-w-0">
           <ScrollReveal>
             <Link
-              to={`/notebook/conference/${c.slug}#${sessionId}`}
+              to={`/notebook/conference/${c.slug}#${urlSlug}`}
               className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
               data-testid="session-back-link"
             >
@@ -214,18 +216,18 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                     <Clock size={9} /> {dayTheme || dayDate}
                   </span>
                   {dayJumpSessions.map((j) => {
-                    const isCurrent = j.id === sessionId;
+                    const isCurrent = j.urlSlug === urlSlug;
                     return (
                       <Link
                         key={j.id}
-                        to={`/notebook/conference/${c.slug}/sessions/${j.id}`}
+                        to={`/notebook/conference/${c.slug}/sessions/${j.urlSlug}`}
                         className={`shrink-0 font-mono text-[10px] tracking-wider px-2 py-1 border transition-all ${
                           isCurrent
                             ? "border-foreground/60 text-foreground bg-foreground/[0.05]"
                             : "border-border/60 text-muted-foreground/75 hover:border-foreground/40 hover:text-foreground"
                         }`}
                         title={j.title}
-                        data-testid={`session-jump-${j.id}`}
+                        data-testid={`session-jump-${j.urlSlug}`}
                       >
                         {j.start}
                       </Link>
@@ -418,7 +420,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
 
               {/* Attribution header — always visible, even in empty state */}
               <Link
-                to={`/notebook/conference/${c.slug}#${sessionId}`}
+                to={`/notebook/conference/${c.slug}#${urlSlug}`}
                 className="block mb-5 group"
                 data-testid="my-notes-attribution"
               >

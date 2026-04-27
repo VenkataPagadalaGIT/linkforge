@@ -34,7 +34,7 @@ import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
 import NoteContent from "@/components/NoteContent";
-import { type Conference, type Session, type SessionType } from "@/data/conferences";
+import { type Conference, type Session, type SessionType, getSessionId, getSessionUrlSlug } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
@@ -85,13 +85,8 @@ interface NoteRecord {
   updated_at: string;
 }
 
-// stable id per session (deterministic from day+start+title)
-const sessionKey = (dayDate: string, s: Session) =>
-  `${dayDate}__${s.start}__${s.title}`
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 120);
+// Internal session_id for note storage (long form, backward compat with existing notes)
+const sessionKey = (dayDate: string, s: Session) => getSessionId(dayDate, s);
 
 // ===== Speaker integration helpers =====
 interface SpeakerRef {
@@ -444,16 +439,17 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                     )
                     .map((s) => {
                       const id = sessionKey(c.days[activeDay].date, s);
+                      const slug = getSessionUrlSlug(c, c.days[activeDay].date, s);
                       return (
                         <button
                           key={id}
                           onClick={() => {
-                            const el = document.getElementById(id);
+                            const el = document.getElementById(slug);
                             if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                           }}
                           className="shrink-0 font-mono text-[10px] tracking-wider text-muted-foreground/75 border border-border/60 px-2 py-1 hover:border-foreground/40 hover:text-foreground transition-all"
                           title={s.title}
-                          data-testid={`time-slot-${id}`}
+                          data-testid={`time-slot-${slug}`}
                         >
                           {s.start}
                         </button>
@@ -484,6 +480,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                       <div className="space-y-2">
                         {d.sessions.map((s, j) => {
                           const id = sessionKey(d.date, s);
+                          const slug = getSessionUrlSlug(c, d.date, s);
                           return (
                             <SessionCard
                               key={id}
@@ -497,7 +494,8 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                               conferenceEdition={c.edition}
                               conferenceDate={d.date}
                               onLocalUpdate={(patch) => updateLocalNote(id, patch)}
-                              anchor={id}
+                              anchor={slug}
+                              urlSlug={slug}
                               isFirst={j === 0}
                             />
                           );
@@ -512,11 +510,12 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                           .filter((s) => s.speaker)
                           .map((s) => {
                             const id = sessionKey(d.date, s);
+                            const slug = getSessionUrlSlug(c, d.date, s);
                             return (
                               <GridSpeakerCard
                                 key={id}
                                 session={s}
-                                anchor={id}
+                                anchor={slug}
                                 hasNote={!!notesById[id]?.note}
                                 conferenceSlug={c.slug}
                               />
@@ -625,6 +624,7 @@ interface SessionCardProps {
   conferenceDate: string;
   onLocalUpdate: (patch: Partial<NoteRecord>) => void;
   anchor: string;
+  urlSlug: string;
   isFirst?: boolean;
 }
 
@@ -639,10 +639,12 @@ const SessionCard: React.FC<SessionCardProps> = ({
   conferenceDate,
   onLocalUpdate,
   anchor,
+  urlSlug,
 }) => {
   const [open, setOpen] = React.useState(false);
   const Icon = sessionIcon[s.type];
   const isStructural = s.type === "break" || s.type === "meal" || s.type === "registration";
+  const sessionPath = `/notebook/conference/${conferenceSlug}/sessions/${urlSlug}`;
 
   return (
     <div
@@ -681,7 +683,17 @@ const SessionCard: React.FC<SessionCardProps> = ({
             <h4
               className={`font-display ${isStructural ? "text-sm" : "text-base"} font-bold text-foreground leading-snug mb-2`}
             >
-              {s.title}
+              {isStructural ? (
+                s.title
+              ) : (
+                <Link
+                  to={sessionPath}
+                  className="hover:underline decoration-foreground/40 underline-offset-4"
+                  data-testid={`session-link-${urlSlug}`}
+                >
+                  {s.title}
+                </Link>
+              )}
             </h4>
 
             {/* Speaker chip — inline within session, links to full profile */}

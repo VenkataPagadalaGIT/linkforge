@@ -902,3 +902,118 @@ export const conferences: Conference[] = [
 
 export const getConferenceBySlug = (slug: string): Conference | undefined =>
   conferences.find((c) => c.slug === slug);
+
+// =============================================================
+// Session slug helpers — dual-key system:
+//   - sessionId  : long, stable internal id used for note storage in MongoDB
+//                  (backward-compatible with existing notes).
+//   - urlSlug    : short, SEO-friendly slug derived from session title only,
+//                  used in /notebook/conference/{conf}/sessions/{slug} URLs.
+// =============================================================
+
+const _slug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+const _internalKey = (dayDate: string, s: Session) =>
+  `${dayDate}__${s.start}__${s.title}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 120);
+
+interface SessionSlugMaps {
+  internalToUrl: Map<string, string>;
+  urlToInternal: Map<string, string>;
+}
+
+const _slugMapCache = new WeakMap<Conference, SessionSlugMaps>();
+
+function _buildSessionMaps(c: Conference): SessionSlugMaps {
+  const internalToUrl = new Map<string, string>();
+  const urlToInternal = new Map<string, string>();
+  const used = new Set<string>();
+
+  c.days.forEach((d, di) => {
+    d.sessions.forEach((s) => {
+      const internal = _internalKey(d.date, s);
+      const baseRaw = _slug(s.title).slice(0, 60) || `session-${di}-${_slug(s.start)}`;
+      let candidate = baseRaw;
+      if (used.has(candidate)) {
+        const startKey = s.start.replace(/[^0-9apm]/gi, "").toLowerCase();
+        candidate = `${baseRaw}-${startKey}`;
+      }
+      if (used.has(candidate)) {
+        candidate = `${baseRaw}-d${di + 1}-${s.start.replace(/[^0-9]/g, "")}`;
+      }
+      used.add(candidate);
+      internalToUrl.set(internal, candidate);
+      urlToInternal.set(candidate, internal);
+    });
+  });
+  return { internalToUrl, urlToInternal };
+}
+
+function _getSessionMaps(c: Conference): SessionSlugMaps {
+  let m = _slugMapCache.get(c);
+  if (!m) {
+    m = _buildSessionMaps(c);
+    _slugMapCache.set(c, m);
+  }
+  return m;
+}
+
+/** Stable internal id used as MongoDB session_id for note storage. */
+export const getSessionId = (dayDate: string, s: Session): string =>
+  _internalKey(dayDate, s);
+
+/** SEO-friendly URL slug for `/sessions/{slug}` route. */
+export function getSessionUrlSlug(c: Conference, dayDate: string, s: Session): string {
+  const internal = _internalKey(dayDate, s);
+  return _getSessionMaps(c).internalToUrl.get(internal) || internal;
+}
+
+/** Resolve a URL slug back to a session. Falls back to legacy long form. */
+export function findSessionByUrlSlug(
+  c: Conference,
+  urlSlug: string,
+):
+  | { session: Session; dayDate: string; dayIndex: number; sessionId: string; urlSlug: string }
+  | null {
+  const maps = _getSessionMaps(c);
+  const internal = maps.urlToInternal.get(urlSlug) || urlSlug; // legacy fallback
+  for (let di = 0; di < c.days.length; di++) {
+    const d = c.days[di];
+    for (const s of d.sessions) {
+      if (_internalKey(d.date, s) === internal) {
+        const slug = maps.internalToUrl.get(internal) || internal;
+        return { session: s, dayDate: d.date, dayIndex: di, sessionId: internal, urlSlug: slug };
+      }
+    }
+  }
+  return null;
+}
+
+/** Flat list of all sessions in a conference with both ids — useful for prev/next. */
+export function listConferenceSessions(c: Conference) {
+  const maps = _getSessionMaps(c);
+  const flat: {
+    session: Session;
+    dayDate: string;
+    dayIndex: number;
+    sessionId: string;
+    urlSlug: string;
+  }[] = [];
+  c.days.forEach((d, di) => {
+    d.sessions.forEach((s) => {
+      const sid = _internalKey(d.date, s);
+      flat.push({
+        session: s,
+        dayDate: d.date,
+        dayIndex: di,
+        sessionId: sid,
+        urlSlug: maps.internalToUrl.get(sid) || sid,
+      });
+    });
+  });
+  return flat;
+}
