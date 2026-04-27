@@ -435,6 +435,36 @@ export const speakers: Speaker[] = [
 ];
 
 // ===== Helpers =====
+
+// Extract LinkedIn username from a profile URL like https://www.linkedin.com/in/michaelkingphilly/
+const linkedinUsername = (url?: string): string | undefined => {
+  if (!url) return undefined;
+  const m = url.match(/linkedin\.com\/in\/([^/?#]+)/i);
+  return m ? m[1] : undefined;
+};
+
+// Slugs for which we have a locally-cached LinkedIn-sourced photo at /speakers/{slug}.jpg
+const localPhotoSlugs = new Set([
+  "alex-halliday","amanda-milligan","andrea-volpini","angela-clark","annie-cushing",
+  "brian-cosgrove","christian-ward","crystal-carter","dale-bertrand","garrett-sussman",
+  "ian-lurie","ilana-gershteyn","james-cadwallader","jeff-coyle","jori-ford",
+  "lisa-paasche","metehan-yesilyurt","mike-king","noah-learner","paul-shapiro",
+  "ruth-burr-reedy","ryan-jones","scott-stouffer","wil-reynolds","zach-chahalis",
+]);
+
+// Generate a public photo URL: prefer local cached LinkedIn photo, otherwise on-brand DiceBear initials.
+const photoFromLinkedIn = (sp: { name: string; slug: string; linkedin?: string }): string => {
+  if (localPhotoSlugs.has(sp.slug)) return `/speakers/${sp.slug}.jpg`;
+  // Branded initials fallback — high-contrast, matches our palette.
+  return `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(sp.name)}&backgroundColor=141414&textColor=eeeeee&fontSize=44`;
+};
+
+// Apply LinkedIn-sourced photo to every speaker (overrides the vendor-branded ones).
+speakers.forEach((sp) => {
+  const linkedinPhoto = photoFromLinkedIn(sp);
+  if (linkedinPhoto) sp.photo = linkedinPhoto;
+});
+
 const _bySlug = new Map(speakers.map((s) => [s.slug, s] as const));
 const _byName = new Map(speakers.map((s) => [s.name, s] as const));
 

@@ -19,10 +19,10 @@ export interface HoloPhotoProps {
 }
 
 const sizeMap: Record<NonNullable<HoloPhotoProps["size"]>, string> = {
-  sm: "w-9 h-9",
-  md: "w-12 h-12",
-  lg: "w-16 h-16",
-  xl: "w-32 h-32",
+  sm: "w-14 h-14",
+  md: "w-20 h-20",
+  lg: "w-28 h-28",
+  xl: "w-40 h-40",
   full: "w-full h-full",
 };
 

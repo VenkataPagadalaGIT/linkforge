@@ -207,7 +207,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const tocSections = React.useMemo(() => {
     const base = [
       { label: "Overview", id: "overview" },
-      { label: "Why It Matters", id: "why" },
       { label: "Venues", id: "venues" },
       { label: "Agenda", id: "agenda" },
       { label: "Speakers", id: "speakers" },
@@ -384,34 +383,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
             </section>
           </ScrollReveal>
 
-          {/* Why It Matters */}
-          {c.whyItMatters && (
-            <section id="why" className="scroll-mt-28 mb-14">
-              <ScrollReveal>
-                <div className="flex items-center gap-2 mb-5">
-                  <Sparkles size={14} className="text-muted-foreground/50" />
-                  <h2 className="font-display text-xl font-bold text-foreground">Why It Matters</h2>
-                </div>
-                <p className="font-mono text-sm text-foreground/80 leading-relaxed border-l-2 border-foreground/20 pl-5 max-w-3xl">
-                  {c.whyItMatters}
-                </p>
-                {c.takeaways && c.takeaways.length > 0 && (
-                  <ul className="mt-6 space-y-2 max-w-3xl">
-                    {c.takeaways.map((t, i) => (
-                      <li
-                        key={i}
-                        className="font-mono text-xs text-muted-foreground/90 leading-relaxed pl-5 relative"
-                      >
-                        <span className="absolute left-0 text-foreground/40">→</span>
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </ScrollReveal>
-            </section>
-          )}
-
           {/* Venues */}
           {c.venues.length > 0 && (
             <section id="venues" className="scroll-mt-28 mb-14">
@@ -499,7 +470,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                 className="sticky top-20 z-20 -mx-2 px-2 py-3 mb-6 bg-background/85 backdrop-blur border-b border-border/40"
                 data-testid="conference-day-tabs"
               >
-                <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar mb-3">
                   {c.days.map((d, i) => (
                     <button
                       key={d.date}
@@ -518,6 +489,38 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                       {d.theme || d.date.split(",")[0]}
                     </button>
                   ))}
+                </div>
+
+                {/* Time slots for active day */}
+                <div
+                  className="flex items-center gap-1.5 overflow-x-auto no-scrollbar"
+                  data-testid="conference-time-slots"
+                >
+                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mr-2">
+                    <Clock size={9} /> Jump to
+                  </span>
+                  {c.days[activeDay]?.sessions
+                    .filter(
+                      (s) =>
+                        s.type !== "registration" && s.type !== "break" && s.type !== "meal",
+                    )
+                    .map((s) => {
+                      const id = sessionKey(c.days[activeDay].date, s);
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => {
+                            const el = document.getElementById(id);
+                            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                          }}
+                          className="shrink-0 font-mono text-[10px] tracking-wider text-muted-foreground/75 border border-border/60 px-2 py-1 hover:border-foreground/40 hover:text-foreground transition-all"
+                          title={s.title}
+                          data-testid={`time-slot-${id}`}
+                        >
+                          {s.start}
+                        </button>
+                      );
+                    })}
                 </div>
               </div>
 

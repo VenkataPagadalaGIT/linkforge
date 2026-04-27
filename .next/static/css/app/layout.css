@@ -1117,14 +1117,14 @@ h1, h2, h3, h4, h5, h6 {
 .h-20{
   height: 5rem;
 }
+.h-28{
+  height: 7rem;
+}
 .h-3{
   height: 0.75rem;
 }
 .h-3\.5{
   height: 0.875rem;
-}
-.h-32{
-  height: 8rem;
 }
 .h-36{
   height: 9rem;
@@ -1269,9 +1269,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 .w-3\/4{
   width: 75%;
-}
-.w-32{
-  width: 8rem;
 }
 .w-4{
   width: 1rem;
@@ -1911,6 +1908,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .border-border\/50{
   border-color: hsl(var(--border) / 0.5);
+}
+.border-border\/60{
+  border-color: hsl(var(--border) / 0.6);
 }
 .border-destructive{
   border-color: hsl(var(--destructive));
@@ -2821,6 +2821,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .text-muted-foreground\/70{
   color: hsl(var(--muted-foreground) / 0.7);
+}
+.text-muted-foreground\/75{
+  color: hsl(var(--muted-foreground) / 0.75);
 }
 .text-muted-foreground\/80{
   color: hsl(var(--muted-foreground) / 0.8);
