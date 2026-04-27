@@ -1,6 +1,7 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://github-checker-8.preview.emergentagent.com";
+  process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "") ||
+  "";
 
 export const SITE_NAME = "Venkata Pagadala";
 export const SITE_TAGLINE = "AI Systems Architect · Mono Mind";
