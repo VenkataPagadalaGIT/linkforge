@@ -803,16 +803,26 @@ const SessionCard: React.FC<SessionCardProps> = ({
                 </Link>
               )}
 
-              {/* Quick inline notes toggle (auth-only) */}
+              {/* Quick "My notes" toggle (auth-only) */}
               {authed && !isStructural && (
                 <button
                   onClick={() => setOpen((o) => !o)}
-                  className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 hover:text-foreground transition-colors border border-border px-2.5 py-1.5"
+                  className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] border px-2.5 py-1.5 transition-all ${
+                    note?.note
+                      ? "border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] hover:bg-emerald-400/[0.08]"
+                      : "border-border text-foreground/85 hover:border-foreground/40"
+                  }`}
                   data-testid={`session-notes-toggle-${anchor}`}
                 >
                   <NotebookIcon size={10} />
-                  {open ? "Hide quick notes" : note?.note ? "Quick edit" : "Quick note"}
-                  {note?.note ? <Circle size={6} className="text-emerald-400 fill-emerald-400" /> : null}
+                  {open
+                    ? "Hide My Notes"
+                    : note?.note
+                      ? `My Notes · ${(note.note.match(/\b[\w'-]+\b/g) || []).length}w`
+                      : "Add My Notes"}
+                  {note?.is_public && (
+                    <Globe2 size={9} className="opacity-90" />
+                  )}
                 </button>
               )}
             </div>

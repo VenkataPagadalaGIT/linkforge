@@ -416,6 +416,29 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 <h2 className="font-display text-xl font-bold text-foreground">My notes</h2>
               </div>
 
+              {/* Attribution header — always visible, even in empty state */}
+              <Link
+                to={`/notebook/conference/${c.slug}#${sessionId}`}
+                className="block mb-5 group"
+                data-testid="my-notes-attribution"
+              >
+                <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-muted-foreground/45 mb-1">
+                  From
+                </p>
+                <p className="font-display text-base text-foreground/90 group-hover:text-glow transition-all">
+                  {c.name} {c.edition || c.year} ·{" "}
+                  <span className="text-foreground/70">{s.title}</span>
+                </p>
+                <p className="font-mono text-[10px] text-muted-foreground/60 mt-0.5">
+                  {dayDate}
+                  {s.speaker && (
+                    <span className="text-muted-foreground/40">
+                      {" "}· {s.speaker}
+                    </span>
+                  )}
+                </p>
+              </Link>
+
               {authed ? (
                 <NoteEditorFull
                   conferenceSlug={c.slug}
@@ -430,13 +453,6 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                   isPublic
                   status={note.status}
                   updatedAt={note.updated_at}
-                  attribution={{
-                    conferenceName: c.name,
-                    conferenceEdition: c.edition,
-                    conferenceDate: dayDate,
-                    sessionTitle: s.title,
-                    sessionUrl: `/notebook/conference/${c.slug}/sessions/${sessionId}`,
-                  }}
                   testId="session-public-note-block"
                 />
               ) : (
