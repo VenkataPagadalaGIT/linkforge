@@ -16,6 +16,7 @@ import {
   Notebook as NotebookIcon,
 } from "lucide-react";
 import SEO from "@/components/SEO";
+import HoloPhoto from "@/components/HoloPhoto";
 import { type Speaker, getSpeakerTalks, type SpeakerTalk } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import axios from "axios";
@@ -149,27 +150,19 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
             {/* Profile hero */}
             <section id="profile" className="scroll-mt-28 mb-14">
               <div className="grid sm:grid-cols-[260px_1fr] gap-8 items-start">
-                <div
-                  className="border border-border bg-foreground/[0.02] aspect-square overflow-hidden relative"
-                  data-testid="speaker-photo"
-                >
-                  {speaker.photo ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={speaker.photo}
-                      alt={speaker.name}
-                      className="w-full h-full object-cover"
-                      loading="eager"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center font-display text-5xl text-foreground/40">
-                      {speaker.name
-                        .split(" ")
-                        .slice(0, 2)
-                        .map((n) => n[0])
-                        .join("")}
-                    </div>
-                  )}
+                <div data-testid="speaker-photo" className="w-full max-w-[260px]">
+                  <HoloPhoto
+                    src={speaker.photo}
+                    alt={speaker.name}
+                    size="full"
+                    loading="eager"
+                    interactive={false}
+                    fallback={speaker.name
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((n) => n[0])
+                      .join("")}
+                  />
                 </div>
 
                 <div>

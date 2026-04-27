@@ -31,6 +31,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import SEO from "@/components/SEO";
+import HoloPhoto from "@/components/HoloPhoto";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -614,24 +615,15 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                       className="group flex items-start gap-3 border border-border p-3 hover:border-foreground/30 transition-all"
                       data-testid={`conference-speaker-${sp.name.toLowerCase().replace(/\s+/g, "-")}`}
                     >
-                      <div className="w-12 h-12 border border-border bg-foreground/[0.03] overflow-hidden shrink-0 group-hover:border-foreground/40 transition-colors">
-                        {profile?.photo ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img
-                            src={profile.photo}
-                            alt={sp.name}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center font-mono text-[11px] text-foreground/70">
-                            {initials(sp.name)}
-                          </div>
-                        )}
-                      </div>
+                      <HoloPhoto
+                        src={profile?.photo}
+                        alt={sp.name}
+                        size="md"
+                        fallback={initials(sp.name)}
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <p className="font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
+                          <p className="holo-aberration font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
                             {sp.name}
                           </p>
                           <ArrowUpRight
@@ -770,21 +762,14 @@ const SessionCard: React.FC<SessionCardProps> = ({
                         ? `/notebook/conference/speakers/${profile.slug}`
                         : "#"
                     }
-                    className="w-9 h-9 border border-border bg-foreground/[0.03] overflow-hidden shrink-0 hover:border-foreground/40 transition-colors"
+                    className="shrink-0"
                   >
-                    {profile?.photo ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={profile.photo}
-                        alt={s.speaker}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="w-full h-full flex items-center justify-center font-mono text-[10px] text-foreground/70">
-                        {initials(s.speaker)}
-                      </span>
-                    )}
+                    <HoloPhoto
+                      src={profile?.photo}
+                      alt={s.speaker}
+                      size="sm"
+                      fallback={initials(s.speaker)}
+                    />
                   </Link>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -1122,29 +1107,25 @@ const GridSpeakerCard = ({
       className="group flex flex-col border border-border hover:border-foreground/30 transition-all"
       data-testid={`grid-speaker-${anchor}`}
     >
-      <div className="aspect-square bg-foreground/[0.02] overflow-hidden border-b border-border relative">
-        {profile?.photo ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={profile.photo}
-            alt={session.speaker || ""}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center font-display text-3xl text-foreground/30">
-            {session.speaker
+      <div className="aspect-square overflow-hidden border-b border-border relative">
+        <HoloPhoto
+          src={profile?.photo}
+          alt={session.speaker || ""}
+          size="full"
+          fallback={
+            session.speaker
               ? session.speaker
                   .split(" ")
                   .slice(0, 2)
                   .map((n) => n[0])
                   .join("")
-              : "—"}
-          </div>
-        )}
+              : "—"
+          }
+          className="border-0"
+        />
         {hasNote && (
           <span
-            className="absolute top-2 right-2 font-mono text-[8px] uppercase tracking-[0.15em] border border-emerald-400/50 text-emerald-300/95 bg-background/80 backdrop-blur px-1.5 py-0.5"
+            className="absolute top-2 right-2 z-10 font-mono text-[8px] uppercase tracking-[0.15em] border border-emerald-400/50 text-emerald-300/95 bg-background/80 backdrop-blur px-1.5 py-0.5"
             title="Has notes"
           >
             Notes

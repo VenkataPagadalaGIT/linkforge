@@ -28,6 +28,7 @@ import {
   Headphones,
 } from "lucide-react";
 import SEO from "@/components/SEO";
+import HoloPhoto from "@/components/HoloPhoto";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -243,26 +244,20 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                         ? `/notebook/conference/speakers/${profile.slug}`
                         : "#"
                     }
-                    className="block aspect-square border border-border bg-foreground/[0.03] overflow-hidden hover:border-foreground/40 transition-colors"
+                    className="block"
                     data-testid="session-speaker-photo"
                   >
-                    {profile?.photo ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={profile.photo}
-                        alt={s.speaker}
-                        className="w-full h-full object-cover"
-                        loading="eager"
-                      />
-                    ) : (
-                      <span className="w-full h-full flex items-center justify-center font-display text-2xl text-foreground/40">
-                        {s.speaker
-                          .split(" ")
-                          .slice(0, 2)
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
-                    )}
+                    <HoloPhoto
+                      src={profile?.photo}
+                      alt={s.speaker}
+                      size="full"
+                      loading="eager"
+                      fallback={s.speaker
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((n) => n[0])
+                        .join("")}
+                    />
                   </Link>
                   <div className="min-w-0">
                     {profile ? (
