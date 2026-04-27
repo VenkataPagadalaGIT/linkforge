@@ -688,49 +688,50 @@ const linkedinUsername = (url?: string): string | undefined => {
   return m ? m[1] : undefined;
 };
 
-// Map slug -> local cached photo filename. LinkedIn-sourced (via unavatar.io) when possible,
-// otherwise sourced from seoweek.org/speakers (with attribution).
+// Map slug -> local cached photo filename. All SEO Week 2026 speakers sourced from seoweek.org/speakers.
+// Botify Connect US 2024 sourced from 6xmedia.wixstudio.com (originally botify.com / linkedin).
 const localPhotoFiles: Record<string, string> = {
-  "alex-halliday": "alex-halliday.jpg",
-  "amanda-milligan": "amanda-milligan.jpg",
-  "andrea-volpini": "andrea-volpini.jpg",
-  "angela-clark": "angela-clark.jpg",
+  // ===== SEO Week 2026 — sourced from seoweek.org/speakers =====
+  "alex-halliday": "alex-halliday.png",
+  "amanda-milligan": "amanda-milligan.webp",
+  "andrea-volpini": "andrea-volpini.png",
+  "angela-clark": "angela-clark.png",
   "angela-skane": "angela-skane.png",
-  "annie-cushing": "annie-cushing.jpg",
+  "annie-cushing": "annie-cushing.png",
   "azeem-ahmad": "azeem-ahmad.png",
   "bianca-anderson": "bianca-anderson.png",
-  "brian-cosgrove": "brian-cosgrove.jpg",
+  "brian-cosgrove": "brian-cosgrove.png",
   "brie-anderson": "brie-anderson.png",
   "brie-moreau": "brie-moreau.png",
   "brittan-king": "brittan-king.png",
   "carrie-rose": "carrie-rose.png",
-  "christian-ward": "christian-ward.jpg",
-  "crystal-carter": "crystal-carter.jpg",
-  "dale-bertrand": "dale-bertrand.jpg",
-  "garrett-sussman": "garrett-sussman.jpg",
-  "ian-lurie": "ian-lurie.jpg",
-  "ilana-gershteyn": "ilana-gershteyn.jpg",
-  "james-cadwallader": "james-cadwallader.jpg",
-  "jeff-coyle": "jeff-coyle.jpg",
+  "christian-ward": "christian-ward.png",
+  "crystal-carter": "crystal-carter.png",
+  "dale-bertrand": "dale-bertrand.webp",
+  "garrett-sussman": "garrett-sussman.png",
+  "ian-lurie": "ian-lurie.png",
+  "ilana-gershteyn": "ilana-gershteyn.png",
+  "james-cadwallader": "james-cadwallader.png",
+  "jeff-coyle": "jeff-coyle.webp",
   "john-doherty": "john-doherty.png",
   "john-shehata": "john-shehata.png",
   "jordan-leschinsky": "jordan-leschinsky.webp",
-  "jori-ford": "jori-ford.jpg",
+  "jori-ford": "jori-ford.webp",
   "krishna-madhavan": "krishna-madhavan.webp",
-  "lisa-paasche": "lisa-paasche.jpg",
-  "metehan-yesilyurt": "metehan-yesilyurt.jpg",
-  "mike-king": "mike-king.jpg",
-  "noah-learner": "noah-learner.jpg",
-  "paul-shapiro": "paul-shapiro.jpg",
+  "lisa-paasche": "lisa-paasche.webp",
+  "metehan-yesilyurt": "metehan-yesilyurt.webp",
+  "mike-king": "mike-king.png",
+  "noah-learner": "noah-learner.webp",
+  "paul-shapiro": "paul-shapiro.png",
   "ray-martinez": "ray-martinez.png",
   "ross-simmonds": "ross-simmonds.png",
-  "ruth-burr-reedy": "ruth-burr-reedy.jpg",
-  "ryan-jones": "ryan-jones.jpg",
+  "ruth-burr-reedy": "ruth-burr-reedy.png",
+  "ryan-jones": "ryan-jones.webp",
   "sam-torres": "sam-torres.png",
-  "scott-stouffer": "scott-stouffer.jpg",
-  "wil-reynolds": "wil-reynolds.jpg",
-  "zach-chahalis": "zach-chahalis.jpg",
-  // Botify Connect US 2024 — sourced from 6xmedia.wixstudio.com (originally from botify.com / linkedin)
+  "scott-stouffer": "scott-stouffer.webp",
+  "wil-reynolds": "wil-reynolds.png",
+  "zach-chahalis": "zach-chahalis.webp",
+  // ===== Botify Connect US 2024 — sourced from 6xmedia.wixstudio.com =====
   "aj-ghergich": "aj-ghergich.png",
   "dalton-finney": "dalton-finney.png",
   "fabrice-canel": "fabrice-canel.png",
@@ -760,18 +761,33 @@ const localPhotoFiles: Record<string, string> = {
   "frank-vitovitch": "frank-vitovitch.png",
 };
 
-// LinkedIn-sourced (via unavatar.io); the rest are seoweek.org PR photos.
-const linkedinSourcedSlugs = new Set([
-  "alex-halliday","amanda-milligan","andrea-volpini","angela-clark","annie-cushing",
-  "brian-cosgrove","christian-ward","crystal-carter","dale-bertrand","garrett-sussman",
-  "ian-lurie","ilana-gershteyn","james-cadwallader","jeff-coyle","jori-ford",
-  "lisa-paasche","metehan-yesilyurt","mike-king","noah-learner","paul-shapiro",
-  "ruth-burr-reedy","ryan-jones","scott-stouffer","wil-reynolds","zach-chahalis",
+// All SEO Week 2026 speakers — sourced from seoweek.org/speakers
+const seoweekSourcedSlugs = new Set([
+  "alex-halliday","amanda-milligan","andrea-volpini","angela-clark","angela-skane",
+  "annie-cushing","azeem-ahmad","bianca-anderson","brian-cosgrove","brie-anderson",
+  "brie-moreau","brittan-king","carrie-rose","christian-ward","crystal-carter",
+  "dale-bertrand","garrett-sussman","ian-lurie","ilana-gershteyn","james-cadwallader",
+  "jeff-coyle","john-doherty","john-shehata","jordan-leschinsky","jori-ford",
+  "krishna-madhavan","lisa-paasche","metehan-yesilyurt","mike-king","noah-learner",
+  "paul-shapiro","ray-martinez","ross-simmonds","ruth-burr-reedy","ryan-jones",
+  "sam-torres","scott-stouffer","wil-reynolds","zach-chahalis",
 ]);
 
-export const photoSourceFor = (slug: string): "linkedin" | "seoweek" | "fallback" => {
-  if (linkedinSourcedSlugs.has(slug)) return "linkedin";
-  if (localPhotoFiles[slug]) return "seoweek";
+// All Botify Connect US 2024 speakers — sourced from 6xmedia.wixstudio.com
+const botifySourcedSlugs = new Set([
+  "aj-ghergich","dalton-finney","fabrice-canel","adrien-menard","anthony-cantelmo",
+  "rick-egan","cody-exter","federico-rodriguez","cody-walker","christophe-frenet",
+  "rebecca-zabow","greg-coleman","lauri-joffe","noam-paransky","charley-hackerson",
+  "jason-mandragona","abishek-surana-rajendra","jordan-long","dave-marks",
+  "sharanya-srinivasan","krista-dalton","chris-long","praneet-nigam","jacque-urick",
+  "ray-grieselhuber","tim-resnik","frank-vitovitch",
+]);
+
+export type PhotoSource = "seoweek" | "botify" | "fallback";
+
+export const photoSourceFor = (slug: string): PhotoSource => {
+  if (seoweekSourcedSlugs.has(slug)) return "seoweek";
+  if (botifySourcedSlugs.has(slug)) return "botify";
   return "fallback";
 };
 
@@ -779,7 +795,6 @@ export const photoSourceFor = (slug: string): "linkedin" | "seoweek" | "fallback
 const photoFromLinkedIn = (sp: { name: string; slug: string; linkedin?: string }): string => {
   const file = localPhotoFiles[sp.slug];
   if (file) return `/speakers/${file}`;
-  // Branded initials fallback — high-contrast, matches our palette.
   return `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(sp.name)}&backgroundColor=141414&textColor=eeeeee&fontSize=44`;
 };
 

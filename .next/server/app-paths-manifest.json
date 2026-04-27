@@ -1,7 +1,4 @@
 {
   "/notebook/conference/[slug]/page": "app/notebook/conference/[slug]/page.js",
-  "/notebook/conference/page": "app/notebook/conference/page.js",
-  "/page": "app/page.js",
-  "/robots.txt/route": "app/robots.txt/route.js",
-  "/notebook/page": "app/notebook/page.js"
+  "/notebook/conference/speakers/[slug]/page": "app/notebook/conference/speakers/[slug]/page.js"
 }

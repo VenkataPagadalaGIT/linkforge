@@ -166,8 +166,8 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
                   <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40" data-testid="speaker-photo-source">
                     {(() => {
                       const src = photoSourceFor(speaker.slug);
-                      if (src === "linkedin") return "Photo · LinkedIn";
                       if (src === "seoweek") return "Photo · seoweek.org";
+                      if (src === "botify") return "Photo · botify.com";
                       return "Photo · initials";
                     })()}
                   </p>
