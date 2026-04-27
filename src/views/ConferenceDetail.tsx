@@ -33,6 +33,7 @@ import {
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
+import NoteContent from "@/components/NoteContent";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -492,6 +493,9 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                               authChecked={authChecked}
                               note={notesById[id]}
                               conferenceSlug={c.slug}
+                              conferenceName={c.name}
+                              conferenceEdition={c.edition}
+                              conferenceDate={d.date}
                               onLocalUpdate={(patch) => updateLocalNote(id, patch)}
                               anchor={id}
                               isFirst={j === 0}
@@ -616,6 +620,9 @@ interface SessionCardProps {
   authChecked: boolean;
   note?: NoteRecord;
   conferenceSlug: string;
+  conferenceName: string;
+  conferenceEdition?: string;
+  conferenceDate: string;
   onLocalUpdate: (patch: Partial<NoteRecord>) => void;
   anchor: string;
   isFirst?: boolean;
@@ -627,6 +634,9 @@ const SessionCard: React.FC<SessionCardProps> = ({
   authed,
   note,
   conferenceSlug,
+  conferenceName,
+  conferenceEdition,
+  conferenceDate,
   onLocalUpdate,
   anchor,
 }) => {
@@ -747,33 +757,28 @@ const SessionCard: React.FC<SessionCardProps> = ({
               </ul>
             )}
 
-            {/* Public field notes (rendered for everyone if note.is_public) */}
+            {/* Public field notes — preview with attribution + read-full link */}
             {note?.is_public && note.note && (
               <div
-                className="mt-4 border-l-2 border-foreground/30 pl-4 py-1"
+                className="mt-4 border-l-2 border-foreground/30 pl-5 py-2"
                 data-testid={`session-public-note-${anchor}`}
               >
-                <div className="flex items-center gap-1.5 mb-2">
-                  <NotebookIcon size={10} className="text-foreground/60" />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
-                    Field notes
-                  </span>
-                </div>
-                <p className="font-mono text-[12px] text-foreground/85 leading-relaxed whitespace-pre-wrap">
-                  {note.note}
-                </p>
-                {note.takeaways && note.takeaways.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {note.takeaways.map((tk, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-0.5"
-                      >
-                        {tk}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <NoteContent
+                  text={note.note}
+                  takeaways={note.takeaways}
+                  isPublic
+                  status={note.status}
+                  updatedAt={note.updated_at}
+                  preview
+                  attribution={{
+                    conferenceName,
+                    conferenceEdition,
+                    conferenceDate,
+                    sessionTitle: s.title,
+                    sessionUrl: `/notebook/conference/${conferenceSlug}/sessions/${anchor}`,
+                  }}
+                  testId={`note-${anchor}`}
+                />
               </div>
             )}
 

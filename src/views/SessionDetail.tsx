@@ -30,6 +30,7 @@ import {
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
+import NoteContent from "@/components/NoteContent";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -423,32 +424,21 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                   onSaved={(n) => setNote(n)}
                 />
               ) : note?.is_public && note.note ? (
-                <article
-                  className="border border-border p-6 max-w-3xl"
-                  data-testid="session-public-note-block"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe2 size={11} className="text-emerald-300/80" />
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
-                      Field notes
-                    </span>
-                  </div>
-                  <div className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                    {note.note}
-                  </div>
-                  {note.takeaways.length > 0 && (
-                    <div className="mt-5 flex flex-wrap gap-1.5">
-                      {note.takeaways.map((t, i) => (
-                        <span
-                          key={i}
-                          className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </article>
+                <NoteContent
+                  text={note.note}
+                  takeaways={note.takeaways}
+                  isPublic
+                  status={note.status}
+                  updatedAt={note.updated_at}
+                  attribution={{
+                    conferenceName: c.name,
+                    conferenceEdition: c.edition,
+                    conferenceDate: dayDate,
+                    sessionTitle: s.title,
+                    sessionUrl: `/notebook/conference/${c.slug}/sessions/${sessionId}`,
+                  }}
+                  testId="session-public-note-block"
+                />
               ) : (
                 <div className="border border-dashed border-border px-5 py-8 max-w-3xl">
                   <div className="flex items-center gap-2 mb-3">
@@ -641,10 +631,14 @@ const NoteEditorFull = ({
         value={text}
         onChange={(e) => onTextChange(e.target.value)}
         placeholder="Long-form notes — quotes, frameworks, links, questions, action items. Markdown-friendly. Autosaves every 1.2s."
-        rows={16}
-        className="w-full bg-background border border-border p-4 font-mono text-[13px] text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-relaxed"
+        rows={26}
+        className="w-full bg-background border border-border p-4 font-mono text-[13.5px] text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-[1.85]"
         data-testid="session-note-textarea"
       />
+
+      <p className="mt-2 font-mono text-[10px] text-muted-foreground/55">
+        {text.length.toLocaleString()} characters · ~{(text.trim().match(/\b[\w'-]+\b/g) || []).length.toLocaleString()} words
+      </p>
 
       <div className="mt-4">
         <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 block mb-2">

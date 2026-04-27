@@ -1050,6 +1050,9 @@ h1, h2, h3, h4, h5, h6 {
 .mt-6{
   margin-top: 1.5rem;
 }
+.mt-7{
+  margin-top: 1.75rem;
+}
 .mt-8{
   margin-top: 2rem;
 }
@@ -1410,6 +1413,9 @@ h1, h2, h3, h4, h5, h6 {
 .max-w-\[260px\]{
   max-width: 260px;
 }
+.max-w-\[68ch\]{
+  max-width: 68ch;
+}
 .max-w-lg{
   max-width: 32rem;
 }
@@ -1422,6 +1428,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .max-w-none{
   max-width: none;
+}
+.max-w-prose{
+  max-width: 65ch;
 }
 .max-w-sm{
   max-width: 24rem;
@@ -1947,6 +1956,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .border-emerald-400\/40{
   border-color: rgb(52 211 153 / 0.4);
+}
+.border-emerald-400\/45{
+  border-color: rgb(52 211 153 / 0.45);
 }
 .border-emerald-400\/50{
   border-color: rgb(52 211 153 / 0.5);
@@ -2561,6 +2573,9 @@ h1, h2, h3, h4, h5, h6 {
 .pt-4{
   padding-top: 1rem;
 }
+.pt-5{
+  padding-top: 1.25rem;
+}
 .pt-6{
   padding-top: 1.5rem;
 }
@@ -2610,14 +2625,17 @@ h1, h2, h3, h4, h5, h6 {
 .text-\[11px\]{
   font-size: 11px;
 }
-.text-\[12\.5px\]{
-  font-size: 12.5px;
-}
 .text-\[12px\]{
   font-size: 12px;
 }
+.text-\[13\.5px\]{
+  font-size: 13.5px;
+}
 .text-\[13px\]{
   font-size: 13px;
+}
+.text-\[14px\]{
+  font-size: 14px;
 }
 .text-\[6px\]{
   font-size: 6px;
@@ -2675,6 +2693,9 @@ h1, h2, h3, h4, h5, h6 {
 .tabular-nums{
   --tw-numeric-spacing: tabular-nums;
   font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);
+}
+.leading-\[1\.85\]{
+  line-height: 1.85;
 }
 .leading-\[1\.8\]{
   line-height: 1.8;
@@ -2846,8 +2867,14 @@ h1, h2, h3, h4, h5, h6 {
 .text-muted-foreground\/40{
   color: hsl(var(--muted-foreground) / 0.4);
 }
+.text-muted-foreground\/45{
+  color: hsl(var(--muted-foreground) / 0.45);
+}
 .text-muted-foreground\/50{
   color: hsl(var(--muted-foreground) / 0.5);
+}
+.text-muted-foreground\/55{
+  color: hsl(var(--muted-foreground) / 0.55);
 }
 .text-muted-foreground\/60{
   color: hsl(var(--muted-foreground) / 0.6);

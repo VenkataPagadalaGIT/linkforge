@@ -18,6 +18,7 @@ import {
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
+import NoteContent from "@/components/NoteContent";
 import { type Speaker, getSpeakerTalks, type SpeakerTalk, photoSourceFor } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import axios from "axios";
@@ -384,36 +385,23 @@ const TalkCard = ({
       )}
 
       {showNote && note && (
-        <div
-          className="mt-5 border-t border-border pt-4"
-          data-testid={`speaker-talk-note-${talk.sessionId}`}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <NotebookIcon size={11} className="text-foreground/60" />
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
-              {note.is_public ? "Field notes" : "Private notes"}
-            </span>
-            {note.status && (
-              <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-emerald-400/40 text-emerald-300/90 px-1.5 py-0.5">
-                {note.status}
-              </span>
-            )}
-          </div>
-          <div className="font-mono text-[12.5px] leading-relaxed text-foreground/85 whitespace-pre-wrap">
-            {note.note}
-          </div>
-          {note.takeaways.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {note.takeaways.map((t, i) => (
-                <span
-                  key={i}
-                  className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
+        <div className="mt-5 border-t border-border pt-5" data-testid={`speaker-talk-note-${talk.sessionId}`}>
+          <NoteContent
+            text={note.note}
+            takeaways={note.takeaways}
+            isPublic={note.is_public}
+            status={note.status}
+            updatedAt={note.updated_at}
+            preview
+            attribution={{
+              conferenceName: talk.conferenceName,
+              conferenceEdition: talk.conferenceEdition,
+              conferenceDate: talk.dayDate,
+              sessionTitle: talk.title,
+              sessionUrl: `/notebook/conference/${talk.conferenceSlug}/sessions/${talk.sessionId}`,
+            }}
+            testId={`speaker-note-${talk.sessionId}`}
+          />
         </div>
       )}
     </article>
