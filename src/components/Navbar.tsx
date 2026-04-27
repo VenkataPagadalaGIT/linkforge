@@ -26,7 +26,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [location]);
+  }, [location.pathname]);
 
   // Admin/CMS shell controls its own chrome — public navbar is irrelevant there.
   if (location.pathname?.startsWith("/admin")) return null;
@@ -64,22 +64,38 @@ const Navbar = () => {
 
           {/* Mobile toggle */}
           <button
+            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-foreground"
-            aria-label="Toggle menu"
+            onTouchStart={() => {}}
+            className="md:hidden relative z-[60] flex items-center justify-center w-11 h-11 -mr-2 text-foreground active:scale-95 transition-transform"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            data-testid="mobile-menu-toggle"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            <span className="pointer-events-none">
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </span>
           </button>
         </div>
       </nav>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-background/98 backdrop-blur-md flex flex-col items-center justify-center gap-8">
+        <div
+          className="fixed inset-0 top-16 z-40 bg-background/98 backdrop-blur-md flex flex-col items-center justify-center gap-8 md:hidden"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            // Tap on backdrop (not on a link) closes the menu
+            if (e.target === e.currentTarget) setMobileOpen(false);
+          }}
+          data-testid="mobile-menu-panel"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
+              onClick={() => setMobileOpen(false)}
               className={`font-mono text-lg tracking-widest uppercase transition-all ${
                 location.pathname === link.to ? "text-foreground text-glow" : "text-muted-foreground"
               }`}

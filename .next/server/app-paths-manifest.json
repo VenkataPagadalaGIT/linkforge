@@ -12,8 +12,8 @@
   "/notebook/ai/page": "app/notebook/ai/page.js",
   "/notebook/ai/encyclopedia/page": "app/notebook/ai/encyclopedia/page.js",
   "/notebook/ai/roadmap/page": "app/notebook/ai/roadmap/page.js",
-  "/insights/[slug]/page": "app/insights/[slug]/page.js",
   "/notebook/business/page": "app/notebook/business/page.js",
+  "/insights/[slug]/page": "app/insights/[slug]/page.js",
   "/insights/[slug]/[postSlug]/page": "app/insights/[slug]/[postSlug]/page.js",
   "/notebook/conference/page": "app/notebook/conference/page.js",
   "/notebook/page": "app/notebook/page.js",
@@ -25,10 +25,10 @@
   "/notebook/conference/[slug]/page": "app/notebook/conference/[slug]/page.js",
   "/solutions/page": "app/solutions/page.js",
   "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
-  "/notebook/conference/[slug]/sessions/[sessionId]/page": "app/notebook/conference/[slug]/sessions/[sessionId]/page.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/notebook/conference/[slug]/sessions/[sessionId]/page": "app/notebook/conference/[slug]/sessions/[sessionId]/page.js",
   "/admin/cms/posts/page": "app/admin/cms/posts/page.js",
-  "/admin/page": "app/admin/page.js",
   "/admin/cms/posts/[slug]/page": "app/admin/cms/posts/[slug]/page.js",
-  "/admin/login/page": "app/admin/login/page.js"
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/page": "app/admin/page.js"
 }
