@@ -1,7 +1,5 @@
 {
-  "/notebook/conference/speakers/[slug]/page": "app/notebook/conference/speakers/[slug]/page.js",
   "/notebook/conference/[slug]/page": "app/notebook/conference/[slug]/page.js",
-  "/page": "app/page.js",
-  "/notebook/page": "app/notebook/page.js",
-  "/notebook/conference/page": "app/notebook/conference/page.js"
+  "/notebook/conference/[slug]/sessions/[sessionId]/page": "app/notebook/conference/[slug]/sessions/[sessionId]/page.js",
+  "/notebook/conference/speakers/[slug]/page": "app/notebook/conference/speakers/[slug]/page.js"
 }

@@ -2064,6 +2064,9 @@ h1, h2, h3, h4, h5, h6 {
 .bg-emerald-400\/5{
   background-color: rgb(52 211 153 / 0.05);
 }
+.bg-emerald-400\/\[0\.03\]{
+  background-color: rgb(52 211 153 / 0.03);
+}
 .bg-emerald-400\/\[0\.04\]{
   background-color: rgb(52 211 153 / 0.04);
 }
@@ -3352,6 +3355,10 @@ h1, h2, h3, h4, h5, h6 {
   border-color: hsl(var(--foreground) / 0.6);
 }
 
+.hover\:border-foreground\/70:hover{
+  border-color: hsl(var(--foreground) / 0.7);
+}
+
 .hover\:border-rose-400\/40:hover{
   border-color: rgb(251 113 133 / 0.4);
 }
@@ -3382,6 +3389,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: hsl(var(--destructive) / 0.9);
 }
 
+.hover\:bg-emerald-400\/\[0\.06\]:hover{
+  background-color: rgb(52 211 153 / 0.06);
+}
+
 .hover\:bg-foreground:hover{
   background-color: hsl(var(--foreground));
 }
@@ -3392,6 +3403,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .hover\:bg-foreground\/\[0\.02\]:hover{
   background-color: hsl(var(--foreground) / 0.02);
+}
+
+.hover\:bg-foreground\/\[0\.05\]:hover{
+  background-color: hsl(var(--foreground) / 0.05);
+}
+
+.hover\:bg-foreground\/\[0\.06\]:hover{
+  background-color: hsl(var(--foreground) / 0.06);
 }
 
 .hover\:bg-muted:hover{
@@ -4512,6 +4531,10 @@ h1, h2, h3, h4, h5, h6 {
     grid-column: span 2 / span 2;
   }
 
+  .sm\:col-start-2{
+    grid-column-start: 2;
+  }
+
   .sm\:mt-0{
     margin-top: 0px;
   }
@@ -4574,6 +4597,10 @@ h1, h2, h3, h4, h5, h6 {
 
   .sm\:grid-cols-4{
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sm\:grid-cols-\[120px_1fr\]{
+    grid-template-columns: 120px 1fr;
   }
 
   .sm\:grid-cols-\[260px_1fr\]{

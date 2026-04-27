@@ -342,6 +342,44 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                   </div>
                 ))}
               </div>
+
+              {/* Quick action CTAs */}
+              <div
+                className="mt-6 flex flex-wrap gap-2"
+                data-testid="conference-quick-actions"
+              >
+                <a
+                  href="#agenda"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-foreground/40 bg-foreground/[0.02] text-foreground px-4 py-2.5 hover:border-foreground/70 hover:bg-foreground/[0.05] transition-all"
+                  data-testid="cta-view-agenda"
+                >
+                  <CalendarDays size={12} /> View Agenda
+                </a>
+                <a
+                  href="#speakers"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-border text-foreground/85 px-4 py-2.5 hover:border-foreground/40 transition-all"
+                  data-testid="cta-browse-speakers"
+                >
+                  <Mic size={12} /> Browse Speakers · {speakers.length}
+                </a>
+                {authChecked && authed ? (
+                  <a
+                    href="#agenda"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-emerald-400/50 text-emerald-300/95 bg-emerald-400/[0.03] px-4 py-2.5 hover:bg-emerald-400/[0.06] transition-all"
+                    data-testid="cta-take-notes-authed"
+                  >
+                    <NotebookIcon size={12} /> Take Notes
+                  </a>
+                ) : (
+                  <Link
+                    to="/admin/login"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-border text-muted-foreground/80 px-4 py-2.5 hover:border-foreground/40 hover:text-foreground transition-all"
+                    data-testid="cta-take-notes-signin"
+                  >
+                    <Lock size={12} /> Sign in to take notes
+                  </Link>
+                )}
+              </div>
             </section>
           </ScrollReveal>
 
@@ -535,6 +573,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                                 session={s}
                                 anchor={id}
                                 hasNote={!!notesById[id]?.note}
+                                conferenceSlug={c.slug}
                               />
                             );
                           })}
@@ -834,18 +873,33 @@ const SessionCard: React.FC<SessionCardProps> = ({
               </p>
             )}
 
-            {/* Notes toggle (auth-only) */}
-            {authed && !isStructural && (
-              <button
-                onClick={() => setOpen((o) => !o)}
-                className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 hover:text-foreground transition-colors border border-border px-2 py-1"
-                data-testid={`session-notes-toggle-${anchor}`}
-              >
-                <NotebookIcon size={10} />
-                {open ? "Hide notes" : note?.note ? "Edit notes" : "Add notes"}
-                {note?.note ? <Circle size={6} className="text-emerald-400 fill-emerald-400" /> : null}
-              </button>
-            )}
+            {/* Action row — always visible */}
+            <div className="mt-3 flex items-center gap-2 flex-wrap">
+              {!isStructural && (
+                <Link
+                  to={`/notebook/conference/${conferenceSlug}/sessions/${anchor}`}
+                  className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground border border-foreground/40 bg-foreground/[0.03] px-2.5 py-1.5 hover:border-foreground/70 hover:bg-foreground/[0.06] transition-all"
+                  data-testid={`session-open-${anchor}`}
+                >
+                  <NotebookIcon size={10} />
+                  Open session
+                  <ArrowUpRight size={10} />
+                </Link>
+              )}
+
+              {/* Quick inline notes toggle (auth-only) */}
+              {authed && !isStructural && (
+                <button
+                  onClick={() => setOpen((o) => !o)}
+                  className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 hover:text-foreground transition-colors border border-border px-2.5 py-1.5"
+                  data-testid={`session-notes-toggle-${anchor}`}
+                >
+                  <NotebookIcon size={10} />
+                  {open ? "Hide quick notes" : note?.note ? "Quick edit" : "Quick note"}
+                  {note?.note ? <Circle size={6} className="text-emerald-400 fill-emerald-400" /> : null}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -1054,19 +1108,17 @@ const GridSpeakerCard = ({
   session,
   anchor,
   hasNote,
+  conferenceSlug,
 }: {
   session: Session;
   anchor: string;
   hasNote: boolean;
+  conferenceSlug: string;
 }) => {
   const profile = session.speaker ? getSpeakerByName(session.speaker) : undefined;
   return (
     <Link
-      to={
-        profile
-          ? `/notebook/conference/speakers/${profile.slug}`
-          : `#${anchor}`
-      }
+      to={`/notebook/conference/${conferenceSlug}/sessions/${anchor}`}
       className="group flex flex-col border border-border hover:border-foreground/30 transition-all"
       data-testid={`grid-speaker-${anchor}`}
     >
