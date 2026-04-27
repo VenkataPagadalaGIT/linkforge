@@ -141,16 +141,14 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const [activeDay, setActiveDay] = React.useState(0);
   const [agendaView, setAgendaView] = React.useState<"timeline" | "grid">("timeline");
 
-  // ===== Auth-gated notes =====
-  const [authed, setAuthed] = React.useState(false);
-  const [authChecked, setAuthChecked] = React.useState(false);
+  // Notes editor is now open to everyone — no auth required.
+  const authed = true;
+  const authChecked = true;
   const [notesById, setNotesById] = React.useState<Record<string, NoteRecord>>({});
 
   React.useEffect(() => {
     let cancelled = false;
     const run = async () => {
-      const token = getToken();
-      // Always try public notes first (works for any visitor)
       try {
         const { data } = await axios.get<NoteRecord[]>(
           `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
@@ -161,24 +159,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
         setNotesById(map);
       } catch {
         /* ignore */
-      }
-
-      if (!token) {
-        setAuthChecked(true);
-        return;
-      }
-      try {
-        await adminApi.get("/auth/me");
-        const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
-        if (cancelled) return;
-        const map: Record<string, NoteRecord> = {};
-        data.forEach((n) => (map[n.session_id] = n));
-        setNotesById((prev) => ({ ...prev, ...map }));
-        setAuthed(true);
-      } catch {
-        // silent — public visitor
-      } finally {
-        if (!cancelled) setAuthChecked(true);
       }
     };
     run();
@@ -207,7 +187,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const tocSections = React.useMemo(() => {
     const base = [
       { label: "Overview", id: "overview" },
-      { label: "Venues", id: "venues" },
       { label: "Agenda", id: "agenda" },
       { label: "Speakers", id: "speakers" },
     ];
@@ -353,7 +332,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                   className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-foreground/40 bg-foreground/[0.02] text-foreground px-4 py-2.5 hover:border-foreground/70 hover:bg-foreground/[0.05] transition-all"
                   data-testid="cta-view-agenda"
                 >
-                  <CalendarDays size={12} /> View Agenda
+                  <CalendarDays size={12} /> Agenda
                 </a>
                 <a
                   href="#speakers"
@@ -362,67 +341,9 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                 >
                   <Mic size={12} /> Browse Speakers · {speakers.length}
                 </a>
-                {authChecked && authed ? (
-                  <a
-                    href="#agenda"
-                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-emerald-400/50 text-emerald-300/95 bg-emerald-400/[0.03] px-4 py-2.5 hover:bg-emerald-400/[0.06] transition-all"
-                    data-testid="cta-take-notes-authed"
-                  >
-                    <NotebookIcon size={12} /> Take Notes
-                  </a>
-                ) : (
-                  <Link
-                    to="/admin/login"
-                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-border text-muted-foreground/80 px-4 py-2.5 hover:border-foreground/40 hover:text-foreground transition-all"
-                    data-testid="cta-take-notes-signin"
-                  >
-                    <Lock size={12} /> Sign in to take notes
-                  </Link>
-                )}
               </div>
             </section>
           </ScrollReveal>
-
-          {/* Venues */}
-          {c.venues.length > 0 && (
-            <section id="venues" className="scroll-mt-28 mb-14">
-              <ScrollReveal>
-                <div className="flex items-center gap-2 mb-5">
-                  <MapPin size={14} className="text-muted-foreground/50" />
-                  <h2 className="font-display text-xl font-bold text-foreground">Venues</h2>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {c.venues.map((v, i) => {
-                    const Wrap: React.ElementType = v.url ? "a" : "div";
-                    const props = v.url ? { href: v.url, target: "_blank", rel: "noopener noreferrer" } : {};
-                    return (
-                      <Wrap
-                        key={i}
-                        {...props}
-                        className={`block border border-border p-5 ${
-                          v.url ? "hover:border-foreground/30 transition-all" : ""
-                        }`}
-                        data-testid={`conference-venue-${i}`}
-                      >
-                        <div className="flex items-start justify-between gap-3 mb-2">
-                          <h3 className="font-display text-base font-bold text-foreground">{v.name}</h3>
-                          {v.url && <ExternalLink size={12} className="text-muted-foreground/40 mt-1" />}
-                        </div>
-                        <p className="font-mono text-[11px] text-muted-foreground/70 mb-2">
-                          {v.address ? `${v.address} · ` : ""}
-                          {v.city}
-                          {v.country ? `, ${v.country}` : ""}
-                        </p>
-                        {v.notes && (
-                          <p className="font-mono text-xs text-muted-foreground leading-relaxed">{v.notes}</p>
-                        )}
-                      </Wrap>
-                    );
-                  })}
-                </div>
-              </ScrollReveal>
-            </section>
-          )}
 
           {/* Agenda — sticky day tabs + chronological timeline */}
           <section id="agenda" className="scroll-mt-28 mb-14">
@@ -656,28 +577,14 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
           {/* Live notes signal in the sidebar */}
           <div className="mt-8 border border-border p-4">
             <div className="flex items-center gap-2 mb-2">
-              {authChecked && authed ? (
-                <NotebookIcon size={11} className="text-emerald-300/80" />
-              ) : (
-                <Lock size={11} className="text-muted-foreground/40" />
-              )}
+              <NotebookIcon size={11} className="text-emerald-300/80" />
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
                 Live Notes
               </p>
             </div>
-            {authed ? (
-              <p className="font-mono text-[11px] text-foreground/80 leading-relaxed">
-                Logged in. Click any session to add notes — saves automatically.
-              </p>
-            ) : (
-              <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed">
-                Public agenda view.{" "}
-                <Link to="/admin/login" className="text-foreground underline-offset-4 hover:underline">
-                  Sign in
-                </Link>{" "}
-                to take notes during sessions.
-              </p>
-            )}
+            <p className="font-mono text-[11px] text-foreground/80 leading-relaxed">
+              Click any session to take notes — saves automatically. Toggle <span className="text-emerald-300/90">Public</span> to publish on the speaker&apos;s profile.
+            </p>
           </div>
         </PageSidebar>
       </div>

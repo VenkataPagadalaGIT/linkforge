@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/notebook/conference/[slug]/page": [
+    "/notebook/conference/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/notebook/conference/[slug]/page.js"
+      "static/chunks/app/notebook/conference/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,10 +16,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
+    "/notebook/conference/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/conference/[slug]/page.js"
+    ],
     "/notebook/conference/speakers/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/notebook/conference/speakers/[slug]/page.js"
+    ],
+    "/notebook/conference/[slug]/sessions/[sessionId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/conference/[slug]/sessions/[sessionId]/page.js"
+    ],
+    "/ai-updates/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ai-updates/page.js"
+    ],
+    "/notebook/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/notebook/page.js"
     ]
   }
 }

@@ -2079,9 +2079,6 @@ h1, h2, h3, h4, h5, h6 {
 .bg-emerald-400\/5{
   background-color: rgb(52 211 153 / 0.05);
 }
-.bg-emerald-400\/\[0\.03\]{
-  background-color: rgb(52 211 153 / 0.03);
-}
 .bg-emerald-400\/\[0\.04\]{
   background-color: rgb(52 211 153 / 0.04);
 }
@@ -3481,9 +3478,6 @@ a:hover .holo-interactive .holo-bracket,
 }
 .hover\:bg-destructive\/90:hover{
   background-color: hsl(var(--destructive) / 0.9);
-}
-.hover\:bg-emerald-400\/\[0\.06\]:hover{
-  background-color: rgb(52 211 153 / 0.06);
 }
 .hover\:bg-foreground:hover{
   background-color: hsl(var(--foreground));

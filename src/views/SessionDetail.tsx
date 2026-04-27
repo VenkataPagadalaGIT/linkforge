@@ -82,14 +82,11 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
   const profile = s.speaker ? getSpeakerByName(s.speaker) : undefined;
   const Icon = sessionIcon[s.type];
 
-  const [authed, setAuthed] = React.useState(false);
-  const [authChecked, setAuthChecked] = React.useState(false);
   const [note, setNote] = React.useState<NoteRecord | undefined>(undefined);
 
   React.useEffect(() => {
     let cancelled = false;
     const run = async () => {
-      // Public note first
       try {
         const { data } = await axios.get<NoteRecord[]>(
           `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
@@ -99,24 +96,6 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
         if (found) setNote(found);
       } catch {
         /* ignore */
-      }
-
-      const token = getToken();
-      if (!token) {
-        setAuthChecked(true);
-        return;
-      }
-      try {
-        await adminApi.get("/auth/me");
-        const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
-        if (cancelled) return;
-        const found = data.find((n) => n.session_id === sessionId);
-        if (found) setNote(found);
-        setAuthed(true);
-      } catch {
-        /* ignore */
-      } finally {
-        if (!cancelled) setAuthChecked(true);
       }
     };
     run();
@@ -364,61 +343,12 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 <h2 className="font-display text-xl font-bold text-foreground">My notes</h2>
               </div>
 
-              {!authChecked ? (
-                <p className="font-mono text-xs text-muted-foreground/60 border border-dashed border-border/50 px-4 py-6">
-                  Loading…
-                </p>
-              ) : authed ? (
-                <NoteEditorFull
-                  conferenceSlug={c.slug}
-                  sessionId={sessionId}
-                  initial={note}
-                  onSaved={(n) => setNote(n)}
-                />
-              ) : note?.is_public && note.note ? (
-                <article
-                  className="border border-border p-6 max-w-3xl"
-                  data-testid="session-public-note-block"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe2 size={11} className="text-emerald-300/80" />
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
-                      Field notes
-                    </span>
-                  </div>
-                  <div className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                    {note.note}
-                  </div>
-                  {note.takeaways.length > 0 && (
-                    <div className="mt-5 flex flex-wrap gap-1.5">
-                      {note.takeaways.map((t, i) => (
-                        <span
-                          key={i}
-                          className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </article>
-              ) : (
-                <div className="border border-dashed border-border px-5 py-8 max-w-3xl">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Lock size={12} className="text-muted-foreground/50" />
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
-                      Notes locked
-                    </span>
-                  </div>
-                  <p className="font-mono text-xs text-muted-foreground/80 leading-relaxed">
-                    Public field notes haven&apos;t been published for this session yet.{" "}
-                    <Link to="/admin/login" className="text-foreground underline-offset-4 hover:underline">
-                      Sign in
-                    </Link>{" "}
-                    to write your own.
-                  </p>
-                </div>
-              )}
+              <NoteEditorFull
+                conferenceSlug={c.slug}
+                sessionId={sessionId}
+                initial={note}
+                onSaved={(n) => setNote(n)}
+              />
             </ScrollReveal>
           </section>
 
