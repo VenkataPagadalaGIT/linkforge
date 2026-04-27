@@ -1,11 +1,11 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
+  "/about/page": "app/about/page.js",
   "/ai-contributors/page": "app/ai-contributors/page.js",
   "/ai-updates/page": "app/ai-updates/page.js",
   "/contact/page": "app/contact/page.js",
   "/ai-contributors/[id]/page": "app/ai-contributors/[id]/page.js",
-  "/about/page": "app/about/page.js",
   "/experience/page": "app/experience/page.js",
   "/ai-updates/[slug]/page": "app/ai-updates/[slug]/page.js",
   "/insights/page": "app/insights/page.js",
@@ -22,13 +22,13 @@
   "/publications/page": "app/publications/page.js",
   "/research/page": "app/research/page.js",
   "/notebook/conference/speakers/[slug]/page": "app/notebook/conference/speakers/[slug]/page.js",
-  "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
   "/notebook/conference/[slug]/page": "app/notebook/conference/[slug]/page.js",
   "/solutions/page": "app/solutions/page.js",
+  "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/notebook/conference/[slug]/sessions/[sessionId]/page": "app/notebook/conference/[slug]/sessions/[sessionId]/page.js",
   "/admin/login/page": "app/admin/login/page.js",
-  "/admin/cms/posts/page": "app/admin/cms/posts/page.js",
   "/admin/cms/posts/[slug]/page": "app/admin/cms/posts/[slug]/page.js",
+  "/admin/cms/posts/page": "app/admin/cms/posts/page.js",
   "/admin/page": "app/admin/page.js"
 }

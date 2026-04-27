@@ -892,6 +892,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
         <NoteEditor
           sessionId={id}
           conferenceSlug={conferenceSlug}
+          session={s}
           note={note}
           onLocalUpdate={onLocalUpdate}
         />
@@ -904,11 +905,51 @@ const SessionCard: React.FC<SessionCardProps> = ({
 interface NoteEditorProps {
   sessionId: string;
   conferenceSlug: string;
+  session: Session;
   note?: NoteRecord;
   onLocalUpdate: (patch: Partial<NoteRecord>) => void;
 }
 
-const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note, onLocalUpdate }) => {
+// Field-notes template (matches the published reading format).
+const buildNoteTemplate = (s: Session): string => {
+  const heading = s.speaker
+    ? `${s.speaker} — ${s.title}`
+    : s.title;
+  return `## ${heading}
+
+**Key thesis:** _What's the core argument in one sentence?_
+
+### Context that matters
+
+_What's the backdrop / why does this matter right now…_
+
+### What ${s.speaker ? s.speaker.split(" ")[0] : "the speaker"} actually said
+
+_The key claim, with the data or example they used…_
+
+### Key takeaways
+
+- takeaway one
+- takeaway two
+- takeaway three
+
+### Quotes worth keeping
+
+> "..." — ${s.speaker || "speaker"}
+
+### My take
+
+_Where I agree, push back, or extend with my own context…_
+
+### Open questions
+
+- [ ] What I want to dig into next
+- [ ] People to follow up with — DM / coffee
+- [ ] Action item — me — by when
+`;
+};
+
+const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, session, note, onLocalUpdate }) => {
   const [text, setText] = React.useState(note?.note || "");
   const [takeaways, setTakeaways] = React.useState<string[]>(note?.takeaways || []);
   const [statusFlag, setStatusFlag] = React.useState<NoteStatus>((note?.status as NoteStatus) || "");
@@ -942,6 +983,48 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
     setText(v);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => persist({ note: v }), 1200);
+  };
+
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const insertAtCursor = (snippet: string) => {
+    const el = textareaRef.current;
+    if (!el) {
+      const next = text + snippet;
+      setText(next);
+      persist({ note: next });
+      return;
+    }
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const next = text.slice(0, start) + snippet + text.slice(end);
+    setText(next);
+    persist({ note: next });
+    requestAnimationFrame(() => {
+      el.focus();
+      el.selectionStart = el.selectionEnd = start + snippet.length;
+    });
+  };
+  const wrapSelection = (before: string, after: string = before) => {
+    const el = textareaRef.current;
+    if (!el) return insertAtCursor(`${before}${after}`);
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const sel = text.slice(start, end);
+    const next = text.slice(0, start) + before + sel + after + text.slice(end);
+    setText(next);
+    persist({ note: next });
+    requestAnimationFrame(() => {
+      el.focus();
+      el.selectionStart = start + before.length;
+      el.selectionEnd = end + before.length;
+    });
+  };
+  const applyTemplate = () => {
+    if (text.trim().length > 0 && !confirm("Replace current note with the field-notes template?")) return;
+    const tmpl = buildNoteTemplate(session);
+    setText(tmpl);
+    persist({ note: tmpl });
+    requestAnimationFrame(() => textareaRef.current?.focus());
   };
 
   const addTakeaway = () => {
@@ -1019,13 +1102,40 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
         </span>
       </div>
 
+      {/* Format toolbar */}
+      <div className="flex flex-wrap items-center gap-1 mb-2" data-testid={`note-toolbar-${sessionId}`}>
+        <button
+          onClick={applyTemplate}
+          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
+          data-testid={`note-template-${sessionId}`}
+          title="Insert the field-notes template (Speaker → Key thesis → Takeaways → My take → Open questions)"
+        >
+          ★ Template
+        </button>
+        <span className="w-px h-4 bg-border/60 mx-1" />
+        <ToolBtn onClick={() => insertAtCursor("\n\n## Heading\n\n")} title="H2">H2</ToolBtn>
+        <ToolBtn onClick={() => insertAtCursor("\n\n### Subheading\n\n")} title="H3">H3</ToolBtn>
+        <ToolBtn onClick={() => wrapSelection("**")} title="Bold">B</ToolBtn>
+        <ToolBtn onClick={() => wrapSelection("_")} title="Italic">I</ToolBtn>
+        <span className="w-px h-4 bg-border/60 mx-1" />
+        <ToolBtn onClick={() => insertAtCursor("\n- ")} title="Arrow takeaway (renders as → bullet)">→</ToolBtn>
+        <ToolBtn onClick={() => insertAtCursor("\n1. ")} title="Numbered list">1.</ToolBtn>
+        <ToolBtn onClick={() => insertAtCursor("\n- [ ] ")} title="Task / action item">☐</ToolBtn>
+        <ToolBtn onClick={() => insertAtCursor("\n\n> \"\" — speaker\n\n")} title="Quote">❝</ToolBtn>
+        <span className="w-px h-4 bg-border/60 mx-1" />
+        <ToolBtn onClick={() => { const u = prompt("Image URL?"); if (u) insertAtCursor(`\n\n![](${u})\n\n`); }} title="Image" testid={`note-image-${sessionId}`}>🖼</ToolBtn>
+        <ToolBtn onClick={() => { const u = prompt("YouTube/Vimeo URL?"); if (u) insertAtCursor(`\n\n${u}\n\n`); }} title="Video" testid={`note-video-${sessionId}`}>▶</ToolBtn>
+        <ToolBtn onClick={() => insertAtCursor("[link](https://)")} title="Link">🔗</ToolBtn>
+      </div>
+
       {/* Note textarea */}
       <textarea
+        ref={textareaRef}
         value={text}
         onChange={(e) => onTextChange(e.target.value)}
-        placeholder="Live notes from this session — quotes, signal, links, ideas you want to revisit later…"
-        rows={5}
-        className="w-full bg-background border border-border p-3 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y"
+        placeholder="Live notes from this session — quotes, signal, links, ideas you want to revisit later. Click ★ Template for the field-notes scaffold."
+        rows={text ? 18 : 5}
+        className="w-full bg-background border border-border p-3 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-relaxed"
         data-testid={`note-textarea-${sessionId}`}
       />
 
@@ -1085,6 +1195,19 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
 };
 
 export default ConferenceDetail;
+
+// Reusable toolbar button for the note editor
+const ToolBtn: React.FC<{ onClick: () => void; title: string; children: React.ReactNode; testid?: string }> = ({ onClick, title, children, testid }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    title={title}
+    className="font-mono text-[11px] border border-border/70 text-foreground/80 px-1.5 py-1 min-w-[24px] hover:border-foreground/40 hover:bg-foreground/[0.04] transition-colors"
+    data-testid={testid}
+  >
+    {children}
+  </button>
+);
 
 // ===== Grid view — speaker-centric card per session =====
 const GridSpeakerCard = ({

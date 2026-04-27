@@ -679,11 +679,59 @@ const NoteEditorFull = ({
     debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
   };
 
+  const buildTemplate = () => {
+    const heading = s.speaker ? `${s.speaker} — ${s.title}` : s.title;
+    const first = s.speaker ? s.speaker.split(" ")[0] : "the speaker";
+    return `## ${heading}
+
+**Key thesis:** _What's the core argument in one sentence?_
+
+### Context that matters
+
+_What's the backdrop / why does this matter right now…_
+
+### What ${first} actually said
+
+_The key claim, with the data or example they used…_
+
+### Key takeaways
+
+- takeaway one
+- takeaway two
+- takeaway three
+
+### Quotes worth keeping
+
+> "..." — ${s.speaker || "speaker"}
+
+### My take
+
+_Where I agree, push back, or extend with my own context…_
+
+### Open questions
+
+- [ ] What I want to dig into next
+- [ ] People to follow up with — DM / coffee
+- [ ] Action item — me — by when
+`;
+  };
+  const applyTemplate = () => {
+    if (text.trim().length > 0 && !window.confirm("Replace current note with the field-notes template?")) return;
+    const tmpl = buildTemplate();
+    setText(tmpl);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({ note: tmpl }), 600);
+    requestAnimationFrame(() => taRef.current?.focus());
+  };
+
   const tools: { label: string; testId: string; onClick: () => void; title: string }[] = [
     { label: "B", testId: "md-bold", onClick: () => wrapSelection("**"), title: "Bold (**)" },
     { label: "I", testId: "md-italic", onClick: () => wrapSelection("*"), title: "Italic (*)" },
-    { label: "H", testId: "md-heading", onClick: () => insertAtLineStart("## "), title: "Heading" },
+    { label: "H2", testId: "md-h2", onClick: () => insertAtLineStart("## "), title: "Heading 2" },
+    { label: "H3", testId: "md-h3", onClick: () => insertAtLineStart("### "), title: "Heading 3 (sub-section)" },
+    { label: "→", testId: "md-arrow", onClick: () => insertAtLineStart("- "), title: "Arrow takeaway (renders as → bullet)" },
     { label: "•", testId: "md-list", onClick: () => insertAtLineStart("- "), title: "Bullet list" },
+    { label: "☐", testId: "md-task", onClick: () => insertAtLineStart("- [ ] "), title: "Task / action item" },
     { label: "“", testId: "md-quote", onClick: () => insertAtLineStart("> "), title: "Quote" },
     { label: "</>", testId: "md-code", onClick: () => wrapSelection("`"), title: "Inline code" },
     { label: "🔗", testId: "md-link", onClick: promptInsertLink, title: "Link" },
@@ -736,6 +784,16 @@ const NoteEditorFull = ({
 
       {/* Markdown toolbar + preview toggle */}
       <div className="flex items-center gap-1 flex-wrap border border-border bg-foreground/[0.015] px-2 py-1.5 mb-0">
+        <button
+          type="button"
+          onClick={applyTemplate}
+          title="Insert the field-notes template (Speaker → Key thesis → H3 sections → Takeaways → My take → Open questions)"
+          data-testid="md-template"
+          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
+        >
+          ★ Template
+        </button>
+        <span className="w-px h-4 bg-border/60 mx-1" />
         {tools.map((t) => (
           <button
             key={t.testId}
