@@ -18,41 +18,64 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       alternates: { canonical: `/insights/${params.slug}/${params.postSlug}` },
     };
   }
+  // Pull from CMS-managed seo block (new) or fall back to legacy fields
+  const seo = (post as any).seo || {};
+  const canonicalPath = seo.canonical || `/insights/${params.slug}/${params.postSlug}`;
+  const metaTitle = seo.metaTitle || post.metaTitle || post.title;
+  const metaDesc = seo.metaDescription || post.metaDescription || post.excerpt;
+  const ogTitle = seo.ogTitle || metaTitle;
+  const ogDesc = seo.ogDescription || metaDesc;
+  const ogImage = seo.ogImage || (post as any).coverImage || undefined;
+  const twitterCard = (seo.twitterCard as any) || "summary_large_image";
+  const robotsIndex = seo.robotsIndex !== false;
+  const robotsFollow = seo.robotsFollow !== false;
   return {
-    title: post.metaTitle || post.title,
-    description: post.metaDescription || post.excerpt,
+    title: metaTitle,
+    description: metaDesc,
     keywords: post.tags,
     authors: [{ name: "Venkata Pagadala", url: SITE_URL }],
-    alternates: { canonical: `/insights/${params.slug}/${params.postSlug}` },
+    alternates: { canonical: canonicalPath },
+    robots: {
+      index: robotsIndex,
+      follow: robotsFollow,
+      googleBot: { index: robotsIndex, follow: robotsFollow },
+    },
     openGraph: {
       type: "article",
-      url: `/insights/${params.slug}/${params.postSlug}`,
-      title: post.title,
-      description: post.metaDescription || post.excerpt,
+      url: canonicalPath,
+      title: ogTitle,
+      description: ogDesc,
       publishedTime: post.date,
       authors: ["Venkata Pagadala"],
       tags: post.tags,
+      images: ogImage ? [ogImage] : undefined,
     },
     twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.metaDescription || post.excerpt,
+      card: twitterCard,
+      title: ogTitle,
+      description: ogDesc,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }
 
 export default async function Page({ params }: { params: Params }) {
   const post = await getPost(params.postSlug);
-  const url = `${SITE_URL}/insights/${params.slug}/${params.postSlug}`;
+  const seo = ((post as any)?.seo) || {};
+  const canonicalPath = seo.canonical || `/insights/${params.slug}/${params.postSlug}`;
+  const url = canonicalPath.startsWith("http") ? canonicalPath : `${SITE_URL}${canonicalPath}`;
+  const schemaType = seo.jsonLdType || "Article";
   const jsonLd = post
     ? [
         articleJsonLd({
           headline: post.title,
-          description: post.metaDescription || post.excerpt,
+          description: seo.metaDescription || post.metaDescription || post.excerpt,
           url,
           datePublished: post.date,
           keywords: post.tags,
           section: params.slug,
+          schemaType,
+          image: seo.ogImage || (post as any).coverImage,
         }),
         breadcrumbJsonLd([
           { name: "Insights", url: `${SITE_URL}/insights` },

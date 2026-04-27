@@ -1,9 +1,13 @@
 "use client";
-import { Link } from "@/lib/router-shim";
+import { Link, useLocation } from "@/lib/router-shim";
 import { ArrowRight, Linkedin, Mail as MailIcon } from "lucide-react";
 import KitSignupForm from "@/components/KitSignupForm";
 
 const Footer = () => {
+  const location = useLocation();
+  // Admin/CMS pages don't need the public marketing footer.
+  if (location.pathname?.startsWith("/admin")) return null;
+
   const links = [
     { label: "About", to: "/about" },
     { label: "Lab", to: "/publications" },

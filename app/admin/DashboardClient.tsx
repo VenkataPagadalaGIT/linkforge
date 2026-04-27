@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { adminApi, clearToken, formatApiError, useRequireAdmin } from "@/lib/admin-client";
 
@@ -110,6 +111,13 @@ export default function DashboardClient() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/admin/cms/posts"
+              className="border border-foreground/30 hover:border-foreground/60 px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-foreground transition-all"
+              data-testid="admin-cms-link"
+            >
+              CMS · Posts
+            </Link>
             <button
               onClick={loadAll}
               disabled={loading}

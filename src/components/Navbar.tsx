@@ -28,6 +28,9 @@ const Navbar = () => {
     setMobileOpen(false);
   }, [location]);
 
+  // Admin/CMS shell controls its own chrome — public navbar is irrelevant there.
+  if (location.pathname?.startsWith("/admin")) return null;
+
   return (
     <>
       <nav

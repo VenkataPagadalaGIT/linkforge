@@ -101,13 +101,16 @@ export function articleJsonLd(opts: {
   section?: string;
   keywords?: string[];
   authorName?: string;
+  schemaType?: string;
+  image?: string;
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": opts.schemaType || "Article",
     headline: opts.headline,
     description: opts.description,
     url: opts.url,
+    ...(opts.image ? { image: opts.image } : {}),
     ...(opts.datePublished ? { datePublished: opts.datePublished } : {}),
     ...(opts.dateModified ? { dateModified: opts.dateModified } : { dateModified: opts.datePublished }),
     ...(opts.section ? { articleSection: opts.section } : {}),
