@@ -1,5 +1,7 @@
 "use client";
 import * as React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Globe2, NotebookText, Hash } from "lucide-react";
 import { Link } from "@/lib/router-shim";
 
@@ -9,21 +11,204 @@ const wordCount = (text: string) =>
 
 const readingMinutes = (n: number) => Math.max(1, Math.round(n / 230));
 
-/** Split note into paragraphs (double-newline) for readable rendering */
-const toParagraphs = (text: string): string[] => {
-  return text
-    .replace(/\r\n/g, "\n")
-    .split(/\n{2,}/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+// ===== URL → embed detection =====
+const YOUTUBE_RE = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{6,})/;
+const VIMEO_RE = /vimeo\.com\/(?:video\/)?(\d+)/;
+const TWITTER_RE = /(?:twitter\.com|x\.com)\/[^/]+\/status\/(\d+)/;
+const IMAGE_EXT_RE = /\.(?:png|jpe?g|gif|webp|avif)(?:\?.*)?$/i;
+
+interface EmbedKind {
+  type: "youtube" | "vimeo" | "tweet" | "image" | null;
+  id?: string;
+  url?: string;
+}
+
+const detectEmbed = (raw: string): EmbedKind => {
+  const url = raw.trim();
+  let m;
+  if ((m = url.match(YOUTUBE_RE))) return { type: "youtube", id: m[1] };
+  if ((m = url.match(VIMEO_RE))) return { type: "vimeo", id: m[1] };
+  if ((m = url.match(TWITTER_RE))) return { type: "tweet", id: m[1], url };
+  if (IMAGE_EXT_RE.test(url) && url.startsWith("http")) return { type: "image", url };
+  return { type: null };
 };
 
-/** Render a single paragraph; preserve single-line breaks within it */
-const Paragraph: React.FC<{ children: string }> = ({ children }) => (
-  <p className="text-foreground/85 leading-[1.85] mb-5 whitespace-pre-wrap">
-    {children}
-  </p>
-);
+const Embed: React.FC<{ kind: EmbedKind }> = ({ kind }) => {
+  if (kind.type === "youtube") {
+    return (
+      <div className="my-6 border border-border aspect-video relative overflow-hidden">
+        <iframe
+          src={`https://www.youtube.com/embed/${kind.id}`}
+          title="YouTube video"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
+    );
+  }
+  if (kind.type === "vimeo") {
+    return (
+      <div className="my-6 border border-border aspect-video relative overflow-hidden">
+        <iframe
+          src={`https://player.vimeo.com/video/${kind.id}`}
+          title="Vimeo video"
+          loading="lazy"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
+    );
+  }
+  if (kind.type === "tweet") {
+    // Lightweight: link card. (Full tweet embed needs Twitter's oEmbed JS — heavy.)
+    return (
+      <a
+        href={kind.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="my-6 block border border-border p-4 hover:border-foreground/40 transition-colors"
+      >
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">
+          X / Twitter post
+        </p>
+        <p className="font-mono text-[12px] text-foreground/80 break-all">{kind.url}</p>
+      </a>
+    );
+  }
+  if (kind.type === "image") {
+    return (
+      <figure className="my-6">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={kind.url}
+          alt=""
+          loading="lazy"
+          className="w-full border border-border"
+        />
+      </figure>
+    );
+  }
+  return null;
+};
+
+// Pre-process the markdown body: any line that is JUST a recognized URL → replace with a placeholder we can render later.
+// But ReactMarkdown handles this elegantly — we override the `p` and `a` components and detect bare-URL paragraphs.
+
+// ===== Custom markdown components =====
+const mdComponents = {
+  h1: (props: React.ComponentProps<"h1">) => (
+    <h2 className="font-display text-2xl font-bold text-foreground mt-9 mb-4 leading-tight" {...props} />
+  ),
+  h2: (props: React.ComponentProps<"h2">) => (
+    <h3 className="font-display text-xl font-bold text-foreground mt-8 mb-3 leading-tight" {...props} />
+  ),
+  h3: (props: React.ComponentProps<"h3">) => (
+    <h4 className="font-display text-lg font-bold text-foreground mt-6 mb-2 leading-tight" {...props} />
+  ),
+  p: (props: React.ComponentProps<"p"> & { children?: React.ReactNode }) => {
+    // If the only child is text matching a single URL → render as embed
+    const children = React.Children.toArray(props.children);
+    if (children.length === 1 && typeof children[0] === "string") {
+      const txt = (children[0] as string).trim();
+      const k = detectEmbed(txt);
+      if (k.type) return <Embed kind={k} />;
+    }
+    // Single anchor whose text equals href and matches an embed
+    if (
+      children.length === 1 &&
+      React.isValidElement(children[0]) &&
+      (children[0] as React.ReactElement<{ href?: string }>).props?.href
+    ) {
+      const a = children[0] as React.ReactElement<{ href?: string; children?: React.ReactNode }>;
+      const k = detectEmbed(a.props.href || "");
+      if (k.type) return <Embed kind={k} />;
+    }
+    return (
+      <p className="text-foreground/85 leading-[1.85] mb-5" {...props} />
+    );
+  },
+  a: (props: React.ComponentProps<"a">) => (
+    <a
+      target={props.href?.startsWith("http") ? "_blank" : undefined}
+      rel={props.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+      className="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors"
+      {...props}
+    />
+  ),
+  strong: (props: React.ComponentProps<"strong">) => (
+    <strong className="text-foreground font-bold" {...props} />
+  ),
+  em: (props: React.ComponentProps<"em">) => (
+    <em className="text-foreground/90 italic" {...props} />
+  ),
+  blockquote: (props: React.ComponentProps<"blockquote">) => (
+    <blockquote
+      className="my-6 border-l-2 border-foreground/40 pl-5 py-1 text-foreground/85 italic"
+      {...props}
+    />
+  ),
+  ul: (props: React.ComponentProps<"ul">) => (
+    <ul className="my-4 space-y-1.5 list-none pl-0" {...props} />
+  ),
+  ol: (props: React.ComponentProps<"ol">) => (
+    <ol className="my-4 space-y-1.5 list-decimal pl-5 marker:text-muted-foreground/50" {...props} />
+  ),
+  li: (props: React.ComponentProps<"li"> & { children?: React.ReactNode }) => (
+    <li
+      className="text-foreground/85 leading-[1.7] pl-5 relative before:content-['→'] before:absolute before:left-0 before:text-foreground/35"
+      {...props}
+    />
+  ),
+  code: ({
+    inline,
+    ...props
+  }: React.ComponentProps<"code"> & { inline?: boolean }) => {
+    if (inline) {
+      return (
+        <code
+          className="font-mono text-[12px] bg-foreground/[0.06] text-foreground/90 px-1.5 py-0.5 border border-border/60"
+          {...props}
+        />
+      );
+    }
+    return <code className="font-mono text-[12.5px] text-foreground/90" {...props} />;
+  },
+  pre: (props: React.ComponentProps<"pre">) => (
+    <pre
+      className="my-5 border border-border bg-foreground/[0.03] p-4 overflow-x-auto text-[12.5px] leading-[1.7]"
+      {...props}
+    />
+  ),
+  hr: () => <hr className="my-8 border-border/50" />,
+  img: (props: React.ComponentProps<"img">) => (
+    <figure className="my-6">
+      {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+      <img loading="lazy" className="w-full border border-border" {...props} />
+      {props.alt && (
+        <figcaption className="mt-2 font-mono text-[10px] text-muted-foreground/60">
+          {props.alt}
+        </figcaption>
+      )}
+    </figure>
+  ),
+  table: (props: React.ComponentProps<"table">) => (
+    <div className="my-6 overflow-x-auto border border-border">
+      <table className="w-full text-[12.5px]" {...props} />
+    </div>
+  ),
+  th: (props: React.ComponentProps<"th">) => (
+    <th
+      className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 text-left p-3 border-b border-border bg-foreground/[0.02]"
+      {...props}
+    />
+  ),
+  td: (props: React.ComponentProps<"td">) => (
+    <td className="p-3 border-b border-border/50 text-foreground/85 leading-[1.7]" {...props} />
+  ),
+};
 
 export interface NoteContentProps {
   text: string;
@@ -31,7 +216,6 @@ export interface NoteContentProps {
   isPublic?: boolean;
   status?: string;
   updatedAt?: string;
-  /** Conference attribution — shown in header so reader always knows context */
   attribution?: {
     conferenceName: string;
     conferenceEdition?: string;
@@ -39,19 +223,11 @@ export interface NoteContentProps {
     sessionTitle: string;
     sessionUrl: string;
   };
-  /** When true, truncates to ~200 words with a "Read full" CTA pointing at attribution.sessionUrl */
   preview?: boolean;
   className?: string;
   testId?: string;
 }
 
-/**
- * Renders long-form note content (200–3000+ words) with:
- *  - Conference + session attribution header (linked)
- *  - Reading typography: serif-feel mono, 1.85 line-height, paragraph spacing, max-w-prose
- *  - Word count + reading time
- *  - Optional preview mode: first ~200 words + "Read full →"
- */
 const NoteContent: React.FC<NoteContentProps> = ({
   text,
   takeaways = [],
@@ -74,7 +250,8 @@ const NoteContent: React.FC<NoteContentProps> = ({
     truncated = true;
     let count = 0;
     const out: string[] = [];
-    for (const para of toParagraphs(text)) {
+    const paras = text.replace(/\r\n/g, "\n").split(/\n{2,}/);
+    for (const para of paras) {
       const w = wordCount(para);
       if (count + w <= PREVIEW_WORDS) {
         out.push(para);
@@ -91,14 +268,12 @@ const NoteContent: React.FC<NoteContentProps> = ({
     bodyText = out.join("\n\n");
   }
 
-  const paragraphs = toParagraphs(bodyText);
-
   return (
     <article
       className={`max-w-[68ch] ${className}`}
       data-testid={testId}
     >
-      {/* Header — context badge */}
+      {/* Header */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         {isPublic ? (
           <span className="font-mono text-[9px] tracking-[0.2em] uppercase border border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] px-2 py-1 inline-flex items-center gap-1.5">
@@ -119,7 +294,6 @@ const NoteContent: React.FC<NoteContentProps> = ({
         </span>
       </div>
 
-      {/* Conference attribution — critical when speakers appear at many events */}
       {attribution && (
         <Link
           to={attribution.sessionUrl}
@@ -144,14 +318,16 @@ const NoteContent: React.FC<NoteContentProps> = ({
         </Link>
       )}
 
-      {/* Body — readable long-form */}
+      {/* Markdown body */}
       <div className="font-mono text-[14px] note-body" data-testid={`${testId}-body`}>
-        {paragraphs.map((p, i) => (
-          <Paragraph key={i}>{p}</Paragraph>
-        ))}
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={mdComponents as never}
+        >
+          {bodyText}
+        </ReactMarkdown>
       </div>
 
-      {/* Truncation CTA */}
       {truncated && attribution && (
         <Link
           to={attribution.sessionUrl}
@@ -162,7 +338,6 @@ const NoteContent: React.FC<NoteContentProps> = ({
         </Link>
       )}
 
-      {/* Takeaways */}
       {takeaways.length > 0 && !truncated && (
         <div className="mt-7 pt-5 border-t border-border/60">
           <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/55 mb-3 inline-flex items-center gap-1.5">

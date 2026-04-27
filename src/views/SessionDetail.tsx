@@ -584,10 +584,99 @@ const NoteEditorFull = ({
     persist({ is_public: next });
   };
 
+  // ===== Markdown helpers =====
+  const taRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const [showPreview, setShowPreview] = React.useState(false);
+
+  const wrapSelection = (before: string, after = before) => {
+    const ta = taRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart ?? 0;
+    const end = ta.selectionEnd ?? 0;
+    const selected = text.slice(start, end);
+    const next = text.slice(0, start) + before + selected + after + text.slice(end);
+    setText(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
+    requestAnimationFrame(() => {
+      ta.focus();
+      const cursor = start + before.length + selected.length;
+      ta.setSelectionRange(cursor, cursor);
+    });
+  };
+
+  const insertAtLineStart = (token: string) => {
+    const ta = taRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart ?? 0;
+    const lineStart = text.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+    const next = text.slice(0, lineStart) + token + text.slice(lineStart);
+    setText(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + token.length, start + token.length);
+    });
+  };
+
+  const insertBlock = (block: string) => {
+    const ta = taRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart ?? text.length;
+    const before = text.slice(0, start);
+    const after = text.slice(start);
+    const sep = before && !before.endsWith("\n\n") ? "\n\n" : "";
+    const trail = after && !after.startsWith("\n\n") ? "\n\n" : "";
+    const next = before + sep + block + trail + after;
+    setText(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
+    requestAnimationFrame(() => ta.focus());
+  };
+
+  const promptInsertImage = () => {
+    const url = window.prompt("Paste image URL (jpg, png, gif, webp):");
+    if (url && url.trim()) insertBlock(`![](${url.trim()})`);
+  };
+
+  const promptInsertVideo = () => {
+    const url = window.prompt("Paste YouTube, Vimeo, or X / Twitter URL:");
+    if (url && url.trim()) insertBlock(url.trim());
+  };
+
+  const promptInsertLink = () => {
+    const url = window.prompt("Paste link URL:");
+    if (!url) return;
+    const ta = taRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart ?? 0;
+    const end = ta.selectionEnd ?? 0;
+    const sel = text.slice(start, end) || "link text";
+    const before = text.slice(0, start);
+    const after = text.slice(end);
+    const next = before + `[${sel}](${url.trim()})` + after;
+    setText(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({ note: next }), 1200);
+  };
+
+  const tools: { label: string; testId: string; onClick: () => void; title: string }[] = [
+    { label: "B", testId: "md-bold", onClick: () => wrapSelection("**"), title: "Bold (**)" },
+    { label: "I", testId: "md-italic", onClick: () => wrapSelection("*"), title: "Italic (*)" },
+    { label: "H", testId: "md-heading", onClick: () => insertAtLineStart("## "), title: "Heading" },
+    { label: "•", testId: "md-list", onClick: () => insertAtLineStart("- "), title: "Bullet list" },
+    { label: "“", testId: "md-quote", onClick: () => insertAtLineStart("> "), title: "Quote" },
+    { label: "</>", testId: "md-code", onClick: () => wrapSelection("`"), title: "Inline code" },
+    { label: "🔗", testId: "md-link", onClick: promptInsertLink, title: "Link" },
+    { label: "🖼", testId: "md-image", onClick: promptInsertImage, title: "Image (paste URL)" },
+    { label: "▶", testId: "md-video", onClick: promptInsertVideo, title: "YouTube / Vimeo / X embed" },
+  ];
+
   return (
     <div className="border border-border p-6 max-w-3xl" data-testid="session-note-editor-full">
-      {/* Toolbar */}
-      <div className="flex items-center gap-2 flex-wrap mb-5">
+      {/* Top row: status pills + visibility */}
+      <div className="flex items-center gap-2 flex-wrap mb-4">
         <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
           Status
         </span>
@@ -627,14 +716,63 @@ const NoteEditorFull = ({
         </span>
       </div>
 
-      <textarea
-        value={text}
-        onChange={(e) => onTextChange(e.target.value)}
-        placeholder="Long-form notes — quotes, frameworks, links, questions, action items. Markdown-friendly. Autosaves every 1.2s."
-        rows={26}
-        className="w-full bg-background border border-border p-4 font-mono text-[13.5px] text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-[1.85]"
-        data-testid="session-note-textarea"
-      />
+      {/* Markdown toolbar + preview toggle */}
+      <div className="flex items-center gap-1 flex-wrap border border-border bg-foreground/[0.015] px-2 py-1.5 mb-0">
+        {tools.map((t) => (
+          <button
+            key={t.testId}
+            type="button"
+            onClick={t.onClick}
+            title={t.title}
+            data-testid={t.testId}
+            className="font-mono text-[12px] text-foreground/75 hover:text-foreground hover:bg-foreground/[0.05] px-2 py-1 transition-colors min-w-[28px]"
+          >
+            {t.label}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setShowPreview((p) => !p)}
+          className={`ml-auto font-mono text-[10px] uppercase tracking-[0.2em] border px-2 py-1 transition-colors ${
+            showPreview
+              ? "border-foreground/50 text-foreground bg-foreground/[0.05]"
+              : "border-border text-muted-foreground/70 hover:border-foreground/30"
+          }`}
+          data-testid="md-preview-toggle"
+        >
+          {showPreview ? "Edit" : "Preview"}
+        </button>
+      </div>
+
+      {/* Editor / Preview */}
+      {showPreview ? (
+        <div
+          className="w-full min-h-[600px] border border-t-0 border-border p-5 bg-foreground/[0.01]"
+          data-testid="md-preview-pane"
+        >
+          {text.trim() ? (
+            <NoteContent
+              text={text}
+              testId="md-preview-content"
+              className="!max-w-none"
+            />
+          ) : (
+            <p className="font-mono text-xs text-muted-foreground/50 italic">
+              Nothing to preview yet — switch back to Edit and start writing.
+            </p>
+          )}
+        </div>
+      ) : (
+        <textarea
+          ref={taRef}
+          value={text}
+          onChange={(e) => onTextChange(e.target.value)}
+          placeholder={"Markdown supported. Examples:\n\n## A heading\n**bold** and *italic*\n- bullet\n> quote\n\nPaste image / YouTube / Vimeo URLs on their own line and they auto-embed.\n\nAutosaves every 1.2s."}
+          rows={26}
+          className="w-full bg-background border border-t-0 border-border p-4 font-mono text-[13.5px] text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-[1.85]"
+          data-testid="session-note-textarea"
+        />
+      )}
 
       <p className="mt-2 font-mono text-[10px] text-muted-foreground/55">
         {text.length.toLocaleString()} characters · ~{(text.trim().match(/\b[\w'-]+\b/g) || []).length.toLocaleString()} words
