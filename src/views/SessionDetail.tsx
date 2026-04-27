@@ -118,8 +118,8 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
       );
       const found = data.find((n) => n.session_id === sessionId);
       if (found) setNote(found);
-    } catch {
-      /* ignore */
+    } catch (err) {
+      console.warn(`[SessionDetail] Public note fetch failed for ${c.slug}:`, err);
     }
 
     if (getToken()) {
@@ -396,7 +396,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 <ul className="space-y-2 max-w-3xl">
                   {s.takeaways.map((t, i) => (
                     <li
-                      key={i}
+                      key={`${sessionId}-suggested-${i}-${t.slice(0, 30)}`}
                       className="font-mono text-xs text-muted-foreground/90 leading-relaxed pl-5 relative"
                     >
                       <span className="absolute left-0 text-foreground/40">→</span>
@@ -801,7 +801,7 @@ const NoteEditorFull = ({
         <div className="flex flex-wrap gap-1.5 mb-2">
           {takeaways.map((t, i) => (
             <button
-              key={i}
+              key={`editor-takeaway-${i}-${t.slice(0, 30)}`}
               onClick={() => removeTakeaway(i)}
               className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-300/90 transition-colors"
               title="Click to remove"

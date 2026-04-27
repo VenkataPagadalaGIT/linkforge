@@ -68,8 +68,8 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
               `${BACKEND_URL}/api/notebook/notes/public/${slug}`,
             );
             data.forEach((n) => (merged[`${slug}::${n.session_id}`] = n));
-          } catch {
-            /* ignore */
+          } catch (err) {
+            console.warn(`[SpeakerProfile] Public notes fetch failed for ${slug}:`, err);
           }
         }),
       );
@@ -84,14 +84,14 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
               try {
                 const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${slug}`);
                 data.forEach((n) => (merged[`${slug}::${n.session_id}`] = n));
-              } catch {
-                /* ignore */
+              } catch (err) {
+                console.warn(`[SpeakerProfile] Admin notes fetch failed for ${slug}:`, err);
               }
             }),
           );
           setAuthed(true);
         } catch {
-          /* not logged in — keep only public */
+          // Auth/me failed → token is expired or invalid. Silent: expected case for stale tokens.
         }
       }
       if (!cancelled) setNotesById(merged);
@@ -374,7 +374,7 @@ const TalkCard = ({
         <ul className="space-y-1.5 mb-4">
           {talk.takeaways.map((tk, i) => (
             <li
-              key={i}
+              key={`${talk.sessionId}-takeaway-${i}-${tk.slice(0, 30)}`}
               className="font-mono text-[11px] text-muted-foreground/85 leading-relaxed pl-4 relative"
             >
               <span className="absolute left-0 text-foreground/30">→</span>

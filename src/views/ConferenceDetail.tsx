@@ -156,8 +156,8 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
         `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
       );
       data.forEach((n) => (merged[n.session_id] = n));
-    } catch {
-      /* ignore */
+    } catch (err) {
+      console.warn(`[ConferenceDetail] Public notes fetch failed for ${c.slug}:`, err);
     }
 
     // If logged in, also load all notes (private + public)
@@ -747,7 +747,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
               <ul className="mt-2 space-y-1">
                 {s.takeaways.map((t, i) => (
                   <li
-                    key={i}
+                    key={`${anchor}-takeaway-${i}-${t.slice(0, 30)}`}
                     className="font-mono text-[11px] text-muted-foreground/80 leading-relaxed pl-4 relative"
                   >
                     <span className="absolute left-0 text-foreground/30">→</span>
@@ -1025,7 +1025,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, note
         <div className="flex flex-wrap gap-1.5 mb-2">
           {takeaways.map((t, i) => (
             <button
-              key={i}
+              key={`editor-takeaway-${sessionId}-${i}-${t.slice(0, 30)}`}
               onClick={() => removeTakeaway(i)}
               className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-300/90 transition-colors"
               data-testid={`takeaway-${sessionId}-${i}`}
