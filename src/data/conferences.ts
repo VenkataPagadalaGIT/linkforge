@@ -933,10 +933,13 @@ function _buildSessionMaps(c: Conference): SessionSlugMaps {
   const urlToInternal = new Map<string, string>();
   const used = new Set<string>();
 
+  const cleanSlice = (s: string, max: number) =>
+    s.slice(0, max).replace(/-+$/g, "");
+
   c.days.forEach((d, di) => {
     d.sessions.forEach((s) => {
       const internal = _internalKey(d.date, s);
-      const baseRaw = _slug(s.title).slice(0, 60) || `session-${di}-${_slug(s.start)}`;
+      const baseRaw = cleanSlice(_slug(s.title), 75) || `session-${di}-${_slug(s.start)}`;
       let candidate = baseRaw;
       if (used.has(candidate)) {
         const startKey = s.start.replace(/[^0-9apm]/gi, "").toLowerCase();
