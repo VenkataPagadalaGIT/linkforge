@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "next dev -p 3000 -H 0.0.0.0",
+    "start": "if [ -f .next/BUILD_ID ]; then next start -p 3000 -H 0.0.0.0; else next dev -p 3000 -H 0.0.0.0; fi",
     "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "serve": "next start -p 3000 -H 0.0.0.0",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "next build || true"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
