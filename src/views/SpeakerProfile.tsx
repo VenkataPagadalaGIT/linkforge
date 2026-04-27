@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
+import TakeNotesPill from "@/components/TakeNotesPill";
 import { type Speaker, getSpeakerTalks, type SpeakerTalk, photoSourceFor } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import axios from "axios";
@@ -125,6 +126,7 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20" data-testid="speaker-profile">
+      <TakeNotesPill />
       <SEO
         title={`${speaker.name} · ${speaker.role}, ${speaker.company}`}
         description={speaker.bio}

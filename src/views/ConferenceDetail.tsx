@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
+import TakeNotesPill from "@/components/TakeNotesPill";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -141,31 +142,45 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const [activeDay, setActiveDay] = React.useState(0);
   const [agendaView, setAgendaView] = React.useState<"timeline" | "grid">("timeline");
 
-  // Notes editor is now open to everyone — no auth required.
-  const authed = true;
+  // Auth-gated notes — listens to the global TakeNotesPill auth state
+  const [authed, setAuthed] = React.useState(false);
   const authChecked = true;
   const [notesById, setNotesById] = React.useState<Record<string, NoteRecord>>({});
 
-  React.useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
+  const loadNotes = React.useCallback(async () => {
+    // Always load published notes (public)
+    let merged: Record<string, NoteRecord> = {};
+    try {
+      const { data } = await axios.get<NoteRecord[]>(
+        `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
+      );
+      data.forEach((n) => (merged[n.session_id] = n));
+    } catch {
+      /* ignore */
+    }
+
+    // If logged in, also load all notes (private + public)
+    if (getToken()) {
       try {
-        const { data } = await axios.get<NoteRecord[]>(
-          `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
-        );
-        if (cancelled) return;
-        const map: Record<string, NoteRecord> = {};
-        data.forEach((n) => (map[n.session_id] = n));
-        setNotesById(map);
+        await adminApi.get("/auth/me");
+        const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
+        data.forEach((n) => (merged[n.session_id] = n));
+        setAuthed(true);
       } catch {
-        /* ignore */
+        setAuthed(false);
       }
-    };
-    run();
-    return () => {
-      cancelled = true;
-    };
+    } else {
+      setAuthed(false);
+    }
+    setNotesById(merged);
   }, [c.slug]);
+
+  React.useEffect(() => {
+    loadNotes();
+    const onAuth = () => loadNotes();
+    window.addEventListener("notebook-auth-changed", onAuth);
+    return () => window.removeEventListener("notebook-auth-changed", onAuth);
+  }, [loadNotes]);
 
   const updateLocalNote = (sessionId: string, patch: Partial<NoteRecord>) => {
     setNotesById((prev) => ({
@@ -236,6 +251,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20" data-testid="conference-detail">
+      <TakeNotesPill />
       <SEO
         title={`${c.name} ${c.edition || c.year} · Conference Notebook | Venkata Pagadala`}
         description={c.summary}

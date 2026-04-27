@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
+import TakeNotesPill from "@/components/TakeNotesPill";
 import { type Conference, type Session, type SessionType } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
@@ -82,27 +83,42 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
   const profile = s.speaker ? getSpeakerByName(s.speaker) : undefined;
   const Icon = sessionIcon[s.type];
 
+  const [authed, setAuthed] = React.useState(false);
   const [note, setNote] = React.useState<NoteRecord | undefined>(undefined);
 
-  React.useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
+  const loadNote = React.useCallback(async () => {
+    // Public note first
+    try {
+      const { data } = await axios.get<NoteRecord[]>(
+        `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
+      );
+      const found = data.find((n) => n.session_id === sessionId);
+      if (found) setNote(found);
+    } catch {
+      /* ignore */
+    }
+
+    if (getToken()) {
       try {
-        const { data } = await axios.get<NoteRecord[]>(
-          `${BACKEND_URL}/api/notebook/notes/public/${c.slug}`,
-        );
-        if (cancelled) return;
+        await adminApi.get("/auth/me");
+        const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
         const found = data.find((n) => n.session_id === sessionId);
         if (found) setNote(found);
+        setAuthed(true);
       } catch {
-        /* ignore */
+        setAuthed(false);
       }
-    };
-    run();
-    return () => {
-      cancelled = true;
-    };
+    } else {
+      setAuthed(false);
+    }
   }, [c.slug, sessionId]);
+
+  React.useEffect(() => {
+    loadNote();
+    const onAuth = () => loadNote();
+    window.addEventListener("notebook-auth-changed", onAuth);
+    return () => window.removeEventListener("notebook-auth-changed", onAuth);
+  }, [loadNote]);
 
   const tocSections = React.useMemo(
     () => [
@@ -140,6 +156,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20" data-testid="session-detail">
+      <TakeNotesPill />
       <SEO
         title={`${s.title} · ${c.name} ${c.edition || c.year}`}
         description={s.description || s.title}
@@ -343,12 +360,55 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 <h2 className="font-display text-xl font-bold text-foreground">My notes</h2>
               </div>
 
-              <NoteEditorFull
-                conferenceSlug={c.slug}
-                sessionId={sessionId}
-                initial={note}
-                onSaved={(n) => setNote(n)}
-              />
+              {authed ? (
+                <NoteEditorFull
+                  conferenceSlug={c.slug}
+                  sessionId={sessionId}
+                  initial={note}
+                  onSaved={(n) => setNote(n)}
+                />
+              ) : note?.is_public && note.note ? (
+                <article
+                  className="border border-border p-6 max-w-3xl"
+                  data-testid="session-public-note-block"
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <Globe2 size={11} className="text-emerald-300/80" />
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                      Field notes
+                    </span>
+                  </div>
+                  <div className="font-mono text-[13px] text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                    {note.note}
+                  </div>
+                  {note.takeaways.length > 0 && (
+                    <div className="mt-5 flex flex-wrap gap-1.5">
+                      {note.takeaways.map((t, i) => (
+                        <span
+                          key={i}
+                          className="font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ) : (
+                <div className="border border-dashed border-border px-5 py-8 max-w-3xl">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Lock size={12} className="text-muted-foreground/50" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                      Notes coming soon
+                    </span>
+                  </div>
+                  <p className="font-mono text-xs text-muted-foreground/80 leading-relaxed">
+                    Field notes will appear here once published. (If this is your notebook, tap{" "}
+                    <span className="text-foreground/90">Take Notes</span> in the bottom-right to
+                    unlock the editor.)
+                  </p>
+                </div>
+              )}
             </ScrollReveal>
           </section>
 

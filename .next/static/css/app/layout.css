@@ -714,6 +714,9 @@ h1, h2, h3, h4, h5, h6 {
 .bottom-4{
   bottom: 1rem;
 }
+.bottom-6{
+  bottom: 1.5rem;
+}
 .bottom-8{
   bottom: 2rem;
 }
@@ -774,6 +777,9 @@ h1, h2, h3, h4, h5, h6 {
 .right-4{
   right: 1rem;
 }
+.right-6{
+  right: 1.5rem;
+}
 .right-8{
   right: 2rem;
 }
@@ -806,6 +812,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .top-28{
   top: 7rem;
+}
+.top-3{
+  top: 0.75rem;
 }
 .top-3\.5{
   top: 0.875rem;
@@ -869,6 +878,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .z-\[6\]{
   z-index: 6;
+}
+.z-\[70\]{
+  z-index: 70;
 }
 .m-0{
   margin: 0px;
@@ -1543,6 +1555,15 @@ h1, h2, h3, h4, h5, h6 {
 .animate-scan-line{
   animation: scan-line 8s linear infinite;
 }
+@keyframes spin{
+
+  to{
+    transform: rotate(360deg);
+  }
+}
+.animate-spin{
+  animation: spin 1s linear infinite;
+}
 .cursor-crosshair{
   cursor: crosshair;
 }
@@ -2081,6 +2102,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .bg-emerald-400\/\[0\.04\]{
   background-color: rgb(52 211 153 / 0.04);
+}
+.bg-emerald-400\/\[0\.06\]{
+  background-color: rgb(52 211 153 / 0.06);
 }
 .bg-emerald-500\/40{
   background-color: rgb(16 185 129 / 0.4);
@@ -2773,6 +2797,9 @@ h1, h2, h3, h4, h5, h6 {
 .text-foreground\/90{
   color: hsl(var(--foreground) / 0.9);
 }
+.text-foreground\/95{
+  color: hsl(var(--foreground) / 0.95);
+}
 .text-foreground\/\[0\.02\]{
   color: hsl(var(--foreground) / 0.02);
 }
@@ -2855,6 +2882,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .text-rose-300\/80{
   color: rgb(253 164 175 / 0.8);
+}
+.text-rose-300\/95{
+  color: rgb(253 164 175 / 0.95);
 }
 .text-secondary-foreground{
   color: hsl(var(--secondary-foreground));
@@ -3479,6 +3509,9 @@ a:hover .holo-interactive .holo-bracket,
 .hover\:bg-destructive\/90:hover{
   background-color: hsl(var(--destructive) / 0.9);
 }
+.hover\:bg-emerald-400\/\[0\.12\]:hover{
+  background-color: rgb(52 211 153 / 0.12);
+}
 .hover\:bg-foreground:hover{
   background-color: hsl(var(--foreground));
 }
@@ -3493,6 +3526,9 @@ a:hover .holo-interactive .holo-bracket,
 }
 .hover\:bg-foreground\/\[0\.06\]:hover{
   background-color: hsl(var(--foreground) / 0.06);
+}
+.hover\:bg-foreground\/\[0\.07\]:hover{
+  background-color: hsl(var(--foreground) / 0.07);
 }
 .hover\:bg-muted:hover{
   background-color: hsl(var(--muted));
@@ -4506,6 +4542,10 @@ a:hover .holo-interactive .holo-bracket,
 
   .sm\:p-6{
     padding: 1.5rem;
+  }
+
+  .sm\:p-7{
+    padding: 1.75rem;
   }
 
   .sm\:p-8{
