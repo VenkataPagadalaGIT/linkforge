@@ -6,14 +6,8 @@ import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string };
 
-export const revalidate = 3600;
-export const dynamicParams = true;
-
-export async function generateStaticParams(): Promise<Params[]> {
-  const data = await getSitemapData();
-  if (!data?.updates) return [];
-  return data.updates.map((u) => ({ slug: u.slug }));
-}
+// On-demand SSR — small set but keep consistent with other content routes.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const upd = await getUpdate(params.slug);

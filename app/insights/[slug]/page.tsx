@@ -6,14 +6,8 @@ import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string };
 
-export const revalidate = 3600;
-export const dynamicParams = true;
-
-export async function generateStaticParams(): Promise<Params[]> {
-  const data = await getSitemapData();
-  if (!data?.pillars) return [];
-  return data.pillars.map((p) => ({ slug: p.slug }));
-}
+// On-demand SSR — only 6 pillars but they pull DB content; keep consistent.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const pillar = await getPillar(params.slug);

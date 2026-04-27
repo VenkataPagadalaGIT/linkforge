@@ -12,7 +12,9 @@ interface Props {
   params: Params;
 }
 
-export const dynamicParams = false;
+// Render on-demand at request time so we don't build 91 SSG pages into memory.
+// SEO is preserved: bots get fully-rendered HTML on first hit.
+export const dynamic = "force-dynamic";
 
 const sessionKey = (dayDate: string, s: Session) =>
   `${dayDate}__${s.start}__${s.title}`
@@ -20,18 +22,6 @@ const sessionKey = (dayDate: string, s: Session) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 120);
-
-export async function generateStaticParams() {
-  const out: Params[] = [];
-  conferences.forEach((c) => {
-    c.days.forEach((d) => {
-      d.sessions.forEach((s) => {
-        out.push({ slug: c.slug, sessionId: sessionKey(d.date, s) });
-      });
-    });
-  });
-  return out;
-}
 
 function findSession(slug: string, sessionId: string): SessionDetailContext | null {
   const c = getConferenceBySlug(slug);

@@ -6,14 +6,8 @@ import { SITE_URL } from "@/lib/site";
 
 type Params = { slug: string; postSlug: string };
 
-export const revalidate = 3600;
-export const dynamicParams = true;
-
-export async function generateStaticParams(): Promise<Params[]> {
-  const data = await getSitemapData();
-  if (!data?.posts) return [];
-  return data.posts.map((p) => ({ slug: p.pillarSlug, postSlug: p.slug }));
-}
+// On-demand SSR for blog posts — was the heaviest route's deepest leaf.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = await getPost(params.postSlug);

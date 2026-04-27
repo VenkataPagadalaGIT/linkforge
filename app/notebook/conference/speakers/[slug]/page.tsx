@@ -7,11 +7,9 @@ interface Props {
   params: { slug: string };
 }
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  return speakers.map((s) => ({ slug: s.slug }));
-}
+// Render on-demand at request time. 78 speakers as SSG was using too much
+// build memory; on-request render still produces full HTML for SEO bots.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sp = getSpeakerBySlug(params.slug);

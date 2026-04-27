@@ -6,15 +6,9 @@ import { SITE_URL } from "@/lib/site";
 
 type Params = { id: string };
 
-// Re-build this page at most once per hour; unknown IDs still render on demand.
-export const revalidate = 3600;
-export const dynamicParams = true;
-
-export async function generateStaticParams(): Promise<Params[]> {
-  const data = await getSitemapData();
-  if (!data?.contributors) return [];
-  return data.contributors.map((c) => ({ id: c.id }));
-}
+// Render on-demand at request time so 100 contributor SSG pages don't bloat
+// build memory. Bots still get fully-rendered HTML.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const c = await getContributor(params.id);

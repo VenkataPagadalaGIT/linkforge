@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "NODE_OPTIONS='--max-old-space-size=700' next build && next start -p 3000 -H 0.0.0.0",
+    "start": "node scripts/start-prod.js",
     "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "serve": "next start -p 3000 -H 0.0.0.0",
