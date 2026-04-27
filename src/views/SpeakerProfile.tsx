@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import SEO from "@/components/SEO";
 import HoloPhoto from "@/components/HoloPhoto";
-import { type Speaker, getSpeakerTalks, type SpeakerTalk } from "@/data/speakers";
+import { type Speaker, getSpeakerTalks, type SpeakerTalk, photoSourceFor } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import axios from "axios";
 import { BACKEND_URL } from "@/lib/site";
@@ -163,6 +163,14 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
                       .map((n) => n[0])
                       .join("")}
                   />
+                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40" data-testid="speaker-photo-source">
+                    {(() => {
+                      const src = photoSourceFor(speaker.slug);
+                      if (src === "linkedin") return "Photo · LinkedIn";
+                      if (src === "seoweek") return "Photo · seoweek.org";
+                      return "Photo · initials";
+                    })()}
+                  </p>
                 </div>
 
                 <div>

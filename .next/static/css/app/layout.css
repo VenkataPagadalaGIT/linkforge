@@ -795,6 +795,9 @@ h1, h2, h3, h4, h5, h6 {
 .top-1\/2{
   top: 50%;
 }
+.top-12{
+  top: 3rem;
+}
 .top-2{
   top: 0.5rem;
 }
