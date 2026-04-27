@@ -757,33 +757,85 @@ const SessionCard: React.FC<SessionCardProps> = ({
               </ul>
             )}
 
-            {/* Public field notes — preview with attribution + read-full link */}
-            {note?.is_public && note.note && (
+            {/* MY NOTES — permanent inline section per session card */}
+            {!isStructural && (
               <div
-                className="mt-4 border-l-2 border-foreground/30 pl-5 py-2"
-                data-testid={`session-public-note-${anchor}`}
+                className="mt-5 pt-4 border-t border-border/60"
+                data-testid={`session-my-notes-${anchor}`}
               >
-                <NoteContent
-                  text={note.note}
-                  takeaways={note.takeaways}
-                  isPublic
-                  status={note.status}
-                  updatedAt={note.updated_at}
-                  preview
-                  attribution={{
-                    conferenceName,
-                    conferenceEdition,
-                    conferenceDate,
-                    sessionTitle: s.title,
-                    sessionUrl: `/notebook/conference/${conferenceSlug}/sessions/${anchor}`,
-                  }}
-                  testId={`note-${anchor}`}
-                />
+                <div className="flex items-center gap-2 flex-wrap mb-3">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/55 inline-flex items-center gap-1.5">
+                    <NotebookIcon size={10} /> My Notes
+                  </span>
+                  {note?.is_public && note.note && (
+                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] px-1.5 py-0.5 inline-flex items-center gap-1">
+                      <Globe2 size={9} /> Published
+                    </span>
+                  )}
+                  {note?.note && !note?.is_public && authed && (
+                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-border text-muted-foreground/70 px-1.5 py-0.5">
+                      Draft
+                    </span>
+                  )}
+                  {note?.status && (
+                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-foreground/30 text-foreground/80 px-1.5 py-0.5">
+                      {note.status}
+                    </span>
+                  )}
+                  {note?.note && (
+                    <span className="ml-auto font-mono text-[10px] text-muted-foreground/55">
+                      {(note.note.match(/\b[\w'-]+\b/g) || []).length} words
+                    </span>
+                  )}
+                </div>
+
+                {/* Public note rendering — visible to everyone */}
+                {note?.is_public && note.note ? (
+                  <NoteContent
+                    text={note.note}
+                    takeaways={note.takeaways}
+                    isPublic
+                    status={note.status}
+                    updatedAt={note.updated_at}
+                    preview
+                    attribution={{
+                      conferenceName,
+                      conferenceEdition,
+                      conferenceDate,
+                      sessionTitle: s.title,
+                      sessionUrl: `/notebook/conference/${conferenceSlug}/sessions/${anchor}`,
+                    }}
+                    testId={`note-${anchor}`}
+                  />
+                ) : authed && note?.note ? (
+                  // Logged in admin sees their private/draft notes preview here too
+                  <NoteContent
+                    text={note.note}
+                    takeaways={note.takeaways}
+                    status={note.status}
+                    updatedAt={note.updated_at}
+                    preview
+                    attribution={{
+                      conferenceName,
+                      conferenceEdition,
+                      conferenceDate,
+                      sessionTitle: s.title,
+                      sessionUrl: `/notebook/conference/${conferenceSlug}/sessions/${anchor}`,
+                    }}
+                    testId={`note-${anchor}`}
+                  />
+                ) : (
+                  <p className="font-mono text-[11px] text-muted-foreground/50 italic">
+                    {authed
+                      ? "No notes yet — tap Add below to start writing."
+                      : "Notes will appear here once published."}
+                  </p>
+                )}
               </div>
             )}
 
             {s.room && (
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-2">
+              <p className="font-mono text-[10px] text-muted-foreground/60 mt-3">
                 <MapPin size={9} className="inline mr-1" />
                 {s.room}
               </p>
@@ -803,7 +855,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                 </Link>
               )}
 
-              {/* Quick "My notes" toggle (auth-only) */}
+              {/* Quick edit toggle (auth-only) — section header says "My Notes", this just toggles the editor */}
               {authed && !isStructural && (
                 <button
                   onClick={() => setOpen((o) => !o)}
@@ -815,14 +867,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                   data-testid={`session-notes-toggle-${anchor}`}
                 >
                   <NotebookIcon size={10} />
-                  {open
-                    ? "Hide My Notes"
-                    : note?.note
-                      ? `My Notes · ${(note.note.match(/\b[\w'-]+\b/g) || []).length}w`
-                      : "Add My Notes"}
-                  {note?.is_public && (
-                    <Globe2 size={9} className="opacity-90" />
-                  )}
+                  {open ? "Hide editor" : note?.note ? "Edit notes" : "Add notes"}
                 </button>
               )}
             </div>
