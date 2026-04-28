@@ -23,6 +23,25 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 32 — Light theme contrast boost (2026-04-28)
+**User report:** *"its bit hard to read can we do anything?"* — light mode body text was using `text-foreground/85` over a near-white bg, rendering as ~rgba(54,54,54) — visually thin gray on white. Sidebar share links (X Post, LinkedIn, ChatGPT, Perplexity) used `text-muted-foreground/40` opacity which alpha-blended to ~#a8a8a8 over white — **WCAG fail (2.4:1 contrast).**
+
+**Fix in `/app/frontend/app/globals.css`:**
+1. Light theme `--foreground` → pure black (`0 0% 0%`) so all `/85`, `/70`, `/60` opacity utilities still hit AAA contrast.
+2. Light theme `--muted-foreground` → `0 0% 18%` (was 30%) — punchier muted text.
+3. Light theme `--border` → `0 0% 80%` (was 88%) — more visible card outlines.
+4. Light theme `--scrollbar-thumb` → `0 0% 65%` (was 75%) — visible without being heavy.
+5. Added `:root:not(.dark) .text-*-foreground\/40 .. \/85` overrides that bump opacity-modified text colors only in light mode (e.g., `/40 → /70`, `/85 → /92`). Dark theme untouched.
+
+**Verified contrast (post-fix):**
+- Body paragraphs: rgba(0,0,0,0.92) → **~17:1 (AAA)** ✓
+- List items: rgba(0,0,0,0.92) → **~17:1 (AAA)** ✓
+- Sidebar links: rgba(46,46,46,0.7) → **~6:1 (AA)** ✓
+- Nav links: rgb(46,46,46) → **~10:1 (AAA)** ✓
+- Borders: hsl(0,0%,80%) → distinctly visible
+
+**Verified visually** on session note, conference agenda, and homepage — all pages render at production-quality readability in light mode. Dark mode unchanged.
+
 ### Iteration 31 — Theme toggle (Light / Dark / System) — Vercel/Stripe pattern (2026-04-28)
 **User goal:** Add a 3-way theme toggle to flip between dark (current default) and light (white bg + black text). Pattern based on user's pick: *"Top-right · OS preference default · Light/Dark/System."*
 
