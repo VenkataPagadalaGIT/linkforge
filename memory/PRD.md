@@ -23,6 +23,33 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 31 — Theme toggle (Light / Dark / System) — Vercel/Stripe pattern (2026-04-28)
+**User goal:** Add a 3-way theme toggle to flip between dark (current default) and light (white bg + black text). Pattern based on user's pick: *"Top-right · OS preference default · Light/Dark/System."*
+
+**Implementation:**
+- `/app/frontend/app/globals.css` — Inverted: `:root` is now LIGHT theme (white bg, black text); `.dark` selector contains the original dark values. Scrollbar colors moved to CSS variables. Tailwind `darkMode: ["class"]` was already configured, so all semantic tokens (`bg-background`, `text-foreground`, `border-border`, etc.) automatically swap.
+- `/app/frontend/src/components/theme/ThemeProvider.tsx` — React context that:
+  - Reads `localStorage["vp-theme"]` → fallback to `prefers-color-scheme`
+  - Applies `<html class="dark">` + `colorScheme` style
+  - Watches OS preference changes when in "system" mode
+  - Syncs across tabs via `storage` event
+  - SSR-safe (no DOM access until mount)
+- `/app/frontend/src/components/theme/ThemeScript.tsx` — Inline blocking `<script>` injected in `<head>` BEFORE React hydration, eliminating flash-of-incorrect-theme. Standard Vercel/Stripe pattern.
+- `/app/frontend/src/components/theme/ThemeToggle.tsx` — Pill button with monospace label ("LIGHT" / "DARK" / "AUTO") + sun/moon/monitor icon. Cycles light → dark → system on click. Hidden text on `<sm` viewports (icon only).
+- `/app/frontend/app/layout.tsx` — Added `<ThemeScript />` in `<head>`, wrapped children in `<ThemeProvider>`, added `suppressHydrationWarning` on `<html>`.
+- `/app/frontend/src/components/Navbar.tsx` — Toggle in desktop nav (right of links) AND in mobile (right of burger).
+
+**Verified on local build:**
+- Light theme: white bg, near-black text, light borders, emerald accent badges preserved.
+- Dark theme: original aesthetic intact (no regression).
+- Auto: tracks OS dark/light preference live (tested via `matchMedia` simulation).
+- Persistence: localStorage `vp-theme=light|dark|system`.
+- Cross-tab: storage event handler swaps theme in real-time.
+- Mobile (393×852, iPhone UA): toggle visible at top-right, click cycles correctly.
+- All 12 published session notes render correctly in both themes.
+
+**Bundled with the mobile-rendering fix from Iteration 30.** Both ship in the next prod redeploy.
+
 ### Iteration 30 — CRITICAL: Mobile notes invisibility bug fixed (2026-04-28)
 **User report:** George Nguyen reported via DM: *"@Venkata Pagadala I see the preview but the notes on your domain aren't populating for Jori for me (viewing on mobile)"* — production site, mobile Safari/Android.
 

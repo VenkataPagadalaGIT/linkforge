@@ -4,6 +4,8 @@ import "./globals.css";
 import Providers from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeScript } from "@/components/theme/ThemeScript";
 import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -98,8 +100,10 @@ const websiteJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        {/* Set theme class BEFORE first paint to prevent flash of wrong theme */}
+        <ThemeScript />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -110,13 +114,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <Providers>
-          <Navbar />
-          <main id="main" className="min-h-[calc(100vh-8rem)]">
-            <Suspense fallback={null}>{children}</Suspense>
-          </main>
-          <Footer />
-        </Providers>
+        <ThemeProvider>
+          <Providers>
+            <Navbar />
+            <main id="main" className="min-h-[calc(100vh-8rem)]">
+              <Suspense fallback={null}>{children}</Suspense>
+            </main>
+            <Footer />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

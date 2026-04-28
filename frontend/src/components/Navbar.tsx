@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
 import { Menu, X } from "lucide-react";
+import ThemeToggle from "./theme/ThemeToggle";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -60,22 +61,26 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
+            <ThemeToggle className="ml-2" />
           </div>
 
           {/* Mobile toggle */}
-          <button
-            type="button"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            onTouchStart={() => {}}
-            className="md:hidden relative z-[60] flex items-center justify-center w-11 h-11 -mr-2 text-foreground active:scale-95 transition-transform"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            data-testid="mobile-menu-toggle"
-          >
-            <span className="pointer-events-none">
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-            </span>
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              onTouchStart={() => {}}
+              className="relative z-[60] flex items-center justify-center w-11 h-11 -mr-2 text-foreground active:scale-95 transition-transform"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              data-testid="mobile-menu-toggle"
+            >
+              <span className="pointer-events-none">
+                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              </span>
+            </button>
+          </div>
         </div>
       </nav>
 
