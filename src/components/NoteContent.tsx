@@ -83,15 +83,47 @@ const Embed: React.FC<{ kind: EmbedKind }> = ({ kind }) => {
       <figure className="my-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={kind.url}
+          {...optimizedImgProps(kind.url || "")}
           alt=""
           loading="lazy"
+          decoding="async"
           className="w-full border border-border"
         />
       </figure>
     );
   }
   return null;
+};
+
+// =============================================================
+// Image optimization helper — routes external markdown images through
+// a public image CDN (wsrv.nl) so we don't ship 4 MB raw slide JPEGs
+// to mobile readers. Effects:
+//   • Resizes the source (3-5 MB raw slide JPEGs → ~50-200 KB WebP)
+//   • Edge-cached for 1 year (Cache-Control: public, max-age=31536000)
+//   • Auto-serves WebP / AVIF
+//   • Generates a responsive srcSet so mobile gets ~640w, not 1920w
+// Same-origin and relative URLs pass through untouched (already cached).
+// wsrv.nl is a free, widely-used FOSS image proxy run by Andries Hiemstra.
+// =============================================================
+const IMG_CDN_WIDTHS = [640, 828, 1080, 1920];
+
+const optimizedImgProps = (src: string) => {
+  if (!src || !src.startsWith("http")) {
+    return { src };
+  }
+  // Skip URLs already routed through the optimizer (idempotent).
+  if (src.startsWith("https://wsrv.nl/")) {
+    return { src };
+  }
+  const enc = encodeURIComponent(src);
+  const url = (w: number) =>
+    `https://wsrv.nl/?url=${enc}&w=${w}&q=70&output=webp`;
+  return {
+    src: url(1080),
+    srcSet: IMG_CDN_WIDTHS.map((w) => `${url(w)} ${w}w`).join(", "),
+    sizes: "(max-width: 768px) 100vw, 768px",
+  };
 };
 
 // Pre-process the markdown body: any line that is JUST a recognized URL → replace with a placeholder we can render later.
@@ -183,17 +215,26 @@ const mdComponents = {
     />
   ),
   hr: () => <hr className="my-8 border-border/50" />,
-  img: (props: React.ComponentProps<"img">) => (
-    <figure className="my-6">
-      {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-      <img loading="lazy" className="w-full border border-border" {...props} />
-      {props.alt && (
-        <figcaption className="mt-2 font-mono text-[10px] text-muted-foreground/60">
-          {props.alt}
-        </figcaption>
-      )}
-    </figure>
-  ),
+  img: (props: React.ComponentProps<"img">) => {
+    const optimized = optimizedImgProps(props.src || "");
+    return (
+      <figure className="my-6">
+        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+        <img
+          loading="lazy"
+          decoding="async"
+          className="w-full border border-border"
+          {...props}
+          {...optimized}
+        />
+        {props.alt && (
+          <figcaption className="mt-2 font-mono text-[10px] text-muted-foreground/60">
+            {props.alt}
+          </figcaption>
+        )}
+      </figure>
+    );
+  },
   table: (props: React.ComponentProps<"table">) => (
     <div className="my-6 overflow-x-auto border border-border">
       <table className="w-full text-[12.5px]" {...props} />
