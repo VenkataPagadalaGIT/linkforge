@@ -141,8 +141,33 @@ const mdComponents = {
     <h4 className="font-display text-lg font-bold text-foreground mt-6 mb-2 leading-tight" {...props} />
   ),
   p: (props: React.ComponentProps<"p"> & { children?: React.ReactNode }) => {
+    // Filter out whitespace-only text nodes that react-markdown sometimes
+    // leaves between block elements (e.g., the newline after `![alt](url)`).
+    const children = React.Children.toArray(props.children).filter(
+      (c) => !(typeof c === "string" && c.trim() === "")
+    );
+
+    // CRITICAL: never wrap block-level media in <p>. The browser auto-closes
+    // the <p> when it sees a <figure> or <iframe>, which corrupts layout —
+    // most visibly on mobile, where the misclosed paragraph swallowed the
+    // remainder of the note (mobile-readers saw blank below "Abstract").
+    if (children.length === 1 && React.isValidElement(children[0])) {
+      const childType = (children[0] as React.ReactElement).type;
+      const isBlockMedia =
+        childType === "figure" ||
+        childType === "img" ||
+        childType === "iframe" ||
+        childType === "div" ||
+        // A custom function component (e.g., this file's own `img` handler,
+        // which renders a <figure>). Safe because none of our components
+        // render true inline-only output for a single image child.
+        typeof childType === "function";
+      if (isBlockMedia) {
+        return <>{props.children}</>;
+      }
+    }
+
     // If the only child is text matching a single URL → render as embed
-    const children = React.Children.toArray(props.children);
     if (children.length === 1 && typeof children[0] === "string") {
       const txt = (children[0] as string).trim();
       const k = detectEmbed(txt);

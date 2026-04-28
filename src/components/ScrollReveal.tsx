@@ -24,12 +24,14 @@ const ScrollReveal = ({ children, className = "", delay = 0 }: ScrollRevealProps
     const el = ref.current;
     if (!el) return;
 
-    // If element is already in viewport on mount, reveal immediately
+    // If element is already in viewport on mount, OR is taller than the
+    // viewport (e.g., a 9000px note article on a 852px phone — where 10%
+    // of the target can never be visible at once), reveal immediately.
     const rect = el.getBoundingClientRect();
-    const inView =
-      rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.bottom > 0;
-    if (inView) {
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const inView = rect.top < vh && rect.bottom > 0;
+    const tallerThanViewport = rect.height > vh;
+    if (inView || tallerThanViewport) {
       setIsVisible(true);
       return;
     }
@@ -41,7 +43,11 @@ const ScrollReveal = ({ children, className = "", delay = 0 }: ScrollRevealProps
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.1 }
+      // Any visible pixel triggers reveal. Threshold 0.1 broke for tall
+      // children (e.g., 9000px note articles) on mobile, where the viewport
+      // can't physically contain 10% of the target → reveal never fired
+      // and the section stayed at opacity:0 indefinitely.
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
