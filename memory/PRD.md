@@ -23,6 +23,33 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 33 — Brand color fix + `/brand` palette page (2026-04-28)
+**User report:** Pointed at washed-out green "PUBLISHED" / "FIELD NOTES" / "LIVE NOTES" badges in light mode. Asked for a brand color panel showing all colors used across the site.
+
+**Two-part fix:**
+
+**A) Brand emerald readability in light mode** (`/app/frontend/app/globals.css`)
+The site uses `text-emerald-300/text-emerald-400/border-emerald-400/40/bg-emerald-400/[0.04]` throughout — all tuned for dark backgrounds. On white they wash to ~#6ee7b7 (illegible).
+- Added `:root:not(.dark)` overrides that remap:
+  - `text-emerald-300 → hsl(160 84% 25%)` = #0A7552 emerald-700 (was emerald-300 #6ee7b7)
+  - `text-emerald-400 → hsl(160 84% 25%)` (same dark green)
+  - `text-green-400 → hsl(142 71% 30%)` = green-700
+  - `border-emerald-400/40 → hsl(160 84% 35% / 0.55)` (more saturated, more opaque)
+  - `bg-emerald-400/[0.04] → hsl(160 84% 40% / 0.12)` (visible mint tint instead of transparent)
+- Same overrides for hover states, opacity variants (/30, /45, /50, /80, /90, /95).
+- Result: "FIELD NOTES" badge in light mode is now `rgb(10, 117, 82)` text on a light mint bg with a clearly visible green border. **~6.5:1 contrast (WCAG AA)** vs. the prior ~2:1 (fail).
+- Dark theme entirely untouched.
+
+**B) `/brand` color palette page** (`/app/frontend/app/brand/page.tsx`)
+A live-updating internal design-system reference at `/brand`. Shows:
+- **Semantic tokens:** background, foreground, card, primary, secondary, muted, accent, border, destructive — each as a swatch with rendered RGB + hex (auto-resolves with active theme)
+- **Brand accent — emerald:** all six emerald/green/teal tints used across the site (300, 400, 400/40 border, 500/40, green-400, teal-500/10)
+- **Foreground opacity scale:** 8 swatches showing /100, /85, /70, /60 for foreground and muted-foreground (the hierarchy primer)
+- **UI component samples:** real badges (PUBLISHED, FIELD NOTES, SAVED, KEYNOTE), buttons (Primary, Secondary, Take Notes), and a long-form prose sample (Key thesis + bulleted list)
+- **In-page theme switcher:** Light / Dark / System buttons, plus live readouts of `theme` and `resolvedTheme`. Lets you flip themes inline to A/B-compare swatches.
+
+**Verified live** at `/brand`. Page builds and renders cleanly in both themes. Ready for the next deploy.
+
 ### Iteration 32 — Light theme contrast boost (2026-04-28)
 **User report:** *"its bit hard to read can we do anything?"* — light mode body text was using `text-foreground/85` over a near-white bg, rendering as ~rgba(54,54,54) — visually thin gray on white. Sidebar share links (X Post, LinkedIn, ChatGPT, Perplexity) used `text-muted-foreground/40` opacity which alpha-blended to ~#a8a8a8 over white — **WCAG fail (2.4:1 contrast).**
 

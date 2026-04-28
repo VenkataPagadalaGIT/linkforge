@@ -150,6 +150,49 @@
   :root:not(.dark) .text-foreground\/85 {
     color: hsl(var(--foreground) / 0.92) !important;
   }
+
+  /* ----- Brand emerald — the conference/notebook accent color ------
+     The site uses emerald-300/400 throughout (PUBLISHED, FIELD NOTES,
+     LIVE NOTES badges, take-notes pill, etc.). Those tints are tuned for
+     dark bg. On white they wash out to ~#6ee7b7 — basically illegible.
+     We remap to emerald-700 (#047857) family for the light theme so the
+     brand color stays recognizable but readable. */
+  :root:not(.dark) .text-emerald-300,
+  :root:not(.dark) .text-emerald-300\/80,
+  :root:not(.dark) .text-emerald-300\/90,
+  :root:not(.dark) .text-emerald-300\/95,
+  :root:not(.dark) .text-emerald-400,
+  :root:not(.dark) .text-emerald-400\/70,
+  :root:not(.dark) .text-emerald-400\/80 {
+    color: hsl(160 84% 25%) !important; /* emerald-700-ish */
+  }
+  :root:not(.dark) .text-green-400,
+  :root:not(.dark) .text-green-400\/70 {
+    color: hsl(142 71% 30%) !important; /* green-700 */
+  }
+  :root:not(.dark) .border-emerald-400\/30,
+  :root:not(.dark) .border-emerald-400\/40,
+  :root:not(.dark) .border-emerald-400\/45,
+  :root:not(.dark) .border-emerald-400\/50 {
+    border-color: hsl(160 84% 35% / 0.55) !important;
+  }
+  :root:not(.dark) .border-green-400\/20,
+  :root:not(.dark) .border-green-400\/30,
+  :root:not(.dark) .border-green-500\/30 {
+    border-color: hsl(142 71% 35% / 0.45) !important;
+  }
+  :root:not(.dark) .bg-emerald-400\/\[0\.04\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.06\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.08\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.12\],
+  :root:not(.dark) .bg-emerald-500\/40 {
+    background-color: hsl(160 84% 40% / 0.12) !important;
+  }
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.06\]:hover,
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.08\]:hover,
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.12\]:hover {
+    background-color: hsl(160 84% 40% / 0.18) !important;
+  }
 }
 
 @layer utilities {
