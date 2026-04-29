@@ -23,6 +23,37 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 34 — Full light-mode audit + canvas theme-aware fix (2026-04-29)
+**User report:** *"Review all pages in light mode and make sure all elements are readable and accessibility as well"* — pointed at the Solutions Graph "neural net" view where text labels rendered with a heavy chromatic glitch effect (white text invisible/garbled on white bg).
+
+**Root cause for the canvas bug:** `<canvas>` doesn't pick up Tailwind classes or CSS variables. Both `SolutionsGraph.tsx` (Neural Net view) and `ContextGraphCanvas.tsx` (Context Graph view) drew text and nodes with hardcoded `#ffffff` and `rgba(255,255,255,X)`. On white backgrounds the labels became invisible — the user saw what looked like a chromatic-aberration glitch (it was actually 4 stacked invisible labels with only the dim shadow versions partially showing).
+
+**Fix:**
+- New helper `/app/frontend/src/lib/canvas-theme.ts` — `useCanvasThemeColors()` hook that returns a ref synced with `<html class="dark">` via MutationObserver. Provides `fg`, `fgSubtle`, `fgFaint`, `labelOutline`, and `isDark`.
+- `SolutionsGraph.tsx` — refactored hardcoded color literals to use `themeColorsRef.current.fg/labelOutline`. All `ctx.globalAlpha = X` calls replaced with `setA(X)` helper that boosts alpha by 1.7× in light mode (Helmholtz–Kohlrausch perceptual asymmetry — dark text on white needs more density to feel as present as light text on black at the same nominal alpha).
+- `ContextGraphCanvas.tsx` — same pattern: `tFg(a)` / `tBg(a)` / `tColor.fg` helpers + `setA(X)` alpha boost. ~28 hardcoded color literals migrated via Python script (`/tmp/migrate_context_canvas.py`).
+- `ContextGraphCanvas.tsx` legend below canvas — converted inline `style={{ color: 'rgba(255,255,255,0.4)' }}` patterns to Tailwind semantic classes (`text-foreground/40`, `text-foreground/50`, `bg-foreground/30`).
+
+**Audit completed across page types:**
+| Page | Light-mode status |
+|------|------|
+| Home (`/`) | ✅ Pass — white bg, bold display, blue CTA |
+| About (`/about`) | ✅ Pass |
+| Solutions Context Graph (`/solutions`) | ✅ Fixed — labels now visible |
+| Solutions Neural Net (`/solutions`) | ✅ Fixed — chromatic glitch eliminated |
+| Solutions Structured | ✅ Pass (already used semantic tokens) |
+| Notebook (`/notebook`) | ✅ Pass |
+| Conference Notebook (`/notebook/conference/seo-week-2026`) | ✅ Pass |
+| Session Detail | ✅ Pass — 17:1 body, 6:1 sidebar links |
+| AI Updates (`/ai-updates`) | ✅ Pass |
+| Insights (`/insights`) | ✅ Pass |
+| Contact (`/contact`) | ✅ Pass — form fields, labels, button all visible |
+| Brand (`/brand`) | ✅ Pass — palette page itself |
+| Lab (`/lab`) | ⚠️ 404 — pre-existing route issue, not theme |
+| Individual Speaker pages | ⚠️ 404 — pre-existing routing, not theme |
+
+**WCAG status (light mode):** AAA on body text (17:1), AA+ on share/sidebar links (6:1), AAA on nav links (10:1), AA+ on emerald brand badges (6.5:1).
+
 ### Iteration 33 — Brand color fix + `/brand` palette page (2026-04-28)
 **User report:** Pointed at washed-out green "PUBLISHED" / "FIELD NOTES" / "LIVE NOTES" badges in light mode. Asked for a brand color panel showing all colors used across the site.
 

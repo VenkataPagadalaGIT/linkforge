@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "@/lib/router-shim";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { services } from "@/components/ServicesGrid";
+import { useCanvasThemeColors } from "@/lib/canvas-theme";
 
 const serviceColors: Record<string, string> = {
   "AI Product": "#3B82F6",
@@ -78,6 +79,9 @@ const ContextGraphCanvas = () => {
   const hoveredDomainRef = useRef<number>(-1);
   const hoveredChildRef = useRef<number>(-1);
   const dragRef = useRef<{ active: boolean; idx: number; offsetX: number; offsetY: number }>({ active: false, idx: -1, offsetX: 0, offsetY: 0 });
+
+  // Theme-aware canvas colors (light vs dark) — fixes "white labels on white bg".
+  const themeRef = useCanvasThemeColors();
 
   // React state for overlays
   const [activeService, setActiveService] = useState<ActiveService | null>(null);
@@ -351,6 +355,11 @@ const ContextGraphCanvas = () => {
 
     // ── DRAW LOOP ──
     const draw = () => {
+
+      // Theme-aware alpha — light bg needs ~1.7× alpha to match perceived
+      // weight tuned in dark mode.
+      const aMul = themeRef.current.isDark ? 1 : 1.7;
+      const setA = (a: number) => { ctx.globalAlpha = Math.min(1, a * aMul); };
       const dpr = window.devicePixelRatio;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
@@ -364,9 +373,25 @@ const ContextGraphCanvas = () => {
       const expanded = expandedRef.current;
       const hoveredD = hoveredDomainRef.current;
       const hoveredC = hoveredChildRef.current;
+      // Theme-aware color helpers. Reads themeRef each call so they always
+      // reflect the active theme (light vs dark).
+      const tColor = themeRef.current;
+      const tFg = (a: number) => {
+        // #rrggbb -> rgba — simple parser sufficient for our 2 known fg values
+        const hex = tColor.fg;
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r},${g},${b},${a})`;
+      };
+      const tBg = (a: number) => {
+        // For label outlines: use the inverse (light bg in dark theme, vice versa)
+        return tColor.isDark ? `rgba(0,0,0,${a})` : tFg(a);
+      };
+
 
       // 1. Background grid with parallax
-      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      ctx.strokeStyle = tFg(0.03);
       ctx.lineWidth = 0.5;
       const gridSize = 50;
       const offsetX = (px * 2) % gridSize;
@@ -395,7 +420,7 @@ const ContextGraphCanvas = () => {
 
         ctx.beginPath();
         ctx.arc(p.x + px, p.y + py, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+        ctx.fillStyle = tFg(p.opacity);
         ctx.fill();
       });
 
@@ -410,7 +435,7 @@ const ContextGraphCanvas = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x + px, particles[i].y + py);
             ctx.lineTo(particles[j].x + px, particles[j].y + py);
-            ctx.strokeStyle = `rgba(255,255,255,${0.03 * (1 - dist / 100)})`;
+            ctx.strokeStyle = tFg(0.03 * (1 - dist / 100));
             ctx.lineWidth = 0.3;
             ctx.stroke();
           }
@@ -490,13 +515,13 @@ const ContextGraphCanvas = () => {
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.lineTo(d.x, d.y);
-        ctx.strokeStyle = isActive ? d.color : "rgba(255,255,255,0.08)";
-        ctx.globalAlpha = isDimmed ? 0.03 : (isExp ? 0.5 : (isHov ? 0.4 : 0.12));
+        ctx.strokeStyle = isActive ? d.color : tFg(0.08);
+        setA(isDimmed ? 0.03 : (isExp ? 0.5 : (isHov ? 0.4 : 0.12)));
         ctx.lineWidth = isExp ? 1.5 : (isHov ? 1.2 : 0.6);
         ctx.setLineDash(isActive ? [] : [4, 6]);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Traveling energy pulse
         if (!isDimmed) {
@@ -505,10 +530,10 @@ const ContextGraphCanvas = () => {
           const pulseY = cy + (d.y - cy) * pulseT;
           ctx.beginPath();
           ctx.arc(pulseX, pulseY, isExp ? 2.5 : 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = isActive ? d.color : "#ffffff";
-          ctx.globalAlpha = isActive ? 0.6 : 0.15;
+          ctx.fillStyle = isActive ? d.color : tColor.fg;
+          setA(isActive ? 0.6 : 0.15);
           ctx.fill();
-          ctx.globalAlpha = 1;
+          setA(1);
         }
       });
 
@@ -520,11 +545,11 @@ const ContextGraphCanvas = () => {
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = "rgba(255,255,255,0.04)";
-        ctx.globalAlpha = bothDimmed ? 0.01 : 0.04;
+        ctx.strokeStyle = tFg(0.04);
+        setA(bothDimmed ? 0.01 : 0.04);
         ctx.lineWidth = 0.4;
         ctx.stroke();
-        ctx.globalAlpha = 1;
+        setA(1);
       }
 
       // 7. Draw parent-to-child lines + child nodes (color only when expanded)
@@ -532,39 +557,39 @@ const ContextGraphCanvas = () => {
         if (c.progress < 0.01) return;
         const d = domains[c.parentIdx];
         const parentActive = expanded === c.parentIdx;
-        const childColor = parentActive ? d.color : "#ffffff";
+        const childColor = parentActive ? d.color : tColor.fg;
 
         // Line from parent to child
         ctx.beginPath();
         ctx.moveTo(d.x, d.y);
         ctx.lineTo(c.x, c.y);
         ctx.strokeStyle = childColor;
-        ctx.globalAlpha = c.progress * 0.35;
+        setA(c.progress * 0.35);
         ctx.lineWidth = 0.8;
         ctx.stroke();
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Child glow
         const isHovChild = hoveredC === ci;
         ctx.beginPath();
         ctx.arc(c.x, c.y, c.r * (isHovChild ? 6 : 3.5), 0, Math.PI * 2);
         ctx.fillStyle = childColor;
-        ctx.globalAlpha = c.progress * (isHovChild ? 0.15 : 0.06);
+        setA(c.progress * (isHovChild ? 0.15 : 0.06));
         ctx.fill();
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Child node
         ctx.beginPath();
         ctx.arc(c.x, c.y, c.r * (isHovChild ? 1.5 : 1), 0, Math.PI * 2);
         ctx.fillStyle = childColor;
-        ctx.globalAlpha = c.progress * (isHovChild ? 0.9 : 0.7);
+        setA(c.progress * (isHovChild ? 0.9 : 0.7));
         ctx.fill();
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Label (fade in after progress > 0.5)
         if (c.progress > 0.5) {
           const labelAlpha = (c.progress - 0.5) * 2;
-          ctx.globalAlpha = labelAlpha * (isHovChild ? 1 : 0.75);
+          setA(labelAlpha * (isHovChild ? 1 : 0.75));
           ctx.fillStyle = childColor;
           ctx.font = `${isHovChild ? '700' : '500'} ${isHovChild ? 11 : 9}px 'JetBrains Mono', monospace`;
           // Position label away from center
@@ -575,11 +600,11 @@ const ContextGraphCanvas = () => {
           ctx.textAlign = Math.cos(awayAngle) > 0 ? "left" : "right";
           ctx.textBaseline = "middle";
           // Background stroke for readability
-          ctx.strokeStyle = "rgba(0,0,0,0.7)";
+          ctx.strokeStyle = tBg(0.7);
           ctx.lineWidth = 2.5;
           ctx.strokeText(c.label, lx, ly);
           ctx.fillText(c.label, lx, ly);
-          ctx.globalAlpha = 1;
+          setA(1);
         }
       });
 
@@ -590,75 +615,75 @@ const ContextGraphCanvas = () => {
         const isDimmed = expanded >= 0 && !isExp;
         const isActive = isExp || isHov;
         const breathe = Math.sin(t * 1.2 + i * 1.5) * 2;
-        const nodeColor = isActive ? d.color : "#ffffff";
+        const nodeColor = isActive ? d.color : tColor.fg;
 
         // Outer glow halo
         const glowR = d.r + 12 + breathe;
         ctx.beginPath();
         ctx.arc(d.x, d.y, glowR, 0, Math.PI * 2);
         ctx.fillStyle = nodeColor;
-        ctx.globalAlpha = isDimmed ? 0.01 : (isExp ? 0.08 : (isHov ? 0.06 : 0.015));
+        setA(isDimmed ? 0.01 : (isExp ? 0.08 : (isHov ? 0.06 : 0.015)));
         ctx.fill();
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Hollow circle (stroke)
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
         ctx.strokeStyle = nodeColor;
         ctx.lineWidth = isExp ? 2.5 : (isHov ? 2 : 1);
-        ctx.globalAlpha = isDimmed ? 0.12 : (isExp ? 0.9 : (isHov ? 0.8 : 0.25));
+        setA(isDimmed ? 0.12 : (isExp ? 0.9 : (isHov ? 0.8 : 0.25)));
         ctx.stroke();
 
         // Fill on hover/expand
         if (isActive) {
           ctx.fillStyle = d.color;
-          ctx.globalAlpha = isExp ? 0.15 : 0.08;
+          setA(isExp ? 0.15 : 0.08);
           ctx.fill();
         }
-        ctx.globalAlpha = 1;
+        setA(1);
 
         // Label
         ctx.fillStyle = nodeColor;
-        ctx.globalAlpha = isDimmed ? 0.15 : (isExp ? 1 : (isHov ? 0.9 : 0.35));
+        setA(isDimmed ? 0.15 : (isExp ? 1 : (isHov ? 0.9 : 0.35)));
         ctx.font = `700 ${isExp ? 11 : 10}px 'JetBrains Mono', monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.strokeStyle = "rgba(0,0,0,0.6)";
+        ctx.strokeStyle = tBg(0.6);
         ctx.lineWidth = 2;
         ctx.strokeText(d.label.toUpperCase(), d.x, d.y - d.r - 14);
         ctx.fillText(d.label.toUpperCase(), d.x, d.y - d.r - 14);
 
         // Capability count
-        ctx.globalAlpha = isDimmed ? 0.08 : (isExp ? 0.6 : 0.2);
+        setA(isDimmed ? 0.08 : (isExp ? 0.6 : 0.2));
         ctx.font = "400 8px 'JetBrains Mono', monospace";
         ctx.strokeText(`${d.items.length} capabilities`, d.x, d.y - d.r - 3);
         ctx.fillText(`${d.items.length} capabilities`, d.x, d.y - d.r - 3);
-        ctx.globalAlpha = 1;
+        setA(1);
       });
 
       // 9. Draw hub
       const hubBreath = Math.sin(t * 0.8) * 3;
       ctx.beginPath();
       ctx.arc(cx, cy, 28 + hubBreath, 0, Math.PI * 2);
-      ctx.strokeStyle = expanded >= 0 ? domains[expanded].color : "rgba(255,255,255,0.15)";
+      ctx.strokeStyle = expanded >= 0 ? domains[expanded].color : tFg(0.15);
       ctx.lineWidth = 1.2;
-      ctx.globalAlpha = 0.4;
+      setA(0.4);
       ctx.stroke();
-      ctx.globalAlpha = 1;
+      setA(1);
 
       ctx.beginPath();
       ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-      ctx.fillStyle = expanded >= 0 ? domains[expanded].color : "rgba(255,255,255,0.3)";
+      ctx.fillStyle = expanded >= 0 ? domains[expanded].color : tFg(0.3);
       ctx.fill();
 
-      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      ctx.fillStyle = tFg(0.25);
       ctx.font = "700 7px 'JetBrains Mono', monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("SOLUTIONS", cx, cy - 1);
 
       ctx.font = "400 7px 'JetBrains Mono', monospace";
-      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      ctx.fillStyle = tFg(0.12);
       ctx.fillText("CONSTELLATION", cx, cy + 40 + hubBreath);
 
       animRef.current = requestAnimationFrame(draw);
@@ -765,15 +790,15 @@ const ContextGraphCanvas = () => {
                     });
                   }
                 }}
-                className="flex items-center gap-1.5 font-mono text-[9px] tracking-wider cursor-pointer hover:opacity-100 transition-all duration-300"
+                className={`flex items-center gap-1.5 font-mono text-[9px] tracking-wider cursor-pointer hover:opacity-100 transition-all duration-300 ${isActive ? '' : 'text-foreground/50'}`}
                 style={{
-                  color: isActive ? serviceColors[s.title] : "rgba(255,255,255,0.5)",
+                  color: isActive ? serviceColors[s.title] : undefined,
                   opacity: selectedDomain >= 0 ? (isActive ? 1 : 0.25) : 0.6
                 }}
               >
                 <span
-                  className="w-2 h-2 rounded-full transition-all duration-300"
-                  style={{ backgroundColor: isActive ? serviceColors[s.title] : "rgba(255,255,255,0.4)" }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${isActive ? '' : 'bg-foreground/40'}`}
+                  style={{ backgroundColor: isActive ? serviceColors[s.title] : undefined }}
                 />
                 {s.title}
               </button>

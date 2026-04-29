@@ -5,6 +5,7 @@ import { Link, useNavigate } from "@/lib/router-shim";
 import { ArrowRight, Network, Brain, List, ExternalLink } from "lucide-react";
 import { services } from "@/components/ServicesGrid";
 import ContextGraphCanvas from "@/components/ContextGraphCanvas";
+import { useCanvasThemeColors } from "@/lib/canvas-theme";
 
 type ViewMode = "graph" | "neural" | "structured";
 
@@ -58,6 +59,11 @@ const NeuralSolutionsCanvas = () => {
   const dragRef = useRef<{ dragging: boolean; nodeIdx: number; offsetX: number; offsetY: number }>({ dragging: false, nodeIdx: -1, offsetX: 0, offsetY: 0 });
   const activeLayerRef = useRef<number>(-1);
   const hoveredChildRef = useRef<string | null>(null);
+
+  // Theme-aware colors. Canvas can't read Tailwind classes, so a hook keeps
+  // a ref synced with `<html class="dark">`. This is what fixes the
+  // "white-on-white invisible labels" bug in light mode.
+  const themeColorsRef = useCanvasThemeColors();
   const [activeService, setActiveService] = useState<{ title: string; slug: string; tagline: string; items: string[]; color: string; highlightItem?: string } | null>(null);
   const [tooltip, setTooltip] = useState<{ label: string; x: number; y: number; color: string } | null>(null);
   const nodesRef = useRef<{ x: number; y: number; vx: number; vy: number; r: number; layer: number; label: string; color: string; isMain: boolean }[]>([]);
@@ -172,6 +178,11 @@ const NeuralSolutionsCanvas = () => {
     let lastCheck = 0;
 
     const draw = () => {
+
+      // Theme-aware alpha — light bg needs ~1.7× the alpha to match the
+      // perceived weight that the dark-mode design was tuned to.
+      const aMul = themeColorsRef.current.isDark ? 1 : 1.7;
+      const setA = (a: number) => { ctx.globalAlpha = Math.min(1, a * aMul); };
       const dpr = window.devicePixelRatio;
       const rw = canvas.offsetWidth;
       const rh = canvas.offsetHeight;
@@ -321,8 +332,8 @@ const NeuralSolutionsCanvas = () => {
           if (dist > 220) continue;
           const isActive = aLayer === a.layer;
           const alpha = (1 - dist / 220) * (isActive ? 0.4 : (aLayer >= 0 ? 0.03 : 0.12));
-          ctx.strokeStyle = isActive ? a.color : "#ffffff";
-          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = isActive ? a.color : themeColorsRef.current.fg;
+          setA(alpha);
           ctx.lineWidth = isActive ? 1.2 : 0.6;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -339,8 +350,8 @@ const NeuralSolutionsCanvas = () => {
           if (dist > 350) continue;
           const isActive = aLayer === a.layer || aLayer === b.layer;
           const alpha = (1 - dist / 350) * (isActive ? 0.15 : (aLayer >= 0 ? 0.02 : 0.04));
-          ctx.strokeStyle = "#fff";
-          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = themeColorsRef.current.fg;
+          setA(alpha);
           ctx.lineWidth = a.isMain && b.isMain ? 0.8 : 0.3;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -350,26 +361,26 @@ const NeuralSolutionsCanvas = () => {
       }
 
       // ── Draw nodes ──
-      ctx.globalAlpha = 1;
+      setA(1);
       const hChild = hoveredChildRef.current;
       for (const n of nodes) {
         const isActive = aLayer === n.layer;
         const isDimmed = aLayer >= 0 && !isActive;
         const isHoveredChild = !n.isMain && hChild === n.label && isActive;
-        const nodeColor = isActive ? n.color : "#ffffff";
+        const nodeColor = isActive ? n.color : themeColorsRef.current.fg;
 
         // Glow
         ctx.fillStyle = nodeColor;
-        ctx.globalAlpha = isHoveredChild ? 0.2 : (isActive ? 0.1 : (isDimmed ? 0.008 : 0.025));
+        setA(isHoveredChild ? 0.2 : (isActive ? 0.1 : (isDimmed ? 0.008 : 0.025)));
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r * (isHoveredChild ? 8 : 5), 0, Math.PI * 2);
         ctx.fill();
 
         // Node circle
         const nodeScale = isHoveredChild ? 1.8 : (isActive && n.isMain ? 1.3 : 1);
-        ctx.globalAlpha = n.isMain
+        setA(n.isMain
           ? (isActive ? 0.9 : (isDimmed ? 0.1 : 0.4))
-          : (isHoveredChild ? 0.9 : (isActive ? 0.7 : (isDimmed ? 0.06 : 0.2)));
+          : (isHoveredChild ? 0.9 : (isActive ? 0.7 : (isDimmed ? 0.06 : 0.2))));
         ctx.fillStyle = nodeColor;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r * nodeScale, 0, Math.PI * 2);
@@ -378,7 +389,7 @@ const NeuralSolutionsCanvas = () => {
         // Hovered child ring
         if (isHoveredChild) {
           ctx.strokeStyle = n.color;
-          ctx.globalAlpha = 0.6;
+          setA(0.6);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r * 2.5, 0, Math.PI * 2);
@@ -388,14 +399,14 @@ const NeuralSolutionsCanvas = () => {
         // Main node labels
         if (n.isMain) {
           const isMob = canvas.offsetWidth < 600;
-          ctx.globalAlpha = isActive ? 0.95 : (isDimmed ? 0.12 : 0.45);
-          ctx.fillStyle = isActive ? n.color : "#ffffff";
+          setA(isActive ? 0.95 : (isDimmed ? 0.12 : 0.45));
+          ctx.fillStyle = isActive ? n.color : themeColorsRef.current.fg;
           const mainFontSize = isMob ? (isActive ? 8 : 7) : (isActive ? 11 : 10);
           ctx.font = `700 ${mainFontSize}px 'JetBrains Mono', monospace`;
           ctx.textAlign = "center";
           ctx.fillText(n.label.toUpperCase(), n.x, n.y - (isMob ? 14 : 20));
           const count = services[n.layer]?.items.length || 0;
-          ctx.globalAlpha = isActive ? 0.5 : (isDimmed ? 0.06 : 0.18);
+          setA(isActive ? 0.5 : (isDimmed ? 0.06 : 0.18));
           ctx.font = `400 ${isMob ? 6 : 8}px 'JetBrains Mono', monospace`;
           ctx.fillText(`${count} capabilities`, n.x, n.y - (isMob ? 5 : 9));
         }
@@ -404,7 +415,7 @@ const NeuralSolutionsCanvas = () => {
         if (!n.isMain && isActive) {
           const isMob = canvas.offsetWidth < 600;
           const cw = canvas.offsetWidth;
-          ctx.globalAlpha = isHoveredChild ? 1 : 0.85;
+          setA(isHoveredChild ? 1 : 0.85);
           ctx.fillStyle = n.color;
           const fontSize = isMob ? (isHoveredChild ? 9 : 8) : (isHoveredChild ? 13 : 11);
           ctx.font = `${isHoveredChild ? '700' : '500'} ${fontSize}px 'JetBrains Mono', monospace`;
@@ -437,13 +448,13 @@ const NeuralSolutionsCanvas = () => {
             ? n.x - n.r * nodeScale - labelOffset
             : n.x + n.r * nodeScale + labelOffset;
 
-          ctx.strokeStyle = "rgba(0,0,0,0.8)";
+          ctx.strokeStyle = themeColorsRef.current.labelOutline;
           ctx.lineWidth = 3;
           ctx.strokeText(displayLabel, labelX, n.y + 4);
           ctx.fillText(displayLabel, labelX, n.y + 4);
         }
       }
-      ctx.globalAlpha = 1;
+      setA(1);
 
       // Data signal particles
       const time = Date.now() * 0.001;
@@ -458,14 +469,14 @@ const NeuralSolutionsCanvas = () => {
           const dist = Math.hypot(a.x - b.x, a.y - b.y);
           if (dist > 180) continue;
           const t = ((time * 0.5 + i * 0.3 + j * 0.1) % 1);
-          ctx.fillStyle = isActive ? a.color : "#ffffff";
-          ctx.globalAlpha = isActive ? 0.7 : 0.2;
+          ctx.fillStyle = isActive ? a.color : themeColorsRef.current.fg;
+          setA(isActive ? 0.7 : 0.2);
           ctx.beginPath();
           ctx.arc(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, isActive ? 2 : 1.5, 0, Math.PI * 2);
           ctx.fill();
         }
       }
-      ctx.globalAlpha = 1;
+      setA(1);
 
       animRef.current = requestAnimationFrame(draw);
     };
@@ -576,10 +587,10 @@ const NeuralSolutionsCanvas = () => {
             return (
               <span
                 key={s.slug}
-                className="flex items-center gap-1.5 font-mono text-[9px] tracking-wider transition-all duration-300"
-                style={{ color: isActive ? serviceColors[s.title] : 'rgba(255,255,255,0.4)', opacity: activeService ? (isActive ? 1 : 0.25) : 0.5 }}
+                className={`flex items-center gap-1.5 font-mono text-[9px] tracking-wider transition-all duration-300 ${isActive ? '' : 'text-foreground/40'}`}
+                style={{ color: isActive ? serviceColors[s.title] : undefined, opacity: activeService ? (isActive ? 1 : 0.25) : 0.5 }}
               >
-                <span className="w-2 h-2 rounded-full transition-all duration-300" style={{ backgroundColor: isActive ? serviceColors[s.title] : 'rgba(255,255,255,0.3)' }} />
+                <span className={`w-2 h-2 rounded-full transition-all duration-300 ${isActive ? '' : 'bg-foreground/30'}`} style={{ backgroundColor: isActive ? serviceColors[s.title] : undefined }} />
                 {s.title} ({s.items.length})
               </span>
             );
