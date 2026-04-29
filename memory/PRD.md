@@ -23,6 +23,21 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 36 — Ross Simmonds Day 3 keynote published (2026-04-29)
+**User goal:** Publish Ross Simmonds' "Inception: Plant Your Brand Into the Memory Layer of Every LLM" — Day 3 (Wednesday April 29, 2026, 9:00 AM) opening keynote — with 4 image artifacts (Ross on stage, Q4 2025 search-share chart, Foundation backlink-formats chart, B2B buyer's journey diagram).
+
+**What's new:**
+- Production note: 2,875 words / 13 min read at session ID `wednesday-april-29-2026-9-00-am-inception-plant-your-brand-into-the-memory-layer-of-every-llm` (`is_public: true`, `status: Published`).
+- 7 takeaways stored on the record (memory as core marketing surface, stop SEO/GEO/AEO debate, Google still 73.7%, statistics 4.25× backlinks, 85% of mentions third-party, Reddit across full B2B journey, three-layer ladder).
+- 4 contextually-placed images, pre-routed through wsrv.nl WebP CDN at publish time:
+  - Ross on stage (`22mzkwsu_IMG_2678 2.jpg`) → top, after key thesis
+  - "Q4 2025 Share of Search · Datos × SparkToro" chart (`ggktw238_IMG_2679 2.jpg`) → in "bread and circus warning" → "Google still front page" subsection
+  - Foundation B2B backlink-format chart with 4 tiers, statistics 4.25× outlier (`7mzrk7ie_IMG_2680 2.jpg`) → in backlinks-still-matter section
+  - Foundation B2B buyer's-journey diagram with Reddit logos at all 5 stages (`bepl2wnw_IMG_2681 2.jpg`) → in distribution layer / "Modern B2B Buyer's Journey" subsection
+- Personal note about Ross (Winky Wink story) preserved as the central narrative frame.
+
+**Day 3 ("The Ecosystem") is now open with Ross's keynote — first Day 3 session published.** Total 13 sessions across all 3 days (~40,500 words of long-form notes).
+
 ### Iteration 35 — Light-mode SECTION-BY-SECTION re-audit + 3 critical fixes (2026-04-29)
 **User report:** *"What the dccckkkkk you neeed check each every section of page · check all page page types and section"* — pointed at the **Knowledge Architecture** section on Home where 10 cards rendered as black boxes with invisible text in light mode. My prior audit only checked top-of-pages.
 
