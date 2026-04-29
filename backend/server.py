@@ -136,7 +136,9 @@ class AdminUser(BaseModel):
 
 
 class ConferenceNoteUpsert(BaseModel):
-    note: Optional[str] = Field(default="", max_length=20000)
+    # Increased from 20K → 60K to accommodate longer field-note formats
+    # (3K+ word multi-image session notes from SEO Week 2026 onwards).
+    note: Optional[str] = Field(default="", max_length=60000)
     takeaways: Optional[List[str]] = Field(default=None)
     status: Optional[str] = Field(default=None, max_length=40)  # attended | skipped | revisit | ""
     is_public: Optional[bool] = Field(default=None)

@@ -23,6 +23,26 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 39 — John Shehata Day 3 (3:15 PM) Discover deep-dive + backend note-length bump (2026-04-29)
+**User goal:** Publish John Shehata's "The Truth About Google Discover: What Works, What Doesn't, What's Changing" — Day 3 (Wednesday April 29, 3:15 PM) — with 5 image artifacts (John on stage, Discover audience growth, Discover pipeline 5-phase diagram, Content cluster types, Performance-by-category heatmap).
+
+**Backend bump (`server.py` line 139):**
+Increased `ConferenceNoteUpsert.note` `max_length` from `20000 → 60000`. The 20K limit was originally enough for ~3K-word notes; new sessions with detailed slide alt-text are pushing 23K+. Production server still has the old 20K limit until next deploy, so the John note was trimmed to fit (mostly via shorter alt-text on the 4 detail slides).
+
+**What's new:**
+- Production note: 2,815 words / 12 min read at session ID `wednesday-april-29-2026-3-15-pm-the-truth-about-google-discover-what-works-what-doesn-t-what-s-changing` (`is_public: true`, `status: Published`).
+- 7 takeaways stored on the record (Discover 75% of traffic, 5-phase pipeline, GA4 captures only 10%, first Discover-specific core update, YouTube/X dominance, OG title is the lever, in-words framework).
+- 5 contextually-placed images, pre-routed through wsrv.nl WebP CDN at publish time:
+  - John on stage (`cm1922ed_IMG_2718 2.jpg`) → top, after key thesis
+  - Discover audience growth (`b111i709_IMG_2720 2.jpg`) → "Why you should care" section
+  - NewzDash 5-phase pipeline diagram (`90lb106f_IMG_2723 2.jpg`) → "Inside the Discover pipeline" section
+  - Content cluster types diagram (`8nl4q2nv_IMG_2724 2.jpg`) → "Content-cluster types" section
+  - GDdash performance-by-category heatmap (`zihp3wxs_IMG_2725 2.jpg`) → "Performance varies by category" section
+
+**Day 3 progress:** Ross Simmonds (9:00 AM keynote) + John Shehata (3:15 PM Discover deep-dive). Total **16 sessions across all 3 days, ~49,000 words.**
+
+**Future ergonomic:** the next deploy will lift the production server's 20K limit to 60K, removing the need to trim long notes pre-publish. Trimming is currently done in-script by shortening image alt text and tightening "My take" prose (full 3,440-word version archived in /tmp).
+
 ### Iteration 38 — Garrett Sussman Day 2 (11:15 AM) note published (2026-04-29)
 **User goal:** Publish Garrett Sussman's "Run Persona Run: A Year in the Life of Me, Myself, and AI" — Day 2 (Tuesday April 28, 2026, 11:15 AM) — with 5 image artifacts (Garrett on stage, Personal Intelligence opt-in tweet, "Even without PI Google has your data", Patrick Schofield comic-book attribution slide, Banking persona recommendations table).
 
