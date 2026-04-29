@@ -23,6 +23,22 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 38 — Garrett Sussman Day 2 (11:15 AM) note published (2026-04-29)
+**User goal:** Publish Garrett Sussman's "Run Persona Run: A Year in the Life of Me, Myself, and AI" — Day 2 (Tuesday April 28, 2026, 11:15 AM) — with 5 image artifacts (Garrett on stage, Personal Intelligence opt-in tweet, "Even without PI Google has your data", Patrick Schofield comic-book attribution slide, Banking persona recommendations table).
+
+**What's new:**
+- Production note: 2,789 words / 12 min read at session ID `tuesday-april-28-2026-11-15-am-run-persona-run-a-year-in-the-life-of-me-myself-and-ai` (`is_public: true`, `status: Published`).
+- 7 takeaways stored on the record.
+- 5 contextually-placed images, pre-routed through wsrv.nl WebP CDN at publish time:
+  - Garrett on stage (`4so538dt_IMG_2636.jpg`) → top, after key thesis
+  - "Personal Intelligence is coming. Google wants your data." with @rmstein tweet (`rwyzcz3q_IMG_2638.jpg`) → in Google PI explainer section
+  - "Even without Personal Intelligence, Google has your data" Mordy Oberstein slide (`6gos504w_IMG_2639.jpg`) → in same section as supporting evidence
+  - Patrick Schofield (Lead Relevance Engineer, iPullRank) data analysis credit slide (`k39mt7gf_IMG_2640.jpg`) → in Experiment 2 setup section
+  - Banking brand recommendations by persona — 4-column comparison table (`9ccd50cq_IMG_2641.jpg`) → in Experiment 1 (the "AI doesn't recommend the same bank to everyone" subsection)
+- Full structure: setup (AI Mode adoption ramp) → Google Personal Intelligence → mental model shift → Experiment 1 (180K queries, 1M citations, banking persona table) → Experiment 2 (3-account controlled seeding, 80% SoV lift) → wild specifics (direct mail, unopened newsletters, spam, family names) → "it's not just SEO" through-line → search twin playbook → industry-specific weighting → tools → PI limitations → quotes → my take (synthesis with Scott/Wil/Bianca) → open questions → action items.
+
+**Day 2 progress:** Wil Reynolds (9:00 AM) + Bianca Anderson (9:45 AM) + Garrett Sussman (11:15 AM) now live. **Total 15 sessions across all 3 days, ~46,000 words of long-form notes.**
+
 ### Iteration 37 — Bianca Anderson Day 2 (9:45 AM) note published (2026-04-29)
 **User goal:** Publish Bianca Anderson's "SEOs Own Less Than We Think: The Influence Gap No One Trains You For" — Day 2 (Tuesday April 28, 2026, 9:45 AM) talk — with 5 image artifacts (Bianca on stage, "Legal said yes." slide, Hims comparison page screenshot, HubSpot E-E-A-T Playbook chapter outline, Shared Source Repository diagram).
 
