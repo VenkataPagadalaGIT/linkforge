@@ -889,8 +889,9 @@ const SolutionsGraph = () => {
           <motion.div key="neural" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             <div className="border border-border relative overflow-hidden" style={{ minHeight: 640 }}>
               <NeuralSolutionsCanvas />
-              {/* Overlay labels */}
-              <div className="absolute bottom-4 left-4 font-mono text-[9px] text-muted-foreground/30 tracking-widest uppercase">
+              {/* Overlay labels — top-right so we don't collide with the
+                  in-canvas legend pinned at bottom-left */}
+              <div className="absolute top-4 right-4 font-mono text-[9px] text-muted-foreground/40 tracking-widest uppercase pointer-events-none">
                 Neural Network Mode — {services.length} Layers × {totalServices} Nodes
               </div>
             </div>

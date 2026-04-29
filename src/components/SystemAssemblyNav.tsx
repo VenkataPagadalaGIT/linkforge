@@ -158,7 +158,7 @@ const CreditCard = ({ card }: { card: NavCard }) => {
       className="group block focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
     >
       <article
-        className="relative overflow-hidden border border-border/50 bg-[hsl(0_0%_5%)] transition-colors duration-300 group-hover:bg-card group-hover:border-foreground/20 group-focus-visible:bg-card group-focus-visible:border-foreground/20"
+        className="relative overflow-hidden border border-border/50 bg-foreground/[0.03] dark:bg-[hsl(0_0%_5%)] transition-colors duration-300 group-hover:bg-card group-hover:border-foreground/20 group-focus-visible:bg-card group-focus-visible:border-foreground/20"
         style={{ aspectRatio: "86 / 54" }}
       >
         {/* Top edge line */}
@@ -195,7 +195,7 @@ const CreditCard = ({ card }: { card: NavCard }) => {
                 width: 26,
                 height: 18,
                 background:
-                  "linear-gradient(135deg, hsl(0 0% 18%), hsl(0 0% 12%))",
+                  "linear-gradient(135deg, hsl(var(--foreground) / 0.18), hsl(var(--foreground) / 0.12))",
               }}
             >
               <div className="absolute inset-[2px] border border-foreground/10" />
