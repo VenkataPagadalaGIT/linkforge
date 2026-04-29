@@ -23,6 +23,22 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 37 — Bianca Anderson Day 2 (9:45 AM) note published (2026-04-29)
+**User goal:** Publish Bianca Anderson's "SEOs Own Less Than We Think: The Influence Gap No One Trains You For" — Day 2 (Tuesday April 28, 2026, 9:45 AM) talk — with 5 image artifacts (Bianca on stage, "Legal said yes." slide, Hims comparison page screenshot, HubSpot E-E-A-T Playbook chapter outline, Shared Source Repository diagram).
+
+**What's new:**
+- Production note: 2,532 words / 11 min read at session ID `tuesday-april-28-2026-9-45-am-seos-own-less-than-we-think-the-influence-gap-no-one-trains-you-for` (`is_public: true`, `status: Published`).
+- 7 takeaways stored on the record.
+- 5 contextually-placed images, pre-routed through wsrv.nl WebP CDN at publish time:
+  - Bianca on stage (`vu3ahyd3_IMG_2622 2.jpg`) → top, after key thesis
+  - "Legal said yes." celebration slide (`dg2efkcl_IMG_2624 2.jpg`) → in Constraints-First section
+  - Hims-vs-Keeps comparison page screenshot (`z7yrbi3r_IMG_2625 2.jpg`) → "What the published page actually looked like" subsection
+  - HubSpot E-E-A-T Playbook chapter outline (`9dh1lmgd_IMG_2626 2.jpg`) → in Make-It-Theirs section preface
+  - Shared Source Repository diagram (`ghioi3hq_IMG_2627 2.jpg`) → in Play 3: SEO as a Service
+- Full structure: Japanese honeybee analogy → Influence gap (Eli Schwartz 2-of-7) → Play 1 Constraints First (legal-team story) → Play 2 Make It Theirs (Erica Garza) → Play 3 SEO as a Service (Shared Source Repository) → Synthesis → Quotes → My take → Open questions → Action items.
+
+**Day 2 progress:** Wil Reynolds (9:00 AM) + Bianca Anderson (9:45 AM) now live. Total **14 sessions across 3 days**, ~43,000 words of long-form notes.
+
 ### Iteration 36 — Ross Simmonds Day 3 keynote published (2026-04-29)
 **User goal:** Publish Ross Simmonds' "Inception: Plant Your Brand Into the Memory Layer of Every LLM" — Day 3 (Wednesday April 29, 2026, 9:00 AM) opening keynote — with 4 image artifacts (Ross on stage, Q4 2025 search-share chart, Foundation backlink-formats chart, B2B buyer's journey diagram).
 
