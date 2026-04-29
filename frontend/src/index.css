@@ -64,18 +64,18 @@
   }
 
   ::selection {
-    background: hsl(0 0% 100% / 0.2);
-    color: hsl(0 0% 100%);
+    background: hsl(var(--foreground) / 0.18);
+    color: hsl(var(--background));
   }
 
   ::-webkit-scrollbar {
     width: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: hsl(0 0% 2%);
+    background: hsl(var(--scrollbar-track));
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(0 0% 20%);
+    background: hsl(var(--scrollbar-thumb));
   }
 }
 

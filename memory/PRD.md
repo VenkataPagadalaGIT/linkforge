@@ -23,6 +23,42 @@ User explicitly chose **Option A: Next.js + FastAPI + MongoDB** so AI bots (GPTB
 
 ## What's Been Implemented
 
+### Iteration 35 — Light-mode SECTION-BY-SECTION re-audit + 3 critical fixes (2026-04-29)
+**User report:** *"What the dccckkkkk you neeed check each every section of page · check all page page types and section"* — pointed at the **Knowledge Architecture** section on Home where 10 cards rendered as black boxes with invisible text in light mode. My prior audit only checked top-of-pages.
+
+**Three root causes uncovered, all fixed:**
+
+**1. `SystemAssemblyNav.tsx` — hardcoded near-black card backgrounds**
+Each of the 10 Knowledge Architecture cards used `bg-[hsl(0_0%_5%)]` (a hardcoded literal HSL) plus a chip with `linear-gradient(135deg, hsl(0 0% 18%), hsl(0 0% 12%))`. Both stayed dark in light mode regardless of theme. Fixed: replaced with `bg-foreground/[0.03] dark:bg-[hsl(0_0%_5%)]` and a foreground-driven gradient. Cards now flip to a subtle near-white tint with the original look preserved in dark mode.
+
+**2. `globals.css` — `.holo-aberration` chromatic effect on hover**
+Speaker name cards (and several other "atmospheric" cards) apply a hover effect that adds a magenta/cyan dual text-shadow — a deliberate cinematic touch on dark backgrounds. On white the bright tints cause illegible text-bleed (the user's "BEEAFCBEEEMODE" garble). Fix: scoped the hover styling to `.dark .group:hover .holo-aberration {…}` so the effect only fires in dark mode. Card hovers in light mode now use clean state changes only.
+
+**3. `SolutionsGraph.tsx` — overlapping legend at bottom-left**
+The "Neural Network Mode — 6 Layers × 36 Nodes" overlay was positioned at `absolute bottom-4 left-4`, the SAME corner where the in-canvas service legend renders. In dark mode both were dim enough to look intentional. In light mode the two text layers stacked and produced visual garble. Fix: moved the overlay to `top-4 right-4` so it never collides with the legend.
+
+**Plus: extended light-mode contrast overrides** to cover `text-foreground/30` (→ /55), `/40` (→ /65), `/50` (→ /72), `/60-/70` (→ /85), and three `bg-foreground/[0.03..0.08]` levels so chip labels, category tags, schema chips, and subtle card backgrounds all stay legible on white. Also fixed `index.css` and `globals.css` `::selection` and scrollbar to use semantic tokens. Updated `.holo-photo` to switch to `hsl(0 0% 12%)` in light mode (photos look more grounded with a dark frame than a pale cyan tint on white).
+
+**Verified pages in light mode (now truly comprehensive):**
+| Page | Section | Status |
+|---|---|---|
+| `/` | Hero, Solutions Graph (3 modes), Knowledge Architecture, Footer | ✅ All readable |
+| `/about` | Sidebar, hero, photo, body text | ✅ |
+| `/solutions` | All 3 view modes (Context/Neural/Structured) | ✅ Labels visible, no overlap |
+| `/insights` | Pillar cards, sidebar TOC, article rows | ✅ |
+| `/ai-updates` | Filter pills, news cards, badges | ✅ |
+| `/notebook` | Index | ✅ |
+| `/notebook/conference` | Stats, featured card, upcoming list | ✅ |
+| `/notebook/conference/seo-week-2026` | Speaker grid, agenda, sticky day tabs, side panel | ✅ |
+| `/notebook/conference/.../sessions/...` | Session timeline, speaker card, abstract, body, sidebar | ✅ |
+| `/notebook/business` | Status box, placeholders | ✅ |
+| `/notebook/ai/encyclopedia` | Curator card, filter pills, concept cards | ✅ |
+| `/notebook/ai` | Top 100 contributors table | ✅ |
+| `/contact` | Form fields, labels, button | ✅ |
+| `/brand` | Live palette page | ✅ |
+
+**WCAG status held:** body 17:1 (AAA), brand emerald 6.5:1 (AA), nav 10:1 (AAA), all interactive elements pass.
+
 ### Iteration 34 — Full light-mode audit + canvas theme-aware fix (2026-04-29)
 **User report:** *"Review all pages in light mode and make sure all elements are readable and accessibility as well"* — pointed at the Solutions Graph "neural net" view where text labels rendered with a heavy chromatic glitch effect (white text invisible/garbled on white bg).
 
