@@ -11,6 +11,7 @@ const navLinks = [
   { label: "AI Updates", to: "/ai-updates" },
   { label: "Lab", to: "/publications" },
   { label: "Insights", to: "/insights" },
+  { label: "Guides", to: "/guides" },
   { label: "Contact", to: "/contact" },
 ];
 
