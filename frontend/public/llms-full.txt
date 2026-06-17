@@ -125,6 +125,19 @@ A structured 18-week curriculum covering 24 topics with 67+ curated videos, 71+ 
 110 AI concepts across 10 categories (Foundations, Machine Learning, Deep Learning, NLP, Computer Vision, Reinforcement Learning, Generative AI, Ethics & Safety, Infrastructure, and Emerging Topics). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
+## Reference Guides
+
+### Graph Types for AI Agents (2026)
+The definitive reference on the data structures behind modern AI search, defining and differentiating six commonly-confused types using one shared dataset (a running-shoe retailer) modeled six ways:
+- Taxonomy: a strict single-parent hierarchy using only "is-a" relationships. Answers "where does this belong?" Best for navigation; cannot express non-hierarchical links.
+- Ontology: the formal blueprint — the classes, allowed relationship types, and rules of a domain, with no instances. Answers "what can exist and how do things relate?" The schema (T-Box); schema.org is a lightweight example.
+- Knowledge Graph: the ontology populated with real entities and typed, directed, resolvable relationships (sameAs to Wikidata/Google). Answers "what is true about these entities?" The factual-grounding layer AI answer engines reason over.
+- Information Graph: an applied/SEO layer mapping content assets (pages, URLs, sections) onto the entities they cover and the search demand they target, plus internal links. Answers "what content covers what, for which query?"
+- Context Graph: layers situation (user, intent, journey stage, location, time, freshness, trust) over a knowledge graph to score which answer is right for a specific person at a specific moment. The decision/relevance layer for AEO, GEO, and agents.
+- Vector / Embedding Index: not a graph — content stored as embeddings and retrieved by nearest-neighbor similarity, with no schema or typed edges. The fuzzy recall engine of RAG; pair with a knowledge graph for precision and grounding.
+Includes a full comparison table, a "which one do you need" decision framework, runnable graphology code examples, and FAQ (knowledge graph vs ontology, knowledge graph vs vector database for RAG, property graph vs RDF).
+- URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
+
 ## Links
 
 - Website: https://venkatapagadala.com

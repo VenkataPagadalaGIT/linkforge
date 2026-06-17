@@ -49,6 +49,12 @@ A structured 18-week curriculum with 24 topics, 67+ videos, 71+ courses, 62+ rep
 110 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
+## Reference Guides
+
+### Graph Types for AI Agents (2026)
+The definitive guide to ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index — defined, compared in one table, and visualized with a single dataset modeled six ways. Explains which layer matters for SEO, AEO, GEO, and AI agents, with runnable graphology code examples.
+- URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
+
 ## Contact
 
 - Email: vdepagadala@gmail.com

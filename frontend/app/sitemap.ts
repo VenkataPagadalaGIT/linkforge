@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
+import { guides } from "@/data/guides";
 
 // Re-generate the sitemap at most once per hour so new content appears
 // without a rebuild.
@@ -24,6 +25,7 @@ const STATIC_ROUTES = [
   "/ai-contributors",
   "/experience",
   "/contact",
+  "/guides",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -71,5 +73,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
   }
+  for (const g of guides) {
+    urls.push({
+      url: `${SITE_URL}/guides/${g.slug}`,
+      lastModified: g.dateModified ? new Date(g.dateModified) : now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    });
+  }
+
   return urls;
 }
