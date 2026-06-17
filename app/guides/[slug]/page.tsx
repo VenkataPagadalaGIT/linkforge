@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import GuideView from "@/views/GuideView";
 import { guides, getGuideBySlug } from "@/data/guides";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 type Params = { slug: string };
 
@@ -29,8 +29,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description: guide.metaDescription,
       publishedTime: guide.datePublished,
       modifiedTime: guide.dateModified,
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     },
-    twitter: { card: "summary_large_image", title: guide.title, description: guide.metaDescription },
+    twitter: { card: "summary_large_image", title: guide.title, description: guide.metaDescription, images: [OG_IMAGE] },
   };
 }
 
@@ -49,6 +50,7 @@ export default function Page({ params }: { params: Params }) {
       section: "Guides",
       keywords: guide.tags,
       schemaType: "TechArticle",
+      image: OG_IMAGE,
     }),
     {
       "@context": "https://schema.org",
