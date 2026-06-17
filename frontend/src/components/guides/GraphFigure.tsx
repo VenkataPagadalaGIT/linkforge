@@ -6,37 +6,49 @@ import type { GraphView, GNode } from "@/lib/graphModels";
  * GraphFigure — renders a GraphView as a self-contained, crawlable SVG.
  *
  * Everything is drawn statically (no animation needed to read it), so the
- * Puppeteer SSG snapshot captures the full diagram — every node and edge label
- * ends up in the prerendered HTML for crawlers and AI answer engines. Hover
- * highlighting is layered on as pure progressive enhancement.
+ * server-rendered HTML contains every node and edge label for crawlers and AI
+ * answer engines. Hover highlighting is pure progressive enhancement.
+ *
+ * Colors: structural tones (node fill, text, edges) are driven by the site's
+ * theme CSS variables so the figure flips correctly between dark and light
+ * mode, matching the rest of venkatapagadala.com. Categorical accents stay
+ * fixed (they read on both themes).
  */
 
-// Restrained, desaturated palette — distinct enough to teach, muted enough to
-// sit inside the monochrome brand.
+// Theme-reactive structural tokens (resolve via CSS variables on :root/.dark).
+const FG = "hsl(var(--foreground))";
+const MUTED = "hsl(var(--muted-foreground))";
+const BORDER = "hsl(var(--border))";
+const CARD = "hsl(var(--card))";
+const FAINT = "hsl(var(--muted-foreground) / 0.45)";
+// Fixed accents — mid-tones legible on both dark and light.
+const TEAL = "#34a8a8";
+const AMBER = "#c08a3a";
+const PERIW = "#7b84d6";
+const GREEN = "#3fa468";
+
 const KIND_COLOR: Record<string, string> = {
-  class: "#9aa3ad",
-  leaf: "#5ec8c8",
-  product: "#5ec8c8",
-  brand: "#d3a35e",
-  concept: "#9aa0e6",
-  attr: "#9a9aa2",
-  external: "#7a7a82",
-  rule: "#d3a35e",
-  page: "#5ec8c8",
-  entity: "#e8e8ea",
-  query: "#d3a35e",
-  nav: "#7a7a82",
-  user: "#ffffff",
-  context: "#9aa0e6",
-  win: "#6fd08c",
-  far: "#5a5a60",
-  sim: "#7a7a82",
-  default: "#cfcfd4",
+  class: MUTED,
+  leaf: TEAL,
+  product: TEAL,
+  brand: AMBER,
+  concept: PERIW,
+  attr: MUTED,
+  external: MUTED,
+  rule: AMBER,
+  page: TEAL,
+  entity: FG,
+  query: AMBER,
+  nav: MUTED,
+  user: FG,
+  win: GREEN,
+  far: FAINT,
+  sim: MUTED,
+  default: MUTED,
 };
 
 const colorFor = (kind: string) => KIND_COLOR[kind] ?? KIND_COLOR.default;
 
-// Naive word-wrap for labels so long page URLs / queries stay readable.
 function wrap(text: string, maxChars = 22): string[] {
   const words = text.split(" ");
   const lines: string[] = [];
@@ -55,7 +67,6 @@ function wrap(text: string, maxChars = 22): string[] {
 
 interface Props {
   view: GraphView;
-  /** Hide the built-in legend (e.g. when shown side-by-side). */
   hideLegend?: boolean;
 }
 
@@ -63,7 +74,6 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
   const [active, setActive] = useState<string | null>(null);
   const byId = new Map<string, GNode>(view.nodes.map((n) => [n.id, n]));
 
-  // Neighbor set for hover highlighting.
   const neighbors = (id: string) => {
     const set = new Set<string>([id]);
     for (const e of view.edges) {
@@ -74,8 +84,7 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
   };
   const lit = active ? neighbors(active) : null;
   const isDim = (id: string) => (lit ? !lit.has(id) : false);
-  const edgeDim = (s: string, t: string) =>
-    lit ? !(lit.has(s) && lit.has(t)) : false;
+  const edgeDim = (s: string, t: string) => (lit ? !(lit.has(s) && lit.has(t)) : false);
 
   return (
     <figure className="my-2">
@@ -88,10 +97,10 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
         >
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#6a6a72" />
+              <path d="M0,0 L10,5 L0,10 z" style={{ fill: MUTED }} />
             </marker>
             <marker id="arrowWin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#6fd08c" />
+              <path d="M0,0 L10,5 L0,10 z" style={{ fill: GREEN }} />
             </marker>
           </defs>
 
@@ -102,7 +111,7 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
             if (!s || !t) return null;
             const win = e.kind === "win";
             const dim = edgeDim(e.source, e.target);
-            const stroke = win ? "#6fd08c" : e.kind === "sim" ? "#6a6a72" : "#56565e";
+            const stroke = win ? GREEN : e.kind === "sim" ? MUTED : BORDER;
             const mx = (s.x + t.x) / 2;
             const my = (s.y + t.y) / 2;
             return (
@@ -112,20 +121,13 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
                   y1={s.y}
                   x2={t.x}
                   y2={t.y}
-                  stroke={stroke}
+                  style={{ stroke }}
                   strokeWidth={win ? 2 : 1.2}
                   strokeDasharray={e.dashed ? "5 4" : undefined}
                   markerEnd={view.id === "vector-index" ? undefined : `url(#${win ? "arrowWin" : "arrow"})`}
                 />
                 {e.label && (
-                  <text
-                    x={mx}
-                    y={my - 3}
-                    textAnchor="middle"
-                    className="font-mono"
-                    fontSize="9"
-                    fill={win ? "#6fd08c" : "#8a8a92"}
-                  >
+                  <text x={mx} y={my - 3} textAnchor="middle" className="font-mono" fontSize="9" style={{ fill: win ? GREEN : MUTED }}>
                     {e.label}
                   </text>
                 )}
@@ -149,21 +151,12 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
                 onMouseLeave={() => setActive(null)}
               >
                 {isRect ? (
-                  <rect x={n.x - 9} y={n.y - 9} width={18} height={18} rx={2} fill="#0c0c0d" stroke={c} strokeWidth={1.6} />
+                  <rect x={n.x - 9} y={n.y - 9} width={18} height={18} rx={2} style={{ fill: CARD, stroke: c }} strokeWidth={1.6} />
                 ) : (
-                  <circle cx={n.x} cy={n.y} r={r} fill="#0c0c0d" stroke={c} strokeWidth={1.8} />
+                  <circle cx={n.x} cy={n.y} r={r} style={{ fill: CARD, stroke: c }} strokeWidth={1.8} />
                 )}
-                {/* label */}
                 {lines.map((ln, li) => (
-                  <text
-                    key={li}
-                    x={n.x}
-                    y={n.y + r + 12 + li * 11}
-                    textAnchor="middle"
-                    className="font-mono"
-                    fontSize="10.5"
-                    fill="#e6e6e8"
-                  >
+                  <text key={li} x={n.x} y={n.y + r + 12 + li * 11} textAnchor="middle" className="font-mono" fontSize="10.5" style={{ fill: FG }}>
                     {ln}
                   </text>
                 ))}
@@ -174,8 +167,7 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
                     textAnchor="middle"
                     className="font-mono"
                     fontSize="9"
-                    fill={colorFor(n.kind)}
-                    opacity={0.8}
+                    style={{ fill: c, opacity: 0.85 }}
                   >
                     {n.sub}
                   </text>
