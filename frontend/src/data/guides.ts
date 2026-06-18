@@ -53,6 +53,7 @@ export type Block =
   | { kind: "list"; ordered?: boolean; items: string[] }
   | { kind: "decision"; items: { when: string; use: string }[] }
   | { kind: "related"; items: { label: string; href: string }[] }
+  | { kind: "graph3d" }
   | { kind: "faq" };
 
 export interface Guide {
@@ -333,6 +334,12 @@ const nikesRoadShoes = kg.filterNodes((n, attr) =>
   kg.outNeighbors(n).includes("nike") &&
   kg.outNeighbors(n).includes("road"));`,
   },
+
+  {
+    kind: "p",
+    text: "Prefer to explore it yourself? Drag to orbit the same knowledge graph in 3D, scroll to zoom, and hover any entity to trace its relationships.",
+  },
+  { kind: "graph3d" },
 
   { kind: "h2", text: "4. Information graph — your content map", id: "information-graph" },
   { kind: "figure", viewId: "information-graph" },

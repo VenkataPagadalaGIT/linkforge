@@ -4,6 +4,7 @@ import type { Block, Guide, DefinedTerm } from "@/data/guides";
 import { VIEW_BUILDERS } from "@/lib/graphModels";
 import GraphFigure from "./GraphFigure";
 import GraphLayerStack from "./GraphLayerStack";
+import Graph3DLazy from "./Graph3DLazy";
 
 const bold = (s: string) =>
   s.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>');
@@ -98,6 +99,8 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
     }
     case "stack":
       return <GraphLayerStack />;
+    case "graph3d":
+      return <Graph3DLazy />;
     case "comparison":
       return <ComparisonTable guide={guide} />;
     case "termcard": {
