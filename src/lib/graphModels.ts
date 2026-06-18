@@ -341,3 +341,44 @@ export const VIEW_BUILDERS: Record<string, () => GraphView> = {
   "context-graph": buildContextGraph,
   "vector-index": buildVectorSpace,
 };
+
+/* ------------------------------------------------------------------ *
+ * 3D data — the knowledge graph laid out in space for the interactive
+ * <Graph3D> centerpiece (react-three-fiber). Deterministic positions.
+ * ------------------------------------------------------------------ */
+export interface GNode3D {
+  id: string;
+  label: string;
+  kind: string;
+  pos: [number, number, number];
+  size?: number;
+}
+export interface GEdge3D {
+  source: string;
+  target: string;
+  label?: string;
+  dashed?: boolean;
+}
+
+export function buildKnowledgeGraph3D(): { nodes: GNode3D[]; edges: GEdge3D[] } {
+  const nodes: GNode3D[] = [
+    { id: "road", label: "Road Running", kind: "concept", pos: [0, 2.3, 0], size: 0.42 },
+    { id: "pegasus", label: "Nike Pegasus 41", kind: "product", pos: [-1.9, 0.7, 0.6], size: 0.55 },
+    { id: "clifton", label: "Hoka Clifton 9", kind: "product", pos: [1.9, 0.5, -0.5], size: 0.55 },
+    { id: "nike", label: "Nike", kind: "brand", pos: [-3.1, -0.5, -0.9], size: 0.45 },
+    { id: "hoka", label: "Hoka", kind: "brand", pos: [3.1, -0.7, 0.7], size: 0.45 },
+    { id: "modCush", label: "Moderate Cushioning", kind: "attr", pos: [-2.5, -1.9, 1.1], size: 0.36 },
+    { id: "maxCush", label: "Max Cushioning", kind: "attr", pos: [2.5, -1.7, -1.1], size: 0.36 },
+    { id: "wikidata", label: "Wikidata: Nike", kind: "external", pos: [-3.8, -2.1, -1.7], size: 0.34 },
+  ];
+  const edges: GEdge3D[] = [
+    { source: "pegasus", target: "nike", label: "madeBy" },
+    { source: "clifton", target: "hoka", label: "madeBy" },
+    { source: "pegasus", target: "road", label: "suitedFor" },
+    { source: "clifton", target: "road", label: "suitedFor" },
+    { source: "pegasus", target: "modCush", label: "has" },
+    { source: "clifton", target: "maxCush", label: "has" },
+    { source: "nike", target: "wikidata", label: "sameAs", dashed: true },
+  ];
+  return { nodes, edges };
+}
