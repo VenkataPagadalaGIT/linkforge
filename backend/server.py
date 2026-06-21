@@ -705,7 +705,8 @@ async def seed_content():
     u = await _seed_collection("ai_updates", data.get("updates", []))
     p = await _seed_collection("pillars", data.get("pillars", []))
     po = await _seed_collection("posts", data.get("posts", []))
-    logger.info("Seed complete — contributors:%s updates:%s pillars:%s posts:%s", c, u, p, po)
+    cn = await _seed_collection("conference_notes", data.get("conference_notes", []), unique_keys=("session_id",))
+    logger.info("Seed complete — contributors:%s updates:%s pillars:%s posts:%s conference_notes:%s", c, u, p, po, cn)
 
 
 async def seed_admin():
