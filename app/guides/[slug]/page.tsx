@@ -40,8 +40,11 @@ export default function Page({ params }: { params: Params }) {
   if (!guide) notFound();
 
   const url = `${SITE_URL}/guides/${guide.slug}`;
-  const jsonLd = [
-    articleJsonLd({
+  const authorUrl = guide.author?.url?.startsWith("http")
+    ? guide.author.url
+    : `${SITE_URL}${guide.author?.url ?? ""}`;
+  const articleSchema: Record<string, unknown> = {
+    ...articleJsonLd({
       headline: guide.title,
       description: guide.metaDescription,
       url,
@@ -52,6 +55,20 @@ export default function Page({ params }: { params: Params }) {
       schemaType: "TechArticle",
       image: OG_IMAGE,
     }),
+  };
+  if (guide.author) {
+    articleSchema.author = {
+      "@type": "Person",
+      "@id": authorUrl,
+      name: guide.author.name,
+      url: authorUrl,
+      jobTitle: guide.author.title,
+      affiliation: { "@type": "Organization", name: guide.author.org },
+      description: guide.author.bio,
+    };
+  }
+  const jsonLd = [
+    articleSchema,
     {
       "@context": "https://schema.org",
       "@type": "DefinedTermSet",

@@ -5,8 +5,19 @@ import { VIEW_BUILDERS } from "@/lib/graphModels";
 import GraphFigure from "./GraphFigure";
 import GraphLayerStack from "./GraphLayerStack";
 
-const bold = (s: string) =>
-  s.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>');
+// Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
+// matters — links run first so a URL containing ** or _ never gets caught by a
+// later pass. External http(s) URLs open in a new tab and carry a noopener rel
+// for safety + SEO (so we don't pass equity to every cited paper).
+const inline = (s: string) =>
+  s
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) =>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">${label}</a>`
+    )
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em class="italic text-foreground/90">$2</em>')
+    .replace(/`([^`]+?)`/g, '<code class="font-mono text-[0.92em] text-foreground bg-foreground/5 border border-border/60 px-1 py-px rounded-sm">$1</code>');
+const bold = inline;
 
 function TermCard({ term }: { term: DefinedTerm }) {
   return (
@@ -19,10 +30,14 @@ function TermCard({ term }: { term: DefinedTerm }) {
           </span>
         )}
       </div>
-      <p className="font-mono text-sm text-foreground/90 leading-relaxed border-l-2 border-foreground/40 pl-4 mb-5">
-        {term.oneLiner}
-      </p>
-      <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5">{term.inDepth}</p>
+      <p
+        className="font-mono text-sm text-foreground/90 leading-relaxed border-l-2 border-foreground/40 pl-4 mb-5"
+        dangerouslySetInnerHTML={{ __html: inline(term.oneLiner) }}
+      />
+      <p
+        className="font-mono text-xs text-muted-foreground leading-relaxed mb-5"
+        dangerouslySetInnerHTML={{ __html: inline(term.inDepth) }}
+      />
       <dl className="space-y-3">
         {[
           ["Analogy", term.analogy],
@@ -31,7 +46,10 @@ function TermCard({ term }: { term: DefinedTerm }) {
         ].map(([label, body]) => (
           <div key={label} className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-4">
             <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/50 pt-0.5">{label}</dt>
-            <dd className="font-mono text-xs text-muted-foreground leading-relaxed">{body}</dd>
+            <dd
+              className="font-mono text-xs text-muted-foreground leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: inline(body) }}
+            />
           </div>
         ))}
       </dl>
@@ -177,10 +195,27 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
           {guide.faqs.map((f, j) => (
             <div key={j} className="border-l-2 border-border pl-4">
               <h3 className="font-display text-base font-semibold text-foreground mb-2">{f.q}</h3>
-              <p className="font-mono text-xs text-muted-foreground leading-relaxed">{f.a}</p>
+              <p
+                className="font-mono text-xs text-muted-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: inline(f.a) }}
+              />
             </div>
           ))}
         </div>
+      );
+    case "details":
+      return (
+        <details className="my-8 border border-border bg-card/30 group">
+          <summary className="cursor-pointer list-none px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground flex items-center justify-between transition-colors">
+            <span>{block.summary}</span>
+            <span className="text-foreground/40 group-open:rotate-180 transition-transform" aria-hidden="true">▾</span>
+          </summary>
+          <div className="border-t border-border px-5 pb-4">
+            {block.blocks.map((b, j) => (
+              <BlockView key={j} block={b} guide={guide} />
+            ))}
+          </div>
+        </details>
       );
     default:
       return null;

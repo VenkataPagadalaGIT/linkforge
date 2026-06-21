@@ -54,7 +54,20 @@ export type Block =
   | { kind: "decision"; items: { when: string; use: string }[] }
   | { kind: "related"; items: { label: string; href: string }[] }
   | { kind: "graph3d" }
-  | { kind: "faq" };
+  | { kind: "faq" }
+  | { kind: "details"; summary: string; blocks: Block[] };
+
+export interface GuideAuthor {
+  name: string;
+  /** Job title — e.g., "AI Product Manager (Search · SEO · GEO)". */
+  title: string;
+  /** Affiliation — e.g., "AT&T". */
+  org: string;
+  /** Canonical author URL on this site — used in JSON-LD Person@id and the byline link. */
+  url: string;
+  /** One-line credibility statement; the AEO/GEO citation hook. */
+  bio: string;
+}
 
 export interface Guide {
   slug: string;
@@ -62,7 +75,15 @@ export interface Guide {
   metaTitle: string;
   metaDescription: string;
   headline: string;
+  /** Optional eyebrow above the H1 — small caps, sets context. */
+  kicker?: string;
+  /** Optional subhead under the H1 — names what else the article covers so the
+   *  visible scope matches the article body. Keeps the H1 short for SEO/CTR
+   *  while still signaling completeness to expert readers. */
+  subhead?: string;
   deck: string;
+  /** Structured author block. Renders as a proper byline card; also feeds JSON-LD Person. */
+  author?: GuideAuthor;
   datePublished: string;
   dateModified: string;
   readingTime: string;
@@ -259,6 +280,10 @@ const graphFaqs: FaqItem[] = [
     a: "Usually both. A vector index gives you fast, fuzzy recall: it finds candidate content even when the wording doesn't match. A knowledge graph gives you precision and grounding: exact facts, explainable relationships, and the ability to traverse a chain of reasoning. Most production RAG today is vector-only, but combining vectors (retrieval) with a knowledge graph (verification + structure) — the pattern Microsoft Research dubbed **GraphRAG** in 2024 — is now standard in agentic systems where answers must be exact, auditable, or fact-checked. Use vectors alone for similarity search; add a graph when grounding matters.",
   },
   {
+    q: "Is semantic search the same as a vector database?",
+    a: "Semantic search is the *capability* — finding results by meaning rather than exact keywords. A vector database is one common *implementation* of it: embed every document, embed the query, return nearest neighbors. But semantic search can also be powered by a knowledge graph (using entity matches and typed relationships) or, more powerfully, by both together — vectors for fuzzy recall + a graph for entity grounding. Pure-vector semantic search is fast and forgiving but blind to facts. Add a knowledge graph and you get explainable, fact-checked answers — the AEO/GEO ceiling.",
+  },
+  {
     q: "What is a context graph and why does it matter for AEO and GEO?",
     a: "A context graph adds a situational layer — user, intent, journey stage, location, time, freshness, and source trust — on top of a knowledge graph, then scores which answer is most relevant for a specific person at a specific moment. It matters for Answer Engine Optimization and Generative Engine Optimization because AI systems like ChatGPT, Gemini, Perplexity, and Google's AI Mode don't return ten links — they synthesize one best answer. The context graph is the layer that decides which answer that is.",
   },
@@ -279,20 +304,12 @@ const graphFaqs: FaqItem[] = [
     a: "Use a relational database (Postgres, MySQL) when your data fits clean tables, your queries are well-known up front, and you mostly aggregate within a single domain (orders, users, inventory). Use a knowledge graph when relationships are first-class (you frequently ask *who is connected to what, how many hops away?*), when entities span domains and need to resolve to the wider web, or when downstream systems — including LLMs — need to reason over the connections, not just join them. Many production stacks use both: the relational DB is the system of record, and a knowledge graph projects the relationships AI systems and answer engines actually consume.",
   },
   {
-    q: "Is semantic search the same as a vector database?",
-    a: "Semantic search is the *capability* — finding results by meaning rather than exact keywords. A vector database is one common *implementation* of it: embed every document, embed the query, return nearest neighbors. But semantic search can also be powered by a knowledge graph (using entity matches and typed relationships) or, more powerfully, by both together — vectors for fuzzy recall + a graph for entity grounding. Pure-vector semantic search is fast and forgiving but blind to facts. Add a knowledge graph and you get explainable, fact-checked answers — the AEO/GEO ceiling.",
-  },
-  {
     q: "How do I actually build a knowledge graph?",
     a: "Five steps, in order: (1) define a lightweight **ontology** — even just schema.org types you'll reuse; (2) **extract entities and relationships** from your source data (LLMs are very good at this now; tools like LangChain's LLMGraphTransformer or Microsoft's GraphRAG pipeline automate it); (3) **resolve entities** to canonical IDs (Wikidata QIDs, your internal product IDs) so duplicates collapse; (4) **store** in a graph database (Neo4j, Memgraph, Neptune) or RDF triple store (Apache Jena, Stardog, GraphDB); (5) **publish the high-leverage subset** as JSON-LD on your pages so search and answer engines can read it directly. Start small, link out via `sameAs`, and let the ontology evolve.",
   },
 ];
 
 const graphBlocks: Block[] = [
-  {
-    kind: "p",
-    text: "By **Venkata Pagadala** — AI Product Manager (Search · SEO · GEO) at AT&T. 10+ years building entity systems and knowledge graphs at enterprise scale; published the AI Contributors directory and the AI Concepts Encyclopedia on this site.",
-  },
   {
     kind: "p",
     text: "“Ontology,” “knowledge graph,” “context graph,” “information graph,” “vector database” — these terms get used interchangeably, and they are not interchangeable. Each is a different way to structure meaning, each answers a different question, and AI agents need different ones for different jobs. This guide pins down what each actually is, shows the **same dataset modeled six ways** so you can see the difference, and explains which layer matters for **RAG, GraphRAG, semantic search, AEO and GEO**.",
@@ -303,21 +320,24 @@ const graphBlocks: Block[] = [
     text: "A **taxonomy** files things. An **ontology** defines what can exist. A **knowledge graph** records what's true. An **information graph** maps your content to that truth and to demand. A **context graph** decides what's relevant right now. A **vector index / vector database** finds what's similar. They stack — and modern AI agents use all of them.",
   },
   {
-    kind: "h2", text: "Plain-English version (start here)", id: "plain-english",
-  },
-  {
-    kind: "p",
-    text: "If you've used a relational database (rows and columns) and a graph database like Neo4j (nodes and edges), you already grasp two of the six. Here's the same idea for the rest, in the bluntest words possible:",
-  },
-  {
-    kind: "list",
-    items: [
-      "**Taxonomy = a folder tree.** “Footwear → Running → Road → Nike Pegasus 41.” One parent each. Great for navigation; terrible at expressing *“who made this”* or *“what's this for.”*",
-      "**Ontology = the schema / rulebook.** Lists what types of things can exist (Product, Brand, Activity), how they're allowed to relate (`Product hasBrand Brand`), and what's not allowed. No actual data yet — just the empty form.",
-      "**Knowledge graph = the schema filled in with real things.** “Nike Pegasus 41 — madeBy → Nike — sameAs → Wikidata's Nike.” This is what Google, Bing, ChatGPT and Perplexity reason over when they answer factual questions.",
-      "**Information graph = your content map.** “The page `/guides/road-shoes` mentions Pegasus 41 and targets the query *best road running shoes*.” It's the SEO/AEO layer that connects your URLs to entities and to demand.",
-      "**Context graph = the personalization layer.** Same knowledge graph + who's asking + when + where + what's fresh and trusted. It decides *which* of two correct answers to surface for *this* person right now.",
-      "**Vector index / vector database = similarity by vibes.** Every piece of content is turned into a list of ~1,500 numbers (an embedding). Search means finding the lists most similar to your query's list. No `WHERE clauses`, no edges — just *nearness in meaning-space*. Pinecone, Weaviate, Qdrant, and pgvector all do this. It's how RAG retrieves candidate text fast.",
+    kind: "details",
+    summary: "New to this? Read the plain-English on-ramp",
+    blocks: [
+      {
+        kind: "p",
+        text: "If you've used a spreadsheet (rows and columns) and a folder tree on your computer (nested folders), you already understand two of the six structures. Here's the same idea for the other four, in the bluntest words possible:",
+      },
+      {
+        kind: "list",
+        items: [
+          "**Taxonomy = a folder tree.** “Footwear → Running → Road → Nike Pegasus 41.” One parent each. Great for navigation; terrible at expressing *“who made this”* or *“what's this for.”*",
+          "**Ontology = the schema / rulebook.** Lists what types of things can exist (Product, Brand, Activity), how they're allowed to relate (`Product hasBrand Brand`), and what's not allowed. No actual data yet — just the empty form, like a spreadsheet's column headers before any rows are filled in.",
+          "**Knowledge graph = the rulebook filled in with real things, then linked to the rest of the web.** “Nike Pegasus 41 — madeBy → Nike — sameAs → Wikidata's Nike.” This is what Google, Bing, ChatGPT and Perplexity reason over when they answer factual questions.",
+          "**Information graph = your content map.** “The page `/guides/road-shoes` mentions Pegasus 41 and targets the query *best road running shoes*.” It's the SEO/AEO layer that connects your URLs to entities and to demand.",
+          "**Context graph = the personalization layer.** Same knowledge graph + who's asking + when + where + what's fresh and trusted. It decides *which* of two correct answers to surface for *this* person right now.",
+          "**Vector index / vector database = similarity by vibes.** Every piece of content is turned into a list of ~1,500 numbers (an embedding). Search means finding the lists most similar to your query's list. No `WHERE clauses`, no edges — just *nearness in meaning-space*. Pinecone, Weaviate, Qdrant, and pgvector all do this. It's how RAG retrieves candidate text fast.",
+        ],
+      },
     ],
   },
   {
@@ -330,10 +350,14 @@ const graphBlocks: Block[] = [
     kind: "p",
     text: "Everything below uses a single, deliberately small domain — a running-shoe retailer with a content site — so the structures are directly comparable. Watch how the **same information** changes shape depending on what you're trying to do with it. (Hover any node to trace its connections — and hit **Explore in 3D** on any figure to orbit it in space.)",
   },
+  {
+    kind: "p",
+    text: "**Read the stack from the bottom up.** Each layer is enabled by the one beneath it; the numbers (01–06) match the six sections that follow. The vector index sits to the side because it runs in parallel — different math, same dataset.",
+  },
   { kind: "stack" },
   {
     kind: "p",
-    text: "That stack is the whole thesis: each layer builds on the one before it. The ontology gives the knowledge graph its grammar; the knowledge graph gives the information and context graphs their facts; the vector index sits alongside as a complementary, fuzzy retrieval substrate. Now let's define each one precisely.",
+    text: "Each layer rests on the one below: the ontology gives the knowledge graph its grammar, the knowledge graph gives the information and context graphs their facts, and the vector index runs alongside as a parallel, schema-free retrieval substrate. Production AI agents query multiple layers per request — not one. Now let's define each one precisely.",
   },
 
   { kind: "h2", text: "1. Taxonomy — the filing system", id: "taxonomy" },
@@ -365,7 +389,7 @@ ontology.setNodeAttribute("Product", "constraint",
   "hasBrand exactly 1 Brand");`,
   },
 
-  { kind: "h2", text: "3. Knowledge graph — the facts", id: "knowledge-graph" },
+  { kind: "h2", text: "3. Knowledge Graph — the facts", id: "knowledge-graph" },
   { kind: "figure", viewId: "knowledge-graph" },
   { kind: "termcard", termSlug: "knowledge-graph" },
   {
@@ -390,18 +414,19 @@ kg.addEdge("nike", "wikidata:Q483915", { rel: "sameAs" });
 const nikesRoadShoes = kg.filterNodes((n, attr) =>
   attr.type === "Product" &&
   kg.outNeighbors(n).includes("nike") &&
-  kg.outNeighbors(n).includes("road"));`,
+  kg.outNeighbors(n).includes("road"));
+// → ["pegasus"]   // grounded answer, with the edges that proved it.`,
   },
 
-  { kind: "h2", text: "4. Information graph — your content map", id: "information-graph" },
+  { kind: "h2", text: "4. Information Graph — your content map", id: "information-graph" },
   { kind: "figure", viewId: "information-graph" },
   { kind: "termcard", termSlug: "information-graph" },
 
-  { kind: "h2", text: "5. Context graph — the decision layer", id: "context-graph" },
+  { kind: "h2", text: "5. Context Graph — the decision layer", id: "context-graph" },
   { kind: "figure", viewId: "context-graph" },
   { kind: "termcard", termSlug: "context-graph" },
 
-  { kind: "h2", text: "6. Vector / embedding index — the similarity space", id: "vector-index" },
+  { kind: "h2", text: "6. Vector / Embedding Index — the similarity space", id: "vector-index" },
   { kind: "figure", viewId: "vector-index" },
   { kind: "termcard", termSlug: "vector-index" },
   {
@@ -419,14 +444,14 @@ const hits = index
 // Note: no edge says WHY they match — only that they're close.`,
   },
 
-  { kind: "h2", text: "Side by side", id: "comparison" },
+  { kind: "h2", text: "Six structures side by side: the comparison table", id: "comparison" },
   {
     kind: "p",
     text: "The whole landscape in one table. Read it as a progression from “files things” to “decides what's relevant” — with the vector index as the parallel, fuzzy alternative to explicit edges.",
   },
   { kind: "comparison" },
 
-  { kind: "h2", text: "Which one do you actually need?", id: "decision" },
+  { kind: "h2", text: "When to use a knowledge graph vs vector database vs ontology", id: "decision" },
   {
     kind: "decision",
     items: [
@@ -462,16 +487,16 @@ const hits = index
   {
     kind: "list",
     items: [
-      "**Gruber, T. (1993).** *A Translation Approach to Portable Ontology Specifications* — the paper that gave us the now-canonical definition: an ontology is a “formal, explicit specification of a shared conceptualization.”",
-      "**W3C OWL 2 Web Ontology Language** — the formal standard for ontologies on the web (T-Box / A-Box, classes, properties, individuals, axioms).",
-      "**W3C RDF 1.1** and **SPARQL 1.1** — the standards behind RDF triple stores and the query language used to traverse them.",
-      "**schema.org** — the practical, web-scale vocabulary jointly stewarded by Google, Microsoft, Yahoo, and Yandex; the easiest entry point to publishing structured data.",
-      "**Singhal, A. (2012). *Introducing the Knowledge Graph: things, not strings* (Google blog)** — the post that mainstreamed the term “knowledge graph.”",
-      "**Wikidata** and **Google's Knowledge Graph API** — the two reference graphs your entities should resolve to via `sameAs`.",
-      "**Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*** — the original RAG paper.",
-      "**Edge et al. (Microsoft Research, 2024). *From Local to Global: A Graph RAG Approach to Query-Focused Summarization*** — coined the GraphRAG pattern (vectors + KG) referenced above.",
-      "**Malkov & Yashunin (2018). *Efficient and robust approximate nearest neighbor search using HNSW graphs*** — the algorithm behind most modern vector databases.",
-      "**Hogan et al. (2021). *Knowledge Graphs*** — comprehensive academic survey (ACM Computing Surveys), if you want the rigorous version of this guide.",
+      "**[Gruber, T. (1993)](https://tomgruber.org/writing/ontolingua-kaj-1993.htm).** *A Translation Approach to Portable Ontology Specifications* — the paper that gave us the now-canonical definition: an ontology is a “formal, explicit specification of a shared conceptualization.”",
+      "**[W3C OWL 2 Web Ontology Language](https://www.w3.org/TR/owl2-overview/)** — the formal standard for ontologies on the web (T-Box / A-Box, classes, properties, individuals, axioms).",
+      "**[W3C RDF 1.1](https://www.w3.org/TR/rdf11-concepts/)** and **[SPARQL 1.1](https://www.w3.org/TR/sparql11-query/)** — the standards behind RDF triple stores and the query language used to traverse them.",
+      "**[schema.org](https://schema.org/) (2011–present)** — the practical, web-scale vocabulary jointly stewarded by Google, Microsoft, Yahoo, and Yandex; the easiest entry point to publishing structured data.",
+      "**[Singhal, A. (2012)](https://blog.google/products/search/introducing-knowledge-graph-things-not/). *Introducing the Knowledge Graph: things, not strings* (Google blog)** — the post that mainstreamed the term “knowledge graph.”",
+      "**[Wikidata](https://www.wikidata.org/) (2012–present)** and **[Google's Knowledge Graph API](https://developers.google.com/knowledge-graph)** — the two reference graphs your entities should resolve to via `sameAs`.",
+      "**[Lewis et al. (2020)](https://arxiv.org/abs/2005.11401). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*** — the original RAG paper.",
+      "**[Edge et al. (Microsoft Research, 2024)](https://arxiv.org/abs/2404.16130). *From Local to Global: A Graph RAG Approach to Query-Focused Summarization*** — coined the GraphRAG pattern (vectors + KG) referenced above.",
+      "**[Malkov & Yashunin (2018)](https://arxiv.org/abs/1603.09320). *Efficient and robust approximate nearest neighbor search using HNSW graphs*** — the algorithm behind most modern vector databases.",
+      "**[Hogan et al. (2021)](https://arxiv.org/abs/2003.02320). *Knowledge Graphs*** — comprehensive academic survey (ACM Computing Surveys), if you want the rigorous version of this guide.",
     ],
   },
 
@@ -484,12 +509,22 @@ export const guides: Guide[] = [
     slug: "graph-types-for-ai-agents",
     title: "Graph Types for AI Agents",
     metaTitle:
-      "Knowledge Graph vs Vector Database vs Ontology: The 2026 Guide for AI Agents, RAG & GraphRAG",
+      "Knowledge Graph vs Vector Database vs Ontology: The 2026 Reference for AI Agents, RAG & GraphRAG",
     metaDescription:
       "Knowledge graph, ontology, taxonomy, information graph, context graph, vector database — what each one is, how they differ, and which to use for RAG, GraphRAG, semantic search, AEO and GEO. One dataset modeled six ways, with runnable code, primary sources, and interactive 3D.",
-    headline: "Graph Types for AI Agents",
+    kicker: "The 2026 reference · For AI agents, RAG & GraphRAG",
+    headline: "Knowledge Graph vs Vector Database vs Ontology",
+    subhead:
+      "…plus **Taxonomy**, **Information Graph** & **Context Graph** — the **6 structures** powering modern AI agents",
     deck:
-      "Knowledge graph vs vector database vs ontology — the six structures behind modern AI search (taxonomy, ontology, knowledge graph, information graph, context graph, vector / embedding index), what each one actually is, when to use which, and how they combine into GraphRAG. One dataset, six structures, visualized in 2D and 3D.",
+      "The six structures behind modern AI search — taxonomy, ontology, knowledge graph, information graph, context graph, vector / embedding index — what each one actually is, when to use which, and how they combine into GraphRAG. One dataset, six structures, visualized in 2D and 3D.",
+    author: {
+      name: "Venkata Pagadala",
+      title: "AI Product Manager (Search · SEO · GEO)",
+      org: "AT&T",
+      url: "/about",
+      bio: "10+ years building entity systems and knowledge graphs at enterprise scale; published the AI Contributors directory and the AI Concepts Encyclopedia on this site.",
+    },
     datePublished: "2026-06-17",
     dateModified: "2026-06-22",
     readingTime: "16 min read",

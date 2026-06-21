@@ -1,6 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useMemo, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Line, Billboard, Text } from "@react-three/drei";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { viewTo3D, type GraphView } from "@/lib/graphModels";
@@ -23,10 +23,25 @@ const colorFor = (kind: string, dark: boolean) =>
 
 type N3 = ReturnType<typeof viewTo3D>["nodes"][number];
 
-function Node({ node, color, textColor, dim, onOver, onOut }: { node: N3; color: string; textColor: string; dim: boolean; onOver: () => void; onOut: () => void; }) {
+function Node({ node, color, textColor, dim, phase, onOver, onOut }: { node: N3; color: string; textColor: string; dim: boolean; phase: number; onOver: () => void; onOut: () => void; }) {
   const isBox = node.kind === "page";
+  const ref = useRef<any>(null);
+  const born = useRef<number | null>(null);
+  useFrame((state) => {
+    const g = ref.current;
+    if (!g) return;
+    const t = state.clock.elapsedTime;
+    if (born.current === null) born.current = t;
+    // entrance: ease-in scale (staggered by phase) + settle
+    const dt = t - born.current - phase * 0.06;
+    const s = Math.max(0, Math.min(1, dt / 0.5));
+    const eased = 1 - (1 - s) * (1 - s);
+    g.scale.setScalar(eased * (dim ? 0.92 : 1));
+    // idle: gentle bob so the scene feels alive even at rest
+    g.position.y = node.pos[1] + Math.sin(t * 1.1 + phase) * 0.05;
+  });
   return (
-    <group position={node.pos}>
+    <group ref={ref} position={node.pos}>
       <mesh onPointerOver={onOver} onPointerOut={onOut}>
         {isBox ? <boxGeometry args={[node.size * 1.6, node.size * 1.6, node.size * 1.6]} /> : <sphereGeometry args={[node.size, 32, 32]} />}
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={dim ? 0.04 : 0.4} roughness={0.35} metalness={0.1} transparent opacity={dim ? 0.22 : 1} />
@@ -78,8 +93,8 @@ function Scene({ view, dark }: { view: GraphView; dark: boolean }) {
           </group>
         );
       })}
-      {nodes.map((n) => (
-        <Node key={n.id} node={n} color={colorFor(n.kind, dark)} textColor={textColor} dim={nodeDim(n.id)} onOver={() => setActive(n.id)} onOut={() => setActive(null)} />
+      {nodes.map((n, i) => (
+        <Node key={n.id} node={n} phase={i} color={colorFor(n.kind, dark)} textColor={textColor} dim={nodeDim(n.id)} onOver={() => setActive(n.id)} onOut={() => setActive(null)} />
       ))}
       <OrbitControls enablePan={false} enableZoom minDistance={4} maxDistance={18} autoRotate autoRotateSpeed={0.5} makeDefault />
     </>

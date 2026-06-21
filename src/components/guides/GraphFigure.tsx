@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GraphView, GNode } from "@/lib/graphModels";
 import Graph3DLazy from "./Graph3DLazy";
 
@@ -73,8 +73,38 @@ interface Props {
 
 const GraphFigure = ({ view, hideLegend }: Props) => {
   const [active, setActive] = useState<string | null>(null);
+  // SSR/initial render is always "2d" so crawlers + the first paint get the
+  // server-rendered SVG (no JS needed). On the client we auto-upgrade to 3D
+  // when the figure scrolls into view, and drop back to 2D when it leaves —
+  // so only ~1-2 WebGL canvases run at once and it stays fast.
   const [mode, setMode] = useState<"2d" | "3d">("2d");
+  const figRef = useRef<HTMLElement>(null);
+  const pinnedRef = useRef(false);
   const byId = new Map<string, GNode>(view.nodes.map((n) => [n.id, n]));
+
+  useEffect(() => {
+    const el = figRef.current;
+    if (!el) return;
+    let webgl = false;
+    try {
+      const c = document.createElement("canvas");
+      webgl = !!(c.getContext("webgl2") || c.getContext("webgl"));
+    } catch {
+      webgl = false;
+    }
+    if (!webgl) return; // no WebGL → stay on the SVG
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (pinnedRef.current) return; // user made a manual choice
+          setMode(e.isIntersecting ? "3d" : "2d");
+        });
+      },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const neighbors = (id: string) => {
     const set = new Set<string>([id]);
@@ -89,15 +119,15 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
   const edgeDim = (s: string, t: string) => (lit ? !(lit.has(s) && lit.has(t)) : false);
 
   return (
-    <figure className="my-2">
+    <figure ref={figRef} className="my-2">
       <div className="relative border border-border bg-card/40">
         <button
           type="button"
-          onClick={() => setMode((m) => (m === "2d" ? "3d" : "2d"))}
+          onClick={() => { pinnedRef.current = true; setMode((m) => (m === "2d" ? "3d" : "2d")); }}
           className="absolute top-2 right-2 z-10 font-mono text-[10px] px-2 py-1 border border-border bg-background/70 backdrop-blur text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
-          aria-label={mode === "2d" ? "Explore this graph in 3D" : "Back to 2D figure"}
+          aria-label={mode === "2d" ? "Show the interactive 3D graph" : "Show the static 2D figure"}
         >
-          {mode === "2d" ? "Explore in 3D ⤢" : "← 2D"}
+          {mode === "2d" ? "Explore in 3D ⤢" : "Static 2D"}
         </button>
         <svg
           viewBox={`0 0 ${view.width} ${view.height}`}
