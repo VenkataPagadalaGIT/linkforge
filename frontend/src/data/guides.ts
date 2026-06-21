@@ -235,8 +235,24 @@ const graphComparison: ComparisonRow[] = [
 
 const graphFaqs: FaqItem[] = [
   {
+    q: "What is a knowledge graph, in plain English?",
+    a: "A knowledge graph is a network of real-world things (entities like Nike, the Pegasus 41, Road Running) connected by labeled, directional relationships (`Nike Pegasus 41 → madeBy → Nike`). It's how Google's Knowledge Graph, Wikidata, and the answer layer of ChatGPT/Perplexity/Gemini *understand* that the words you typed refer to specific entities — and what those entities are connected to. Think “Wikipedia for machines, but with the connections made explicit and queryable.”",
+  },
+  {
+    q: "What is the difference between a knowledge graph and a vector database?",
+    a: "A knowledge graph stores **explicit relationships** between specific things — `Nike Pegasus 41 → madeBy → Nike`. You query it by traversing edges. A vector database stores **embeddings** — long lists of numbers representing each piece of content — and lets you find the most *similar* content to a query by distance in that number-space (typically using approximate nearest-neighbor search like HNSW). One is precise and explainable; the other is fuzzy and forgiving. They're not competitors — most modern AI systems use vectors for fast recall, then a knowledge graph to verify facts and explain *why*.",
+  },
+  {
+    q: "What is GraphRAG and when should I use it?",
+    a: "GraphRAG is the pattern of combining a vector index (for fast, fuzzy retrieval) with a knowledge graph (for grounded facts and explainability). The term was popularized by Microsoft Research's 2024 paper *“From Local to Global: A Graph RAG Approach to Query-Focused Summarization.”* Use plain (vector-only) RAG when you're answering open-ended questions over messy text and don't need provenance. Use GraphRAG when answers must be exact, auditable, multi-hop (`A → B → C`), or when you need to reason across an entire corpus rather than just retrieving similar chunks.",
+  },
+  {
+    q: "When should I use a graph database, an ontology, or a knowledge graph?",
+    a: "A **graph database** (Neo4j, Memgraph, TigerGraph, ArangoDB) is the storage engine — it holds nodes and edges efficiently. An **ontology** is the schema you load into (or alongside) it — the rules about what types of things can exist and how they can relate. A **knowledge graph** is the result: a graph database, structured by an ontology, populated with real instances and ideally linked to external entities via `sameAs`. You can have a graph DB without an ontology (and watch it rot), or an ontology with no data (a blueprint with no building). A real knowledge graph is all three working together.",
+  },
+  {
     q: "Is a knowledge graph the same as an ontology?",
-    a: "No. An ontology is the schema — the classes, allowed relationships, and rules. A knowledge graph is that schema filled with real instances and facts. The ontology is the empty blueprint; the knowledge graph is the populated building. You can have an ontology with no data, but a well-built knowledge graph almost always relies on an ontology to keep its facts consistent.",
+    a: "No. An ontology is the schema — the classes, allowed relationships, and rules. A knowledge graph is that schema populated with real instances and facts. The ontology is the empty blueprint; the knowledge graph is the populated building. You can have an ontology with no data, but a well-built knowledge graph almost always relies on an ontology to keep its facts consistent as it grows.",
   },
   {
     q: "Knowledge graph vs vector database — which should I use for RAG?",
@@ -256,19 +272,58 @@ const graphFaqs: FaqItem[] = [
   },
   {
     q: "Property graph or RDF triple store — does the implementation matter?",
-    a: "Both are valid ways to build a knowledge graph, and the choice is about trade-offs, not correctness. A labeled property graph (Neo4j-style) treats edges as first-class objects with their own properties and is ergonomic for traversal-heavy applications. RDF triple stores use subject–predicate–object triples, follow W3C standards, and excel at linked-data interoperability — sharing facts across organizations and resolving to the public web. Choose property graphs for internal app logic and analytics; choose RDF when web-scale interoperability and standards compliance matter.",
+    a: "Both are valid ways to build a knowledge graph, and the choice is about trade-offs, not correctness. A labeled property graph (Neo4j-style) treats edges as first-class objects with their own properties and is ergonomic for traversal-heavy applications. RDF triple stores use subject–predicate–object triples, follow W3C standards (RDF 1.1, SPARQL 1.1, OWL 2), and excel at linked-data interoperability — sharing facts across organizations and resolving to the public web. Choose property graphs for internal app logic and analytics; choose RDF when web-scale interoperability and standards compliance matter.",
+  },
+  {
+    q: "Knowledge graph vs relational database — when do I need one over the other?",
+    a: "Use a relational database (Postgres, MySQL) when your data fits clean tables, your queries are well-known up front, and you mostly aggregate within a single domain (orders, users, inventory). Use a knowledge graph when relationships are first-class (you frequently ask *who is connected to what, how many hops away?*), when entities span domains and need to resolve to the wider web, or when downstream systems — including LLMs — need to reason over the connections, not just join them. Many production stacks use both: the relational DB is the system of record, and a knowledge graph projects the relationships AI systems and answer engines actually consume.",
+  },
+  {
+    q: "Is semantic search the same as a vector database?",
+    a: "Semantic search is the *capability* — finding results by meaning rather than exact keywords. A vector database is one common *implementation* of it: embed every document, embed the query, return nearest neighbors. But semantic search can also be powered by a knowledge graph (using entity matches and typed relationships) or, more powerfully, by both together — vectors for fuzzy recall + a graph for entity grounding. Pure-vector semantic search is fast and forgiving but blind to facts. Add a knowledge graph and you get explainable, fact-checked answers — the AEO/GEO ceiling.",
+  },
+  {
+    q: "How do I actually build a knowledge graph?",
+    a: "Five steps, in order: (1) define a lightweight **ontology** — even just schema.org types you'll reuse; (2) **extract entities and relationships** from your source data (LLMs are very good at this now; tools like LangChain's LLMGraphTransformer or Microsoft's GraphRAG pipeline automate it); (3) **resolve entities** to canonical IDs (Wikidata QIDs, your internal product IDs) so duplicates collapse; (4) **store** in a graph database (Neo4j, Memgraph, Neptune) or RDF triple store (Apache Jena, Stardog, GraphDB); (5) **publish the high-leverage subset** as JSON-LD on your pages so search and answer engines can read it directly. Start small, link out via `sameAs`, and let the ontology evolve.",
   },
 ];
 
 const graphBlocks: Block[] = [
   {
     kind: "p",
-    text: "“Ontology,” “knowledge graph,” “context graph,” “information graph,” “vector database” — these terms get used interchangeably, and they are not interchangeable. Each is a different way to structure meaning, each answers a different question, and AI agents need different ones for different jobs. This guide pins down what each actually is, shows the **same dataset modeled six ways** so you can see the difference, and explains which layer matters for SEO, AEO, GEO, and agents.",
+    text: "By **Venkata Pagadala** — AI Product Manager (Search · SEO · GEO) at AT&T. 10+ years building entity systems and knowledge graphs at enterprise scale; published the AI Contributors directory and the AI Concepts Encyclopedia on this site.",
+  },
+  {
+    kind: "p",
+    text: "“Ontology,” “knowledge graph,” “context graph,” “information graph,” “vector database” — these terms get used interchangeably, and they are not interchangeable. Each is a different way to structure meaning, each answers a different question, and AI agents need different ones for different jobs. This guide pins down what each actually is, shows the **same dataset modeled six ways** so you can see the difference, and explains which layer matters for **RAG, GraphRAG, semantic search, AEO and GEO**.",
   },
   {
     kind: "callout",
     title: "The one-line version",
-    text: "A **taxonomy** files things. An **ontology** defines what can exist. A **knowledge graph** records what's true. An **information graph** maps your content to that truth and to demand. A **context graph** decides what's relevant right now. A **vector index** finds what's similar. They stack — and agents use all of them.",
+    text: "A **taxonomy** files things. An **ontology** defines what can exist. A **knowledge graph** records what's true. An **information graph** maps your content to that truth and to demand. A **context graph** decides what's relevant right now. A **vector index / vector database** finds what's similar. They stack — and modern AI agents use all of them.",
+  },
+  {
+    kind: "h2", text: "Plain-English version (start here)", id: "plain-english",
+  },
+  {
+    kind: "p",
+    text: "If you've used a relational database (rows and columns) and a graph database like Neo4j (nodes and edges), you already grasp two of the six. Here's the same idea for the rest, in the bluntest words possible:",
+  },
+  {
+    kind: "list",
+    items: [
+      "**Taxonomy = a folder tree.** “Footwear → Running → Road → Nike Pegasus 41.” One parent each. Great for navigation; terrible at expressing *“who made this”* or *“what's this for.”*",
+      "**Ontology = the schema / rulebook.** Lists what types of things can exist (Product, Brand, Activity), how they're allowed to relate (`Product hasBrand Brand`), and what's not allowed. No actual data yet — just the empty form.",
+      "**Knowledge graph = the schema filled in with real things.** “Nike Pegasus 41 — madeBy → Nike — sameAs → Wikidata's Nike.” This is what Google, Bing, ChatGPT and Perplexity reason over when they answer factual questions.",
+      "**Information graph = your content map.** “The page `/guides/road-shoes` mentions Pegasus 41 and targets the query *best road running shoes*.” It's the SEO/AEO layer that connects your URLs to entities and to demand.",
+      "**Context graph = the personalization layer.** Same knowledge graph + who's asking + when + where + what's fresh and trusted. It decides *which* of two correct answers to surface for *this* person right now.",
+      "**Vector index / vector database = similarity by vibes.** Every piece of content is turned into a list of ~1,500 numbers (an embedding). Search means finding the lists most similar to your query's list. No `WHERE clauses`, no edges — just *nearness in meaning-space*. Pinecone, Weaviate, Qdrant, and pgvector all do this. It's how RAG retrieves candidate text fast.",
+    ],
+  },
+  {
+    kind: "callout",
+    title: "If you only remember one thing",
+    text: "**Graphs = explicit truth. Vectors = fuzzy similarity.** Modern AI systems use both — vectors to find candidate content (recall) and a knowledge graph to verify the facts (precision). The combined pattern has a name: **GraphRAG** (Microsoft Research, 2024).",
   },
   { kind: "h2", text: "See it: one domain, six structures", id: "see-it" },
   {
@@ -429,24 +484,28 @@ export const guides: Guide[] = [
     slug: "graph-types-for-ai-agents",
     title: "Graph Types for AI Agents",
     metaTitle:
-      "Ontology vs Knowledge Graph vs Context Graph vs Information Graph (2026 Guide)",
+      "Knowledge Graph vs Vector Database vs Ontology: The 2026 Guide for AI Agents, RAG & GraphRAG",
     metaDescription:
-      "The definitive guide to graph types for AI agents: ontology, taxonomy, knowledge graph, information graph, context graph, and vector indexes — defined, compared, and visualized with one dataset modeled six ways.",
+      "Knowledge graph, ontology, taxonomy, information graph, context graph, vector database — what each one is, how they differ, and which to use for RAG, GraphRAG, semantic search, AEO and GEO. One dataset modeled six ways, with runnable code, primary sources, and interactive 3D.",
     headline: "Graph Types for AI Agents",
     deck:
-      "Ontology, taxonomy, knowledge graph, information graph, context graph, vector index — what each one actually is, how they differ, and which layer matters for SEO, AEO, GEO, and agents. One dataset, six structures, visualized.",
+      "Knowledge graph vs vector database vs ontology — the six structures behind modern AI search (taxonomy, ontology, knowledge graph, information graph, context graph, vector / embedding index), what each one actually is, when to use which, and how they combine into GraphRAG. One dataset, six structures, visualized in 2D and 3D.",
     datePublished: "2026-06-17",
-    dateModified: "2026-06-21",
-    readingTime: "14 min read",
+    dateModified: "2026-06-22",
+    readingTime: "16 min read",
     tags: [
       "Knowledge Graphs",
-      "Ontology",
-      "Context Graph",
       "Vector Databases",
+      "Ontology",
+      "GraphRAG",
       "RAG",
+      "Retrieval-Augmented Generation",
+      "Context Graph",
+      "Semantic Search",
       "AEO",
       "GEO",
       "AI Agents",
+      "Schema.org",
     ],
     terms: graphTerms,
     comparison: graphComparison,
