@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { GraphView, GNode } from "@/lib/graphModels";
+import Graph3DLazy from "./Graph3DLazy";
 
 /**
  * GraphFigure — renders a GraphView as a self-contained, crawlable SVG.
@@ -72,6 +73,7 @@ interface Props {
 
 const GraphFigure = ({ view, hideLegend }: Props) => {
   const [active, setActive] = useState<string | null>(null);
+  const [mode, setMode] = useState<"2d" | "3d">("2d");
   const byId = new Map<string, GNode>(view.nodes.map((n) => [n.id, n]));
 
   const neighbors = (id: string) => {
@@ -88,7 +90,15 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
 
   return (
     <figure className="my-2">
-      <div className="border border-border bg-card/40">
+      <div className="relative border border-border bg-card/40">
+        <button
+          type="button"
+          onClick={() => setMode((m) => (m === "2d" ? "3d" : "2d"))}
+          className="absolute top-2 right-2 z-10 font-mono text-[10px] px-2 py-1 border border-border bg-background/70 backdrop-blur text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+          aria-label={mode === "2d" ? "Explore this graph in 3D" : "Back to 2D figure"}
+        >
+          {mode === "2d" ? "Explore in 3D ⤢" : "← 2D"}
+        </button>
         <svg
           viewBox={`0 0 ${view.width} ${view.height}`}
           className="w-full h-auto"
@@ -176,6 +186,11 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
             );
           })}
         </svg>
+        {mode === "3d" && (
+          <div className="absolute inset-0 bg-background">
+            <Graph3DLazy view={view} />
+          </div>
+        )}
       </div>
 
       {!hideLegend && (

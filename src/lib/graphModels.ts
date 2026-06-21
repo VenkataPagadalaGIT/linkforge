@@ -382,3 +382,36 @@ export function buildKnowledgeGraph3D(): { nodes: GNode3D[]; edges: GEdge3D[] } 
   ];
   return { nodes, edges };
 }
+
+/**
+ * viewTo3D — project any 2D GraphView into 3D coordinates so the interactive
+ * <Graph3D> can render ANY of the six figures. Deterministic: x/y come from the
+ * curated 2D layout (centered + scaled), z is a stable per-node spread so the
+ * graph reads as dimensional rather than flat. No randomness → SSR-safe.
+ */
+export function viewTo3D(view: GraphView): {
+  nodes: { id: string; label: string; kind: string; pos: [number, number, number]; size: number }[];
+  edges: { source: string; target: string; label?: string; kind?: string; dashed?: boolean }[];
+} {
+  const { width: W, height: H } = view;
+  const zFor = (id: string) => {
+    let s = 0;
+    for (let i = 0; i < id.length; i++) s = (s * 31 + id.charCodeAt(i)) >>> 0;
+    return ((s % 1000) / 1000 - 0.5) * 3.4;
+  };
+  const nodes = view.nodes.map((n) => ({
+    id: n.id,
+    label: n.label,
+    kind: n.kind,
+    pos: [(n.x / W - 0.5) * 8.4, (0.5 - n.y / H) * 5.2, zFor(n.id)] as [number, number, number],
+    size: 0.26 * (n.size ?? 1) + 0.16,
+  }));
+  const edges = view.edges.map((e) => ({
+    source: e.source,
+    target: e.target,
+    label: e.label,
+    kind: e.kind,
+    dashed: e.dashed,
+  }));
+  return { nodes, edges };
+}
