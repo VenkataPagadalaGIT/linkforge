@@ -101,7 +101,7 @@ const graphTerms: DefinedTerm[] = [
     oneLiner:
       "An ontology is the formal blueprint of a domain: the classes that can exist, the types of relationships allowed between them, and the rules that govern them — independent of any actual data.",
     inDepth:
-      "Where a taxonomy only nests categories, an ontology defines the full grammar of a domain. It says a Product can have a Brand, belong to a Category, be suited for an Activity, and carry Attributes — and it can enforce rules such as “every Product must have exactly one Brand.” Schema.org is a lightweight, web-scale ontology. An ontology contains no instances; it is the empty form that real facts later fill in.",
+      "Where a taxonomy only nests categories, an ontology defines the full grammar of a domain. It says a Product can have a Brand, belong to a Category, be suited for an Activity, and carry Attributes — and it can enforce rules such as “every Product must have exactly one Brand.” Schema.org is a widely-cited, web-scale vocabulary that functions as a lightweight ontology in practice. Formally, the ontology layer (the “T-Box” in Description Logic) defines classes, relationship types, and rules; instances live in the “A-Box.” OWL ontologies can include named individuals, but in practice we keep the two layers separate for clarity.",
     analogy:
       "The architectural blueprint and building code for a house. It specifies what rooms and connections are permitted and the rules they must obey, before a single brick is laid.",
     example:
@@ -149,7 +149,7 @@ const graphTerms: DefinedTerm[] = [
     oneLiner:
       "A context graph layers situation — user, intent, journey stage, location, time, freshness, and trust — over a knowledge graph to decide which answer is right for this person, right now.",
     inDepth:
-      "A knowledge graph knows that both the Pegasus and the Clifton are road shoes. A context graph decides which one to surface for a beginner marathoner in Atlanta, on mobile, in winter, who wants maximum cushioning and an in-stock option with a fresh review. It re-weights the knowledge graph by situational signals and scores the best match. This is the highest-value and newest layer — the one that powers personalization, AI Overviews, and agentic decisions.",
+      "A knowledge graph knows that both the Pegasus and the Clifton are road shoes. A context graph decides which one to surface for a beginner marathoner in Atlanta, on mobile, in winter, who wants maximum cushioning and an in-stock option with a fresh review. It re-weights the knowledge graph by situational signals and scores the best match. (Like “information graph,” *context graph* is an applied/industry framing rather than a formal CS category — useful precisely because it names the situational-relevance layer that nothing else does. Similarity scores below are illustrative.) This is the highest-value and newest layer — the one that powers personalization, AI Overviews, and agentic decisions.",
     analogy:
       "A great concierge. They know the full menu (the knowledge graph), but their recommendation changes based on who you are, the occasion, the time of day, and what's fresh in the kitchen.",
     example:
@@ -165,7 +165,7 @@ const graphTerms: DefinedTerm[] = [
     oneLiner:
       "A vector index stores content as numerical embeddings and retrieves by similarity — nearest neighbors in meaning-space — with no schema and no explicit relationships.",
     inDepth:
-      "A vector index is the counterpart to a graph, not a kind of it. Instead of typed edges, it places everything as points in a high-dimensional space where closeness means semantic similarity. Ask a fuzzy question and it returns the nearest content by cosine distance. It is fast, forgiving of phrasing, and needs no upfront modeling — but it cannot tell you *why* two things relate, cannot guarantee a fact, and cannot traverse a chain of reasoning. Most production RAG systems pair a vector index (recall) with a knowledge graph (precision and grounding).",
+      "A vector index is the counterpart to a graph, not a kind of it. Instead of typed edges, it places everything as points in a high-dimensional space where closeness means semantic similarity. Production systems use approximate nearest-neighbor search (HNSW, IVF) to find the closest content in milliseconds. Most vector databases (Pinecone, Weaviate, Qdrant) also let you attach metadata for filtering — but the geometry itself carries no semantic relationships: it can't tell you *why* two things relate, can't guarantee a fact, and can't traverse a chain of reasoning. Leading agentic systems are increasingly pairing vector retrieval (recall) with a knowledge graph (precision and grounding) — a pattern Microsoft Research labeled **GraphRAG** in 2024.",
     analogy:
       "Standing in a room where similar ideas naturally cluster together. You can grab whatever is nearby, but no one has labeled the connections — you only know things are 'close,' not how they relate.",
     example:
@@ -202,7 +202,7 @@ const graphComparison: ComparisonRow[] = [
     structure: "Entities + typed, directed edges; resolvable",
     example: "Pegasus 41 madeBy Nike; sameAs Wikidata",
     bestFor: "Factual grounding, entity SEO, reasoning",
-    limit: "Costly to build & maintain; needs an ontology",
+    limit: "Costly to build & maintain; rots without an ontology",
   },
   {
     type: "Information Graph",
@@ -240,7 +240,7 @@ const graphFaqs: FaqItem[] = [
   },
   {
     q: "Knowledge graph vs vector database — which should I use for RAG?",
-    a: "Usually both. A vector index gives you fast, fuzzy recall: it finds candidate content even when the wording doesn't match. A knowledge graph gives you precision and grounding: exact facts, explainable relationships, and the ability to traverse a chain of reasoning. Production RAG systems increasingly combine them — vectors to retrieve candidates, a graph to verify and structure the answer. Use vectors alone for similarity search; add a graph when answers must be exact, auditable, or fact-checked.",
+    a: "Usually both. A vector index gives you fast, fuzzy recall: it finds candidate content even when the wording doesn't match. A knowledge graph gives you precision and grounding: exact facts, explainable relationships, and the ability to traverse a chain of reasoning. Most production RAG today is vector-only, but combining vectors (retrieval) with a knowledge graph (verification + structure) — the pattern Microsoft Research dubbed **GraphRAG** in 2024 — is now standard in agentic systems where answers must be exact, auditable, or fact-checked. Use vectors alone for similarity search; add a graph when grounding matters.",
   },
   {
     q: "What is a context graph and why does it matter for AEO and GEO?",
@@ -323,6 +323,9 @@ kg.addNode("pegasus", { type: "Product", label: "Nike Pegasus 41" });
 kg.addNode("nike",    { type: "Brand",   label: "Nike" });
 kg.addNode("road",    { type: "Activity", label: "Road Running" });
 
+// External entity — declared before the sameAs edge can reference it.
+kg.addNode("wikidata:Q483915", { type: "External", label: "Wikidata: Nike" });
+
 kg.addEdge("pegasus", "nike", { rel: "madeBy" });
 kg.addEdge("pegasus", "road", { rel: "suitedFor" });
 kg.addEdge("nike", "wikidata:Q483915", { rel: "sameAs" });
@@ -396,6 +399,27 @@ const hits = index
     ],
   },
 
+  { kind: "h2", text: "Primary sources & further reading", id: "sources" },
+  {
+    kind: "p",
+    text: "If you want to go deeper than this guide — or verify any claim above — these are the canonical references.",
+  },
+  {
+    kind: "list",
+    items: [
+      "**Gruber, T. (1993).** *A Translation Approach to Portable Ontology Specifications* — the paper that gave us the now-canonical definition: an ontology is a “formal, explicit specification of a shared conceptualization.”",
+      "**W3C OWL 2 Web Ontology Language** — the formal standard for ontologies on the web (T-Box / A-Box, classes, properties, individuals, axioms).",
+      "**W3C RDF 1.1** and **SPARQL 1.1** — the standards behind RDF triple stores and the query language used to traverse them.",
+      "**schema.org** — the practical, web-scale vocabulary jointly stewarded by Google, Microsoft, Yahoo, and Yandex; the easiest entry point to publishing structured data.",
+      "**Singhal, A. (2012). *Introducing the Knowledge Graph: things, not strings* (Google blog)** — the post that mainstreamed the term “knowledge graph.”",
+      "**Wikidata** and **Google's Knowledge Graph API** — the two reference graphs your entities should resolve to via `sameAs`.",
+      "**Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*** — the original RAG paper.",
+      "**Edge et al. (Microsoft Research, 2024). *From Local to Global: A Graph RAG Approach to Query-Focused Summarization*** — coined the GraphRAG pattern (vectors + KG) referenced above.",
+      "**Malkov & Yashunin (2018). *Efficient and robust approximate nearest neighbor search using HNSW graphs*** — the algorithm behind most modern vector databases.",
+      "**Hogan et al. (2021). *Knowledge Graphs*** — comprehensive academic survey (ACM Computing Surveys), if you want the rigorous version of this guide.",
+    ],
+  },
+
   { kind: "h2", text: "Frequently asked questions", id: "faq" },
   { kind: "faq" },
 ];
@@ -412,7 +436,7 @@ export const guides: Guide[] = [
     deck:
       "Ontology, taxonomy, knowledge graph, information graph, context graph, vector index — what each one actually is, how they differ, and which layer matters for SEO, AEO, GEO, and agents. One dataset, six structures, visualized.",
     datePublished: "2026-06-17",
-    dateModified: "2026-06-17",
+    dateModified: "2026-06-21",
     readingTime: "14 min read",
     tags: [
       "Knowledge Graphs",
