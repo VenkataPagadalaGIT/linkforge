@@ -208,6 +208,22 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
           </p>
         </figcaption>
       )}
+
+      {/* Machine-readable graph data: server-rendered plain text so crawlers
+          (incl. JS-off AI bots) and screen readers get the entities AND the
+          relationships, not just disconnected SVG labels or WebGL pixels. */}
+      <details className="mt-2">
+        <summary className="font-mono text-[10px] text-muted-foreground/50 cursor-pointer hover:text-muted-foreground transition-colors">
+          Graph data (text) — {view.nodes.length} entities, {view.edges.length} relationships
+        </summary>
+        <ul className="mt-2 space-y-0.5 pl-1">
+          {view.edges.map((e, i) => (
+            <li key={i} className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
+              {byId.get(e.source)?.label ?? e.source} —{e.label ?? "related to"}→ {byId.get(e.target)?.label ?? e.target}
+            </li>
+          ))}
+        </ul>
+      </details>
     </figure>
   );
 };
