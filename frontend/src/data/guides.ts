@@ -273,7 +273,7 @@ const graphBlocks: Block[] = [
   { kind: "h2", text: "See it: one domain, six structures", id: "see-it" },
   {
     kind: "p",
-    text: "Everything below uses a single, deliberately small domain — a running-shoe retailer with a content site — so the structures are directly comparable. Watch how the **same information** changes shape depending on what you're trying to do with it. (Hover any node to trace its connections.)",
+    text: "Everything below uses a single, deliberately small domain — a running-shoe retailer with a content site — so the structures are directly comparable. Watch how the **same information** changes shape depending on what you're trying to do with it. (Hover any node to trace its connections — and hit **Explore in 3D** on any figure to orbit it in space.)",
   },
   { kind: "stack" },
   {
@@ -334,12 +334,6 @@ const nikesRoadShoes = kg.filterNodes((n, attr) =>
   kg.outNeighbors(n).includes("nike") &&
   kg.outNeighbors(n).includes("road"));`,
   },
-
-  {
-    kind: "p",
-    text: "Prefer to explore it yourself? Drag to orbit the same knowledge graph in 3D, scroll to zoom, and hover any entity to trace its relationships.",
-  },
-  { kind: "graph3d" },
 
   { kind: "h2", text: "4. Information graph — your content map", id: "information-graph" },
   { kind: "figure", viewId: "information-graph" },

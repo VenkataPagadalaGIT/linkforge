@@ -2,58 +2,37 @@
 import { useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Line, Billboard, Text } from "@react-three/drei";
-import * as THREE from "three";
 import { useTheme } from "@/components/theme/ThemeProvider";
-import { buildKnowledgeGraph3D, type GNode3D } from "@/lib/graphModels";
+import { viewTo3D, type GraphView } from "@/lib/graphModels";
 
-// Categorical accent colors — mid-tones legible on both themes.
-const KIND_COLOR: Record<string, string> = {
+// Fixed accent hues (legible on both themes). Neutral kinds flip with theme.
+const ACCENT: Record<string, string> = {
+  leaf: "#3fb6b6",
   product: "#3fb6b6",
+  page: "#3fb6b6",
   brand: "#d39a4a",
+  rule: "#d39a4a",
+  query: "#d39a4a",
   concept: "#8b93e6",
-  attr: "#9a9aa6",
-  external: "#7a7a86",
+  context: "#8b93e6",
+  win: "#46b06e",
+  user: "#46b06e",
 };
+const colorFor = (kind: string, dark: boolean) =>
+  ACCENT[kind] ?? (dark ? "#a6a6b0" : "#6a6a76");
 
-function Node({
-  node,
-  color,
-  textColor,
-  dim,
-  onOver,
-  onOut,
-}: {
-  node: GNode3D;
-  color: string;
-  textColor: string;
-  dim: boolean;
-  onOver: () => void;
-  onOut: () => void;
-}) {
+type N3 = ReturnType<typeof viewTo3D>["nodes"][number];
+
+function Node({ node, color, textColor, dim, onOver, onOut }: { node: N3; color: string; textColor: string; dim: boolean; onOver: () => void; onOut: () => void; }) {
+  const isBox = node.kind === "page";
   return (
     <group position={node.pos}>
       <mesh onPointerOver={onOver} onPointerOut={onOut}>
-        <sphereGeometry args={[node.size ?? 0.4, 32, 32]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={dim ? 0.05 : 0.45}
-          roughness={0.35}
-          metalness={0.1}
-          transparent
-          opacity={dim ? 0.25 : 1}
-        />
+        {isBox ? <boxGeometry args={[node.size * 1.6, node.size * 1.6, node.size * 1.6]} /> : <sphereGeometry args={[node.size, 32, 32]} />}
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={dim ? 0.04 : 0.4} roughness={0.35} metalness={0.1} transparent opacity={dim ? 0.22 : 1} />
       </mesh>
       <Billboard>
-        <Text
-          position={[0, (node.size ?? 0.4) + 0.28, 0]}
-          fontSize={0.26}
-          color={textColor}
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0}
-          fillOpacity={dim ? 0.3 : 1}
-        >
+        <Text position={[0, node.size + 0.26, 0]} fontSize={0.24} color={textColor} anchorX="center" anchorY="middle" fillOpacity={dim ? 0.3 : 1} maxWidth={3.2} textAlign="center">
           {node.label}
         </Text>
       </Billboard>
@@ -61,117 +40,59 @@ function Node({
   );
 }
 
-function Scene({ resolved }: { resolved: "light" | "dark" }) {
-  const { nodes, edges } = useMemo(() => buildKnowledgeGraph3D(), []);
-  const posById = useMemo(
-    () => Object.fromEntries(nodes.map((n) => [n.id, n.pos])),
-    [nodes]
-  );
+function Scene({ view, dark }: { view: GraphView; dark: boolean }) {
+  const { nodes, edges } = useMemo(() => viewTo3D(view), [view]);
+  const posById = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n.pos])), [nodes]);
   const [active, setActive] = useState<string | null>(null);
 
-  const textColor = resolved === "dark" ? "#e8e8ea" : "#1a1a1f";
-  const edgeColor = resolved === "dark" ? "#6f6f7a" : "#b4b4c0";
-  const winColor = "#46b06e";
+  const textColor = dark ? "#e8e8ea" : "#1a1a1f";
+  const edgeColor = dark ? "#6f6f7a" : "#b0b0bc";
 
-  const neighbors = useMemo(() => {
+  const lit = useMemo(() => {
     if (!active) return null;
     const s = new Set<string>([active]);
-    edges.forEach((e) => {
-      if (e.source === active) s.add(e.target);
-      if (e.target === active) s.add(e.source);
-    });
+    edges.forEach((e) => { if (e.source === active) s.add(e.target); if (e.target === active) s.add(e.source); });
     return s;
   }, [active, edges]);
-
-  const nodeDim = (id: string) => (neighbors ? !neighbors.has(id) : false);
-  const edgeLit = (a: string, b: string) =>
-    !neighbors || (neighbors.has(a) && neighbors.has(b));
+  const nodeDim = (id: string) => (lit ? !lit.has(id) : false);
+  const edgeOn = (a: string, b: string) => !lit || (lit.has(a) && lit.has(b));
 
   return (
     <>
-      <ambientLight intensity={resolved === "dark" ? 0.6 : 0.9} />
-      <pointLight position={[6, 6, 8]} intensity={resolved === "dark" ? 1.1 : 0.7} />
-
+      <ambientLight intensity={dark ? 0.6 : 0.95} />
+      <pointLight position={[6, 6, 8]} intensity={dark ? 1.1 : 0.6} />
       {edges.map((e, i) => {
-        const a = posById[e.source];
-        const b = posById[e.target];
+        const a = posById[e.source], b = posById[e.target];
         if (!a || !b) return null;
-        const lit = edgeLit(e.source, e.target);
-        const mid: [number, number, number] = [
-          (a[0] + b[0]) / 2,
-          (a[1] + b[1]) / 2,
-          (a[2] + b[2]) / 2,
-        ];
+        const on = edgeOn(e.source, e.target);
+        const win = e.kind === "win";
+        const mid: [number, number, number] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
         return (
           <group key={i}>
-            <Line
-              points={[a, b]}
-              color={e.label === "sameAs" ? winColor : edgeColor}
-              lineWidth={lit ? 1.6 : 0.6}
-              dashed={!!e.dashed}
-              dashSize={0.18}
-              gapSize={0.12}
-              transparent
-              opacity={lit ? 0.9 : 0.15}
-            />
-            {e.label && lit && (
+            <Line points={[a, b]} color={win ? "#46b06e" : edgeColor} lineWidth={on ? 1.5 : 0.5} dashed={!!e.dashed} dashSize={0.16} gapSize={0.1} transparent opacity={on ? 0.85 : 0.12} />
+            {e.label && on && (
               <Billboard position={mid}>
-                <Text fontSize={0.17} color={edgeColor} anchorX="center" anchorY="middle">
-                  {e.label}
-                </Text>
+                <Text fontSize={0.16} color={edgeColor} anchorX="center" anchorY="middle">{e.label}</Text>
               </Billboard>
             )}
           </group>
         );
       })}
-
       {nodes.map((n) => (
-        <Node
-          key={n.id}
-          node={n}
-          color={KIND_COLOR[n.kind] ?? "#9a9aa6"}
-          textColor={textColor}
-          dim={nodeDim(n.id)}
-          onOver={() => setActive(n.id)}
-          onOut={() => setActive(null)}
-        />
+        <Node key={n.id} node={n} color={colorFor(n.kind, dark)} textColor={textColor} dim={nodeDim(n.id)} onOver={() => setActive(n.id)} onOut={() => setActive(null)} />
       ))}
-
-      <OrbitControls
-        enablePan={false}
-        enableZoom
-        minDistance={5}
-        maxDistance={16}
-        autoRotate
-        autoRotateSpeed={0.6}
-        makeDefault
-      />
+      <OrbitControls enablePan={false} enableZoom minDistance={4} maxDistance={18} autoRotate autoRotateSpeed={0.5} makeDefault />
     </>
   );
 }
 
-const Graph3D = () => {
+const Graph3D = ({ view }: { view: GraphView }) => {
   const { resolvedTheme } = useTheme();
-  const resolved = resolvedTheme === "light" ? "light" : "dark";
+  const dark = resolvedTheme !== "light";
   return (
-    <figure className="my-2">
-      <div className="border border-border bg-card/40" style={{ height: 460 }}>
-        <Canvas
-          camera={{ position: [0, 0.5, 9], fov: 50 }}
-          gl={{ alpha: true, antialias: true }}
-          dpr={[1, 2]}
-        >
-          <Scene resolved={resolved} />
-        </Canvas>
-      </div>
-      <figcaption className="mt-3">
-        <p className="font-mono text-[11px] text-muted-foreground/80 leading-relaxed">
-          <span className="text-foreground">Knowledge graph, in 3D.</span> Drag to orbit,
-          scroll to zoom, hover any entity to trace its relationships. Same facts as the figure
-          above — entities and typed edges, now explorable in space.
-        </p>
-      </figcaption>
-    </figure>
+    <Canvas style={{ width: "100%", height: "100%" }} camera={{ position: [0, 0.4, 9.5], fov: 50 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]}>
+      <Scene view={view} dark={dark} />
+    </Canvas>
   );
 };
 
