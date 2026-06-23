@@ -311,7 +311,7 @@ export function buildVectorSpace(): GraphView {
     id: "vector-index",
     title: "Vector / Embedding Index",
     caption:
-      "No arrows: vectors are positions in space, not typed relationships. Similar things sit close; retrieval finds nearest neighbors by distance. Fast and fuzzy — it surfaces relevant content but can’t tell you *why* or guarantee a fact.",
+      "No typed relationships — the dashed lines are similarity scores (cosine distance), not semantic edges. Meaning lives in the positions: things close to the query are retrieved, things far away aren’t. Fast and fuzzy; can’t tell you why two items match or guarantee a fact.",
     legend: [
       { kind: "query", label: "Query embedding" },
       { kind: "product", label: "Near neighbor" },

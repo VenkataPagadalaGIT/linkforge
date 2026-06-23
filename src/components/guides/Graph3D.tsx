@@ -32,13 +32,18 @@ function Node({ node, color, textColor, dim, phase, onOver, onOut }: { node: N3;
     if (!g) return;
     const t = state.clock.elapsedTime;
     if (born.current === null) born.current = t;
-    // entrance: ease-in scale (staggered by phase) + settle
+    // Entrance: ease-in scale, staggered by phase. After the entrance settles,
+    // the scene is STATIC — no idle bob, no ambient drift. Motion that doesn't
+    // carry information is decoration; on a research figure it reads as jitter.
+    // Hovered (lit) nodes get a faint 1.0→1.06 pulse so the user can see which
+    // one they've selected without changing position (which would imply that
+    // position has changed in the underlying graph — it hasn't).
     const dt = t - born.current - phase * 0.06;
     const s = Math.max(0, Math.min(1, dt / 0.5));
     const eased = 1 - (1 - s) * (1 - s);
-    g.scale.setScalar(eased * (dim ? 0.92 : 1));
-    // idle: gentle bob so the scene feels alive even at rest
-    g.position.y = node.pos[1] + Math.sin(t * 1.1 + phase) * 0.05;
+    const litPulse = !dim ? 1 + Math.sin(t * 2.4) * 0.03 : 1;
+    const dimScale = dim ? 0.92 : litPulse;
+    g.scale.setScalar(eased * dimScale);
   });
   return (
     <group ref={ref} position={node.pos}>
@@ -96,7 +101,10 @@ function Scene({ view, dark }: { view: GraphView; dark: boolean }) {
       {nodes.map((n, i) => (
         <Node key={n.id} node={n} phase={i} color={colorFor(n.kind, dark)} textColor={textColor} dim={nodeDim(n.id)} onOver={() => setActive(n.id)} onOut={() => setActive(null)} />
       ))}
-      <OrbitControls enablePan={false} enableZoom minDistance={4} maxDistance={18} autoRotate autoRotateSpeed={0.5} makeDefault />
+      {/* User-driven exploration only: no autoRotate. Spinning a research figure
+          on idle implies the structure has a preferred axis of motion (it
+          doesn't) and induces motion sickness on long reads. Drag to orbit. */}
+      <OrbitControls enablePan={false} enableZoom minDistance={4} maxDistance={18} makeDefault />
     </>
   );
 }
