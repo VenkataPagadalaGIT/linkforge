@@ -26,3 +26,8 @@ dist-ssr
 # Claude Code local tooling (user-specific, not team-shared)
 .claude/launch.json
 .claude/settings.local.json
+
+# 6X Marketing rebuild — local-only references
+6X marketing/snapshot/
+6X marketing/assets/
+6xmarketing-src/
