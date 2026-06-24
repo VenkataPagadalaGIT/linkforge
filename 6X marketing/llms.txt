@@ -1,0 +1,32 @@
+# 6X Marketing
+
+> AI-powered SEO solutions for enterprise growth. We engineer organic visibility, qualified pipeline, and revenue through AI-led strategy, technical depth, and senior execution — built to compound quarter over quarter.
+
+The "6X" in our name represents six disciplines we believe every enterprise SEO program needs to compound: strategic vision, data intelligence, technical foundation, content engineering, authority building, and continuous monitoring.
+
+## Services
+
+- [SEO Consulting](https://6xmarketing.example.com/#services): Embedded senior strategists who diagnose the gaps, build the roadmap, and execute alongside your in-house team.
+- [Recruiting & Outsourcing](https://6xmarketing.example.com/#services): Vetted SEO specialists, writers, and engineers placed full-time or fractionally to plug capacity gaps fast.
+- [Programmatic SEO](https://6xmarketing.example.com/#services): Data-driven page systems that capture long-tail demand at scale — schema, templates, deployment, and QA.
+- [Technical SEO](https://6xmarketing.example.com/#services): Deep audits and remediation across rendering, performance, internal linking, and AI-crawler readiness.
+
+## Pillars
+
+- Strategic Vision: Revenue-mapped roadmaps that tie every keyword and page to a measurable business outcome.
+- Data Intelligence: Proprietary models trained on SERP, intent, and behavioral signals at enterprise scale.
+- Technical Foundation: Crawlability, rendering, and Core Web Vitals engineering for the AI-search era.
+- Content Engineering: Programmatic and editorial systems that publish at scale without sacrificing quality.
+- Authority Building: Digital PR, partnerships, and entity work that earn trust from Google and LLMs alike.
+- Continuous Monitoring: Always-on dashboards and anomaly detection so issues are fixed before they cost rankings.
+
+## Why 6X
+
+- AI-driven precision at every step (intent clustering, revenue-tied forecasting, AI-Overview tracking).
+- Strategies engineered for compounding returns (90-day sprints, topical authority maps, cross-channel attribution).
+- Flawless execution end to end (senior-only delivery, engineering support, weekly executive reporting).
+
+## Contact
+
+- Book a consultation: https://6xmarketing.example.com/#contact
+- Email: hello@6xmarketing.example
