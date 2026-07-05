@@ -210,8 +210,8 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const tocSections = React.useMemo(() => {
     const base = [
       { label: "Overview", id: "overview" },
-      { label: "Agenda", id: "agenda" },
       { label: "Speakers", id: "speakers" },
+      { label: "Agenda", id: "agenda" },
     ];
     return base;
   }, []);
@@ -368,6 +368,68 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
               </div>
             </section>
           </ScrollReveal>
+
+          {/* Speakers — headshot grid at the top for immediate navigation */}
+          <section id="speakers" className="scroll-mt-28 mb-14">
+            <ScrollReveal>
+              <div className="flex items-center gap-2 mb-5">
+                <Mic size={14} className="text-muted-foreground/50" />
+                <h2 className="font-display text-xl font-bold text-foreground">
+                  Speakers · {speakers.length}
+                </h2>
+              </div>
+              <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mb-5 max-w-3xl">
+                Tap any speaker to open their profile — bio, every talk, and the notes once they go live.
+              </p>
+              <div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                data-testid="conference-speakers-grid"
+              >
+                {speakers.map((sp) => {
+                  const profile = getSpeakerByName(sp.name);
+                  return (
+                    <Link
+                      key={sp.name}
+                      to={
+                        profile
+                          ? `/notebook/conference/speakers/${profile.slug}`
+                          : `#${sp.anchor}`
+                      }
+                      className="group flex items-start gap-3 border border-border p-3 hover:border-foreground/30 transition-all"
+                      data-testid={`conference-speaker-${sp.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    >
+                      <HoloPhoto
+                        src={profile?.photo}
+                        alt={sp.name}
+                        size="md"
+                        fallback={initials(sp.name)}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="holo-aberration font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
+                            {sp.name}
+                          </p>
+                          <ArrowUpRight
+                            size={11}
+                            className="text-muted-foreground/30 group-hover:text-foreground transition-colors shrink-0"
+                          />
+                        </div>
+                        {sp.affiliation && (
+                          <p className="font-mono text-[10px] text-muted-foreground/70 truncate">
+                            {sp.affiliation}
+                          </p>
+                        )}
+                        <p className="font-mono text-[9px] text-muted-foreground/50 mt-1 truncate">
+                          <Clock size={9} className="inline mr-1" />
+                          {sp.start} · {sp.dayLabel}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </ScrollReveal>
+          </section>
 
           {/* Agenda — sticky day tabs + chronological timeline */}
           <section id="agenda" className="scroll-mt-28 mb-14">
@@ -541,67 +603,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
             </ScrollReveal>
           </section>
 
-          {/* Speakers — photo cards linking to dedicated speaker profiles */}
-          <section id="speakers" className="scroll-mt-28 mb-14">
-            <ScrollReveal>
-              <div className="flex items-center gap-2 mb-5">
-                <Mic size={14} className="text-muted-foreground/50" />
-                <h2 className="font-display text-xl font-bold text-foreground">
-                  Speakers · {speakers.length}
-                </h2>
-              </div>
-              <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mb-5 max-w-3xl">
-                Tap any speaker to open their profile — bio, every talk, and the notes once they go live.
-              </p>
-              <div
-                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
-                data-testid="conference-speakers-grid"
-              >
-                {speakers.map((sp) => {
-                  const profile = getSpeakerByName(sp.name);
-                  return (
-                    <Link
-                      key={sp.name}
-                      to={
-                        profile
-                          ? `/notebook/conference/speakers/${profile.slug}`
-                          : `#${sp.anchor}`
-                      }
-                      className="group flex items-start gap-3 border border-border p-3 hover:border-foreground/30 transition-all"
-                      data-testid={`conference-speaker-${sp.name.toLowerCase().replace(/\s+/g, "-")}`}
-                    >
-                      <HoloPhoto
-                        src={profile?.photo}
-                        alt={sp.name}
-                        size="md"
-                        fallback={initials(sp.name)}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <p className="holo-aberration font-display text-sm font-bold text-foreground truncate group-hover:text-glow transition-all">
-                            {sp.name}
-                          </p>
-                          <ArrowUpRight
-                            size={11}
-                            className="text-muted-foreground/30 group-hover:text-foreground transition-colors shrink-0"
-                          />
-                        </div>
-                        {sp.affiliation && (
-                          <p className="font-mono text-[10px] text-muted-foreground/70 truncate">
-                            {sp.affiliation}
-                          </p>
-                        )}
-                        <p className="font-mono text-[9px] text-muted-foreground/50 mt-1 truncate">
-                          <Clock size={9} className="inline mr-1" />
-                          {sp.start} · {sp.dayLabel}
-                        </p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </ScrollReveal>
-          </section>
         </div>
 
         <PageSidebar sections={tocSections} shareTitle={`${c.name} ${c.edition || c.year}`}>
