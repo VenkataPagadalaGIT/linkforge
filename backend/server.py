@@ -678,17 +678,41 @@ async def content_sitemap():
 
 # ================ Startup: seed content + admin + indexes ================
 
-async def _seed_collection(coll_name: str, docs: list, unique_keys: tuple = ("id",)) -> int:
+async def _seed_collection(
+    coll_name: str,
+    docs: list,
+    unique_keys: tuple = ("id",),
+    reconcile: bool = False,
+) -> tuple:
+    """Additive, idempotent seed. Runs on every boot; never deletes.
+
+    - Inserts any seed doc whose unique key is absent.
+    - When ``reconcile`` is set, an existing doc is also refreshed from the
+      seed, but only if the seed's ``updated_at`` is newer than or equal to
+      the stored one — so a later admin edit (which bumps ``updated_at``) is
+      never clobbered by a stale seed. Docs without ``updated_at`` on either
+      side are treated as insert-only.
+    """
     coll = db[coll_name]
-    existing = await coll.count_documents({})
-    if existing > 0:
-        return 0
     if not docs:
-        return 0
-    # Remove any MongoDB-reserved keys just in case
-    cleaned = [{k: v for k, v in d.items() if k != "_id"} for d in docs]
-    await coll.insert_many(cleaned)
-    return len(cleaned)
+        return (0, 0)
+    inserted = updated = 0
+    for d in docs:
+        cleaned = {k: v for k, v in d.items() if k != "_id"}
+        flt = {k: cleaned.get(k) for k in unique_keys}
+        existing = await coll.find_one(flt)
+        if existing is None:
+            await coll.insert_one(cleaned)
+            inserted += 1
+        elif reconcile:
+            seed_ts = str(cleaned.get("updated_at") or "")
+            cur_ts = str(existing.get("updated_at") or "")
+            if seed_ts and seed_ts >= cur_ts:
+                same = all(existing.get(k) == v for k, v in cleaned.items())
+                if not same:
+                    await coll.update_one(flt, {"$set": cleaned})
+                    updated += 1
+    return (inserted, updated)
 
 
 async def seed_content():
@@ -704,9 +728,17 @@ async def seed_content():
     c = await _seed_collection("contributors", data.get("contributors", []))
     u = await _seed_collection("ai_updates", data.get("updates", []))
     p = await _seed_collection("pillars", data.get("pillars", []))
-    po = await _seed_collection("posts", data.get("posts", []))
-    cn = await _seed_collection("conference_notes", data.get("conference_notes", []), unique_keys=("session_id",))
-    logger.info("Seed complete — contributors:%s updates:%s pillars:%s posts:%s conference_notes:%s", c, u, p, po, cn)
+    po = await _seed_collection("posts", data.get("posts", []), unique_keys=("slug",))
+    cn = await _seed_collection(
+        "conference_notes",
+        data.get("conference_notes", []),
+        unique_keys=("session_id",),
+        reconcile=True,
+    )
+    logger.info(
+        "Seed complete — contributors:%s updates:%s pillars:%s posts:%s conference_notes:%s",
+        c, u, p, po, cn,
+    )
 
 
 async def seed_admin():
