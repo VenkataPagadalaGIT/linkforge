@@ -1728,4 +1728,11 @@ export const AI_EDGES: AiEdge[] = [
   {"from": "eu-ai-act", "to": "frontier-safety-frameworks", "relation": "restricts", "note": "GPAI Code of Practice aligns with lab frameworks"},
   {"from": "nvidia", "to": "vllm", "relation": "partners_with", "note": "Optimizes open serving stacks for its GPUs"},
   {"from": "together-ai", "to": "flashattention", "relation": "designs", "note": "FlashAttention author affiliated with Together AI"},
+  {"from": "abridge-health-ai", "to": "gpt-5", "relation": "uses", "note": "ambient clinical documentation built on frontier LLMs"},
+  {"from": "abridge-health-ai", "to": "claude-model", "relation": "uses", "note": "multi-model routing for medical transcription"},
+  {"from": "stepfun", "to": "deepseek", "relation": "competes_with", "note": "rival Chinese frontier lab"},
+  {"from": "stepfun", "to": "nvidia-gpu", "relation": "depends_on", "note": "export-constrained accelerators"},
+  {"from": "us-export-controls", "to": "stepfun", "relation": "restricts", "note": "limits access to leading-edge compute"},
+  {"from": "nscale-sovereign", "to": "nvidia-gpu", "relation": "depends_on", "note": "GPU fleet for its sovereign cloud"},
+  {"from": "nscale-sovereign", "to": "coreweave", "relation": "competes_with", "note": "rival GPU-cloud/neocloud"},
 ];
