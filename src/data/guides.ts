@@ -10,6 +10,20 @@
  * Add guide #2 by appending another record — no new components required.
  */
 
+import {
+  COMPONENTS,
+  FAULTS,
+  PATHS,
+  SCENARIOS,
+  SYMPTOMS,
+  SEVERITY_META,
+  componentById,
+  faultsForPath,
+  rankFaults,
+  symptomById,
+  type HvacPath,
+} from "./hvac";
+
 export interface DefinedTerm {
   slug: string;
   term: string;
@@ -55,6 +69,16 @@ export type Block =
   | { kind: "related"; items: { label: string; href: string }[] }
   | { kind: "graph3d" }
   | { kind: "faq" }
+  /** Interactive 3D HVAC explorer + symptom-based diagnoser (lazy-loaded). */
+  | { kind: "hvac" }
+  /** Static, crawlable table of the full HVAC fault library. */
+  | { kind: "hvacfaults" }
+  /** Static, crawlable rendering of the guided scenario walkthroughs. */
+  | { kind: "hvacscenarios" }
+  /** The ontology's path-level segmentation: 5 system paths → components → faults. */
+  | { kind: "hvacpaths" }
+  /** External sources / further-reading links. */
+  | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
   | { kind: "details"; summary: string; blocks: Block[] };
 
 export interface GuideAuthor {
@@ -92,6 +116,12 @@ export interface Guide {
   comparison: ComparisonRow[];
   faqs: FaqItem[];
   blocks: Block[];
+  /** Label for the third TermCard row (defaults to "Role for AI agents"). */
+  termRoleLabel?: string;
+  /** Column headers for the comparison table (defaults to the graph-guide set). */
+  comparisonHeaders?: string[];
+  /** HowTo entries emitted as schema.org HowTo JSON-LD on the guide page. */
+  howTos?: { name: string; description: string; steps: { name: string; text: string }[] }[];
 }
 
 /* ====================================================================== *
@@ -504,6 +534,447 @@ const hits = index
   { kind: "faq" },
 ];
 
+/* ====================================================================== *
+ *  GUIDE 2 — Interactive 3D HVAC Troubleshooting
+ *  (fault ontology lives in ./hvac.ts; blocks below are partly generated
+ *  from it so the page, the 3D widget, and the noscript fallback never
+ *  drift apart)
+ * ====================================================================== */
+
+const hvacTerms: DefinedTerm[] = [
+  {
+    slug: "thermostat",
+    term: "Thermostat",
+    aka: ["Control", "Stat"],
+    oneLiner:
+      "The thermostat is the system's decision-maker: it measures room temperature against your set point and switches heating, cooling, and the fan on and off.",
+    inDepth:
+      "Everything downstream — furnace, blower, outdoor unit — only runs when the thermostat closes a 24-volt circuit asking for it. That low-voltage chain also runs through safety devices like the condensate float switch and the furnace door switch, which is why a full pan or an ajar panel can make a healthy system play dead. Because it sits at the top of the chain, the thermostat is always the first suspect when nothing runs at all.",
+    analogy:
+      "A referee with a whistle. The players (furnace, AC, blower) are fine — but nobody moves until the whistle blows, and a referee with a dead whistle looks exactly like a team that can't play.",
+    example:
+      "A system 'dead' in July: the screen is blank because two AA batteries died. Batteries, five minutes, zero dollars — versus the $150 service call that discovers the same thing.",
+    agentRole:
+      "Dead batteries, mode left on HEAT in summer, schedule holds overriding the set point, loose low-voltage wires, or a tripped float switch upstream interrupting the same circuit.",
+  },
+  {
+    slug: "air-filter",
+    term: "Air Filter",
+    oneLiner:
+      "A disposable mesh that strains dust from return air before it reaches the blower and coil — and the single most common cause of HVAC problems when neglected.",
+    inDepth:
+      "Every cubic foot of air the system moves passes through this one rectangle. As it loads up, airflow drops; the evaporator coil runs colder and colder until it ices into a solid block in summer, and the furnace overheats and trips its limit switch in winter. A huge share of 'my AC died' service calls end at a $10 filter. Size and thickness are printed on the frame; 1-inch filters want changing every 1–3 months.",
+    analogy:
+      "A coffee filter for your house's lungs. Ignore it long enough and you're trying to breathe through a wet paper towel.",
+    example:
+      "Weak airflow + ice on the copper lines + a filter you can't see light through = case closed. Replace, thaw with fan-only for a few hours, done.",
+    agentRole:
+      "Clogging (weak airflow, iced coil, tripped furnace limit, rising bills). Also being installed backwards or missing entirely, which fouls the blower and coil instead.",
+  },
+  {
+    slug: "blower",
+    term: "Blower Motor & Wheel",
+    aka: ["Air handler fan", "Squirrel cage"],
+    oneLiner:
+      "The motor-driven wheel inside the indoor unit that actually moves air — pulling it through the return and filter, pushing it across the coil or heat exchanger and out to the rooms.",
+    inDepth:
+      "Cooling and heating both depend on it: refrigerant can make the coil cold and burners can make the exchanger hot, but nothing reaches your rooms without the blower. Modern variable-speed (ECM) blowers are efficient but their control modules are the expensive way they fail. Years of running against a dirty filter is what wears blowers out early.",
+    analogy: "The system's lungs. The rest of the equipment decides the temperature; the blower decides whether any of it reaches you.",
+    example:
+      "Thermostat calling, outdoor unit humming along, and total silence at every vent — that's a blower problem, and the iced-over coil that follows is the collateral damage.",
+    agentRole:
+      "Worn bearings (screech/grind at startup), overheated windings or a dead ECM module (hum, no spin, hot electrical smell), and slow death from chronic filter neglect.",
+  },
+  {
+    slug: "evaporator-coil",
+    term: "Evaporator Coil",
+    aka: ["A-coil", "Indoor coil"],
+    oneLiner:
+      "The A-shaped coil above the furnace where cold refrigerant absorbs heat and moisture from indoor air — the place cooling actually happens.",
+    inDepth:
+      "Refrigerant boils inside this coil at around 40°F, soaking up heat from the air the blower pushes across it. The moisture that condenses on its fins is why AC also dehumidifies — and why there's a drain pan under it. The coil lives at the intersection of the system's two flows, so it's where problems from either side show up: starve it of airflow or of refrigerant and it ices; let it get filthy and capacity quietly evaporates.",
+    analogy:
+      "A glass of iced tea on a humid porch. Warm air touches the cold surface, gives up its heat, and leaves its moisture beading on the outside.",
+    example:
+      "House won't get below 78 on a 95° day, lines frosted: coil starved into icing — by a dirty filter three times out of four, by a refrigerant leak the rest.",
+    agentRole:
+      "Icing (from low airflow or low charge), dirt matting the fins (slow capacity loss, musty smell), and formicary corrosion pinholes that leak refrigerant — the classic reason older systems 'need a top-off' every spring.",
+  },
+  {
+    slug: "refrigerant-circuit",
+    term: "Refrigerant Circuit",
+    aka: ["Line set", "Charge", "Freon loop"],
+    oneLiner:
+      "The sealed copper loop — coil, compressor, condenser, metering device, and two connecting lines — that moves heat from inside your house to outside it.",
+    inDepth:
+      "Refrigerant is not fuel and is never consumed; the same charge should circulate for the system's whole life. The fat insulated line carries cool vapor to the compressor, the thin line returns high-pressure liquid, and the TXV meters it into the coil. 'Low on refrigerant' therefore always means 'has a leak.' Running undercharged drops coil temperature (ice), tanks efficiency, and slowly destroys the compressor — which is why the recharge-every-summer routine is the most expensive cheap fix in HVAC.",
+    analogy:
+      "A conveyor belt for heat. Buckets (refrigerant) get filled indoors and dumped outdoors, around and around. Buckets don't get used up — if there are fewer buckets this year, some fell off, and topping up without fixing the hole just schedules the next failure.",
+    example:
+      "Cooling that fades over three weeks, oil staining a flare fitting, frost creeping up the suction line: a slow leak, not a thirsty system.",
+    agentRole:
+      "Leaks at coil corrosion pinholes and line fittings (oil stains are the tell), a sticking TXV starving or flooding the coil, and chronic undercharge quietly cooking the compressor.",
+  },
+  {
+    slug: "compressor",
+    term: "Compressor",
+    oneLiner:
+      "The pump at the heart of the refrigerant loop: it squeezes low-pressure vapor into hot, high-pressure vapor so the heat collected indoors can be dumped outdoors.",
+    inDepth:
+      "The compressor is the hardest-working and most expensive component in the system — and it almost never fails first. It fails last, murdered slowly by everything else: low charge (poor cooling of its own windings), a matted condenser (chronic overheating), or a weak capacitor (brutal hard starts). That's why a good technician treats a dead compressor as the end of a story and looks for the chapters before it.",
+    analogy:
+      "The heart of the system. And like a heart, it rarely just stops — years of high blood pressure (head pressure) and strain do it in, and by then a transplant costs more than the patient may be worth.",
+    example:
+      "A 14-year-old condenser hums for two seconds, dims the lights, and trips the breaker. Winding test confirms a shorted compressor: the $1,800 quote versus a $5,500 new system is now a math problem, not a repair problem.",
+    agentRole:
+      "Hard starting and overload trips (often really a capacitor), seized or shorted windings at end of life, and slugging damage from a flooding TXV. Its failure is usually the bill for a cheaper problem ignored.",
+  },
+  {
+    slug: "condenser-unit",
+    term: "Condenser (Coil + Fan)",
+    aka: ["Outdoor unit", "Condensing unit"],
+    oneLiner:
+      "The outdoor unit's coil and top fan, which together throw the heat collected from your house into the outdoor air.",
+    inDepth:
+      "Hot refrigerant vapor condenses back to liquid inside this coil, releasing its heat to outdoor air that the fan pulls through the fins. Its enemies are mundane: grass clippings, cottonwood fluff, dirt, and shrubs planted too close. A blocked coil raises head pressure, which cuts capacity, raises bills, and on the hottest days trips the unit off entirely — the reason so many failures happen exactly when you need cooling most.",
+    analogy:
+      "Your car's radiator. Same job, same failure: it doesn't break so much as clog, and the engine (compressor) pays the price for it.",
+    example:
+      "AC 'can't keep up' every July afternoon. The fins are a felt blanket of cottonwood. One gentle hose-out from the inside, capacity returns like a software update.",
+    agentRole:
+      "Fin blockage and bent fins (heat can't leave), fan motor bearings seizing (unit cooks itself in minutes), and coil damage from string trimmers and dogs.",
+  },
+  {
+    slug: "capacitor-contactor",
+    term: "Capacitor & Contactor",
+    aka: ["Run cap", "Relay"],
+    oneLiner:
+      "The outdoor unit's two small electrical parts: the capacitor gives its motors the jolt to start spinning, and the contactor is the relay that feeds the unit power at all.",
+    inDepth:
+      "Between them, these two $20–$45 parts explain the majority of outdoor-unit failures. Capacitors dry out with heat and age — the compressor and fan then hum without starting. Contactor points arc on every cycle until they burn (no power) or weld (unit never shuts off). Both are quick pro fixes; the capacitor is also genuinely hazardous DIY, because it stores a charge after the power is off.",
+    analogy:
+      "The starter motor and ignition switch of a car. When either fails, the engine is perfectly fine — it just cranks and clicks, or gets no juice at all.",
+    example:
+      "Outdoor unit hums, clicks off, hums again; fan starts when nudged with a stick through the grille. Textbook failed capacitor — a $200 visit, not a $2,000 one.",
+    agentRole:
+      "Capacitor bulge/leak (hum, no start — the #1 AC repair in the country), burned contactor points (dead unit), welded points (unit runs with the thermostat off).",
+  },
+  {
+    slug: "condensate-drain",
+    term: "Condensate Pan & Drain",
+    oneLiner:
+      "The pan and pipe that carry away the gallons of water your AC wrings out of the air daily — with a float switch that shuts the system down if they back up.",
+    inDepth:
+      "A central AC can pull 5–20 gallons of water out of humid air per day, all of which must drain through one narrow, algae-prone line. When it clogs, either water overflows (the mystery ceiling stain under an attic unit) or the float switch cuts the whole system dead. That switch interrupts the same 24-volt circuit as the thermostat — which is why a clogged drain perfectly impersonates a dead system.",
+    analogy:
+      "A gutter and downspout for your air. Nobody thinks about it until it clogs, and then the damage happens somewhere that looks unrelated.",
+    example:
+      "AC quits on the most humid week of the year, no error anywhere. Pan full, float switch tripped. A wet/dry vac on the outdoor drain stub pulls out a plug of algae; system returns from the dead.",
+    agentRole:
+      "Algae clogs (overflow or float-switch shutdown), cracked or rusted pans on older units, and pump failures where gravity drainage isn't possible.",
+  },
+  {
+    slug: "heat-exchanger",
+    term: "Burners & Heat Exchanger",
+    oneLiner:
+      "The furnace's core: gas burners heat a sealed metal passage, air heats up passing over its outside, and combustion gases stay separated from the air you breathe.",
+    inDepth:
+      "That separation is the entire safety design of a gas furnace. The exchanger flexes with every heat cycle for 15–25 years until metal fatigue cracks it — at which point combustion byproducts, including carbon monoxide, can mix into supply air. This is the one fault on this page that is about life safety rather than comfort, and the reason a CO detector belongs near every furnace and bedroom. It's also, unfortunately, a classic pressure-sales diagnosis — always ask to see camera evidence of the crack.",
+    analogy:
+      "A campfire behind glass. You want the warmth radiating through; you absolutely do not want a crack in the glass letting smoke into the room.",
+    example:
+      "A 20-year-old furnace, a CO alarm at 2 a.m., and a flame that flutters when the blower kicks on: shut it down, ventilate, and get eyes on the exchanger before it runs again.",
+    agentRole:
+      "Fatigue cracks (CO risk — shut down now), overheating from airflow neglect accelerating that fatigue, and on the ignition side: dirty flame sensors and cracked igniters causing no-heat lockouts.",
+  },
+];
+
+const hvacComparison: ComparisonRow[] = [
+  {
+    type: "Split system (AC + furnace)",
+    isA: "The system modeled on this page: outdoor condenser, indoor gas furnace with coil on top",
+    answers: "Gas burns for heat; refrigerant loop cools",
+    structure: "Outdoor unit + indoor cabinet joined by two refrigerant lines and ducts",
+    example: "Most existing US single-family homes",
+    bestFor: "Cold-winter regions with gas service; cheapest to repair",
+    limit: "Two fuel bills; ducts leak 20–30% in typical homes",
+  },
+  {
+    type: "Air-source heat pump",
+    isA: "A split system whose refrigerant loop runs both directions",
+    answers: "One refrigerant loop both heats and cools",
+    structure: "Same layout as a split, plus a reversing valve; often electric backup strips",
+    example: "The default in new builds and electrification retrofits",
+    bestFor: "Mild-to-cold climates (modern units work below 0°F); one all-electric bill",
+    limit: "Backup heat strips can spike bills if sized or set up wrong",
+  },
+  {
+    type: "Ductless mini-split",
+    isA: "Small outdoor unit feeding wall-mounted indoor heads, no ducts",
+    answers: "Heat-pump loop, one head per zone",
+    structure: "1 outdoor unit → 1–5 indoor heads through a 3\" wall sleeve",
+    example: "Additions, garages, old houses without ducts",
+    bestFor: "Room-by-room control; no duct losses at all",
+    limit: "A head on the wall in every room; filters in each head to clean",
+  },
+  {
+    type: "Packaged unit",
+    isA: "Everything — coil, compressor, furnace/heat pump, blower — in one outdoor box",
+    answers: "Same cycles, single self-contained cabinet",
+    structure: "One rooftop or slab unit with supply and return ducts entering the building",
+    example: "Homes without basements/attics; most small commercial rooftops",
+    bestFor: "Tight indoor space; simple single-cabinet service",
+    limit: "All components live outdoors in the weather; shorter lifespans",
+  },
+  {
+    type: "Boiler + radiators",
+    isA: "Hydronic heat: a boiler circulates hot water, not air",
+    answers: "Water carries the heat; no cooling included",
+    structure: "Boiler → pipes → radiators or in-floor loops; separate AC if you want cooling",
+    example: "Pre-war housing stock, much of the Northeast",
+    bestFor: "Even, quiet, dust-free heat",
+    limit: "No cooling or filtration; adding AC means a parallel system",
+  },
+];
+
+const hvacFaqs: FaqItem[] = [
+  {
+    q: "Why is my AC running but not cooling the house?",
+    a: "Work outside-in. First: is the outdoor unit actually running? If it's silent while the indoor blower runs, suspect its capacitor, contactor, breaker, or a tripped float switch. If it is running, check the air filter (the most common cause), then look for ice on the refrigerant lines and a dirt-matted outdoor coil. A clean filter, a clean coil, and no ice — but still weak cooling — points to low refrigerant from a leak, which is a pro repair. The 3D diagnoser above walks this exact sequence.",
+  },
+  {
+    q: "Why is there ice on my AC lines, and what should I do?",
+    a: "Ice means the evaporator coil is running below freezing, which happens for exactly two reasons: not enough warm air moving across it (dirty filter, failing blower, blocked vents) or not enough refrigerant in it (a leak). Turn cooling off, run the fan only for 2–4 hours to thaw, and replace the filter. If ice comes back with a clean filter and strong airflow, stop — continuing to run it can flood-damage the compressor. That recurrence pattern means a refrigerant leak or TXV problem, both licensed-pro work.",
+  },
+  {
+    q: "Why does my AC turn on and off every few minutes?",
+    a: "Short cycling has three common families of cause. Airflow/ice: a clogged filter freezes the coil and the system trips off repeatedly. Heat rejection: a dirty condenser coil or dead condenser fan spikes pressure until the compressor cuts out on overload — the outdoor unit will feel very hot. Control: a thermostat mounted over a lamp or supply register, or an oversized system that blasts the room and quits before doing real dehumidification. Filter and condenser coil are the two you can check yourself in ten minutes.",
+  },
+  {
+    q: "Why is my outdoor AC unit humming but not starting?",
+    a: "That hum is almost always a motor trying to start without its run capacitor — the single most-replaced part in residential AC. The classic confirmation: if the fan spins up when nudged with a stick through the top grille, the capacitor is dead. It's a cheap, fast professional fix ($150–$400). It is not a good DIY job: capacitors store a lethal charge after power is off. Left unfixed, every failed start beats on the compressor, converting a $200 repair into a $2,000 one.",
+  },
+  {
+    q: "Why is my furnace blowing cold air?",
+    a: "If the burners never light: on most modern furnaces that's a cracked hot-surface igniter or a board in lockout after failed attempts. If they light and die seconds later: a dirty flame sensor — the most common furnace no-heat cause, fixed by cleaning a single rod. If burners run but air still comes out cool, the blower may be moving air while a tripped limit switch (usually from a clogged filter) keeps shutting the burners down. And check the thermostat fan setting: FAN ON circulates unheated air between cycles, which feels cold and is harmless.",
+  },
+  {
+    q: "How often should I really change my HVAC filter?",
+    a: "1-inch filters: every 1–3 months. 4–5-inch media filters: every 6–12 months. Sooner with pets, smokers, nearby construction, or wildfire smoke. The test that beats any schedule: hold it up to a light — if light doesn't pass through, air isn't either. A dirty filter is implicated in more HVAC failures than any other single cause: frozen coils in summer, limit-switch trips in winter, and early blower death year-round. It's a $10 part protecting a $10,000 system.",
+  },
+  {
+    q: "Which HVAC repairs are safe to DIY, and which aren't?",
+    a: "Safe and worthwhile: filters, thermostat batteries and settings, one-time breaker resets, rinsing the outdoor coil (power off first), clearing the condensate drain with a wet/dry vac, and keeping 2 feet of clearance around the outdoor unit. Leave to licensed pros: anything refrigerant (federal EPA 608 rules, plus you can't diagnose charge without gauges), capacitors and other high-voltage parts (stored charge), gas-side work, and combustion diagnostics. The dividing line is simple: air and low-voltage settings are yours; refrigerant, gas, and line voltage are not.",
+  },
+  {
+    q: "When does emergency heat kick in on a heat pump — and when should I worry?",
+    a: "Three triggers: (1) droop — the room falls about 1.5–2°F below your set point and the thermostat stages the electric strips in to help; (2) outdoor temperature below the balance point (typically 25–40°F), where the heat pump alone can't carry the house; (3) defrost cycles, which briefly energize strips so vents don't blow cold — a steam plume outside plus a few minutes of AUX is healthy. Worry when: AUX or EM HEAT shows on a mild 45°F+ day, when it runs constantly rather than in bursts, or when a winter electric bill lands 3–5x normal with a perfectly warm house — that's a lying sensor, a failed board, a welded sequencer, or aggressive setback schedules triggering strips every morning. Set your aux lockout at 35–40°F and use gradual recovery, and the strips can only rob you during real cold snaps.",
+  },
+  {
+    q: "Repair or replace? How long should AC units and furnaces last?",
+    a: "Typical lifespans: central AC and heat pumps 12–17 years, gas furnaces 15–25. Two useful rules. The $5,000 rule: multiply the repair quote by the unit's age — over ~$5,000 (a $600 repair on a 10-year-old unit), lean replace. And any single repair over about a third of replacement cost on a unit past 12 years — especially a compressor or heat exchanger — is money better put toward new equipment, which will also cut energy use substantially. Cheap fixes (capacitors, contactors, sensors, drains) are always worth doing at any age.",
+  },
+];
+
+/** Symptom → ranked causes, generated straight from the fault ontology. */
+const hvacDecision: { when: string; use: string }[] = SYMPTOMS.map((s) => {
+  const top = rankFaults([s.id]).slice(0, 3);
+  const [first, ...rest] = top.map((r) => r.fault.name);
+  return {
+    when: s.label,
+    use: `**${first}** is the most common cause${rest.length ? `; also check: ${rest.join(", ")}` : ""}.`,
+  };
+});
+
+const hvacBlocks: Block[] = [
+  {
+    kind: "p",
+    text: `Most HVAC guides are a wall of text about parts you've never seen. This one is different: below is a **full 3D model of a residential split system** — gas furnace, evaporator coil, ductwork, refrigerant lines, outdoor condenser — that you can orbit, explode, and click. Behind it sits a fault ontology: ${COMPONENTS.length} components, ${SYMPTOMS.length} symptoms, and ${FAULTS.length} faults connected by cause-and-effect edges, segmented into the five system paths every failure lives on. Tell it what you're seeing, and it ranks what's actually wrong, what to check first, and what a fix typically costs.`,
+  },
+  {
+    kind: "callout",
+    title: "Before anything else",
+    text: "Two checks resolve an outsized share of 'broken' systems: a **clogged air filter** (the #1 cause of HVAC problems) and an interrupted control circuit — **dead thermostat batteries, a tripped breaker, or a full condensate pan tripping its float switch**. Ten minutes, zero dollars, no tools.",
+  },
+
+  { kind: "h2", text: "Explore the system in 3D", id: "model" },
+  {
+    kind: "p",
+    text: "Drag to orbit, scroll to zoom. **Explore mode**: click any part to see what it does and how it fails. **Diagnose mode**: pick the symptoms you're seeing and suspect parts glow amber while ranked causes appear on the right. Toggle **Running** to watch the refrigerant loop and fans, and **Exploded** to pull the system apart.",
+  },
+  { kind: "hvac" },
+
+  { kind: "h2", text: "How a central HVAC system actually works", id: "how-it-works" },
+  {
+    kind: "p",
+    text: "Cooling is a loop that moves heat, not a machine that 'makes cold.' Indoors, the blower pulls room air through the filter and pushes it across the **evaporator coil**, where refrigerant boiling at ~40°F absorbs the air's heat and moisture. The **compressor** squeezes that vapor hot and dense and sends it to the outdoor **condenser coil**, where the fan dumps the heat into outside air. The refrigerant condenses back to liquid, returns indoors through the thin copper line, and the **TXV** meters it into the coil to start again. Around and around, moving heat from where you don't want it to where you don't care.",
+  },
+  {
+    kind: "p",
+    text: "Heating (in the gas-furnace system modeled here) skips the refrigerant entirely: the igniter lights the **burners**, flames heat the sealed **heat exchanger**, and the same blower pushes air over its hot surface — combustion gases and breathing air never mixing. That one-sentence safety contract is why a cracked heat exchanger is the only fault on this page that's about life safety instead of comfort.",
+  },
+  {
+    kind: "callout",
+    title: "The one-line version",
+    text: "The **thermostat** asks. The **blower** moves air. The **refrigerant loop** moves heat out (cooling); the **burners and heat exchanger** add heat in (heating). Everything else on this page — filter, capacitor, contactor, drains, ducts — exists to keep those four jobs running, and is where most failures actually live.",
+  },
+
+  { kind: "h2", text: "The numbers: droop, balance point, and when emergency heat kicks in", id: "numbers" },
+  {
+    kind: "p",
+    text: "Heat-pump owners live or die by three numbers nobody explains. **Droop**: a staging thermostat calls for the next stage when the room falls ~1.5–2°F below the set point — backup strips don't wait for 'cold,' they wait for that gap. **Balance point**: the outdoor temperature (typically 25–40°F, set per house) below which the heat pump alone can no longer keep up. **Aux lockout**: the setting that forbids strips above a chosen outdoor temperature — the single best defense against silent 3–5x bills.",
+  },
+  {
+    kind: "list",
+    items: [
+      "**Set 70°F, outdoor 45°F:** the heat pump cycles normally (10–20 min runs). AUX showing on the thermostat in this weather is the red flag — see the stuck-aux fault.",
+      "**Set 70°F, outdoor 20°F:** below most balance points. The compressor runs almost continuously — that's normal, not a fault. If the house HOLDS 70°F, strips stay off and the bill survives. If the room sags to ~68°F (the 2°F droop), AUX stages in until it recovers, in bursts. Bursts are fine; constant AUX is money burning.",
+      "**Set 60°F, outdoor 20°F:** a lower set point means less load — the heat pump usually carries this alone, and aux should engage only briefly during defrost cycles. If AUX runs constantly holding 60°F, something is lying (sensor, board, or staging).",
+      "**Setback recovery (60°F → 70°F at 6am):** asking for a >2°F jump exceeds droop instantly, so a basic thermostat slams the strips on every morning — the classic self-inflicted aux bill. Use gradual 'smart recovery,' or keep setbacks small on heat pumps.",
+      "**During defrost (every 30–90 min below ~40°F outdoor):** the system briefly runs in cooling to melt the outdoor coil and energizes strips so the vents don't blow cold. A few minutes of AUX + a steam plume outside = healthy, not broken.",
+    ],
+  },
+  {
+    kind: "callout",
+    title: "Numbers worth memorizing",
+    text: "Droop before staging: **1.5–2°F**. Balance point: **25–40°F** outdoor. Aux lockout: set it **≥35–40°F**. Supply air: heat pump alone **90–100°F**, strips engaged **105–125°F** (the hand-on-the-register test). Defrost: **30–90 min** cycles below 40°F. Healthy cool/heat cycle: **10–20 minutes** — under 5 is short cycling.",
+  },
+
+  { kind: "h2", text: "The pressure test: what the gauges tell a tech", id: "pressure-test" },
+  {
+    kind: "p",
+    text: "When a technician clips **manifold gauges onto the service valves' Schrader ports** (the two capped brass valves where the copper lines enter the outdoor unit — modeled above), the refrigerant loop finally talks. Typical healthy R-410A numbers while cooling on a ~90°F day: **suction ~115–140 psi** (a coil boiling around 40°F) and **liquid ~350–420 psi**, with **superheat ~8–15°F** and **subcooling ~8–12°F**. Those four numbers separate diagnoses that feel identical from the couch:",
+  },
+  {
+    kind: "list",
+    items: [
+      "**Low suction + low head + low subcool** → undercharged: there's a leak. Demand the leak search, not a top-off.",
+      "**Low suction + normal head + high superheat** → the coil is starved, not empty: metering device (TXV) or a plugged filter-drier — this is the misdiagnosis triangle where 'needs freon' wastes money.",
+      "**High head + high subcool** → overcharged or the condenser can't reject heat (matted coil, dead fan).",
+      "**Both sides equalized while the compressor 'runs'** → the compressor isn't pumping: valves are gone.",
+      "**Leak confirmation:** the loop holds **300–500 psi of dry nitrogen** for hours if it's tight — bubbles or an electronic sniffer find the exit. This is the test that ends the recharge-every-spring cycle.",
+    ],
+  },
+  {
+    kind: "callout",
+    title: "The homeowner's share of the pressure test",
+    text: "Exactly two things: check that **both brass caps on the service valves are present and snug** (a leaking Schrader core under a missing cap is a classic slow leak), and **write down the numbers the tech reads out** — suction, head, superheat, subcool go straight into your intake report. Hooking up gauges yourself is EPA 608 territory, and every connection loses a little charge.",
+  },
+
+  { kind: "h2", text: "The ten parts that matter", id: "components" },
+  {
+    kind: "p",
+    text: "Every diagnosis on this page traces back to one of these. Learn what each does and its signature failure, and you can translate any symptom — and any contractor quote — into physics.",
+  },
+  { kind: "termcard", termSlug: "thermostat" },
+  { kind: "termcard", termSlug: "air-filter" },
+  { kind: "termcard", termSlug: "blower" },
+  { kind: "termcard", termSlug: "evaporator-coil" },
+  { kind: "termcard", termSlug: "refrigerant-circuit" },
+  { kind: "termcard", termSlug: "compressor" },
+  { kind: "termcard", termSlug: "condenser-unit" },
+  { kind: "termcard", termSlug: "capacitor-contactor" },
+  { kind: "termcard", termSlug: "condensate-drain" },
+  { kind: "termcard", termSlug: "heat-exchanger" },
+
+  { kind: "h2", text: "The five paths every failure lives on", id: "paths" },
+  {
+    kind: "p",
+    text: "The most useful way to segment an HVAC system isn't by room or by part — it's by **path**: the five flows the machine maintains (air, refrigerant, electricity & control, combustion, water). Every component belongs to a path, every fault lives where its components live, and every diagnosis is really the question *\"which path is broken?\"* The part labels in the 3D model above are color-coded by these paths.",
+  },
+  { kind: "hvacpaths" },
+
+  { kind: "h2", text: "Real service calls, replayed", id: "scenarios" },
+  {
+    kind: "p",
+    text: "First, two healthy baselines — the cooling start-up from breaker to cold air, and the gas heat cycle with its deliberate delays — because every diagnosis is a comparison against how it should work. Then complete real incidents — from first symptom to fix confirmed — that you can **replay step-by-step in the 3D model above** (Scenarios tab). Each step lights up the parts involved and shows what the system is doing at that moment, including the detail most people miss: **watching the outdoor drain outlet drip is how you confirm a condensate system is healthy**.",
+  },
+  { kind: "hvacscenarios" },
+
+  { kind: "h2", text: "Symptom → most likely causes", id: "symptoms" },
+  {
+    kind: "p",
+    text: "The same lookup the diagnoser runs, flattened to a table: each symptom, ranked by how often each cause turns out to be the answer on real service calls. Multiple symptoms narrow it fast — that's what the interactive mode above is for.",
+  },
+  { kind: "decision", items: hvacDecision },
+
+  { kind: "h2", text: "The complete fault library", id: "fault-library" },
+  {
+    kind: "p",
+    text: `All ${FAULTS.length} faults in the ontology: what causes each, what to check in order, the realistic fix, and typical US repair costs (2026). Severity is honest about the DIY line — **refrigerant, gas, and line voltage are licensed-pro territory**, both legally and practically.`,
+  },
+  { kind: "hvacfaults" },
+
+  { kind: "h2", text: "Not all systems look like this one", id: "system-types" },
+  {
+    kind: "p",
+    text: "The model above is a **split system** — the most common US configuration. The diagnosis logic transfers to other system types, but the layout and failure emphasis shift:",
+  },
+  { kind: "comparison" },
+
+  { kind: "h2", text: "The DIY line", id: "diy-or-pro" },
+  {
+    kind: "list",
+    items: [
+      "**Always yours:** filters, thermostat batteries and settings, one-time breaker resets, hosing the outdoor coil (power off at the disconnect first), vacuuming the condensate drain, 2 feet of clearance around the outdoor unit.",
+      "**Judgment calls for the handy:** cleaning a flame sensor, swapping a hot-surface igniter (gas off, don't touch the element), sealing accessible duct joints with mastic.",
+      "**Never DIY:** anything refrigerant (EPA 608 federal certification is required, and charge can't be diagnosed without gauges), capacitors and contactors (stored lethal charge), gas valves and combustion work, repeated breaker resets into a fault.",
+      "**Leave the house first:** gas smell, or a CO alarm. Call from outside.",
+    ],
+  },
+  {
+    kind: "callout",
+    title: "The economics of neglect",
+    text: "Almost every expensive HVAC failure is a cheap one that aged. A **$10 filter** protects the blower and coil. A **$200 capacitor visit** protects the $2,000 compressor. A **$150 leak search** protects against buying refrigerant every spring and a coil in three years. The system rarely breaks — it gets broken, slowly, by deferred trivial maintenance.",
+  },
+
+  { kind: "h2", text: "Frequently asked questions", id: "faq" },
+  { kind: "faq" },
+
+  {
+    kind: "sources",
+    items: [
+      {
+        label: "Trane — What is HVAC? (glossary)",
+        href: "https://www.trane.com/residential/en/resources/glossary/what-is-hvac/",
+        note: "Manufacturer definitions of core HVAC terms and system types.",
+      },
+      {
+        label: "UCF Florida Solar Energy Center — HVAC Systems",
+        href: "https://energyresearch.ucf.edu/consumer/buildings/hvac-systems/",
+        note: "University research center's consumer guide to how residential systems work and their efficiency.",
+      },
+      {
+        label: "Icon Mechanical — HVAC energy-efficiency tips",
+        href: "https://www.iconmechanicalinc.com/energy-efficiency-tips-hvac/",
+        note: "Contractor-side maintenance and efficiency practices.",
+      },
+      {
+        label: "Home Depot — Heating, Venting & Cooling",
+        href: "https://www.homedepot.com/b/Heating-Venting-Cooling/N-5yc1vZc4k8",
+        note: "Retail reference for filters, capacitors, thermostats, and DIY-range part pricing.",
+      },
+    ],
+  },
+
+  {
+    kind: "related",
+    items: [
+      { label: "Graph Types for AI Agents — the ontology pattern behind this page's fault model", href: "/guides/graph-types-for-ai-agents" },
+    ],
+  },
+];
+
+/** Scenario walkthroughs → schema.org HowTo entries (one per scenario). */
+const hvacHowTos = SCENARIOS.map((s) => ({
+  name: s.title,
+  description: s.symptomSummary,
+  steps: [
+    ...s.steps.map((st) => ({ name: st.title, text: st.text })),
+    { name: "The verdict", text: s.verdict },
+  ],
+}));
+
 export const guides: Guide[] = [
   {
     slug: "graph-types-for-ai-agents",
@@ -546,6 +1017,28 @@ export const guides: Guide[] = [
     comparison: graphComparison,
     faqs: graphFaqs,
     blocks: graphBlocks,
+  },
+  {
+    slug: "hvac-system-troubleshooting",
+    title: "3D HVAC Troubleshooting",
+    metaTitle: "Interactive 3D HVAC Troubleshooting: Diagnose AC & Furnace Problems (2026 Guide)",
+    metaDescription:
+      "Explore a full 3D model of a home HVAC system, then diagnose it: pick your symptoms — warm air, ice on lines, short cycling — and get ranked causes, step-by-step checks, DIY-vs-pro calls, and real repair costs.",
+    headline: "The Interactive 3D HVAC Troubleshooter",
+    kicker: "Interactive Reference",
+    deck:
+      `A complete residential split system — furnace, coil, ducts, refrigerant loop, condenser — modeled in 3D and wired to a fault ontology. Click parts to learn them; pick symptoms to diagnose them. ${COMPONENTS.length} components, ${SYMPTOMS.length} symptoms, ${FAULTS.length} faults across five system paths, real costs.`,
+    datePublished: "2026-07-04",
+    dateModified: "2026-07-04",
+    readingTime: "22 min read",
+    tags: ["HVAC", "Air Conditioning", "Furnace", "Troubleshooting", "3D Interactive", "Home Maintenance", "Fault Diagnosis"],
+    terms: hvacTerms,
+    comparison: hvacComparison,
+    faqs: hvacFaqs,
+    blocks: hvacBlocks,
+    termRoleLabel: "Common failure modes",
+    comparisonHeaders: ["System type", "What it is", "How it heats & cools", "Layout", "Where you'll find it", "Best for", "Watch out for"],
+    howTos: hvacHowTos,
   },
 ];
 

@@ -4,6 +4,17 @@ import type { Block, Guide, DefinedTerm } from "@/data/guides";
 import { VIEW_BUILDERS } from "@/lib/graphModels";
 import GraphFigure from "./GraphFigure";
 import GraphLayerStack from "./GraphLayerStack";
+import {
+  FAULTS,
+  PATHS,
+  SCENARIOS,
+  SEVERITY_META,
+  componentById,
+  faultsForPath,
+  symptomById,
+  type HvacPath,
+} from "@/data/hvac";
+import HvacExplorerLazy from "./HvacExplorerLazy";
 
 // Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
 // matters — links run first so a URL containing ** or _ never gets caught by a
@@ -19,7 +30,7 @@ const inline = (s: string) =>
     .replace(/`([^`]+?)`/g, '<code class="font-mono text-[0.92em] text-foreground bg-foreground/5 border border-border/60 px-1 py-px rounded-sm">$1</code>');
 const bold = inline;
 
-function TermCard({ term }: { term: DefinedTerm }) {
+function TermCard({ term, roleLabel = "Role for AI agents" }: { term: DefinedTerm; roleLabel?: string }) {
   return (
     <div className="border border-border bg-card/30 p-6 my-6">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
@@ -42,7 +53,7 @@ function TermCard({ term }: { term: DefinedTerm }) {
         {[
           ["Analogy", term.analogy],
           ["Example", term.example],
-          ["Role for AI agents", term.agentRole],
+          [roleLabel, term.agentRole],
         ].map(([label, body]) => (
           <div key={label} className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-4">
             <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/50 pt-0.5">{label}</dt>
@@ -63,7 +74,7 @@ function ComparisonTable({ guide }: { guide: Guide }) {
       <table className="w-full border-collapse min-w-[760px]">
         <thead>
           <tr className="bg-secondary/30">
-            {["Type", "What it is", "Answers", "Structure", "Example", "Best for", "Limitation"].map((h) => (
+            {(guide.comparisonHeaders ?? ["Type", "What it is", "Answers", "Structure", "Example", "Best for", "Limitation"]).map((h) => (
               <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
                 {h}
               </th>
@@ -120,7 +131,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       return <ComparisonTable guide={guide} />;
     case "termcard": {
       const term = guide.terms.find((t) => t.slug === block.termSlug);
-      return term ? <TermCard term={term} /> : null;
+      return term ? <TermCard term={term} roleLabel={guide.termRoleLabel ?? "Role for AI agents"} /> : null;
     }
     case "code":
       return (
@@ -185,6 +196,141 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
               >
                 → {it.label}
               </Link>
+            ))}
+          </div>
+        </div>
+      );
+    case "hvac":
+      return <HvacExplorerLazy />;
+    case "hvacpaths":
+      return (
+        <div className="my-6 space-y-4">
+          {(Object.keys(PATHS) as HvacPath[]).map((pKey) => {
+            const meta = PATHS[pKey];
+            const faults = faultsForPath(pKey);
+            return (
+              <div key={pKey} className="border border-border/70" style={{ borderLeft: `3px solid ${meta.color}` }}>
+                <div className="p-5">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
+                    <h3 className="font-display text-lg font-semibold" style={{ color: meta.color }}>
+                      {meta.label}
+                    </h3>
+                    <span className="font-mono text-[10px] text-muted-foreground/60">{faults.length} faults live here</span>
+                  </div>
+                  <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-3">{meta.description}</p>
+                  <p className="font-mono text-[11px] text-muted-foreground/80 leading-relaxed mb-3">
+                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/50 mr-2">Flow</span>
+                    {meta.flow.map((c, i) => (
+                      <span key={i}>
+                        {i > 0 && <span className="text-muted-foreground/40"> → </span>}
+                        <span className="text-foreground/80">{componentById(c)?.name ?? c}</span>
+                      </span>
+                    ))}
+                  </p>
+                  <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mb-4">
+                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/50 mr-2">How it fails</span>
+                    {meta.failureSignature}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {faults.map((f) => (
+                      <span key={f.id} className="font-mono text-[10px] border border-border/60 px-2 py-1 text-muted-foreground" title={`${SEVERITY_META[f.severity].label} · ${f.costHint}`}>
+                        {f.name}
+                        <span className="ml-1.5" style={{ color: SEVERITY_META[f.severity].color }}>●</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    case "hvacscenarios":
+      return (
+        <div className="my-6 space-y-6">
+          {SCENARIOS.map((sc) => (
+            <div key={sc.id} className="border border-border/70 p-5">
+              {sc.kind === "healthy" && (
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-300/80 mb-2">
+                  Baseline — how it's supposed to work
+                </p>
+              )}
+              <h3 className="font-display text-lg font-semibold text-foreground mb-2">{sc.title}</h3>
+              <p className="font-mono text-xs text-muted-foreground leading-relaxed border-l-2 border-foreground/30 pl-4 mb-4">
+                {sc.symptomSummary}
+              </p>
+              <ol className="space-y-2.5 mb-4">
+                {sc.steps.map((st, i) => (
+                  <li key={i} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-2">
+                    <span className="text-foreground/40 flex-shrink-0">{i + 1}.</span>
+                    <span>
+                      <strong className="text-foreground font-semibold">{st.title}.</strong> {st.text}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <p className="font-mono text-xs text-foreground/90 leading-relaxed bg-foreground/[0.03] border border-foreground/15 p-3">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 mr-2">
+                  {sc.kind === "healthy" ? "Takeaway" : "Verdict"}
+                </span>
+                {sc.verdict}
+              </p>
+            </div>
+          ))}
+        </div>
+      );
+    case "hvacfaults":
+      return (
+        <div className="my-6 overflow-x-auto border border-border">
+          <table className="w-full border-collapse min-w-[900px]">
+            <thead>
+              <tr className="bg-secondary/30">
+                {["Fault", "Severity", "Symptoms", "Components", "First checks", "Fix & typical cost"].map((h) => (
+                  <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {FAULTS.map((f) => (
+                <tr key={f.id} className="align-top hover:bg-secondary/10 transition-colors">
+                  <td className="font-mono text-xs text-foreground font-semibold p-3 border-b border-border/50 whitespace-nowrap">{f.name}</td>
+                  <td className="p-3 border-b border-border/50 whitespace-nowrap">
+                    <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border" style={{ color: SEVERITY_META[f.severity].color, borderColor: `${SEVERITY_META[f.severity].color}66` }}>
+                      {SEVERITY_META[f.severity].label}
+                    </span>
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {f.symptoms.map((sy) => symptomById(sy)?.label ?? sy).join(" · ")}
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {f.components.map((c) => componentById(c)?.name ?? c).join(" · ")}
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{f.checks[0]}</td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {f.fix} <span className="text-muted-foreground/60 whitespace-nowrap">({f.costHint})</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    case "sources":
+      return (
+        <div className="my-8 border-t border-border pt-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
+            Sources & further reading
+          </p>
+          <div className="space-y-2.5">
+            {block.items.map((it) => (
+              <div key={it.href}>
+                <a href={it.href} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors">
+                  {it.label} ↗
+                </a>
+                {it.note && <p className="font-mono text-[10px] text-muted-foreground/60 leading-relaxed mt-0.5">{it.note}</p>}
+              </div>
             ))}
           </div>
         </div>
