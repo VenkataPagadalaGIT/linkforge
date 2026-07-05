@@ -87,6 +87,13 @@ export default function AiSystemsMap() {
         >
           ⬦ Chokepoints · {ONTOLOGY_COUNTS.chokepoints}
         </button>
+        <a
+          href="/notebook/ai/graph"
+          className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
+          data-testid="ai-map-graphlink"
+        >
+          Graph view →
+        </a>
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
           {ONTOLOGY_COUNTS.nodes} nodes · {ONTOLOGY_COUNTS.edges} links
         </span>
@@ -146,9 +153,9 @@ export default function AiSystemsMap() {
                         ? "ring-1 ring-sky-400/70"
                         : "";
                     return (
-                      <Link
+                      <a
                         key={n.id}
-                        to={`/notebook/ai/map/${n.id}`}
+                        href={`/notebook/ai/map/${n.id}`}
                         onMouseEnter={() => setFocus(n.id)}
                         onMouseLeave={() => setFocus((f) => (f === n.id ? null : f))}
                         onFocus={() => setFocus(n.id)}
@@ -170,7 +177,7 @@ export default function AiSystemsMap() {
                             ⬦
                           </span>
                         )}
-                      </Link>
+                      </a>
                     );
                   })}
                 </div>
