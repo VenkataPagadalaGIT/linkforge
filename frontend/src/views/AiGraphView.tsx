@@ -2,8 +2,10 @@
 import * as React from "react";
 import { Link } from "@/lib/router-shim";
 import ScrollReveal from "@/components/ScrollReveal";
-import AiOntologyGraph from "@/components/ai/AiOntologyGraph";
+import AiOntologyGraph, { EDGE_CAT_COLOR, EDGE_CAT_LABEL } from "@/components/ai/AiOntologyGraph";
 import { ONTOLOGY_COUNTS } from "@/data/aiOntology";
+
+const CAT_ORDER = ["up", "down", "capital", "peer", "policy", "make"];
 
 export default function AiGraphView() {
   const [query, setQuery] = React.useState("");
@@ -26,11 +28,22 @@ export default function AiGraphView() {
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-4">
             The AI Systems Map — Graph
           </h1>
-          <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-8">
+          <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-5">
             The whole ontology as one node-edge graph — {ONTOLOGY_COUNTS.nodes} entities in {ONTOLOGY_COUNTS.layers} layers.
-            Hover any node to light up what it <span className="text-emerald-300">depends on ↑</span> and what it{" "}
-            <span className="text-sky-300">feeds ↓</span>. Click to open its topic page. ⬦ rings mark chokepoints.
+            Hover any node and its edges light up, each <span className="text-foreground">coloured and labelled by the actual
+            relation</span> (an investor shows as “invests in”, not “depends on”). Click a node to open its topic page.
+            ⬦ rings mark chokepoints.
           </p>
+
+          {/* Edge relation legend */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mb-8">
+            {CAT_ORDER.map((c) => (
+              <span key={c} className="inline-flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/80">
+                <i className="inline-block w-3 h-[2px]" style={{ background: EDGE_CAT_COLOR[c] }} />
+                {EDGE_CAT_LABEL[c]}
+              </span>
+            ))}
+          </div>
 
           {/* Controls */}
           <div className="flex flex-wrap items-center gap-3 mb-6">

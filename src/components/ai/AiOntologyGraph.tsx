@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { LAYERS, nodesInLayer, edges as ALL_EDGES, RELATION_META, type AiNode } from "@/data/aiOntology";
+import { LAYERS, nodesInLayer, edges as ALL_EDGES, RELATION_META, type AiNode, type RelationType } from "@/data/aiOntology";
 
 // Canvas-rendered layered graph of the whole ontology — fast for hundreds of
-// nodes. Bands L0 (top) → L6 (bottom); dots coloured by layer; hovering a node
-// lights up its dependencies (emerald = depends on ↑, sky = feeds ↓). Click a
+// nodes. Bands L0 (top) → L6 (bottom); dots coloured by layer. Hovering a node
+// lights up its edges, each coloured + labelled by its actual relation. Click a
 // node to open its topic page. The crawlable node links live in the Stack view.
 
 const CW = 1400;
@@ -15,6 +15,22 @@ const ROW_H = 28;
 const TOP = 14;
 
 const layerColor = (id: number) => LAYERS.find((l) => l.id === id)?.color ?? "#8a8a8a";
+
+// Edge colour by relation CATEGORY (resolved relative to the hovered node):
+// depends-on/uses (green), supplies/feeds (blue), invests_in (amber),
+// partner/rival (fuchsia), restricts (red), designs (slate).
+export const EDGE_CAT_COLOR: Record<string, string> = {
+  up: "#34d399", down: "#38bdf8", capital: "#fbbf24", peer: "#e879f9", policy: "#f87171", make: "#cbd5e1",
+};
+export const EDGE_CAT_LABEL: Record<string, string> = {
+  up: "depends on / uses", down: "supplies / feeds", capital: "invests in", peer: "partner / rival", policy: "restricts", make: "designs",
+};
+function edgeCategory(relation: RelationType, outgoing: boolean): string {
+  const dir = RELATION_META[relation]?.dir;
+  if (dir === "up") return outgoing ? "up" : "down";
+  if (dir === "down") return outgoing ? "down" : "up";
+  return dir || "peer";
+}
 
 interface P { x: number; y: number; node: AiNode }
 
@@ -43,12 +59,11 @@ export default function AiOntologyGraph({ query = "", chokeOnly = false }: { que
   }, []);
 
   const adj = React.useMemo(() => {
-    const m = new Map<string, { id: string; dir: string }[]>();
+    const m = new Map<string, { id: string; rel: RelationType; outgoing: boolean }[]>();
     for (const e of ALL_EDGES) {
-      const meta = RELATION_META[e.relation];
-      if (!meta) continue;
-      (m.get(e.from) ?? m.set(e.from, []).get(e.from)!).push({ id: e.to, dir: meta.dir === "up" ? "up" : "down" });
-      (m.get(e.to) ?? m.set(e.to, []).get(e.to)!).push({ id: e.from, dir: meta.dir === "up" ? "down" : "up" });
+      if (!RELATION_META[e.relation]) continue;
+      (m.get(e.from) ?? m.set(e.from, []).get(e.from)!).push({ id: e.to, rel: e.relation, outgoing: true });
+      (m.get(e.to) ?? m.set(e.to, []).get(e.to)!).push({ id: e.from, rel: e.relation, outgoing: false });
     }
     return m;
   }, []);
@@ -78,22 +93,29 @@ export default function AiOntologyGraph({ query = "", chokeOnly = false }: { que
       ctx.fillText(String(b.count), 12, b.top + 24);
     }
 
-    const neighbors = hover ? new Map((adj.get(hover) ?? []).map((a) => [a.id, a.dir])) : null;
+    const neighbors = hover ? new Set((adj.get(hover) ?? []).map((a) => a.id)) : null;
 
-    // hovered node's edges
+    // hovered node's edges — coloured + labelled by their actual relation
     if (hover) {
       const h = pos.get(hover);
       if (h) {
+        ctx.textBaseline = "middle";
         for (const a of adj.get(hover) ?? []) {
           const o = pos.get(a.id);
           if (!o) continue;
-          ctx.strokeStyle = a.dir === "up" ? "#34d399" : "#38bdf8";
-          ctx.globalAlpha = 0.85;
+          const color = EDGE_CAT_COLOR[edgeCategory(a.rel, a.outgoing)] ?? "#888";
+          ctx.strokeStyle = color;
+          ctx.globalAlpha = 0.9;
           ctx.lineWidth = 1.4;
           ctx.beginPath();
           ctx.moveTo(h.x, h.y);
           ctx.lineTo(o.x, o.y);
           ctx.stroke();
+          // the relation itself, at the edge midpoint
+          ctx.globalAlpha = 1;
+          ctx.font = "9px ui-monospace, monospace";
+          ctx.fillStyle = color;
+          ctx.fillText(a.rel.replace(/_/g, " "), (h.x + o.x) / 2, (h.y + o.y) / 2 - 4);
         }
         ctx.globalAlpha = 1;
       }
