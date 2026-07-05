@@ -35,6 +35,7 @@ function resolveContext(slug: string, sessionParam: string): SessionDetailContex
     conference: c,
     session: found.session,
     sessionId: found.sessionId,
+    urlSlug: found.urlSlug,
     dayDate: found.dayDate,
     dayIndex: found.dayIndex,
     dayTheme: c.days[found.dayIndex]?.theme,
