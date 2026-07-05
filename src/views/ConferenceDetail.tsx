@@ -134,6 +134,18 @@ const initials = (name: string) =>
 const ConferenceDetail = ({ conference }: { conference: Conference }) => {
   const c = conference;
   const speakers = React.useMemo(() => buildSpeakers(c), [c]);
+
+  // Default view: land on the Speakers section unless a specific hash is set.
+  React.useEffect(() => {
+    const defaultToSpeakers = () => {
+      if (!window.location.hash) {
+        document.getElementById("speakers")?.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "start" });
+      }
+    };
+    // wait one frame so layout (and lazy content above) has painted
+    const t = window.setTimeout(defaultToSpeakers, 60);
+    return () => window.clearTimeout(t);
+  }, []);
   const totalSessions = c.days.reduce((n, d) => n + d.sessions.length, 0);
   const [activeDay, setActiveDay] = React.useState(0);
   const [agendaView, setAgendaView] = React.useState<"timeline" | "grid">("timeline");
