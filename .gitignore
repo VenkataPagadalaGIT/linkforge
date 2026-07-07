@@ -26,3 +26,23 @@ yarn-error.log*
 # was serving old routes on Railway (the /guides 404 bug)
 .next/
 frontend/.next/
+
+# --- hardened by consolidation snapshot: nested deps, venvs, secrets, data ---
+node_modules/
+**/node_modules/
+.venv/
+**/.venv/
+backend/.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.db
+*.sqlite
+*.sqlite3
+dist/
+build/
+.DS_Store

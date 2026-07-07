@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Venkata Pagadala — Insights</title>
+    <link>https://venkatapagadala.com/insights</link>
+    <description>AI systems, enterprise SEO, machine learning, and automation insights by Venkata Pagadala.</description>
+    <language>en-us</language>
+    <atom:link href="https://venkatapagadala.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>AI Agents &amp; Automation for SEO</title>
+      <link>https://venkatapagadala.com/insights/ai-agents-automation</link>
+      <description>How AI agents, MCP servers, A2A pipelines, and Claude Code are automating enterprise SEO at scale.</description>
+      <guid>https://venkatapagadala.com/insights/ai-agents-automation</guid>
+    </item>
+    <item>
+      <title>AI &amp; Machine Learning for Search Optimization</title>
+      <link>https://venkatapagadala.com/insights/ai-ml-search-optimization</link>
+      <description>Leveraging RAG engines, knowledge graphs, vector embeddings, and NLP for enterprise search optimization.</description>
+      <guid>https://venkatapagadala.com/insights/ai-ml-search-optimization</guid>
+    </item>
+    <item>
+      <title>Enterprise Technical SEO at Scale</title>
+      <link>https://venkatapagadala.com/insights/enterprise-technical-seo</link>
+      <description>10+ years managing technical SEO across 50M+ pages — crawl optimization, structured data, site migrations.</description>
+      <guid>https://venkatapagadala.com/insights/enterprise-technical-seo</guid>
+    </item>
+    <item>
+      <title>Answer Engine Optimization</title>
+      <link>https://venkatapagadala.com/insights/answer-engine-optimization</link>
+      <description>Optimizing for AI-generated answers — AEO, GEO, and AI Overviews strategy.</description>
+      <guid>https://venkatapagadala.com/insights/answer-engine-optimization</guid>
+    </item>
+    <item>
+      <title>Editorial SEO &amp; Content Strategy</title>
+      <link>https://venkatapagadala.com/insights/editorial-seo-content-strategy</link>
+      <description>Building topical authority through strategic content frameworks and persona-driven editorial planning.</description>
+      <guid>https://venkatapagadala.com/insights/editorial-seo-content-strategy</guid>
+    </item>
+    <item>
+      <title>SEO Performance Analytics</title>
+      <link>https://venkatapagadala.com/insights/seo-performance-analytics</link>
+      <description>Growth forecasting, custom dashboards, KPI tracking, and CRO optimization for enterprise SEO.</description>
+      <guid>https://venkatapagadala.com/insights/seo-performance-analytics</guid>
+    </item>
+  </channel>
+</rss>

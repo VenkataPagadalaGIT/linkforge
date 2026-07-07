@@ -1,0 +1,383 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Default — LIGHT theme. Used when html has no `.dark` class.
+     Foreground is pure black (not 8% gray) so all `/85`, `/70`, `/60`
+     opacity utilities still hit AAA contrast against the white background. */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 18%;
+
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 0% 25%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 80%;
+    --input: 0 0% 80%;
+    --ring: 0 0% 40%;
+
+    --radius: 0px;
+
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 80%;
+    --sidebar-ring: 0 0% 40%;
+
+    --glow: 0 0% 0%;
+
+    --scrollbar-track: 0 0% 96%;
+    --scrollbar-thumb: 0 0% 65%;
+  }
+
+  /* DARK theme — applied when `<html class="dark">` (the original look). */
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 96%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 92%;
+
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 85%;
+
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 96%;
+
+    --destructive: 0 0% 45%;
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 45%;
+
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 40%;
+
+    --glow: 0 0% 100%;
+
+    --scrollbar-track: 0 0% 2%;
+    --scrollbar-thumb: 0 0% 20%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  ::selection {
+    background: hsl(var(--foreground) / 0.18);
+    color: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-track));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--scrollbar-thumb));
+  }
+
+  /* Light-theme readability boosts.
+     Many components use opacity modifiers (`/40`, `/50`, `/60`) on text
+     colors. On dark bg these read fine; on white they wash out below WCAG
+     AA. We strengthen them here without touching the dark theme. */
+  :root:not(.dark) .text-muted-foreground\/40,
+  :root:not(.dark) .text-muted-foreground\/50 {
+    color: hsl(var(--muted-foreground) / 0.7) !important;
+  }
+  :root:not(.dark) .text-muted-foreground\/60,
+  :root:not(.dark) .text-muted-foreground\/70 {
+    color: hsl(var(--muted-foreground) / 0.85) !important;
+  }
+  /* Foreground alphas — same Helmholtz–Kohlrausch logic. /30 and /40
+     designed for white-on-black evaporate to <#bbb on white; bump to
+     stay AA-readable for chip labels, category tags, etc. */
+  :root:not(.dark) .text-foreground\/30 {
+    color: hsl(var(--foreground) / 0.55) !important;
+  }
+  :root:not(.dark) .text-foreground\/40 {
+    color: hsl(var(--foreground) / 0.65) !important;
+  }
+  :root:not(.dark) .text-foreground\/50 {
+    color: hsl(var(--foreground) / 0.72) !important;
+  }
+  :root:not(.dark) .text-foreground\/60,
+  :root:not(.dark) .text-foreground\/70 {
+    color: hsl(var(--foreground) / 0.85) !important;
+  }
+  /* Body prose: bump from /85 to full strength on white for comfortable
+     long-form reading. Conference notes are the primary content type. */
+  :root:not(.dark) .text-foreground\/85 {
+    color: hsl(var(--foreground) / 0.92) !important;
+  }
+  /* Background overlays — `bg-foreground/[0.03..0.08]` show as 3-8% black
+     on white = barely visible. Strengthen subtly. */
+  :root:not(.dark) .bg-foreground\/\[0\.03\] {
+    background-color: hsl(var(--foreground) / 0.05) !important;
+  }
+  :root:not(.dark) .bg-foreground\/\[0\.04\],
+  :root:not(.dark) .bg-foreground\/\[0\.05\] {
+    background-color: hsl(var(--foreground) / 0.06) !important;
+  }
+  :root:not(.dark) .bg-foreground\/\[0\.06\],
+  :root:not(.dark) .bg-foreground\/\[0\.08\] {
+    background-color: hsl(var(--foreground) / 0.08) !important;
+  }
+
+  /* ----- Brand emerald — the conference/notebook accent color ------
+     The site uses emerald-300/400 throughout (PUBLISHED, FIELD NOTES,
+     LIVE NOTES badges, take-notes pill, etc.). Those tints are tuned for
+     dark bg. On white they wash out to ~#6ee7b7 — basically illegible.
+     We remap to emerald-700 (#047857) family for the light theme so the
+     brand color stays recognizable but readable. */
+  :root:not(.dark) .text-emerald-300,
+  :root:not(.dark) .text-emerald-300\/80,
+  :root:not(.dark) .text-emerald-300\/90,
+  :root:not(.dark) .text-emerald-300\/95,
+  :root:not(.dark) .text-emerald-400,
+  :root:not(.dark) .text-emerald-400\/70,
+  :root:not(.dark) .text-emerald-400\/80 {
+    color: hsl(160 84% 25%) !important; /* emerald-700-ish */
+  }
+  :root:not(.dark) .text-green-400,
+  :root:not(.dark) .text-green-400\/70 {
+    color: hsl(142 71% 30%) !important; /* green-700 */
+  }
+  :root:not(.dark) .border-emerald-400\/30,
+  :root:not(.dark) .border-emerald-400\/40,
+  :root:not(.dark) .border-emerald-400\/45,
+  :root:not(.dark) .border-emerald-400\/50 {
+    border-color: hsl(160 84% 35% / 0.55) !important;
+  }
+  :root:not(.dark) .border-green-400\/20,
+  :root:not(.dark) .border-green-400\/30,
+  :root:not(.dark) .border-green-500\/30 {
+    border-color: hsl(142 71% 35% / 0.45) !important;
+  }
+  :root:not(.dark) .bg-emerald-400\/\[0\.04\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.06\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.08\],
+  :root:not(.dark) .bg-emerald-400\/\[0\.12\],
+  :root:not(.dark) .bg-emerald-500\/40 {
+    background-color: hsl(160 84% 40% / 0.12) !important;
+  }
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.06\]:hover,
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.08\]:hover,
+  :root:not(.dark) .hover\:bg-emerald-400\/\[0\.12\]:hover {
+    background-color: hsl(160 84% 40% / 0.18) !important;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--glow) / 0.3), 0 0 40px hsl(var(--glow) / 0.1);
+  }
+
+  .border-glow {
+    box-shadow: 0 0 15px hsl(var(--glow) / 0.1), inset 0 0 15px hsl(var(--glow) / 0.05);
+  }
+
+  .border-glow-hover {
+    transition: box-shadow 0.4s ease;
+  }
+  .border-glow-hover:hover {
+    box-shadow: 0 0 30px hsl(var(--glow) / 0.2), inset 0 0 30px hsl(var(--glow) / 0.08);
+  }
+
+  .grid-perspective {
+    perspective: 800px;
+    perspective-origin: 50% 50%;
+  }
+}
+
+@keyframes float-block {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* ===== HoloPhoto — 3D hologram speaker treatment ===== */
+:root {
+  --holo-cyan: 180 100% 70%;
+  --holo-magenta: 300 90% 70%;
+}
+
+.holo-photo {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 30% 0%, hsl(var(--holo-cyan) / 0.10) 0%, transparent 60%),
+    radial-gradient(circle at 80% 100%, hsl(var(--holo-magenta) / 0.08) 0%, transparent 55%),
+    hsl(var(--card));
+  border: 1px solid hsl(var(--holo-cyan) / 0.18);
+  box-shadow:
+    0 0 0 1px hsl(var(--foreground) / 0.04),
+    0 0 22px -4px hsl(var(--holo-cyan) / 0.18),
+    inset 0 0 30px -8px hsl(var(--holo-cyan) / 0.10);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.4s ease,
+              border-color 0.4s ease;
+}
+
+/* Light-mode tweak: photos look more grounded with a subtle dark backdrop
+   instead of a pale cyan tint, matching the editorial photo treatment. */
+:root:not(.dark) .holo-photo {
+  background:
+    radial-gradient(circle at 30% 0%, hsl(var(--holo-cyan) / 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 80% 100%, hsl(var(--holo-magenta) / 0.05) 0%, transparent 55%),
+    hsl(0 0% 12%);
+  border-color: hsl(0 0% 18%);
+}
+
+.holo-photo-img {
+  filter: grayscale(0.55) contrast(1.15) brightness(0.9) saturate(0.7);
+  mix-blend-mode: luminosity;
+  transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), mix-blend-mode 0.5s ease;
+}
+
+/* Holographic color tint overlay */
+.holo-photo-tint {
+  background:
+    linear-gradient(135deg,
+      hsl(var(--holo-cyan) / 0.12) 0%,
+      transparent 35%,
+      transparent 65%,
+      hsl(var(--holo-magenta) / 0.10) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  transition: opacity 0.4s ease;
+}
+
+/* Scanlines */
+.holo-photo-scan {
+  background-image: repeating-linear-gradient(
+    0deg,
+    hsl(var(--holo-cyan) / 0.06) 0px,
+    hsl(var(--holo-cyan) / 0.06) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  animation: holo-scan-shift 6s linear infinite;
+}
+
+/* Edge cyan glow ring */
+.holo-photo-ring {
+  box-shadow: inset 0 0 0 1px hsl(var(--holo-cyan) / 0.12);
+}
+
+/* Corner brackets */
+.holo-bracket {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid hsl(var(--holo-cyan) / 0.55);
+  pointer-events: none;
+  transition: border-color 0.4s ease, width 0.3s ease, height 0.3s ease;
+}
+.holo-bracket-tl { top: 4px; left: 4px; border-right: none; border-bottom: none; }
+.holo-bracket-tr { top: 4px; right: 4px; border-left: none; border-bottom: none; }
+.holo-bracket-bl { bottom: 4px; left: 4px; border-right: none; border-top: none; }
+.holo-bracket-br { bottom: 4px; right: 4px; border-left: none; border-top: none; }
+
+/* Hover state — interactive cards reveal more color + lift */
+.holo-interactive { cursor: pointer; }
+a:hover .holo-interactive,
+.holo-interactive:hover,
+.group:hover .holo-interactive {
+  transform: translateY(-2px);
+  border-color: hsl(var(--holo-cyan) / 0.45);
+  box-shadow:
+    0 0 0 1px hsl(var(--holo-cyan) / 0.25),
+    0 0 35px -2px hsl(var(--holo-cyan) / 0.35),
+    0 6px 24px -4px hsl(var(--foreground) / 0.18),
+    inset 0 0 40px -6px hsl(var(--holo-cyan) / 0.18);
+}
+a:hover .holo-interactive .holo-photo-img,
+.holo-interactive:hover .holo-photo-img,
+.group:hover .holo-interactive .holo-photo-img {
+  filter: grayscale(0) contrast(1.2) brightness(1.05) saturate(1.15);
+  mix-blend-mode: normal;
+  transform: scale(1.04);
+}
+a:hover .holo-interactive .holo-photo-tint,
+.holo-interactive:hover .holo-photo-tint,
+.group:hover .holo-interactive .holo-photo-tint {
+  opacity: 0.45;
+}
+a:hover .holo-interactive .holo-bracket,
+.holo-interactive:hover .holo-bracket,
+.group:hover .holo-interactive .holo-bracket {
+  border-color: hsl(var(--holo-cyan) / 0.95);
+  width: 10px;
+  height: 10px;
+}
+
+/* Scanline drift */
+@keyframes holo-scan-shift {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 -120px; }
+}
+
+/* Subtle chromatic aberration on hover for "name + meta" text in cards.
+   Disabled in light mode — the holo-magenta/holo-cyan offsets that look
+   cinematic on a black background turn into illegible text-bleed on white. */
+.holo-aberration {
+  transition: text-shadow 0.4s ease;
+}
+.dark .group:hover .holo-aberration {
+  text-shadow:
+    -1px 0 0 hsl(var(--holo-magenta) / 0.55),
+    1px 0 0 hsl(var(--holo-cyan) / 0.55);
+}
