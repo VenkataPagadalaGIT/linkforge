@@ -1211,8 +1211,22 @@ export default function HvacScene(props: HvacSceneState) {
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [2.2, 4.2, 12.6], fov: 42 }}
-      gl={{ antialias: true, alpha: false }}
-      onCreated={({ gl }) => gl.setClearColor("#0a0a0a")}
+      // powerPreference nudges hybrid-GPU Windows laptops onto the discrete
+      // GPU; leaving failIfMajorPerformanceCaveat unset (default false) lets
+      // weak/software GPUs still render instead of hard-failing on Edge.
+      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.setClearColor("#0a0a0a");
+        // Some Windows/Edge GPUs drop the WebGL context under memory pressure
+        // or a driver reset. Calling preventDefault on "lost" lets the browser
+        // fire "restored", so three.js rebuilds resources and the scene comes
+        // back instead of freezing on a blank canvas.
+        gl.domElement.addEventListener(
+          "webglcontextlost",
+          (e) => e.preventDefault(),
+          false,
+        );
+      }}
       onPointerMissed={() => props.onSelect(null)}
       onPointerDown={() => setInteracted(true)}
       style={{ touchAction: "none" }}
