@@ -14,6 +14,7 @@ import type React from "react";
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -1189,6 +1190,23 @@ export default function HvacScene(props: HvacSceneState) {
   // selected/highlighted) — a still frame doesn't pull people in.
   const [interacted, setInteracted] = useState(false);
   const attract = !interacted && !props.selectedId && props.highlightIds.length === 0;
+
+  // r3f measures its container with a ResizeObserver, but on some
+  // browsers/GPUs (notably Edge on Windows) the first measurement is missed
+  // and the canvas stays stuck at its default 300x150 — the model renders
+  // into a tiny corner of a black box and looks broken. A window "resize"
+  // forces r3f to re-measure; fire a few after mount so the canvas fills
+  // its container regardless of when layout/fonts settle.
+  useEffect(() => {
+    const nudge = () => window.dispatchEvent(new Event("resize"));
+    const raf = requestAnimationFrame(nudge);
+    const timers = [60, 250, 800].map((ms) => window.setTimeout(nudge, ms));
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+
   return (
     <Canvas
       dpr={[1, 2]}
