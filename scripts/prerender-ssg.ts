@@ -17,7 +17,10 @@ import puppeteer, { type Browser } from "puppeteer";
 import { buildRouteSpecs } from "./vite-plugin-prerender-noscript";
 
 const DIST_DIR = path.resolve(process.cwd(), "dist");
-const PORT = 4173;
+// Bound to an OS-assigned ephemeral port (see startStaticServer) to avoid
+// EADDRINUSE conflicts in containerized build environments where the default
+// Vite preview port (4173) may already be occupied.
+let PORT = 0;
 const HYDRATION_TIMEOUT_MS = 15000;
 
 const MIME: Record<string, string> = {
@@ -64,7 +67,13 @@ function startStaticServer(): Promise<http.Server> {
         res.end(String(err));
       }
     });
-    server.listen(PORT, () => resolve(server));
+    server.listen(0, () => {
+      const address = server.address();
+      if (address && typeof address === "object") {
+        PORT = address.port;
+      }
+      resolve(server);
+    });
     server.on("error", reject);
   });
 }
@@ -113,8 +122,9 @@ async function main() {
   // `dist/index.html`). SSG should overwrite it with real hydrated HTML.
   const paths = ["/", ...specs.map((s) => s.path)];
 
-  console.log(`[ssg] starting static server on :${PORT}`);
+  console.log(`[ssg] starting static server on an ephemeral port`);
   const server = await startStaticServer();
+  console.log(`[ssg] static server listening on :${PORT}`);
 
   console.log(`[ssg] launching headless Chrome`);
   const browser = await puppeteer.launch({
