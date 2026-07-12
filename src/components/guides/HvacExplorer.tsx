@@ -221,6 +221,15 @@ const HvacExplorer = () => {
   const [scenario, setScenario] = useState<HvacScenario | null>(null);
   const [stepIdx, setStepIdx] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  // Re-measure the r3f canvas when the panel slides in/out.
+  useEffect(() => {
+    const nudge = () => window.dispatchEvent(new Event("resize"));
+    const raf = requestAnimationFrame(nudge);
+    const timers = [120, 320, 640].map((ms) => window.setTimeout(nudge, ms));
+    return () => { cancelAnimationFrame(raf); timers.forEach(clearTimeout); };
+  }, [panelOpen]);
   const [autoPlay, setAutoPlay] = useState(false);
   const [systemType, setSystemType] = useState<"any" | "gas" | "heatpump">("any");
   const [showReport, setShowReport] = useState(false);
@@ -396,6 +405,15 @@ const HvacExplorer = () => {
           <Toggle label="Labels" value={labels} onChange={setLabels} />
           <button
             type="button"
+            onClick={() => setPanelOpen((v) => !v)}
+            title={panelOpen ? "Hide the panel — full-width 3D" : "Show the panel"}
+            className={`font-mono text-[10px] uppercase tracking-wider px-2.5 py-1.5 border transition-colors ${panelOpen ? "border-border text-muted-foreground hover:text-foreground hover:border-foreground/40" : "border-foreground/50 text-foreground bg-foreground/10"}`}
+            data-testid="hvac-focus"
+          >
+            {panelOpen ? "⤢ Focus" : "☰ Panel"}
+          </button>
+          <button
+            type="button"
             onClick={toggleFullscreen}
             className="font-mono text-[10px] uppercase tracking-wider px-2.5 py-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
             title={fullscreen ? "Exit fullscreen" : "Fullscreen"}
@@ -405,10 +423,10 @@ const HvacExplorer = () => {
         </div>
       </div>
 
-      <div className="lg:grid lg:grid-cols-[1.4fr_1fr]">
+      <div className={`lg:grid transition-[grid-template-columns] duration-300 ease-in-out ${panelOpen ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-[1fr_0fr]"}`}>
         {/* 3D canvas */}
         <div
-          className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 lg:border-r border-border`}
+          className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 ${panelOpen ? "lg:border-r" : ""} border-border`}
           style={canvasStyle}
         >
           {webgl === false ? (
@@ -447,7 +465,7 @@ const HvacExplorer = () => {
         </div>
 
         {/* side panel */}
-        <div className="p-4 min-w-0 lg:h-[540px] lg:overflow-y-auto" style={panelStyle}>
+        <div className={`min-w-0 transition-opacity duration-200 ${panelOpen ? "p-4 lg:h-[540px] lg:overflow-y-auto" : "h-0 lg:h-[540px] overflow-hidden opacity-0 pointer-events-none"}`} style={panelOpen ? panelStyle : undefined}>
           {mode === "explore" &&
             (selected ? (
               <div>

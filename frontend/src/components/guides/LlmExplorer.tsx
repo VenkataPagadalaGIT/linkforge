@@ -119,6 +119,19 @@ export default function LlmExplorer() {
   const [running, setRunning] = useState(true);
   const [labels, setLabels] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  // When the panel slides in/out, the canvas column changes width — nudge r3f
+  // to re-measure so the 3D fills the new space (during + after the transition).
+  useEffect(() => {
+    const nudge = () => window.dispatchEvent(new Event("resize"));
+    const raf = requestAnimationFrame(nudge);
+    const timers = [120, 320, 640].map((ms) => window.setTimeout(nudge, ms));
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+    };
+  }, [panelOpen]);
 
   const step = mode === "journey" ? JOURNEY[stepIdx] : null;
   const selected = selectedId ? stageById(selectedId) : null;
@@ -215,6 +228,19 @@ export default function LlmExplorer() {
           <Toggle label="Labels" value={labels} onChange={setLabels} />
           <button
             type="button"
+            onClick={() => setPanelOpen((v) => !v)}
+            title={panelOpen ? "Hide the text — full-width animation" : "Show the text panel"}
+            className={`font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 border transition-colors ${
+              panelOpen
+                ? "border-border text-muted-foreground hover:text-foreground"
+                : "border-foreground/50 text-foreground bg-foreground/10"
+            }`}
+            data-testid="llm-focus"
+          >
+            {panelOpen ? "⤢ focus" : "☰ text"}
+          </button>
+          <button
+            type="button"
             onClick={toggleFullscreen}
             className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 border border-border text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -223,9 +249,13 @@ export default function LlmExplorer() {
         </div>
       </div>
 
-      <div className="lg:grid lg:grid-cols-[1.4fr_1fr]">
+      <div
+        className={`lg:grid transition-[grid-template-columns] duration-300 ease-in-out ${
+          panelOpen ? "lg:grid-cols-[1.4fr_1fr]" : "lg:grid-cols-[1fr_0fr]"
+        }`}
+      >
         {/* 3D canvas */}
-        <div className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 lg:border-r border-border`} style={canvasStyle}>
+        <div className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 ${panelOpen ? "lg:border-r" : ""} border-border`} style={canvasStyle}>
           {webgl === false ? (
             <SceneFallback />
           ) : (
@@ -264,7 +294,14 @@ export default function LlmExplorer() {
         </div>
 
         {/* side panel */}
-        <div className="p-4 min-w-0 lg:h-[540px] lg:overflow-y-auto" style={panelStyle}>
+        <div
+          className={`min-w-0 transition-opacity duration-200 ${
+            panelOpen
+              ? "p-4 lg:h-[540px] lg:overflow-y-auto"
+              : "h-0 lg:h-[540px] overflow-hidden opacity-0 pointer-events-none"
+          }`}
+          style={panelOpen ? panelStyle : undefined}
+        >
           {mode === "journey" && step && (
             <div data-testid="llm-journey-panel">
               <div className="flex items-center justify-between gap-2 mb-2">
