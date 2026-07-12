@@ -1082,6 +1082,17 @@ const llmTerms: DefinedTerm[] = [
     agentRole: "The default architecture for enterprise AI: your data stays in a database, the model consumes it through the context window.",
   },
   {
+    slug: "interpretability",
+    term: "Mechanistic Interpretability",
+    aka: ["mech interp", "SAEs", "features"],
+    oneLiner: "Reverse-engineering a trained model's weights into human-understandable features and circuits — reading the mind, not just testing the behavior.",
+    inDepth:
+      "Because weights are grown, not written, no one knows what a given neuron means; superposition makes it worse, smearing many concepts across shared directions (polysemantic neurons). Sparse autoencoders (dictionary learning) untangle activations into millions of monosemantic features — Anthropic's Scaling Monosemanticity (2024) did this on Claude 3 Sonnet and amplified one feature to build 'Golden Gate Claude'. Interpretability is the leading bet for a real safety guarantee: catch deception or misalignment by reading internals, before behavior alone would reveal it.",
+    analogy: "An fMRI for a mind we grew: locate the features that light up for a concept, then turn the dial and watch behavior change.",
+    example: "Amplify the 'Golden Gate Bridge' feature and Claude steers every answer toward the bridge — proof the feature is real and causal.",
+    agentRole: "The frontier of trust: as agents get more autonomous, understanding WHY a model acts matters as much as whether it passed the test.",
+  },
+  {
     slug: "reasoning-model",
     term: "Reasoning Model",
     aka: ["thinking model", "o-series style", "RLVR"],
@@ -1192,6 +1203,10 @@ const llmFaqs: FaqItem[] = [
     q: "Prompt engineering, RAG, or fine-tuning — when do I use which?",
     a: "Climb the ladder by cost. Prompt engineering first: instructions and examples in the prompt, free and instant. RAG second: retrieve your documents into the context window for factual, current, citable answers — no retraining. Fine-tune last, and only to change BEHAVIOR (tone, format, a skill) rather than to inject facts; facts belong in retrieval, where they stay updatable.",
   },
+  {
+    q: "Can I trust what an LLM says — and is it safe?",
+    a: "Trust it like a brilliant, fast, confidently-wrong intern: verify anything that matters. It can hallucinate (fluent fabrication), it's steerable by adversaries (jailbreaks via odd encodings, prompt injection through content it reads, data poisoning during training), and its safety behavior was trained in, not proven. That's exactly why alignment (RLHF, Constitutional AI) and mechanistic interpretability matter: because we grow these systems rather than write them, the frontier goal is to READ their internals — catch deception or misalignment directly — rather than trust that passing today's tests means safe tomorrow.",
+  },
 ];
 
 const llmHowTos: Guide["howTos"] = [
@@ -1249,6 +1264,7 @@ const llmBlocks: Block[] = [
   { kind: "termcard", termSlug: "temperature" },
   { kind: "termcard", termSlug: "reasoning-model" },
   { kind: "termcard", termSlug: "rag" },
+  { kind: "termcard", termSlug: "interpretability" },
   { kind: "h2", text: "Seven years, six eras", id: "eras" },
   {
     kind: "p",

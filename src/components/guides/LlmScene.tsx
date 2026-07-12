@@ -83,6 +83,7 @@ const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: 
   "j-pretrain": { pos: [-5.0, 3.2, -2.2], look: [-5, 1.3, -6.5] },
   "j-align": { pos: [-1.0, 3.2, -2.2], look: [-1, 1.3, -6.5] },
   "j-reason": { pos: [3.0, 3.2, -2.2], look: [3, 1.3, -6.5] },
+  "j-interpret": { pos: [5.7, 3.2, -2.2], look: [5.7, 1.4, -6.5] },
 };
 
 function CameraRig({ controls }: { controls: React.RefObject<OrbitControlsImpl | null> }) {
@@ -1033,6 +1034,60 @@ function ReasoningRl() {
   );
 }
 
+/** Interpretability — a feature dictionary: a grid of mostly-dark cells with a
+ *  few monosemantic features lit and one amplified (the steered feature). */
+function Interpretability() {
+  const ctx = useScene();
+  const cols = 9, rows = 6;
+  const inst = useRef<THREE.InstancedMesh>(null);
+  const hero = useRef<THREE.MeshStandardMaterial>(null);
+  const tmp = useMemo(() => new THREE.Object3D(), []);
+  const col = useMemo(() => new THREE.Color(), []);
+  const lit = useMemo(() => new Set([7, 12, 20, 29, 38, 41, 47]), []); // scattered monosemantic features
+  useFrame((state) => {
+    const on = ctx.training || ctx.running || ctx.selectedId === "interpretability" || ctx.highlight.has("interpretability");
+    if (inst.current) {
+      const t = state.clock.elapsedTime;
+      let k = 0;
+      for (let c = 0; c < cols; c++) for (let r = 0; r < rows; r++) {
+        tmp.position.set(-0.72 + c * 0.18, 0.55 + r * 0.2, 0);
+        tmp.scale.setScalar(0.07);
+        tmp.updateMatrix();
+        inst.current.setMatrixAt(k, tmp.matrix);
+        const feat = lit.has(k);
+        const b = feat && on ? 0.55 + 0.25 * Math.sin(t * 2 + k) : 0.05;
+        col.setRGB(b * 0.7, b * 0.66, b * 0.42); // brass glow
+        inst.current.setColorAt(k, col);
+        k++;
+      }
+      inst.current.instanceMatrix.needsUpdate = true;
+      if (inst.current.instanceColor) inst.current.instanceColor.needsUpdate = true;
+    }
+    if (hero.current) hero.current.emissiveIntensity = THREE.MathUtils.lerp(hero.current.emissiveIntensity, on ? 1.1 : 0.15, 0.1);
+  });
+  return (
+    <Stage id="interpretability" labelPos={[0, 2.5, 0]} halo={[2.4, 2.6, 1.6]} plinth={{ w: 2.2, d: 1.4 }} dimInInference>
+      {/* the scan board */}
+      <mesh position={[0, 1.15, -0.05]}>
+        <boxGeometry args={[2.0, 1.5, 0.06]} />
+        <meshStandardMaterial color="#2b2e34" roughness={0.4} metalness={0.55} emissive="#b39a6b" emissiveIntensity={0.05} />
+      </mesh>
+      <instancedMesh ref={inst} args={[undefined, undefined, cols * rows]} position={[0, 0, 0.05]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial roughness={0.4} toneMapped={false} />
+      </instancedMesh>
+      {/* the amplified 'Golden Gate' feature — one cell pulled out + a dial */}
+      <mesh position={[0.78, 1.72, 0.12]}>
+        <boxGeometry args={[0.16, 0.16, 0.16]} />
+        <meshStandardMaterial ref={hero} color="#c9a86a" emissive="#c9a86a" emissiveIntensity={0.15} roughness={0.35} />
+      </mesh>
+      <Text position={[0.78, 1.9, 0.12]} fontSize={0.07} color="#c9b280" anchorX="center">
+        steer
+      </Text>
+    </Stage>
+  );
+}
+
 /* ---------------------------------------------------------------- *
  *  Scene assembly
  * ---------------------------------------------------------------- */
@@ -1060,8 +1115,9 @@ function Machine() {
       <group position={[-5, 0, -6.5]}><Pretraining /></group>
       <group position={[-1, 0, -6.5]}><Alignment /></group>
       <group position={[3, 0, -6.5]}><ReasoningRl /></group>
-      <mesh position={[-3.1, 0.02, -6.5]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[15, 3.4]} />
+      <group position={[5.7, 0, -6.5]}><Interpretability /></group>
+      <mesh position={[-2.0, 0.02, -6.5]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[18, 3.4]} />
         <meshBasicMaterial color="#b39a6b" transparent opacity={ctx.training ? 0.04 : 0.012} />
       </mesh>
       <FlowConduit segment="input" />

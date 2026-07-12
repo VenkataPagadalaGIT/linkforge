@@ -145,7 +145,7 @@ export const STAGES: LlmStage[] = [
     story:
       "This is the transformer's superpower. For each token, dozens of attention heads each ask a different question of the sentence — one tracks grammar, one tracks names, one tracks what 'it' refers to. Each head pulls in information from the tokens that answer best, updating the token's vector with context. 'The' at the end of \"the cat sat on the\" ends up knowing it needs a sit-on-able noun next.",
     tech:
-      "Each head projects the stream into query (Q), key (K), value (V) vectors; attention weights = softmax(QKᵀ/√d). Causal masking hides future tokens. Frontier models use grouped-query attention (GQA) or DeepSeek's multi-head latent attention (MLA) to shrink the KV footprint. Cost is quadratic in sequence length — the reason long context is expensive.",
+      "Each head projects the stream into query (Q), key (K), value (V) vectors; weights = softmax(QKᵀ/√d) select which values to pull. Heads run in PARALLEL, each producing its own value-weighted output; those per-head outputs are CONCATENATED and passed through a single output-projection matrix (W_O) that writes the result back into the residual stream. Causal masking hides the future; GQA / DeepSeek's MLA shrink the KV footprint. Cost is quadratic in sequence length.",
     analogy: "A meeting where every word simultaneously polls every earlier word — 'are you relevant to me?' — and listens in proportion to the answer.",
     numbers: [
       { label: "GPT-3 heads/layer", value: "96" },
@@ -163,7 +163,7 @@ export const STAGES: LlmStage[] = [
     story:
       "After attention gathers context, a much bigger block does the 'thinking': the feed-forward network, where most of the parameters live. Frontier models split it into many parallel 'experts' and a tiny router picks the best 1-2 for each token — a chemistry token might fire different experts than a French one. The model can be huge on disk yet cheap per token.",
     tech:
-      "Classic FFN: two linear layers with a nonlinearity (SwiGLU), ~⅔ of layer params. Mixture-of-Experts (MoE): the FFN is replicated N times; a learned router (top-k softmax) sends each token to k experts. DeepSeek-V3: 256 routed experts + 1 shared, top-8 — 671B total params, ~37B active per token. Mixtral 8×7B: top-2 of 8.",
+      "One FFN is up-projection → nonlinearity (GELU/SwiGLU) → down-projection, ~⅔ of a layer's params. Read mechanistically (3Blue1Brown / Anthropic): the up-projection rows act like yes/no QUESTIONS ('is this about Michael Jordan?'), the nonlinearity gates them, and the down-projection WRITES facts back into the stream ('…plays Basketball'). It is where the model stores what it knows. Mixture-of-Experts (MoE) replicates this block N times with a top-k router. DeepSeek-V3: 256 experts + 1 shared, top-8 — 671B total, ~37B active. Mixtral 8×7B: top-2 of 8.",
     analogy: "A hospital triage desk: every patient (token) is routed to the two most relevant specialists rather than seeing all 256 doctors.",
     numbers: [
       { label: "DeepSeek-V3", value: "671B total → 37B active (top-8 of 256)" },
@@ -292,6 +292,24 @@ export const STAGES: LlmStage[] = [
       { label: "New risk", value: "Prompt injection via content the agent reads" },
     ],
     now: "This is the 2026 frontier: agentic RL trains models on completing long multi-step jobs (coding tasks, research, operations) with tools, supervised at a growing human-to-agent ratio.",
+  },
+  {
+    id: "interpretability",
+    name: "Interpretability — Reading the Weights",
+    short: "Interpretability",
+    zone: "training",
+    tagline: "We grow these models — then try to read their minds",
+    story:
+      "Here's the uncomfortable truth the Anthropic founders keep pointing at: nobody writes these weights, we GROW them — so no one knows what any given number means. Mechanistic interpretability is the effort to reverse-engineer them. The obstacle is superposition: a model packs far more concepts than it has neurons by smearing each across many overlapping directions, so a single neuron fires for a jumble of unrelated things (polysemanticity). It's a compressed, tangled code.",
+    tech:
+      "Sparse autoencoders (dictionary learning) pull those tangled activations apart into millions of MONOSEMANTIC features — a clean 'Golden Gate Bridge' feature, a 'code with a bug' feature, a 'sycophancy' feature. Anthropic's Scaling Monosemanticity (2024) extracted millions of features from Claude 3 Sonnet, then AMPLIFIED one to make 'Golden Gate Claude' — a model that steered every answer toward the bridge. Add the circuit view (induction heads, attention/FFN interplay) and you can start reading computation, not just outputs.",
+    analogy: "An fMRI for the model: find the exact features that light up for a concept, then turn the dial and watch behavior change.",
+    numbers: [
+      { label: "The obstacle", value: "Superposition → polysemantic neurons" },
+      { label: "The tool", value: "Sparse autoencoders → monosemantic features" },
+      { label: "The demo", value: "Golden Gate Claude (Anthropic, 2024)" },
+    ],
+    now: "In 2025-2026 interpretability is a frontier SAFETY bet: read a model's internals to catch deception, sycophancy, or misalignment before behavior alone would reveal it — understanding the system you deployed, not just testing it.",
   },
   {
     id: "context-window",
@@ -573,6 +591,15 @@ export const JOURNEY: JourneyStep[] = [
     narration:
       "The newest layer: reinforcement learning on the chain of thought itself, rewarded only when the reasoning verifiably works (math checks, code passes tests). That's what a 'thinking' model is doing during the pause — and why more thinking time buys more accuracy.",
     highlightIds: ["reasoning"],
+    flow: "train",
+    training: true,
+  },
+  {
+    id: "j-interpret",
+    title: "…and can we even read what we grew?",
+    narration:
+      "The final humility: nobody writes these weights, we grow them — so we can't fully read them. Superposition tangles concepts across neurons; sparse autoencoders pull them apart into clean features (a 'Golden Gate Bridge' feature you can dial up to steer the model). This is the frontier safety bet: understand the mind, don't just test the behavior.",
+    highlightIds: ["interpretability"],
     flow: "train",
     training: true,
   },
