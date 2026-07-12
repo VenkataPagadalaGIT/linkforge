@@ -23,6 +23,7 @@ import {
   symptomById,
   type HvacPath,
 } from "./hvac";
+import { LLM_COUNTS } from "./llm";
 
 export interface DefinedTerm {
   slug: string;
@@ -77,6 +78,12 @@ export type Block =
   | { kind: "hvacscenarios" }
   /** The ontology's path-level segmentation: 5 system paths → components → faults. */
   | { kind: "hvacpaths" }
+  /** Interactive 3D LLM pipeline explorer + guided journey (lazy-loaded). */
+  | { kind: "llm" }
+  /** Static, crawlable table of every LLM pipeline stage with real figures. */
+  | { kind: "llmstages" }
+  /** Static, crawlable transcript of the guided token-generation journey. */
+  | { kind: "llmjourney" }
   /** External sources / further-reading links. */
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
   | { kind: "details"; summary: string; blocks: Block[] };
@@ -975,6 +982,293 @@ const hvacHowTos = SCENARIOS.map((s) => ({
   ],
 }));
 
+/* ====================================================================== *
+ *  LLM guide content — terms, comparison, FAQs, HowTos, blocks
+ * ====================================================================== */
+
+const llmTerms: DefinedTerm[] = [
+  {
+    slug: "token",
+    term: "Token",
+    aka: ["subword", "BPE unit"],
+    oneLiner: "The atomic unit of LLM text — a common word, word-piece, or symbol from a fixed ~100-200k vocabulary.",
+    inDepth:
+      "Models never see letters or words — a byte-pair-encoding tokenizer chops text into vocabulary entries and hands the model integer IDs. Common words are one token; rare words shatter into pieces; a token averages about ¾ of an English word. Pricing, context limits, and speed are all measured in tokens.",
+    analogy: "A box of ~100,000 standard LEGO bricks that can snap together into any text ever written.",
+    example: "\"The cat sat on the\" → 5 tokens [791, 8415, 7731, 389, 279]; \"antidisestablishment\" → 4-5 tokens.",
+    agentRole: "Explains model quirks (letter-counting failures), API bills, and why context windows are token budgets, not word counts.",
+  },
+  {
+    slug: "embedding",
+    term: "Embedding",
+    oneLiner: "The vector of thousands of numbers each token becomes — a point in meaning-space where distance ≈ similarity.",
+    inDepth:
+      "Each token ID looks up a learned row in a vocab × d_model matrix (12,288 dims in GPT-3; 16,384 in Llama 3 405B). Directions carry semantics — the famous king − man + woman ≈ queen. Every subsequent computation operates on these vectors, never on text.",
+    analogy: "A GPS coordinate for every word, on a map with 16,000 dimensions where 'near' means 'means something similar'.",
+    example: "'cat' and 'kitten' land close together; 'cat' and 'carburetor' are far apart.",
+    agentRole: "The same trick powers vector search and RAG: embed a query and documents, retrieve by distance.",
+  },
+  {
+    slug: "self-attention",
+    term: "Self-Attention",
+    aka: ["QKV attention", "multi-head attention"],
+    oneLiner: "The mechanism that lets every token look at every earlier token and pull in the context that matters.",
+    inDepth:
+      "Each of dozens of heads projects tokens into queries, keys, and values; softmax(QKᵀ/√d) decides who listens to whom, and causal masking hides the future. One head may track syntax, another coreference. It's the transformer's core innovation — and its quadratic cost in context length is why long contexts are expensive.",
+    analogy: "A meeting where every word simultaneously polls every earlier word — 'are you relevant to me?' — and listens in proportion.",
+    example: "In \"the cat sat on the ___\", the final position attends hard to 'sat' and 'on', concluding a sit-on-able noun comes next.",
+    agentRole: "Explains why prompts work at all — instructions early in context steer computation everywhere downstream.",
+  },
+  {
+    slug: "mixture-of-experts",
+    term: "Mixture of Experts (MoE)",
+    oneLiner: "An architecture where a router activates only the best 1-2 of many expert networks per token — huge capacity, small per-token cost.",
+    inDepth:
+      "The feed-forward block (where ~⅔ of parameters live) is replicated into N experts; a learned router sends each token to the top-k. DeepSeek-V3 runs 256 routed experts and activates ~37B of its 671B parameters per token. This decoupling of stored capability from active compute is how 2025-2026 frontier models got big without getting slow.",
+    analogy: "A hospital triage desk routing each patient to the two most relevant specialists instead of all 256 doctors.",
+    example: "Mixtral 8×7B: top-2 of 8 experts. DeepSeek-V3: top-8 of 256 plus one shared expert.",
+    agentRole: "Why 'parameter count' stopped being the headline spec — active parameters and routing quality matter more.",
+  },
+  {
+    slug: "kv-cache",
+    term: "KV Cache",
+    oneLiner: "Stored attention keys/values for every processed token, so each new token only computes itself.",
+    inDepth:
+      "Without it, token #500 would recompute the whole prefix. With it, generation is one token of compute per step: the slow 'prefill' processes your prompt once, then tokens stream fast. It consumes VRAM linearly with context (GBs at 128k), which GQA and DeepSeek's MLA compress; vLLM pages it like virtual memory; providers bill cached prompt tokens ~10× cheaper.",
+    analogy: "A court stenographer's transcript — nobody re-litigates yesterday's testimony, they consult the notes.",
+    example: "Time-to-first-token = prefill; tokens-per-second after = cached decoding.",
+    agentRole: "Explains prompt-caching discounts and why agents should keep stable prompt prefixes.",
+  },
+  {
+    slug: "temperature",
+    term: "Temperature",
+    oneLiner: "The dial that reshapes next-token probabilities before sampling — 0 is deterministic, higher is more adventurous.",
+    inDepth:
+      "Logits are divided by T before softmax: T→0 concentrates all probability on the top token (greedy); T≈0.7-1.0 gives natural variety; T>1.2 gets weird. Top-p (nucleus) sampling then truncates the tail. This is why the same prompt yields different answers — the model outputs a distribution, not a word.",
+    analogy: "A weighted roulette wheel where temperature resizes the wedges before the spin.",
+    example: "After \"The cat sat on the\": T=0 always 'mat'; T=1 sometimes 'couch'; T=2 occasionally 'moon'.",
+    agentRole: "The first knob to set: 0-0.3 for extraction and code, 0.7+ for ideation.",
+  },
+  {
+    slug: "context-window",
+    term: "Context Window",
+    oneLiner: "The maximum tokens a model can hold at once — its entire working memory, and a hard wall.",
+    inDepth:
+      "Prompt + conversation + generated output must fit inside it (GPT-3: 2k; 2026 standard: 128k; frontier: 1M+, with Llama 4 Scout claiming 10M). Nothing outside exists. Chat 'memory' is application engineering — retrieved notes pasted back into the prompt. Attention cost grows quadratically with it, KV cache linearly.",
+    analogy: "A desk of fixed size: papers not on the desk right now might as well not exist.",
+    example: "A 300-page book ≈ 120k tokens — one full frontier context.",
+    agentRole: "The budget every RAG pipeline and agent scratchpad is engineered around.",
+  },
+  {
+    slug: "rlhf",
+    term: "RLHF / DPO",
+    aka: ["alignment", "post-training"],
+    oneLiner: "Post-training on human preferences that turns a raw next-token predictor into a helpful assistant.",
+    inDepth:
+      "After supervised fine-tuning on example conversations, humans rank pairs of model answers; either a reward model + PPO (classic RLHF) or Direct Preference Optimization uses those rankings to shift the model toward preferred behavior. It's why ChatGPT answers questions instead of continuing them — and the root of assistant-style tone.",
+    analogy: "A brilliant hire who's read everything but never met a customer, sent through onboarding with performance reviews.",
+    example: "GPT-3 (2020) continues your question with more questions; InstructGPT/ChatGPT (2022) answers it.",
+    agentRole: "The reason system prompts work and models refuse harmful requests — behavior was trained, not hardcoded.",
+  },
+  {
+    slug: "reasoning-model",
+    term: "Reasoning Model",
+    aka: ["thinking model", "o-series style", "RLVR"],
+    oneLiner: "A model trained with RL to produce a long private chain of thought before answering — accuracy now scales with thinking time.",
+    inDepth:
+      "Instead of rewarding only polished answers, 2025-era training samples chains of thought and reinforces those that verifiably succeed (math checks, unit tests) — RL with verifiable rewards, via GRPO/PPO-family algorithms. DeepSeek-R1 showed reasoning emerge from pure RL; OpenAI's o-series established inference-time compute as a second scaling axis alongside model size.",
+    analogy: "Grading the student's scratch work, not just the answer box — with unlimited scratch paper.",
+    example: "o3 and DeepSeek-R1 pausing to 'think' for seconds-to-minutes on a hard math problem, then answering.",
+    agentRole: "The 2026 frontier: agentic RL extends the same trick to multi-step tool use and long-horizon tasks.",
+  },
+];
+
+const llmComparison: ComparisonRow[] = [
+  {
+    type: "GPT-2 era (2019)",
+    isA: "1.5B params",
+    answers: "Scaled-up decoder-only transformer",
+    structure: "Pretraining only (WebText)",
+    example: "GPT-2",
+    bestFor: "Proof that scale buys coherent text",
+    limit: "Paragraphs drift; no instruction following",
+  },
+  {
+    type: "GPT-3 era (2020)",
+    isA: "175B params, 96 layers",
+    answers: "Few-shot in-context learning",
+    structure: "Pretraining on ~300B tokens",
+    example: "GPT-3",
+    bestFor: "One model, many tasks via prompting",
+    limit: "Continues text; doesn't reliably answer or obey",
+  },
+  {
+    type: "Assistant era (2022)",
+    isA: "GPT-3-class + post-training",
+    answers: "RLHF alignment",
+    structure: "SFT + human preference RL",
+    example: "InstructGPT, ChatGPT, Claude 1",
+    bestFor: "Conversation, instruction following — mass adoption",
+    limit: "Hallucination; shallow multi-step reasoning",
+  },
+  {
+    type: "Frontier dense (2023-24)",
+    isA: "100B-405B dense",
+    answers: "Scale + multimodality + long context",
+    structure: "10-15T tokens, DPO-era alignment",
+    example: "GPT-4, Claude 3, Llama 3 405B",
+    bestFor: "Expert-level breadth, 128k contexts",
+    limit: "Every parameter pays per token — cost ceiling",
+  },
+  {
+    type: "MoE frontier (2024-25)",
+    isA: "Huge total, small active (671B → 37B)",
+    answers: "Sparse mixture-of-experts routing",
+    structure: "Pretraining with router load-balancing",
+    example: "Mixtral, DeepSeek-V3, Llama 4, Qwen-MoE",
+    bestFor: "Frontier quality at a fraction of serving cost",
+    limit: "Complex to train/serve; memory-hungry weights",
+  },
+  {
+    type: "Reasoning era (2024-26)",
+    isA: "MoE/dense + inference-time compute",
+    answers: "RL on verifiable chains of thought",
+    structure: "RLVR (GRPO) over math/code checkers",
+    example: "o1/o3, DeepSeek-R1, Claude thinking modes",
+    bestFor: "Math, code, agentic multi-step work",
+    limit: "Slow + expensive thinking; reward hacking risk",
+  },
+];
+
+const llmFaqs: FaqItem[] = [
+  {
+    q: "Is the model actually 'thinking'?",
+    a: "It computes one next-token distribution per forward pass — nothing more. But to predict text written by thinking humans, it learned internal features that track syntax, facts, and goals, and reasoning models are explicitly trained to compute useful intermediate steps before answering. 'Thinking' is a fair description of the computation and a wrong description of the experience — there's no inner observer.",
+  },
+  {
+    q: "Why do LLMs hallucinate?",
+    a: "The base objective rewards plausible continuations, not true ones — a confident wrong answer often scores better than 'I don't know'. Post-training reduces this and retrieval (RAG) grounds it, but the generator is still sampling from a probability distribution, so fluent fabrication remains possible whenever the distribution is wrong.",
+  },
+  {
+    q: "What exactly happens when I set temperature to 0?",
+    a: "Logits stop being softened: the single highest-scoring token is chosen every step (greedy decoding). Output becomes near-deterministic — same prompt, same answer, modulo minor hardware nondeterminism — which is what you want for extraction, code, and evals.",
+  },
+  {
+    q: "How can predicting the next word produce reasoning?",
+    a: "Because the training data was written by people who reason. Predicting the next token of a proof or a program forces the network to internally represent the rules that generated it. Reasoning-RL then sharpens this: chains of thought that verifiably solve problems get reinforced, so the model learns to search, backtrack, and check itself.",
+  },
+  {
+    q: "What is a mixture-of-experts model in one sentence?",
+    a: "A model whose big feed-forward blocks are split into many specialists with a tiny router choosing the best 1-2 per token — so DeepSeek-V3 stores 671B parameters but only ~37B do work on any given token.",
+  },
+  {
+    q: "Why do 'thinking' models pause before answering?",
+    a: "They're generating a long private chain of thought — sometimes thousands of tokens — before the visible answer. That's inference-time compute: the 2025 discovery that letting a model think longer buys accuracy the same way more parameters used to.",
+  },
+  {
+    q: "Does the model remember our previous conversations?",
+    a: "The weights never change while you chat. Anything it 'remembers' was placed into the current context window by the app — the conversation so far, plus retrieved memory notes. When context overflows, the app summarizes or drops the oldest parts, which is when models seem to forget.",
+  },
+  {
+    q: "What changed between 2023-era and 2026-era models?",
+    a: "Three shifts: sparse MoE architectures made frontier capacity affordable per token; context windows grew from 8k to 128k-1M+ (RoPE scaling, better attention kernels); and reasoning-RL added inference-time compute as a new scaling axis — models that deliberate. Plus multimodality and agentic tool use became defaults.",
+  },
+];
+
+const llmHowTos: Guide["howTos"] = [
+  {
+    name: "How a prompt becomes a response",
+    description: "The full inference pipeline inside a large language model, from keystrokes to streamed answer.",
+    steps: [
+      { name: "Tokenize", text: "The chat app assembles one flat sequence (system prompt + conversation) and a BPE tokenizer chops it into IDs from a ~100-200k vocabulary." },
+      { name: "Embed", text: "Each token ID looks up its embedding vector (~12-16k numbers); RoPE stamps position onto the geometry." },
+      { name: "Run the stack", text: "Vectors flow through 30-126 identical layers; in each, attention lets every token read every earlier token, then feed-forward/MoE experts transform it, all accumulating in the residual stream." },
+      { name: "Score the vocabulary", text: "The final position's vector is multiplied against the unembedding matrix, producing a logit for every vocabulary token." },
+      { name: "Sample", text: "Softmax (scaled by temperature, truncated by top-p) turns logits into probabilities and one token is drawn." },
+      { name: "Loop", text: "The token is appended and the pipeline runs again — one forward pass per token, fast because keys/values are cached — until an end token." },
+    ],
+  },
+  {
+    name: "How an LLM is trained",
+    description: "The three training phases behind a 2026 frontier assistant.",
+    steps: [
+      { name: "Pretrain", text: "Months of next-token prediction over ~15T tokens of text/code on tens of thousands of GPUs — grammar, facts, and style emerge because they help predict." },
+      { name: "Align", text: "Supervised fine-tuning on example conversations, then RLHF/DPO on human preference rankings turns the autocomplete into an assistant." },
+      { name: "Teach reasoning", text: "RL with verifiable rewards: sample chains of thought on math/code, reinforce the ones that check out (GRPO) — producing thinking models whose accuracy scales with inference-time compute." },
+    ],
+  },
+];
+
+const llmBlocks: Block[] = [
+  {
+    kind: "p",
+    text:
+      "Every answer an LLM gives you is manufactured by the same machine: text is chopped into **tokens**, tokens become **vectors**, vectors flow through a stack of **attention** and **expert** layers, and everything collapses into one probability distribution over the next token. A weighted die is rolled, the winner is appended — and the whole machine runs again, hundreds of times per answer. The model below is that machine. **Play the journey**, or click any stage.",
+  },
+  { kind: "h2", text: "Watch a thought get computed", id: "interactive" },
+  { kind: "llm" },
+  {
+    kind: "callout",
+    title: "What you're looking at",
+    text:
+      "**Blue** stages turn your words into numbers. **Violet** is the transformer core — attention beams polling the sentence, a router waking 2 of 8 experts, a KV cache filling. **Green** is the output side: 200,000 scores, a temperature dial, a die roll, and the loop arc carrying 'mat' back to the start. **Amber**, behind, is where the weights came from: pretraining, human feedback, and 2025's reasoning RL.",
+  },
+  { kind: "h2", text: "The journey, in plain text", id: "journey" },
+  {
+    kind: "p",
+    text:
+      "The same 15 steps the interactive journey walks through — as text, for reading (and for the crawlers and answer engines that can't run WebGL).",
+  },
+  { kind: "llmjourney" },
+  { kind: "h2", text: "Every stage, with real numbers", id: "stages" },
+  { kind: "llmstages" },
+  { kind: "h2", text: "The vocabulary that unlocks the papers", id: "terms" },
+  { kind: "termcard", termSlug: "token" },
+  { kind: "termcard", termSlug: "self-attention" },
+  { kind: "termcard", termSlug: "mixture-of-experts" },
+  { kind: "termcard", termSlug: "kv-cache" },
+  { kind: "termcard", termSlug: "temperature" },
+  { kind: "termcard", termSlug: "reasoning-model" },
+  { kind: "h2", text: "Seven years, six eras", id: "eras" },
+  {
+    kind: "p",
+    text:
+      "The pipeline above barely changed since 2019 — decoder-only transformer, next-token loop. What changed is everything around it: scale, post-training, sparsity, and finally inference-time reasoning.",
+  },
+  { kind: "comparison" },
+  {
+    kind: "callout",
+    title: "The 2026 frontier in one line",
+    text:
+      "**MoE for capacity, long context for memory, reasoning RL for depth** — and the next battleground is agentic RL: rewarding models for completing multi-step tasks with tools, not just answering questions.",
+  },
+  { kind: "h2", text: "Questions everyone asks", id: "faq" },
+  { kind: "faq" },
+  {
+    kind: "related",
+    items: [
+      { label: "The AI Systems Map — the industry behind this machine, 455 entities in 3D", href: "/notebook/ai/map" },
+      { label: "The AI Concepts Encyclopedia", href: "/notebook/ai/encyclopedia" },
+      { label: "3D HVAC Troubleshooting — the same interactive treatment, for your house", href: "/guides/hvac-system-troubleshooting" },
+    ],
+  },
+  {
+    kind: "sources",
+    items: [
+      { label: "3Blue1Brown — Large Language Models explained briefly", href: "https://www.youtube.com/watch?v=LPZh9BOjkQs", note: "The visual style this guide is inspired by" },
+      { label: "Vaswani et al. — Attention Is All You Need (2017)", href: "https://arxiv.org/abs/1706.03762", note: "The transformer" },
+      { label: "Brown et al. — Language Models are Few-Shot Learners (2020)", href: "https://arxiv.org/abs/2005.14165", note: "GPT-3: 175B params, 96 layers" },
+      { label: "Ouyang et al. — Training language models to follow instructions (2022)", href: "https://arxiv.org/abs/2203.02155", note: "InstructGPT / RLHF" },
+      { label: "Su et al. — RoFormer: Rotary Position Embedding (2021)", href: "https://arxiv.org/abs/2104.09864", note: "RoPE" },
+      { label: "Jiang et al. — Mixtral of Experts (2024)", href: "https://arxiv.org/abs/2401.04088", note: "Top-2 of 8 MoE" },
+      { label: "DeepSeek-AI — DeepSeek-V3 Technical Report (2024)", href: "https://arxiv.org/abs/2412.19437", note: "671B total / 37B active, MLA" },
+      { label: "DeepSeek-AI — DeepSeek-R1 (2025)", href: "https://arxiv.org/abs/2501.12948", note: "Reasoning from pure RL (RLVR/GRPO)" },
+      { label: "Dao — FlashAttention-2/3", href: "https://arxiv.org/abs/2307.08691", note: "Exact attention, far less memory traffic" },
+      { label: "Grattafiori et al. — The Llama 3 Herd of Models (2024)", href: "https://arxiv.org/abs/2407.21783", note: "405B dense, 126 layers, 15T tokens" },
+    ],
+  },
+];
+
 export const guides: Guide[] = [
   {
     slug: "graph-types-for-ai-agents",
@@ -1039,6 +1333,40 @@ export const guides: Guide[] = [
     termRoleLabel: "Common failure modes",
     comparisonHeaders: ["System type", "What it is", "How it heats & cools", "Layout", "Where you'll find it", "Best for", "Watch out for"],
     howTos: hvacHowTos,
+  },
+
+  /* ==================================================================== *
+   *  GUIDE 3 — How LLMs Work (interactive 3D)
+   * ==================================================================== */
+  {
+    slug: "how-llms-work",
+    title: "How LLMs Work",
+    metaTitle: "How LLMs Work: Interactive 3D Walkthrough — Tokens, Attention, MoE & Reasoning (2026)",
+    metaDescription:
+      "Watch a prompt become an answer inside a 3D model of a large language model: tokenization, embeddings, attention, mixture-of-experts, the KV cache, sampling, and the 2025-2026 reasoning-RL frontier — one animated stage at a time.",
+    headline: "How LLMs Work — Watch a Thought Get Computed",
+    kicker: "Interactive Explainer",
+    subhead:
+      "From your keystrokes to the model's next word: tokenizer, embeddings, 96 layers of attention and experts, a 200,000-way dice roll — and the loop that runs it all again. Updated for the MoE + reasoning-model era.",
+    deck: `Every stage a prompt passes through, modeled as an explorable 3D machine. ${LLM_COUNTS.stages} stages, a ${LLM_COUNTS.journeySteps}-step guided journey tracing one token from "The cat sat on the" to "mat", real parameter counts from GPT-3 to DeepSeek-V3, and the training story — pretraining, RLHF, and the reasoning-RL breakthrough.`,
+    author: {
+      name: "Venkata Pagadala",
+      title: "AI Product Manager (Search · SEO · GEO)",
+      org: "AT&T",
+      url: "/about",
+      bio: "10+ years building entity systems and knowledge graphs at enterprise scale; published the AI Systems Map and the AI Concepts Encyclopedia on this site.",
+    },
+    datePublished: "2026-07-11",
+    dateModified: "2026-07-11",
+    readingTime: "18 min read",
+    tags: ["LLM", "Transformers", "Attention", "Mixture of Experts", "Reasoning Models", "3D Interactive", "AI Explainer"],
+    terms: llmTerms,
+    comparison: llmComparison,
+    faqs: llmFaqs,
+    blocks: llmBlocks,
+    termRoleLabel: "Why it matters",
+    comparisonHeaders: ["Era / model", "Scale", "Key innovation", "Training recipe", "Example systems", "What it unlocked", "Limit"],
+    howTos: llmHowTos,
   },
 ];
 

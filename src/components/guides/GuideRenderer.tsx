@@ -15,6 +15,8 @@ import {
   type HvacPath,
 } from "@/data/hvac";
 import HvacExplorerLazy from "./HvacExplorerLazy";
+import LlmExplorerLazy from "./LlmExplorerLazy";
+import { JOURNEY, STAGES, ZONES } from "@/data/llm";
 
 // Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
 // matters — links run first so a URL containing ** or _ never gets caught by a
@@ -311,6 +313,65 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                   <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
                     {f.fix} <span className="text-muted-foreground/60 whitespace-nowrap">({f.costHint})</span>
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    case "llm":
+      return <LlmExplorerLazy />;
+    case "llmjourney":
+      return (
+        <div className="my-6 border border-border/70 p-5">
+          <ol className="space-y-4">
+            {JOURNEY.map((st, i) => (
+              <li key={st.id} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-3">
+                <span className="text-foreground/40 flex-shrink-0 w-5 text-right">{i + 1}.</span>
+                <span>
+                  <strong className="text-foreground font-semibold">{st.title}.</strong>{" "}
+                  {st.narration}
+                  {st.training && (
+                    <span className="ml-2 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border border-amber-400/40 text-amber-300/90">
+                      training
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "llmstages":
+      return (
+        <div className="my-6 overflow-x-auto border border-border">
+          <table className="w-full border-collapse min-w-[900px]">
+            <thead>
+              <tr className="bg-secondary/30">
+                {["Stage", "Zone", "What happens", "Real numbers", "2025-2026"].map((h) => (
+                  <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {STAGES.map((s) => (
+                <tr key={s.id} className="align-top hover:bg-secondary/10 transition-colors">
+                  <td className="font-mono text-xs text-foreground font-semibold p-3 border-b border-border/50 whitespace-nowrap">{s.name}</td>
+                  <td className="p-3 border-b border-border/50 whitespace-nowrap">
+                    <span
+                      className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border"
+                      style={{ color: ZONES[s.zone].color, borderColor: `${ZONES[s.zone].color}66` }}
+                    >
+                      {s.zone}
+                    </span>
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{s.tagline}. {s.story}</td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {s.numbers.map((n) => `${n.label}: ${n.value}`).join(" · ")}
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{s.now ?? "—"}</td>
                 </tr>
               ))}
             </tbody>
