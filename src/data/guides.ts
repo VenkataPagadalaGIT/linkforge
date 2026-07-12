@@ -1003,7 +1003,7 @@ const llmTerms: DefinedTerm[] = [
     term: "Embedding",
     oneLiner: "The vector of thousands of numbers each token becomes — a point in meaning-space where distance ≈ similarity.",
     inDepth:
-      "Each token ID looks up a learned row in a vocab × d_model matrix (12,288 dims in GPT-3; 16,384 in Llama 3 405B). Directions carry semantics — the famous king − man + woman ≈ queen. Every subsequent computation operates on these vectors, never on text.",
+      "Each token ID looks up a learned row in a vocab × d_model matrix (12,288 dims in GPT-3; 16,384 in Llama 3 405B). Directions carry semantics — the classic king − man + woman ≈ queen result from static word2vec/GloVe embeddings (it holds only weakly in a transformer's input table). Every subsequent computation operates on these vectors, never on text.",
     analogy: "A GPS coordinate for every word, on a map with 16,000 dimensions where 'near' means 'means something similar'.",
     example: "'cat' and 'kitten' land close together; 'cat' and 'carburetor' are far apart.",
     agentRole: "The same trick powers vector search and RAG: embed a query and documents, retrieve by distance.",
@@ -1014,7 +1014,7 @@ const llmTerms: DefinedTerm[] = [
     aka: ["QKV attention", "multi-head attention"],
     oneLiner: "The mechanism that lets every token look at every earlier token and pull in the context that matters.",
     inDepth:
-      "Each of dozens of heads projects tokens into queries, keys, and values; softmax(QKᵀ/√d) decides who listens to whom, and causal masking hides the future. One head may track syntax, another coreference. It's the transformer's core innovation — and its quadratic cost in context length is why long contexts are expensive.",
+      "Each of dozens of heads projects tokens into queries, keys, and values; softmax(QKᵀ/√d_k) decides who listens to whom, and causal masking hides the future. One head may track syntax, another coreference. It's the transformer's core innovation — and its quadratic cost in context length is why long contexts are expensive.",
     analogy: "A meeting where every word simultaneously polls every earlier word — 'are you relevant to me?' — and listens in proportion.",
     example: "In \"the cat sat on the ___\", the final position attends hard to 'sat' and 'on', concluding a sit-on-able noun comes next.",
     agentRole: "Explains why prompts work at all — instructions early in context steer computation everywhere downstream.",

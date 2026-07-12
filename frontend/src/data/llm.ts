@@ -25,13 +25,13 @@ export const ZONES: Record<LlmZone, LlmZoneMeta> = {
     id: "input",
     label: "Input — text becomes numbers",
     color: "#38bdf8",
-    blurb: "Your words are chopped into tokens and turned into vectors — the only language the model speaks.",
+    blurb: "Your words are chopped into tokens and turned into vectors — the model's native language. (Images and audio get the same treatment: an encoder turns them into vectors too.)",
   },
   core: {
     id: "core",
     label: "Core — the transformer stack",
     color: "#a78bfa",
-    blurb: "Dozens of identical layers pass a growing bundle of meaning along, each one letting every token look at every other token.",
+    blurb: "Dozens of identical layers pass a growing bundle of meaning along, each one letting every token look at every earlier token.",
   },
   output: {
     id: "output",
@@ -74,7 +74,7 @@ export const STAGES: LlmStage[] = [
     zone: "input",
     tagline: "Plain text in — the only thing the model ever sees",
     story:
-      "Everything starts as a string of characters: your question, the system prompt, the conversation so far, maybe a document you pasted. The model has no memory of you and no access to the world — this text is its entire universe for the next few hundred milliseconds.",
+      "Everything starts as a string of characters: your question, the system prompt, the conversation so far, maybe a document you pasted. The model has no memory of you and no access to the world — for a text model this text is its entire universe for the next few hundred milliseconds. (Natively-multimodal models also take images and audio, encoded to embeddings by a separate vision/audio encoder and injected right alongside the text tokens.)",
     tech:
       "The chat UI assembles a single sequence: system prompt + alternating user/assistant turns, wrapped in special control tokens (e.g. <|im_start|>). Multimodal models additionally splice in image or audio patches encoded as token-like embeddings.",
     analogy: "A relay race where the only baton is a strip of paper with words on it.",
@@ -109,7 +109,7 @@ export const STAGES: LlmStage[] = [
     zone: "input",
     tagline: "Each token ID becomes a vector — a point in meaning-space",
     story:
-      "Each token ID looks up its own row in a giant table, retrieving a list of thousands of numbers — its embedding. Directions in this space carry meaning: king − man + woman lands near queen. From here on, the model never touches words again — only these vectors.",
+      "Each token ID looks up its own row in a giant table, retrieving a list of thousands of numbers — its embedding. Directions carry rough meaning — similar tokens sit closer. (The famous king − man + woman ≈ queen trick is a word2vec/GloVe property of STATIC embeddings; a transformer's input table is nearly context-free, and the rich geometry is built up layer by layer.) From here on, the model touches only vectors, never words.",
     tech:
       "A learned matrix of shape vocab × d_model (e.g. 128,256 × 16,384 for Llama 3 405B). The lookup output is the token's initial residual-stream state. The same matrix (tied or untied) is reused at the far end to turn vectors back into token scores.",
     analogy: "A GPS coordinate for every word — except the map has 16,000 dimensions and 'nearby' means 'similar in meaning'.",
@@ -145,14 +145,14 @@ export const STAGES: LlmStage[] = [
     story:
       "This is the transformer's superpower. For each token, dozens of attention heads each ask a different question of the sentence — one tracks grammar, one tracks names, one tracks what 'it' refers to. Each head pulls in information from the tokens that answer best, updating the token's vector with context. 'The' at the end of \"the cat sat on the\" ends up knowing it needs a sit-on-able noun next.",
     tech:
-      "Each head projects the stream into query (Q), key (K), value (V) vectors; weights = softmax(QKᵀ/√d) select which values to pull. Heads run in PARALLEL, each producing its own value-weighted output; those per-head outputs are CONCATENATED and passed through a single output-projection matrix (W_O) that writes the result back into the residual stream. Causal masking hides the future; GQA / DeepSeek's MLA shrink the KV footprint. Cost is quadratic in sequence length.",
+      "Each head projects the stream into query (Q), key (K), value (V) vectors; weights = softmax(QKᵀ/√d_k), where d_k is the per-head key dimension, select which values to pull. Heads run in PARALLEL, each producing its own value-weighted output; those per-head outputs are CONCATENATED and passed through a single output-projection matrix (W_O) that writes the result back into the residual stream. Causal masking hides the future; GQA / DeepSeek's MLA shrink the KV footprint. Cost is quadratic in sequence length.",
     analogy: "A meeting where every word simultaneously polls every earlier word — 'are you relevant to me?' — and listens in proportion to the answer.",
     numbers: [
       { label: "GPT-3 heads/layer", value: "96" },
       { label: "Llama 3 405B", value: "128 heads, GQA 8 KV groups" },
-      { label: "Complexity", value: "O(n²) in context length" },
+      { label: "Cost", value: "O(n²) compute · O(n) memory (FlashAttention)" },
     ],
-    now: "FlashAttention-3 computes exact attention with far less memory traffic; MLA (DeepSeek) compresses KV 10×+. Interpretability work can now read heads directly: they spontaneously specialize (grammar, names, pronouns), and 'induction heads' that spot A-B…A patterns and predict B turn out to be the circuit behind in-context learning.",
+    now: "FlashAttention-3 computes exact attention with far less memory traffic; MLA (DeepSeek) compresses KV 10×+. Interpretability work can now read heads directly: they spontaneously specialize (grammar, names, pronouns), and 'induction heads' that spot A-B…A patterns and predict B are a major mechanism behind in-context learning.",
   },
   {
     id: "moe",
@@ -170,7 +170,7 @@ export const STAGES: LlmStage[] = [
       { label: "Mixtral 8×7B", value: "46.7B total → ~12.9B active (top-2 of 8)" },
       { label: "Where params live", value: "~⅔ of the model is FFN/experts" },
     ],
-    now: "MoE won the frontier: GPT-4-class systems, Gemini, DeepSeek, Qwen-MoE and Llama 4 all use sparse experts to decouple capability from per-token cost. Interpretability adds a wrinkle: the FFN is where facts physically live — specific neurons fire on Eiffel-Tower text, and model-editing methods (ROME) can surgically rewrite a single stored fact.",
+    now: "MoE won the frontier: GPT-4-class systems, Gemini, DeepSeek, Qwen-MoE and Llama 4 all use sparse experts to decouple capability from per-token cost. Interpretability adds a wrinkle: the FFN is where facts physically live — specific neurons fire on Eiffel-Tower text, and model-editing methods (ROME/MEMIT) can edit a stored fact directly in the weights — though edits ripple and aren't perfectly localized.",
   },
   {
     id: "layers",
@@ -230,7 +230,7 @@ export const STAGES: LlmStage[] = [
     zone: "output",
     tagline: "Scores become probabilities; a weighted die is rolled",
     story:
-      "Softmax squashes the raw scores into probabilities: mat 62%, floor 21%, chair 9%… Then the model doesn't just take the top one — it samples. 'Temperature' scales the randomness: at 0 you always get the favorite (good for code); higher spreads probability to underdogs (good for brainstorming). This one dial is why the same prompt gives different answers.",
+      "Softmax squashes the raw scores into probabilities: mat 62%, floor 21%, couch 9%… Then the model doesn't just take the top one — it samples. 'Temperature' scales the randomness: at 0 you always get the favorite (good for code); higher spreads probability to underdogs (good for brainstorming). This one dial is why the same prompt gives different answers.",
     tech:
       "p(token) = softmax(logits / T). Top-p (nucleus) sampling truncates to the smallest set covering e.g. 95% of the mass; top-k keeps the k best. Repetition penalties down-weight recent tokens. Greedy decoding (T=0) is deterministic modulo hardware nondeterminism.",
     analogy: "A weighted roulette wheel where the wedge sizes are the probabilities — temperature reshapes the wedges before the spin.",
@@ -269,7 +269,7 @@ export const STAGES: LlmStage[] = [
       "Two production mitigations. (1) Wire uncertainty to words: probe the model with factual questions, find where it reliably fails, and add fine-tuning examples where the correct answer is literally \"I don't know\" (Meta's Llama 3 factuality recipe). (2) Ground it: retrieval-augmented generation (RAG) fetches real documents into the context window at answer time, so the model reads instead of recalls — context beats weights.",
     analogy: "A one-way typewriter with no backspace: when the sentence goes wrong, the writer saves face by making the ending fit.",
     numbers: [
-      { label: "Failure mode", value: "Coherence pressure, not lookup error" },
+      { label: "Two causes", value: "Knowledge gap (fact not in weights) + coherence pressure" },
       { label: "Mitigation 1", value: "'I don't know' fine-tuning (Llama 3 recipe)" },
       { label: "Mitigation 2", value: "RAG — retrieve, paste into context, read" },
     ],
@@ -302,7 +302,7 @@ export const STAGES: LlmStage[] = [
     story:
       "Here's the uncomfortable truth the Anthropic founders keep pointing at: nobody writes these weights, we GROW them — so no one knows what any given number means. Mechanistic interpretability is the effort to reverse-engineer them. The obstacle is superposition: a model packs far more concepts than it has neurons by smearing each across many overlapping directions, so a single neuron fires for a jumble of unrelated things (polysemanticity). It's a compressed, tangled code.",
     tech:
-      "Sparse autoencoders (dictionary learning) pull those tangled activations apart into millions of MONOSEMANTIC features — a clean 'Golden Gate Bridge' feature, a 'code with a bug' feature, a 'sycophancy' feature. Anthropic's Scaling Monosemanticity (2024) extracted millions of features from Claude 3 Sonnet, then AMPLIFIED one to make 'Golden Gate Claude' — a model that steered every answer toward the bridge. Add the circuit view (induction heads, attention/FFN interplay) and you can start reading computation, not just outputs.",
+      "Sparse autoencoders (dictionary learning) pull those tangled activations apart into millions of far-more-monosemantic features (not perfectly — feature splitting and absorption are open problems) — a clean 'Golden Gate Bridge' feature, a 'code with a bug' feature, a 'sycophancy' feature. Anthropic's Scaling Monosemanticity (2024) extracted millions of features from Claude 3 Sonnet, then AMPLIFIED one to make 'Golden Gate Claude' — a model that steered every answer toward the bridge. Add the circuit view (induction heads, attention/FFN interplay) and you can start reading computation, not just outputs.",
     analogy: "An fMRI for the model: find the exact features that light up for a concept, then turn the dial and watch behavior change.",
     numbers: [
       { label: "The obstacle", value: "Superposition → polysemantic neurons" },
@@ -379,7 +379,7 @@ export const STAGES: LlmStage[] = [
       { label: "GPT-4-class cost", value: "$50-100M+ compute" },
       { label: "Objective", value: "Predict token t+1. That's it." },
     ],
-    now: "Scaling laws make all this an engineering discipline: next-token loss is a smooth, predictable function of just parameters (N) and data (D), so labs compute how good a model will be BEFORE spending the money. That predictability — plus a data wall pushing toward synthetic corpora — is the economics of the GPU race.",
+    now: "Scaling laws make all this an engineering discipline: next-token loss is a smooth, predictable function of parameters (N), data (D), and compute (C ≈ 6ND), so labs compute how good a model will be BEFORE spending the money. In practice frontier models are deliberately OVER-trained far past Chinchilla-optimal (~20 tokens/param): a bigger training bill buys a smaller model that is cheaper to serve for its whole lifetime. That predictability — plus a data wall pushing toward synthetic corpora — is the economics of the GPU race.",
   },
   {
     id: "alignment",
@@ -390,11 +390,11 @@ export const STAGES: LlmStage[] = [
     story:
       "A raw pretrained model is an internet document simulator — prompt it with a question and it may continue with three more questions, because that's what documents do. The assistant is a persona conjured almost entirely by data: same architecture, same algorithm, just ~100k carefully written conversations. A pretrained model is a savant autocomplete — ask it a question and it might continue with three more questions. Post-training turns it into an assistant: first it studies curated example conversations (SFT), then humans rank pairs of its answers and a reinforcement signal pushes it toward the preferred kind — helpful, honest, harmless. This step is why ChatGPT (2022) felt like a different species from GPT-3 (2020).",
     tech:
-      "Supervised fine-tuning on demonstration data, then RLHF: a reward model trained on human preference pairs guides PPO — or, more common now, DPO optimizes on preferences directly, no reward model needed. Constitutional AI (Anthropic) uses AI feedback against written principles (RLAIF) to scale supervision.",
+      "Supervised fine-tuning on demonstration data, then RLHF: a reward model trained on human preference pairs guides PPO — or DPO optimizes on preferences directly — no SEPARATE reward model, but it still relies on a reference model and an implicit reward (reward reparameterized as β·log π/π_ref). Constitutional AI (Anthropic) uses AI feedback against written principles (RLAIF) to scale supervision.",
     analogy: "A brilliant hire who's read everything but has never talked to a customer — sent through onboarding and coached with performance reviews.",
     numbers: [
       { label: "Preference data", value: "100k-1M+ human comparisons" },
-      { label: "2026 default", value: "DPO-family (simpler than PPO)" },
+      { label: "2026 default", value: "DPO for prefs · PPO/GRPO for reasoning RL" },
     ],
   },
   {
@@ -406,12 +406,12 @@ export const STAGES: LlmStage[] = [
     story:
       "The newest idea: instead of only rewarding a nice final answer, let the model generate a long private chain of thought — then reinforce whatever reasoning actually leads to verifiably correct results on math, code, and logic. Models learn to plan, backtrack, and self-check. This is why 'thinking' models pause before answering: they're spending extra compute at inference time, and accuracy scales with how long they think.",
     tech:
-      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. RL with verifiable rewards (RLVR): sample chains of thought, score them with automatic checkers (unit tests, math verification), update with GRPO/PPO-style algorithms. DeepSeek-R1 showed reasoning emerging from pure RL on a base model; OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
+      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. RL with verifiable rewards (RLVR): sample chains of thought, score them with automatic checkers (unit tests, math verification), update with GRPO/PPO-style algorithms. DeepSeek-R1-Zero showed reasoning emerging from pure RL on a base model (the shipped R1 added a cold-start SFT stage for readability); OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
     analogy: "Grading the student's scratch work, not just the final answer box — and giving them as much scratch paper as they want.",
     numbers: [
       { label: "Landmark models", value: "o1/o3 (OpenAI), R1 (DeepSeek), Claude thinking modes" },
       { label: "New scaling axis", value: "Inference-time compute" },
-      { label: "R1's surprise", value: "Reasoning emerged from RL alone" },
+      { label: "R1-Zero surprise", value: "Reasoning from pure RL (shipped R1 added cold-start SFT)" },
     ],
     now: "The live frontier in 2026 is agentic RL — rewarding multi-step tool use and long-horizon tasks. One caution learned early: don't directly optimize the visible chain of thought, or models learn to hide intent while still misbehaving (OpenAI's CoT-monitoring result).",
   },
