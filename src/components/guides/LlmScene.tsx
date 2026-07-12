@@ -12,7 +12,7 @@ import {
   Text,
   Trail,
 } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import {
@@ -27,10 +27,12 @@ import {
 /**
  * LlmScene — the "How LLMs Work" machine, rendered like a film set.
  *
- * Cinematic layer on top of the pipeline model: HDR bloom + vignette, a
- * reflective studio floor, fog and dust for depth, a consistent zone-colored
- * light-strip design language, and a camera rig that flies to each journey
- * step (the user can always grab the camera; it re-engages on step change).
+ * Rendered like a professional product shoot, matching HvacScene's material
+ * language: neutral studio lighting (white key, cool + warm fills), gunmetal
+ * and graphite materials, muted functional zone accents, a soft-reflective
+ * floor, and a camera rig that flies to each journey step (the user can
+ * always grab the camera; it re-engages on step change). No bloom — polish
+ * comes from materials and light, not glow.
  */
 
 export interface LlmSceneState {
@@ -51,7 +53,10 @@ interface Ctx extends Omit<LlmSceneState, "highlightIds"> {
 const SceneCtx = createContext<Ctx | null>(null);
 const useScene = () => useContext(SceneCtx)!;
 
-const zoneColor = (id: string) => ZONES[stageById(id)?.zone ?? "core"].color;
+const ACCENT: Record<string, string> = {
+  input: "#5f8cb0", core: "#8b84ad", output: "#79a68d", training: "#b39a6b",
+};
+const zoneColor = (id: string) => ACCENT[stageById(id)?.zone ?? "core"];
 
 /* ---------------------------------------------------------------- *
  *  Camera choreography — one pose per journey step
@@ -122,16 +127,16 @@ function Plinth({ w, d, color }: { w: number; d: number; color: string }) {
     <group>
       <mesh position={[0, 0.14, 0]}>
         <boxGeometry args={[w, 0.16, d]} />
-        <meshStandardMaterial color="#0d0d0f" roughness={0.35} metalness={0.7} />
+        <meshStandardMaterial color="#26282e" roughness={0.35} metalness={0.7} />
       </mesh>
       {/* front + back light strips — the unifying visual signature */}
       <mesh position={[0, 0.055, d / 2 + 0.012]}>
         <boxGeometry args={[w * 0.94, 0.028, 0.02]} />
-        <meshBasicMaterial color={color} toneMapped={false} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.4} />
       </mesh>
       <mesh position={[0, 0.055, -d / 2 - 0.012]}>
         <boxGeometry args={[w * 0.94, 0.028, 0.02]} />
-        <meshBasicMaterial color={color} toneMapped={false} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.4} />
       </mesh>
     </group>
   );
@@ -257,7 +262,7 @@ function FlowParticles({ segment }: { segment: Exclude<FlowSegment, null> }) {
   const tmp = useMemo(() => new THREE.Object3D(), []);
   const v = useMemo(() => new THREE.Vector3(), []);
   const pts = PATHS[segment];
-  const color = segment === "train" ? "#fbbf24" : segment === "loop" ? "#34d399" : "#7dd3fc";
+  const color = segment === "train" ? "#c9a86a" : segment === "loop" ? "#79a68d" : "#cbd5e1";
 
   useFrame((state) => {
     if (!mesh.current || !mat.current) return;
@@ -267,8 +272,7 @@ function FlowParticles({ segment }: { segment: Exclude<FlowSegment, null> }) {
     const targetOpacity = !visible ? 0 : active ? 1 : segment === "loop" || segment === "train" ? 0.05 : 0.24;
     mat.current.opacity = THREE.MathUtils.lerp(mat.current.opacity, targetOpacity, 0.08);
     // active particles punch past the bloom threshold
-    mat.current.toneMapped = !active;
-    const t0 = state.clock.elapsedTime * speed;
+        const t0 = state.clock.elapsedTime * speed;
     for (let i = 0; i < N; i++) {
       const t = (t0 + i / N) % 1;
       sampleQuadratic(pts, t, v);
@@ -331,7 +335,7 @@ function Dust() {
  *  Individual stage models
  * ---------------------------------------------------------------- */
 
-const PANEL = "#141416";
+const PANEL = "#33363d";
 
 function PromptPanel() {
   return (
@@ -339,20 +343,20 @@ function PromptPanel() {
       <group position={[0, 1.7, 0]}>
         <mesh>
           <boxGeometry args={[2.3, 1.5, 0.1]} />
-          <meshStandardMaterial color={PANEL} roughness={0.25} metalness={0.6} emissive="#38bdf8" emissiveIntensity={0.06} />
+          <meshStandardMaterial color={PANEL} roughness={0.25} metalness={0.6} emissive="#5f8cb0" emissiveIntensity={0.05} />
         </mesh>
         {/* screen glow frame */}
         <mesh position={[0, 0, 0.055]}>
           <planeGeometry args={[2.14, 1.34]} />
-          <meshBasicMaterial color="#0b1220" />
+          <meshBasicMaterial color="#15181d" />
         </mesh>
-        <Text position={[0, 0.28, 0.07]} fontSize={0.23} color="#e8f4fd" anchorX="center">
+        <Text position={[0, 0.28, 0.07]} fontSize={0.23} color="#e7e5e4" anchorX="center">
           The cat sat
         </Text>
-        <Text position={[0, -0.05, 0.07]} fontSize={0.23} color="#e8f4fd" anchorX="center">
+        <Text position={[0, -0.05, 0.07]} fontSize={0.23} color="#e7e5e4" anchorX="center">
           on the█
         </Text>
-        <Text position={[0, -0.5, 0.07]} fontSize={0.1} color="#7dd3fc" anchorX="center">
+        <Text position={[0, -0.5, 0.07]} fontSize={0.1} color="#8fa8bd" anchorX="center">
           your prompt
         </Text>
       </group>
@@ -370,18 +374,18 @@ function Tokenizer() {
     <Stage id="tokenizer" labelPos={[0, 2.9, 0]} halo={[2.5, 2.6, 1.2]} plinth={{ w: 2.4, d: 1.1 }}>
       <mesh ref={blade} position={[0, 1.55, 0]}>
         <boxGeometry args={[1.9, 0.07, 0.5]} />
-        <meshStandardMaterial color="#38bdf8" roughness={0.2} metalness={0.7} emissive="#38bdf8" emissiveIntensity={1.6} toneMapped={false} />
+        <meshStandardMaterial color="#5f8cb0" roughness={0.25} metalness={0.7} emissive="#5f8cb0" emissiveIntensity={0.55} />
       </mesh>
       {DEMO_TOKENS.map((tok, i) => (
         <group key={i} position={[-0.84 + i * 0.42, 0.95, 0]}>
           <mesh>
             <boxGeometry args={[0.36, 0.26, 0.1]} />
-            <meshStandardMaterial color={PANEL} roughness={0.35} metalness={0.5} emissive="#38bdf8" emissiveIntensity={0.22} />
+            <meshStandardMaterial color={PANEL} roughness={0.35} metalness={0.5} emissive="#5f8cb0" emissiveIntensity={0.18} />
           </mesh>
-          <Text position={[0, 0.03, 0.07]} fontSize={0.085} color="#d6efff" anchorX="center">
+          <Text position={[0, 0.03, 0.07]} fontSize={0.085} color="#d1d5db" anchorX="center">
             {tok}
           </Text>
-          <Text position={[0, -0.08, 0.07]} fontSize={0.055} color="#64748b" anchorX="center">
+          <Text position={[0, -0.08, 0.07]} fontSize={0.055} color="#8f949d" anchorX="center">
             {String(DEMO_TOKEN_IDS[i])}
           </Text>
         </group>
@@ -414,12 +418,12 @@ function EmbeddingWall() {
     <Stage id="embeddings" labelPos={[0, 2.7, 0]} halo={[2.2, 2.4, 1.2]} plinth={{ w: 2.1, d: 1.3 }}>
       <instancedMesh ref={inst} args={[undefined, undefined, cols * rows]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#7dd3fc" emissive="#38bdf8" emissiveIntensity={0.9} roughness={0.3} />
+        <meshStandardMaterial color="#9db8cc" emissive="#5f8cb0" emissiveIntensity={0.4} roughness={0.3} metalness={0.4} />
       </instancedMesh>
       {DEMO_TOKENS.map((_, i) => (
         <mesh key={i} position={[-0.56 + i * 0.28, 1.05, 0.45]}>
           <boxGeometry args={[0.09, 0.9 + (i % 3) * 0.12, 0.09]} />
-          <meshStandardMaterial color="#bae6fd" emissive="#38bdf8" emissiveIntensity={1.5} roughness={0.25} toneMapped={false} />
+          <meshStandardMaterial color="#c3d3e0" emissive="#5f8cb0" emissiveIntensity={0.55} roughness={0.25} metalness={0.4} />
         </mesh>
       ))}
     </Stage>
@@ -436,11 +440,11 @@ function PositionalDial() {
     <Stage id="positional" labelPos={[0, 1.15, 0]} halo={[1.1, 1.3, 0.9]}>
       <mesh ref={ring} rotation={[Math.PI / 2, 0, 0]} position={[0, 0.45, 0]}>
         <torusGeometry args={[0.34, 0.045, 12, 44]} />
-        <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={1.4} roughness={0.25} metalness={0.5} toneMapped={false} />
+        <meshStandardMaterial color="#5f8cb0" emissive="#5f8cb0" emissiveIntensity={0.5} roughness={0.25} metalness={0.6} />
       </mesh>
       <mesh position={[0, 0.45, 0]}>
         <sphereGeometry args={[0.09, 12, 12]} />
-        <meshStandardMaterial color="#bae6fd" emissive="#38bdf8" emissiveIntensity={1.8} toneMapped={false} />
+        <meshStandardMaterial color="#c3d3e0" emissive="#5f8cb0" emissiveIntensity={0.7} />
       </mesh>
     </Stage>
   );
@@ -454,16 +458,16 @@ function TransformerStack() {
         <group key={i} position={[0, 0.85 + i * 0.5, 0]}>
           <mesh>
             <boxGeometry args={[2.1, 0.32, 1.5]} />
-            <meshStandardMaterial color={PANEL} roughness={0.22} metalness={0.72} emissive="#a78bfa" emissiveIntensity={0.08 + (i / layers) * 0.1} />
+            <meshStandardMaterial color={PANEL} roughness={0.22} metalness={0.72} emissive="#8b84ad" emissiveIntensity={0.06 + (i / layers) * 0.08} />
           </mesh>
           {/* per-layer light seam */}
           <mesh position={[0, -0.12, 0.76]}>
             <boxGeometry args={[1.96, 0.02, 0.015]} />
-            <meshBasicMaterial color="#a78bfa" toneMapped={false} />
+            <meshStandardMaterial color="#8b84ad" emissive="#8b84ad" emissiveIntensity={0.45} roughness={0.4} />
           </mesh>
         </group>
       ))}
-      <Text position={[1.25, 2.1, 0]} fontSize={0.16} color="#c4b5fd" anchorX="left" rotation={[0, 0, Math.PI / 2]}>
+      <Text position={[1.25, 2.1, 0]} fontSize={0.16} color="#a9a1c4" anchorX="left" rotation={[0, 0, Math.PI / 2]}>
         × 96 layers
       </Text>
     </Stage>
@@ -486,22 +490,21 @@ function AttentionPlate() {
     lines.current.forEach((ln, k) => {
       if (!ln) return;
       const m = ln.material as THREE.LineBasicMaterial;
-      const base = on ? 0.95 : ctx.running ? 0.3 : 0.12;
+      const base = on ? 0.8 : ctx.running ? 0.28 : 0.12;
       m.opacity = base * (0.4 + 0.6 * Math.abs(Math.sin(t * 1.7 + k * 0.9)));
-      m.toneMapped = !on;
-    });
+          });
   });
   return (
     <Stage id="attention" labelPos={[0, 1.75, 0]} halo={[2.3, 1.9, 0.8]} plinth={{ w: 2.25, d: 0.7 }}>
       <mesh position={[0, 0.75, -0.06]}>
         <boxGeometry args={[2.15, 1.5, 0.06]} />
-        <meshStandardMaterial color="#111113" roughness={0.3} metalness={0.6} emissive="#a78bfa" emissiveIntensity={0.06} />
+        <meshStandardMaterial color="#2b2e34" roughness={0.3} metalness={0.6} emissive="#8b84ad" emissiveIntensity={0.05} />
       </mesh>
       {DEMO_TOKENS.map((tok, i) => (
         <group key={i} position={[nodeX(i), 0.32, 0]}>
           <mesh>
             <sphereGeometry args={[0.07, 12, 12]} />
-            <meshStandardMaterial color="#e9d5ff" emissive="#a78bfa" emissiveIntensity={1.5} toneMapped={false} />
+            <meshStandardMaterial color="#d8d3e8" emissive="#8b84ad" emissiveIntensity={0.6} />
           </mesh>
           <Text position={[0, -0.16, 0]} fontSize={0.07} color="#a3a3a3" anchorX="center">
             {tok}
@@ -518,7 +521,7 @@ function AttentionPlate() {
         return (
           <primitive
             key={k}
-            object={new THREE.Line(geo, new THREE.LineBasicMaterial({ color: "#b79bfc", transparent: true, opacity: 0.2 }))}
+            object={new THREE.Line(geo, new THREE.LineBasicMaterial({ color: "#8b84ad", transparent: true, opacity: 0.2 }))}
             ref={(el: THREE.Line) => { lines.current[k] = el; }}
           />
         );
@@ -538,19 +541,18 @@ function MoEPlate() {
     mats.current.forEach((m, i) => {
       if (!m) return;
       const active = (ctx.running || lit) && (i === a || i === b);
-      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, active ? 1.9 : 0.07, 0.15);
-      m.toneMapped = !active;
-    });
+      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, active ? 0.9 : 0.07, 0.15);
+          });
   });
   return (
     <Stage id="moe" labelPos={[0, 1.75, 0]} halo={[2.1, 1.9, 0.9]} plinth={{ w: 2.0, d: 0.8 }}>
       <mesh position={[0, 0.75, -0.06]}>
         <boxGeometry args={[1.95, 1.5, 0.06]} />
-        <meshStandardMaterial color="#111113" roughness={0.3} metalness={0.6} emissive="#a78bfa" emissiveIntensity={0.06} />
+        <meshStandardMaterial color="#2b2e34" roughness={0.3} metalness={0.6} emissive="#8b84ad" emissiveIntensity={0.05} />
       </mesh>
       <mesh position={[0, 1.18, 0.05]}>
         <sphereGeometry args={[0.1, 14, 14]} />
-        <meshStandardMaterial color="#f3e8ff" emissive="#a78bfa" emissiveIntensity={1.7} toneMapped={false} />
+        <meshStandardMaterial color="#d8d3e8" emissive="#8b84ad" emissiveIntensity={0.65} />
       </mesh>
       <Text position={[0.24, 1.18, 0.05]} fontSize={0.07} color="#a3a3a3" anchorX="left">
         router
@@ -565,7 +567,7 @@ function MoEPlate() {
               color={PANEL}
               roughness={0.3}
               metalness={0.55}
-              emissive="#a78bfa"
+              emissive="#8b84ad"
               emissiveIntensity={0.07}
             />
           </mesh>
@@ -583,7 +585,7 @@ function KvCache() {
     const filled = ctx.running ? Math.floor(state.clock.elapsedTime * 1.4) % (slabs + 1) : 3;
     mats.current.forEach((m, i) => {
       if (!m) return;
-      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, i < filled ? 0.9 : 0.04, 0.1);
+      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, i < filled ? 0.5 : 0.04, 0.1);
     });
   });
   return (
@@ -593,10 +595,10 @@ function KvCache() {
           <boxGeometry args={[1.15, 0.13, 0.85]} />
           <meshStandardMaterial
             ref={(el) => { mats.current[i] = el; }}
-            color="#121214"
+            color="#2b2d33"
             roughness={0.3}
             metalness={0.6}
-            emissive="#a78bfa"
+            emissive="#8b84ad"
             emissiveIntensity={0.04}
           />
         </mesh>
@@ -635,14 +637,14 @@ function LogitsBoard() {
           <mesh ref={(el) => { bars.current[i] = el; }} position={[0, 0.55, 0]} scale={[1, 0.04, 1]}>
             <boxGeometry args={[0.24, 1, 0.24]} />
             <meshStandardMaterial
-              color={i === 0 ? "#34d399" : "#1e2a26"}
-              emissive="#34d399"
-              emissiveIntensity={i === 0 ? 1.4 : 0.12}
+              color={i === 0 ? "#79a68d" : "#2b2e34"}
+              emissive="#79a68d"
+              emissiveIntensity={i === 0 ? 0.6 : 0.1}
               roughness={0.3}
-              toneMapped={i !== 0}
+             
             />
           </mesh>
-          <Text position={[0, 0.32, 0.3]} fontSize={0.08} color={i === 0 ? "#6ee7b7" : "#737373"} anchorX="center" rotation={[-0.5, 0, 0]}>
+          <Text position={[0, 0.32, 0.3]} fontSize={0.08} color={i === 0 ? "#8fbfa3" : "#8f949d"} anchorX="center" rotation={[-0.5, 0, 0]}>
             {d.token}
           </Text>
         </group>
@@ -664,17 +666,17 @@ function Sampler() {
     <Stage id="sampling" labelPos={[0, 2.5, 0]} halo={[1.7, 2.4, 1.2]} plinth={{ w: 1.6, d: 1.2 }}>
       <mesh position={[0, 0.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.5, 0.5, 0.12, 28]} />
-        <meshStandardMaterial color="#121214" roughness={0.3} metalness={0.7} />
+        <meshStandardMaterial color="#2b2d33" roughness={0.3} metalness={0.7} />
       </mesh>
       <mesh position={[0, 0.5, 0.09]} rotation={[0, 0, -0.6]}>
         <boxGeometry args={[0.05, 0.4, 0.04]} />
-        <meshBasicMaterial color="#34d399" toneMapped={false} />
+        <meshStandardMaterial color="#79a68d" emissive="#79a68d" emissiveIntensity={0.55} roughness={0.4} />
       </mesh>
       <mesh ref={die} position={[0, 1.45, 0]}>
         <icosahedronGeometry args={[0.32, 0]} />
-        <meshStandardMaterial color="#34d399" emissive="#34d399" emissiveIntensity={0.8} roughness={0.2} metalness={0.4} />
+        <meshStandardMaterial color="#79a68d" emissive="#79a68d" emissiveIntensity={0.45} roughness={0.25} metalness={0.5} />
       </mesh>
-      <Text position={[0, 0.5, 0.12]} fontSize={0.08} color="#6ee7b7" anchorX="center">
+      <Text position={[0, 0.5, 0.12]} fontSize={0.08} color="#8fbfa3" anchorX="center">
         T
       </Text>
     </Stage>
@@ -697,13 +699,13 @@ function LoopArc() {
   });
   return (
     <Stage id="loop" labelPos={[-1, 7.1, 0.6]} halo={[0.1, 0.1, 0.1]}>
-      <Trail width={1.6} length={5} color="#34d399" attenuation={(t) => t * t}>
+      <Trail width={0.9} length={4} color="#79a68d" attenuation={(t) => t * t}>
         <group ref={chip}>
           <mesh>
             <boxGeometry args={[0.5, 0.3, 0.1]} />
-            <meshStandardMaterial color="#0a0a0a" emissive="#34d399" emissiveIntensity={1.3} roughness={0.25} toneMapped={false} />
+            <meshStandardMaterial color="#20242a" emissive="#79a68d" emissiveIntensity={0.55} roughness={0.25} metalness={0.5} />
           </mesh>
-          <Text position={[0, 0, 0.08]} fontSize={0.14} color="#d1fae5" anchorX="center">
+          <Text position={[0, 0, 0.08]} fontSize={0.14} color="#d6e5db" anchorX="center">
             mat
           </Text>
         </group>
@@ -729,32 +731,32 @@ function Hallucination() {
     <Stage id="hallucination" labelPos={[0, 2.9, 0]} halo={[2.3, 2.7, 1.0]} plinth={{ w: 2.2, d: 1.0 }}>
       <mesh position={[0, 1.5, 0]}>
         <boxGeometry args={[1.9, 1.3, 0.1]} />
-        <meshStandardMaterial color={PANEL} roughness={0.25} metalness={0.6} emissive="#34d399" emissiveIntensity={0.05} />
+        <meshStandardMaterial color={PANEL} roughness={0.25} metalness={0.6} emissive="#79a68d" emissiveIntensity={0.05} />
       </mesh>
       <Text position={[0, 1.82, 0.07]} fontSize={0.11} color="#a3a3a3" anchorX="center">
         The cat sat on the…
       </Text>
       <group position={[0, 1.38, 0.07]}>
-        <Text fontSize={0.34} color="#6ee7b7" anchorX="center">
+        <Text fontSize={0.34} color="#8fbfa3" anchorX="center">
           mat
-          <meshBasicMaterial ref={matTrue} transparent opacity={1} color="#6ee7b7" toneMapped={false} />
+          <meshBasicMaterial ref={matTrue} transparent opacity={1} color="#8fbfa3" />
         </Text>
-        <Text fontSize={0.34} color="#fca5a5" anchorX="center">
+        <Text fontSize={0.34} color="#c49a9a" anchorX="center">
           moon
-          <meshBasicMaterial ref={matFalse} transparent opacity={0.06} color="#fca5a5" toneMapped={false} />
+          <meshBasicMaterial ref={matFalse} transparent opacity={0.06} color="#c49a9a" />
         </Text>
       </group>
       {/* grounding anchor: RAG block feeding the panel */}
       <mesh position={[-1.35, 0.55, 0]}>
         <boxGeometry args={[0.55, 0.5, 0.4]} />
-        <meshStandardMaterial color="#0e1512" roughness={0.35} metalness={0.5} emissive="#34d399" emissiveIntensity={0.5} />
+        <meshStandardMaterial color="#252a2c" roughness={0.35} metalness={0.5} emissive="#79a68d" emissiveIntensity={0.35} />
       </mesh>
-      <Text position={[-1.35, 0.55, 0.22]} fontSize={0.1} color="#6ee7b7" anchorX="center">
+      <Text position={[-1.35, 0.55, 0.22]} fontSize={0.1} color="#8fbfa3" anchorX="center">
         RAG
       </Text>
       <mesh position={[-0.85, 0.9, 0]} rotation={[0, 0, 0.5]}>
         <cylinderGeometry args={[0.015, 0.015, 0.75, 6]} />
-        <meshBasicMaterial color="#34d399" toneMapped={false} />
+        <meshStandardMaterial color="#79a68d" emissive="#79a68d" emissiveIntensity={0.5} roughness={0.4} />
       </mesh>
     </Stage>
   );
@@ -768,18 +770,18 @@ function ToolsAgents() {
     if (orbit.current && (ctx.running || ctx.training || true)) orbit.current.rotation.y += delta * 0.45;
   });
   const TOOLS = [
-    { label: "search", color: "#38bdf8" },
-    { label: "python", color: "#fbbf24" },
-    { label: "browser", color: "#e879f9" },
+    { label: "search", color: "#5f8cb0" },
+    { label: "python", color: "#b39a6b" },
+    { label: "browser", color: "#a98bb8" },
   ];
   return (
     <Stage id="tools-agents" labelPos={[0, 2.9, 0]} halo={[2.6, 2.8, 2.6]} plinth={{ w: 2.4, d: 2.4 }}>
       {/* the CPU core */}
       <mesh position={[0, 1.35, 0]}>
         <icosahedronGeometry args={[0.34, 1]} />
-        <meshStandardMaterial color="#34d399" emissive="#34d399" emissiveIntensity={1.2} roughness={0.25} metalness={0.5} toneMapped={false} />
+        <meshStandardMaterial color="#79a68d" emissive="#79a68d" emissiveIntensity={0.5} roughness={0.25} metalness={0.55} />
       </mesh>
-      <Text position={[0, 0.78, 0.4]} fontSize={0.09} color="#6ee7b7" anchorX="center">
+      <Text position={[0, 0.78, 0.4]} fontSize={0.09} color="#8fbfa3" anchorX="center">
         LLM = CPU
       </Text>
       {/* orbiting peripherals */}
@@ -790,7 +792,7 @@ function ToolsAgents() {
             <group key={t.label} position={[Math.cos(a) * 1.0, Math.sin(i * 2.1) * 0.18, Math.sin(a) * 1.0]}>
               <mesh>
                 <boxGeometry args={[0.3, 0.3, 0.3]} />
-                <meshStandardMaterial color="#131316" roughness={0.3} metalness={0.6} emissive={t.color} emissiveIntensity={0.6} />
+                <meshStandardMaterial color="#2b2e34" roughness={0.3} metalness={0.6} emissive={t.color} emissiveIntensity={0.4} />
               </mesh>
               <Text position={[0, -0.28, 0]} fontSize={0.08} color={t.color} anchorX="center">
                 {t.label}
@@ -801,7 +803,7 @@ function ToolsAgents() {
         {/* orbit ring */}
         <mesh rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[1.0, 0.008, 8, 64]} />
-          <meshBasicMaterial color="#34d399" transparent opacity={0.35} toneMapped={false} />
+          <meshBasicMaterial color="#79a68d" transparent opacity={0.22} />
         </mesh>
       </group>
     </Stage>
@@ -821,22 +823,22 @@ function ModelArtifact() {
     <Stage id="model-artifact" labelPos={[0, 2.5, 0]} halo={[2.0, 2.5, 1.8]} plinth={{ w: 1.8, d: 1.6 }} dimInInference>
       <mesh ref={cube} position={[-0.3, 1.05, 0]}>
         <boxGeometry args={[0.85, 0.85, 0.85]} />
-        <meshStandardMaterial color="#191307" roughness={0.3} metalness={0.6} emissive="#fbbf24" emissiveIntensity={0.5} />
+        <meshStandardMaterial color="#35312a" roughness={0.3} metalness={0.6} emissive="#b39a6b" emissiveIntensity={0.35} />
       </mesh>
-      <Text position={[-0.3, 1.05, 0.45]} fontSize={0.1} color="#fcd34d" anchorX="center">
+      <Text position={[-0.3, 1.05, 0.45]} fontSize={0.1} color="#c9b280" anchorX="center">
         140 GB
       </Text>
-      <Text position={[-0.3, 0.86, 0.45]} fontSize={0.06} color="#a8a29e" anchorX="center">
+      <Text position={[-0.3, 0.86, 0.45]} fontSize={0.06} color="#9aa0ab" anchorX="center">
         parameters
       </Text>
       <mesh position={[0.62, 0.78, 0.1]} rotation={[0, -0.35, 0]}>
         <boxGeometry args={[0.5, 0.68, 0.04]} />
-        <meshStandardMaterial color="#0f0f11" roughness={0.35} metalness={0.4} emissive="#fbbf24" emissiveIntensity={0.2} />
+        <meshStandardMaterial color="#2b2d33" roughness={0.35} metalness={0.4} emissive="#b39a6b" emissiveIntensity={0.18} />
       </mesh>
-      <Text position={[0.62, 0.86, 0.14]} rotation={[0, -0.35, 0]} fontSize={0.07} color="#fcd34d" anchorX="center">
+      <Text position={[0.62, 0.86, 0.14]} rotation={[0, -0.35, 0]} fontSize={0.07} color="#c9b280" anchorX="center">
         ~500
       </Text>
-      <Text position={[0.62, 0.72, 0.14]} rotation={[0, -0.35, 0]} fontSize={0.05} color="#a8a29e" anchorX="center">
+      <Text position={[0.62, 0.72, 0.14]} rotation={[0, -0.35, 0]} fontSize={0.05} color="#9aa0ab" anchorX="center">
         lines of C
       </Text>
     </Stage>
@@ -871,18 +873,18 @@ function DataFunnel() {
       {/* funnel */}
       <mesh position={[0, 1.55, 0]}>
         <cylinderGeometry args={[0.8, 0.1, 1.1, 24, 1, true]} />
-        <meshStandardMaterial color="#1a1610" roughness={0.4} metalness={0.55} side={THREE.DoubleSide} emissive="#fbbf24" emissiveIntensity={0.12} />
+        <meshStandardMaterial color="#3a3630" roughness={0.4} metalness={0.55} side={THREE.DoubleSide} emissive="#b39a6b" emissiveIntensity={0.1} />
       </mesh>
       <instancedMesh ref={drops} args={[undefined, undefined, N]} frustumCulled={false}>
         <sphereGeometry args={[1, 8, 8]} />
-        <meshBasicMaterial color="#fcd34d" toneMapped={false} transparent opacity={0.85} />
+        <meshBasicMaterial color="#c9b280" transparent opacity={0.85} />
       </instancedMesh>
       {/* clean output cube */}
       <mesh position={[0, 0.55, 0]}>
         <boxGeometry args={[0.45, 0.45, 0.45]} />
-        <meshStandardMaterial color="#191307" roughness={0.3} metalness={0.6} emissive="#fbbf24" emissiveIntensity={0.8} />
+        <meshStandardMaterial color="#35312a" roughness={0.3} metalness={0.6} emissive="#b39a6b" emissiveIntensity={0.45} />
       </mesh>
-      <Text position={[0, 2.35, 0]} fontSize={0.09} color="#fcd34d" anchorX="center">
+      <Text position={[0, 2.35, 0]} fontSize={0.09} color="#c9b280" anchorX="center">
         2.7B pages → 15T tokens
       </Text>
     </Stage>
@@ -901,11 +903,11 @@ function Pretraining() {
         {Array.from({ length: 9 }).map((_, i) => (
           <mesh key={i} position={[Math.sin(i * 2.4) * 0.5, 0.35 + i * 0.18, Math.cos(i * 2.4) * 0.5]} rotation={[0, i * 0.7, 0]}>
             <boxGeometry args={[0.9, 0.1, 0.65]} />
-            <meshStandardMaterial color="#1a1610" roughness={0.5} metalness={0.3} emissive="#fbbf24" emissiveIntensity={0.16} />
+            <meshStandardMaterial color="#3a3630" roughness={0.5} metalness={0.3} emissive="#b39a6b" emissiveIntensity={0.14} />
           </mesh>
         ))}
       </group>
-      <Text position={[0, 2.2, 0]} fontSize={0.12} color="#fcd34d" anchorX="center">
+      <Text position={[0, 2.2, 0]} fontSize={0.12} color="#c9b280" anchorX="center">
         15T tokens
       </Text>
     </Stage>
@@ -917,19 +919,19 @@ function Alignment() {
     <Stage id="alignment" labelPos={[0, 2.4, 0]} halo={[2.2, 2.4, 1.4]} plinth={{ w: 2.0, d: 1.2 }} dimInInference>
       <mesh position={[-0.45, 1.0, 0]}>
         <boxGeometry args={[0.6, 0.6, 0.14]} />
-        <meshStandardMaterial color="#04190e" roughness={0.3} metalness={0.4} emissive="#34d399" emissiveIntensity={0.7} />
+        <meshStandardMaterial color="#252a2c" roughness={0.3} metalness={0.4} emissive="#79a68d" emissiveIntensity={0.4} />
       </mesh>
-      <Text position={[-0.45, 1.0, 0.09]} fontSize={0.24} color="#a7f3d0" anchorX="center">
+      <Text position={[-0.45, 1.0, 0.09]} fontSize={0.24} color="#9ac4a8" anchorX="center">
         ✓
       </Text>
       <mesh position={[0.45, 1.0, 0]}>
         <boxGeometry args={[0.6, 0.6, 0.14]} />
-        <meshStandardMaterial color="#2a0908" roughness={0.3} metalness={0.4} emissive="#f87171" emissiveIntensity={0.4} />
+        <meshStandardMaterial color="#2c2526" roughness={0.3} metalness={0.4} emissive="#b08585" emissiveIntensity={0.3} />
       </mesh>
-      <Text position={[0.45, 1.0, 0.09]} fontSize={0.24} color="#fecaca" anchorX="center">
+      <Text position={[0.45, 1.0, 0.09]} fontSize={0.24} color="#c4a5a5" anchorX="center">
         ✗
       </Text>
-      <Text position={[0, 0.45, 0.1]} fontSize={0.09} color="#fcd34d" anchorX="center">
+      <Text position={[0, 0.45, 0.1]} fontSize={0.09} color="#c9b280" anchorX="center">
         humans rank answers
       </Text>
     </Stage>
@@ -948,15 +950,15 @@ function ReasoningRl() {
         {Array.from({ length: 14 }).map((_, i) => (
           <mesh key={i} position={[Math.sin(i * 0.9) * 0.45, 0.35 + i * 0.13, Math.cos(i * 0.9) * 0.45]}>
             <sphereGeometry args={[0.065, 10, 10]} />
-            <meshStandardMaterial color="#fbbf24" emissive="#fbbf24" emissiveIntensity={0.4 + (i / 14) * 1.1} toneMapped={i < 10} />
+            <meshStandardMaterial color="#b39a6b" emissive="#b39a6b" emissiveIntensity={0.3 + (i / 14) * 0.45} />
           </mesh>
         ))}
       </group>
       <mesh position={[0, 2.3, 0]}>
         <boxGeometry args={[0.42, 0.42, 0.12]} />
-        <meshStandardMaterial color="#04190e" emissive="#34d399" emissiveIntensity={1.2} toneMapped={false} />
+        <meshStandardMaterial color="#252a2c" emissive="#79a68d" emissiveIntensity={0.5} />
       </mesh>
-      <Text position={[0, 2.3, 0.08]} fontSize={0.2} color="#a7f3d0" anchorX="center">
+      <Text position={[0, 2.3, 0.08]} fontSize={0.2} color="#9ac4a8" anchorX="center">
         ✓
       </Text>
     </Stage>
@@ -992,14 +994,13 @@ function Machine() {
       <group position={[3, 0, -6.5]}><ReasoningRl /></group>
       <mesh position={[-3.1, 0.02, -6.5]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[15, 3.4]} />
-        <meshBasicMaterial color="#fbbf24" transparent opacity={ctx.training ? 0.05 : 0.015} />
+        <meshBasicMaterial color="#b39a6b" transparent opacity={ctx.training ? 0.04 : 0.012} />
       </mesh>
       <FlowParticles segment="input" />
       <FlowParticles segment="core" />
       <FlowParticles segment="output" />
       <FlowParticles segment="loop" />
       <FlowParticles segment="train" />
-      <Dust />
     </group>
   );
 }
@@ -1039,7 +1040,7 @@ export default function LlmScene(props: LlmSceneState) {
       onPointerDown={() => setInteracted(true)}
       style={{ touchAction: "none" }}
     >
-      <fog attach="fog" args={["#09090b", 18, 46]} />
+      <fog attach="fog" args={["#0a0a0b", 20, 52]} />
       <SceneCtx.Provider value={ctx}>
         <Machine />
         <CameraRig controls={controlsRef} />
@@ -1052,24 +1053,25 @@ export default function LlmScene(props: LlmSceneState) {
           blur={[280, 70]}
           resolution={640}
           mixBlur={1}
-          mixStrength={14}
+          mixStrength={7}
           roughness={0.92}
           depthScale={1.1}
           minDepthThreshold={0.4}
           maxDepthThreshold={1.3}
           color="#060607"
-          metalness={0.55}
-          mirror={0.6}
+          metalness={0.4}
+          mirror={0.35}
         />
       </mesh>
 
-      <ambientLight intensity={0.22} />
-      <directionalLight position={[6, 10, 6]} intensity={0.65} />
-      <directionalLight position={[-8, 6, -4]} intensity={0.3} color="#a78bfa" />
-      <Environment resolution={64}>
-        <Lightformer position={[0, 6, -9]} scale={[14, 3, 1]} intensity={1.1} color="#a78bfa" />
-        <Lightformer position={[-8, 4, 4]} scale={[3, 3, 1]} intensity={0.8} color="#38bdf8" />
-        <Lightformer position={[8, 4, 4]} scale={[3, 3, 1]} intensity={0.8} color="#34d399" />
+      <ambientLight intensity={0.45} />
+      <directionalLight position={[5, 9, 5]} intensity={1.25} />
+      <directionalLight position={[-6, 4, -4]} intensity={0.5} />
+      <Environment resolution={64} frames={1}>
+        <Lightformer intensity={2.2} position={[0, 6, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[12, 12, 1]} color="#cdd3dd" />
+        <Lightformer intensity={1.1} position={[-8, 3, 2]} rotation={[0, Math.PI / 2, 0]} scale={[8, 3, 1]} color="#9fb4d0" />
+        <Lightformer intensity={0.9} position={[8, 2.5, -1]} rotation={[0, -Math.PI / 2, 0]} scale={[7, 3, 1]} color="#d9c9a8" />
+        <Lightformer intensity={0.5} position={[0, 2, -9]} scale={[10, 2, 1]} color="#7d8aa0" />
       </Environment>
       <ContactShadows position={[0, 0, 0]} opacity={0.45} scale={32} blur={2.4} far={5} />
       <Grid
@@ -1077,18 +1079,17 @@ export default function LlmScene(props: LlmSceneState) {
         args={[40, 40]}
         cellSize={1}
         cellThickness={0.35}
-        cellColor="#17171a"
+        cellColor="#1c1f24"
         sectionSize={5}
         sectionThickness={0.7}
-        sectionColor="#232328"
+        sectionColor="#2a2e35"
         fadeDistance={36}
         infiniteGrid
       />
 
       {/* the cinematic pass */}
       <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.32} luminanceSmoothing={0.25} intensity={0.75} mipmapBlur />
-        <Vignette eskil={false} offset={0.18} darkness={0.72} />
+        <Vignette eskil={false} offset={0.1} darkness={0.42} />
       </EffectComposer>
 
       <OrbitControls
