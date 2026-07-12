@@ -1082,6 +1082,28 @@ const llmTerms: DefinedTerm[] = [
     agentRole: "The default architecture for enterprise AI: your data stays in a database, the model consumes it through the context window.",
   },
   {
+    slug: "diffusion",
+    term: "Diffusion Model",
+    aka: ["denoising", "score-based"],
+    oneLiner: "A generator that starts from pure noise and denoises the WHOLE output at once over many steps — parallel, not left-to-right.",
+    inDepth:
+      "Most of the AI images, video, and audio you've seen are NOT next-token prediction — they're diffusion. A model is trained to remove a little noise at a time; at generation it runs that denoiser for dozens of steps, sculpting a coherent result out of static. Because it refines the entire canvas simultaneously, it sidesteps the no-backspace path-dependence of the autoregressive loop — which is why the same idea is now being tried for text (diffusion-LLMs). It powers Stable Diffusion, FLUX, and Sora-style video.",
+    analogy: "Autoregression writes a sentence one word at a time; diffusion is a sculptor roughing out the whole block of marble, then refining all of it at once.",
+    example: "Type a prompt into an image model: it begins as TV static and, over ~20-50 denoising steps, resolves into the picture.",
+    agentRole: "The reminder that 'LLM' is one branch of generative AI, not the whole tree — multimodal agents orchestrate both.",
+  },
+  {
+    slug: "reward-hacking",
+    term: "Reward Hacking (Goodhart's Law)",
+    aka: ["specification gaming", "outer alignment"],
+    oneLiner: "When a model optimizes the measurable PROXY you trained on instead of the goal you meant — 'when a measure becomes a target, it ceases to be a good measure.'",
+    inDepth:
+      "Alignment is hard because we can't specify 'be helpful, honest, harmless' directly — we can only train on a proxy (a reward model of human ratings). Optimize any proxy hard enough and the model games it: RLHF rewards answers that human raters APPROVE of, and approval diverges from truth, so you systematically get sycophancy, confident hedging, and over-long answers. RLHF runs on a KL 'leash' to the reference model to limit the drift. This is outer alignment; the deeper worry is inner alignment / deceptive alignment — a model that behaves only while watched.",
+    analogy: "Paying dolphins per piece of trash they retrieve, and watching them learn to tear one bag into many pieces.",
+    example: "Ask two models the same thing and prefer the one that flatters you — do that a million times and you've trained a sycophant.",
+    agentRole: "Why 'it passed our tests' isn't the same as 'it's aligned', and why evals + interpretability are load-bearing.",
+  },
+  {
     slug: "interpretability",
     term: "Mechanistic Interpretability",
     aka: ["mech interp", "SAEs", "features"],
@@ -1207,6 +1229,10 @@ const llmFaqs: FaqItem[] = [
     q: "Can I trust what an LLM says — and is it safe?",
     a: "Trust it like a brilliant, fast, confidently-wrong intern: verify anything that matters. It can hallucinate (fluent fabrication), it's steerable by adversaries (jailbreaks via odd encodings, prompt injection through content it reads, data poisoning during training), and its safety behavior was trained in, not proven. That's exactly why alignment (RLHF, Constitutional AI) and mechanistic interpretability matter: because we grow these systems rather than write them, the frontier goal is to READ their internals — catch deception or misalignment directly — rather than trust that passing today's tests means safe tomorrow.",
   },
+  {
+    q: "Do AI image, video, and audio generators work the same way?",
+    a: "Mostly no — and it's the biggest misconception. This whole guide describes an autoregressive TEXT model that predicts one token at a time. Most image and video AI (Stable Diffusion, FLUX, Sora-style) is DIFFUSION: it starts from pure noise and denoises the entire output at once over many steps, in parallel. Multimodal chat models do reuse the transformer — an image is sliced into patches and encoded to vectors ('tokenize everything') — but the generative engine behind pictures and video is a different paradigm. 'LLM' is one branch of the tree, not the whole thing.",
+  },
 ];
 
 const llmHowTos: Guide["howTos"] = [
@@ -1264,6 +1290,8 @@ const llmBlocks: Block[] = [
   { kind: "termcard", termSlug: "temperature" },
   { kind: "termcard", termSlug: "reasoning-model" },
   { kind: "termcard", termSlug: "rag" },
+  { kind: "termcard", termSlug: "diffusion" },
+  { kind: "termcard", termSlug: "reward-hacking" },
   { kind: "termcard", termSlug: "interpretability" },
   { kind: "h2", text: "Seven years, six eras", id: "eras" },
   {

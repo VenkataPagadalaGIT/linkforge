@@ -163,7 +163,7 @@ export const STAGES: LlmStage[] = [
     story:
       "After attention gathers context, a much bigger block does the 'thinking': the feed-forward network, where most of the parameters live. Frontier models split it into many parallel 'experts' and a tiny router picks the best 1-2 for each token — a chemistry token might fire different experts than a French one. The model can be huge on disk yet cheap per token.",
     tech:
-      "One FFN is up-projection → nonlinearity (GELU/SwiGLU) → down-projection, ~⅔ of a layer's params. Read mechanistically (3Blue1Brown / Anthropic): the up-projection rows act like yes/no QUESTIONS ('is this about Michael Jordan?'), the nonlinearity gates them, and the down-projection WRITES facts back into the stream ('…plays Basketball'). It is where the model stores what it knows. Mixture-of-Experts (MoE) replicates this block N times with a top-k router. DeepSeek-V3: 256 experts + 1 shared, top-8 — 671B total, ~37B active. Mixtral 8×7B: top-2 of 8.",
+      "One FFN is up-projection → nonlinearity (GELU/SwiGLU) → down-projection, ~⅔ of a layer's params. Read mechanistically (3Blue1Brown / Anthropic): the up-projection rows act like yes/no QUESTIONS ('is this about Michael Jordan?'), the nonlinearity gates them, and the down-projection WRITES facts back into the stream ('…plays Basketball'). It is where the model stores what it knows. Mixture-of-Experts (MoE) replicates this block N times with a top-k router. DeepSeek-V3: 256 experts + 1 shared, top-8 — 671B total, ~37B active. Mixtral 8×7B: top-2 of 8. The hard part MoE hid for a decade: routing collapse — left alone the router funnels everything to a few favorite experts, so training adds a load-balancing auxiliary loss (or DeepSeek-V3's loss-free bias nudging) to keep all experts fed.",
     analogy: "A hospital triage desk: every patient (token) is routed to the two most relevant specialists rather than seeing all 256 doctors.",
     numbers: [
       { label: "DeepSeek-V3", value: "671B total → 37B active (top-8 of 256)" },
@@ -203,9 +203,11 @@ export const STAGES: LlmStage[] = [
     numbers: [
       { label: "Why streaming is fast", value: "New token attends to cached K/V" },
       { label: "128k-context cache", value: "Multiple GB of VRAM" },
+      { label: "Prefill (read prompt)", value: "COMPUTE-bound — one big parallel matmul" },
+      { label: "Decode (each new token)", value: "MEMORY-BANDWIDTH-bound — GPU waits on weights/KV" },
       { label: "Prompt-cache discount", value: "~10× cheaper (typical 2026 pricing)" },
     ],
-    now: "Speculative decoding adds a second trick: a tiny draft model proposes several tokens, the big model verifies them in one pass — 2-3× faster output with identical results.",
+    now: "This splits inference into two regimes with OPPOSITE bottlenecks — prefill is compute-bound, decode is memory-bandwidth-bound — which is why serving batches many users together (to reuse each weight load) and why time-to-first-token and tokens/sec are billed differently. Speculative decoding piles on: a tiny draft model proposes several tokens, the big model verifies them in one pass — 2-3× faster, identical output.",
   },
   {
     id: "logits",
@@ -312,6 +314,24 @@ export const STAGES: LlmStage[] = [
     now: "In 2025-2026 interpretability is a frontier SAFETY bet: read a model's internals to catch deception, sycophancy, or misalignment before behavior alone would reveal it — understanding the system you deployed, not just testing it.",
   },
   {
+    id: "beyond-text",
+    name: "Beyond Text — Multimodal & Diffusion",
+    short: "Beyond Text",
+    zone: "output",
+    tagline: "Not everything is a token predicted left-to-right",
+    story:
+      "Everything in this machine is ONE paradigm: an autoregressive, decoder-only TEXT transformer. Two huge things sit outside it. Multimodality is just 'tokenize everything' — an image is sliced into patches and a vision encoder turns each into a vector, audio becomes spectrogram slices; the same transformer, the same loop, more kinds of token in the residual stream. And most of the images, video, and audio you've seen from AI aren't next-token at all — they're DIFFUSION.",
+    tech:
+      "Diffusion generates the WHOLE output at once and refines it: start from pure noise and run a learned denoiser for many steps until a coherent image / video / audio emerges — parallel, not left-to-right, which sidesteps the no-backspace trap of the autoregressive loop. It powers Stable Diffusion, FLUX, and Sora-style video, and is now being tried for TEXT (diffusion-LLMs like Mercury). Lineage: the 2017 transformer was encoder-DECODER (translation), BERT was encoder-only — the chat frontier is the decoder-only branch, but the family is wider than this guide's spine. A third architecture, state-space models (Mamba), handles sequences in linear time.",
+    analogy: "Autoregression writes a sentence one word at a time; diffusion is a sculptor who roughs out the whole block of marble, then refines the entire thing at once.",
+    numbers: [
+      { label: "Multimodal", value: "Images→patches, audio→spectrogram — same transformer" },
+      { label: "Most image/video AI", value: "Diffusion (Stable Diffusion, FLUX, Sora)" },
+      { label: "Text-diffusion", value: "Emerging alt to the autoregressive loop (Mercury)" },
+    ],
+    now: "2025-2026: frontier models are natively multimodal by default (GPT-4o, Gemini, Claude); autoregression and diffusion are converging (autoregressive image models, diffusion text models); and Mamba-style state-space models offer a linear-time third path.",
+  },
+  {
     id: "context-window",
     name: "Context Window",
     short: "Context",
@@ -372,7 +392,7 @@ export const STAGES: LlmStage[] = [
     story:
       "Where did all those weights come from? Months of one game, played trillions of times: here's a snippet of internet text — predict the next token. Wrong? Nudge all the weights a hair toward right. To get good at this game at scale, the network is forced to learn grammar, facts, style, even rudimentary world-models — because they all help predict what comes next.",
     tech:
-      "Self-supervised learning: cross-entropy loss on next-token prediction, minimized by AdamW + backpropagation over web-scale corpora (Llama 3: ~15T tokens). GPT-4-class training runs cost $50-100M+ in compute on tens of thousands of GPUs. Scaling laws (Chinchilla) prescribe data/parameter ratios.",
+      "Self-supervised learning: cross-entropy loss on next-token prediction, minimized by AdamW + backpropagation over web-scale corpora (Llama 3: ~15T tokens). Crucially, training is PARALLEL: every position in a document is predicted at once in one forward/backward pass (teacher forcing) — the one-token-at-a-time behavior is only how the model GENERATES later, not how it learns. GPT-4-class training runs cost $50-100M+ in compute on tens of thousands of GPUs. Scaling laws (Chinchilla) prescribe data/parameter ratios.",
     analogy: "Reading the whole library with a thumb over every next word — for a few million years of subjective reading time.",
     numbers: [
       { label: "Llama 3 corpus", value: "~15 trillion tokens" },
@@ -388,14 +408,16 @@ export const STAGES: LlmStage[] = [
     zone: "training",
     tagline: "From autocomplete to assistant",
     story:
-      "A raw pretrained model is an internet document simulator — prompt it with a question and it may continue with three more questions, because that's what documents do. The assistant is a persona conjured almost entirely by data: same architecture, same algorithm, just ~100k carefully written conversations. A pretrained model is a savant autocomplete — ask it a question and it might continue with three more questions. Post-training turns it into an assistant: first it studies curated example conversations (SFT), then humans rank pairs of its answers and a reinforcement signal pushes it toward the preferred kind — helpful, honest, harmless. This step is why ChatGPT (2022) felt like a different species from GPT-3 (2020).",
+      "A raw pretrained model is an internet document simulator — ask it a question and it may reply with three more, because that's what documents do. Post-training turns it into an assistant: it studies ~100k curated example conversations (SFT), then humans rank pairs of its answers and a reward signal pushes it toward the preferred kind — helpful, honest, harmless. Same architecture, same algorithm; the assistant persona is conjured almost entirely by data. It's why ChatGPT (2022) felt like a different species from GPT-3 (2020) — and it's exactly where the alignment problem begins.",
     tech:
-      "Supervised fine-tuning on demonstration data, then RLHF: a reward model trained on human preference pairs guides PPO — or DPO optimizes on preferences directly — no SEPARATE reward model, but it still relies on a reference model and an implicit reward (reward reparameterized as β·log π/π_ref). Constitutional AI (Anthropic) uses AI feedback against written principles (RLAIF) to scale supervision.",
+      "Supervised fine-tuning on demonstration data, then RLHF: a reward model trained on human preference pairs guides PPO — or DPO optimizes on preferences directly — no SEPARATE reward model, but it still relies on a reference model and an implicit reward (reward reparameterized as β·log π/π_ref). Constitutional AI (Anthropic) uses AI feedback against written principles (RLAIF) to scale supervision. The catch that makes alignment HARD: the reward model is a learned PROXY for what we actually want, and optimizing hard against any proxy games it (Goodhart's law / reward hacking) — so RLHF runs on a KL leash back to the reference model and still drifts toward what raters APPROVE of over what is true. That is the mechanical origin of sycophancy and confident-but-wrong answers.",
     analogy: "A brilliant hire who's read everything but has never talked to a customer — sent through onboarding and coached with performance reviews.",
     numbers: [
       { label: "Preference data", value: "100k-1M+ human comparisons" },
+      { label: "The hard part", value: "Reward is a hackable PROXY (Goodhart) → sycophancy" },
       { label: "2026 default", value: "DPO for prefs · PPO/GRPO for reasoning RL" },
     ],
+    now: "This is the OUTER alignment problem: we can only optimize measurable proxies of 'good'. The deeper fear is INNER alignment / deceptive alignment — a capable model that behaves well only while it's watched. Neither is solved; it's why evals, red-teaming, and interpretability exist.",
   },
   {
     id: "reasoning",
@@ -406,14 +428,14 @@ export const STAGES: LlmStage[] = [
     story:
       "The newest idea: instead of only rewarding a nice final answer, let the model generate a long private chain of thought — then reinforce whatever reasoning actually leads to verifiably correct results on math, code, and logic. Models learn to plan, backtrack, and self-check. This is why 'thinking' models pause before answering: they're spending extra compute at inference time, and accuracy scales with how long they think.",
     tech:
-      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. RL with verifiable rewards (RLVR): sample chains of thought, score them with automatic checkers (unit tests, math verification), update with GRPO/PPO-style algorithms. DeepSeek-R1-Zero showed reasoning emerging from pure RL on a base model (the shipped R1 added a cold-start SFT stage for readability); OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
+      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. The load-bearing distinction: RLHF optimizes a soft, gameable human-preference proxy (it plateaus and needs a KL leash — Karpathy's 'RLHF is barely RL'), whereas RL with verifiable rewards (RLVR) optimizes a HARD, checkable signal — did the code pass? is the proof correct? — so you can push far harder. GRPO (DeepSeek's PPO variant) drops the value network and just ranks a GROUP of sampled answers against each other; it's cheaper and what the reasoning era runs on. DeepSeek-R1-Zero showed reasoning emerging from pure RL on a base model (the shipped R1 added a cold-start SFT stage for readability); OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
     analogy: "Grading the student's scratch work, not just the final answer box — and giving them as much scratch paper as they want.",
     numbers: [
       { label: "Landmark models", value: "o1/o3 (OpenAI), R1 (DeepSeek), Claude thinking modes" },
       { label: "New scaling axis", value: "Inference-time compute" },
       { label: "R1-Zero surprise", value: "Reasoning from pure RL (shipped R1 added cold-start SFT)" },
     ],
-    now: "The live frontier in 2026 is agentic RL — rewarding multi-step tool use and long-horizon tasks. One caution learned early: don't directly optimize the visible chain of thought, or models learn to hide intent while still misbehaving (OpenAI's CoT-monitoring result).",
+    now: "Reasoning also DISTILLS: DeepSeek-R1's chains fine-tuned small models (R1-Distill) that inherit much of the reasoning at a fraction of the size — the second headline result. The live frontier is agentic RL — rewarding multi-step tool use and long-horizon tasks. One caution learned early: don't directly optimize the VISIBLE chain of thought, or models learn to hide intent while still misbehaving (OpenAI's CoT-monitoring result) — and remember the chain of thought is not a guaranteed-faithful window into the real computation.",
   },
 ];
 
@@ -566,6 +588,14 @@ export const JOURNEY: JourneyStep[] = [
     highlightIds: ["data-pipeline"],
     flow: "train",
     training: true,
+  },
+  {
+    id: "j-beyond",
+    title: "…but this is only one paradigm",
+    narration:
+      "Zoom out before we rewind. Everything you just watched is ONE design: autoregressive, decoder-only, text. Images and audio ride the same rails ('tokenize everything' — patches become vectors), and most image/video/audio AI isn't next-token at all: it's diffusion, denoising a whole output at once. Same field, far wider than this one machine.",
+    highlightIds: ["beyond-text"],
+    flow: null,
   },
   {
     id: "j-pretrain",

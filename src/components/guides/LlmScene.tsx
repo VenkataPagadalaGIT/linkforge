@@ -76,6 +76,7 @@ const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: 
   "j-sample": { pos: [6.8, 2.7, 4.6], look: [6.6, 1.15, 0] },
   "j-loop": { pos: [-0.5, 7.5, 13.5], look: [-1.2, 3.4, 0] },
   "j-context": { pos: [0.5, 6.5, 17.5], look: [-0.5, 2.4, 0] },
+  "j-beyond": { pos: [2.0, 2.6, 9.8], look: [2.0, 1.3, 5.6] },
   "j-hallucinate": { pos: [9.5, 2.7, 4.8], look: [9.4, 1.4, 0.4] },
   "j-tools": { pos: [9.9, 3.0, 1.4], look: [9.6, 1.3, -3.2] },
   "j-artifact": { pos: [-9.2, 3.2, -2.2], look: [-9.2, 1.2, -6.5] },
@@ -1088,6 +1089,69 @@ function Interpretability() {
   );
 }
 
+/** Beyond Text — a side exhibit: an image patch-grid (multimodal 'tokenize
+ *  everything') and a diffusion denoise strip (noise → clean, in parallel). */
+function BeyondText() {
+  const ctx = useScene();
+  const patches = useRef<THREE.InstancedMesh>(null);
+  const denoise = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const tmp = useMemo(() => new THREE.Object3D(), []);
+  useFrame((state) => {
+    const on = ctx.running || ctx.selectedId === "beyond-text" || ctx.highlight.has("beyond-text");
+    if (patches.current) {
+      let k = 0;
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+        tmp.position.set(-0.62 + c * 0.16, 0.62 + r * 0.16, 0.06);
+        tmp.scale.setScalar(0.13);
+        tmp.updateMatrix();
+        patches.current.setMatrixAt(k++, tmp.matrix);
+      }
+      patches.current.instanceMatrix.needsUpdate = true;
+    }
+    // diffusion strip: a wave of "resolve" sweeping left→right, over and over
+    const sweep = on ? (state.clock.elapsedTime * 0.5) % 1.6 : 1.2;
+    denoise.current.forEach((m, i) => {
+      if (!m) return;
+      const cleaned = Math.max(0, Math.min(1, sweep - i / 6)); // 0 = noisy, 1 = clean
+      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, 0.15 + cleaned * 0.5, 0.12);
+      m.roughness = 0.8 - cleaned * 0.45;
+    });
+  });
+  return (
+    <Stage id="beyond-text" labelPos={[0, 2.5, 0]} halo={[3.0, 2.6, 0.9]} plinth={{ w: 2.9, d: 0.9 }}>
+      {/* left board: multimodal patch grid */}
+      <mesh position={[-0.5, 1.2, 0]}>
+        <boxGeometry args={[1.5, 1.4, 0.08]} />
+        <meshStandardMaterial color="#2b2e34" roughness={0.4} metalness={0.55} emissive="#79a68d" emissiveIntensity={0.05} />
+      </mesh>
+      <instancedMesh ref={patches} args={[undefined, undefined, 16]} position={[-0.5, 0, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="#9db8cc" emissive="#5f8cb0" emissiveIntensity={0.35} roughness={0.4} />
+      </instancedMesh>
+      <Text position={[-0.5, 0.32, 0.1]} fontSize={0.09} color="#9aa0ab" anchorX="center">
+        image → patches
+      </Text>
+      {/* right strip: diffusion denoise */}
+      {Array.from({ length: 7 }).map((_, i) => (
+        <mesh key={i} position={[0.7 + i * 0.16, 1.2, 0.05]}>
+          <boxGeometry args={[0.13, 0.9, 0.13]} />
+          <meshStandardMaterial
+            ref={(el) => { denoise.current[i] = el; }}
+            color="#79a68d"
+            emissive="#79a68d"
+            emissiveIntensity={0.15}
+            roughness={0.8}
+            metalness={0.3}
+          />
+        </mesh>
+      ))}
+      <Text position={[1.18, 0.55, 0.1]} fontSize={0.09} color="#9aa0ab" anchorX="center">
+        noise → image (diffusion)
+      </Text>
+    </Stage>
+  );
+}
+
 /* ---------------------------------------------------------------- *
  *  Scene assembly
  * ---------------------------------------------------------------- */
@@ -1107,6 +1171,7 @@ function Machine() {
       <group position={[4.2, 0, 0]}><LogitsBoard /></group>
       <group position={[6.6, 0, 0]}><Sampler /></group>
       <LoopArc />
+      <group position={[2.0, 0, 5.6]}><BeyondText /></group>
       <ContextFrame />
       <group position={[9.4, 0, 0.4]}><Hallucination /></group>
       <group position={[9.6, 0, -3.2]}><ToolsAgents /></group>
