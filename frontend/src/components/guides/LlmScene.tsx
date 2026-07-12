@@ -208,7 +208,7 @@ function Stage({
         <boxGeometry args={halo} />
         <meshBasicMaterial ref={haloMat} color={color} transparent opacity={0} depthWrite={false} side={THREE.BackSide} />
       </mesh>
-      {(ctx.labels || selected || lit) && stage && (
+      {(ctx.labels || selected || lit) && stage && !dimmed && (
         <Html position={labelPos} center distanceFactor={14} style={{ pointerEvents: "none" }}>
           <div
             style={{
@@ -254,31 +254,86 @@ function sampleQuadratic(pts: THREE.Vector3[], t: number, out: THREE.Vector3) {
   );
 }
 
+function sampleTangent(pts: THREE.Vector3[], t: number, out: THREE.Vector3) {
+  const [a, b, c] = pts;
+  // derivative of the quadratic bezier
+  out.set(
+    2 * (1 - t) * (b.x - a.x) + 2 * t * (c.x - b.x),
+    2 * (1 - t) * (b.y - a.y) + 2 * t * (c.y - b.y),
+    2 * (1 - t) * (b.z - a.z) + 2 * t * (c.z - b.z),
+  ).normalize();
+}
+
+/** The physical rail the data pulses travel on — thin graphite conduit. */
+function FlowConduit({ segment }: { segment: Exclude<FlowSegment, null> }) {
+  const ctx = useScene();
+  const mat = useRef<THREE.MeshStandardMaterial>(null);
+  const geo = useMemo(() => {
+    const [a, b, c] = PATHS[segment];
+    const curve = new THREE.QuadraticBezierCurve3(a, b, c);
+    return new THREE.TubeGeometry(curve, 40, segment === "loop" ? 0.008 : 0.013, 6, false);
+  }, [segment]);
+  useFrame(() => {
+    if (!mat.current) return;
+    const active = ctx.flow === segment;
+    mat.current.emissiveIntensity = THREE.MathUtils.lerp(mat.current.emissiveIntensity, active ? 0.35 : 0.08, 0.08);
+  });
+  const accent = segment === "train" ? "#b39a6b" : segment === "loop" ? "#79a68d" : "#5f8cb0";
+  return (
+    <mesh geometry={geo}>
+      <meshStandardMaterial
+        ref={mat}
+        color="#2b2e34"
+        roughness={0.4}
+        metalness={0.6}
+        emissive={accent}
+        emissiveIntensity={0.08}
+        transparent={segment === "loop"}
+        opacity={segment === "loop" ? 0.55 : 1}
+      />
+    </mesh>
+  );
+}
+
+const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const GOLDEN = 0.6180339887;
+
+/** Data pulses — small elongated streaks riding the conduit, fading at the
+ *  endpoints, irregularly spaced. Fiber-optic, not bouncing balls. */
 function FlowParticles({ segment }: { segment: Exclude<FlowSegment, null> }) {
   const ctx = useScene();
-  const N = 9;
+  const N = 7;
   const mesh = useRef<THREE.InstancedMesh>(null);
   const mat = useRef<THREE.MeshBasicMaterial>(null);
   const tmp = useMemo(() => new THREE.Object3D(), []);
   const v = useMemo(() => new THREE.Vector3(), []);
+  const tan = useMemo(() => new THREE.Vector3(), []);
+  const q = useMemo(() => new THREE.Quaternion(), []);
   const pts = PATHS[segment];
-  const color = segment === "train" ? "#c9a86a" : segment === "loop" ? "#79a68d" : "#cbd5e1";
+  const color = segment === "train" ? "#c9a86a" : "#cbd5e1";
 
   useFrame((state) => {
     if (!mesh.current || !mat.current) return;
     const active = ctx.flow === segment;
     const visible = ctx.running || active;
-    const speed = active ? 0.4 : 0.16;
-    const targetOpacity = !visible ? 0 : active ? 1 : segment === "loop" || segment === "train" ? 0.05 : 0.24;
+    const speed = active ? 0.3 : 0.13;
+    const targetOpacity = !visible ? 0 : active ? 0.95 : segment === "loop" || segment === "train" ? 0.04 : 0.3;
     mat.current.opacity = THREE.MathUtils.lerp(mat.current.opacity, targetOpacity, 0.08);
-    // active particles punch past the bloom threshold
-        const t0 = state.clock.elapsedTime * speed;
+    const t0 = state.clock.elapsedTime * speed;
     for (let i = 0; i < N; i++) {
-      const t = (t0 + i / N) % 1;
+      // golden-ratio phase + slight per-pulse speed variance: no metronome
+      const t = (t0 * (1 + ((i * 7) % 5) * 0.016) + ((i * GOLDEN) % 1)) % 1;
       sampleQuadratic(pts, t, v);
+      sampleTangent(pts, t, tan);
+      // fade in/out at the endpoints via scale envelope
+      const fade =
+        THREE.MathUtils.smoothstep(t, 0, 0.14) * (1 - THREE.MathUtils.smoothstep(t, 0.86, 1));
       tmp.position.copy(v);
-      const s = active ? 0.085 + 0.035 * Math.sin(t * Math.PI) : 0.05;
-      tmp.scale.setScalar(s);
+      q.setFromUnitVectors(Y_AXIS, tan);
+      tmp.quaternion.copy(q);
+      const len = (active ? 0.24 : 0.15) * (0.35 + 0.65 * fade);
+      const thick = (active ? 0.026 : 0.018) * (0.5 + 0.5 * fade);
+      tmp.scale.set(thick, len, thick);
       tmp.updateMatrix();
       mesh.current.setMatrixAt(i, tmp.matrix);
     }
@@ -287,7 +342,7 @@ function FlowParticles({ segment }: { segment: Exclude<FlowSegment, null> }) {
 
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, N]} frustumCulled={false}>
-      <sphereGeometry args={[1, 10, 10]} />
+      <capsuleGeometry args={[1, 2.2, 3, 8]} />
       <meshBasicMaterial ref={mat} color={color} transparent opacity={0} depthWrite={false} />
     </instancedMesh>
   );
@@ -608,12 +663,14 @@ function KvCache() {
 }
 
 function ContextFrame() {
+  // Edges only — a wireframe boxGeometry draws triangle diagonals across the
+  // scene, which read as stray artifacts. EdgesGeometry gives a clean frame.
+  const edges = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(13, 5, 3)), []);
   return (
     <Stage id="context-window" labelPos={[0, 5.3, 0]} halo={[13.4, 5.4, 3.4]}>
-      <mesh position={[0, 2.5, 0]}>
-        <boxGeometry args={[13, 5, 3]} />
-        <meshBasicMaterial color="#64748b" wireframe transparent opacity={0.08} />
-      </mesh>
+      <lineSegments geometry={edges} position={[0, 2.5, 0]}>
+        <lineBasicMaterial color="#64748b" transparent opacity={0.18} />
+      </lineSegments>
     </Stage>
   );
 }
@@ -699,7 +756,7 @@ function LoopArc() {
   });
   return (
     <Stage id="loop" labelPos={[-1, 7.1, 0.6]} halo={[0.1, 0.1, 0.1]}>
-      <Trail width={0.9} length={4} color="#79a68d" attenuation={(t) => t * t}>
+      <Trail width={0.3} length={2.5} color="#79a68d" attenuation={(t) => t * t}>
         <group ref={chip}>
           <mesh>
             <boxGeometry args={[0.5, 0.3, 0.1]} />
@@ -996,6 +1053,10 @@ function Machine() {
         <planeGeometry args={[15, 3.4]} />
         <meshBasicMaterial color="#b39a6b" transparent opacity={ctx.training ? 0.04 : 0.012} />
       </mesh>
+      <FlowConduit segment="input" />
+      <FlowConduit segment="core" />
+      <FlowConduit segment="output" />
+      <FlowConduit segment="loop" />
       <FlowParticles segment="input" />
       <FlowParticles segment="core" />
       <FlowParticles segment="output" />
