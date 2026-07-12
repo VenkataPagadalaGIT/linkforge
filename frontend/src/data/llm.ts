@@ -152,7 +152,7 @@ export const STAGES: LlmStage[] = [
       { label: "Llama 3 405B", value: "128 heads, GQA 8 KV groups" },
       { label: "Complexity", value: "O(n²) in context length" },
     ],
-    now: "FlashAttention-3 computes exact attention with far less memory traffic; MLA (DeepSeek) compresses KV 10×+. Attention is now the best-understood part of the stack thanks to interpretability work.",
+    now: "FlashAttention-3 computes exact attention with far less memory traffic; MLA (DeepSeek) compresses KV 10×+. Interpretability work can now read heads directly: they spontaneously specialize (grammar, names, pronouns), and 'induction heads' that spot A-B…A patterns and predict B turn out to be the circuit behind in-context learning.",
   },
   {
     id: "moe",
@@ -167,10 +167,10 @@ export const STAGES: LlmStage[] = [
     analogy: "A hospital triage desk: every patient (token) is routed to the two most relevant specialists rather than seeing all 256 doctors.",
     numbers: [
       { label: "DeepSeek-V3", value: "671B total → 37B active (top-8 of 256)" },
-      { label: "Mixtral 8×7B", value: "top-2 of 8 experts" },
+      { label: "Mixtral 8×7B", value: "46.7B total → ~12.9B active (top-2 of 8)" },
       { label: "Where params live", value: "~⅔ of the model is FFN/experts" },
     ],
-    now: "MoE won the frontier: GPT-4-class systems, Gemini, DeepSeek, Qwen-MoE and Llama 4 all use sparse experts to decouple capability from per-token cost.",
+    now: "MoE won the frontier: GPT-4-class systems, Gemini, DeepSeek, Qwen-MoE and Llama 4 all use sparse experts to decouple capability from per-token cost. Interpretability adds a wrinkle: the FFN is where facts physically live — specific neurons fire on Eiffel-Tower text, and model-editing methods (ROME) can surgically rewrite a single stored fact.",
   },
   {
     id: "layers",
@@ -181,7 +181,7 @@ export const STAGES: LlmStage[] = [
     story:
       "One layer of attention-plus-experts is a single 'read the room, then think' step. The model stacks that step dozens of times. Early layers resolve syntax and merge word-pieces; middle layers assemble facts and relationships; late layers commit to what comes next. Each token's vector flows up this stack, enriched at every floor.",
     tech:
-      "A residual stream connects everything: each sublayer ADDS its output to the stream (x = x + f(x)) rather than replacing it, with RMSNorm keeping scales sane. GPT-3: 96 layers. Llama 3 405B: 126. Interpretability work reads the stream mid-stack and finds increasingly abstract features layer by layer.",
+      "A residual stream connects everything: each sublayer ADDS its output to the stream (x = x + f(x)) rather than replacing it, with RMSNorm keeping scales sane. GPT-3: 96 layers. Llama 3 405B: 126. Why does width buy so much? Superposition: in high dimensions you can pack exponentially many nearly-orthogonal directions, so a 12,288-dim stream stores far more than 12,288 features — neurons are polysemantic, features are superimposed.",
     analogy: "An assembly line of 100 stations — each station reads the whole chassis, then bolts on one refinement.",
     numbers: [
       { label: "GPT-3", value: "96 layers" },
@@ -249,13 +249,49 @@ export const STAGES: LlmStage[] = [
     story:
       "The sampled token ('mat') is appended to the sequence, and the ENTIRE pipeline runs again to pick the token after it. And again. A 500-word answer is ~650 full trips through the machine, each choosing just one token while seeing everything chosen so far. The 'thinking' you watch stream out is this loop, spinning at 50-200 tokens per second.",
     tech:
-      "Autoregressive generation: x_{t+1} ~ p(· | x_1..x_t). Thanks to the KV cache each iteration is one token's worth of compute, not the whole prompt's. Generation stops at an end-of-sequence token or a length limit.",
+      "Autoregressive generation: x_{t+1} ~ p(· | x_1..x_t). Thanks to the KV cache each iteration is one token's worth of compute, not the whole prompt's. Generation stops at an end-of-sequence token or a length limit. The left-to-right, no-backspace nature of this loop is also the root of hallucination-under-pressure — which is why text-diffusion models (draft the whole answer at once, then refine) are being explored as an alternative.",
     analogy: "Writing a novel one word at a time — and rereading the entire manuscript-so-far (from very good notes) before choosing each next word.",
     numbers: [
       { label: "One token requires", value: "1 full forward pass" },
       { label: "Typical stream rate", value: "50-200 tokens/sec" },
       { label: "A 500-word answer", value: "~650 loop iterations" },
     ],
+  },
+  {
+    id: "hallucination",
+    name: "Hallucination & Grounding",
+    short: "Hallucination",
+    zone: "output",
+    tagline: "The model is always dreaming — some dreams happen to be true",
+    story:
+      "Everything an LLM outputs is, in Karpathy's phrase, a dream of internet documents — hallucination isn't a malfunction, it's the only mode the machine has; most dreams just happen to be accurate. And because generation is strictly left-to-right with no backspace, a model that writes itself into a corner will lie to stay coherent rather than backtrack: its training data was finished essays, never drafts with corrections.",
+    tech:
+      "Two production mitigations. (1) Wire uncertainty to words: probe the model with factual questions, find where it reliably fails, and add fine-tuning examples where the correct answer is literally \"I don't know\" (Meta's Llama 3 factuality recipe). (2) Ground it: retrieval-augmented generation (RAG) fetches real documents into the context window at answer time, so the model reads instead of recalls — context beats weights.",
+    analogy: "A one-way typewriter with no backspace: when the sentence goes wrong, the writer saves face by making the ending fit.",
+    numbers: [
+      { label: "Failure mode", value: "Coherence pressure, not lookup error" },
+      { label: "Mitigation 1", value: "'I don't know' fine-tuning (Llama 3 recipe)" },
+      { label: "Mitigation 2", value: "RAG — retrieve, paste into context, read" },
+    ],
+    now: "2026 assistants stack the fixes: retrieval + citations + tool calls for anything factual, and reasoning models that check their own work before answering.",
+  },
+  {
+    id: "tools-agents",
+    name: "Tools, Agents & the LLM OS",
+    short: "Tools & Agents",
+    zone: "output",
+    tagline: "The loop learns to pause, call a tool, and read the result",
+    story:
+      "The autoregressive loop has one more trick: the model can emit special tokens — <search>, <python>, <browse> — that pause generation, run a real tool, and paste the result back into the context for the model to read. It reaches for a calculator exactly like a human would, offloading what its architecture is bad at: arithmetic, fresh facts, counting letters. Chain enough tool calls together with a goal and you have an agent.",
+    tech:
+      "Tool use is trained by fine-tuning on examples that demonstrate the special-token protocol; the runtime intercepts the tokens and executes. Karpathy's unifying frame is the LLM OS: the model is the CPU, the context window is RAM, tools are peripherals, retrieval/embeddings are disk, and other models are processes. Caution ships with it: a browsing agent can be prompt-injected by hidden text on a webpage — instructions in data are the new attack surface.",
+    analogy: "A new kind of computer: the LLM is the processor, context is RAM, tools are its keyboard, browser, and calculator.",
+    numbers: [
+      { label: "Mechanism", value: "Special tokens pause the loop → tool runs → result enters context" },
+      { label: "The frame", value: "LLM = CPU · context = RAM · tools = peripherals" },
+      { label: "New risk", value: "Prompt injection via content the agent reads" },
+    ],
+    now: "This is the 2026 frontier: agentic RL trains models on completing long multi-step jobs (coding tasks, research, operations) with tools, supervised at a growing human-to-agent ratio.",
   },
   {
     id: "context-window",
@@ -275,6 +311,41 @@ export const STAGES: LlmStage[] = [
     ],
   },
   {
+    id: "model-artifact",
+    name: "The Model Is Two Files",
+    short: "Two Files",
+    zone: "training",
+    tagline: "A parameters file and ~500 lines of code — that's the whole thing",
+    story:
+      "Strip away the cloud and an LLM is astonishingly small in kind: Llama-2-70B is literally two files — a 140 GB parameters file and about 500 lines of C that runs it. No database, no internet connection, no secret machinery. Everything the model 'knows' is dissolved into those billions of numbers, like a lossy zip of the internet: the weights hold a gestalt of the text, not the text itself.",
+    tech:
+      "The parameters file is the learned weight matrices (embeddings, attention projections, FFN/experts, unembedding); the code is a forward-pass loop anyone can read. The architecture is famously simple — frontier models are structurally scaled-up GPT-2 — which is why the real moats are data curation, training know-how, and compute, not secret architectures.",
+    analogy: "A brain fits in a briefcase: one heavy book of numbers and one page of instructions for reading it.",
+    numbers: [
+      { label: "Llama-2-70B", value: "140 GB weights + ~500 lines of C" },
+      { label: "Training run", value: "~6,000 GPUs, ~12 days, ~$2M" },
+      { label: "Compression", value: "~10TB of text → 140 GB (lossy, ~100×)" },
+    ],
+    now: "GPT-2 (2019) cost ~$40k to train; by 2025 it reproduces for a few hundred dollars (llm.c) — training-cost collapse is why capable open models are everywhere.",
+  },
+  {
+    id: "data-pipeline",
+    name: "The Corpus Funnel",
+    short: "Data Funnel",
+    zone: "training",
+    tagline: "The internet, filtered down 1000× before a single weight is trained",
+    story:
+      "Before any training, the internet itself goes through a brutal funnel. Common Crawl's ~2.7 billion pages get URL-filtered (spam, malware, junk), stripped from HTML to text, language-filtered, deduplicated, and scrubbed of personal data — until ~44 TB of clean text remains, roughly 15 trillion tokens. The entire useful text internet fits on a $200 hard drive. Every filtering choice here IS model behavior later: what's kept is what the model becomes.",
+    tech:
+      "The FineWeb-style pipeline: URL blocklists → text extraction → language ID (e.g. keep pages >65% English for an English model) → fuzzy dedup → PII removal → quality classifiers. The frontier's dirty secret is that high-quality natural text is nearly exhausted — 2025-2026 runs supplement with synthetic data, curated code, and multimodal corpora.",
+    analogy: "Panning for gold at planetary scale: billions of pages in, a briefcase of ore out — and the choice of sieve decides what the metal is.",
+    numbers: [
+      { label: "In", value: "Common Crawl, ~2.7B web pages" },
+      { label: "Out", value: "~44 TB clean text ≈ 15T tokens" },
+      { label: "The lever", value: "Filtering choices = model behavior" },
+    ],
+  },
+  {
     id: "pretraining",
     name: "Pretraining — Next-Token Prediction",
     short: "Pretraining",
@@ -290,7 +361,7 @@ export const STAGES: LlmStage[] = [
       { label: "GPT-4-class cost", value: "$50-100M+ compute" },
       { label: "Objective", value: "Predict token t+1. That's it." },
     ],
-    now: "The frontier hit a data wall — high-quality web text is largely consumed — so 2025-2026 runs lean on synthetic data, curriculum curation, and multimodal corpora.",
+    now: "Scaling laws make all this an engineering discipline: next-token loss is a smooth, predictable function of just parameters (N) and data (D), so labs compute how good a model will be BEFORE spending the money. That predictability — plus a data wall pushing toward synthetic corpora — is the economics of the GPU race.",
   },
   {
     id: "alignment",
@@ -299,7 +370,7 @@ export const STAGES: LlmStage[] = [
     zone: "training",
     tagline: "From autocomplete to assistant",
     story:
-      "A pretrained model is a savant autocomplete — ask it a question and it might continue with three more questions. Post-training turns it into an assistant: first it studies curated example conversations (SFT), then humans rank pairs of its answers and a reinforcement signal pushes it toward the preferred kind — helpful, honest, harmless. This step is why ChatGPT (2022) felt like a different species from GPT-3 (2020).",
+      "A raw pretrained model is an internet document simulator — prompt it with a question and it may continue with three more questions, because that's what documents do. The assistant is a persona conjured almost entirely by data: same architecture, same algorithm, just ~100k carefully written conversations. A pretrained model is a savant autocomplete — ask it a question and it might continue with three more questions. Post-training turns it into an assistant: first it studies curated example conversations (SFT), then humans rank pairs of its answers and a reinforcement signal pushes it toward the preferred kind — helpful, honest, harmless. This step is why ChatGPT (2022) felt like a different species from GPT-3 (2020).",
     tech:
       "Supervised fine-tuning on demonstration data, then RLHF: a reward model trained on human preference pairs guides PPO — or, more common now, DPO optimizes on preferences directly, no reward model needed. Constitutional AI (Anthropic) uses AI feedback against written principles (RLAIF) to scale supervision.",
     analogy: "A brilliant hire who's read everything but has never talked to a customer — sent through onboarding and coached with performance reviews.",
@@ -317,14 +388,14 @@ export const STAGES: LlmStage[] = [
     story:
       "The newest idea: instead of only rewarding a nice final answer, let the model generate a long private chain of thought — then reinforce whatever reasoning actually leads to verifiably correct results on math, code, and logic. Models learn to plan, backtrack, and self-check. This is why 'thinking' models pause before answering: they're spending extra compute at inference time, and accuracy scales with how long they think.",
     tech:
-      "RL with verifiable rewards (RLVR): sample chains of thought, score them with automatic checkers (unit tests, math verification), update with GRPO/PPO-style algorithms. DeepSeek-R1 showed reasoning emerging from pure RL on a base model; OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
+      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. RL with verifiable rewards (RLVR): sample chains of thought, score them with automatic checkers (unit tests, math verification), update with GRPO/PPO-style algorithms. DeepSeek-R1 showed reasoning emerging from pure RL on a base model; OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
     analogy: "Grading the student's scratch work, not just the final answer box — and giving them as much scratch paper as they want.",
     numbers: [
       { label: "Landmark models", value: "o1/o3 (OpenAI), R1 (DeepSeek), Claude thinking modes" },
       { label: "New scaling axis", value: "Inference-time compute" },
       { label: "R1's surprise", value: "Reasoning emerged from RL alone" },
     ],
-    now: "This is the live frontier in 2026: agentic RL — rewarding multi-step tool use and long-horizon tasks, not just single answers.",
+    now: "The live frontier in 2026 is agentic RL — rewarding multi-step tool use and long-horizon tasks. One caution learned early: don't directly optimize the visible chain of thought, or models learn to hide intent while still misbehaving (OpenAI's CoT-monitoring result).",
   },
 ];
 
@@ -445,10 +516,44 @@ export const JOURNEY: JourneyStep[] = [
     flow: null,
   },
   {
-    id: "j-pretrain",
-    title: "Rewind: where the weights came from",
+    id: "j-hallucinate",
+    title: "When the dream goes wrong",
     narration:
-      "Why did 'mat' score highest? Months of pretraining: ~15 trillion tokens of text, one game — predict the next token, nudge the weights when wrong. Grammar, facts, and style all emerge because they help win that one game.",
+      "One catch: the machine is always dreaming. It writes left-to-right with no backspace — corner itself, and it lies to stay coherent. The fixes: train it to say 'I don't know', and ground it by pasting real documents into the context (RAG). Context beats weights.",
+    highlightIds: ["hallucination"],
+    flow: null,
+  },
+  {
+    id: "j-tools",
+    title: "The loop learns to use tools",
+    narration:
+      "The loop's final trick: special tokens that pause generation, run a real tool — search, Python, a browser — and paste the result into context. The LLM becomes a CPU; context is its RAM, tools its peripherals. Chain the calls toward a goal and you have an agent.",
+    highlightIds: ["tools-agents"],
+    flow: null,
+  },
+  {
+    id: "j-artifact",
+    title: "Rewind: what IS this thing?",
+    narration:
+      "Strip the cloud away and the whole model is two files: 140 GB of learned numbers and ~500 lines of code that runs them. No database, no internet. Everything it 'knows' is dissolved into those weights — a lossy zip of the internet.",
+    highlightIds: ["model-artifact"],
+    flow: "train",
+    training: true,
+  },
+  {
+    id: "j-data",
+    title: "First, filter the internet",
+    narration:
+      "Where do the numbers come from? Start with ~2.7 billion web pages, filter, deduplicate, and scrub — until ~15 trillion clean tokens remain. The whole useful text internet fits on a $200 hard drive, and every filtering choice becomes model behavior.",
+    highlightIds: ["data-pipeline"],
+    flow: "train",
+    training: true,
+  },
+  {
+    id: "j-pretrain",
+    title: "One game, played trillions of times",
+    narration:
+      "Why did 'mat' score highest? Months of pretraining: those 15 trillion tokens, one game — predict the next token, nudge the weights when wrong. Grammar, facts, and style all emerge because they help win that one game.",
     highlightIds: ["pretraining"],
     flow: "train",
     training: true,

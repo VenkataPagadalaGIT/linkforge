@@ -253,6 +253,7 @@ export default function LlmExplorer() {
                   labels={labels}
                   training={training}
                   flow={flow}
+                  focusStepId={mode === "journey" ? step?.id ?? null : null}
                 />
               </Suspense>
             </SceneErrorBoundary>

@@ -1071,6 +1071,17 @@ const llmTerms: DefinedTerm[] = [
     agentRole: "The reason system prompts work and models refuse harmful requests — behavior was trained, not hardcoded.",
   },
   {
+    slug: "rag",
+    term: "RAG (Retrieval-Augmented Generation)",
+    aka: ["grounding", "retrieval"],
+    oneLiner: "Fetch relevant documents at question time and paste them into the context window — the model reads instead of recalls.",
+    inDepth:
+      "A retriever (usually embedding search over a vector index) finds passages relevant to the query; they're injected into the prompt so the model answers from evidence it can see rather than from its lossy weights. It's the cheapest cure for hallucination and stale knowledge — no retraining, updatable in real time, and citable. The 2026 customization ladder runs: prompt engineering (free) → RAG (cheap, factual) → fine-tuning (behavioral change).",
+    analogy: "An open-book exam instead of a closed-book one: same student, radically better factual accuracy.",
+    example: "Ask about today's weather: the weights can't know it, but a RAG pipeline retrieves the live forecast into context and the model reads it back.",
+    agentRole: "The default architecture for enterprise AI: your data stays in a database, the model consumes it through the context window.",
+  },
+  {
     slug: "reasoning-model",
     term: "Reasoning Model",
     aka: ["thinking model", "o-series style", "RLVR"],
@@ -1173,6 +1184,14 @@ const llmFaqs: FaqItem[] = [
     q: "What changed between 2023-era and 2026-era models?",
     a: "Three shifts: sparse MoE architectures made frontier capacity affordable per token; context windows grew from 8k to 128k-1M+ (RoPE scaling, better attention kernels); and reasoning-RL added inference-time compute as a new scaling axis — models that deliberate. Plus multimodality and agentic tool use became defaults.",
   },
+  {
+    q: "Why is the same model brilliant at math and wrong about 9.11 vs 9.9?",
+    a: "Capability is jagged — swiss cheese, in Karpathy's phrase. Skills come from training-data coverage and tokenization quirks, not a unified intellect, so a model can medal at olympiad problems while insisting 9.11 > 9.9 or miscounting letters in 'strawberry' (it sees tokens, not characters). Treat every output as strong-but-spiky: verify anything that matters.",
+  },
+  {
+    q: "Prompt engineering, RAG, or fine-tuning — when do I use which?",
+    a: "Climb the ladder by cost. Prompt engineering first: instructions and examples in the prompt, free and instant. RAG second: retrieve your documents into the context window for factual, current, citable answers — no retraining. Fine-tune last, and only to change BEHAVIOR (tone, format, a skill) rather than to inject facts; facts belong in retrieval, where they stay updatable.",
+  },
 ];
 
 const llmHowTos: Guide["howTos"] = [
@@ -1229,6 +1248,7 @@ const llmBlocks: Block[] = [
   { kind: "termcard", termSlug: "kv-cache" },
   { kind: "termcard", termSlug: "temperature" },
   { kind: "termcard", termSlug: "reasoning-model" },
+  { kind: "termcard", termSlug: "rag" },
   { kind: "h2", text: "Seven years, six eras", id: "eras" },
   {
     kind: "p",
@@ -1256,6 +1276,10 @@ const llmBlocks: Block[] = [
     kind: "sources",
     items: [
       { label: "3Blue1Brown — Large Language Models explained briefly", href: "https://www.youtube.com/watch?v=LPZh9BOjkQs", note: "The visual style this guide is inspired by" },
+      { label: "Andrej Karpathy — Intro to Large Language Models", href: "https://www.youtube.com/watch?v=zjkBMFhNj_g", note: "The two-file model, lossy-zip framing, LLM OS" },
+      { label: "Andrej Karpathy — Deep Dive into LLMs like ChatGPT", href: "https://www.youtube.com/watch?v=7xTGNNLPyMI", note: "FineWeb funnel, hallucination mitigations, tokens-to-think" },
+      { label: "IBM — What are large language models?", href: "https://www.ibm.com/think/topics/large-language-models", note: "Enterprise framing: customization ladder, governance" },
+      { label: "Hacker News — How LLMs work, explained", href: "https://news.ycombinator.com/item?id=48389360", note: "Practitioner mental models: coherence pressure, induction heads" },
       { label: "Vaswani et al. — Attention Is All You Need (2017)", href: "https://arxiv.org/abs/1706.03762", note: "The transformer" },
       { label: "Brown et al. — Language Models are Few-Shot Learners (2020)", href: "https://arxiv.org/abs/2005.14165", note: "GPT-3: 175B params, 96 layers" },
       { label: "Ouyang et al. — Training language models to follow instructions (2022)", href: "https://arxiv.org/abs/2203.02155", note: "InstructGPT / RLHF" },
