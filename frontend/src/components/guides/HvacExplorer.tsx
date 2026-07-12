@@ -408,7 +408,7 @@ const HvacExplorer = () => {
       <div className="lg:grid lg:grid-cols-[1.4fr_1fr]">
         {/* 3D canvas */}
         <div
-          className={`${canvasHeightClass} relative border-b lg:border-b-0 lg:border-r border-border`}
+          className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 lg:border-r border-border`}
           style={canvasStyle}
         >
           {webgl === false ? (
@@ -447,7 +447,7 @@ const HvacExplorer = () => {
         </div>
 
         {/* side panel */}
-        <div className="p-4 lg:h-[540px] lg:overflow-y-auto" style={panelStyle}>
+        <div className="p-4 min-w-0 lg:h-[540px] lg:overflow-y-auto" style={panelStyle}>
           {mode === "explore" &&
             (selected ? (
               <div>

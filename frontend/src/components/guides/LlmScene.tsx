@@ -153,6 +153,7 @@ function Stage({
   halo = [2.2, 2.2, 1.4],
   plinth,
   dimInInference = false,
+  noHalo = false,
 }: {
   id: string;
   children: React.ReactNode;
@@ -160,6 +161,7 @@ function Stage({
   halo?: [number, number, number];
   plinth?: { w: number; d: number };
   dimInInference?: boolean;
+  noHalo?: boolean;
 }) {
   const ctx = useScene();
   const group = useRef<THREE.Group>(null);
@@ -204,7 +206,7 @@ function Stage({
           <meshBasicMaterial />
         </mesh>
       )}
-      <mesh position={[0, halo[1] / 2 - 0.1, 0]}>
+      <mesh position={[0, halo[1] / 2 - 0.1, 0]} visible={!noHalo}>
         <boxGeometry args={halo} />
         <meshBasicMaterial ref={haloMat} color={color} transparent opacity={0} depthWrite={false} side={THREE.BackSide} />
       </mesh>
@@ -665,11 +667,20 @@ function KvCache() {
 function ContextFrame() {
   // Edges only — a wireframe boxGeometry draws triangle diagonals across the
   // scene, which read as stray artifacts. EdgesGeometry gives a clean frame.
+  // noHalo: a 13m halo box washes out the whole machine when this stage is
+  // highlighted — instead the frame itself brightens.
+  const ctx = useScene();
+  const mat = useRef<THREE.LineBasicMaterial>(null);
   const edges = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(13, 5, 3)), []);
+  useFrame(() => {
+    if (!mat.current) return;
+    const lit = ctx.selectedId === "context-window" || ctx.highlight.has("context-window");
+    mat.current.opacity = THREE.MathUtils.lerp(mat.current.opacity, lit ? 0.55 : 0.18, 0.1);
+  });
   return (
-    <Stage id="context-window" labelPos={[0, 5.3, 0]} halo={[13.4, 5.4, 3.4]}>
+    <Stage id="context-window" labelPos={[0, 5.3, 0]} halo={[13.4, 5.4, 3.4]} noHalo>
       <lineSegments geometry={edges} position={[0, 2.5, 0]}>
-        <lineBasicMaterial color="#64748b" transparent opacity={0.18} />
+        <lineBasicMaterial ref={mat} color="#64748b" transparent opacity={0.18} />
       </lineSegments>
     </Stage>
   );
