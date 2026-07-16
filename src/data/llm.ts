@@ -134,7 +134,7 @@ export const STAGES: LlmStage[] = [
       { label: "Technique of choice", value: "RoPE (rotary embeddings)" },
       { label: "Context this enables", value: "128k → 1M+ tokens" },
     ],
-    now: "Gemini ships 1-2M-token contexts; Llama 4 Scout advertises 10M. RoPE-scaling tricks are a big part of how.",
+    now: "Gemini 3.1 Pro and GPT-5.5's API both ship ~1M-token contexts. Two tricks get there. Rope-scaling (YaRN and kin) stretches a model trained at, say, 64K out to far longer; it's how DeepSeek-V3 was extended to 128k. Newer models like DeepSeek-V4 lean instead on sparse, compressed attention. (Meta advertises 10M for Llama 4 Scout, but independent long-context tests haven't backed it, so treat it as a claim.)",
   },
   {
     id: "attention",
@@ -152,16 +152,16 @@ export const STAGES: LlmStage[] = [
       { label: "Llama 3 405B", value: "128 heads, GQA 8 KV groups" },
       { label: "Cost", value: "O(n²) compute · O(n) memory (FlashAttention)" },
     ],
-    now: "FlashAttention-3 computes exact attention with far less memory traffic; MLA (DeepSeek) compresses KV 10×+. Interpretability work can now read heads directly: they spontaneously specialize (grammar, names, pronouns), and 'induction heads' that spot A-B…A patterns and predict B are a major mechanism behind in-context learning.",
+    now: "FlashAttention-3 computes exact attention with far less memory traffic; nearly every 2026 model ships grouped-query attention (MHA→MQA→GQA: query heads share K/V heads to shrink the cache) and DeepSeek's MLA compresses KV 10×+ into a latent vector. The live fight is hybrid linear attention — Ant's Ring-linear ships 4-7 linear layers per softmax layer, while MiniMax publicly reverted its M2 to full attention after linear variants fell short on multi-hop reasoning. Interpretability can now read heads directly: they specialize (grammar, names, pronouns), and 'induction heads' that spot A-B…A patterns and predict B are a leading hypothesized mechanism behind in-context learning.",
   },
   {
     id: "moe",
     name: "Feed-Forward / MoE Experts",
     short: "Experts (MoE)",
     zone: "core",
-    tagline: "A router wakes only 2 of N expert networks per token",
+    tagline: "A router wakes only the top few of N expert networks per token",
     story:
-      "After attention gathers context, a much bigger block does the 'thinking': the feed-forward network, where most of the parameters live. Frontier models split it into many parallel 'experts' and a tiny router picks the best 1-2 for each token — a chemistry token might fire different experts than a French one. The model can be huge on disk yet cheap per token.",
+      "After attention gathers context, a much bigger block does the 'thinking': the feed-forward network, where most of the parameters live. Frontier models split it into many parallel 'experts' and a tiny router picks the best few for each token (top-2 in Mixtral, top-8 in DeepSeek-V3) — a chemistry token might fire different experts than a French one. The model can be huge on disk yet cheap per token.",
     tech:
       "One FFN is up-projection → nonlinearity (GELU/SwiGLU) → down-projection, ~⅔ of a layer's params. Read mechanistically (3Blue1Brown / Anthropic): the up-projection rows act like yes/no QUESTIONS ('is this about Michael Jordan?'), the nonlinearity gates them, and the down-projection WRITES facts back into the stream ('…plays Basketball'). It is where the model stores what it knows. Mixture-of-Experts (MoE) replicates this block N times with a top-k router. DeepSeek-V3: 256 experts + 1 shared, top-8 — 671B total, ~37B active. Mixtral 8×7B: top-2 of 8. The hard part MoE hid for a decade: routing collapse — left alone the router funnels everything to a few favorite experts, so training adds a load-balancing auxiliary loss (or DeepSeek-V3's loss-free bias nudging) to keep all experts fed.",
     analogy: "A hospital triage desk: every patient (token) is routed to the two most relevant specialists rather than seeing all 256 doctors.",
@@ -170,7 +170,7 @@ export const STAGES: LlmStage[] = [
       { label: "Mixtral 8×7B", value: "46.7B total → ~12.9B active (top-2 of 8)" },
       { label: "Where params live", value: "~⅔ of the model is FFN/experts" },
     ],
-    now: "MoE won the frontier: GPT-4-class systems, Gemini, DeepSeek, Qwen-MoE and Llama 4 all use sparse experts to decouple capability from per-token cost. Interpretability adds a wrinkle: the FFN is where facts physically live — specific neurons fire on Eiffel-Tower text, and model-editing methods (ROME/MEMIT) can edit a stored fact directly in the weights — though edits ripple and aren't perfectly localized.",
+    now: "MoE won the frontier — and sparsity keeps climbing: DeepSeek-V4's preview is 1.6T total / 49B active, Kimi K2 is 1T / 32B across 384 experts, Qwen3's flagship is 235B / 22B (Apache 2.0), GLM-4.5 is 355B / 32B (MIT) — all open weights. Interpretability adds a wrinkle: the FFN is where facts physically live — specific neurons fire on Eiffel-Tower text, and model-editing methods (ROME/MEMIT) can edit a stored fact directly in the weights — though edits ripple and aren't perfectly localized.",
   },
   {
     id: "layers",
@@ -207,7 +207,7 @@ export const STAGES: LlmStage[] = [
       { label: "Decode (each new token)", value: "MEMORY-BANDWIDTH-bound — GPU waits on weights/KV" },
       { label: "Prompt-cache discount", value: "~10× cheaper (typical 2026 pricing)" },
     ],
-    now: "This splits inference into two regimes with OPPOSITE bottlenecks — prefill is compute-bound, decode is memory-bandwidth-bound — which is why serving batches many users together (to reuse each weight load) and why time-to-first-token and tokens/sec are billed differently. Speculative decoding piles on: a tiny draft model proposes several tokens, the big model verifies them in one pass — 2-3× faster, identical output.",
+    now: "This splits inference into two regimes with OPPOSITE bottlenecks — prefill is compute-bound, decode is memory-bandwidth-bound — which is why serving batches many users together (continuous 'in-flight' batching slots new requests in the moment others finish) and why time-to-first-token and tokens/sec are billed differently. Speculative decoding piles on: a tiny draft model proposes several tokens, the big model verifies them in one pass — 2-3× faster, identical output. The cache is the battleground: GQA shares it, MLA compresses it, and DeepSeek-V4's sparse attention reports needing just 10% of its predecessor's KV cache at 1M-token context (lab-reported).",
   },
   {
     id: "logits",
@@ -329,7 +329,7 @@ export const STAGES: LlmStage[] = [
       { label: "Most image/video AI", value: "Diffusion (Stable Diffusion, FLUX, Sora)" },
       { label: "Text-diffusion", value: "Emerging alt to the autoregressive loop (Mercury)" },
     ],
-    now: "2025-2026: frontier models are natively multimodal by default (GPT-4o, Gemini, Claude); autoregression and diffusion are converging (autoregressive image models, diffusion text models); and Mamba-style state-space models offer a linear-time third path.",
+    now: "2025-2026: frontier models are natively multimodal by default (GPT-5.x, Gemini 3.x, Claude); autoregression and diffusion are converging (autoregressive image models, diffusion text models); and Mamba-style state-space models offer a linear-time third path.",
   },
   {
     id: "context-window",
@@ -344,7 +344,7 @@ export const STAGES: LlmStage[] = [
     analogy: "A desk of fixed size: any paper not on the desk right now might as well not exist.",
     numbers: [
       { label: "GPT-3 (2020)", value: "2,048 tokens" },
-      { label: "Frontier 2026", value: "128k standard, 1M+ shipping" },
+      { label: "Frontier 2026", value: "128k standard; 1M shipping (GPT-5.5, Claude Fable 5, Gemini 3.1 Pro)" },
       { label: "Llama 4 Scout claim", value: "10M tokens" },
     ],
   },
@@ -364,7 +364,7 @@ export const STAGES: LlmStage[] = [
       { label: "Training run", value: "~6,000 GPUs, ~12 days, ~$2M" },
       { label: "Compression", value: "~10TB of text → 140 GB (lossy, ~100×)" },
     ],
-    now: "GPT-2 (2019) cost ~$40k to train; by 2025 it reproduces for a few hundred dollars (llm.c) — training-cost collapse is why capable open models are everywhere.",
+    now: "GPT-2 (2019) cost ~$40k to train; by 2025 it reproduces for a few hundred dollars (llm.c) — training-cost collapse is why capable open models are everywhere. The weights file itself is shrinking too: quantization ships models at 8- or even 4-bit precision (DeepSeek-V4's experts are FP4) — same architecture, a fraction of the disk and GPU bill.",
   },
   {
     id: "data-pipeline",
@@ -428,10 +428,10 @@ export const STAGES: LlmStage[] = [
     story:
       "The newest idea: instead of only rewarding a nice final answer, let the model generate a long private chain of thought — then reinforce whatever reasoning actually leads to verifiably correct results on math, code, and logic. Models learn to plan, backtrack, and self-check. This is why 'thinking' models pause before answering: they're spending extra compute at inference time, and accuracy scales with how long they think.",
     tech:
-      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. The load-bearing distinction: RLHF optimizes a soft, gameable human-preference proxy (it plateaus and needs a KL leash — Karpathy's 'RLHF is barely RL'), whereas RL with verifiable rewards (RLVR) optimizes a HARD, checkable signal — did the code pass? is the proof correct? — so you can push far harder. GRPO (DeepSeek's PPO variant) drops the value network and just ranks a GROUP of sampled answers against each other; it's cheaper and what the reasoning era runs on. DeepSeek-R1-Zero showed reasoning emerging from pure RL on a base model (the shipped R1 added a cold-start SFT stage for readability); OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
+      "The physics behind it: compute per token is fixed (one forward pass), so any answer needing more computation MUST spread it across more tokens — chain-of-thought isn't a style choice, it's how the machine buys itself thinking room. The load-bearing distinction: RLHF optimizes a soft, gameable human-preference proxy (it plateaus and needs a KL leash — Karpathy's 'RLHF is barely RL'), whereas RL with verifiable rewards (RLVR) optimizes a HARD, checkable signal — did the code pass? is the proof correct? — so you can push far harder. GRPO (DeepSeek's PPO variant) drops the value network and just ranks a GROUP of sampled answers against each other; it's cheaper and what the reasoning era runs on. DeepSeek-R1-Zero showed strong reasoning can be incentivized by pure RL on a base model with no SFT step (the shipped R1 added a cold-start SFT stage for readability) — the R1 paper later passed peer review at Nature (Sept 2025), a first for a frontier LLM; OpenAI's o-series established inference-time scaling as a second axis alongside model size.",
     analogy: "Grading the student's scratch work, not just the final answer box — and giving them as much scratch paper as they want.",
     numbers: [
-      { label: "Landmark models", value: "o1/o3 (OpenAI), R1 (DeepSeek), Claude thinking modes" },
+      { label: "Landmark models", value: "o1 → GPT-5.x Thinking (OpenAI), R1 (DeepSeek, Nature 2025), Claude adaptive thinking + effort levels" },
       { label: "New scaling axis", value: "Inference-time compute" },
       { label: "R1-Zero surprise", value: "Reasoning from pure RL (shipped R1 added cold-start SFT)" },
     ],
@@ -509,9 +509,9 @@ export const JOURNEY: JourneyStep[] = [
   },
   {
     id: "j-experts",
-    title: "The router wakes two experts",
+    title: "The router wakes the top experts",
     narration:
-      "Next, each token hits the expert block. A tiny router scores all 256 experts and wakes just the top few — 37B of DeepSeek-V3's 671B parameters actually fire. Big model, small bill.",
+      "Next, each token hits the expert block. A tiny router scores all 256 experts and wakes the top 8; 37B of DeepSeek-V3's 671B parameters actually fire. Big model, small bill.",
     highlightIds: ["moe"],
     flow: "core",
   },

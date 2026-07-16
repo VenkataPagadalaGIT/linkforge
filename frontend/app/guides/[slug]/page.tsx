@@ -7,8 +7,11 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 type Params = { slug: string };
 
-// Static content — prerender every guide at build time.
+// Static content — prerender every guide at build time. dynamicParams=false
+// makes unknown slugs (including /guides/<slug>.md misses) hard-404 instead of
+// soft-404ing the not-found UI at HTTP 200.
 export const dynamic = "force-static";
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }));
@@ -67,12 +70,12 @@ export default function Page({ params }: { params: Params }) {
       description: guide.author.bio,
     };
   }
-  const jsonLd = [
+  const jsonLd: unknown[] = [
     articleSchema,
     {
       "@context": "https://schema.org",
       "@type": "DefinedTermSet",
-      name: `${guide.title} — Glossary`,
+      name: `${guide.title}: Glossary`,
       url,
       hasDefinedTerm: guide.terms.map((t) => ({
         "@type": "DefinedTerm",
@@ -96,6 +99,23 @@ export default function Page({ params }: { params: Params }) {
       { name: guide.title, url },
     ]),
   ];
+
+  if (guide.howTos?.length) {
+    for (const h of guide.howTos) {
+      jsonLd.push({
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name: h.name,
+        description: h.description,
+        step: h.steps.map((s, i) => ({
+          "@type": "HowToStep",
+          position: i + 1,
+          name: s.name,
+          text: s.text,
+        })),
+      });
+    }
+  }
 
   return (
     <>

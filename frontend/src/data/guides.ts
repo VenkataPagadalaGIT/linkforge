@@ -24,6 +24,7 @@ import {
   type HvacPath,
 } from "./hvac";
 import { LLM_COUNTS } from "./llm";
+import { sfGuide } from "./sfGuide";
 
 export interface DefinedTerm {
   slug: string;
@@ -60,6 +61,8 @@ export type Block =
   | { kind: "h2"; text: string; id: string }
   | { kind: "h3"; text: string; id?: string }
   | { kind: "figure"; viewId: string }
+  | { kind: "image"; src: string; alt: string; caption?: string; width?: number; height?: number }
+  | { kind: "tasks"; title?: string; items: { task: string; how: string }[] }
   | { kind: "stack" }
   | { kind: "comparison" }
   | { kind: "termcard"; termSlug: string }
@@ -1022,7 +1025,7 @@ const llmTerms: DefinedTerm[] = [
   {
     slug: "mixture-of-experts",
     term: "Mixture of Experts (MoE)",
-    oneLiner: "An architecture where a router activates only the best 1-2 of many expert networks per token — huge capacity, small per-token cost.",
+    oneLiner: "An architecture where a router activates only the top few (top-k) of many expert networks per token — huge capacity, small per-token cost.",
     inDepth:
       "The feed-forward block (where ~⅔ of parameters live) is replicated into N experts; a learned router sends each token to the top-k. DeepSeek-V3 runs 256 routed experts and activates ~37B of its 671B parameters per token. This decoupling of stored capability from active compute is how 2025-2026 frontier models got big without getting slow.",
     analogy: "A hospital triage desk routing each patient to the two most relevant specialists instead of all 256 doctors.",
@@ -1054,7 +1057,7 @@ const llmTerms: DefinedTerm[] = [
     term: "Context Window",
     oneLiner: "The maximum tokens a model can hold at once — its entire working memory, and a hard wall.",
     inDepth:
-      "Prompt + conversation + generated output must fit inside it (GPT-3: 2k; 2026 standard: 128k; frontier: 1M+, with Llama 4 Scout claiming 10M). Nothing outside exists. Chat 'memory' is application engineering — retrieved notes pasted back into the prompt. Attention cost grows quadratically with it, KV cache linearly.",
+      "Prompt + conversation + generated output must fit inside it (GPT-3: 2k; 2026 standard: 128k; frontier: 1M shipping — GPT-5.5, Claude Fable 5, Gemini 3.1 Pro — with Llama 4 Scout claiming 10M). Nothing outside exists. Chat 'memory' is application engineering — retrieved notes pasted back into the prompt. Attention cost grows quadratically with it, KV cache linearly.",
     analogy: "A desk of fixed size: papers not on the desk right now might as well not exist.",
     example: "A 300-page book ≈ 120k tokens — one full frontier context.",
     agentRole: "The budget every RAG pipeline and agent scratchpad is engineered around.",
@@ -1178,7 +1181,7 @@ const llmComparison: ComparisonRow[] = [
     isA: "MoE/dense + inference-time compute",
     answers: "RL on verifiable chains of thought",
     structure: "RLVR (GRPO) over math/code checkers",
-    example: "o1/o3, DeepSeek-R1, Claude thinking modes",
+    example: "OpenAI's o-series → GPT-5.x Thinking tiers, DeepSeek-R1 (Nature, 2025), Claude's adaptive thinking with effort levels",
     bestFor: "Math, code, agentic multi-step work",
     limit: "Slow + expensive thinking; reward hacking risk",
   },
@@ -1203,7 +1206,7 @@ const llmFaqs: FaqItem[] = [
   },
   {
     q: "What is a mixture-of-experts model in one sentence?",
-    a: "A model whose big feed-forward blocks are split into many specialists with a tiny router choosing the best 1-2 per token — so DeepSeek-V3 stores 671B parameters but only ~37B do work on any given token.",
+    a: "A model whose big feed-forward blocks are split into many specialists with a tiny router choosing the best few (top-8 in DeepSeek-V3, top-2 in Mixtral) per token — so DeepSeek-V3 stores 671B parameters but only ~37B do work on any given token.",
   },
   {
     q: "Why do 'thinking' models pause before answering?",
@@ -1338,6 +1341,7 @@ const llmBlocks: Block[] = [
 ];
 
 export const guides: Guide[] = [
+  sfGuide,
   {
     slug: "graph-types-for-ai-agents",
     title: "Graph Types for AI Agents",

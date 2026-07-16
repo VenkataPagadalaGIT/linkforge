@@ -54,6 +54,22 @@ A structured 18-week curriculum with 24 topics, 67+ videos, 71+ courses, 62+ rep
 ### Graph Types for AI Agents (2026)
 The definitive guide to ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index — defined, compared in one table, and visualized with a single dataset modeled six ways. Explains which layer matters for SEO, AEO, GEO, and AI agents, with runnable graphology code examples.
 - URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
+- Markdown edition: https://venkatapagadala.com/guides/graph-types-for-ai-agents.md
+
+### How LLMs Work: Interactive 3D Walkthrough (2026)
+Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL. 21 stages, a 15-step guided journey, full crawlable text.
+- URL: https://venkatapagadala.com/guides/how-llms-work
+- Markdown edition: https://venkatapagadala.com/guides/how-llms-work.md
+
+### 3D HVAC System Troubleshooting (2026)
+An interactive 3D home HVAC system with a fault library, guided scenarios, and symptom-based diagnosis. The same explorable-machine treatment, applied to a physical system.
+- URL: https://venkatapagadala.com/guides/hvac-system-troubleshooting
+- Markdown edition: https://venkatapagadala.com/guides/hvac-system-troubleshooting.md
+
+### Screaming Frog SEO Spider: The Complete 2026 Guide (v24)
+Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration, JavaScript rendering, content embeddings and semantic search, Google Search Console and AI integrations, scheduling, and the MCP server. Includes a recommended agency configuration profile.
+- URL: https://venkatapagadala.com/guides/screaming-frog
+- Markdown edition: https://venkatapagadala.com/guides/screaming-frog.md
 
 ## Contact
 

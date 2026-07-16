@@ -135,6 +135,45 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       const term = guide.terms.find((t) => t.slug === block.termSlug);
       return term ? <TermCard term={term} roleLabel={guide.termRoleLabel ?? "Role for AI agents"} /> : null;
     }
+    case "tasks":
+      return (
+        <div className="my-6 border border-border bg-card/20">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 px-5 pt-4">
+            {block.title ?? "What teams use this for"}
+          </p>
+          <div className="px-5 pb-4 divide-y divide-border/40">
+            {block.items.map((it, j) => (
+              <div key={j} className="py-3">
+                <p className="font-mono text-xs text-foreground font-semibold mb-1">{it.task}</p>
+                <p
+                  className="font-mono text-xs text-muted-foreground leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: bold(it.how) }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    case "image":
+      return (
+        <figure className="my-6 border border-border bg-card/30">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={block.src}
+            alt={block.alt}
+            width={block.width}
+            height={block.height}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto block"
+          />
+          {block.caption && (
+            <figcaption className="font-mono text-[11px] text-muted-foreground/70 px-4 py-2.5 leading-relaxed border-t border-border/60">
+              {block.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
     case "code":
       return (
         <figure className="my-6">

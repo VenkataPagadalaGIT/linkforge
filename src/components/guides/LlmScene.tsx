@@ -17,6 +17,7 @@ import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import {
   ZONES,
+  JOURNEY,
   stageById,
   DEMO_TOKENS,
   DEMO_TOKEN_IDS,
@@ -49,6 +50,8 @@ export interface LlmSceneState {
 
 interface Ctx extends Omit<LlmSceneState, "highlightIds"> {
   highlight: Set<string>;
+  /** True when nothing is focused/selected and the camera should idle-orbit. */
+  attract: boolean;
 }
 const SceneCtx = createContext<Ctx | null>(null);
 const useScene = () => useContext(SceneCtx)!;
@@ -63,6 +66,7 @@ const zoneColor = (id: string) => ACCENT[stageById(id)?.zone ?? "core"];
  * ---------------------------------------------------------------- */
 
 const DEFAULT_POSE = { pos: [1.5, 5.4, 16.5] as const, look: [-0.5, 2.0, 0] as const };
+const DEFAULT_POS_V = new THREE.Vector3(...DEFAULT_POSE.pos);
 const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: readonly [number, number, number] }> = {
   "j-prompt": { pos: [-9.2, 2.6, 5.4], look: [-9, 1.7, 0] },
   "j-tokenize": { pos: [-6.6, 2.7, 5.0], look: [-6.6, 1.15, 0] },
@@ -87,11 +91,31 @@ const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: 
   "j-interpret": { pos: [5.7, 3.2, -2.2], look: [5.7, 1.4, -6.5] },
 };
 
+/** Explore-mode focus: clicking a stage flies the camera to frame it. Auto-derived
+ *  from the journey — each step already has a tuned pose plus the stages it
+ *  highlights — so it stays in sync with zero hand-maintained duplicate table. */
+const STAGE_POSE: Record<string, { pos: readonly [number, number, number]; look: readonly [number, number, number] }> = (() => {
+  const m: Record<string, { pos: readonly [number, number, number]; look: readonly [number, number, number] }> = {};
+  for (const step of JOURNEY) {
+    const pose = CAM_POSES[step.id];
+    if (!pose) continue;
+    for (const sid of step.highlightIds) if (!m[sid]) m[sid] = pose;
+  }
+  return m;
+})();
+
 function CameraRig({ controls }: { controls: React.RefObject<OrbitControlsImpl | null> }) {
   const ctx = useScene();
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const overrideRef = useRef(false);
   const lastStep = useRef<string | null | undefined>(undefined);
+
+  // Layout changes (panel toggle, fullscreen enter/exit, window resize) re-engage
+  // the rig so the current pose re-frames for the new canvas instead of leaving
+  // the camera stranded wherever the last grab put it.
+  useEffect(() => {
+    overrideRef.current = false;
+  }, [size.width, size.height]);
 
   // A user grab pauses the rig until the next step change.
   useEffect(() => {
@@ -103,17 +127,27 @@ function CameraRig({ controls }: { controls: React.RefObject<OrbitControlsImpl |
   }, [controls]);
 
   useFrame(() => {
-    const stepId = ctx.focusStepId ?? null;
-    if (stepId !== lastStep.current) {
-      lastStep.current = stepId;
-      overrideRef.current = false; // re-engage on every new step
+    // Journey drives the cinematic camera; in Explore, a selected stage flies the
+    // camera to frame that component, and deselecting ("view all") eases back to the
+    // overview. A user grab pauses the rig until the focus target next changes.
+    const focusKey = ctx.focusStepId ?? ctx.selectedId ?? null;
+    if (focusKey !== lastStep.current) {
+      lastStep.current = focusKey;
+      overrideRef.current = false; // re-engage whenever the focus target changes
     }
-    if (!stepId || overrideRef.current) return;
-    const pose = CAM_POSES[stepId] ?? DEFAULT_POSE;
+    if (overrideRef.current) return;
+    // Deselected ("view all"): fly home first; only once settled does the attract
+    // auto-orbit take over — otherwise it would idle wherever the close-up left it.
+    if (!focusKey && ctx.attract && camera.position.distanceTo(DEFAULT_POS_V) < 0.5) return;
+    const pose = ctx.focusStepId
+      ? CAM_POSES[ctx.focusStepId] ?? DEFAULT_POSE
+      : focusKey
+        ? STAGE_POSE[focusKey] ?? DEFAULT_POSE
+        : DEFAULT_POSE;
     const c = controls.current;
-    camera.position.lerp(new THREE.Vector3(...pose.pos), 0.035);
+    camera.position.lerp(new THREE.Vector3(...pose.pos), 0.04);
     if (c) {
-      c.target.lerp(new THREE.Vector3(...pose.look), 0.045);
+      c.target.lerp(new THREE.Vector3(...pose.look), 0.05);
       c.update();
     }
   });
@@ -213,7 +247,7 @@ function Stage({
         <meshBasicMaterial ref={haloMat} color={color} transparent opacity={0} depthWrite={false} side={THREE.BackSide} />
       </mesh>
       {(ctx.labels || selected || lit) && stage && !dimmed && (
-        <Html position={labelPos} center distanceFactor={14} style={{ pointerEvents: "none" }}>
+        <Html position={labelPos} center distanceFactor={14} zIndexRange={[30, 0]} style={{ pointerEvents: "none" }}>
           <div
             style={{
               font: "600 10px ui-monospace, monospace",
@@ -1203,10 +1237,10 @@ function Machine() {
  * ---------------------------------------------------------------- */
 
 export default function LlmScene(props: LlmSceneState) {
-  const ctx: Ctx = { ...props, highlight: new Set(props.highlightIds) };
   const [interacted, setInteracted] = useState(false);
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const attract = !interacted && !props.selectedId && props.highlightIds.length === 0 && !props.focusStepId;
+  const ctx: Ctx = { ...props, highlight: new Set(props.highlightIds), attract };
 
   // Same mount nudge as HvacScene: some browsers (notably Edge/Windows) miss
   // r3f's first ResizeObserver measurement and the canvas sticks at 300x150.

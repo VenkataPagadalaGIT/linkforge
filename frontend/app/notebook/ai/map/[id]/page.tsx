@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!n) return { title: "Entity not found", robots: { index: false } };
   const desc = (n.story || n.tagline).slice(0, 155);
   const url = `/notebook/ai/map/${n.id}`;
-  const title = `${n.name} — ${NODE_TYPE_META[n.type].label} in the AI Systems Map`;
+  const title = `${n.name} · ${NODE_TYPE_META[n.type].label} in the AI Systems Map`;
   return {
     title,
     description: desc,
     keywords: [n.name, NODE_TYPE_META[n.type].label, LAYER_BY_ID.get(n.layer)?.label || "", "AI supply chain", n.chokepoint ? "chokepoint" : ""].filter(Boolean),
     alternates: { canonical: url },
-    openGraph: { url, type: "article", title, description: desc, siteName: "Venkata Pagadala — Mono Mind" },
+    openGraph: { url, type: "article", title, description: desc, siteName: "Venkata Pagadala · Mono Mind" },
     twitter: { card: "summary", title, description: desc },
   };
 }

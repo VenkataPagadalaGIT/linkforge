@@ -6,7 +6,7 @@ import { ONTOLOGY_COUNTS, LAYERS } from "@/data/aiOntology";
 const desc = `An interactive ontology of the AI industry: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers — frontier labs, cloud, accelerators, foundries, equipment, memory, materials and energy — wired by ${ONTOLOGY_COUNTS.edges} typed dependencies, with ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on and what feeds it.`;
 
 export const metadata: Metadata = {
-  title: "The AI Systems Map — the entire AI value chain as one dependency graph",
+  title: "The AI Systems Map: the entire AI value chain as one dependency graph",
   description: desc,
   alternates: { canonical: "/notebook/ai/map" },
   keywords: ["AI supply chain", "AI value chain", "semiconductors", "GPU", "foundry", "HBM", "data centers", "AI ontology", "Nvidia", "TSMC", "ASML"],
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "The AI Systems Map",
     description: "The entire AI value chain as one interactive dependency graph.",
-    siteName: "Venkata Pagadala — Mono Mind",
+    siteName: "Venkata Pagadala · Mono Mind",
   },
 };
 

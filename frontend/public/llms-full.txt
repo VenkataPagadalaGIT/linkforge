@@ -142,3 +142,27 @@ Includes a full comparison table, a "which one do you need" decision framework, 
 
 - Website: https://venkatapagadala.com
 - LinkedIn: https://linkedin.com/in/venkatapagadala
+
+## Reference Guides (full-text markdown editions)
+
+Each guide ships a plain-markdown edition for AI assistants and answer engines. The .md URL carries the complete text, tables, and image references.
+
+### Screaming Frog SEO Spider: The Complete 2026 Guide (v24)
+Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration, JavaScript rendering, content embeddings and semantic search, Google Search Console and AI integrations, scheduling, and the MCP server. Includes a recommended agency configuration.
+- Web: https://venkatapagadala.com/guides/screaming-frog
+- Markdown: https://venkatapagadala.com/guides/screaming-frog.md
+
+### How LLMs Work: Interactive 3D Walkthrough (2026)
+Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL.
+- Web: https://venkatapagadala.com/guides/how-llms-work
+- Markdown: https://venkatapagadala.com/guides/how-llms-work.md
+
+### Graph Types for AI Agents (2026)
+Taxonomy, ontology, knowledge graph, information graph, context graph, and vector index: defined, compared, and visualized with one dataset modeled six ways.
+- Web: https://venkatapagadala.com/guides/graph-types-for-ai-agents
+- Markdown: https://venkatapagadala.com/guides/graph-types-for-ai-agents.md
+
+### 3D HVAC System Troubleshooting (2026)
+An interactive 3D home HVAC system with a fault library, guided scenarios, and symptom-based diagnosis.
+- Web: https://venkatapagadala.com/guides/hvac-system-troubleshooting
+- Markdown: https://venkatapagadala.com/guides/hvac-system-troubleshooting.md

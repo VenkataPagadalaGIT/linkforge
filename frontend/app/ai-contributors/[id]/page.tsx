@@ -14,16 +14,16 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const c = await getContributor(params.id);
   if (!c) {
     const name = params.id.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
-    return { title: `${name} — AI Contributor`, alternates: { canonical: `/ai-contributors/${params.id}` } };
+    return { title: `${name} · AI Contributor`, alternates: { canonical: `/ai-contributors/${params.id}` } };
   }
   return {
-    title: `${c.name} — AI Contributor`,
+    title: `${c.name} · AI Contributor`,
     description: c.bio,
     alternates: { canonical: `/ai-contributors/${params.id}` },
     openGraph: {
       type: "profile",
       url: `/ai-contributors/${params.id}`,
-      title: `${c.name} — AI Contributor`,
+      title: `${c.name} · AI Contributor`,
       description: c.bio,
     },
     twitter: { card: "summary_large_image", title: c.name, description: c.bio },
