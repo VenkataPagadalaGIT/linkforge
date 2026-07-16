@@ -46,3 +46,6 @@ __pycache__/
 dist/
 build/
 .DS_Store
+
+# TypeScript incremental build artifacts — never commit or upload
+*.tsbuildinfo
