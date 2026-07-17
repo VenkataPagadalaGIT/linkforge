@@ -23,6 +23,8 @@ import {
 import { PATHS, componentById } from "@/data/hvac";
 
 export interface HvacSceneState {
+  /** WebGL powerPreference proven usable by the explorer probe. */
+  glPower?: "high-performance" | "default";
   selectedId: string | null;
   highlightIds: string[];
   running: boolean;
@@ -1214,7 +1216,7 @@ export default function HvacScene(props: HvacSceneState) {
       // powerPreference nudges hybrid-GPU Windows laptops onto the discrete
       // GPU; leaving failIfMajorPerformanceCaveat unset (default false) lets
       // weak/software GPUs still render instead of hard-failing on Edge.
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      gl={{ antialias: true, alpha: false, powerPreference: props.glPower ?? "high-performance", failIfMajorPerformanceCaveat: false }}
       onCreated={({ gl }) => {
         gl.setClearColor("#0a0a0a");
         // Some Windows/Edge GPUs drop the WebGL context under memory pressure

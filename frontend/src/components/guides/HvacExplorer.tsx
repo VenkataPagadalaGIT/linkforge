@@ -1,4 +1,5 @@
 "use client";
+import { useWebGL } from "@/lib/webgl";
 /**
  * HvacExplorer — the interactive shell around HvacScene.
  *
@@ -78,18 +79,6 @@ function SceneFallback() {
   );
 }
 
-function useWebGLSupport() {
-  const [ok, setOk] = useState<boolean | null>(null);
-  useEffect(() => {
-    try {
-      const c = document.createElement("canvas");
-      setOk(!!(c.getContext("webgl2") || c.getContext("webgl")));
-    } catch {
-      setOk(false);
-    }
-  }, []);
-  return ok;
-}
 
 /* ---------------------------------------------------------------- */
 
@@ -234,7 +223,7 @@ const HvacExplorer = () => {
   const [systemType, setSystemType] = useState<"any" | "gas" | "heatpump">("any");
   const [showReport, setShowReport] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
-  const webgl = useWebGLSupport();
+  const { ok: webgl, power: glPower } = useWebGL();
 
   // ▶ Power-on demo: auto-plays the cooling start-up sequence step by step.
   const startDemo = () => {
@@ -431,6 +420,8 @@ const HvacExplorer = () => {
         >
           {webgl === false ? (
             <SceneFallback />
+          ) : webgl === null ? (
+            <div className="h-full w-full" aria-busy="true" />
           ) : (
             <SceneErrorBoundary>
               <Suspense
@@ -443,6 +434,7 @@ const HvacExplorer = () => {
                 }
               >
                 <HvacScene
+                  glPower={glPower}
                   selectedId={selectedId}
                   highlightIds={highlightIds}
                   onSelect={(id) => {

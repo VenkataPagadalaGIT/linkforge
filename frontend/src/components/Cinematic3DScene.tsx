@@ -393,7 +393,8 @@ const Cinematic3DScene = () => {
           gl={{
             antialias: true,
             alpha: true,
-            powerPreference: "high-performance",
+            powerPreference: "default",
+            failIfMajorPerformanceCaveat: false,
           }}
           style={{ background: "transparent" }}
         >

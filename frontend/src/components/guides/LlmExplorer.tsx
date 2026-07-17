@@ -1,4 +1,5 @@
 "use client";
+import { useWebGL } from "@/lib/webgl";
 /**
  * LlmExplorer — the interactive shell around LlmScene.
  *
@@ -68,18 +69,6 @@ function SceneFallback() {
   );
 }
 
-function useWebGLSupport() {
-  const [ok, setOk] = useState<boolean | null>(null);
-  useEffect(() => {
-    try {
-      const c = document.createElement("canvas");
-      setOk(!!(c.getContext("webgl2") || c.getContext("webgl")));
-    } catch {
-      setOk(false);
-    }
-  }, []);
-  return ok;
-}
 
 function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -110,7 +99,7 @@ type Mode = "journey" | "explore";
 const AUTOPLAY_MS = 9000;
 
 export default function LlmExplorer() {
-  const webgl = useWebGLSupport();
+  const { ok: webgl, power: glPower } = useWebGL();
   const shellRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<Mode>("journey");
   const [stepIdx, setStepIdx] = useState(0);
@@ -258,6 +247,8 @@ export default function LlmExplorer() {
         <div className={`${canvasHeightClass} relative min-w-0 overflow-hidden border-b lg:border-b-0 ${panelOpen ? "lg:border-r" : ""} border-border`} style={canvasStyle}>
           {webgl === false ? (
             <SceneFallback />
+          ) : webgl === null ? (
+            <div className="h-full w-full" aria-busy="true" />
           ) : (
             <SceneErrorBoundary>
               <Suspense
@@ -270,6 +261,7 @@ export default function LlmExplorer() {
                 }
               >
                 <LlmScene
+                  glPower={glPower}
                   selectedId={selectedId}
                   highlightIds={highlightIds}
                   onSelect={(id) => {

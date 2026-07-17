@@ -1,4 +1,5 @@
 "use client";
+import { useWebGL } from "@/lib/webgl";
 import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Line, Billboard, Text } from "@react-three/drei";
@@ -112,8 +113,17 @@ function Scene({ view, dark }: { view: GraphView; dark: boolean }) {
 const Graph3D = ({ view }: { view: GraphView }) => {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme !== "light";
+  const { ok: webglOk, power: glPower } = useWebGL();
+  if (webglOk === false)
+    return (
+      <div className="w-full h-full flex items-center justify-center p-6 text-center">
+        <p className="font-mono text-xs text-muted-foreground max-w-sm leading-relaxed">
+          This diagram needs WebGL, which this browser or device doesn&apos;t provide.
+        </p>
+      </div>
+    );
   return (
-    <Canvas style={{ width: "100%", height: "100%" }} camera={{ position: [0, 0.4, 9.5], fov: 50 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]}>
+    <Canvas style={{ width: "100%", height: "100%" }} camera={{ position: [0, 0.4, 9.5], fov: 50 }} gl={{ alpha: true, antialias: true, powerPreference: glPower, failIfMajorPerformanceCaveat: false }} dpr={[1, 2]}>
       <Scene view={view} dark={dark} />
     </Canvas>
   );

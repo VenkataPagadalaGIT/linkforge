@@ -1,1 +1,7 @@
+# Build artifacts and deps — Railway builds fresh via Nixpacks; never upload these.
+# A file at a Nixpacks cache-mount target (e.g. tsconfig.tsbuildinfo) aborts the build.
 *.tsbuildinfo
+.next/
+frontend/.next/
+node_modules/
+.git/

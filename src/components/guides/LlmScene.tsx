@@ -46,6 +46,8 @@ export interface LlmSceneState {
   flow: FlowSegment;
   /** Journey step id — drives the cinematic camera. Null = free camera. */
   focusStepId?: string | null;
+  /** WebGL powerPreference proven usable by the explorer probe. */
+  glPower?: "high-performance" | "default";
 }
 
 interface Ctx extends Omit<LlmSceneState, "highlightIds"> {
@@ -1258,7 +1260,7 @@ export default function LlmScene(props: LlmSceneState) {
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [...DEFAULT_POSE.pos], fov: 40 }}
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      gl={{ antialias: true, alpha: false, powerPreference: props.glPower ?? "high-performance", failIfMajorPerformanceCaveat: false }}
       onCreated={({ gl }) => {
         gl.setClearColor("#09090b");
         gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault(), false);
