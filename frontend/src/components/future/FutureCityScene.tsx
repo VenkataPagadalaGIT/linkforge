@@ -42,7 +42,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
 import Robot from "./assets/Robot";
 import { AirCar, CargoBoat, CyberSemi, CyberTruck, GranTourer, MonoPod, PodBus, Sedan } from "./assets/Vehicles";
 
@@ -77,6 +76,9 @@ interface DriveSel {
   id: string;
   label: string;
   kind: "car" | "boat" | "bot";
+  /** Chase distance. A semi is ~10 units long, so the car default parks the
+   *  camera inside its own trailer; every rider passes its own. */
+  chase?: number;
 }
 interface DriveApi {
   sel: DriveSel | null;
@@ -1092,6 +1094,7 @@ function PathRider({
   driveMax = 4,
   driveKind = "car",
   hitR,
+  driveChase,
   children,
 }: {
   curve: THREE.CatmullRomCurve3;
@@ -1106,6 +1109,8 @@ function PathRider({
   driveKind?: "car" | "boat";
   /** Collision circle radius before scale; boats and semis pass bigger. */
   hitR?: number;
+  /** Chase-camera distance for this machine; long ones need much more. */
+  driveChase?: number;
   children: (wheelSpeed: number) => ReactNode;
 }) {
   const ctx = useScene();
@@ -1219,7 +1224,13 @@ function PathRider({
         clickable
           ? (e) => {
               e.stopPropagation();
-              drive!.set({ id: driveId!, label: driveLabel ?? driveId!, kind: driveKind });
+              drive!.setFreeCam(false);
+              drive!.set({
+                id: driveId!,
+                label: driveLabel ?? driveId!,
+                kind: driveKind,
+                chase: driveChase,
+              });
             }
           : undefined
       }
@@ -1306,7 +1317,7 @@ function Canal() {
 function BoatTraffic() {
   const ctx = useScene();
   const boat = (offset: number, id: string, ph: number) => (
-    <PathRider curve={CANAL} offset={offset} lapSpeed={0.006} y={0} scale={1.35} driveId={id} driveLabel="CARGO BARGE" driveMax={2.4} driveKind="boat">
+    <PathRider curve={CANAL} offset={offset} lapSpeed={0.006} y={0} scale={1.35} driveId={id} driveLabel="CARGO BARGE" driveMax={2.4} driveKind="boat" driveChase={13}>
       {() => (
         <>
           <CargoBoat dim={ctx.dim} phase={ph} />
@@ -1397,8 +1408,8 @@ function ChaseCam({ controls, game }: { controls: { current: { enabled: boolean 
     }
     if (oc && oc.enabled) oc.enabled = false;
     const bot = game || drive?.sel?.kind === "bot";
-    const back = bot ? 4.2 : 7.8;
-    const up = bot ? 2.2 : 3.2;
+    const back = drive?.sel?.chase ?? (bot ? 4.2 : 7.8);
+    const up = bot ? 2.2 : back * 0.42;
     want
       .set(-Math.sin(t.rotation.y) * back, up, -Math.cos(t.rotation.y) * back)
       .add(t.position);
@@ -1502,7 +1513,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.5} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="podbus-1" driveLabel="SHUTTLE POD" driveMax={3.2}>
+      <PathRider curve={ROAD} offset={0.5} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="podbus-1" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
         {(s) => (
           <>
             <PodBus dim={ctx.dim} speed={s} />
@@ -1530,7 +1541,7 @@ function RingTraffic() {
       {/* the semi on the outer bypass: slow, huge, half in the fog; its
           frozen offset 0.6 parks it on the far arc for the reduced-motion
           poster, exactly where scale reads best against the towers */}
-      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-1" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
+      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-1" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4} driveChase={19}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
@@ -1540,7 +1551,7 @@ function RingTraffic() {
         )}
       </PathRider>
       {/* two more of the fleet, spaced a third of a lap apart */}
-      <PathRider curve={BYPASS} offset={0.27} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-2" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
+      <PathRider curve={BYPASS} offset={0.27} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-2" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4} driveChase={19}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
@@ -1548,7 +1559,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={BYPASS} offset={0.93} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-3" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
+      <PathRider curve={BYPASS} offset={0.93} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-3" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4} driveChase={19}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
@@ -2056,11 +2067,11 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         left: 0,
         right: 0,
         bottom: 16,
-        zIndex: 1000,
+        zIndex: 30,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -2159,11 +2170,11 @@ function GamePad({ onFree }: { onFree: () => void }) {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         left: 0,
         right: 0,
         bottom: 16,
-        zIndex: 1000,
+        zIndex: 30,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -2217,7 +2228,13 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   const driveInput = useRef({ th: 0, st: 0, bk: 0 });
   const driveTarget = useRef<THREE.Object3D | null>(null);
   const orbitRef = useRef<{ enabled: boolean } | null>(null);
-  const [freeCam, setFreeCam] = useState(false);
+  // Entering a machine always cancels free look: the two HUDs must never
+  // render at once (they overlapped at the bottom of the frame).
+  const [freeCam, setFreeCamState] = useState(false);
+  const setFreeCam = (v: boolean) => {
+    if (v) setDriveSel(null);
+    setFreeCamState(v);
+  };
   const driveApi = useMemo<DriveApi>(
     () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, input: driveInput, target: driveTarget }),
     [driveSel, freeCam]
@@ -2240,7 +2257,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   }, []);
 
   return (
-    <>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
     <Canvas
       // Background mode caps dpr: it sits behind content, it does not get to
       // spend retina pixels.
@@ -2331,20 +2348,15 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         />
       )}
     </Canvas>
-    {!background &&
-      typeof document !== "undefined" &&
-      createPortal(<DriveOverlay api={driveApi} sel={driveSel} />, document.body)}
-    {game &&
-      freeCam &&
-      typeof document !== "undefined" &&
-      createPortal(
+    {!background && <DriveOverlay api={driveApi} sel={driveSel} />}
+    {game && freeCam && !driveSel && (
         <div
           style={{
-            position: "fixed",
+            position: "absolute",
             left: 0,
             right: 0,
             bottom: 16,
-            zIndex: 1000,
+            zIndex: 30,
             display: "flex",
             justifyContent: "center",
             pointerEvents: "none",
@@ -2367,14 +2379,9 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
           >
             FREE LOOK · DRAG TO ORBIT · CLICK HERE TO TAKE THE HUMANOID BACK
           </div>
-        </div>,
-        document.body
+        </div>
       )}
-    {game &&
-      !freeCam &&
-      !driveSel &&
-      typeof document !== "undefined" &&
-      createPortal(<GamePad onFree={() => setFreeCam(true)} />, document.body)}
-    </>
+    {game && !freeCam && !driveSel && <GamePad onFree={() => setFreeCam(true)} />}
+    </div>
   );
 }

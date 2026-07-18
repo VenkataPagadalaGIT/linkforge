@@ -17,24 +17,28 @@ const CONTROLS: { keys: string; what: string }[] = [
 
 export default function ThreeDGame() {
   return (
-    <div className="min-h-screen bg-background pt-24 pb-20 px-6">
-      <div className="max-w-5xl mx-auto">
-        <p className="font-mono text-[10px] text-muted-foreground/50 tracking-widest uppercase mb-4">
-          Interactive · year 2040
-        </p>
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-4 leading-[1.1]">
-          3D Game
-        </h1>
-        <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+    <div className="bg-background">
+      {/* The game IS the page: it fills the viewport under the fixed navbar, so
+          the controls dock to the frame the player is actually looking at. */}
+      <div className="relative w-full h-[calc(100vh-4rem)] mt-16 border-b border-border overflow-hidden">
+        <FutureCitySceneLazy game />
+        <div className="pointer-events-none absolute top-5 left-6 z-20">
+          <p className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase mb-1">
+            Interactive · year 2040
+          </p>
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow leading-none">
+            3D Game
+          </h1>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 py-14">
+        <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-10 max-w-3xl">
           A city that runs itself, and you can interrupt it. Walk the humanoid,
           greet the crew, or climb into anything with wheels or a hull. The
           machines yield to you, the traffic waits, and the work carries on
           when you let go.
         </p>
-
-        <div className="h-[70vh] min-h-[440px] border border-border overflow-hidden mb-8">
-          <FutureCitySceneLazy game />
-        </div>
 
         <h2 className="font-display text-2xl font-bold text-foreground mb-4">Controls</h2>
         <div className="border border-border divide-y divide-border/60 mb-10">
