@@ -1,21 +1,35 @@
 "use client";
 /**
- * FutureCityScene: a year-2040 establishing shot. A levitating cloud brain
- * over a central plaza, faceless humanoid robots walking a loop while a pair
- * assembles a frame, autonomous drones on curved patrol paths, driverless
- * cars gliding a ring road with light trails, monolith towers with a landing
- * pad and holographic rings, and a silent aircraft crossing high up now and
- * then.
+ * FutureCityScene, hero-banner pass: a year-2040 establishing shot rebuilt
+ * around the detailed humanoid and vehicle assets in ./assets. A levitating
+ * cloud brain over a central plaza, articulated humanoids walking the loop
+ * (one pauses to watch the landing pad), a kneeling pair assembling a frame
+ * in sync with the beam cycle, one idle unit posed three-quarter to the
+ * camera in the near field, angular pickups and a smooth sedan gliding the
+ * ring road, and a slow semi on an outer bypass that makes the towers read
+ * tall.
  *
- * Built to survive as a homepage background, so restraint is the design:
- * one ice-blue emissive family plus sparse amber, low-poly primitives,
- * instancing for every repeated glow, no shadow passes, no postprocessing
- * (same call as LlmScene: polish comes from materials and light, not glow).
- * Draw calls stay under ~100. Loaded lazily, three.js never touches the
- * main bundle.
+ * Cinematography: cool moonlight key from camera-left, a low warm amber rim
+ * spot raking from behind the plaza so silhouettes get an edge, dim fill, a
+ * barely-reflective ground (drei MeshReflectorMaterial, hero mode only),
+ * selective Bloom on the emissives (hero mode only), sparse dust motes in
+ * the rim light, and a low 3/4 dolly start so the machines dominate frame.
+ *
+ * Background mode stays cheap by design: plain ground, no postprocessing,
+ * capped dpr, dimmed emissives, pointer events off, slow fixed orbit.
+ * No shadow maps anywhere; contact shadows are soft dark discs fed by a
+ * tiny in-code radial gradient texture. No external assets of any kind.
  */
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Grid, Lightformer, OrbitControls, Trail } from "@react-three/drei";
+import {
+  Environment,
+  Grid,
+  Lightformer,
+  MeshReflectorMaterial,
+  OrbitControls,
+  Trail,
+} from "@react-three/drei";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import {
   createContext,
@@ -25,7 +39,10 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
+import Robot from "./assets/Robot";
+import { CyberSemi, CyberTruck, Sedan } from "./assets/Vehicles";
 
 export interface FutureCitySceneProps {
   /** Background mode: pointer-events off, slow fixed orbit, dimmer, capped dpr. */
@@ -59,9 +76,11 @@ const M = {
   graphite: { color: "#3a3d44", metalness: 0.55, roughness: 0.5 },
   slab: { color: "#26282d", metalness: 0.4, roughness: 0.65 },
   joint: { color: "#4a4e56", metalness: 0.55, roughness: 0.5 },
-  glass: { color: "#12141a", metalness: 0.9, roughness: 0.18 },
-  car: { color: "#181b21", metalness: 0.85, roughness: 0.3 },
 } as const;
+
+/** Humanoid scale: the old capsule figures stood ~1.25 units; the detailed
+ *  asset is 1.75 at scale 1, so 0.82 lands ~1.44, the requested ~15% bump. */
+const ROBOT_SCALE = 0.82;
 
 /* ---------------------------------------------------------------- *
  *  Paths: everything that moves rides an arc-length-sampled curve
@@ -79,6 +98,20 @@ const ROAD = new THREE.CatmullRomCurve3(
   "catmullrom",
   0.5
 );
+/** Ring-road surface height: ribbon sits at 0.01 with half-height 0.077. */
+const ROAD_Y = 0.09;
+
+/** Outer bypass: one slow lane for the semi, wide enough to skirt everything. */
+const BYPASS = new THREE.CatmullRomCurve3(
+  [
+    v3(22, 0, 4), v3(15, 0, 15), v3(2, 0, 20), v3(-12, 0, 17.5), v3(-20.5, 0, 8),
+    v3(-22, 0, -6), v3(-13.5, 0, -17), v3(2, 0, -21), v3(15, 0, -16.5), v3(21.5, 0, -7),
+  ],
+  true,
+  "catmullrom",
+  0.5
+);
+const BYPASS_Y = 0.082;
 
 /** Pedestrian loop around the plaza under the brain. */
 const WALKWAY = new THREE.CatmullRomCurve3(
@@ -89,6 +122,9 @@ const WALKWAY = new THREE.CatmullRomCurve3(
   }),
   true
 );
+
+/** Landing pad centre; the pausing walker turns to face it. */
+const PAD_POS = v3(8.2, 0, -5.4);
 
 const DRONE_PATHS = [
   // wide patrol that sinks toward the landing pad on each lap
@@ -125,18 +161,71 @@ const DRONES = [
   { path: 2, offset: 0.85, speed: 0.016 },
 ];
 
-const CARS = [
-  { offset: 0, speed: 0.03 },
-  { offset: 0.38, speed: 0.026 },
-  { offset: 0.72, speed: 0.034 },
-];
-
 const TOWERS = [
   { x: -8.5, z: -7.5, w: 1.15, h: 9.5 },
   { x: -10.6, z: -4.2, w: 0.85, h: 6.2 },
   { x: 9.6, z: -8.4, w: 1.3, h: 11 },
   { x: 11.6, z: -5, w: 0.7, h: 5 },
 ];
+
+/* ---------------------------------------------------------------- *
+ *  Contact shadows: soft dark discs, no shadow maps anywhere
+ * ---------------------------------------------------------------- */
+
+/** In-code radial gradient (alphaMap reads green); Linear filtering so the
+ *  64px falloff stays smooth at any disc size. */
+let _shadowTex: THREE.DataTexture | null = null;
+function shadowTex(): THREE.DataTexture {
+  if (_shadowTex) return _shadowTex;
+  const S = 64;
+  const data = new Uint8Array(S * S * 4);
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const dx = (x + 0.5) / S - 0.5;
+      const dy = (y + 0.5) / S - 0.5;
+      const r = Math.min(1, Math.sqrt(dx * dx + dy * dy) * 2);
+      const a = 1 - r;
+      const f = Math.round(a * a * (3 - 2 * a) * 255); // smoothstep falloff
+      const i = (y * S + x) * 4;
+      data[i] = f;
+      data[i + 1] = f;
+      data[i + 2] = f;
+      data[i + 3] = 255;
+    }
+  }
+  const tex = new THREE.DataTexture(data, S, S);
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  _shadowTex = tex;
+  return tex;
+}
+
+/** Soft grounding disc; w and l are the footprint in local units. */
+function ContactShadow({
+  w,
+  l,
+  opacity = 0.42,
+  y = 0.008,
+}: {
+  w: number;
+  l: number;
+  opacity?: number;
+  y?: number;
+}) {
+  return (
+    <mesh position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[w, l, 1]} renderOrder={1}>
+      <circleGeometry args={[0.5, 24]} />
+      <meshBasicMaterial
+        color="#000000"
+        transparent
+        opacity={opacity}
+        alphaMap={shadowTex()}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
 
 /* ---------------------------------------------------------------- *
  *  Cloud brain: wireframe shell, pulsing core, slow particle rings
@@ -198,7 +287,7 @@ function CloudBrain() {
           roughness={0.3}
         />
       </mesh>
-      {/* soft halo around the core: cheap glow without a bloom pass */}
+      {/* soft halo around the core: cheap glow that Bloom then picks up */}
       <mesh>
         <sphereGeometry args={[1.0, 20, 14]} />
         <meshBasicMaterial color={ICE} transparent opacity={0.07 * ctx.dim} depthWrite={false} />
@@ -218,121 +307,106 @@ function CloudBrain() {
 }
 
 /* ---------------------------------------------------------------- *
- *  Robots: stylized figures, blank domes, no faces, no marks
+ *  Humanoids: detailed articulated asset, three duty loops
  * ---------------------------------------------------------------- */
 
-function Robot({ mode, phase }: { mode: "walk" | "assemble"; phase: number }) {
-  const ctx = useScene();
-  const root = useRef<THREE.Group>(null);
-  const armL = useRef<THREE.Group>(null);
-  const armR = useRef<THREE.Group>(null);
-  const legL = useRef<THREE.Group>(null);
-  const legR = useRef<THREE.Group>(null);
-
-  useFrame(({ clock }) => {
-    if (!root.current || !armL.current || !armR.current || !legL.current || !legR.current) return;
-    const t = ctx.still ? 0 : clock.elapsedTime;
-    const amp = ctx.still ? 0 : 1;
-    if (mode === "walk") {
-      const s = Math.sin(t * 3.6 + phase) * 0.5 * amp;
-      legL.current.rotation.x = s;
-      legR.current.rotation.x = -s;
-      armL.current.rotation.x = -s * 0.65;
-      armR.current.rotation.x = s * 0.65;
-      root.current.position.y = Math.abs(Math.sin(t * 3.6 + phase)) * 0.03 * amp;
-    } else {
-      // both arms working at chest height, slightly out of phase: reads as
-      // handling a part, not waving
-      armL.current.rotation.x = -1.3 + Math.sin(t * 1.2 + phase) * 0.28 * amp;
-      armR.current.rotation.x = -1.3 + Math.sin(t * 1.2 + phase + 0.9) * 0.28 * amp;
-      root.current.rotation.x = 0.07;
-    }
-  });
-
-  return (
-    <group ref={root}>
-      <mesh position={[0, 0.82, 0]}>
-        <capsuleGeometry args={[0.125, 0.34, 4, 10]} />
-        <meshStandardMaterial {...M.hull} />
-      </mesh>
-      {/* head: a smooth blank dome, deliberately faceless */}
-      <mesh position={[0, 1.16, 0]}>
-        <sphereGeometry args={[0.095, 12, 10]} />
-        <meshStandardMaterial {...M.joint} />
-      </mesh>
-      {/* chest light: the one identity mark they get */}
-      <mesh position={[0, 0.9, 0.135]}>
-        <boxGeometry args={[0.08, 0.025, 0.02]} />
-        <meshBasicMaterial color={ICE} transparent opacity={0.85 * ctx.dim} />
-      </mesh>
-      <group ref={armL} position={[-0.185, 0.97, 0]}>
-        <mesh position={[0, -0.17, 0]}>
-          <capsuleGeometry args={[0.032, 0.26, 4, 8]} />
-          <meshStandardMaterial {...M.joint} />
-        </mesh>
-      </group>
-      <group ref={armR} position={[0.185, 0.97, 0]}>
-        <mesh position={[0, -0.17, 0]}>
-          <capsuleGeometry args={[0.032, 0.26, 4, 8]} />
-          <meshStandardMaterial {...M.joint} />
-        </mesh>
-      </group>
-      <group ref={legL} position={[-0.07, 0.46, 0]}>
-        <mesh position={[0, -0.2, 0]}>
-          <capsuleGeometry args={[0.045, 0.3, 4, 8]} />
-          <meshStandardMaterial {...M.hull} />
-        </mesh>
-      </group>
-      <group ref={legR} position={[0.07, 0.46, 0]}>
-        <mesh position={[0, -0.2, 0]}>
-          <capsuleGeometry args={[0.045, 0.3, 4, 8]} />
-          <meshStandardMaterial {...M.hull} />
-        </mesh>
-      </group>
-    </group>
-  );
+interface WalkerSpec {
+  offset: number;
+  speed: number;
+  phase: number;
+  /** Curve parameter where this walker stops for a beat. */
+  pauseAt?: number;
+  /** Seconds spent idling at the pause point. */
+  pauseFor?: number;
 }
 
-function Walker({ offset, speed, phase }: { offset: number; speed: number; phase: number }) {
+/** Phases are chosen for the frozen poster too: sin(1.2) puts the first
+ *  walker mid-stride on the camera side of the loop under reduced motion. */
+const WALKERS: WalkerSpec[] = [
+  { offset: 0.13, speed: 0.03, phase: 1.2 },
+  { offset: 0.44, speed: 0.027, phase: 3.35, pauseAt: 0.9, pauseFor: 4.2 },
+  { offset: 0.72, speed: 0.033, phase: 5.05 },
+];
+
+function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
   const ctx = useScene();
   const group = useRef<THREE.Group>(null);
-  const t = useRef(offset);
+  const [paused, setPaused] = useState(false);
+  const u = useRef(offset);
+  const pauseStart = useRef(0);
+  const yaw = useRef<number | null>(null);
   const p = useMemo(() => new THREE.Vector3(), []);
   const tan = useMemo(() => new THREE.Vector3(), []);
-  useFrame((_, delta) => {
+
+  useFrame(({ clock }, delta) => {
     const g = group.current;
     if (!g) return;
-    if (!ctx.still) t.current = (t.current + speed * delta) % 1;
-    WALKWAY.getPointAt(t.current, p);
-    WALKWAY.getTangentAt(t.current, tan);
-    g.position.set(p.x, 0.05, p.z);
-    g.rotation.y = Math.atan2(tan.x, tan.z);
+    if (!ctx.still) {
+      if (paused) {
+        if (clock.elapsedTime - pauseStart.current > pauseFor) setPaused(false);
+      } else {
+        const prev = u.current;
+        let next = prev + speed * delta;
+        // crossing test that survives the 1 -> 0 wrap
+        if (pauseAt !== undefined && (prev < pauseAt ? next >= pauseAt : next >= pauseAt + 1)) {
+          next = pauseAt;
+          setPaused(true);
+          pauseStart.current = clock.elapsedTime;
+        }
+        u.current = next % 1;
+      }
+    }
+    WALKWAY.getPointAt(u.current, p);
+    WALKWAY.getTangentAt(u.current, tan);
+    g.position.set(p.x, 0.01, p.z);
+    // while paused, turn to watch the landing pad; otherwise face the path
+    const target = paused
+      ? Math.atan2(PAD_POS.x - p.x, PAD_POS.z - p.z)
+      : Math.atan2(tan.x, tan.z);
+    if (yaw.current === null || ctx.still) {
+      yaw.current = target;
+    } else {
+      let dh = target - yaw.current;
+      if (dh > Math.PI) dh -= Math.PI * 2;
+      if (dh < -Math.PI) dh += Math.PI * 2;
+      yaw.current += dh * Math.min(1, 4 * delta);
+    }
+    g.rotation.y = yaw.current;
   });
+
   return (
     <group ref={group}>
-      <Robot mode="walk" phase={phase} />
+      <Robot
+        pose={paused ? "idle" : "walk"}
+        phase={phase}
+        scale={ROBOT_SCALE}
+        dim={ctx.dim}
+        frozen={ctx.still}
+      />
+      <ContactShadow w={0.85} l={1.05} opacity={0.4} />
     </group>
   );
 }
 
-function Walkers() {
-  const walkers = [
-    { offset: 0, speed: 0.03 },
-    { offset: 0.36, speed: 0.027 },
-    { offset: 0.68, speed: 0.033 },
-  ];
+/** Near-field unit in three-quarter view, close to the hero camera start so
+ *  the visor band, joint spheres and two-tone shells actually read. */
+function IdleRobot() {
+  const ctx = useScene();
   return (
-    <>
-      {walkers.map((w, i) => (
-        <Walker key={i} offset={w.offset} speed={w.speed} phase={i * 2.1} />
-      ))}
-    </>
+    <group position={[4.7, 0.008, 9.2]} rotation={[0, 1.35, 0]}>
+      <Robot pose="idle" phase={0.7} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+      <ContactShadow w={0.85} l={1.05} opacity={0.42} />
+    </group>
   );
 }
 
 /* ---------------------------------------------------------------- *
- *  Build site: a frame going up, one beam placed on loop by a pair
+ *  Build site: a frame going up, a kneeling pair working the beam cycle
  * ---------------------------------------------------------------- */
+
+/** Three full assemble cycles (the asset's loop runs 3.125 s) per beam
+ *  placement, so the kneel-reach loop stays in step with the lift. */
+const BEAM_PERIOD = 9.375;
 
 function BuildSite() {
   const ctx = useScene();
@@ -342,16 +416,15 @@ function BuildSite() {
     const m = beam.current;
     const mat = beamMat.current;
     if (!m || !mat) return;
-    // one placement cycle: lift for ~5.5s, seat, dissolve, repeat. The loop
-    // reads as steady work, not a glitch, because the dissolve is quiet.
-    const p = ctx.still ? 0.6 : (clock.elapsedTime % 10) / 10;
+    // one placement cycle: lift, seat, quiet dissolve, repeat
+    const p = ctx.still ? 0.6 : (clock.elapsedTime % BEAM_PERIOD) / BEAM_PERIOD;
     const rise = THREE.MathUtils.smoothstep(Math.min(p / 0.55, 1), 0, 1);
     m.position.y = 0.3 + rise * 1.9;
     mat.opacity = p > 0.75 ? Math.max(0, 1 - (p - 0.75) / 0.15) : 1;
     m.visible = mat.opacity > 0.01;
   });
   return (
-    <group position={[6.2, 0, 5.8]} rotation={[0, -0.5, 0]}>
+    <group position={[6.2, 0.004, 5.8]} rotation={[0, -0.5, 0]}>
       {/* columns done, one top beam and one mid beam in, the rest still to come */}
       {[[-0.85, -0.85], [0.85, -0.85], [-0.85, 0.85], [0.85, 0.85]].map(([x, z], i) => (
         <mesh key={i} position={[x, 1.1, z]}>
@@ -378,12 +451,14 @@ function BuildSite() {
           emissiveIntensity={0.25 * ctx.dim}
         />
       </mesh>
-      {/* the assembly pair, facing the frame from either side */}
-      <group position={[1.7, 0, 0.4]} rotation={[0, -Math.PI / 2, 0]}>
-        <Robot mode="assemble" phase={0} />
+      {/* the kneeling pair at the beam ends, half a cycle apart */}
+      <group position={[1.55, 0, 0.85]} rotation={[0, -Math.PI / 2, 0]}>
+        <Robot pose="assemble" phase={0} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+        <ContactShadow w={1.0} l={1.3} opacity={0.42} />
       </group>
-      <group position={[-1.7, 0, 0.4]} rotation={[0, Math.PI / 2, 0]}>
-        <Robot mode="assemble" phase={1.7} />
+      <group position={[-1.55, 0, 0.85]} rotation={[0, Math.PI / 2, 0]}>
+        <Robot pose="assemble" phase={2.94} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+        <ContactShadow w={1.0} l={1.3} opacity={0.42} />
       </group>
     </group>
   );
@@ -412,7 +487,7 @@ function Drone({ curve, offset, speed }: { curve: THREE.CatmullRomCurve3; offset
     g.position.copy(p);
     const h = Math.atan2(tan.x, tan.z);
     // bank into turns from the frame-to-frame heading change, normalized
-    // across the ±π wrap so the roll never snaps
+    // across the +-pi wrap so the roll never snaps
     let dh = heading.current === null ? 0 : h - heading.current;
     if (dh > Math.PI) dh -= Math.PI * 2;
     if (dh < -Math.PI) dh += Math.PI * 2;
@@ -446,7 +521,7 @@ function Drone({ curve, offset, speed }: { curve: THREE.CatmullRomCurve3; offset
 }
 
 /* ---------------------------------------------------------------- *
- *  Roadway and cars
+ *  Roadways and traffic
  * ---------------------------------------------------------------- */
 
 function RoadStuds() {
@@ -501,50 +576,129 @@ function Roadway() {
   );
 }
 
-function Car({ offset, speed }: { offset: number; speed: number }) {
+/** The bypass lane: wider, darker, fainter guide; the semi's territory. */
+function BypassRoad() {
+  const ctx = useScene();
+  const ribbon = useMemo(() => new THREE.TubeGeometry(BYPASS, 160, 0.85, 8, true), []);
+  const guide = useMemo(() => new THREE.TubeGeometry(BYPASS, 160, 0.02, 6, true), []);
+  return (
+    <group>
+      <mesh geometry={ribbon} scale={[1, 0.08, 1]} position={[0, 0.012, 0]}>
+        <meshStandardMaterial color="#121317" metalness={0.5} roughness={0.55} />
+      </mesh>
+      <mesh geometry={guide} position={[0, 0.08, 0]}>
+        <meshBasicMaterial color={ICE} transparent opacity={0.12 * ctx.dim} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/**
+ * Rides a closed curve at a constant lap speed, +Z aligned to the tangent.
+ * Children receive the wheel-spin speed (world speed divided by the group
+ * scale, so the asset's unscaled wheel radii roll at true ground speed).
+ */
+function PathRider({
+  curve,
+  offset,
+  lapSpeed,
+  y,
+  scale = 1,
+  children,
+}: {
+  curve: THREE.CatmullRomCurve3;
+  offset: number;
+  lapSpeed: number;
+  y: number;
+  scale?: number;
+  children: (wheelSpeed: number) => ReactNode;
+}) {
   const ctx = useScene();
   const group = useRef<THREE.Group>(null);
-  const t = useRef(offset);
+  const u = useRef(offset);
   const p = useMemo(() => new THREE.Vector3(), []);
   const tan = useMemo(() => new THREE.Vector3(), []);
+  const len = useMemo(() => curve.getLength(), [curve]);
   useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
-    if (!ctx.still) t.current = (t.current + speed * delta) % 1;
-    ROAD.getPointAt(t.current, p);
-    ROAD.getTangentAt(t.current, tan);
-    g.position.set(p.x, 0.14, p.z);
+    if (!ctx.still) u.current = (u.current + lapSpeed * delta) % 1;
+    curve.getPointAt(u.current, p);
+    curve.getTangentAt(u.current, tan);
+    g.position.set(p.x, y, p.z);
     g.rotation.y = Math.atan2(tan.x, tan.z);
   });
+  const wheelSpeed = ctx.still ? 0 : (len * lapSpeed) / scale;
+  return (
+    <group ref={group} scale={scale}>
+      {children(wheelSpeed)}
+    </group>
+  );
+}
+
+/** Rear-marker light trail, subtler than the old pass; frozen scenes keep the marker only. */
+function TailTrail({ y, z }: { y: number; z: number }) {
+  const ctx = useScene();
   const marker = (
-    <mesh position={[0, 0.06, -0.58]}>
-      <sphereGeometry args={[0.03, 6, 6]} />
-      <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.9 * ctx.dim} depthWrite={false} />
+    <mesh position={[0, y, z]}>
+      <sphereGeometry args={[0.035, 6, 6]} />
+      <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.85 * ctx.dim} depthWrite={false} />
     </mesh>
   );
+  if (ctx.still) return marker;
   return (
-    <group ref={group}>
-      <mesh position={[0, 0.02, 0]}>
-        <boxGeometry args={[0.52, 0.14, 1.1]} />
-        <meshStandardMaterial {...M.car} />
-      </mesh>
-      <mesh position={[0, 0.13, -0.06]}>
-        <boxGeometry args={[0.42, 0.1, 0.58]} />
-        <meshStandardMaterial {...M.glass} />
-      </mesh>
-      <mesh position={[0, 0.03, 0.56]}>
-        <boxGeometry args={[0.44, 0.02, 0.03]} />
-        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.9 * ctx.dim} />
-      </mesh>
-      {/* the light trail is what sells the glide; frozen scenes keep the marker only */}
-      {ctx.still ? (
-        marker
-      ) : (
-        <Trail width={0.4} length={4.5} decay={2.2} color={ICE} attenuation={(w) => w * w}>
-          {marker}
-        </Trail>
-      )}
-    </group>
+    <Trail width={0.22} length={3.2} decay={2.6} color={ICE} attenuation={(w) => w * w}>
+      {marker}
+    </Trail>
+  );
+}
+
+/** Equal lap speeds keep the ring spacing constant forever: no overtaking,
+ *  no eventual overlap during long homepage dwells. */
+function RingTraffic() {
+  const ctx = useScene();
+  return (
+    <>
+      {/* hero pickup: frozen offset 0.1 parks it on the camera side */}
+      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.8}>
+        {(s) => (
+          <>
+            <CyberTruck dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
+            <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.8}>
+        {(s) => (
+          <>
+            <CyberTruck dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
+            <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.78} lapSpeed={0.027} y={ROAD_Y} scale={0.9}>
+        {(s) => (
+          <>
+            <Sedan dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
+            <TailTrail y={0.42} z={-1.16} />
+          </>
+        )}
+      </PathRider>
+      {/* the semi on the outer bypass: slow, huge, half in the fog; its
+          frozen offset 0.6 parks it on the far arc for the reduced-motion
+          poster, exactly where scale reads best against the towers */}
+      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y}>
+        {(s) => (
+          <>
+            <CyberSemi dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.9} l={10} opacity={0.5} y={0.01} />
+          </>
+        )}
+      </PathRider>
+    </>
   );
 }
 
@@ -672,19 +826,108 @@ function HomeBase() {
   );
 }
 
-function Plaza() {
+/* ---------------------------------------------------------------- *
+ *  Ground: barely-reflective in hero mode, plain in background mode
+ * ---------------------------------------------------------------- */
+
+function GroundPlane() {
   const ctx = useScene();
   return (
-    <group>
-      <mesh position={[0, 0.02, 0]}>
-        <cylinderGeometry args={[5.4, 5.55, 0.05, 40]} />
-        <meshStandardMaterial color="#17181c" metalness={0.45} roughness={0.6} />
-      </mesh>
-      <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[4.95, 5.05, 48]} />
-        <meshBasicMaterial color={ICE} transparent opacity={0.3 * ctx.dim} side={THREE.DoubleSide} />
-      </mesh>
-    </group>
+    <mesh position={[0, 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <circleGeometry args={[30, 48]} />
+      {ctx.background ? (
+        <meshStandardMaterial color="#0e0f12" metalness={0.35} roughness={0.75} />
+      ) : (
+        <MeshReflectorMaterial
+          resolution={512}
+          blur={[220, 80]}
+          mixBlur={0.85}
+          mixStrength={0.55}
+          mirror={0.35}
+          depthScale={0.6}
+          minDepthThreshold={0.4}
+          maxDepthThreshold={1.4}
+          color="#0e0f12"
+          metalness={0.5}
+          roughness={0.8}
+        />
+      )}
+    </mesh>
+  );
+}
+
+/** The plaza is now just its lit boundary ring over the reflective floor. */
+function PlazaRing() {
+  const ctx = useScene();
+  return (
+    <mesh position={[0, 0.012, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <ringGeometry args={[4.95, 5.05, 48]} />
+      <meshBasicMaterial
+        color={ICE}
+        transparent
+        opacity={0.3 * ctx.dim}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  Atmosphere: sparse dust motes drifting through the rim light
+ * ---------------------------------------------------------------- */
+
+function DustMotes() {
+  const ctx = useScene();
+  const N = 60;
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const tmp = useMemo(() => new THREE.Object3D(), []);
+  // deterministic scatter: hashed, no Math.random, same field every load
+  const seeds = useMemo(
+    () =>
+      Array.from({ length: N }, (_, i) => {
+        const h = (n: number) => {
+          const s = Math.sin(i * 12.9898 + n * 78.233) * 43758.5453;
+          return s - Math.floor(s);
+        };
+        const a = h(1) * Math.PI * 2;
+        const r = 2.5 + h(2) * 10.5;
+        return {
+          x: Math.cos(a) * r,
+          z: Math.sin(a) * r,
+          y: 0.4 + h(3) * 4.2,
+          rise: 0.05 + h(4) * 0.08,
+          sway: 0.3 + h(5) * 0.5,
+          swaySpeed: 0.1 + h(6) * 0.25,
+          phase: h(7) * Math.PI * 2,
+          s: 0.014 + h(8) * 0.02,
+        };
+      }),
+    []
+  );
+  useFrame(({ clock }) => {
+    const m = ref.current;
+    if (!m) return;
+    const t = ctx.still ? 0 : clock.elapsedTime;
+    for (let i = 0; i < N; i++) {
+      const d = seeds[i];
+      tmp.position.set(
+        d.x + Math.sin(t * d.swaySpeed + d.phase) * d.sway,
+        0.3 + ((d.y - 0.3 + t * d.rise) % 4.6),
+        d.z + Math.cos(t * d.swaySpeed * 0.8 + d.phase) * d.sway
+      );
+      tmp.scale.setScalar(d.s);
+      tmp.updateMatrix();
+      m.setMatrixAt(i, tmp.matrix);
+    }
+    m.instanceMatrix.needsUpdate = true;
+  });
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, N]} frustumCulled={false}>
+      <sphereGeometry args={[1, 6, 5]} />
+      {/* warm-tinted so the motes read as caught in the amber rim light */}
+      <meshBasicMaterial color="#d9c8a8" transparent opacity={0.28 * ctx.dim} depthWrite={false} />
+    </instancedMesh>
   );
 }
 
@@ -732,26 +975,64 @@ function Aircraft() {
 }
 
 /* ---------------------------------------------------------------- *
+ *  Lighting: moonlight key, amber rim, dim fill
+ * ---------------------------------------------------------------- */
+
+/** Low warm spot raking from behind the plaza toward the camera side, so
+ *  the humanoid silhouettes pick up an amber edge. No shadow casting. */
+function RimLight() {
+  const ctx = useScene();
+  const spot = useRef<THREE.SpotLight>(null);
+  useLayoutEffect(() => {
+    const s = spot.current;
+    if (!s) return;
+    // static target: one manual matrix update stands in for scene insertion
+    s.target.position.set(1.5, 0.7, 4.5);
+    s.target.updateMatrixWorld();
+  }, []);
+  return (
+    <spotLight
+      ref={spot}
+      position={[-5.5, 1.9, -12.5]}
+      color="#e2a763"
+      intensity={60 * (ctx.background ? 0.7 : 1)}
+      distance={42}
+      angle={0.62}
+      penumbra={0.85}
+      decay={1.45}
+    />
+  );
+}
+
+/* ---------------------------------------------------------------- *
  *  Composition + camera
  * ---------------------------------------------------------------- */
 
 function World() {
+  const ctx = useScene();
   return (
     <>
-      <Plaza />
+      <GroundPlane />
+      <PlazaRing />
       <CloudBrain />
       <Roadway />
+      <BypassRoad />
       <Towers />
       <HomeBase />
       <BuildSite />
-      <Walkers />
+      {WALKERS.map((w, i) => (
+        <Walker key={i} {...w} />
+      ))}
+      {/* the near-field showcase unit is framed for the hero camera; the
+          background orbit never reads it, so it stays hero-only */}
+      {!ctx.background && <IdleRobot />}
+      <RingTraffic />
       {DRONES.map((d, i) => (
         <Drone key={i} curve={DRONE_PATHS[d.path]} offset={d.offset} speed={d.speed} />
       ))}
-      {CARS.map((c, i) => (
-        <Car key={i} offset={c.offset} speed={c.speed} />
-      ))}
       <Aircraft />
+      <DustMotes />
+      <RimLight />
     </>
   );
 }
@@ -806,7 +1087,9 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
       // Background mode caps dpr: it sits behind content, it does not get to
       // spend retina pixels.
       dpr={background ? [1, 1.5] : [1, 2]}
-      camera={{ position: [13, 7, 18.5], fov: 42 }}
+      // Hero start: a low 3/4 dolly angle so the humanoids and vehicles
+      // dominate the frame instead of the skyline.
+      camera={{ position: [9.5, 2.2, 15.5], fov: 40 }}
       // powerPreference nudges hybrid-GPU Windows laptops onto the discrete
       // GPU; leaving failIfMajorPerformanceCaveat false lets weak/software
       // GPUs still render instead of hard-failing on Edge.
@@ -846,30 +1129,42 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         infiniteGrid
       />
 
-      <ambientLight intensity={0.35 * lightDim} />
-      <hemisphereLight args={["#ffffff", "#3a3a40", 0.4 * lightDim]} />
-      <directionalLight position={[6, 10, 6]} intensity={0.95 * lightDim} />
-      <directionalLight position={[-7, 5, -4]} intensity={0.4 * lightDim} />
+      {/* fill stays dim: the key and rim do the modelling */}
+      <ambientLight intensity={0.18 * lightDim} />
+      <hemisphereLight args={["#8fa3c0", "#26262c", 0.3 * lightDim]} />
+      {/* cool moonlight key from camera-left of the hero start */}
+      <directionalLight position={[-11, 11, 20]} color="#b9cfec" intensity={1.4 * lightDim} />
+      {/* faint counter-fill so the dark sides never go to pure black */}
+      <directionalLight position={[8, 5, -6]} intensity={0.22 * lightDim} />
       {/* procedural studio environment: real reflections on every hull
-          without fetching a single asset (CSP-safe, offline-safe) */}
+          without fetching a single asset (CSP-safe, offline-safe); side
+          formers pushed up so the brushed metals keep a horizon to mirror */}
       <Environment resolution={64} frames={1}>
-        <Lightformer intensity={2.2} position={[0, 6, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[12, 12, 1]} color="#cdd3dd" />
-        <Lightformer intensity={1.1} position={[-8, 3, 2]} rotation={[0, Math.PI / 2, 0]} scale={[8, 3, 1]} color="#9fb4d0" />
-        <Lightformer intensity={0.9} position={[8, 2.5, -1]} rotation={[0, -Math.PI / 2, 0]} scale={[7, 3, 1]} color="#d9c9a8" />
-        <Lightformer intensity={0.5} position={[0, 2, -9]} scale={[10, 2, 1]} color="#7d8aa0" />
+        <Lightformer intensity={1.6} position={[0, 6, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[12, 12, 1]} color="#cdd3dd" />
+        <Lightformer intensity={1.6} position={[-8, 3, 2]} rotation={[0, Math.PI / 2, 0]} scale={[8, 3, 1]} color="#9fb4d0" />
+        <Lightformer intensity={1.2} position={[8, 2.5, -1]} rotation={[0, -Math.PI / 2, 0]} scale={[7, 3, 1]} color="#d9c9a8" />
+        <Lightformer intensity={0.6} position={[0, 2, -9]} scale={[10, 2, 1]} color="#7d8aa0" />
       </Environment>
+
+      {/* selective glow, hero mode only: threshold high enough that only the
+          emissives and light bars cross it, never the hulls */}
+      {!background && (
+        <EffectComposer multisampling={4}>
+          <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.8} luminanceSmoothing={0.2} />
+        </EffectComposer>
+      )}
 
       {!background && (
         <OrbitControls
-          target={[0, 2.7, 0]}
+          target={[0, 1.7, 0]}
           enablePan
           enableDamping
           autoRotate={!interacted && !still}
-          autoRotateSpeed={0.4}
+          autoRotateSpeed={0.35}
           onStart={() => setInteracted(true)}
-          minDistance={6}
+          minDistance={5}
           maxDistance={36}
-          maxPolarAngle={1.5}
+          maxPolarAngle={1.56}
         />
       )}
     </Canvas>
