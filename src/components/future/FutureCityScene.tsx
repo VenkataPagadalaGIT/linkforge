@@ -87,10 +87,13 @@ interface DriveApi {
    *  handing the camera back to free orbit. */
   freeCam: boolean;
   setFreeCam: (v: boolean) => void;
-  /** th: -0.7..1 throttle · st: -1..1 steer · bk: 0/1 held brake. */
-  input: { current: { th: number; st: number; bk: number } };
+  /** Signed throttle, steer, brake and handbrake. See DriveInput. */
+  input: { current: DriveInput };
   /** The object the chase camera follows while driving. */
   target: { current: THREE.Object3D | null };
+  /** Live chassis state of whatever is being driven, mutated in place. The
+   *  chase camera and the cockpit read it every frame without a render. */
+  rig: { current: Rig };
 }
 const DriveCtx = createContext<DriveApi | null>(null);
 const useDrive = () => useContext(DriveCtx);
@@ -225,10 +228,42 @@ const DRONES = [
   { path: 2, offset: 0.85, speed: 0.016 },
 ];
 
-/** Circle colliders every driven machine resolves against. Vehicles register
- *  themselves on mount; statics are listed once. Crude circles beat objects
- *  passing through each other, which is what breaks the illusion fastest. */
-const COLLIDERS = new Set<{ o: THREE.Object3D; r: number }>();
+/**
+ * Capsule colliders every driven machine resolves against. Vehicles register
+ * themselves on mount; statics are listed once.
+ *
+ * These used to be single circles, and a circle is a bad stand-in for a car:
+ * one radius has to be either long enough to cover the nose (and then it is
+ * two car widths wide, so you get shoved sideways across a visible gap) or
+ * narrow enough to match the body (and then your bumper disappears into the
+ * other machine before anything fires). A semi is the worst case at 4.79 long
+ * and 1.05 wide. So each body is a spine of half extent `hl` along its own
+ * local +Z, swept by radius `r`: exact in both axes, and it turns with the
+ * body, which a circle never did.
+ */
+interface Collider {
+  o: THREE.Object3D;
+  /** Capsule radius, which is the body's half WIDTH, already scaled. */
+  r: number;
+  /** Spine half extent along local +Z, already scaled. Zero makes the capsule
+   *  a plain circle, which is what every non-vehicle collider registers. */
+  hl: number;
+  /** Live "this body is on the elevated deck" flag, shared by reference with
+   *  the owner so the surface tests below are an O(1) read. */
+  deck: { current: boolean };
+}
+const COLLIDERS = new Set<Collider>();
+
+/** Everything that is not a viaduct rider shares one immutable ground flag,
+ *  so registering a plain collider costs no extra allocation. */
+const AT_GRADE = { current: false };
+
+/** Vertical separation above which two bodies count as being on different
+ *  decks and therefore cannot touch. The flyover curve peaks at y = 3.2 and
+ *  everything at grade sits near 0.09, so anything past 1.5 is unambiguously
+ *  upstairs. Without this a truck on the viaduct shoves a car standing on the
+ *  road eleven units below it. */
+const DECK_GAP = 1.5;
 
 /** Greetable units: the player finds the nearest and waves; it waves back.
  *  Registered by every autonomous humanoid, cleared on unmount. */
@@ -242,7 +277,7 @@ function useCollider(ref: React.MutableRefObject<THREE.Group | null>, r: number)
   useEffect(() => {
     const o = ref.current;
     if (!o) return;
-    const entry = { o: o as THREE.Object3D, r };
+    const entry: Collider = { o: o as THREE.Object3D, r, hl: 0, deck: AT_GRADE };
     COLLIDERS.add(entry);
     return () => {
       COLLIDERS.delete(entry);
@@ -268,6 +303,773 @@ const STATIC_COLS: { x: number; z: number; r: number }[] = [
   ...TOWERS.map((t) => ({ x: t.x, z: t.z, r: t.w * 0.75 + 0.45 })),
   { x: 6.2, z: 5.8, r: 2.7 }, // the construction site
 ];
+
+/* ---------------------------------------------------------------- *
+ *  Lane traffic: every path follower publishes where it is on its curve
+ * ---------------------------------------------------------------- */
+
+/**
+ * Path followers used to advance blind: each one hard-set its position from
+ * its own curve every frame and never looked at anybody else, so the only
+ * thing keeping two of them apart was the gap between their authored start
+ * offsets. Any perturbation (a rider stopping to let the player past while
+ * the one behind kept full lap speed) closed that gap permanently and the
+ * two bodies ended up nose-inside-body. This registry is what lets a rider
+ * see the machine in front of it.
+ *
+ * A positional push cannot fix that, because the curve write at the end of
+ * every frame would erase it. Riders separate by modulating their SPEED
+ * instead, which is also what real traffic does.
+ */
+interface TrafficEntry {
+  curve: THREE.CatmullRomCurve3;
+  /** Arc length of the curve, so a param delta converts to world units. */
+  len: number;
+  /** Live curve param, shared with the rider's own useFrame. */
+  u: { current: number };
+  /** Half the body length in world units, already scaled. */
+  half: number;
+  /** Collision circle radius, already scaled. */
+  r: number;
+  o: THREE.Object3D;
+  /** True while the player has this one: it has left the lane, so nobody
+   *  should queue behind its stale curve param. Open curves (the flyover)
+   *  have no wrap, so "ahead" is read off curve.closed at the call site. */
+  driven: { current: boolean };
+}
+const TRAFFIC = new Set<TrafficEntry>();
+/** Object3D -> lane entry, so the cross-curve pass can tell which colliders
+ *  the same-curve pass already owns and skip them. */
+const TRAFFIC_BY_OBJ = new Map<THREE.Object3D, TrafficEntry>();
+
+/** Bumper clearance at which a follower is fully stopped, and the gap at
+ *  which it runs free. Everything between is a smooth speed taper, which is
+ *  stable in a way a hard stop test is not: no rider ever waits on a rider
+ *  that is waiting on it, because the taper never reaches zero until the
+ *  gap is genuinely gone. */
+const GAP_STOP = 0.4;
+const GAP_FREE = 4.2;
+/** How far ahead the cross-curve cone looks, before the speed term. */
+const CONE_BASE = 1.6;
+
+/** Longest a rider will hold for the player before it creeps again. The old
+ *  hold was re-armed every frame the player stayed close, so a parked player
+ *  pinned a rider forever and everything behind piled into it. */
+const STOP_DWELL_MAX = 3;
+/** Seconds spent easing a released machine back into its lane. The old code
+ *  teleported it onto the curve, and at ten units a second that snap was the
+ *  most visible artifact of letting a vehicle go. */
+const REJOIN_BLEND = 0.35;
+/** How much the rejoin scan prefers a param that points the way the car is
+ *  already pointing, so a car released backwards does not flip 180 degrees. */
+const REJOIN_HEADING = 3;
+/** Cross-curve cones can in principle stare each other down. Nothing in the
+ *  authored layout does, but a lane that has been stopped this long starts
+ *  creeping rather than waiting forever. The timer is only cleared by a real
+ *  recovery of clearance, never by the creep it triggers: an earlier version
+ *  cleared it the moment the creep raised the speed factor past the trigger
+ *  threshold, so the escape cancelled itself after about a tenth of a second
+ *  and a blocked rider covered 0.4 units in two minutes. */
+const JAM_MAX = 5;
+
+/** Half body lengths before scale, keyed the same way the drive tuning is.
+ *  Collision circles are a poor stand-in here: a semi's 3.4 circle misses
+ *  1.4 of its own nose, and following distance has to know the real body. */
+const BODY_HALF = {
+  truck: 1.71,
+  sedan: 1.15,
+  tourer: 1.5,
+  podbus: 1.06,
+  pod: 0.54,
+  semi: 4.79,
+  boat: 2.2,
+} as const;
+
+/** Half body WIDTHS before scale, which are the capsule radii. Measured off
+ *  the vehicle assets rather than guessed from the track width, because the
+ *  flares and the barge hull both sit well outside the wheels. */
+const BODY_HW = {
+  truck: 0.75,
+  sedan: 0.6,
+  tourer: 0.62,
+  podbus: 0.62,
+  pod: 0.34,
+  semi: 1.05,
+  boat: 0.58,
+} as const;
+
+/* ---------------------------------------------------------------- *
+ *  Drive model: a bicycle chassis with slip, weight transfer and an
+ *  arcade stability assist
+ * ---------------------------------------------------------------- */
+
+/**
+ * Body frame: +f is forward, +q is the driver's right. A positive yaw rate r
+ * swings the nose right, which DECREASES rotation.y, because the scene
+ * integrates position as (sin psi, cos psi). Positive steer is a right turn,
+ * and positive lateral velocity is the car sliding to the driver's right.
+ *
+ * Every sign below is stated with its check. One inverted term here makes
+ * the car amplify its own oversteer, which reads as "the physics is broken"
+ * rather than "one line is negated", so the checks are worth the words.
+ */
+interface DriveInput {
+  /** -1..1. Negative is brake in D and drive in R; stepDrive owns which. */
+  th: number;
+  /** -1..1 steer request, before rate limiting and the speed-faded lock. */
+  st: number;
+  /** 0/1 held foot brake. */
+  bk: number;
+  /** 0/1 held handbrake: kills rear grip and switches the assist off. */
+  hb: number;
+}
+
+const cl = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
+/** Smoothstep between two thresholds, clamped. */
+const ss = (x: number, a: number, b: number) => smooth(cl((x - a) / (b - a), 0, 1));
+/** Framerate-independent exponential ease: the fraction to move this step. */
+const ease = (k: number, dt: number) => 1 - Math.exp(-k * dt);
+
+/** Fixed inner step. Variable delta feeding a saturating tyre curve is the
+ *  single likeliest way this ships broken, so the physics never sees the
+ *  frame delta directly. 1/120 leaves ~6x margin on the stability bound and
+ *  moves at most 0.083 units per step, well inside any collision circle. */
+const H_FIXED = 1 / 120;
+const MAX_SUBSTEPS = 8;
+/** A 300 ms stall advances the world 100 ms. Dilating time on a hitch beats
+ *  teleporting a 10 u/s car through a tower whose circle is 1.4 wide. */
+const DT_CAP = 0.1;
+const PRES_DT_CAP = 1 / 30;
+/** Grip and load normalizer: real gravity at this scene's 1.65 m per unit. */
+const G_REF = 6;
+/** Air time only, and deliberately NOT the same number: real-scale gravity
+ *  in a 52-unit world leaves a car hanging for an absurd length of time. */
+const GRAV_AIR = 20;
+/** Metres per world unit, for the speedometer. */
+const UNIT_M = 1.65;
+/** Tyre curve shape. Peak slip angle lands at 1.855 / B. */
+const TYRE_C = 1.45;
+/** Below this speed the chassis blends to a pure Ackermann trolley. Without
+ *  it the car shimmies at parking speed, and parking speed is the first
+ *  thing anyone experiences after clicking a truck. */
+const UKIN = 1.7;
+/** Rear combined-slip coupling: how much drive and brake eat cornering grip.
+ *  This is what earns power oversteer. Set to 0 if it ever rings. */
+const ELLIPSE = 0.7;
+const HB_GRIP = 0.3;
+const ASSIST_MAX = 1.8;
+const ASSIST_FADE = 0.75;
+const CS_ASSIST = 0.55;
+/** 0.31 s to full lock, 0.19 s back to centre. The old keyboard wrote a hard
+ *  plus or minus one straight into a yaw write, and that step function was
+ *  most of the toy feel. The ramp lives in physics so the keyboard, the HUD
+ *  wheel drag and anything added later all share one smoothing path. */
+const STEER_IN = 3.2;
+const STEER_OUT = 5.2;
+const SPEED_FADE = 7;
+const REST = 0.22;
+/** Tangential velocity kept in a scrape. High, because a wall should feel
+ *  like something you slide along, not a speed penalty for grazing a post. */
+const TANG_KEEP = 0.88;
+const CONTACT_MAX_PUSH = 0.4;
+/** Soft reflecting boundary, inside the 27-unit walker bowl and far inside
+ *  the fog far plane, so nothing pops as the car turns away. Machines on the
+ *  viaduct are exempt: the flyover ramps reach radius 31.7, so the bowl cut
+ *  across the deck in mid-air and bounced a truck off nothing. */
+const BOWL_R = 26;
+/** The bowl's positional correction is deliberately far smaller than a
+ *  contact's. A car that lands off the end of a flyover ramp is five units
+ *  outside the bowl, and resolving that overshoot at the contact rate would
+ *  drag it home at nearly twenty times driving speed. The velocity impulse is
+ *  what actually stops you leaving; the push only has to nudge. */
+const BOWL_PUSH_MAX = 0.05;
+/** Visible front-wheel angle cap, sized to the truck's front arch: at 0.50
+ *  the steered tread sweeps 0.35 longitudinally against a 0.46 half-opening
+ *  and 0.83 laterally against a flare edge at 0.73, so it clears. The full
+ *  0.58 lock would push tread about 0.11 past the flare. */
+const STEER_VIS_CLAMP = 0.5;
+/** Steer is delivered to the vehicle meshes through a React re-render, so it
+ *  is quantized: a steady corner settles on one bucket and stops rendering. */
+const STEER_VIS_STEP = 0.03;
+
+/** Chassis springs. Underdamped on purpose: the overshoot is the thing that
+ *  reads as mass, and critically damped looks dead. */
+const W0 = 13;
+const ZETA = 0.5;
+/** Pitch and roll gains are lower than a real chassis would want because the
+ *  wheels rotate with the body here (the vehicle assets have no separate
+ *  body group), so the lift term below has to keep them out of the tarmac. */
+const PITCH_K = 0.0038;
+const ROLL_K = 0.0045;
+const A_CLAMP = 22;
+const LAND_KICK = 0.9;
+
+/** Chase camera. The azimuth lag IS the corner swing: in a right turn the
+ *  camera sits off the outside rear and catches up on the exit. */
+const CAM_YAW_BASE = 2.8;
+const CAM_YAW_SPD = 3;
+const CAM_SLIP = 0.5;
+const CAM_SWING = 0.2;
+const CAM_OFFSET_MAX = 0.55;
+const CAM_POS_BASE = 4.5;
+const CAM_POS_SPD = 3;
+/** Beyond this the camera snaps rather than sweeping the whole map, which is
+ *  what a release-and-rejoin or a machine swap would otherwise look like. */
+const CAM_SNAP = 14;
+const BACK_SPD = 0.28;
+const UP_DROP = 0.15;
+const LOOK_UP = 1.1;
+const LOOK_AHEAD = 4;
+const LOOK_VEL = 0.12;
+const LOOK_RESP = 6;
+const CAM_ROLL_K = 0.006;
+const CAM_ROLL_MAX = 0.07;
+const SHAKE_K = 0.06;
+const SHAKE_MAX = 0.3;
+const SHAKE_DECAY = 6;
+const FOV0 = 40;
+const FOV_SPD = 10;
+const FOV_TH = 3;
+const FOV_DRIFT = 3;
+const FOV_RESP = 3.5;
+
+interface VehicleSpec {
+  /** Wheelbase, and the CG split fore and aft of it. */
+  L: number;
+  a: number;
+  b: number;
+  aFrac: number;
+  bFrac: number;
+  track: number;
+  hCg: number;
+  /** Yaw inertia over mass, as a multiple of a*b. */
+  K2: number;
+  MU: number;
+  /** Longitudinal traction factor, applied ONLY to the drive clamp. Without
+   *  it the clamp is a flat MU * load ceiling that every machine hits at
+   *  launch, so the whole fleet left the line at 3.7 to 4.4 u/s2 no matter
+   *  what its ACCEL said and a shuttle pod actually beat a truck. Cornering
+   *  grip is untouched, so the corner-speed budget in the comment above still
+   *  holds exactly. */
+  TRAC: number;
+  BF: number;
+  BR: number;
+  SIG_HI: number;
+  SIG_LO: number;
+  VMAX: number;
+  ACCEL: number;
+  BRAKE: number;
+  COAST: number;
+  HB_DECEL: number;
+  VREV: number;
+  ACCEL_REV: number;
+  ASSIST_YAW: number;
+  R_MAX: number;
+  wheelR: number;
+  halfWB: number;
+  halfTrack: number;
+  boat: boolean;
+  BTHRUST: number;
+  BDRAG: number;
+  BRUD: number;
+  BYAWD: number;
+  BLAT: number;
+}
+
+/** Per-machine tuning. Lengths take the rider's scale; speeds and
+ *  accelerations deliberately do not, because a 0.85-scale pod must not be
+ *  15% slower than the same pod at scale 1.
+ *
+ *  The MU numbers are what make the ring road a game rather than a rail:
+ *  max lateral is MU * G_REF = 6.3 u/s2, so the fastest a car holds the
+ *  ring's ~14-unit radius is sqrt(6.3 * 14) = 9.4 against a VMAX of 10.
+ *  Every corner asks for a brush of brake. */
+const DRIVE_TUNE = {
+  truck: { L: 2.3, track: 1.1, aFrac: 0.52, hCg: 0.52, K2: 1.15, MU: 1.05, TRAC: 1, BF: 9, BR: 10.2, SIG_HI: 0.56, SIG_LO: 0.19, ACCEL: 11, BRAKE: 14, COAST: 2, HB_DECEL: 5, VREV: 3.4, ACCEL_REV: 6, ASSIST_YAW: 2.2, R_MAX: 2.6, wheelR: 0.3 },
+  sedan: { L: 1.44, track: 0.72, aFrac: 0.5, hCg: 0.3, K2: 1.1, MU: 1.12, TRAC: 1.15, BF: 10, BR: 11, SIG_HI: 0.58, SIG_LO: 0.2, ACCEL: 12.5, BRAKE: 15, COAST: 1.9, HB_DECEL: 5, VREV: 3.4, ACCEL_REV: 6.5, ASSIST_YAW: 2, R_MAX: 2.9, wheelR: 0.19 },
+  tourer: { L: 1.84, track: 0.84, aFrac: 0.51, hCg: 0.33, K2: 1.15, MU: 1.08, TRAC: 1.05, BF: 9.6, BR: 10.6, SIG_HI: 0.55, SIG_LO: 0.19, ACCEL: 11.8, BRAKE: 14.5, COAST: 1.9, HB_DECEL: 5, VREV: 3.4, ACCEL_REV: 6.2, ASSIST_YAW: 2.1, R_MAX: 2.7, wheelR: 0.22 },
+  podbus: { L: 1.56, track: 0.92, aFrac: 0.48, hCg: 0.62, K2: 1.25, MU: 0.95, TRAC: 0.65, BF: 8.4, BR: 9.4, SIG_HI: 0.5, SIG_LO: 0.17, ACCEL: 7, BRAKE: 11, COAST: 2.4, HB_DECEL: 4, VREV: 2.8, ACCEL_REV: 4, ASSIST_YAW: 2.8, R_MAX: 2.2, wheelR: 0.24 },
+  // Single-track: it leans instead of steering, and it gets no countersteer
+  // help, because a leaning bike that catches its own slides feels wrong.
+  pod: { L: 0.84, track: 0, aFrac: 0.5, hCg: 0.34, K2: 0.95, MU: 1, TRAC: 1.2, BF: 9, BR: 9, SIG_HI: 0.7, SIG_LO: 0.24, ACCEL: 13.5, BRAKE: 13, COAST: 2.2, HB_DECEL: 5.5, VREV: 4, ACCEL_REV: 7, ASSIST_YAW: 1.2, R_MAX: 3.2, wheelR: 0.2 },
+  semi: { L: 7.3, track: 0.54, aFrac: 0.62, hCg: 1.2, K2: 1.4, MU: 0.85, TRAC: 0.5, BF: 7.5, BR: 8.5, SIG_HI: 0.34, SIG_LO: 0.13, ACCEL: 4.2, BRAKE: 8, COAST: 2.6, HB_DECEL: 3, VREV: 2.2, ACCEL_REV: 2.4, ASSIST_YAW: 3.2, R_MAX: 1.1, wheelR: 0.3 },
+} as const;
+
+/** Which tuning block a rider id maps to. Checked longest-prefix first so
+ *  "podbus" never falls through to "pod". */
+const TUNE_KEYS = ["podbus", "truck", "sedan", "tourer", "semi", "pod"] as const;
+
+/** Half body length for a rider id, before scale. */
+function bodyHalf(id: string | undefined, kind: "car" | "boat"): number {
+  if (kind === "boat") return BODY_HALF.boat;
+  const key = id ? TUNE_KEYS.find((k) => id.startsWith(k)) : undefined;
+  return key ? BODY_HALF[key] : 1.4;
+}
+
+/** Half body width for a rider id, before scale. The unknown case returns the
+ *  same 1.4 the length lookup does, which collapses the capsule back to the
+ *  circle the porter and the drone rider have always had. */
+function bodyHW(id: string | undefined, kind: "car" | "boat"): number {
+  if (kind === "boat") return BODY_HW.boat;
+  const key = id ? TUNE_KEYS.find((k) => id.startsWith(k)) : undefined;
+  return key ? BODY_HW[key] : 1.4;
+}
+
+function resolveSpec(id: string, kind: "car" | "boat" | "bot", driveMax: number, scale: number): VehicleSpec {
+  // VMAX derives from the existing per-rider driveMax prop, so all nineteen
+  // mount sites keep their authored relative pace with no edits.
+  const VMAX = driveMax * 2.5;
+  const key = TUNE_KEYS.find((k) => id.startsWith(k)) ?? "sedan";
+  const t = DRIVE_TUNE[key];
+  const L = t.L * scale;
+  const a = L * t.aFrac;
+  return {
+    L,
+    a,
+    b: L - a,
+    aFrac: t.aFrac,
+    bFrac: 1 - t.aFrac,
+    track: t.track * scale,
+    hCg: t.hCg * scale,
+    K2: t.K2 * a * (L - a),
+    MU: t.MU,
+    TRAC: t.TRAC,
+    BF: t.BF,
+    BR: t.BR,
+    SIG_HI: t.SIG_HI,
+    SIG_LO: t.SIG_LO,
+    VMAX,
+    ACCEL: t.ACCEL,
+    BRAKE: t.BRAKE,
+    COAST: t.COAST,
+    HB_DECEL: t.HB_DECEL,
+    VREV: t.VREV,
+    ACCEL_REV: t.ACCEL_REV,
+    ASSIST_YAW: t.ASSIST_YAW,
+    R_MAX: t.R_MAX,
+    wheelR: t.wheelR * scale,
+    halfWB: L * 0.5,
+    halfTrack: Math.max(0.2, t.track * scale * 0.5),
+    boat: kind === "boat",
+    // A barge takes two seconds to answer the helm and then keeps turning.
+    // The lag is the point, so it gets a first-order yaw and no tyres.
+    BTHRUST: 3.4,
+    BDRAG: 0.095,
+    BRUD: 0.9,
+    BYAWD: 1.1,
+    BLAT: 1.3,
+  };
+}
+
+const DEFAULT_SPEC = resolveSpec("sedan", "car", 4, 1);
+
+/** Deck centreline samples. Sample spacing is 0.59 units against a 0.62
+ *  half-width test, so coverage along the ribbon is continuous. */
+const FLYOVER_PTS = Array.from({ length: 129 }, (_, i) => FLYOVER.getPointAt(i / 128));
+const DECK_HALF_W = 0.62;
+
+/**
+ * Wheels-on-deck height above (x, z), or null off the ribbon. The flyover is
+ * the only elevated surface a machine can be on, so one linear scan for the
+ * one driven vehicle is the whole ground query the scene needs. Without it
+ * a player taking over a flyover rider drops through the deck immediately.
+ */
+function deckHeightAt(x: number, z: number): number | null {
+  let best = -1;
+  for (const q of FLYOVER_PTS) {
+    const dx = q.x - x;
+    const dz = q.z - z;
+    if (dx * dx + dz * dz < DECK_HALF_W * DECK_HALF_W && q.y > best) best = q.y;
+  }
+  return best < 0 ? null : best + FLYOVER_Y;
+}
+
+/** Live chassis state. One stable ref, mutated in place: the camera, the HUD
+ *  and the vehicle meshes all read it, so a car at full slip costs no
+ *  React renders at all. */
+interface Rig {
+  vf: number;
+  vl: number;
+  r: number;
+  vy: number;
+  steer: number;
+  steerN: number;
+  ax: number;
+  ay: number;
+  airborne: boolean;
+  speed: number;
+  norm: number;
+  beta: number;
+  gear: "D" | "N" | "R";
+  gripLoss: number;
+  driftHeat: number;
+  pitch: number;
+  pitchV: number;
+  roll: number;
+  rollV: number;
+  steerVis: number;
+  brakeLamp: number;
+  thSm: number;
+  bkSm: number;
+  hb: number;
+  /** Event channels: physics raises them, presentation consumes and clears. */
+  impact: number;
+  landing: number;
+  /** Decaying shake level the camera reads. It has to be a separate field
+   *  because presentation runs before the camera does, so a channel that
+   *  cleared itself would always be zero by the time the camera looked. */
+  hit: number;
+  driven: boolean;
+  spec: VehicleSpec;
+}
+
+function createRig(): Rig {
+  return {
+    vf: 0, vl: 0, r: 0, vy: 0,
+    steer: 0, steerN: 0, ax: 0, ay: 0, airborne: false,
+    speed: 0, norm: 0, beta: 0, gear: "N",
+    gripLoss: 0, driftHeat: 0,
+    pitch: 0, pitchV: 0, roll: 0, rollV: 0,
+    steerVis: 0, brakeLamp: 0,
+    thSm: 0, bkSm: 0, hb: 0,
+    impact: 0, landing: 0, hit: 0,
+    driven: false, spec: DEFAULT_SPEC,
+  };
+}
+
+function resetRig(rig: Rig) {
+  const spec = rig.spec;
+  Object.assign(rig, createRig());
+  rig.spec = spec;
+}
+
+/**
+ * One fixed physics substep. Order matters: steering, gear, load transfer,
+ * longitudinal, rear combined slip, tyres, yaw, then integrate.
+ */
+function stepDrive(rig: Rig, inp: DriveInput, g: THREE.Object3D, h: number) {
+  const s = rig.spec;
+  if (s.boat) {
+    // No tyres, no load transfer, no handbrake. Drag is quadratic so the
+    // barge coasts a long way, and the rudder needs way on to bite.
+    rig.vf += (inp.th * s.BTHRUST - s.BDRAG * rig.vf * Math.abs(rig.vf)) * h;
+    rig.r += (inp.st * s.BRUD * cl(Math.abs(rig.vf) / 2, 0.25, 1) * Math.sign(rig.vf || 1) - rig.r * s.BYAWD) * h;
+    rig.vl += (-rig.vf * rig.r - s.BLAT * rig.vl) * h;
+    rig.r = cl(rig.r, -0.85, 0.85);
+    rig.ax = 0;
+    rig.ay = -rig.vf * rig.r;
+    rig.steer = inp.st * 0.3;
+    g.rotation.y -= rig.r * h;
+    const by = g.rotation.y;
+    g.position.x += (Math.sin(by) * rig.vf - Math.cos(by) * rig.vl) * h;
+    g.position.z += (Math.cos(by) * rig.vf + Math.sin(by) * rig.vl) * h;
+    return;
+  }
+
+  // A. Steering. Return to centre is faster than turn-in, which is what a
+  // real self-centring rack does and what stops the car darting on release.
+  const rate = Math.abs(inp.st) > Math.abs(rig.steerN) ? STEER_IN : STEER_OUT;
+  rig.steerN += cl(inp.st - rig.steerN, -rate * h, rate * h);
+  const lock = s.SIG_HI - (s.SIG_HI - s.SIG_LO) * cl(Math.abs(rig.vf) / SPEED_FADE, 0, 1);
+  let d = rig.steerN * lock;
+  // Countersteer aid, and only while the player is NOT steering. beta > 0
+  // means the car is travelling to the driver's right of where it points,
+  // so the tail is out to the left and the correction is a LEFT (negative)
+  // steer input: -CS_ASSIST * beta is negative. Inverting this sign makes
+  // the car amplify its own slide.
+  d += cl(-CS_ASSIST * rig.beta, -0.14, 0.14) * (1 - Math.abs(rig.steerN));
+  rig.steer = cl(d, -s.SIG_HI, s.SIG_HI);
+
+  // B. Gear, as real state rather than a HUD multiplier. In D a negative
+  // throttle is the brake pedal, not reverse, which kills the old bug where
+  // the S key drove you backwards with the readout still showing D.
+  if (Math.abs(rig.vf) < 0.4 && inp.th < -0.05 && rig.gear !== "R") rig.gear = "R";
+  if (rig.gear === "R" && (inp.th > 0.05 || rig.vf > 0.6)) rig.gear = "D";
+  if (rig.gear === "N" && Math.abs(inp.th) > 0.05) rig.gear = inp.th > 0 ? "D" : "R";
+  if (rig.gear === "D" && Math.abs(rig.vf) < 0.15 && Math.abs(inp.th) < 0.05) rig.gear = "N";
+
+  // C. Load transfer. Braking gives ax < 0, so nF rises, the nose bites and
+  // the rear goes light. This one line is where trail-braking rotation
+  // comes from, and it is why the front axle needs no friction ellipse.
+  const xfer = cl(rig.ax / G_REF, -0.7, 0.7) * (s.hCg / s.L);
+  const nF = cl(s.bFrac - xfer, 0.15, 0.85);
+  const nR = cl(s.aFrac + xfer, 0.15, 0.85);
+
+  // D. Longitudinal. Torque droop rather than heavy drag, so top speed is
+  // exact and coasting still feels weighty.
+  let aDrive = 0;
+  let aBrake = 0;
+  if (rig.gear === "R") {
+    if (inp.th < 0) aDrive = inp.th * s.ACCEL_REV * (1 - cl(-rig.vf / s.VREV, 0, 1));
+    else if (inp.th > 0 && rig.vf < -0.2) aBrake = s.BRAKE * inp.th;
+  } else {
+    if (inp.th > 0) aDrive = inp.th * s.ACCEL * (1 - cl(rig.vf / s.VMAX, 0, 1));
+    else if (inp.th < 0) aBrake = s.BRAKE * -inp.th;
+  }
+  if (inp.bk) aBrake = Math.max(aBrake, s.BRAKE);
+  if (rig.hb) aBrake = Math.max(aBrake, s.HB_DECEL);
+  if (Math.abs(inp.th) < 0.05 && !inp.bk) aBrake = Math.max(aBrake, s.COAST);
+  // Traction-limit the drive against the rear load BEFORE the ellipse, so
+  // the ellipse is not a function of its own output. TRAC is what keeps this
+  // ceiling from swallowing the whole authored ACCEL column at launch.
+  const tCap = s.MU * s.TRAC * nR * G_REF;
+  aDrive = cl(aDrive, -tCap, tCap);
+  // Capping at |vf|/h stops the brake reversing the car through zero inside
+  // a single substep, which would read as a bounce off nothing.
+  const aBrakeSigned = -Math.sign(rig.vf || 1) * Math.min(aBrake, Math.abs(rig.vf) / h + s.BRAKE);
+
+  // E. Rear combined slip. Only the rear: the front is modulated by its load
+  // alone, and an ellipse there is the term most likely to ring under trail
+  // braking for no gain the load transfer has not already delivered.
+  const useR = cl((Math.abs(aDrive) + 0.38 * aBrake) / (s.MU * nR * G_REF + 1e-4), 0, 1);
+  let muR = s.MU * Math.sqrt(Math.max(0, 1 - ELLIPSE * useR * useR));
+  if (rig.hb) muR *= HB_GRIP;
+  const muF = s.MU;
+
+  // F. Tyres: one saturating curve that peaks and then drops slightly. The
+  // drop is what lets a slide break away and stay out instead of settling
+  // on an asymptote, and it is what makes lifting off catch it.
+  const uSafe = Math.max(Math.abs(rig.vf), 0.9);
+  const aF = Math.atan2(rig.vl + s.a * rig.r, uSafe) - rig.steer;
+  const aR = Math.atan2(rig.vl - s.b * rig.r, uSafe);
+  const satF = Math.sin(TYRE_C * Math.atan(s.BF * aF));
+  const satR = Math.sin(TYRE_C * Math.atan(s.BR * aR));
+  // Sign check: straight ahead, steer right (steer > 0) gives aF < 0, so
+  // satF < 0 and AyF > 0, a force to the driver's right. That both pushes
+  // the car right and yaws the nose right. Correct.
+  const AyF = -muF * nF * G_REF * satF;
+  const AyR = -muR * nR * G_REF * satR;
+  rig.gripLoss = cl(Math.abs(aR) / (1.855 / s.BR), 0, 1);
+
+  // G. Yaw. The assist is a product setting, not physics: it pulls the car
+  // toward the grip-capped kinematic reference so a first-time visitor does
+  // not spin into a tower in three seconds, and it fades out once they have
+  // committed to a slide. Handbrake switches it off entirely.
+  const cd = Math.cos(rig.steer);
+  const sd = Math.sin(rig.steer);
+  const tauPhys = (s.a * AyF * cd - s.b * AyR) / s.K2;
+  const rKin = (rig.vf * Math.tan(rig.steer)) / s.L;
+  const rCap = (s.MU * G_REF) / Math.max(Math.abs(rig.vf), 1);
+  const rRef = cl(rKin, -rCap, rCap);
+  const fade = 1 - ASSIST_FADE * ss(Math.abs(rig.beta), 0.18, 0.55);
+  const gAss = s.ASSIST_YAW * (1 - rig.hb) * fade;
+  const rD = tauPhys + cl(gAss * (rRef - rig.r), -ASSIST_MAX, ASSIST_MAX);
+
+  // H. Body accelerations, then integrate.
+  const axD = aDrive + aBrakeSigned - AyF * sd + rig.vl * rig.r;
+  const ayD = AyF * cd + AyR - rig.vf * rig.r;
+  rig.vf += axD * h;
+  const kb = cl(Math.abs(rig.vf) / UKIN, 0, 1);
+  const rK = (rig.vf * Math.tan(rig.steer)) / s.L;
+  rig.vl = kb * (rig.vl + ayD * h) + (1 - kb) * (rK * s.b);
+  rig.r = kb * (rig.r + rD * h) + (1 - kb) * rK;
+  if (rig.airborne) {
+    // Nothing to push against: yaw and slide just decay.
+    rig.r *= Math.exp(-0.6 * h);
+    rig.vl *= Math.exp(-0.4 * h);
+  }
+  rig.r = cl(rig.r, -s.R_MAX, s.R_MAX);
+  rig.vl = cl(rig.vl, -(0.85 * Math.abs(rig.vf) + 2.2), 0.85 * Math.abs(rig.vf) + 2.2);
+  rig.vf = cl(rig.vf, -s.VREV * 1.05, s.VMAX * 1.05);
+  rig.ax = axD;
+  rig.ay = ayD;
+
+  // rotation.y stays the visual heading: slip lives in the velocity vector,
+  // never in a mesh yaw the chase camera cannot see.
+  g.rotation.y -= rig.r * h;
+  const py = g.rotation.y;
+  const sy = Math.sin(py);
+  const cy = Math.cos(py);
+  g.position.x += (sy * rig.vf - cy * rig.vl) * h;
+  g.position.z += (cy * rig.vf + sy * rig.vl) * h;
+}
+
+/**
+ * Contact response as an impulse rather than a speed tax. n points AWAY from
+ * the other body. Tangential velocity is mostly kept, so a wall reads as
+ * something you scrape along.
+ *
+ * Known limitation: this is still one-sided, because path followers write
+ * their position from their curve every frame. T-boning a truck gives you a
+ * proper impulse and a spin, and the truck drives on through. That is why
+ * REST stays low: a hard bounce off an effectively immovable body looks
+ * absurd. Closing it means the lane branch owning two-way resolution.
+ */
+function rigContact(rig: Rig, g: THREE.Object3D, nx: number, nz: number, push: number) {
+  const p = Math.min(push, CONTACT_MAX_PUSH);
+  g.position.x += nx * p;
+  g.position.z += nz * p;
+  const py = g.rotation.y;
+  const sy = Math.sin(py);
+  const cy = Math.cos(py);
+  let wx = sy * rig.vf - cy * rig.vl;
+  let wz = cy * rig.vf + sy * rig.vl;
+  const vn = wx * nx + wz * nz;
+  if (vn >= 0) return; // already moving out of the surface
+  const j = -(1 + REST) * vn;
+  wx += nx * j;
+  wz += nz * j;
+  // Scrub and yaw damping scale with how head-on the hit is. Applying them
+  // flat compounds once per substep, and a car merely RESTING against a
+  // bollard is in contact on every substep of every frame: at eight substeps
+  // that is a 64% speed tax per frame, which reads as the car being glued to
+  // whatever it last touched. A grazing contact should cost almost nothing.
+  const sev = cl(-vn / 2, 0, 1);
+  const tx = -nz;
+  const tz = nx;
+  const vt = wx * tx + wz * tz;
+  wx -= tx * vt * (1 - TANG_KEEP) * sev;
+  wz -= tz * vt * (1 - TANG_KEEP) * sev;
+  rig.vf = sy * wx + cy * wz;
+  rig.vl = -cy * wx + sy * wz;
+  rig.r *= 1 - 0.18 * sev;
+  rig.impact = Math.max(rig.impact, -vn);
+}
+
+/** Closest-point scratch for the spine solver. JS has no cheap multi-return
+ *  and this runs a few hundred times a frame, so it is a module singleton. */
+const _spine = { ax: 0, az: 0, bx: 0, bz: 0 };
+
+/**
+ * Closest points between two 2D capsule spines, written into _spine. Each
+ * spine is a centre, a unit direction and a half extent; a half extent of
+ * zero degenerates to a point, which is how static circles and un-oriented
+ * colliders fall out of the same code path with no branch.
+ *
+ * This is the standard clamped-parameter segment solver: solve the
+ * unconstrained least squares for one parameter, clamp it, solve the other
+ * against that clamp, then re-clamp the first. Two passes is exact for
+ * segments, unlike the naive "project each centre onto the other".
+ */
+function closestSpines(
+  ax: number, az: number, adx: number, adz: number, ah: number,
+  bx: number, bz: number, bdx: number, bdz: number, bh: number
+) {
+  const rx = ax - bx;
+  const rz = az - bz;
+  const f = adx * bdx + adz * bdz;
+  const c = adx * rx + adz * rz;
+  const e = bdx * rx + bdz * rz;
+  const den = 1 - f * f;
+  // Near-parallel spines (two semis nose to tail) make the least squares
+  // singular, and any point along the overlap is equally close, so take the
+  // projection of B's centre onto A and let the clamps do the rest.
+  let s = den > 1e-6 ? cl((f * e - c) / den, -ah, ah) : cl(-c, -ah, ah);
+  const t = cl(f * s + e, -bh, bh);
+  s = cl(f * t - c, -ah, ah);
+  _spine.ax = ax + adx * s;
+  _spine.az = az + adz * s;
+  _spine.bx = bx + bdx * t;
+  _spine.bz = bz + bdz * t;
+}
+
+/**
+ * Every collider the driven machine has to stay out of, plus the world bowl.
+ * Runs per substep, which is a few hundred capsule tests a frame: free.
+ *
+ * `onDeck` is passed rather than derived, because the deck query is a linear
+ * scan of the viaduct centreline and the caller already has the answer.
+ */
+function resolveContacts(
+  rig: Rig,
+  g: THREE.Object3D,
+  selfR: number,
+  selfHL: number,
+  bowl: boolean,
+  onDeck: boolean
+) {
+  const fx = Math.sin(g.rotation.y);
+  const fz = Math.cos(g.rotation.y);
+  const hit = (ox: number, oz: number, odx: number, odz: number, ohl: number, orr: number) => {
+    closestSpines(g.position.x, g.position.z, fx, fz, selfHL, ox, oz, odx, odz, ohl);
+    let dx = _spine.ax - _spine.bx;
+    let dz = _spine.az - _spine.bz;
+    const rs = selfR + orr;
+    let d2 = dx * dx + dz * dz;
+    if (d2 > rs * rs) return;
+    if (d2 < 1e-6) {
+      // The spines actually cross, so there is no direction between the
+      // closest points. Push along the centre line, and if the centres
+      // coincide too, along this body's own lateral axis: any consistent
+      // direction beats a NaN normal reaching the chassis.
+      dx = g.position.x - ox;
+      dz = g.position.z - oz;
+      d2 = dx * dx + dz * dz;
+      if (d2 < 1e-6) {
+        dx = -fz;
+        dz = fx;
+        d2 = 1;
+      }
+    }
+    const d = Math.sqrt(d2);
+    rigContact(rig, g, dx / d, dz / d, rs - d);
+  };
+  COLLIDERS.forEach((c) => {
+    if (c.o === g) return;
+    // The flyover passes OVER the ring road. Without this test a car three
+    // units overhead shoves the player sideways through a solid deck.
+    if (c.deck.current !== onDeck) return;
+    hit(c.o.position.x, c.o.position.z, Math.sin(c.o.rotation.y), Math.cos(c.o.rotation.y), c.hl, c.r);
+  });
+  // Towers and the build site are upright circles, so their spine is a point
+  // and their direction is arbitrary.
+  for (const sc of STATIC_COLS) hit(sc.x, sc.z, 0, 1, 0, sc.r);
+  // Reflect off the world edge rather than clamping to it. At 10 u/s the
+  // bowl is crossed in five seconds, so the player meets it constantly and
+  // a hard clamp reads as sticking to an invisible wall. Barges are exempt:
+  // the canal sits outside the bowl and has its own banks.
+  if (!bowl) return;
+  const rad = Math.hypot(g.position.x, g.position.z);
+  if (rad > BOWL_R) {
+    rigContact(rig, g, -g.position.x / rad, -g.position.z / rad, Math.min(rad - BOWL_R, BOWL_PUSH_MAX));
+  }
+}
+
+/**
+ * Presentation, once per frame. Two second-order springs for the chassis,
+ * plus the smoothed channels the HUD and the lamps read.
+ *
+ * The vehicle assets have no separate body group, so pitching the rig
+ * rotates its wheels with it. The lift term compensates: raise the body by
+ * exactly the amount the outermost corner dropped, and the wheels sit on
+ * the road while the chassis still visibly dives, squats and leans.
+ */
+function presentDrive(rig: Rig, inp: DriveInput, dtP: number) {
+  const aL = cl(rig.ax, -A_CLAMP, A_CLAMP);
+  const aY = cl(rig.ay, -A_CLAMP, A_CLAMP);
+  // Both signs are negated against the raw acceleration, because of how the
+  // Euler angles land in this frame. rotation.x > 0 drops the +Z nose, so
+  // braking (aL < 0) has to produce a POSITIVE pitch to dive. rotation.z > 0
+  // raises the +X side, which is the driver's left, so a right-hand corner
+  // (aY > 0) needs a NEGATIVE roll to lean on its outside wheels. Getting
+  // either backwards gives a car that squats when it should dive and leans
+  // into corners like a motorcycle.
+  const pitchT = -PITCH_K * aL;
+  const rollT = -ROLL_K * aY;
+  rig.pitchV += (W0 * W0 * (pitchT - rig.pitch) - 2 * ZETA * W0 * rig.pitchV) * dtP;
+  rig.pitch += rig.pitchV * dtP;
+  rig.rollV += (W0 * W0 * (rollT - rig.roll) - 2 * ZETA * W0 * rig.rollV) * dtP;
+  rig.roll += rig.rollV * dtP;
+  if (rig.landing > 0) rig.pitchV -= LAND_KICK * rig.landing;
+  // Fold this frame's events into a decaying level, then clear them. The
+  // camera reads the level, because it runs after this and would otherwise
+  // only ever see zero.
+  rig.hit = Math.max(rig.hit * Math.exp(-SHAKE_DECAY * dtP), rig.impact + rig.landing * 0.6);
+  rig.impact = 0;
+  rig.landing = 0;
+
+  rig.speed = Math.hypot(rig.vf, rig.vl);
+  rig.norm = cl(rig.speed / rig.spec.VMAX, 0, 1);
+  rig.beta = Math.atan2(rig.vl, Math.max(Math.abs(rig.vf), 1));
+  rig.steerVis = cl(rig.steer, -STEER_VIS_CLAMP, STEER_VIS_CLAMP);
+
+  rig.thSm += (Math.max(0, inp.th) - rig.thSm) * ease(12, dtP);
+  rig.bkSm += ((inp.bk || rig.hb ? 1 : 0) - rig.bkSm) * ease(16, dtP);
+  // Lamps light on lift-off deceleration too, not only on the pedal, which
+  // is the difference between a car and a prop.
+  rig.brakeLamp = Math.max(rig.bkSm, cl(-rig.ax / 8, 0, 1));
+  rig.driftHeat += ((Math.abs(rig.beta) > 0.2 ? 1 : 0) - rig.driftHeat) * ease(2.2, dtP);
+}
 
 /* ---------------------------------------------------------------- *
  *  Contact shadows: soft dark discs, no shadow maps anywhere
@@ -522,13 +1324,18 @@ function IdleRobot() {
   const waveUntil = useRef(0);
   const keys = useRef({ f: 0, b: 0, l: 0, r: 0, run: false });
   // In game mode the hero unit is the player from the first frame, unless the
-  // player has stepped out to look around.
-  const driven = (ctx.game && !drive?.freeCam) || drive?.sel?.id === "hero-bot";
+  // player has stepped out to look around, or has taken a machine. Clicking a
+  // vehicle only clears freeCam, not the game flag, so without the `!sel` term
+  // the humanoid stayed live: both key handlers ate the same WASD, the robot
+  // walked off-screen while you drove, and both wrote drive.target so the
+  // camera owner came down to mount order.
+  const inMachine = !!drive?.sel && drive.sel.id !== "hero-bot";
+  const driven = (ctx.game && !drive?.freeCam && !inMachine) || drive?.sel?.id === "hero-bot";
 
   // Game controls: arrows and WASD walk, shift runs, E or G greets the
   // nearest unit and it waves back. Kept local so drive mode is untouched.
   useEffect(() => {
-    if (!ctx.game) return;
+    if (!ctx.game || inMachine) return;
     const set = (k: string, v: number, downEvt: boolean) => {
       const kk = k.toLowerCase();
       if (["w", "arrowup"].includes(kk)) keys.current.f = v;
@@ -560,18 +1367,39 @@ function IdleRobot() {
       set(e.key, 1, true);
     };
     const up = (e: KeyboardEvent) => set(e.key, 0, false);
+    // A key held when the window loses focus never delivers its keyup, so it
+    // stays latched at 1 for as long as the player is away. Combined with the
+    // frame delta on return that walked the unit straight through every
+    // collider in its path, so both halves are fixed: this clears the latch,
+    // and the frame loop caps its step.
+    const clear = () => {
+      keys.current.f = 0;
+      keys.current.b = 0;
+      keys.current.l = 0;
+      keys.current.r = 0;
+      keys.current.run = false;
+    };
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
+    window.addEventListener("blur", clear);
+    document.addEventListener("visibilitychange", clear);
     (window as unknown as { __vpGreet?: () => void }).__vpGreet = greet;
     return () => {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", clear);
+      document.removeEventListener("visibilitychange", clear);
       delete (window as unknown as { __vpGreet?: () => void }).__vpGreet;
     };
-  }, [ctx.game]);
-  useFrame((_, delta) => {
+  }, [ctx.game, inMachine]);
+  useFrame((_, rawDelta) => {
     const g = group.current;
     if (!g || !driven) return;
+    // r3f hands over raw wall-clock time, and rAF is suspended while the tab
+    // is hidden, so the first frame back can carry twenty seconds. Uncapped
+    // that integrated to a thirty-unit step, which tunnels through every
+    // half-unit collider on the way and lands on the fog edge.
+    const delta = Math.min(rawDelta, PRES_DT_CAP);
     if (waving && performance.now() > waveUntil.current) setWaving(false);
     // game mode reads its own keys; drive mode reads the shared input
     const k = keys.current;
@@ -594,10 +1422,14 @@ function IdleRobot() {
       g.position.x *= 27 / r;
       g.position.z *= 27 / r;
     }
-    // the robot slides out of overlaps like everything else
-    const resolve = (ox: number, oz: number, orr: number) => {
-      const dx = g.position.x - ox;
-      const dz = g.position.z - oz;
+    // The robot slides out of overlaps like everything else. It is a point
+    // against the other body's capsule spine, which matters now that a semi
+    // is a 3.7-unit spine rather than a 3.4-unit circle: a circle test would
+    // let the walker stroll straight through the middle of the trailer.
+    const resolve = (ox: number, oz: number, odx: number, odz: number, ohl: number, orr: number) => {
+      closestSpines(g.position.x, g.position.z, 0, 1, 0, ox, oz, odx, odz, ohl);
+      const dx = g.position.x - _spine.bx;
+      const dz = g.position.z - _spine.bz;
       const rs = 0.45 + orr;
       const d2 = dx * dx + dz * dz;
       if (d2 > rs * rs || d2 < 1e-6) return;
@@ -608,9 +1440,11 @@ function IdleRobot() {
       vel.current *= 0.5;
     };
     COLLIDERS.forEach((c) => {
-      if (c.o !== g) resolve(c.o.position.x, c.o.position.z, c.r);
+      if (c.o !== g) {
+        resolve(c.o.position.x, c.o.position.z, Math.sin(c.o.rotation.y), Math.cos(c.o.rotation.y), c.hl, c.r);
+      }
     });
-    for (const sc of STATIC_COLS) resolve(sc.x, sc.z, sc.r);
+    for (const sc of STATIC_COLS) resolve(sc.x, sc.z, 0, 1, 0, sc.r);
     const isMoving = Math.abs(vel.current) > 0.12;
     if (isMoving !== moving) setMoving(isMoving);
     if (drive) drive.target.current = g;
@@ -1012,7 +1846,25 @@ function BypassRoad() {
  *  where they will not spear the ring road or the plaza. */
 function FlyoverRoad() {
   const ctx = useScene();
-  const deck = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.62, 8, false), []);
+  // TubeGeometry bakes world coordinates, so flattening the round tube into a
+  // ribbon with a mesh-level scale on Y squashed the deck's ELEVATION, not
+  // just its thickness: the slab ended up lying across the ring road at y 0.3
+  // while its riders drove three units above it. Flatten every ring toward
+  // its own centre point instead, which touches thickness only.
+  const deck = useMemo(() => {
+    const SEG = 160;
+    const geo = new THREE.TubeGeometry(FLYOVER, SEG, 0.62, 8, false);
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    const perRing = pos.count / (SEG + 1);
+    const c = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      FLYOVER.getPointAt(Math.min(1, Math.floor(i / perRing) / SEG), c);
+      pos.setY(i, c.y + (pos.getY(i) - c.y) * 0.12);
+    }
+    pos.needsUpdate = true;
+    geo.computeVertexNormals();
+    return geo;
+  }, []);
   const guide = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.02, 6, false), []);
   // Pylon placement: sample the deck, drop a pier unless it lands on the
   // ring road ribbon, inside the plaza, or on the bypass lane.
@@ -1067,7 +1919,7 @@ function FlyoverRoad() {
   }, []);
   return (
     <group>
-      <mesh geometry={deck} scale={[1, 0.12, 1]}>
+      <mesh geometry={deck}>
         <meshStandardMaterial color="#16171c" metalness={0.55} roughness={0.5} />
       </mesh>
       <mesh geometry={guide} position={[0, 0.075, 0]}>
@@ -1118,112 +1970,308 @@ function PathRider({
   hitR?: number;
   /** Chase-camera distance for this machine; long ones need much more. */
   driveChase?: number;
-  children: (wheelSpeed: number) => ReactNode;
+  /** Second and third arguments are the live front-wheel angle (radians,
+   *  positive turns left, matching the vehicle assets) and brake state of a
+   *  player-driven machine. Ambient traffic passes undefined for both, which
+   *  is what keeps its tail lamps on the old constant glow. */
+  children: (wheelSpeed: number, steer?: number, brake?: boolean) => ReactNode;
 }) {
   const ctx = useScene();
   const drive = useDrive();
   const group = useRef<THREE.Group>(null);
   const u = useRef(offset);
-  const vel = useRef(0);
   const wasDriven = useRef(false);
   const p = useMemo(() => new THREE.Vector3(), []);
   const tan = useMemo(() => new THREE.Vector3(), []);
   const len = useMemo(() => curve.getLength(), [curve]);
   const driven = !!driveId && drive?.sel?.id === driveId;
   const selfR = (hitR ?? (driveKind === "boat" ? 2.6 : 1.4)) * scale;
+  const halfLen = bodyHalf(driveId, driveKind) * scale;
+  // Which deck this body is on, shared by reference with its collider entry so
+  // the resolver reads it in O(1). Flyover riders start elevated, and it is
+  // refreshed from real height every frame because a driven machine can come
+  // down a ramp and rejoin the traffic at grade mid-lap.
+  const deckRef = useRef(curve === FLYOVER);
   const yieldF = useRef(1);
   const holdUntil = useRef(0);
+  const holdSince = useRef(0);
+  const jamSince = useRef(0);
+  const drivenRef = useRef(false);
+  // Rejoin blend state, captured at the moment the player lets go.
+  const rejoin = useRef(0);
+  const rejoinPos = useMemo(() => new THREE.Vector3(), []);
+  const rejoinYaw = useRef(0);
   const lamps = useRef<THREE.Group>(null);
   const lampMat = useMemo(
     () => new THREE.MeshBasicMaterial({ color: "#ff3524", transparent: true, opacity: 0, toneMapped: false }),
     []
   );
   useEffect(() => () => lampMat.dispose(), [lampMat]);
+  // Steer and brake reach the vehicle meshes as props, which costs a render,
+  // so they are quantized: a steady corner settles on one bucket and stops
+  // re-rendering, and ambient traffic never writes them at all.
+  const [vis, setVis] = useState({ ws: 0, st: 0, bk: false });
+  const visRef = useRef(vis);
+  const pushVis = (ws: number, st: number, bk: boolean) => {
+    const q = visRef.current;
+    if (q.ws === ws && q.st === st && q.bk === bk) return;
+    visRef.current = { ws, st, bk };
+    setVis(visRef.current);
+  };
+  useEffect(() => {
+    drivenRef.current = driven;
+  }, [driven]);
   useEffect(() => {
     const g = group.current;
     if (!g) return;
-    const entry = { o: g as THREE.Object3D, r: selfR };
+    // Heading, pitch and roll all live on this one group (the vehicle assets
+    // have no separate body node), so the Euler order has to apply yaw
+    // first or a leaning car would also swing its nose.
+    g.rotation.order = "YXZ";
+    const entry: Collider = { o: g as THREE.Object3D, r: selfR, hl: halfLen, deck: deckRef };
     COLLIDERS.add(entry);
     return () => {
       COLLIDERS.delete(entry);
     };
-  }, [selfR]);
+  }, [selfR, halfLen]);
+  // Only drivable riders join the lane registry: the airborne drone rider and
+  // the build-site porter have no traffic to queue behind.
+  useEffect(() => {
+    const g = group.current;
+    if (!g || !driveId) return;
+    const entry: TrafficEntry = {
+      curve,
+      len,
+      u,
+      half: halfLen,
+      r: selfR,
+      o: g as THREE.Object3D,
+      driven: drivenRef,
+    };
+    TRAFFIC.add(entry);
+    TRAFFIC_BY_OBJ.set(g, entry);
+    return () => {
+      TRAFFIC.delete(entry);
+      TRAFFIC_BY_OBJ.delete(g);
+    };
+  }, [curve, len, halfLen, selfR, driveId, u]);
   useFrame((st, delta) => {
     const g = group.current;
     if (!g) return;
+    // Refreshed before any contact test runs, so a machine that has just
+    // ramped down is treated as being at grade on the same frame.
+    deckRef.current = g.position.y > DECK_GAP;
     if (driven && drive) {
-      // player control: throttle eases velocity, steering scales with speed
-      wasDriven.current = true;
-      const inp = drive.input.current;
-      vel.current += (inp.th * driveMax - vel.current) * Math.min(1, delta * 1.8);
-      if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 1.4);
-      if (inp.bk) vel.current *= 1 - Math.min(1, delta * 5);
-      const steerAuthority = Math.min(1, Math.abs(vel.current) / 1.2);
-      g.rotation.y -= inp.st * 1.7 * delta * steerAuthority * Math.sign(vel.current || 1);
-      g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
-      g.position.z += Math.cos(g.rotation.y) * vel.current * delta;
-      if (driveKind === "boat") {
-        g.position.y += (0.02 - g.position.y) * Math.min(1, delta * 3);
-        g.position.z = Math.min(CANAL_BOUNDS.zMax, Math.max(CANAL_BOUNDS.zMin, g.position.z));
-        g.position.x = Math.min(CANAL_BOUNDS.xMax, Math.max(-CANAL_BOUNDS.xMax, g.position.x));
-      } else {
-        // eased return to grade: driving off the flyover lands, not falls
-        g.position.y += (ROAD_Y - g.position.y) * Math.min(1, delta * 2.5);
+      const rig = drive.rig.current;
+      if (!wasDriven.current) {
+        // Take control without a dead stop: seed the chassis with the speed
+        // this machine was already carrying, and let its heading stand.
+        wasDriven.current = true;
+        resetRig(rig);
+        rig.spec = resolveSpec(driveId!, driveKind, driveMax, scale);
+        rig.driven = true;
+        rig.vf = ctx.still ? 0 : len * lapSpeed;
+        rig.gear = rig.vf > 0.25 ? "D" : "N";
       }
-      // resolve collisions: slide out of overlaps, bleed speed on contact
-      const px = g.position;
-      const resolve = (ox: number, oz: number, orr: number) => {
-        const dx = px.x - ox;
-        const dz = px.z - oz;
-        const rs = selfR + orr;
-        const d2 = dx * dx + dz * dz;
-        if (d2 > rs * rs || d2 < 1e-6) return;
-        const d = Math.sqrt(d2);
-        const push = rs - d;
-        px.x += (dx / d) * push;
-        px.z += (dz / d) * push;
-        vel.current *= 0.55;
-      };
-      COLLIDERS.forEach((c) => {
-        if (c.o !== g) resolve(c.o.position.x, c.o.position.z, c.r);
-      });
-      for (const sc of STATIC_COLS) resolve(sc.x, sc.z, sc.r);
+      const inp = drive.input.current;
+      rig.hb = inp.hb;
+      const dtPhys = Math.min(delta, DT_CAP);
+      let rem = dtPhys;
+      let guard = 0;
+      while (rem > 1e-5 && guard++ < MAX_SUBSTEPS) {
+        const h = Math.min(H_FIXED, rem);
+        stepDrive(rig, inp, g, h);
+        resolveContacts(rig, g, selfR, halfLen, driveKind !== "boat", deckRef.current);
+        rem -= h;
+      }
+      // A NaN anywhere in the chassis is unrecoverable and silently poisons
+      // the camera too, so catch it here rather than debugging it later.
+      if (!Number.isFinite(rig.vf + rig.vl + rig.r + rig.steer + g.position.x + g.position.z)) {
+        resetRig(rig);
+        rig.driven = true;
+        g.position.set(0, ROAD_Y, 0);
+      }
+      if (driveKind === "boat") {
+        // The banks bounce the barge instead of clamping it, so a hard turn
+        // into the wall scrubs off speed rather than sticking.
+        if (g.position.z < CANAL_BOUNDS.zMin) rigContact(rig, g, 0, 1, CANAL_BOUNDS.zMin - g.position.z);
+        else if (g.position.z > CANAL_BOUNDS.zMax) rigContact(rig, g, 0, -1, g.position.z - CANAL_BOUNDS.zMax);
+        if (g.position.x < -CANAL_BOUNDS.xMax) rigContact(rig, g, 1, 0, -CANAL_BOUNDS.xMax - g.position.x);
+        else if (g.position.x > CANAL_BOUNDS.xMax) rigContact(rig, g, -1, 0, g.position.x - CANAL_BOUNDS.xMax);
+      }
+      const dtP = Math.min(delta, PRES_DT_CAP);
+      presentDrive(rig, inp, dtP);
+      g.rotation.x = rig.pitch;
+      g.rotation.z = rig.roll;
+      // Ride height: the body dives and leans about the group origin, which
+      // would drive the loaded corner through the tarmac, so lift by exactly
+      // what that corner dropped. The net read is suspension travel.
+      const lift =
+        Math.abs(Math.sin(rig.pitch)) * rig.spec.halfWB + Math.abs(Math.sin(rig.roll)) * rig.spec.halfTrack;
+      // Stay on the viaduct while you are on it, and fall off the end. The
+      // half-unit tolerance is what stops a car driving UNDER the flyover
+      // from being snapped up onto it.
+      let surface = ROAD_Y;
+      if (driveKind === "boat") {
+        surface = 0.02;
+      } else {
+        const deck = deckHeightAt(g.position.x, g.position.z);
+        if (deck !== null && g.position.y > deck - 0.5) surface = deck;
+      }
+      const rest = surface + lift;
+      if (g.position.y > rest + 0.05 || rig.vy > 0) {
+        // Driving off the flyover now actually falls, and lands.
+        rig.airborne = true;
+        rig.vy -= GRAV_AIR * dtPhys;
+        g.position.y += rig.vy * dtPhys;
+        if (g.position.y <= rest) {
+          rig.landing = Math.max(rig.landing, -rig.vy);
+          g.position.y = rest;
+          rig.vy = 0;
+          rig.airborne = false;
+        }
+      } else {
+        g.position.y += (rest - g.position.y) * ease(8, dtPhys);
+        rig.airborne = false;
+      }
+      if (lamps.current) {
+        lamps.current.visible = rig.brakeLamp > 0.05;
+        lampMat.opacity = rig.brakeLamp;
+      }
       drive.target.current = g;
+      // The assets take a LEFT-positive steer angle; the chassis works in
+      // right-positive, so this is the one place the sign flips.
+      pushVis(
+        Math.round((Math.abs(rig.vf) / scale) * 4) / 4,
+        -Math.round(rig.steerVis / STEER_VIS_STEP) * STEER_VIS_STEP,
+        rig.brakeLamp > 0.45
+      );
       return;
     }
+    const now = st.clock.elapsedTime;
     if (wasDriven.current) {
-      // released: rejoin the loop at the nearest curve param
+      // Released: pick a curve param that is near, points the way the car is
+      // already pointing, and is not already occupied. The old scan took the
+      // nearest param unconditionally, which could drop a car inside another
+      // one and, since every ring rider shares a lap speed, leave it there.
       wasDriven.current = false;
-      vel.current = 0;
+      // Only clear the chassis if nothing else has claimed it. Swapping
+      // straight from one machine to another runs the new rider's seeding
+      // and this release in the same frame, in mount order, so an
+      // unconditional reset here would wipe a rig that is already in use.
+      const rig = drive?.rig.current;
+      if (rig && !drive?.sel) {
+        resetRig(rig);
+        rig.driven = false;
+      }
+      rejoinPos.copy(g.position);
+      rejoinYaw.current = g.rotation.y;
+      rejoin.current = REJOIN_BLEND;
+      g.rotation.x = 0;
+      g.rotation.z = 0;
+      pushVis(0, 0, false);
+      const fx = Math.sin(g.rotation.y);
+      const fz = Math.cos(g.rotation.y);
       let best = 0;
-      let bd = Infinity;
+      let bs = Infinity;
       for (let i = 0; i < 160; i++) {
         const uu = i / 160;
         curve.getPointAt(uu, p);
+        curve.getTangentAt(uu, tan);
         const dx = p.x - g.position.x;
         const dz = p.z - g.position.z;
-        const dd = dx * dx + dz * dz;
-        if (dd < bd) {
-          bd = dd;
+        let score = dx * dx + dz * dz - REJOIN_HEADING * Math.max(0, tan.x * fx + tan.z * fz);
+        TRAFFIC.forEach((e) => {
+          if (e.o === g || e.curve !== curve) return;
+          let du = Math.abs(uu - e.u.current);
+          if (curve.closed) du = Math.min(du, 1 - du);
+          if (du * len < halfLen + e.half + 0.6) score += 1e4;
+        });
+        if (score < bs) {
+          bs = score;
           best = uu;
         }
       }
       u.current = best;
     }
-    // Yield: stop for whoever is in the way, hold the stop for a beat, then
-    // go. The target is the player whether they are driving or on foot, so a
-    // walking humanoid gets the same right of way a driven machine does.
-    const now = st.clock.elapsedTime;
+    // Yield to the player, whether they are driving or on foot. The hold is
+    // now capped: it used to be re-armed on every frame the player stayed
+    // inside the circle, so a parked player pinned this rider forever and
+    // the machine behind drove straight into its back. That was the bug.
+    let playerWant = 1;
     const pt = drive?.target.current ?? null;
-    if (pt && pt !== g) {
+    if (pt && pt !== g && Math.abs(pt.position.y - g.position.y) < DECK_GAP) {
       const dx = pt.position.x - g.position.x;
       const dz = pt.position.z - g.position.z;
-      const near = selfR + 2.8;
-      if (dx * dx + dz * dz < near * near) holdUntil.current = now + STOP_DWELL;
+      // A fast player needs to be seen sooner, or the yield reads as a jerk.
+      const near = selfR + 2.8 + (drive?.rig.current.speed ?? 0) * 0.35;
+      if (dx * dx + dz * dz < near * near) {
+        if (holdSince.current === 0) holdSince.current = now;
+        holdUntil.current = now + STOP_DWELL;
+      } else if (now > holdUntil.current) {
+        holdSince.current = 0;
+      }
+    } else if (now > holdUntil.current) {
+      holdSince.current = 0;
     }
-    const want = now < holdUntil.current ? 0 : 1;
-    yieldF.current += (want - yieldF.current) * Math.min(1, delta * 2.5);
-    // brake lamps blink through the pause so the stop reads as a decision
+    if (now < holdUntil.current) {
+      playerWant = holdSince.current > 0 && now - holdSince.current > STOP_DWELL_MAX ? 0.25 : 0;
+    }
+    // Same-curve following. Speed, never position: the curve write at the
+    // bottom of this function is absolute, so a positional push would be
+    // erased on the same frame it was applied.
+    let laneGap = Infinity;
+    let coneGap = Infinity;
+    if (driveId) {
+      TRAFFIC.forEach((e) => {
+        if (e.o === g || e.curve !== curve || e.driven.current) return;
+        let du = e.u.current - u.current;
+        // On an open curve nobody behind you wraps around to be in front.
+        if (du < 0) {
+          if (!curve.closed) return;
+          du += 1;
+        }
+        const gap = du * len - (halfLen + e.half);
+        if (gap < laneGap) laneGap = gap;
+      });
+      // Everything else (the ride-hail taxi sharing the ring line, walkers,
+      // the player, riders on a crossing curve) gets a forward cone. Slowing
+      // beats pushing here: shoving a path follower off its own curve looks
+      // far worse than a pause does.
+      const fx = Math.sin(g.rotation.y);
+      const fz = Math.cos(g.rotation.y);
+      const reach = CONE_BASE + halfLen + len * lapSpeed * 0.8;
+      COLLIDERS.forEach((c) => {
+        if (c.o === g) return;
+        const lane = TRAFFIC_BY_OBJ.get(c.o);
+        if (lane && lane.curve === curve && !lane.driven.current) return; // the arc rule owns it
+        if (Math.abs(c.o.position.y - g.position.y) > DECK_GAP) return; // different deck
+        const dx = c.o.position.x - g.position.x;
+        const dz = c.o.position.z - g.position.z;
+        const ahead = dx * fx + dz * fz;
+        if (ahead <= 0 || ahead > reach + c.r) return;
+        if (Math.abs(-dx * fz + dz * fx) > selfR * 0.8 + c.r * 0.8) return;
+        const gap = ahead - (halfLen + c.r);
+        if (gap < coneGap) coneGap = gap;
+      });
+    }
+    // Two cones can in principle stare each other down. Nothing in the
+    // authored layout does, but a rider that has been cone-stopped this long
+    // starts creeping rather than parking there for the session.
+    if (yieldF.current < 0.06) {
+      if (jamSince.current === 0) jamSince.current = now;
+    } else {
+      jamSince.current = 0;
+    }
+    const jammed = jamSince.current > 0 && now - jamSince.current > JAM_MAX;
+    let coneWant = coneGap === Infinity ? 1 : ss(coneGap, GAP_STOP, GAP_FREE);
+    if (jammed) coneWant = Math.max(coneWant, 0.3);
+    const want = Math.min(playerWant, laneGap === Infinity ? 1 : ss(laneGap, GAP_STOP, GAP_FREE), coneWant);
+    // Braking is prompt and releasing is gentle. That asymmetry is what keeps
+    // a queue from oscillating into a stop-and-go wave.
+    yieldF.current += (want - yieldF.current) * ease(want < yieldF.current ? 6 : 2, delta);
+    // Brake lamps for every reason the machine slows, not just player yields:
+    // a blink through the pause reads as a decision rather than a stall.
     if (lamps.current) {
       const stopped = 1 - yieldF.current;
       lamps.current.visible = stopped > 0.05;
@@ -1234,10 +2282,30 @@ function PathRider({
     curve.getTangentAt(u.current, tan);
     // y is additive so elevated curves (the flyover) carry their own height
     // while the flat ground loops keep behaving exactly as before
-    g.position.set(p.x, p.y + y, p.z);
-    g.rotation.y = Math.atan2(tan.x, tan.z);
+    const tx = p.x;
+    const ty = p.y + y;
+    const tz = p.z;
+    const tyaw = Math.atan2(tan.x, tan.z);
+    if (rejoin.current > 0) {
+      rejoin.current = Math.max(0, rejoin.current - delta);
+      const k = smooth(1 - rejoin.current / REJOIN_BLEND);
+      let dh = tyaw - rejoinYaw.current;
+      if (dh > Math.PI) dh -= Math.PI * 2;
+      if (dh < -Math.PI) dh += Math.PI * 2;
+      g.position.set(
+        rejoinPos.x + (tx - rejoinPos.x) * k,
+        rejoinPos.y + (ty - rejoinPos.y) * k,
+        rejoinPos.z + (tz - rejoinPos.z) * k
+      );
+      g.rotation.y = rejoinYaw.current + dh * k;
+    } else {
+      g.position.set(tx, ty, tz);
+      g.rotation.y = tyaw;
+    }
   });
-  const wheelSpeed = ctx.still ? 0 : (len * lapSpeed) / scale;
+  // Ambient riders roll at their lap speed; a driven one rolls at whatever it
+  // is actually doing, so the wheels no longer spin while it sits parked.
+  const wheelSpeed = driven ? vis.ws : ctx.still ? 0 : (len * lapSpeed) / scale;
   const clickable = !!driveId && !!drive && !ctx.background;
   return (
     <group
@@ -1267,7 +2335,7 @@ function PathRider({
       }
       onPointerOut={clickable ? () => (document.body.style.cursor = "auto") : undefined}
     >
-      {children(wheelSpeed)}
+      {children(wheelSpeed, driven ? vis.st : undefined, driven ? vis.bk : undefined)}
       {driveKind !== "boat" && (
         <group ref={lamps} visible={false}>
           <mesh position={[-0.36, 0.5, -(selfR / scale) * 0.82]} material={lampMat}>
@@ -1306,27 +2374,27 @@ function FlyoverTraffic() {
   return (
     <>
       <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.88} driveId="truck-3" driveLabel="CYBERTRUCK">
-        {(s) => (
+        {(s, steer, brake) => (
           <>
-            <CyberTruck dim={ctx.dim} speed={s} />
+            <CyberTruck dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.4} l={3.0} opacity={0.4} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
           </>
         )}
       </PathRider>
       <PathRider curve={FLYOVER} offset={0.88} lapSpeed={0.02} y={FLYOVER_Y} scale={0.86} driveId="tourer-3" driveLabel="GRAN TOURER">
-        {(s) => (
+        {(s, steer, brake) => (
           <>
-            <GranTourer dim={ctx.dim} speed={s} />
+            <GranTourer dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
             <TailTrail y={0.44} z={-1.05} />
           </>
         )}
       </PathRider>
       <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.92} driveId="sedan-3" driveLabel="ROBOTAXI">
-        {(s) => (
+        {(s, steer, brake) => (
           <>
-            <Sedan dim={ctx.dim} speed={s} />
+            <Sedan dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.2} opacity={0.38} y={0.012} />
             <TailTrail y={0.44} z={-1.05} />
           </>
@@ -1434,11 +2502,33 @@ function TrafficBeacons() {
   );
 }
 
-/** While driving, the camera falls in behind the controlled machine. */
+/**
+ * While driving, the camera falls in behind the controlled machine.
+ *
+ * The old pass was a rear offset in the target's yaw, one framerate-dependent
+ * lerp, and a hard-snapped lookAt. That snap against a smoothed position is a
+ * per-frame derivative discontinuity baked straight into the view matrix, and
+ * it read as cheap no matter what the chassis underneath was doing. This one
+ * lags the azimuth behind the car (which is what makes a corner swing), leads
+ * the look target down the road, rolls slightly into the lateral load, kicks
+ * on impact and widens the frustum with speed.
+ *
+ * Walking gets none of it. A humanoid keeps the original tuning exactly.
+ */
 function ChaseCam({ controls, game }: { controls: { current: { enabled: boolean } | null }; game?: boolean }) {
+  const ctx = useScene();
   const drive = useDrive();
   const want = useMemo(() => new THREE.Vector3(), []);
-  useFrame(({ camera }, delta) => {
+  const lead = useMemo(() => new THREE.Vector3(), []);
+  const lookWant = useMemo(() => new THREE.Vector3(), []);
+  const lookAt = useMemo(() => new THREE.Vector3(), []);
+  const camYaw = useRef<number | null>(null);
+  const camRoll = useRef(0);
+  useFrame((state, delta) => {
+    // The default camera is the perspective one configured on <Canvas>; the
+    // fov sweep below needs that concrete type.
+    const camera = state.camera as THREE.PerspectiveCamera;
+    const clock = state.clock;
     // game mode keeps the camera on the player unit; drive mode follows the
     // selected machine
     const following = drive?.sel || (game && !drive?.freeCam);
@@ -1446,23 +2536,97 @@ function ChaseCam({ controls, game }: { controls: { current: { enabled: boolean 
     const oc = controls.current;
     if (!t) {
       if (oc && !oc.enabled) oc.enabled = true;
+      camYaw.current = null;
       return;
     }
     if (oc && oc.enabled) oc.enabled = false;
-    const bot = game || drive?.sel?.kind === "bot";
-    const back = drive?.sel?.chase ?? (bot ? 4.2 : 7.8);
-    const up = bot ? 2.2 : back * 0.42;
-    want
-      .set(-Math.sin(t.rotation.y) * back, up, -Math.cos(t.rotation.y) * back)
-      .add(t.position);
-    camera.position.lerp(want, Math.min(1, delta * 2.4));
-    camera.lookAt(t.position.x, t.position.y + 1.1, t.position.z);
+    // Orbit's target was pinned at world centre forever, so stepping out of a
+    // machine parked at the fog line swung the camera all the way home.
+    if (oc) (oc as unknown as { target?: THREE.Vector3 }).target?.copy(t.position);
+    const dt = Math.min(delta, PRES_DT_CAP);
+    const rig = drive?.rig.current;
+    // A selection wins over the game flag: on /3d-game the walking camera
+    // would otherwise stay selected while the player drove a truck.
+    const bot = drive?.sel ? drive.sel.kind === "bot" : !!game;
+    const psi = t.rotation.y;
+    if (camYaw.current === null) {
+      camYaw.current = psi;
+      // Seed the look target too, or the first frame of a follow sweeps the
+      // view all the way in from world origin.
+      lookAt.set(t.position.x, t.position.y + LOOK_UP, t.position.z);
+    }
+
+    if (!rig || !rig.driven || bot) {
+      // On foot: the original camera, untouched.
+      const back = drive?.sel?.chase ?? (bot ? 4.2 : 7.8);
+      const up = bot ? 2.2 : back * 0.42;
+      camYaw.current = psi;
+      want.set(-Math.sin(psi) * back, up, -Math.cos(psi) * back).add(t.position);
+      camera.position.lerp(want, ease(2.4, dt));
+      camera.lookAt(t.position.x, t.position.y + 1.1, t.position.z);
+      lookAt.set(t.position.x, t.position.y + 1.1, t.position.z);
+      if (camera.fov !== FOV0) {
+        camera.fov = FOV0;
+        camera.updateProjectionMatrix();
+      }
+      return;
+    }
+
+    // Reduced motion keeps the framing improvements and drops the effects
+    // that actually move the viewer: roll, shake and the fov sweep together
+    // are what make a chase camera nauseating.
+    const cine = !ctx.still;
+    const n = rig.norm;
+
+    // Azimuth lag. In a right-hand corner the camera sits off the outside
+    // rear and catches up on the exit, and in a slide it swings around to
+    // show the flank rather than staring at the boot lid.
+    let off = -CAM_SLIP * rig.beta + CAM_SWING * rig.r;
+    off = cl(off, -CAM_OFFSET_MAX, CAM_OFFSET_MAX);
+    let dy = psi + off - camYaw.current;
+    if (dy > Math.PI) dy -= Math.PI * 2;
+    if (dy < -Math.PI) dy += Math.PI * 2;
+    camYaw.current += dy * ease(CAM_YAW_BASE + CAM_YAW_SPD * n, dt);
+
+    const back = (drive?.sel?.chase ?? 7.8) * (1 + BACK_SPD * n);
+    const up = back * 0.42 * (1 - UP_DROP * n);
+    want.set(-Math.sin(camYaw.current) * back, up, -Math.cos(camYaw.current) * back).add(t.position);
+    if (want.distanceTo(camera.position) > CAM_SNAP) camera.position.copy(want);
+    else camera.position.lerp(want, ease(CAM_POS_BASE + CAM_POS_SPD * n, dt));
+
+    // Lead the look target down the road and smooth it, so the view matrix
+    // stops carrying a discontinuity every frame.
+    const wx = Math.sin(psi) * rig.vf - Math.cos(psi) * rig.vl;
+    const wz = Math.cos(psi) * rig.vf + Math.sin(psi) * rig.vl;
+    lead.set(Math.sin(psi) * LOOK_AHEAD * n + wx * LOOK_VEL, 0, Math.cos(psi) * LOOK_AHEAD * n + wz * LOOK_VEL);
+    lookWant.set(t.position.x, t.position.y + LOOK_UP, t.position.z).add(lead);
+    lookAt.lerp(lookWant, ease(LOOK_RESP, dt));
+    camera.lookAt(lookAt);
+
+    if (cine) {
+      camRoll.current += (cl(-CAM_ROLL_K * rig.ay, -CAM_ROLL_MAX, CAM_ROLL_MAX) - camRoll.current) * ease(5, dt);
+      camera.rotateZ(camRoll.current);
+      // Two irrational frequencies so the shake never visibly repeats.
+      const sh = Math.min(SHAKE_MAX, rig.hit * SHAKE_K);
+      if (sh > 0.001) {
+        const ts = clock.elapsedTime;
+        camera.position.x += sh * Math.sin(ts * 47.3);
+        camera.position.y += sh * Math.sin(ts * 61.7) * 0.6;
+      }
+      // Quadratic in speed so the sensation lands in the top quarter of the
+      // range instead of creeping in from a standstill.
+      const fovWant = FOV0 + FOV_SPD * n * n + FOV_TH * rig.thSm * n + FOV_DRIFT * rig.driftHeat;
+      if (Math.abs(camera.fov - fovWant) > 0.01) {
+        camera.fov += (fovWant - camera.fov) * ease(FOV_RESP, dt);
+        camera.updateProjectionMatrix();
+      }
+    }
   });
   return null;
 }
 
-/** In-canvas layer keeps only the idle invitation; the active cockpit lives
- *  in a viewport-fixed portal so it never moves with scroll or layout. */
+/** In-canvas layer keeps only the idle invitation; the active cockpit is a
+ *  plain DOM sibling of the Canvas, docked inside the game frame. */
 function CanvasHint() {
   const drive = useDrive();
   if (!drive || drive.sel) return null;
@@ -1520,61 +2684,70 @@ function AirCarDock() {
   );
 }
 
-/** Equal lap speeds keep the ring spacing constant forever: no overtaking,
- *  no eventual overlap during long homepage dwells. */
+/**
+ * Ring order is authored, not incidental: long bodies and short ones
+ * alternate so no two Cybertrucks are ever neighbours, and every gap clears
+ * the sum of the two half-lengths by at least four world units even before
+ * the following logic in PathRider does anything. The old offsets clustered
+ * three big vehicles inside a fifth of the loop, which meant a single yield
+ * closed the gap and put one truck's nose inside another's body.
+ *
+ * Equal lap speeds still hold that spacing while nothing perturbs it; the
+ * car-following taper is what holds it when something does.
+ */
 function RingTraffic() {
   const ctx = useScene();
   return (
     <>
-      {/* hero pickup: frozen offset 0.1 parks it on the camera side */}
-      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.92} driveId="truck-1" driveLabel="CYBERTRUCK">
-        {(s) => (
+      {/* hero pickup: frozen offset 0.13 parks it on the camera side */}
+      <PathRider curve={ROAD} offset={0.13} lapSpeed={0.027} y={ROAD_Y} scale={0.92} driveId="truck-1" driveLabel="CYBERTRUCK">
+        {(s, steer, brake) => (
           <>
-            <CyberTruck dim={ctx.dim} speed={s} />
+            <CyberTruck dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="truck-2" driveLabel="CYBERTRUCK">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.92} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="truck-2" driveLabel="CYBERTRUCK">
+        {(s, steer, brake) => (
           <>
-            <CyberTruck dim={ctx.dim} speed={s} />
+            <CyberTruck dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
           </>
         )}
       </PathRider>
       {/* second sedan and a narrow single-track pod fill the ring out */}
-      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="tourer-1" driveLabel="GRAN TOURER">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.3} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="tourer-1" driveLabel="GRAN TOURER">
+        {(s, steer, brake) => (
           <>
-            <GranTourer dim={ctx.dim} speed={s} />
+            <GranTourer dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
             <TailTrail y={0.44} z={-1.05} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.5} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="podbus-1" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.39} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="podbus-1" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
+        {(s, steer, brake) => (
           <>
-            <PodBus dim={ctx.dim} speed={s} />
+            <PodBus dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.2} l={2.4} opacity={0.42} y={0.012} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.62} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-1" driveLabel="MONOPOD" driveMax={5}>
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.22} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-1" driveLabel="MONOPOD" driveMax={5}>
+        {(s, steer, brake) => (
           <>
-            <MonoPod dim={ctx.dim} speed={s} />
+            <MonoPod dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={0.55} l={1.4} opacity={0.38} y={0.012} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.78} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="sedan-1" driveLabel="ROBOTAXI">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.65} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="sedan-1" driveLabel="ROBOTAXI">
+        {(s, steer, brake) => (
           <>
-            <Sedan dim={ctx.dim} speed={s} />
+            <Sedan dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
             <TailTrail y={0.42} z={-1.16} />
           </>
@@ -1582,45 +2755,45 @@ function RingTraffic() {
       </PathRider>
       {/* the ring fills out: a second tourer, two more taxis, a second pod
           and a second shuttle, so the loop reads as traffic not a parade */}
-      <PathRider curve={ROAD} offset={0.05} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="sedan-2" driveLabel="ROBOTAXI">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.04} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="sedan-2" driveLabel="ROBOTAXI">
+        {(s, steer, brake) => (
           <>
-            <Sedan dim={ctx.dim} speed={s} />
+            <Sedan dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
             <TailTrail y={0.42} z={-1.16} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.18} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="truck-4" driveLabel="CYBERTRUCK">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.48} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="truck-4" driveLabel="CYBERTRUCK">
+        {(s, steer, brake) => (
           <>
-            <CyberTruck dim={ctx.dim} speed={s} />
+            <CyberTruck dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.36} lapSpeed={0.027} y={ROAD_Y} scale={0.83} driveId="tourer-2" driveLabel="GRAN TOURER">
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.74} lapSpeed={0.027} y={ROAD_Y} scale={0.83} driveId="tourer-2" driveLabel="GRAN TOURER">
+        {(s, steer, brake) => (
           <>
-            <GranTourer dim={ctx.dim} speed={s} />
+            <GranTourer dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
             <TailTrail y={0.44} z={-1.05} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.7} lapSpeed={0.027} y={ROAD_Y} scale={0.84} driveId="podbus-2" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.83} lapSpeed={0.027} y={ROAD_Y} scale={0.84} driveId="podbus-2" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
+        {(s, steer, brake) => (
           <>
-            <PodBus dim={ctx.dim} speed={s} />
+            <PodBus dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={1.2} l={2.4} opacity={0.42} y={0.012} />
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.9} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-2" driveLabel="MONOPOD" driveMax={5}>
-        {(s) => (
+      <PathRider curve={ROAD} offset={0.57} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-2" driveLabel="MONOPOD" driveMax={5}>
+        {(s, steer, brake) => (
           <>
-            <MonoPod dim={ctx.dim} speed={s} />
+            <MonoPod dim={ctx.dim} speed={s} steer={steer} brake={brake} />
             <ContactShadow w={0.55} l={1.4} opacity={0.38} y={0.012} />
           </>
         )}
@@ -2252,75 +3425,109 @@ function usePrefersReducedMotion() {
   return still;
 }
 
-/** The cockpit, docked to the VIEWPORT (portal to body): bottom-center,
- *  same place no matter how the page scrolls. The wheel is alive: an rAF
- *  loop eases the rim toward the live steering input (keyboard included)
- *  and layers in micro road-feel while throttle is applied, so it reads
- *  as a machine being driven, not a static widget. */
+/** The cockpit, docked inside the game frame: bottom-center controls plus a
+ *  telemetry panel top-right. Both are absolutely positioned siblings of the
+ *  Canvas inside the relative wrapper, so they travel with the frame.
+ *
+ *  Everything live is written imperatively from one rAF loop. The wheel now
+ *  shows the chassis's ACTUAL road-wheel angle rather than echoing the key
+ *  that was pressed, which means it displays the rate limit, the speed-faded
+ *  lock and the countersteer assist for free. The old cosmetic road-feel
+ *  sine is gone with it: there is real yaw data now, and fake vibration
+ *  layered on top of real data looks like a bug. */
 function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
-  const [gear, setGear] = useState<"R" | "N" | "D">("D");
+  // R/N/D is a REQUEST that biases the accelerator. The gear the machine is
+  // actually in comes from the chassis and is shown in the telemetry panel,
+  // so the HUD can no longer read D while the car reverses.
+  const [gearReq, setGearReq] = useState<"R" | "N" | "D">("D");
   const [pedal, setPedal] = useState<0 | 1>(0);
   const [braking, setBraking] = useState(false);
+  const [handbrake, setHandbrake] = useState(false);
   const wheelRef = useRef<HTMLDivElement | null>(null);
-  const shown = useRef(0);
+  const speedRef = useRef<HTMLDivElement | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
+  const gearRef = useRef<HTMLSpanElement | null>(null);
+  const stateRef = useRef<HTMLSpanElement | null>(null);
+  const needle = useRef(0);
   const dragStart = useRef<number | null>(null);
 
   useEffect(() => {
-    setGear("D");
+    setGearReq("D");
     setPedal(0);
     setBraking(false);
+    setHandbrake(false);
     api.input.current.th = 0;
     api.input.current.st = 0;
     api.input.current.bk = 0;
+    api.input.current.hb = 0;
   }, [sel?.id, api]);
 
-  // gear + pedal resolve into throttle; brake is its own held channel
+  // The pedal is a signed throttle request; the chassis owns what that means.
   useEffect(() => {
-    api.input.current.th = pedal === 1 ? (gear === "D" ? 1 : gear === "R" ? -0.7 : 0) : 0;
-  }, [api, gear, pedal]);
+    api.input.current.th = pedal === 1 ? (gearReq === "R" ? -1 : gearReq === "N" ? 0 : 1) : 0;
+  }, [api, gearReq, pedal]);
   useEffect(() => {
     api.input.current.bk = braking ? 1 : 0;
   }, [api, braking]);
+  useEffect(() => {
+    api.input.current.hb = handbrake ? 1 : 0;
+  }, [api, handbrake]);
 
-  // the living wheel: ease toward input, add road-feel under throttle
+  // One loop drives every live readout: rim angle, speed, slip and gear.
   useEffect(() => {
     if (!sel) return;
     let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = (now - start) / 1000;
-      const target = api.input.current.st * 120;
-      shown.current += (target - shown.current) * 0.18;
-      const feel =
-        Math.abs(api.input.current.th) > 0.05
-          ? Math.sin(t * 7.1) * 1.3 + Math.sin(t * 13.7) * 0.7
-          : Math.sin(t * 1.9) * 0.4;
+    const tick = () => {
+      const rig = api.rig.current;
       const el = wheelRef.current;
-      if (el) el.style.transform = `rotate(${shown.current + feel}deg)`;
+      if (el) el.style.transform = `rotate(${(rig.steer / rig.spec.SIG_HI) * 120}deg)`;
+      // Honest number, satisfying sweep: the dial tops out just above VMAX so
+      // the digits stay real rather than being multiplied for drama.
+      const kmh = Math.abs(rig.vf) * UNIT_M * 3.6;
+      needle.current += (kmh - needle.current) * 0.14;
+      if (speedRef.current) speedRef.current.textContent = String(Math.round(needle.current));
+      const bar = barRef.current;
+      if (bar) {
+        bar.style.width = `${Math.round(rig.driftHeat * 100)}%`;
+        bar.style.background = rig.gripLoss > 0.85 ? "#e2573e" : rig.gripLoss > 0.6 ? "#d9a860" : "#9fb4d0";
+      }
+      if (gearRef.current) gearRef.current.textContent = rig.gear;
+      const s = stateRef.current;
+      if (s) {
+        // The only readout that teaches where the limit is.
+        s.textContent = rig.hb ? "HANDBRAKE" : rig.gripLoss > 0.85 ? "SLIP" : rig.gripLoss > 0.6 ? "LOOSE" : "GRIP";
+        s.style.color = rig.hb || rig.gripLoss > 0.85 ? "#e2573e" : rig.gripLoss > 0.6 ? "#d9a860" : "#9a9aa3";
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [sel, api]);
 
-  // keyboard: throttle, steer, space brakes, Esc exits
+  // keyboard: signed throttle, steer, space brakes, shift handbrakes, Esc exits
   useEffect(() => {
     if (!sel) return;
     const input = api.input;
     const down = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
       if (["w", "arrowup"].includes(k)) input.current.th = 1;
-      if (["s", "arrowdown"].includes(k)) input.current.th = -0.7;
+      // Signed, not a reverse shortcut: at speed this is the brake pedal and
+      // only a held press from a near stop drops the box into R.
+      if (["s", "arrowdown"].includes(k)) input.current.th = -1;
       if (["a", "arrowleft"].includes(k)) input.current.st = -1;
       if (["d", "arrowright"].includes(k)) input.current.st = 1;
       if (k === " ") input.current.bk = 1;
+      if (k === "shift") input.current.hb = 1;
       if (k === "escape") api.set(null);
+      // Space and the arrows scroll the page under the canvas otherwise.
+      if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) e.preventDefault();
     };
     const up = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
       if (["w", "s", "arrowup", "arrowdown"].includes(k)) input.current.th = 0;
       if (["a", "d", "arrowleft", "arrowright"].includes(k)) input.current.st = 0;
       if (k === " ") input.current.bk = 0;
+      if (k === "shift") input.current.hb = 0;
     };
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
@@ -2330,6 +3537,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
       input.current.th = 0;
       input.current.st = 0;
       input.current.bk = 0;
+      input.current.hb = 0;
     };
   }, [sel, api]);
 
@@ -2361,9 +3569,9 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
     borderRadius: 7,
     cursor: "pointer",
     textAlign: "center",
-    border: `1px solid ${gear === g ? "#9fb4d0" : "#2c2e35"}`,
-    background: gear === g ? "rgba(159,180,208,0.18)" : "rgba(16,17,20,0.92)",
-    color: gear === g ? "#e6f0ff" : "#9a9aa3",
+    border: `1px solid ${gearReq === g ? "#9fb4d0" : "#2c2e35"}`,
+    background: gearReq === g ? "rgba(159,180,208,0.18)" : "rgba(16,17,20,0.92)",
+    color: gearReq === g ? "#e6f0ff" : "#9a9aa3",
   });
   const pedalStyle = (active: boolean): React.CSSProperties => ({
     ...base,
@@ -2377,6 +3585,38 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
   });
 
   return (
+    <>
+    {/* telemetry: the needle sweep is what reads as speed, so the dial tops
+        out just above VMAX and the printed figure stays honest */}
+    <div
+      style={{
+        ...base,
+        position: "absolute",
+        right: 16,
+        top: 16,
+        zIndex: 30,
+        pointerEvents: "none",
+        background: "rgba(16,17,20,0.92)",
+        border: "1px solid #2c2e35",
+        borderRadius: 8,
+        padding: "9px 12px 8px",
+        minWidth: 118,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "flex-end", gap: 6 }}>
+        <div ref={speedRef} style={{ fontSize: 30, lineHeight: 1 }}>
+          0
+        </div>
+        <div style={{ fontSize: 9, letterSpacing: "0.2em", color: "#9a9aa3" }}>KM/H</div>
+      </div>
+      <div style={{ marginTop: 9, height: 4, borderRadius: 2, background: "#23252b", overflow: "hidden" }}>
+        <div ref={barRef} style={{ width: "0%", height: "100%", background: "#9fb4d0", borderRadius: 2 }} />
+      </div>
+      <div style={{ marginTop: 7, display: "flex", justifyContent: "space-between", fontSize: 9, letterSpacing: "0.18em", color: "#9a9aa3" }}>
+        <span ref={gearRef}>N</span>
+        <span ref={stateRef}>GRIP</span>
+      </div>
+    </div>
     <div
       style={{
         position: "absolute",
@@ -2392,12 +3632,12 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
       }}
     >
       <div style={{ ...base, fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.82)", padding: "5px 10px", borderRadius: 6 }}>
-        DRIVING · {sel.label} · WASD + SPACE BRAKE · ESC EXITS
+        DRIVING · {sel.label} · WASD · SPACE BRAKE · SHIFT HANDBRAKE · HOLD S FROM A STOP TO REVERSE · ESC EXITS
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 14, pointerEvents: "auto" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           {(["R", "N", "D"] as const).map((g) => (
-            <div key={g} style={gearBtn(g)} onPointerDown={() => setGear(g)}>
+            <div key={g} style={gearBtn(g)} onPointerDown={() => setGearReq(g)}>
               {g}
             </div>
           ))}
@@ -2443,11 +3683,24 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
             BRAKE
           </div>
         </div>
+        {/* the handbrake is the only control that lets the rear go: it drops
+            rear grip to a third and switches the stability assist off */}
+        <div
+          style={{ ...pedalStyle(handbrake), color: handbrake ? "#e2c07e" : "#cfe4ff" }}
+          onPointerDown={() => setHandbrake(true)}
+          onPointerUp={() => setHandbrake(false)}
+          onPointerLeave={() => setHandbrake(false)}
+        >
+          HAND
+          <br />
+          BRAKE
+        </div>
         <div style={{ ...pedalStyle(false), color: "#e2937e" }} onPointerDown={() => api.set(null)}>
           ✕ EXIT
         </div>
       </div>
     </div>
+    </>
   );
 }
 
@@ -2537,8 +3790,11 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   const still = usePrefersReducedMotion();
   const [interacted, setInteracted] = useState(false);
   const [driveSel, setDriveSel] = useState<DriveSel | null>(null);
-  const driveInput = useRef({ th: 0, st: 0, bk: 0 });
+  const driveInput = useRef<DriveInput>({ th: 0, st: 0, bk: 0, hb: 0 });
   const driveTarget = useRef<THREE.Object3D | null>(null);
+  // One chassis, reused by whatever machine is currently under the player.
+  // Stable across renders, so adding it to the memo below changes nothing.
+  const driveRig = useRef<Rig>(createRig());
   const orbitRef = useRef<{ enabled: boolean } | null>(null);
   // Entering a machine always cancels free look: the two HUDs must never
   // render at once (they overlapped at the bottom of the frame).
@@ -2548,7 +3804,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     setFreeCamState(v);
   };
   const driveApi = useMemo<DriveApi>(
-    () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, input: driveInput, target: driveTarget }),
+    () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, input: driveInput, target: driveTarget, rig: driveRig }),
     [driveSel, freeCam]
   );
   const game = props.game ?? false;
