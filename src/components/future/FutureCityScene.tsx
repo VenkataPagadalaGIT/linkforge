@@ -24,6 +24,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Environment,
   Grid,
+  Html,
   Lightformer,
   MeshReflectorMaterial,
   OrbitControls,
@@ -42,7 +43,7 @@ import {
   type ReactNode,
 } from "react";
 import Robot from "./assets/Robot";
-import { AirCar, CyberSemi, CyberTruck, MonoPod, Sedan } from "./assets/Vehicles";
+import { AirCar, CargoBoat, CyberSemi, CyberTruck, MonoPod, Sedan } from "./assets/Vehicles";
 
 export interface FutureCitySceneProps {
   /** Background mode: pointer-events off, slow fixed orbit, dimmer, capped dpr. */
@@ -62,6 +63,26 @@ interface Ctx {
 // module. The non-null assertion below is safe once mounted under the provider.
 const SceneCtx = createContext<Ctx | null>(null);
 const useScene = () => useContext(SceneCtx)!;
+
+/* ---------------------------------------------------------------- *
+ *  Drive mode: click a machine, take its controls
+ * ---------------------------------------------------------------- */
+
+interface DriveSel {
+  id: string;
+  label: string;
+  kind: "car" | "boat" | "bot";
+}
+interface DriveApi {
+  sel: DriveSel | null;
+  set: (d: DriveSel | null) => void;
+  /** th: -0.7..1 throttle · st: -1..1 steer; mutated by HUD and keyboard. */
+  input: { current: { th: number; st: number } };
+  /** The object the chase camera follows while driving. */
+  target: { current: THREE.Object3D | null };
+}
+const DriveCtx = createContext<DriveApi | null>(null);
+const useDrive = () => useContext(DriveCtx);
 
 /* ---------------------------------------------------------------- *
  *  Palette: monochrome structures, one ice accent family, sparse amber
@@ -131,6 +152,19 @@ const FLYOVER = new THREE.CatmullRomCurve3(
 );
 /** Wheels-on-deck offset: half the flattened ribbon above the curve line. */
 const FLYOVER_Y = 0.075;
+
+/** Cargo canal along the north edge, outside the bypass: two barge lanes. */
+const CANAL = new THREE.CatmullRomCurve3(
+  [
+    v3(25, 0, 25.6), v3(10, 0, 25.1), v3(-12, 0, 25.5), v3(-25, 0, 26.3),
+    v3(-25.5, 0, 28.4), v3(-10, 0, 28.9), v3(12, 0, 28.6), v3(25.5, 0, 28.1),
+  ],
+  true,
+  "catmullrom",
+  0.5
+);
+/** Water clamp box for player-driven barges. */
+const CANAL_BOUNDS = { zMin: 24.4, zMax: 29.7, xMax: 29 } as const;
 
 /** Pedestrian loop around the plaza under the brain. */
 const WALKWAY = new THREE.CatmullRomCurve3(
@@ -411,9 +445,61 @@ function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
  *  the visor band, joint spheres and two-tone shells actually read. */
 function IdleRobot() {
   const ctx = useScene();
+  const drive = useDrive();
+  const group = useRef<THREE.Group>(null);
+  const vel = useRef(0);
+  const [moving, setMoving] = useState(false);
+  const driven = drive?.sel?.id === "hero-bot";
+  useFrame((_, delta) => {
+    const g = group.current;
+    if (!g || !driven || !drive) return;
+    const inp = drive.input.current;
+    vel.current += (inp.th * 1.7 - vel.current) * Math.min(1, delta * 3);
+    if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 3);
+    g.rotation.y -= inp.st * 2.6 * delta;
+    g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
+    g.position.z += Math.cos(g.rotation.y) * vel.current * delta;
+    // stay inside the fog bowl
+    const r = Math.hypot(g.position.x, g.position.z);
+    if (r > 27) {
+      g.position.x *= 27 / r;
+      g.position.z *= 27 / r;
+    }
+    const isMoving = Math.abs(vel.current) > 0.12;
+    if (isMoving !== moving) setMoving(isMoving);
+    drive.target.current = g;
+  });
+  const clickable = !!drive && !ctx.background;
   return (
-    <group position={[4.7, 0.008, 9.2]} rotation={[0, 1.35, 0]}>
-      <Robot pose="idle" phase={0.7} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+    <group
+      ref={group}
+      position={[4.7, 0.008, 9.2]}
+      rotation={[0, 1.35, 0]}
+      onClick={
+        clickable
+          ? (e) => {
+              e.stopPropagation();
+              drive!.set({ id: "hero-bot", label: "HUMANOID", kind: "bot" });
+            }
+          : undefined
+      }
+      onPointerOver={
+        clickable
+          ? (e) => {
+              e.stopPropagation();
+              document.body.style.cursor = "pointer";
+            }
+          : undefined
+      }
+      onPointerOut={clickable ? () => (document.body.style.cursor = "auto") : undefined}
+    >
+      <Robot
+        pose={driven && moving ? "walk" : "idle"}
+        phase={0.7}
+        scale={ROBOT_SCALE}
+        dim={ctx.dim}
+        frozen={ctx.still}
+      />
       <ContactShadow w={0.85} l={1.05} opacity={0.42} />
     </group>
   );
@@ -864,6 +950,10 @@ function PathRider({
   lapSpeed,
   y,
   scale = 1,
+  driveId,
+  driveLabel,
+  driveMax = 4,
+  driveKind = "car",
   children,
 }: {
   curve: THREE.CatmullRomCurve3;
@@ -871,17 +961,66 @@ function PathRider({
   lapSpeed: number;
   y: number;
   scale?: number;
+  /** Present = this rider is clickable and player-drivable. */
+  driveId?: string;
+  driveLabel?: string;
+  driveMax?: number;
+  driveKind?: "car" | "boat";
   children: (wheelSpeed: number) => ReactNode;
 }) {
   const ctx = useScene();
+  const drive = useDrive();
   const group = useRef<THREE.Group>(null);
   const u = useRef(offset);
+  const vel = useRef(0);
+  const wasDriven = useRef(false);
   const p = useMemo(() => new THREE.Vector3(), []);
   const tan = useMemo(() => new THREE.Vector3(), []);
   const len = useMemo(() => curve.getLength(), [curve]);
+  const driven = !!driveId && drive?.sel?.id === driveId;
   useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
+    if (driven && drive) {
+      // player control: throttle eases velocity, steering scales with speed
+      wasDriven.current = true;
+      const inp = drive.input.current;
+      vel.current += (inp.th * driveMax - vel.current) * Math.min(1, delta * 1.8);
+      if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 1.4);
+      const steerAuthority = Math.min(1, Math.abs(vel.current) / 1.2);
+      g.rotation.y -= inp.st * 1.7 * delta * steerAuthority * Math.sign(vel.current || 1);
+      g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
+      g.position.z += Math.cos(g.rotation.y) * vel.current * delta;
+      if (driveKind === "boat") {
+        g.position.y += (0.02 - g.position.y) * Math.min(1, delta * 3);
+        g.position.z = Math.min(CANAL_BOUNDS.zMax, Math.max(CANAL_BOUNDS.zMin, g.position.z));
+        g.position.x = Math.min(CANAL_BOUNDS.xMax, Math.max(-CANAL_BOUNDS.xMax, g.position.x));
+      } else {
+        // eased return to grade: driving off the flyover lands, not falls
+        g.position.y += (ROAD_Y - g.position.y) * Math.min(1, delta * 2.5);
+      }
+      drive.target.current = g;
+      return;
+    }
+    if (wasDriven.current) {
+      // released: rejoin the loop at the nearest curve param
+      wasDriven.current = false;
+      vel.current = 0;
+      let best = 0;
+      let bd = Infinity;
+      for (let i = 0; i < 160; i++) {
+        const uu = i / 160;
+        curve.getPointAt(uu, p);
+        const dx = p.x - g.position.x;
+        const dz = p.z - g.position.z;
+        const dd = dx * dx + dz * dz;
+        if (dd < bd) {
+          bd = dd;
+          best = uu;
+        }
+      }
+      u.current = best;
+    }
     if (!ctx.still) u.current = (u.current + lapSpeed * delta) % 1;
     curve.getPointAt(u.current, p);
     curve.getTangentAt(u.current, tan);
@@ -891,8 +1030,29 @@ function PathRider({
     g.rotation.y = Math.atan2(tan.x, tan.z);
   });
   const wheelSpeed = ctx.still ? 0 : (len * lapSpeed) / scale;
+  const clickable = !!driveId && !!drive && !ctx.background;
   return (
-    <group ref={group} scale={scale}>
+    <group
+      ref={group}
+      scale={scale}
+      onClick={
+        clickable
+          ? (e) => {
+              e.stopPropagation();
+              drive!.set({ id: driveId!, label: driveLabel ?? driveId!, kind: driveKind });
+            }
+          : undefined
+      }
+      onPointerOver={
+        clickable
+          ? (e) => {
+              e.stopPropagation();
+              document.body.style.cursor = "pointer";
+            }
+          : undefined
+      }
+      onPointerOut={clickable ? () => (document.body.style.cursor = "auto") : undefined}
+    >
       {children(wheelSpeed)}
     </group>
   );
@@ -921,7 +1081,7 @@ function FlyoverTraffic() {
   const ctx = useScene();
   return (
     <>
-      <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.88}>
+      <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.88} driveId="truck-3" driveLabel="CYBERTRUCK">
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
@@ -930,7 +1090,7 @@ function FlyoverTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.92}>
+      <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.92} driveId="sedan-3" driveLabel="ROBOTAXI">
         {(s) => (
           <>
             <Sedan dim={ctx.dim} speed={s} />
@@ -940,6 +1100,215 @@ function FlyoverTraffic() {
         )}
       </PathRider>
     </>
+  );
+}
+
+/** The canal: still dark water, two shoreline guides, cargo barge lanes. */
+function Canal() {
+  const ctx = useScene();
+  return (
+    <group>
+      <mesh position={[0, -0.02, 27.05]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[66, 8.6]} />
+        <meshPhysicalMaterial color="#0a1420" metalness={0.85} roughness={0.22} clearcoat={0.6} clearcoatRoughness={0.3} />
+      </mesh>
+      {[23.6, 30.5].map((z) => (
+        <mesh key={z} position={[0, 0.015, z]}>
+          <boxGeometry args={[64, 0.02, 0.06]} />
+          <meshBasicMaterial color={ICE} transparent opacity={0.14 * ctx.dim} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+/** Two electric barges hauling the fleet's containers, clickable like cars. */
+function BoatTraffic() {
+  const ctx = useScene();
+  const boat = (offset: number, id: string, ph: number) => (
+    <PathRider curve={CANAL} offset={offset} lapSpeed={0.006} y={0} scale={1.35} driveId={id} driveLabel="CARGO BARGE" driveMax={2.4} driveKind="boat">
+      {() => (
+        <>
+          <CargoBoat dim={ctx.dim} phase={ph} />
+          {!ctx.still && !ctx.background && (
+            <Trail width={0.55} length={5} decay={3} color="#dfe9f5" attenuation={(w) => w * w}>
+              <mesh position={[0, 0.08, -2.15]}>
+                <sphereGeometry args={[0.02, 4, 4]} />
+                <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+              </mesh>
+            </Trail>
+          )}
+        </>
+      )}
+    </PathRider>
+  );
+  return (
+    <>
+      {boat(0.12, "boat-1", 0)}
+      {boat(0.62, "boat-2", 2.4)}
+    </>
+  );
+}
+
+/** Holographic lane beacons on the ring road shoulder, cycling ice-amber. */
+function TrafficBeacons() {
+  const ctx = useScene();
+  const spots = useMemo(() => {
+    return [0.16, 0.5, 0.84].map((uu) => {
+      const pt = ROAD.getPointAt(uu);
+      const tn = ROAD.getTangentAt(uu);
+      const side = new THREE.Vector3(tn.z, 0, -tn.x).normalize();
+      return { x: pt.x + side.x * 1.2, z: pt.z + side.z * 1.2 };
+    });
+  }, []);
+  const mats = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  useFrame(({ clock }) => {
+    const t = ctx.still ? 0 : clock.elapsedTime;
+    spots.forEach((_, i) => {
+      const phase = (t * 0.35 + i * 0.33) % 1;
+      for (let k = 0; k < 2; k++) {
+        const m = mats.current[i * 2 + k];
+        if (!m) continue;
+        const on = phase < 0.5 ? k === 0 : k === 1;
+        m.opacity = (on ? 0.85 : 0.12) * ctx.dim;
+      }
+    });
+  });
+  return (
+    <>
+      {spots.map((sp, i) => (
+        <group key={i} position={[sp.x, 0, sp.z]}>
+          <mesh position={[0, 0.7, 0]}>
+            <cylinderGeometry args={[0.025, 0.035, 1.4, 8]} />
+            <meshStandardMaterial color="#1d1f24" metalness={0.6} roughness={0.5} />
+          </mesh>
+          {[0, 1].map((k) => (
+            <mesh key={k} position={[0, 1.5 - k * 0.18, 0]}>
+              <sphereGeometry args={[0.05, 8, 8]} />
+              <meshBasicMaterial
+                ref={(el) => {
+                  mats.current[i * 2 + k] = el;
+                }}
+                color={k === 0 ? ICE_BRIGHT : AMBER}
+                transparent
+                depthWrite={false}
+              />
+            </mesh>
+          ))}
+        </group>
+      ))}
+    </>
+  );
+}
+
+/** While driving, the camera falls in behind the controlled machine. */
+function ChaseCam({ controls }: { controls: { current: { enabled: boolean } | null } }) {
+  const drive = useDrive();
+  const want = useMemo(() => new THREE.Vector3(), []);
+  useFrame(({ camera }, delta) => {
+    const t = drive?.sel ? drive.target.current : null;
+    const oc = controls.current;
+    if (!t) {
+      if (oc && !oc.enabled) oc.enabled = true;
+      return;
+    }
+    if (oc && oc.enabled) oc.enabled = false;
+    const bot = drive!.sel!.kind === "bot";
+    const back = bot ? 4.2 : 7.8;
+    const up = bot ? 2.2 : 3.2;
+    want
+      .set(-Math.sin(t.rotation.y) * back, up, -Math.cos(t.rotation.y) * back)
+      .add(t.position);
+    camera.position.lerp(want, Math.min(1, delta * 2.4));
+    camera.lookAt(t.position.x, t.position.y + 1.1, t.position.z);
+  });
+  return null;
+}
+
+/** On-screen drive controls + keyboard (WASD / arrows, Esc exits). */
+function DriveHUD() {
+  const drive = useDrive();
+  const sel = drive?.sel ?? null;
+  useEffect(() => {
+    if (!sel || !drive) return;
+    const input = drive.input;
+    const down = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (["w", "arrowup"].includes(k)) input.current.th = 1;
+      if (["s", "arrowdown"].includes(k)) input.current.th = -0.7;
+      if (["a", "arrowleft"].includes(k)) input.current.st = -1;
+      if (["d", "arrowright"].includes(k)) input.current.st = 1;
+      if (k === "escape") drive.set(null);
+    };
+    const up = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (["w", "s", "arrowup", "arrowdown"].includes(k)) input.current.th = 0;
+      if (["a", "d", "arrowleft", "arrowright"].includes(k)) input.current.st = 0;
+    };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      input.current.th = 0;
+      input.current.st = 0;
+    };
+  }, [sel, drive]);
+  if (!drive) return null;
+  const btn: React.CSSProperties = {
+    pointerEvents: "auto",
+    userSelect: "none",
+    fontFamily: "monospace",
+    fontSize: 15,
+    lineHeight: 1,
+    color: "#cfe4ff",
+    background: "rgba(16,17,20,0.9)",
+    border: "1px solid #2c2e35",
+    borderRadius: 8,
+    padding: "12px 16px",
+    cursor: "pointer",
+  };
+  const hold = (th: number, st: number) => ({
+    onPointerDown: () => {
+      drive.input.current.th = th || drive.input.current.th;
+      drive.input.current.st = st;
+      if (th !== 0) drive.input.current.th = th;
+    },
+    onPointerUp: () => {
+      if (th !== 0) drive.input.current.th = 0;
+      if (st !== 0) drive.input.current.st = 0;
+    },
+    onPointerLeave: () => {
+      if (th !== 0) drive.input.current.th = 0;
+      if (st !== 0) drive.input.current.st = 0;
+    },
+  });
+  return (
+    <Html fullscreen zIndexRange={[40, 0]} style={{ pointerEvents: "none" }}>
+      {sel ? (
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 14, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.75)", padding: "5px 10px", borderRadius: 6 }}>
+            DRIVING · {sel.label} · WASD / ARROWS · ESC EXITS
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={btn} {...hold(0, -1)}>◀</div>
+            <div style={btn} {...hold(1, 0)}>▲</div>
+            <div style={btn} {...hold(-0.7, 0)}>▼</div>
+            <div style={btn} {...hold(0, 1)}>▶</div>
+            <div
+              style={{ ...btn, color: "#e2937e" }}
+              onPointerDown={() => drive.set(null)}
+            >
+              ✕ EXIT
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ position: "absolute", left: 12, bottom: 12, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.18em", color: "#6b6b74" }}>
+          CLICK A VEHICLE, BARGE, OR THE NEAR HUMANOID TO DRIVE IT
+        </div>
+      )}
+    </Html>
   );
 }
 
@@ -995,7 +1364,7 @@ function RingTraffic() {
   return (
     <>
       {/* hero pickup: frozen offset 0.1 parks it on the camera side */}
-      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.92}>
+      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.92} driveId="truck-1" driveLabel="CYBERTRUCK">
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
@@ -1004,7 +1373,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.88}>
+      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="truck-2" driveLabel="CYBERTRUCK">
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
@@ -1014,7 +1383,7 @@ function RingTraffic() {
         )}
       </PathRider>
       {/* second sedan and a narrow single-track pod fill the ring out */}
-      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85}>
+      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="sedan-2" driveLabel="ROBOTAXI">
         {(s) => (
           <>
             <Sedan dim={ctx.dim} speed={s} />
@@ -1023,7 +1392,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.62} lapSpeed={0.027} y={ROAD_Y} scale={0.85}>
+      <PathRider curve={ROAD} offset={0.62} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-1" driveLabel="MONOPOD" driveMax={5}>
         {(s) => (
           <>
             <MonoPod dim={ctx.dim} speed={s} />
@@ -1031,7 +1400,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.78} lapSpeed={0.027} y={ROAD_Y} scale={0.9}>
+      <PathRider curve={ROAD} offset={0.78} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="sedan-1" driveLabel="ROBOTAXI">
         {(s) => (
           <>
             <Sedan dim={ctx.dim} speed={s} />
@@ -1043,11 +1412,28 @@ function RingTraffic() {
       {/* the semi on the outer bypass: slow, huge, half in the fog; its
           frozen offset 0.6 parks it on the far arc for the reduced-motion
           poster, exactly where scale reads best against the towers */}
-      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y}>
+      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-1" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
             <AirCarDock />
+            <ContactShadow w={1.9} l={10} opacity={0.5} y={0.01} />
+          </>
+        )}
+      </PathRider>
+      {/* two more of the fleet, spaced a third of a lap apart */}
+      <PathRider curve={BYPASS} offset={0.27} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-2" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
+        {(s) => (
+          <>
+            <CyberSemi dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.9} l={10} opacity={0.5} y={0.01} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={BYPASS} offset={0.93} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-3" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
+        {(s) => (
+          <>
+            <CyberSemi dim={ctx.dim} speed={s} />
             <ContactShadow w={1.9} l={10} opacity={0.5} y={0.01} />
           </>
         )}
@@ -1372,6 +1758,9 @@ function World() {
       <Roadway />
       <BypassRoad />
       <FlyoverRoad />
+      <Canal />
+      <BoatTraffic />
+      <TrafficBeacons />
       <Towers />
       <HomeBase />
       <BuildSite />
@@ -1426,6 +1815,14 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   const background = props.background ?? false;
   const still = usePrefersReducedMotion();
   const [interacted, setInteracted] = useState(false);
+  const [driveSel, setDriveSel] = useState<DriveSel | null>(null);
+  const driveInput = useRef({ th: 0, st: 0 });
+  const driveTarget = useRef<THREE.Object3D | null>(null);
+  const orbitRef = useRef<{ enabled: boolean } | null>(null);
+  const driveApi = useMemo<DriveApi>(
+    () => ({ sel: driveSel, set: setDriveSel, input: driveInput, target: driveTarget }),
+    [driveSel]
+  );
   const ctx: Ctx = { background, still, dim: background ? 0.55 : 1 };
   const lightDim = background ? 0.8 : 1;
 
@@ -1471,8 +1868,12 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     >
       <fog attach="fog" args={["#0a0a0b", 18, 56]} />
       <SceneCtx.Provider value={ctx}>
-        <World />
-        {background && <BackgroundRig />}
+        <DriveCtx.Provider value={background ? null : driveApi}>
+          <World />
+          {background && <BackgroundRig />}
+          {!background && <ChaseCam controls={orbitRef} />}
+          {!background && <DriveHUD />}
+        </DriveCtx.Provider>
       </SceneCtx.Provider>
 
       <Grid
@@ -1516,6 +1917,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
 
       {!background && (
         <OrbitControls
+          ref={orbitRef as never}
           target={[0, 1.7, 0]}
           enablePan
           enableDamping

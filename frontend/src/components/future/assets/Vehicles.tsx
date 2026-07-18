@@ -418,11 +418,13 @@ export function CyberSemi({ dim, speed }: VehicleProps) {
       {([-1, 1] as const).map((side) => (
         <Text
           key={side}
-          position={[side * 0.675, 1.46, -1.1]}
+          position={[side * 0.675, 1.36, -1.1]}
           rotation={[0, side * (Math.PI / 2), 0]}
-          fontSize={0.34}
-          letterSpacing={0.14}
-          color="#3f424a"
+          fontSize={0.47}
+          letterSpacing={0.09}
+          color="#191b20"
+          outlineWidth={0.012}
+          outlineColor="#0d0e11"
           anchorX="center"
           anchorY="middle"
         >
@@ -737,6 +739,115 @@ export function MonoPod({ dim, speed }: VehicleProps) {
         <sphereGeometry args={[0.02, 8, 6]} />
         <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
       </mesh>
+    </group>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  CargoBoat: electric canal barge, container stacks, silent wake
+ * ---------------------------------------------------------------- */
+
+interface BoatGeos {
+  hull: THREE.BufferGeometry;
+}
+let _boat: BoatGeos | null = null;
+function boatGeos(): BoatGeos {
+  if (_boat) return _boat;
+  // Low freeboard barge profile: raked bow, long flat deck, squared stern.
+  const hull = sideExtrude(
+    [
+      [1.95, 0.05],
+      [2.25, 0.34],
+      [1.8, 0.52],
+      [-1.95, 0.52],
+      [-2.15, 0.3],
+      [-2.05, 0.05],
+    ],
+    1.15,
+    0.02
+  );
+  _boat = { hull };
+  return _boat;
+}
+
+const CONTAINERS = [
+  { x: -0.26, y: 0.7, z: 0.75, c: "#31527a" },
+  { x: 0.26, y: 0.7, z: 0.75, c: "#6b4b2a" },
+  { x: -0.26, y: 0.7, z: -0.15, c: "#4a4e56" },
+  { x: 0.26, y: 0.7, z: -0.15, c: "#31527a" },
+  { x: 0, y: 1.06, z: 0.3, c: "#5a5d66" },
+];
+
+export function CargoBoat({ dim, phase = 0 }: { dim?: number; phase?: number }) {
+  const d = dim ?? 1;
+  const g = useMemo(boatGeos, []);
+  const root = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    const r = root.current;
+    if (!r) return;
+    // gentle displacement bob and pitch; electric barges leave the water calm
+    const t = clock.elapsedTime;
+    r.position.y = 0.02 * Math.sin(t * 1.1 + phase);
+    r.rotation.x = 0.008 * Math.sin(t * 0.9 + phase * 1.7);
+    r.rotation.z = 0.01 * Math.sin(t * 0.7 + phase * 2.3);
+  });
+  return (
+    <group ref={root}>
+      <mesh geometry={g.hull}>
+        <meshPhysicalMaterial color="#2a2d33" metalness={0.6} roughness={0.4} clearcoat={0.3} clearcoatRoughness={0.3} />
+      </mesh>
+      {/* solar deck between the container bays */}
+      <mesh position={[0, 0.53, -1.35]}>
+        <boxGeometry args={[0.95, 0.012, 0.9]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      {/* container stacks, fleet colors */}
+      {CONTAINERS.map((c, i) => (
+        <mesh key={i} position={[c.x, c.y, c.z]}>
+          <boxGeometry args={[0.46, 0.34, 0.86]} />
+          <meshStandardMaterial color={c.c} metalness={0.45} roughness={0.55} />
+        </mesh>
+      ))}
+      {/* aft bridge: low block, wrapped glass, mast light */}
+      <group position={[0, 0.72, -1.6]}>
+        <mesh>
+          <boxGeometry args={[0.7, 0.4, 0.5]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+        <mesh position={[0, 0.1, 0.26]}>
+          <boxGeometry args={[0.6, 0.16, 0.02]} />
+          <meshPhysicalMaterial {...GLASS} />
+        </mesh>
+        <mesh position={[0, 0.34, -0.1]}>
+          <sphereGeometry args={[0.022, 8, 6]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.9 * d} />
+        </mesh>
+      </group>
+      {/* nav lights: port red, starboard green, per maritime rule */}
+      <mesh position={[-0.55, 0.5, 1.7]}>
+        <sphereGeometry args={[0.02, 8, 6]} />
+        <meshBasicMaterial color="#e2573e" transparent opacity={0.9 * d} />
+      </mesh>
+      <mesh position={[0.55, 0.5, 1.7]}>
+        <sphereGeometry args={[0.02, 8, 6]} />
+        <meshBasicMaterial color="#57e28a" transparent opacity={0.9 * d} />
+      </mesh>
+      {/* owner livery low on both hull sides */}
+      {([-1, 1] as const).map((side) => (
+        <Text
+          key={side}
+          position={[side * 0.585, 0.3, 0.2]}
+          rotation={[0, side * (Math.PI / 2), 0]}
+          fontSize={0.17}
+          letterSpacing={0.12}
+          color="#9fb4d0"
+          fillOpacity={0.85}
+          anchorX="center"
+          anchorY="middle"
+        >
+          VENKATAPAGADALA
+        </Text>
+      ))}
     </group>
   );
 }
