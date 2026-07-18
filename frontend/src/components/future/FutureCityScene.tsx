@@ -2018,22 +2018,41 @@ const HAIL_PATH = new THREE.CatmullRomCurve3(
   "catmullrom",
   0.4
 );
-const HAIL_POST = { x: -3.4, z: 7.7 };
+/** The post stands well back from the bay: close enough to read as its call
+ *  point, far enough that the waiting robot is not inside the parked car. */
+const HAIL_POST = { x: -2.9, z: 6.5 };
 /** Where the robot stands to reach the button, then the curbside door, then
- *  the spot it waits on between runs. */
-const HAIL_STAND = { x: -3.75, z: 8.2 };
-const HAIL_DOOR = { x: -4.55, z: 7.85 };
-const HAIL_HOME = { x: -1.5, z: 6.3 };
-/** Back seat in the taxi's own frame; +x is the curb side. */
-const SEAT = { x: 0.3, y: 0.36, z: -0.42 };
+ *  the spot it waits on between runs. The door sits about 1.4 off the bay
+ *  centre, which is just clear of the taxi's flank at this scale. */
+const HAIL_STAND = { x: -3.1, z: 7.12 };
+const HAIL_DOOR = { x: -4.5, z: 7.6 };
+const HAIL_HOME = { x: -1.2, z: 5.5 };
+/** Back seat in the taxi's own frame. Negative x is the curb side, the same
+ *  side as HAIL_DOOR, so the robot sits down where it got in.
+ *
+ *  The y is deliberately below ground. A humanoid at this scale is about
+ *  twice the height of this car, so seating it on top of the bodywork just
+ *  perches it on the tail. Sinking it instead puts the hips and legs under
+ *  the ground plane, which occludes them, and leaves the head and shoulders
+ *  riding above the canopy exactly like a passenger in a low car. */
+const SEAT = { x: -0.16, y: 0.18, z: -0.08 };
+/** Seated scale. A standing humanoid is about twice this car's height, so a
+ *  full-size figure either perches on the roof or pushes its limbs out
+ *  through the bodywork. Shrinking it as it gets in is what makes it read as
+ *  a passenger; the change happens during the board leg, while it is already
+ *  half behind the door, so it is not something the eye catches. */
+const SEAT_SCALE = 0.62;
 
-type HailLeg = "toPost" | "press" | "hail" | "toDoor" | "board" | "ride" | "reset";
+type HailLeg = "toPost" | "press" | "hail" | "wait" | "toDoor" | "board" | "ride" | "reset";
+/** The taxi is parked through wait, toDoor and board, so the pickup holds
+ *  for about five seconds. Any less and it reads as a drive-by, not a stop. */
 const HAIL_LEGS: { name: HailLeg; dur: number }[] = [
   { name: "toPost", dur: 2.6 },
   { name: "press", dur: 1.9 },
   { name: "hail", dur: 4.6 },
+  { name: "wait", dur: 1.4 },
   { name: "toDoor", dur: 1.5 },
-  { name: "board", dur: 1.1 },
+  { name: "board", dur: 2.0 },
   { name: "ride", dur: 5.6 },
   { name: "reset", dur: 2.4 },
 ];
@@ -2097,8 +2116,11 @@ function RideHail() {
       b.position.x += (wx - b.position.x) * k;
       b.position.z += (wz - b.position.z) * k;
       b.position.y += (car.position.y + SEAT.y - b.position.y) * k;
+      b.scale.setScalar(b.scale.x + (SEAT_SCALE - b.scale.x) * k);
       b.rotation.y = car.rotation.y;
     };
+    /** Back to full height once it is out of the car. */
+    const stand = (k: number) => b.scale.setScalar(b.scale.x + (1 - b.scale.x) * k);
 
     // Reduced motion gets the tableau instead of the loop: robot at the post
     // with a hand on the button, taxi already waiting in the bay.
@@ -2118,6 +2140,7 @@ function RideHail() {
     switch (cur.name) {
       case "toPost":
         stow();
+        stand(Math.min(1, delta * 8));
         walkTo(HAIL_HOME.x, HAIL_HOME.z, HAIL_STAND.x, HAIL_STAND.z, smooth(k));
         setPose_("walk");
         break;
@@ -2130,6 +2153,13 @@ function RideHail() {
         // ease out of the arrival: quick off the road, gentle into the bay
         place((1 - Math.pow(1 - k, 2.4)) * 0.5);
         setRoll(k < 0.94);
+        setPose_("idle");
+        break;
+      case "wait":
+        // parked with the passenger still at the post: the beat that makes
+        // the arrival read as a stop rather than a pass
+        place(0.5);
+        setRoll(false);
         setPose_("idle");
         break;
       case "toDoor":
@@ -2151,6 +2181,7 @@ function RideHail() {
         break;
       default:
         stow();
+        stand(1);
         b.position.set(HAIL_HOME.x, 0.008, HAIL_HOME.z);
         b.rotation.y = 0.6;
         setPose_("idle");
@@ -2172,8 +2203,8 @@ function RideHail() {
           <meshStandardMaterial color="#2a2c31" roughness={0.5} metalness={0.5} />
         </mesh>
         <mesh position={[0, 1.32, 0]}>
-          <boxGeometry args={[0.42, 0.28, 0.06]} />
-          <meshStandardMaterial color="#17181c" roughness={0.4} metalness={0.6} />
+          <boxGeometry args={[0.4, 0.26, 0.06]} />
+          <meshStandardMaterial color="#111216" roughness={0.75} metalness={0.2} />
         </mesh>
         <mesh position={[0, 1.0, 0.075]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.05, 0.05, 0.03, 16]} />
