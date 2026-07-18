@@ -220,6 +220,22 @@ const DRONES = [
  *  passing through each other, which is what breaks the illusion fastest. */
 const COLLIDERS = new Set<{ o: THREE.Object3D; r: number }>();
 
+/** Register a world-space group as a collision circle for its lifetime.
+ *  Anything a driven machine must not pass through has to call this: the
+ *  resolver only sees registered entries, so a body that merely resolves
+ *  against others (and never registers) gets driven straight through. */
+function useCollider(ref: React.MutableRefObject<THREE.Group | null>, r: number) {
+  useEffect(() => {
+    const o = ref.current;
+    if (!o) return;
+    const entry = { o: o as THREE.Object3D, r };
+    COLLIDERS.add(entry);
+    return () => {
+      COLLIDERS.delete(entry);
+    };
+  }, [ref, r]);
+}
+
 const TOWERS = [
   { x: -8.5, z: -7.5, w: 1.15, h: 9.5 },
   { x: -10.6, z: -4.2, w: 0.85, h: 6.2 },
@@ -395,6 +411,7 @@ const WALKERS: WalkerSpec[] = [
 function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
   const ctx = useScene();
   const group = useRef<THREE.Group>(null);
+  useCollider(group, 0.5);
   const [paused, setPaused] = useState(false);
   const u = useRef(offset);
   const pauseStart = useRef(0);
@@ -458,6 +475,7 @@ function IdleRobot() {
   const ctx = useScene();
   const drive = useDrive();
   const group = useRef<THREE.Group>(null);
+  useCollider(group, 0.5);
   const vel = useRef(0);
   const [moving, setMoving] = useState(false);
   const driven = drive?.sel?.id === "hero-bot";
