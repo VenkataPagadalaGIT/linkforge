@@ -37,7 +37,9 @@ const ICE_BRIGHT = "#cfe4ff";
 const AMBER = "#d9a860";
 const TAIL = "#e2573e"; // amber-red rear strip family
 
-const STEEL = { color: "#a8a8ae", metalness: 0.9, roughness: 0.35, clearcoat: 0.4, clearcoatRoughness: 0.3 } as const;
+const STEEL = { color: "#b6b6bc", metalness: 0.9, roughness: 0.32, clearcoat: 0.55, clearcoatRoughness: 0.25 } as const;
+/** EV solar skin: deep blue-black glass laminate on hoods, roofs, trailers. */
+const SOLAR = { color: "#0d1524", metalness: 0.85, roughness: 0.18, clearcoat: 0.8, clearcoatRoughness: 0.15 } as const;
 const TRAILER_STEEL = { color: "#b4b4ba", metalness: 0.85, roughness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.3 } as const;
 const DARK_TRIM = { color: "#26282d", metalness: 0.5, roughness: 0.6 } as const;
 const TIRE = { color: "#1a1b1f", metalness: 0.2, roughness: 0.9 } as const;
@@ -180,9 +182,18 @@ export function CyberTruck({ dim, speed }: VehicleProps) {
         <meshPhysicalMaterial {...GLASS} flatShading side={THREE.DoubleSide} />
       </mesh>
       {/* full-width light bars: cool white nose, amber-red tail */}
-      <mesh position={[0, 0.49, 1.5]}>
-        <boxGeometry args={[1.18, 0.045, 0.03]} />
-        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.95 * d} />
+      <mesh position={[0, 0.5, 1.51]}>
+        <boxGeometry args={[1.22, 0.06, 0.035]} />
+        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={d} />
+      </mesh>
+      {/* solar laminate: hood panel and bed tonneau, tilted to the facets */}
+      <mesh position={[0, 0.675, 1.03]} rotation={[0.335, 0, 0]}>
+        <boxGeometry args={[0.9, 0.012, 0.68]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      <mesh position={[0, 0.84, -0.68]} rotation={[-0.245, 0, 0]}>
+        <boxGeometry args={[0.98, 0.012, 1.32]} />
+        <meshPhysicalMaterial {...SOLAR} />
       </mesh>
       <mesh position={[0, 0.52, -1.49]}>
         <boxGeometry args={[1.18, 0.04, 0.03]} />
@@ -392,6 +403,11 @@ export function CyberSemi({ dim, speed }: VehicleProps) {
         <boxGeometry args={[1.3, 1.46, 7.4]} />
         <meshPhysicalMaterial {...TRAILER_STEEL} />
       </mesh>
+      {/* trailer roof is one long solar array: the 2040 fleet economics */}
+      <mesh position={[0, 2.095, -1.1]}>
+        <boxGeometry args={[1.18, 0.016, 6.9]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
       {/* subtle panel seams: thin darker inset boxes, not textures */}
       <instancedMesh ref={seams} args={[undefined, undefined, SEMI_SEAMS.length]} frustumCulled={false}>
         <boxGeometry args={[1.312, 1.38, 0.018]} />
@@ -519,6 +535,11 @@ export function Sedan({ dim, speed }: VehicleProps) {
       <mesh geometry={g.rearArc}>
         <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
       </mesh>
+      {/* solar hood laminate riding the front body curve */}
+      <mesh position={[0, 0.598, 0.58]} rotation={[0.13, 0, 0]}>
+        <boxGeometry args={[0.44, 0.01, 0.36]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
       {/* dark arch trims ground each wheel into the body instead of leaving
           it floating beside the ellipsoid: the single biggest "real car" cue */}
       {SEDAN_WHEELS.map((w, i) => (
@@ -569,6 +590,153 @@ export function Sedan({ dim, speed }: VehicleProps) {
           </group>
         </group>
       ))}
+    </group>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  AirCar: a VTOL pod that can put down on a moving trailer roof
+ * ---------------------------------------------------------------- */
+
+export interface AirCarProps {
+  dim?: number;
+  /** 0..1 rotor speed, mutated per frame by the owner (0 while docked). */
+  rotorRef?: { current: number };
+}
+
+export function AirCar({ dim, rotorRef }: AirCarProps) {
+  const d = dim ?? 1;
+  const rotors = useRef<(THREE.Mesh | null)[]>([]);
+  const spin = useRef(0);
+  useFrame((_, delta) => {
+    spin.current += 22 * (rotorRef ? rotorRef.current : 1) * delta;
+    for (const r of rotors.current) if (r) r.rotation.y = spin.current;
+  });
+  const arm = (sx: 1 | -1, sz: 1 | -1, i: number) => (
+    <group key={i} position={[sx * 0.42, 0.1, sz * 0.44]}>
+      <mesh position={[-sx * 0.14, 0, -sz * 0.12]} rotation={[0, Math.atan2(sx, sz), 0]}>
+        <boxGeometry args={[0.05, 0.03, 0.32]} />
+        <meshStandardMaterial {...DARK_TRIM} />
+      </mesh>
+      <mesh>
+        <cylinderGeometry args={[0.075, 0.09, 0.07, 10]} />
+        <meshStandardMaterial {...DARK_TRIM} />
+      </mesh>
+      <mesh
+        ref={(el) => {
+          rotors.current[i] = el;
+        }}
+        position={[0, 0.055, 0]}
+      >
+        <cylinderGeometry args={[0.23, 0.23, 0.008, 16]} />
+        <meshStandardMaterial color="#5a5d66" metalness={0.4} roughness={0.4} transparent opacity={0.5} />
+      </mesh>
+      <mesh position={[0, 0.06, 0]}>
+        <sphereGeometry args={[0.02, 8, 6]} />
+        <meshBasicMaterial color={AMBER} transparent opacity={0.85 * d} />
+      </mesh>
+    </group>
+  );
+  return (
+    <group>
+      {/* cabin: glossy black pod with a wrapped glass front */}
+      <mesh position={[0, 0.16, 0]}>
+        <capsuleGeometry args={[0.21, 0.5, 4, 12]} />
+        <meshPhysicalMaterial color="#101114" metalness={0.7} roughness={0.3} clearcoat={1} clearcoatRoughness={0.12} />
+      </mesh>
+      <mesh position={[0, 0.24, 0.26]} rotation={[0.45, 0, 0]} scale={[1, 0.7, 1]}>
+        <sphereGeometry args={[0.17, 14, 10]} />
+        <meshPhysicalMaterial {...GLASS} />
+      </mesh>
+      {/* solar spine on the roof */}
+      <mesh position={[0, 0.345, -0.05]}>
+        <boxGeometry args={[0.26, 0.008, 0.42]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      {/* nose and tail strips */}
+      <mesh position={[0, 0.15, 0.49]}>
+        <boxGeometry args={[0.24, 0.03, 0.02]} />
+        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.95 * d} />
+      </mesh>
+      <mesh position={[0, 0.16, -0.48]}>
+        <boxGeometry args={[0.22, 0.025, 0.02]} />
+        <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
+      </mesh>
+      {/* landing skids */}
+      {([-1, 1] as const).map((sx) => (
+        <mesh key={sx} position={[sx * 0.16, 0.015, 0]}>
+          <boxGeometry args={[0.035, 0.03, 0.6]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+      ))}
+      {arm(-1, -1, 0)}
+      {arm(1, -1, 1)}
+      {arm(-1, 1, 2)}
+      {arm(1, 1, 3)}
+    </group>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  MonoPod: the narrow single-track commuter, wheels inline
+ * ---------------------------------------------------------------- */
+
+let _podBody: THREE.CapsuleGeometry | null = null;
+function podBody(): THREE.CapsuleGeometry {
+  if (_podBody) return _podBody;
+  const geo = new THREE.CapsuleGeometry(0.17, 0.62, 4, 12);
+  geo.rotateX(Math.PI / 2); // long axis onto Z
+  _podBody = geo;
+  return geo;
+}
+
+export function MonoPod({ dim, speed }: VehicleProps) {
+  const d = dim ?? 1;
+  const wheels = useRef<(THREE.Group | null)[]>([]);
+  const roll = useRef(0);
+  const R = 0.2;
+  useFrame((_, delta) => {
+    roll.current += ((speed ?? 0) / R) * delta;
+    for (const w of wheels.current) if (w) w.rotation.x = roll.current;
+  });
+  return (
+    <group>
+      <mesh geometry={podBody()} position={[0, 0.46, 0]}>
+        <meshPhysicalMaterial color="#15161a" metalness={0.7} roughness={0.28} clearcoat={1} clearcoatRoughness={0.12} />
+      </mesh>
+      {/* canopy bubble */}
+      <mesh position={[0, 0.6, 0.1]} scale={[0.75, 0.65, 1]}>
+        <sphereGeometry args={[0.16, 14, 10]} />
+        <meshPhysicalMaterial {...GLASS} />
+      </mesh>
+      {/* solar strip down the spine */}
+      <mesh position={[0, 0.635, -0.22]}>
+        <boxGeometry args={[0.12, 0.008, 0.3]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      {/* inline wheels, half swallowed by the body */}
+      {[0.42, -0.42].map((z, i) => (
+        <group
+          key={z}
+          position={[0, R, z]}
+          ref={(el) => {
+            wheels.current[i] = el;
+          }}
+        >
+          <mesh geometry={tireGeo(R, 0.09, 18)}>
+            <meshStandardMaterial {...TIRE} />
+          </mesh>
+        </group>
+      ))}
+      {/* light dots */}
+      <mesh position={[0, 0.5, 0.52]}>
+        <sphereGeometry args={[0.022, 8, 6]} />
+        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.95 * d} />
+      </mesh>
+      <mesh position={[0, 0.5, -0.52]}>
+        <sphereGeometry args={[0.02, 8, 6]} />
+        <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
+      </mesh>
     </group>
   );
 }

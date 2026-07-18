@@ -42,7 +42,7 @@ import {
   type ReactNode,
 } from "react";
 import Robot from "./assets/Robot";
-import { CyberSemi, CyberTruck, Sedan } from "./assets/Vehicles";
+import { AirCar, CyberSemi, CyberTruck, MonoPod, Sedan } from "./assets/Vehicles";
 
 export interface FutureCitySceneProps {
   /** Background mode: pointer-events off, slow fixed orbit, dimmer, capped dpr. */
@@ -114,15 +114,16 @@ const BYPASS = new THREE.CatmullRomCurve3(
 const BYPASS_Y = 0.082;
 
 /** Elevated flyover: an OPEN viaduct arc that sweeps across the BACK of the
- *  scene, both ends dissolving into the fog, crossing over the ring road
+ *  scene, both ends RAMPING DOWN TO GRADE in the fog (a floating deck end reads broken; a ramp reads like an interchange), crossing over the ring road
  *  behind the plaza and over the bypass on the west. It deliberately never
  *  encloses the plaza: the camera's foreground stays clear and no pylon can
  *  land in the pedestrian field. The curve carries real y: deck height IS
  *  the path (higher over the west bypass crossing for semi clearance). */
 const FLYOVER = new THREE.CatmullRomCurve3(
   [
-    v3(27, 2.1, 7), v3(19, 2.7, -1), v3(11, 3.1, -7.5), v3(2, 3.2, -11.5),
-    v3(-7, 3.05, -11.8), v3(-15, 2.85, -8.5), v3(-22, 2.6, -2.5), v3(-28, 2.3, 4),
+    v3(30.5, 0.1, 8.6), v3(26.5, 1.5, 6.6), v3(19, 2.7, -1), v3(11, 3.1, -7.5),
+    v3(2, 3.2, -11.5), v3(-7, 3.05, -11.8), v3(-15, 2.85, -8.5), v3(-22, 2.6, -2.5),
+    v3(-27.5, 1.4, 3.4), v3(-31, 0.1, 5.2),
   ],
   false,
   "catmullrom",
@@ -793,7 +794,8 @@ function FlyoverRoad() {
       const nearRoad = roadPts.some((q) => (q.x - p.x) ** 2 + (q.z - p.z) ** 2 < 1.35 ** 2);
       const nearBypass = bypassPts.some((q) => (q.x - p.x) ** 2 + (q.z - p.z) ** 2 < 1.1 ** 2);
       const inPlaza = p.x * p.x + p.z * p.z < 5.6 ** 2;
-      if (!nearRoad && !nearBypass && !inPlaza) out.push({ x: p.x, z: p.z, h: p.y - 0.05 });
+      const h = p.y - 0.12; // top ends clear of the deck underside
+      if (h > 0.7 && !nearRoad && !nearBypass && !inPlaza) out.push({ x: p.x, z: p.z, h });
     }
     return out;
   }, []);
@@ -844,7 +846,7 @@ function FlyoverRoad() {
         <meshBasicMaterial color={ICE} transparent opacity={0.35 * ctx.dim} depthWrite={false} />
       </instancedMesh>
       <instancedMesh ref={piers} args={[undefined, undefined, 26]} count={pylons.length} frustumCulled={false}>
-        <cylinderGeometry args={[0.09, 0.14, 1, 8]} />
+        <cylinderGeometry args={[0.07, 0.14, 1, 8]} />
         <meshStandardMaterial color="#1d1f24" metalness={0.6} roughness={0.5} />
       </instancedMesh>
     </group>
@@ -919,7 +921,7 @@ function FlyoverTraffic() {
   const ctx = useScene();
   return (
     <>
-      <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.75}>
+      <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.88}>
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
@@ -928,7 +930,7 @@ function FlyoverTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.85}>
+      <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.92}>
         {(s) => (
           <>
             <Sedan dim={ctx.dim} speed={s} />
@@ -941,6 +943,51 @@ function FlyoverTraffic() {
   );
 }
 
+/** AirCarDock rides inside the semi's PathRider, so its whole landing cycle
+ *  happens in trailer-local space: approach, touch down on the solar roof,
+ *  sit docked with rotors spun down, lift off, peel away. The landing zone
+ *  is marked by four ice corner brackets on the trailer top. */
+const DOCK_PERIOD = 34;
+
+function AirCarDock() {
+  const ctx = useScene();
+  const car = useRef<THREE.Group>(null);
+  const rotorRef = useRef(1);
+  useFrame(({ clock }) => {
+    const g = car.current;
+    if (!g) return;
+    const p = ctx.still ? 0.45 : (clock.elapsedTime % DOCK_PERIOD) / DOCK_PERIOD;
+    const ss = THREE.MathUtils.smoothstep;
+    const flyIn = ss(p, 0.02, 0.2);
+    const down = ss(p, 0.24, 0.34);
+    const up = ss(p, 0.62, 0.72);
+    const away = ss(p, 0.74, 0.98);
+    // behind-and-above approach, settle at the marked zone, mirror out
+    g.position.set(
+      0,
+      4.4 - 2.2 * flyIn + (2.24 - (4.4 - 2.2)) * down + 1.9 * up + 0.4 * away,
+      -6.5 + 4.5 * flyIn + 6.5 * away
+    );
+    g.rotation.z = 0.08 * Math.sin(clock.elapsedTime * 0.8) * (1 - down + up * 0.5);
+    // rotors spin down while docked, back up before liftoff
+    rotorRef.current = ctx.still ? 0.3 : Math.max(0.12, 1 - down + up);
+  });
+  return (
+    <group>
+      <group ref={car}>
+        <AirCar dim={ctx.dim} rotorRef={rotorRef} />
+      </group>
+      {/* landing zone brackets on the trailer roof */}
+      {([[-0.42, -2.42], [0.42, -2.42], [-0.42, -1.58], [0.42, -1.58]] as const).map(([x, z], i) => (
+        <mesh key={i} position={[x, 2.11, z]}>
+          <boxGeometry args={[0.16, 0.008, 0.16]} />
+          <meshBasicMaterial color={ICE} transparent opacity={0.4 * ctx.dim} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 /** Equal lap speeds keep the ring spacing constant forever: no overtaking,
  *  no eventual overlap during long homepage dwells. */
 function RingTraffic() {
@@ -948,7 +995,7 @@ function RingTraffic() {
   return (
     <>
       {/* hero pickup: frozen offset 0.1 parks it on the camera side */}
-      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.8}>
+      <PathRider curve={ROAD} offset={0.1} lapSpeed={0.027} y={ROAD_Y} scale={0.92}>
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
@@ -957,12 +1004,30 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.8}>
+      <PathRider curve={ROAD} offset={0.45} lapSpeed={0.027} y={ROAD_Y} scale={0.88}>
         {(s) => (
           <>
             <CyberTruck dim={ctx.dim} speed={s} />
             <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      {/* second sedan and a narrow single-track pod fill the ring out */}
+      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85}>
+        {(s) => (
+          <>
+            <Sedan dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
+            <TailTrail y={0.44} z={-1.05} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.62} lapSpeed={0.027} y={ROAD_Y} scale={0.85}>
+        {(s) => (
+          <>
+            <MonoPod dim={ctx.dim} speed={s} />
+            <ContactShadow w={0.55} l={1.4} opacity={0.38} y={0.012} />
           </>
         )}
       </PathRider>
@@ -982,6 +1047,7 @@ function RingTraffic() {
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
+            <AirCarDock />
             <ContactShadow w={1.9} l={10} opacity={0.5} y={0.01} />
           </>
         )}
@@ -1317,6 +1383,10 @@ function World() {
       {!ctx.background && <IdleRobot />}
       <RingTraffic />
       <FlyoverTraffic />
+      {/* one air car cruising the high sweep, rotors always up */}
+      <PathRider curve={DRONE_PATHS[2]} offset={0.3} lapSpeed={0.012} y={0} scale={1.1}>
+        {() => <AirCar dim={ctx.dim} />}
+      </PathRider>
       {DRONES.map((d, i) => (
         <Drone key={i} curve={DRONE_PATHS[d.path]} offset={d.offset} speed={d.speed} />
       ))}
