@@ -42,6 +42,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import Robot from "./assets/Robot";
 import { AirCar, CargoBoat, CyberSemi, CyberTruck, MonoPod, Sedan } from "./assets/Vehicles";
 
@@ -76,8 +77,8 @@ interface DriveSel {
 interface DriveApi {
   sel: DriveSel | null;
   set: (d: DriveSel | null) => void;
-  /** th: -0.7..1 throttle · st: -1..1 steer; mutated by HUD and keyboard. */
-  input: { current: { th: number; st: number } };
+  /** th: -0.7..1 throttle · st: -1..1 steer · bk: 0/1 held brake. */
+  input: { current: { th: number; st: number; bk: number } };
   /** The object the chase camera follows while driving. */
   target: { current: THREE.Object3D | null };
 }
@@ -466,6 +467,7 @@ function IdleRobot() {
     const inp = drive.input.current;
     vel.current += (inp.th * 1.7 - vel.current) * Math.min(1, delta * 3);
     if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 3);
+    if (inp.bk) vel.current *= 1 - Math.min(1, delta * 6);
     g.rotation.y -= inp.st * 2.6 * delta;
     g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
     g.position.z += Math.cos(g.rotation.y) * vel.current * delta;
@@ -1028,6 +1030,7 @@ function PathRider({
       const inp = drive.input.current;
       vel.current += (inp.th * driveMax - vel.current) * Math.min(1, delta * 1.8);
       if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 1.4);
+      if (inp.bk) vel.current *= 1 - Math.min(1, delta * 5);
       const steerAuthority = Math.min(1, Math.abs(vel.current) / 1.2);
       g.rotation.y -= inp.st * 1.7 * delta * steerAuthority * Math.sign(vel.current || 1);
       g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
@@ -1294,178 +1297,16 @@ function ChaseCam({ controls }: { controls: { current: { enabled: boolean } | nu
   return null;
 }
 
-/** The cockpit: a draggable steering wheel that springs back to center, an
- *  R/N/D gear selector, and hold-to-press pedals, centered under the scene.
- *  Keyboard still works (WASD / arrows, Esc exits). */
-function DriveHUD() {
+/** In-canvas layer keeps only the idle invitation; the active cockpit lives
+ *  in a viewport-fixed portal so it never moves with scroll or layout. */
+function CanvasHint() {
   const drive = useDrive();
-  const sel = drive?.sel ?? null;
-  const [gear, setGear] = useState<"R" | "N" | "D">("D");
-  const [wheelDeg, setWheelDeg] = useState(0);
-  const [pedal, setPedal] = useState<0 | 1>(0);
-  const dragStart = useRef<number | null>(null);
-
-  // entering a machine resets the cockpit to neutral-forward
-  useEffect(() => {
-    setGear("D");
-    setPedal(0);
-    setWheelDeg(0);
-  }, [sel?.id]);
-
-  // gear + pedal resolve into the low-level throttle the physics reads
-  useEffect(() => {
-    if (!drive) return;
-    const th = pedal === 1 ? (gear === "D" ? 1 : gear === "R" ? -0.7 : 0) : 0;
-    drive.input.current.th = th;
-  }, [drive, gear, pedal]);
-
-  // keyboard: same low-level channels as before
-  useEffect(() => {
-    if (!sel || !drive) return;
-    const input = drive.input;
-    const down = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (["w", "arrowup"].includes(k)) input.current.th = 1;
-      if (["s", "arrowdown"].includes(k)) input.current.th = -0.7;
-      if (["a", "arrowleft"].includes(k)) input.current.st = -1;
-      if (["d", "arrowright"].includes(k)) input.current.st = 1;
-      if (k === "escape") drive.set(null);
-    };
-    const up = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase();
-      if (["w", "s", "arrowup", "arrowdown"].includes(k)) input.current.th = 0;
-      if (["a", "d", "arrowleft", "arrowright"].includes(k)) input.current.st = 0;
-    };
-    window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
-    return () => {
-      window.removeEventListener("keydown", down);
-      window.removeEventListener("keyup", up);
-      input.current.th = 0;
-      input.current.st = 0;
-    };
-  }, [sel, drive]);
-
-  if (!drive) return null;
-
-  const onWheelDown = (e: React.PointerEvent) => {
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    dragStart.current = e.clientX;
-  };
-  const onWheelMove = (e: React.PointerEvent) => {
-    if (dragStart.current === null) return;
-    const st = Math.max(-1, Math.min(1, (e.clientX - dragStart.current) / 70));
-    drive.input.current.st = st;
-    setWheelDeg(st * 120);
-  };
-  const onWheelUp = () => {
-    dragStart.current = null;
-    drive.input.current.st = 0;
-    setWheelDeg(0);
-  };
-
-  const panel: React.CSSProperties = {
-    pointerEvents: "auto",
-    userSelect: "none",
-    touchAction: "none",
-    fontFamily: "monospace",
-    color: "#cfe4ff",
-  };
-  const gearBtn = (g: "R" | "N" | "D"): React.CSSProperties => ({
-    ...panel,
-    fontSize: 13,
-    padding: "8px 13px",
-    borderRadius: 7,
-    cursor: "pointer",
-    border: `1px solid ${gear === g ? "#9fb4d0" : "#2c2e35"}`,
-    background: gear === g ? "rgba(159,180,208,0.18)" : "rgba(16,17,20,0.9)",
-    color: gear === g ? "#e6f0ff" : "#9a9aa3",
-  });
-  const pedalStyle = (active: boolean): React.CSSProperties => ({
-    ...panel,
-    fontSize: 11,
-    letterSpacing: "0.12em",
-    padding: "14px 16px",
-    borderRadius: 8,
-    cursor: "pointer",
-    border: `1px solid ${active ? "#9fb4d0" : "#2c2e35"}`,
-    background: active ? "rgba(159,180,208,0.2)" : "rgba(16,17,20,0.9)",
-  });
-
+  if (!drive || drive.sel) return null;
   return (
     <Html fullscreen zIndexRange={[40, 0]} style={{ pointerEvents: "none" }}>
-      {sel ? (
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 12, display: "flex", flexDirection: "column", alignItems: "center", gap: 9 }}>
-          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.78)", padding: "5px 10px", borderRadius: 6 }}>
-            DRIVING · {sel.label} · DRAG THE WHEEL · WASD WORKS · ESC EXITS
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            {/* gear selector */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-              {(["R", "N", "D"] as const).map((g) => (
-                <div key={g} style={gearBtn(g)} onPointerDown={() => setGear(g)}>
-                  {g}
-                </div>
-              ))}
-            </div>
-            {/* steering wheel: drag horizontally, springs back on release */}
-            <div
-              style={{
-                ...panel,
-                width: 96,
-                height: 96,
-                borderRadius: "50%",
-                border: "3px solid #3a3d44",
-                background: "rgba(13,14,17,0.92)",
-                position: "relative",
-                cursor: "grab",
-                transform: `rotate(${wheelDeg}deg)`,
-                transition: dragStart.current === null ? "transform 0.25s ease" : "none",
-              }}
-              onPointerDown={onWheelDown}
-              onPointerMove={onWheelMove}
-              onPointerUp={onWheelUp}
-              onPointerCancel={onWheelUp}
-            >
-              {/* spokes + hub */}
-              <div style={{ position: "absolute", left: "50%", top: 6, bottom: "50%", width: 4, marginLeft: -2, background: "#3a3d44", borderRadius: 2 }} />
-              <div style={{ position: "absolute", top: "50%", left: 8, right: 8, height: 4, marginTop: -2, background: "#3a3d44", borderRadius: 2 }} />
-              <div style={{ position: "absolute", left: "50%", top: "50%", width: 22, height: 22, margin: "-11px 0 0 -11px", borderRadius: "50%", background: "#23252b", border: "1px solid #4a4e56" }} />
-              <div style={{ position: "absolute", left: "50%", top: 9, width: 6, height: 6, marginLeft: -3, borderRadius: "50%", background: "#9fb4d0" }} />
-            </div>
-            {/* pedals */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <div
-                style={pedalStyle(pedal === 1)}
-                onPointerDown={() => setPedal(1)}
-                onPointerUp={() => setPedal(0)}
-                onPointerLeave={() => setPedal(0)}
-              >
-                ACCEL
-              </div>
-              <div
-                style={pedalStyle(false)}
-                onPointerDown={() => {
-                  setPedal(0);
-                  if (drive) drive.input.current.th = 0;
-                }}
-              >
-                BRAKE
-              </div>
-            </div>
-            <div
-              style={{ ...pedalStyle(false), color: "#e2937e", alignSelf: "center" }}
-              onPointerDown={() => drive.set(null)}
-            >
-              ✕ EXIT
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div style={{ position: "absolute", left: 12, bottom: 12, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.18em", color: "#6b6b74" }}>
-          CLICK A VEHICLE, BARGE, OR THE NEAR HUMANOID TO DRIVE IT
-        </div>
-      )}
+      <div style={{ position: "absolute", left: 12, bottom: 12, fontFamily: "monospace", fontSize: 10, letterSpacing: "0.18em", color: "#6b6b74" }}>
+        CLICK A VEHICLE, BARGE, OR THE NEAR HUMANOID TO DRIVE IT
+      </div>
     </Html>
   );
 }
@@ -1969,12 +1810,211 @@ function usePrefersReducedMotion() {
   return still;
 }
 
+/** The cockpit, docked to the VIEWPORT (portal to body): bottom-center,
+ *  same place no matter how the page scrolls. The wheel is alive: an rAF
+ *  loop eases the rim toward the live steering input (keyboard included)
+ *  and layers in micro road-feel while throttle is applied, so it reads
+ *  as a machine being driven, not a static widget. */
+function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
+  const [gear, setGear] = useState<"R" | "N" | "D">("D");
+  const [pedal, setPedal] = useState<0 | 1>(0);
+  const [braking, setBraking] = useState(false);
+  const wheelRef = useRef<HTMLDivElement | null>(null);
+  const shown = useRef(0);
+  const dragStart = useRef<number | null>(null);
+
+  useEffect(() => {
+    setGear("D");
+    setPedal(0);
+    setBraking(false);
+    api.input.current.th = 0;
+    api.input.current.st = 0;
+    api.input.current.bk = 0;
+  }, [sel?.id, api]);
+
+  // gear + pedal resolve into throttle; brake is its own held channel
+  useEffect(() => {
+    api.input.current.th = pedal === 1 ? (gear === "D" ? 1 : gear === "R" ? -0.7 : 0) : 0;
+  }, [api, gear, pedal]);
+  useEffect(() => {
+    api.input.current.bk = braking ? 1 : 0;
+  }, [api, braking]);
+
+  // the living wheel: ease toward input, add road-feel under throttle
+  useEffect(() => {
+    if (!sel) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = (now - start) / 1000;
+      const target = api.input.current.st * 120;
+      shown.current += (target - shown.current) * 0.18;
+      const feel =
+        Math.abs(api.input.current.th) > 0.05
+          ? Math.sin(t * 7.1) * 1.3 + Math.sin(t * 13.7) * 0.7
+          : Math.sin(t * 1.9) * 0.4;
+      const el = wheelRef.current;
+      if (el) el.style.transform = `rotate(${shown.current + feel}deg)`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [sel, api]);
+
+  // keyboard: throttle, steer, space brakes, Esc exits
+  useEffect(() => {
+    if (!sel) return;
+    const input = api.input;
+    const down = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (["w", "arrowup"].includes(k)) input.current.th = 1;
+      if (["s", "arrowdown"].includes(k)) input.current.th = -0.7;
+      if (["a", "arrowleft"].includes(k)) input.current.st = -1;
+      if (["d", "arrowright"].includes(k)) input.current.st = 1;
+      if (k === " ") input.current.bk = 1;
+      if (k === "escape") api.set(null);
+    };
+    const up = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (["w", "s", "arrowup", "arrowdown"].includes(k)) input.current.th = 0;
+      if (["a", "d", "arrowleft", "arrowright"].includes(k)) input.current.st = 0;
+      if (k === " ") input.current.bk = 0;
+    };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      input.current.th = 0;
+      input.current.st = 0;
+      input.current.bk = 0;
+    };
+  }, [sel, api]);
+
+  if (!sel) return null;
+
+  const onWheelDown = (e: React.PointerEvent) => {
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    dragStart.current = e.clientX - api.input.current.st * 70;
+  };
+  const onWheelMove = (e: React.PointerEvent) => {
+    if (dragStart.current === null) return;
+    api.input.current.st = Math.max(-1, Math.min(1, (e.clientX - dragStart.current) / 70));
+  };
+  const onWheelUp = () => {
+    dragStart.current = null;
+    api.input.current.st = 0;
+  };
+
+  const base: React.CSSProperties = {
+    userSelect: "none",
+    touchAction: "none",
+    fontFamily: "monospace",
+    color: "#cfe4ff",
+  };
+  const gearBtn = (g: "R" | "N" | "D"): React.CSSProperties => ({
+    ...base,
+    fontSize: 13,
+    padding: "9px 14px",
+    borderRadius: 7,
+    cursor: "pointer",
+    textAlign: "center",
+    border: `1px solid ${gear === g ? "#9fb4d0" : "#2c2e35"}`,
+    background: gear === g ? "rgba(159,180,208,0.18)" : "rgba(16,17,20,0.92)",
+    color: gear === g ? "#e6f0ff" : "#9a9aa3",
+  });
+  const pedalStyle = (active: boolean): React.CSSProperties => ({
+    ...base,
+    fontSize: 11,
+    letterSpacing: "0.12em",
+    padding: "15px 17px",
+    borderRadius: 8,
+    cursor: "pointer",
+    border: `1px solid ${active ? "#9fb4d0" : "#2c2e35"}`,
+    background: active ? "rgba(159,180,208,0.2)" : "rgba(16,17,20,0.92)",
+  });
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 16,
+        zIndex: 1000,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 9,
+        pointerEvents: "none",
+      }}
+    >
+      <div style={{ ...base, fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.82)", padding: "5px 10px", borderRadius: 6 }}>
+        DRIVING · {sel.label} · WASD + SPACE BRAKE · ESC EXITS
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, pointerEvents: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          {(["R", "N", "D"] as const).map((g) => (
+            <div key={g} style={gearBtn(g)} onPointerDown={() => setGear(g)}>
+              {g}
+            </div>
+          ))}
+        </div>
+        <div
+          ref={wheelRef}
+          style={{
+            ...base,
+            width: 104,
+            height: 104,
+            borderRadius: "50%",
+            border: "3px solid #3a3d44",
+            background: "rgba(13,14,17,0.94)",
+            position: "relative",
+            cursor: "grab",
+            willChange: "transform",
+          }}
+          onPointerDown={onWheelDown}
+          onPointerMove={onWheelMove}
+          onPointerUp={onWheelUp}
+          onPointerCancel={onWheelUp}
+        >
+          <div style={{ position: "absolute", left: "50%", top: 7, bottom: "50%", width: 4, marginLeft: -2, background: "#3a3d44", borderRadius: 2 }} />
+          <div style={{ position: "absolute", top: "50%", left: 9, right: 9, height: 4, marginTop: -2, background: "#3a3d44", borderRadius: 2 }} />
+          <div style={{ position: "absolute", left: "50%", top: "50%", width: 24, height: 24, margin: "-12px 0 0 -12px", borderRadius: "50%", background: "#23252b", border: "1px solid #4a4e56" }} />
+          <div style={{ position: "absolute", left: "50%", top: 10, width: 7, height: 7, marginLeft: -3.5, borderRadius: "50%", background: "#9fb4d0" }} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div
+            style={pedalStyle(pedal === 1)}
+            onPointerDown={() => setPedal(1)}
+            onPointerUp={() => setPedal(0)}
+            onPointerLeave={() => setPedal(0)}
+          >
+            ACCEL
+          </div>
+          <div
+            style={pedalStyle(braking)}
+            onPointerDown={() => setBraking(true)}
+            onPointerUp={() => setBraking(false)}
+            onPointerLeave={() => setBraking(false)}
+          >
+            BRAKE
+          </div>
+        </div>
+        <div style={{ ...pedalStyle(false), color: "#e2937e" }} onPointerDown={() => api.set(null)}>
+          ✕ EXIT
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FutureCityScene(props: FutureCitySceneProps) {
   const background = props.background ?? false;
   const still = usePrefersReducedMotion();
   const [interacted, setInteracted] = useState(false);
   const [driveSel, setDriveSel] = useState<DriveSel | null>(null);
-  const driveInput = useRef({ th: 0, st: 0 });
+  const driveInput = useRef({ th: 0, st: 0, bk: 0 });
   const driveTarget = useRef<THREE.Object3D | null>(null);
   const orbitRef = useRef<{ enabled: boolean } | null>(null);
   const driveApi = useMemo<DriveApi>(
@@ -1998,6 +2038,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   }, []);
 
   return (
+    <>
     <Canvas
       // Background mode caps dpr: it sits behind content, it does not get to
       // spend retina pixels.
@@ -2030,7 +2071,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
           <World />
           {background && <BackgroundRig />}
           {!background && <ChaseCam controls={orbitRef} />}
-          {!background && <DriveHUD />}
+          {!background && <CanvasHint />}
         </DriveCtx.Provider>
       </SceneCtx.Provider>
 
@@ -2088,5 +2129,9 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         />
       )}
     </Canvas>
+    {!background &&
+      typeof document !== "undefined" &&
+      createPortal(<DriveOverlay api={driveApi} sel={driveSel} />, document.body)}
+    </>
   );
 }
