@@ -214,11 +214,21 @@ const DRONES = [
   { path: 2, offset: 0.85, speed: 0.016 },
 ];
 
+/** Circle colliders every driven machine resolves against. Vehicles register
+ *  themselves on mount; statics are listed once. Crude circles beat objects
+ *  passing through each other, which is what breaks the illusion fastest. */
+const COLLIDERS = new Set<{ o: THREE.Object3D; r: number }>();
+
 const TOWERS = [
   { x: -8.5, z: -7.5, w: 1.15, h: 9.5 },
   { x: -10.6, z: -4.2, w: 0.85, h: 6.2 },
   { x: 9.6, z: -8.4, w: 1.3, h: 11 },
   { x: 11.6, z: -5, w: 0.7, h: 5 },
+];
+
+const STATIC_COLS: { x: number; z: number; r: number }[] = [
+  ...TOWERS.map((t) => ({ x: t.x, z: t.z, r: t.w * 0.75 + 0.45 })),
+  { x: 6.2, z: 5.8, r: 2.7 }, // the construction site
 ];
 
 /* ---------------------------------------------------------------- *
@@ -465,6 +475,23 @@ function IdleRobot() {
       g.position.x *= 27 / r;
       g.position.z *= 27 / r;
     }
+    // the robot slides out of overlaps like everything else
+    const resolve = (ox: number, oz: number, orr: number) => {
+      const dx = g.position.x - ox;
+      const dz = g.position.z - oz;
+      const rs = 0.45 + orr;
+      const d2 = dx * dx + dz * dz;
+      if (d2 > rs * rs || d2 < 1e-6) return;
+      const d = Math.sqrt(d2);
+      const push = rs - d;
+      g.position.x += (dx / d) * push;
+      g.position.z += (dz / d) * push;
+      vel.current *= 0.5;
+    };
+    COLLIDERS.forEach((c) => {
+      if (c.o !== g) resolve(c.o.position.x, c.o.position.z, c.r);
+    });
+    for (const sc of STATIC_COLS) resolve(sc.x, sc.z, sc.r);
     const isMoving = Math.abs(vel.current) > 0.12;
     if (isMoving !== moving) setMoving(isMoving);
     drive.target.current = g;
@@ -954,6 +981,7 @@ function PathRider({
   driveLabel,
   driveMax = 4,
   driveKind = "car",
+  hitR,
   children,
 }: {
   curve: THREE.CatmullRomCurve3;
@@ -966,6 +994,8 @@ function PathRider({
   driveLabel?: string;
   driveMax?: number;
   driveKind?: "car" | "boat";
+  /** Collision circle radius before scale; boats and semis pass bigger. */
+  hitR?: number;
   children: (wheelSpeed: number) => ReactNode;
 }) {
   const ctx = useScene();
@@ -978,6 +1008,17 @@ function PathRider({
   const tan = useMemo(() => new THREE.Vector3(), []);
   const len = useMemo(() => curve.getLength(), [curve]);
   const driven = !!driveId && drive?.sel?.id === driveId;
+  const selfR = (hitR ?? (driveKind === "boat" ? 2.6 : 1.4)) * scale;
+  const yieldF = useRef(1);
+  useEffect(() => {
+    const g = group.current;
+    if (!g) return;
+    const entry = { o: g as THREE.Object3D, r: selfR };
+    COLLIDERS.add(entry);
+    return () => {
+      COLLIDERS.delete(entry);
+    };
+  }, [selfR]);
   useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
@@ -999,6 +1040,24 @@ function PathRider({
         // eased return to grade: driving off the flyover lands, not falls
         g.position.y += (ROAD_Y - g.position.y) * Math.min(1, delta * 2.5);
       }
+      // resolve collisions: slide out of overlaps, bleed speed on contact
+      const px = g.position;
+      const resolve = (ox: number, oz: number, orr: number) => {
+        const dx = px.x - ox;
+        const dz = px.z - oz;
+        const rs = selfR + orr;
+        const d2 = dx * dx + dz * dz;
+        if (d2 > rs * rs || d2 < 1e-6) return;
+        const d = Math.sqrt(d2);
+        const push = rs - d;
+        px.x += (dx / d) * push;
+        px.z += (dz / d) * push;
+        vel.current *= 0.55;
+      };
+      COLLIDERS.forEach((c) => {
+        if (c.o !== g) resolve(c.o.position.x, c.o.position.z, c.r);
+      });
+      for (const sc of STATIC_COLS) resolve(sc.x, sc.z, sc.r);
       drive.target.current = g;
       return;
     }
@@ -1021,7 +1080,17 @@ function PathRider({
       }
       u.current = best;
     }
-    if (!ctx.still) u.current = (u.current + lapSpeed * delta) % 1;
+    // yield to the player: traffic eases to a stop near the driven machine
+    let want = 1;
+    const pt = drive?.sel ? drive.target.current : null;
+    if (pt && pt !== g) {
+      const dx = pt.position.x - g.position.x;
+      const dz = pt.position.z - g.position.z;
+      const near = selfR + 2.8;
+      if (dx * dx + dz * dz < near * near) want = 0;
+    }
+    yieldF.current += (want - yieldF.current) * Math.min(1, delta * 2.5);
+    if (!ctx.still) u.current = (u.current + lapSpeed * delta * yieldF.current) % 1;
     curve.getPointAt(u.current, p);
     curve.getTangentAt(u.current, tan);
     // y is additive so elevated curves (the flyover) carry their own height
@@ -1225,10 +1294,32 @@ function ChaseCam({ controls }: { controls: { current: { enabled: boolean } | nu
   return null;
 }
 
-/** On-screen drive controls + keyboard (WASD / arrows, Esc exits). */
+/** The cockpit: a draggable steering wheel that springs back to center, an
+ *  R/N/D gear selector, and hold-to-press pedals, centered under the scene.
+ *  Keyboard still works (WASD / arrows, Esc exits). */
 function DriveHUD() {
   const drive = useDrive();
   const sel = drive?.sel ?? null;
+  const [gear, setGear] = useState<"R" | "N" | "D">("D");
+  const [wheelDeg, setWheelDeg] = useState(0);
+  const [pedal, setPedal] = useState<0 | 1>(0);
+  const dragStart = useRef<number | null>(null);
+
+  // entering a machine resets the cockpit to neutral-forward
+  useEffect(() => {
+    setGear("D");
+    setPedal(0);
+    setWheelDeg(0);
+  }, [sel?.id]);
+
+  // gear + pedal resolve into the low-level throttle the physics reads
+  useEffect(() => {
+    if (!drive) return;
+    const th = pedal === 1 ? (gear === "D" ? 1 : gear === "R" ? -0.7 : 0) : 0;
+    drive.input.current.th = th;
+  }, [drive, gear, pedal]);
+
+  // keyboard: same low-level channels as before
   useEffect(() => {
     if (!sel || !drive) return;
     const input = drive.input;
@@ -1254,49 +1345,116 @@ function DriveHUD() {
       input.current.st = 0;
     };
   }, [sel, drive]);
+
   if (!drive) return null;
-  const btn: React.CSSProperties = {
+
+  const onWheelDown = (e: React.PointerEvent) => {
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    dragStart.current = e.clientX;
+  };
+  const onWheelMove = (e: React.PointerEvent) => {
+    if (dragStart.current === null) return;
+    const st = Math.max(-1, Math.min(1, (e.clientX - dragStart.current) / 70));
+    drive.input.current.st = st;
+    setWheelDeg(st * 120);
+  };
+  const onWheelUp = () => {
+    dragStart.current = null;
+    drive.input.current.st = 0;
+    setWheelDeg(0);
+  };
+
+  const panel: React.CSSProperties = {
     pointerEvents: "auto",
     userSelect: "none",
+    touchAction: "none",
     fontFamily: "monospace",
-    fontSize: 15,
-    lineHeight: 1,
     color: "#cfe4ff",
-    background: "rgba(16,17,20,0.9)",
-    border: "1px solid #2c2e35",
-    borderRadius: 8,
-    padding: "12px 16px",
-    cursor: "pointer",
   };
-  const hold = (th: number, st: number) => ({
-    onPointerDown: () => {
-      drive.input.current.th = th || drive.input.current.th;
-      drive.input.current.st = st;
-      if (th !== 0) drive.input.current.th = th;
-    },
-    onPointerUp: () => {
-      if (th !== 0) drive.input.current.th = 0;
-      if (st !== 0) drive.input.current.st = 0;
-    },
-    onPointerLeave: () => {
-      if (th !== 0) drive.input.current.th = 0;
-      if (st !== 0) drive.input.current.st = 0;
-    },
+  const gearBtn = (g: "R" | "N" | "D"): React.CSSProperties => ({
+    ...panel,
+    fontSize: 13,
+    padding: "8px 13px",
+    borderRadius: 7,
+    cursor: "pointer",
+    border: `1px solid ${gear === g ? "#9fb4d0" : "#2c2e35"}`,
+    background: gear === g ? "rgba(159,180,208,0.18)" : "rgba(16,17,20,0.9)",
+    color: gear === g ? "#e6f0ff" : "#9a9aa3",
   });
+  const pedalStyle = (active: boolean): React.CSSProperties => ({
+    ...panel,
+    fontSize: 11,
+    letterSpacing: "0.12em",
+    padding: "14px 16px",
+    borderRadius: 8,
+    cursor: "pointer",
+    border: `1px solid ${active ? "#9fb4d0" : "#2c2e35"}`,
+    background: active ? "rgba(159,180,208,0.2)" : "rgba(16,17,20,0.9)",
+  });
+
   return (
     <Html fullscreen zIndexRange={[40, 0]} style={{ pointerEvents: "none" }}>
       {sel ? (
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 14, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.75)", padding: "5px 10px", borderRadius: 6 }}>
-            DRIVING · {sel.label} · WASD / ARROWS · ESC EXITS
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 12, display: "flex", flexDirection: "column", alignItems: "center", gap: 9 }}>
+          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.78)", padding: "5px 10px", borderRadius: 6 }}>
+            DRIVING · {sel.label} · DRAG THE WHEEL · WASD WORKS · ESC EXITS
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <div style={btn} {...hold(0, -1)}>◀</div>
-            <div style={btn} {...hold(1, 0)}>▲</div>
-            <div style={btn} {...hold(-0.7, 0)}>▼</div>
-            <div style={btn} {...hold(0, 1)}>▶</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {/* gear selector */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+              {(["R", "N", "D"] as const).map((g) => (
+                <div key={g} style={gearBtn(g)} onPointerDown={() => setGear(g)}>
+                  {g}
+                </div>
+              ))}
+            </div>
+            {/* steering wheel: drag horizontally, springs back on release */}
             <div
-              style={{ ...btn, color: "#e2937e" }}
+              style={{
+                ...panel,
+                width: 96,
+                height: 96,
+                borderRadius: "50%",
+                border: "3px solid #3a3d44",
+                background: "rgba(13,14,17,0.92)",
+                position: "relative",
+                cursor: "grab",
+                transform: `rotate(${wheelDeg}deg)`,
+                transition: dragStart.current === null ? "transform 0.25s ease" : "none",
+              }}
+              onPointerDown={onWheelDown}
+              onPointerMove={onWheelMove}
+              onPointerUp={onWheelUp}
+              onPointerCancel={onWheelUp}
+            >
+              {/* spokes + hub */}
+              <div style={{ position: "absolute", left: "50%", top: 6, bottom: "50%", width: 4, marginLeft: -2, background: "#3a3d44", borderRadius: 2 }} />
+              <div style={{ position: "absolute", top: "50%", left: 8, right: 8, height: 4, marginTop: -2, background: "#3a3d44", borderRadius: 2 }} />
+              <div style={{ position: "absolute", left: "50%", top: "50%", width: 22, height: 22, margin: "-11px 0 0 -11px", borderRadius: "50%", background: "#23252b", border: "1px solid #4a4e56" }} />
+              <div style={{ position: "absolute", left: "50%", top: 9, width: 6, height: 6, marginLeft: -3, borderRadius: "50%", background: "#9fb4d0" }} />
+            </div>
+            {/* pedals */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div
+                style={pedalStyle(pedal === 1)}
+                onPointerDown={() => setPedal(1)}
+                onPointerUp={() => setPedal(0)}
+                onPointerLeave={() => setPedal(0)}
+              >
+                ACCEL
+              </div>
+              <div
+                style={pedalStyle(false)}
+                onPointerDown={() => {
+                  setPedal(0);
+                  if (drive) drive.input.current.th = 0;
+                }}
+              >
+                BRAKE
+              </div>
+            </div>
+            <div
+              style={{ ...pedalStyle(false), color: "#e2937e", alignSelf: "center" }}
               onPointerDown={() => drive.set(null)}
             >
               ✕ EXIT
@@ -1412,7 +1570,7 @@ function RingTraffic() {
       {/* the semi on the outer bypass: slow, huge, half in the fog; its
           frozen offset 0.6 parks it on the far arc for the reduced-motion
           poster, exactly where scale reads best against the towers */}
-      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-1" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
+      <PathRider curve={BYPASS} offset={0.6} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-1" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
@@ -1422,7 +1580,7 @@ function RingTraffic() {
         )}
       </PathRider>
       {/* two more of the fleet, spaced a third of a lap apart */}
-      <PathRider curve={BYPASS} offset={0.27} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-2" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
+      <PathRider curve={BYPASS} offset={0.27} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-2" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
@@ -1430,7 +1588,7 @@ function RingTraffic() {
           </>
         )}
       </PathRider>
-      <PathRider curve={BYPASS} offset={0.93} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-3" driveLabel="VENKATAPAGADALA SEMI" driveMax={3}>
+      <PathRider curve={BYPASS} offset={0.93} lapSpeed={0.009} y={BYPASS_Y} driveId="semi-3" driveLabel="VENKATAPAGADALA SEMI" driveMax={3} hitR={3.4}>
         {(s) => (
           <>
             <CyberSemi dim={ctx.dim} speed={s} />
