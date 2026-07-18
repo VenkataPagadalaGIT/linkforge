@@ -113,6 +113,21 @@ const BYPASS = new THREE.CatmullRomCurve3(
 );
 const BYPASS_Y = 0.082;
 
+/** Elevated flyover: an elongated viaduct oval that crosses OVER the ring
+ *  road on both flanks and rides pylons. Unlike the ground loops, this
+ *  curve carries real y: the deck height IS the path. */
+const FLYOVER = new THREE.CatmullRomCurve3(
+  [
+    v3(20, 2.4, 0), v3(16, 2.9, 4.5), v3(6, 3.15, 6.5), v3(-6, 3.15, 6.5), v3(-16, 2.9, 4.5),
+    v3(-20, 2.4, 0), v3(-16, 2.9, -4.5), v3(-6, 3.15, -6.5), v3(6, 3.15, -6.5), v3(16, 2.9, -4.5),
+  ],
+  true,
+  "catmullrom",
+  0.5
+);
+/** Wheels-on-deck offset: half the flattened ribbon above the curve line. */
+const FLYOVER_Y = 0.075;
+
 /** Pedestrian loop around the plaza under the brain. */
 const WALKWAY = new THREE.CatmullRomCurve3(
   Array.from({ length: 10 }, (_, i) => {
@@ -672,6 +687,84 @@ function BypassRoad() {
   );
 }
 
+
+/** The flyover: flattened-tube deck riding the elevated curve, a faint
+ *  guide line, instanced edge lights, and pylons that drop to grade only
+ *  where they will not spear the ring road or the plaza. */
+function FlyoverRoad() {
+  const ctx = useScene();
+  const deck = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.62, 8, true), []);
+  const guide = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.02, 6, true), []);
+  // Pylon placement: sample the deck, drop a pier unless it lands on the
+  // ring road ribbon, inside the plaza, or on the bypass lane.
+  const pylons = useMemo(() => {
+    const roadPts = ROAD.getSpacedPoints(140);
+    const bypassPts = BYPASS.getSpacedPoints(140);
+    const out: { x: number; z: number; h: number }[] = [];
+    const N = 26;
+    for (let i = 0; i < N; i++) {
+      const p = FLYOVER.getPointAt(i / N);
+      const nearRoad = roadPts.some((q) => (q.x - p.x) ** 2 + (q.z - p.z) ** 2 < 1.35 ** 2);
+      const nearBypass = bypassPts.some((q) => (q.x - p.x) ** 2 + (q.z - p.z) ** 2 < 1.1 ** 2);
+      const inPlaza = p.x * p.x + p.z * p.z < 5.6 ** 2;
+      if (!nearRoad && !nearBypass && !inPlaza) out.push({ x: p.x, z: p.z, h: p.y - 0.05 });
+    }
+    return out;
+  }, []);
+  const piers = useRef<THREE.InstancedMesh>(null);
+  useLayoutEffect(() => {
+    const m = piers.current;
+    if (!m) return;
+    const tmp = new THREE.Object3D();
+    pylons.forEach((py, i) => {
+      tmp.position.set(py.x, py.h / 2, py.z);
+      tmp.scale.set(1, py.h, 1);
+      tmp.updateMatrix();
+      m.setMatrixAt(i, tmp.matrix);
+    });
+    m.instanceMatrix.needsUpdate = true;
+  }, [pylons]);
+  const lights = useRef<THREE.InstancedMesh>(null);
+  useLayoutEffect(() => {
+    const m = lights.current;
+    if (!m) return;
+    const tmp = new THREE.Object3D();
+    const p = new THREE.Vector3();
+    const tan = new THREE.Vector3();
+    const side = new THREE.Vector3();
+    const N = 64;
+    for (let i = 0; i < N; i++) {
+      FLYOVER.getPointAt(i / N, p);
+      FLYOVER.getTangentAt(i / N, tan);
+      side.set(tan.z, 0, -tan.x).normalize();
+      const s = i % 2 === 0 ? 1 : -1;
+      tmp.position.set(p.x + side.x * 0.55 * s, p.y + 0.085, p.z + side.z * 0.55 * s);
+      tmp.rotation.set(0, Math.atan2(tan.x, tan.z), 0);
+      tmp.updateMatrix();
+      m.setMatrixAt(i, tmp.matrix);
+    }
+    m.instanceMatrix.needsUpdate = true;
+  }, []);
+  return (
+    <group>
+      <mesh geometry={deck} scale={[1, 0.12, 1]}>
+        <meshStandardMaterial color="#16171c" metalness={0.55} roughness={0.5} />
+      </mesh>
+      <mesh geometry={guide} position={[0, 0.075, 0]}>
+        <meshBasicMaterial color={ICE} transparent opacity={0.16 * ctx.dim} depthWrite={false} />
+      </mesh>
+      <instancedMesh ref={lights} args={[undefined, undefined, 64]} frustumCulled={false}>
+        <boxGeometry args={[0.05, 0.02, 0.16]} />
+        <meshBasicMaterial color={ICE} transparent opacity={0.35 * ctx.dim} depthWrite={false} />
+      </instancedMesh>
+      <instancedMesh ref={piers} args={[undefined, undefined, 26]} count={pylons.length} frustumCulled={false}>
+        <cylinderGeometry args={[0.09, 0.14, 1, 8]} />
+        <meshStandardMaterial color="#1d1f24" metalness={0.6} roughness={0.5} />
+      </instancedMesh>
+    </group>
+  );
+}
+
 /**
  * Rides a closed curve at a constant lap speed, +Z aligned to the tangent.
  * Children receive the wheel-spin speed (world speed divided by the group
@@ -704,7 +797,9 @@ function PathRider({
     if (!ctx.still) u.current = (u.current + lapSpeed * delta) % 1;
     curve.getPointAt(u.current, p);
     curve.getTangentAt(u.current, tan);
-    g.position.set(p.x, y, p.z);
+    // y is additive so elevated curves (the flyover) carry their own height
+    // while the flat ground loops keep behaving exactly as before
+    g.position.set(p.x, p.y + y, p.z);
     g.rotation.y = Math.atan2(tan.x, tan.z);
   });
   const wheelSpeed = ctx.still ? 0 : (len * lapSpeed) / scale;
@@ -729,6 +824,34 @@ function TailTrail({ y, z }: { y: number; z: number }) {
     <Trail width={0.22} length={3.2} decay={2.6} color={ICE} attenuation={(w) => w * w}>
       {marker}
     </Trail>
+  );
+}
+
+
+/** Two machines keep the flyover alive without crowding it. */
+function FlyoverTraffic() {
+  const ctx = useScene();
+  return (
+    <>
+      <PathRider curve={FLYOVER} offset={0.15} lapSpeed={0.02} y={FLYOVER_Y} scale={0.75}>
+        {(s) => (
+          <>
+            <CyberTruck dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.4} l={3.0} opacity={0.4} y={0.012} />
+            <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={FLYOVER} offset={0.62} lapSpeed={0.02} y={FLYOVER_Y} scale={0.85}>
+        {(s) => (
+          <>
+            <Sedan dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.2} opacity={0.38} y={0.012} />
+            <TailTrail y={0.44} z={-1.05} />
+          </>
+        )}
+      </PathRider>
+    </>
   );
 }
 
@@ -1096,6 +1219,7 @@ function World() {
       <CloudBrain />
       <Roadway />
       <BypassRoad />
+      <FlyoverRoad />
       <Towers />
       <HomeBase />
       <BuildSite />
@@ -1106,6 +1230,7 @@ function World() {
           background orbit never reads it, so it stays hero-only */}
       {!ctx.background && <IdleRobot />}
       <RingTraffic />
+      <FlyoverTraffic />
       {DRONES.map((d, i) => (
         <Drone key={i} curve={DRONE_PATHS[d.path]} offset={d.offset} speed={d.speed} />
       ))}
