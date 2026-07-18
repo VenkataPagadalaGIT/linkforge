@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import BlogPostPage from "@/views/BlogPostPage";
 import { getPost, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
@@ -12,11 +13,10 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = await getPost(params.postSlug);
   if (!post) {
-    const t = params.postSlug.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join(" ");
-    return {
-      title: t,
-      alternates: { canonical: `/insights/${params.slug}/${params.postSlug}` },
-    };
+    // Slug did not resolve. Emit noindex and NO canonical: previously this
+    // title-cased the URL slug and self-canonicalised it, which turned every
+    // bogus URL into an indexable page with an attacker-chosen <title>.
+    return { title: "Not found", robots: { index: false, follow: false } };
   }
   // Pull from CMS-managed seo block (new) or fall back to legacy fields
   const seo = (post as any).seo || {};
@@ -61,6 +61,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function Page({ params }: { params: Params }) {
   const post = await getPost(params.postSlug);
+  if (!post) notFound();
   const seo = ((post as any)?.seo) || {};
   const canonicalPath = seo.canonical || `/insights/${params.slug}/${params.postSlug}`;
   const url = canonicalPath.startsWith("http") ? canonicalPath : `${SITE_URL}${canonicalPath}`;

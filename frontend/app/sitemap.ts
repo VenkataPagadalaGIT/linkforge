@@ -29,6 +29,11 @@ const STATIC_ROUTES = [
   "/experience",
   "/contact",
   "/guides",
+  // Machine-readable resources for AI answer engines. Self-canonical, so
+  // they belong here; the /guides/<slug>.md twins deliberately do NOT (they
+  // canonical back to the HTML page).
+  "/llms.txt",
+  "/llms-full.txt",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -84,6 +89,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     });
   }
+  // Solutions detail pages — internally linked and indexable, but were absent
+  // from the sitemap (audit: 160 indexable URLs missing).
+  const solutionSlugs = ["ai-product", "aeo", "technical", "programmatic", "editorial", "performance"];
+  for (const slug of solutionSlugs) {
+    urls.push({ url: `${SITE_URL}/solutions/${slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.7 });
+  }
+
   // AI Systems Map — one topic page per ontology entity.
   for (const n of aiOntologyNodes) {
     urls.push({

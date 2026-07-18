@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import AIContributorProfilePage from "@/views/AIContributorProfilePage";
 import { getContributor, personJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
@@ -13,8 +14,10 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const c = await getContributor(params.id);
   if (!c) {
-    const name = params.id.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
-    return { title: `${name} · AI Contributor`, alternates: { canonical: `/ai-contributors/${params.id}` } };
+    // Slug did not resolve. Emit noindex and NO canonical: previously this
+    // title-cased the URL slug and self-canonicalised it, which turned every
+    // bogus URL into an indexable page with an attacker-chosen <title>.
+    return { title: "Not found", robots: { index: false, follow: false } };
   }
   return {
     title: `${c.name} · AI Contributor`,
@@ -32,6 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function Page({ params }: { params: Params }) {
   const c = await getContributor(params.id);
+  if (!c) notFound();
   const url = `${SITE_URL}/ai-contributors/${params.id}`;
   const jsonLd = c
     ? [
