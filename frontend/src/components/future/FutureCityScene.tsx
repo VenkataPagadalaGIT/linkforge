@@ -408,39 +408,74 @@ function IdleRobot() {
  *  placement, so the kneel-reach loop stays in step with the lift. */
 const BEAM_PERIOD = 9.375;
 
+/** Panel airlift loop: rise off the stack, ferry across, seat on the slab. */
+const LIFT_PERIOD = 14;
+
 function BuildSite() {
   const ctx = useScene();
   const beam = useRef<THREE.Mesh>(null);
   const beamMat = useRef<THREE.MeshStandardMaterial>(null);
+  const lift = useRef<THREE.Group>(null);
+  const liftMat = useRef<THREE.MeshStandardMaterial>(null);
+  // ghost outline of the floors that do not exist yet
+  const holoGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(1.9, 1.05, 1.9)), []);
+
   useFrame(({ clock }) => {
     const m = beam.current;
     const mat = beamMat.current;
-    if (!m || !mat) return;
-    // one placement cycle: lift, seat, quiet dissolve, repeat
-    const p = ctx.still ? 0.6 : (clock.elapsedTime % BEAM_PERIOD) / BEAM_PERIOD;
-    const rise = THREE.MathUtils.smoothstep(Math.min(p / 0.55, 1), 0, 1);
-    m.position.y = 0.3 + rise * 1.9;
-    mat.opacity = p > 0.75 ? Math.max(0, 1 - (p - 0.75) / 0.15) : 1;
-    m.visible = mat.opacity > 0.01;
+    if (m && mat) {
+      // one placement cycle: lift, seat, quiet dissolve, repeat
+      const p = ctx.still ? 0.6 : (clock.elapsedTime % BEAM_PERIOD) / BEAM_PERIOD;
+      const rise = THREE.MathUtils.smoothstep(Math.min(p / 0.55, 1), 0, 1);
+      m.position.y = 0.3 + rise * 1.9;
+      mat.opacity = p > 0.75 ? Math.max(0, 1 - (p - 0.75) / 0.15) : 1;
+      m.visible = mat.opacity > 0.01;
+    }
+    const lg = lift.current;
+    const lm = liftMat.current;
+    if (lg && lm) {
+      // drone pair ferries a wall panel: stack, up, across, seat, dissolve
+      const p = ctx.still ? 0.42 : (clock.elapsedTime % LIFT_PERIOD) / LIFT_PERIOD;
+      const up = THREE.MathUtils.smoothstep(Math.min(p / 0.3, 1), 0, 1);
+      const across = THREE.MathUtils.smoothstep(p, 0.32, 0.58);
+      const seat = THREE.MathUtils.smoothstep(p, 0.6, 0.72);
+      lg.position.set(
+        -1.7 + across * 1.7,
+        0.35 + up * 2.1 - seat * 0.85,
+        -0.6 + across * 0.25
+      );
+      lm.opacity = p > 0.8 ? Math.max(0, 1 - (p - 0.8) / 0.12) : 1;
+      lg.visible = lm.opacity > 0.01;
+    }
   });
   return (
     <group position={[6.2, 0.004, 5.8]} rotation={[0, -0.5, 0]}>
-      {/* columns done, one top beam and one mid beam in, the rest still to come */}
+      {/* full-height corner columns span both built levels */}
       {[[-0.85, -0.85], [0.85, -0.85], [-0.85, 0.85], [0.85, 0.85]].map(([x, z], i) => (
         <mesh key={i} position={[x, 1.1, z]}>
           <boxGeometry args={[0.09, 2.2, 0.09]} />
           <meshStandardMaterial {...M.joint} />
         </mesh>
       ))}
+      {/* ground floor is DONE: slab on top, glass infill on the two back sides */}
+      <mesh position={[0, 1.12, 0]}>
+        <boxGeometry args={[2.05, 0.07, 2.05]} />
+        <meshStandardMaterial {...M.hull} />
+      </mesh>
+      <mesh position={[0, 0.55, -0.85]}>
+        <boxGeometry args={[1.66, 1.05, 0.035]} />
+        <meshStandardMaterial color="#10131a" metalness={0.85} roughness={0.2} />
+      </mesh>
+      <mesh position={[-0.85, 0.55, 0]}>
+        <boxGeometry args={[0.035, 1.05, 1.66]} />
+        <meshStandardMaterial color="#10131a" metalness={0.85} roughness={0.2} />
+      </mesh>
+      {/* level two is bones: one top beam in, the rest arriving */}
       <mesh position={[0, 2.2, -0.85]}>
         <boxGeometry args={[1.8, 0.09, 0.09]} />
         <meshStandardMaterial {...M.joint} />
       </mesh>
-      <mesh position={[-0.85, 1.15, 0]}>
-        <boxGeometry args={[0.09, 0.09, 1.8]} />
-        <meshStandardMaterial {...M.joint} />
-      </mesh>
-      {/* the beam the pair is placing */}
+      {/* the beam the ground pair is placing */}
       <mesh ref={beam} position={[0, 0.3, 0.85]}>
         <boxGeometry args={[1.8, 0.09, 0.09]} />
         <meshStandardMaterial
@@ -451,6 +486,45 @@ function BuildSite() {
           emissiveIntensity={0.25 * ctx.dim}
         />
       </mesh>
+      {/* holographic blueprint: the two floors that only exist as intent yet */}
+      {[2.85, 3.95].map((y, i) => (
+        <lineSegments key={i} geometry={holoGeo} position={[0, y, 0]}>
+          <lineBasicMaterial color={ICE} transparent opacity={(0.2 - i * 0.07) * ctx.dim} />
+        </lineSegments>
+      ))}
+      {/* panel stack waiting on the ground */}
+      {[0, 1, 2].map((i) => (
+        <mesh key={i} position={[-1.7, 0.08 + i * 0.055, -0.6]} rotation={[0, 0.12 * i, 0]}>
+          <boxGeometry args={[0.72, 0.045, 0.5]} />
+          <meshStandardMaterial {...M.hull} />
+        </mesh>
+      ))}
+      {/* drone pair ferrying one panel up to the slab */}
+      <group ref={lift}>
+        <mesh>
+          <boxGeometry args={[0.72, 0.045, 0.5]} />
+          <meshStandardMaterial
+            ref={liftMat}
+            {...M.hull}
+            transparent
+            emissive={ICE}
+            emissiveIntensity={0.2 * ctx.dim}
+          />
+        </mesh>
+        {([-1, 1] as const).map((side) => (
+          <group key={side} position={[side * 0.26, 0.34, 0]}>
+            <mesh>
+              <capsuleGeometry args={[0.035, 0.09, 3, 8]} />
+              <meshStandardMaterial {...M.joint} />
+            </mesh>
+            {/* taut lift cables down to the panel corners */}
+            <mesh position={[0, -0.17, 0]}>
+              <boxGeometry args={[0.006, 0.3, 0.006]} />
+              <meshStandardMaterial color="#3a3d44" metalness={0.6} roughness={0.5} />
+            </mesh>
+          </group>
+        ))}
+      </group>
       {/* the kneeling pair at the beam ends, half a cycle apart */}
       <group position={[1.55, 0, 0.85]} rotation={[0, -Math.PI / 2, 0]}>
         <Robot pose="assemble" phase={0} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
@@ -459,6 +533,11 @@ function BuildSite() {
       <group position={[-1.55, 0, 0.85]} rotation={[0, Math.PI / 2, 0]}>
         <Robot pose="assemble" phase={2.94} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
         <ContactShadow w={1.0} l={1.3} opacity={0.42} />
+      </group>
+      {/* the third builder works ON the finished slab, seating the airlifted
+          panels at the level-two edge */}
+      <group position={[0.45, 1.155, 0.2]} rotation={[0, -Math.PI / 2 + 0.3, 0]}>
+        <Robot pose="assemble" phase={1.5} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
       </group>
     </group>
   );

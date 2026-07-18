@@ -2,11 +2,11 @@
 /**
  * Robot: a brand-free Optimus-class humanoid built to read as real at the
  * mid distances the city scene uses. Two-tone body language does the work:
- * satin-black shell (head, chest, pelvis) against graphite-and-silver limb
- * segments, with dark gunmetal joint spheres at shoulder, elbow, hip and
- * knee so the mechanical articulation stays visible in silhouette. A glossy
- * clearcoat visor band with a faint ice-blue strip and a tiny amber sternum
- * LED are the only lights it carries.
+ * satin ivory outer panels (chest, cowls, arms, legs) over a matte black
+ * undersuit (waist, pelvis, collar), near-black joint spheres at shoulder,
+ * elbow, hip and knee, black hands and feet, and one fully glossy black
+ * head. A faint ice-blue visor strip and a tiny amber sternum LED are the
+ * only lights it carries.
  *
  * Everything is generated geometry: rounded boxes, capsules, spheres, and a
  * four-sided tapered cylinder for each chamfered foot. 34 meshes total.
@@ -28,21 +28,23 @@ const ICE = "#9fb4d0";
 const AMBER = "#d9a860";
 
 /* Shared, static materials: one program each across all robot instances.
-   Limb grays run slightly rougher than the shell on purpose: the wider
-   specular lobe catches rim light so the grays diffuse against the dark
-   scene instead of going black. */
-const SHELL = new THREE.MeshStandardMaterial({ color: "#141416", metalness: 0.6, roughness: 0.35 });
-const GRAPHITE = new THREE.MeshStandardMaterial({ color: "#3a3a3e", metalness: 0.5, roughness: 0.55 });
-const SILVER = new THREE.MeshStandardMaterial({ color: "#8a8a90", metalness: 0.55, roughness: 0.55 });
+   The Optimus read comes from the split, not the parts: satin ivory outer
+   panels over a matte black undersuit, near-black joints at every
+   articulation, and one fully glossy black head. Panels run a wider
+   specular lobe so they catch rim light and stay visible against the dark
+   scene. */
+const SHELL = new THREE.MeshStandardMaterial({ color: "#d8d8d2", metalness: 0.25, roughness: 0.42 });
+const GRAPHITE = new THREE.MeshStandardMaterial({ color: "#1a1b1e", metalness: 0.45, roughness: 0.6 });
+const SILVER = new THREE.MeshStandardMaterial({ color: "#d8d8d2", metalness: 0.25, roughness: 0.42 });
 const SILVER_FACET = new THREE.MeshStandardMaterial({
-  color: "#8a8a90",
-  metalness: 0.55,
+  color: "#1c1d20",
+  metalness: 0.5,
   roughness: 0.55,
   // the feet are the one faceted design element; flat shading keeps their
   // chamfers crisp instead of ballooning across the four-sided taper
   flatShading: true,
 });
-const GUNMETAL = new THREE.MeshStandardMaterial({ color: "#26262b", metalness: 0.75, roughness: 0.4 });
+const GUNMETAL = new THREE.MeshStandardMaterial({ color: "#1f2024", metalness: 0.75, roughness: 0.4 });
 const SOLE = new THREE.MeshStandardMaterial({ color: "#101013", metalness: 0.3, roughness: 0.75 });
 const VISOR = new THREE.MeshPhysicalMaterial({
   color: "#060608",
@@ -197,7 +199,7 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
         <mesh material={GUNMETAL}>
           <sphereGeometry args={[0.056, 12, 10]} />
         </mesh>
-        <mesh material={GRAPHITE} position={[0, -0.145, 0]}>
+        <mesh material={SILVER} position={[0, -0.145, 0]}>
           <capsuleGeometry args={[0.046, 0.2, 4, 10]} />
         </mesh>
         <group ref={el} position={[0, -0.29, 0]}>
@@ -211,14 +213,14 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
             args={[0.065, 0.1, 0.042]}
             radius={0.014}
             smoothness={2}
-            material={SILVER}
+            material={GUNMETAL}
             position={[0, -0.305, 0]}
           />
           <RoundedBox
             args={[0.024, 0.055, 0.03]}
             radius={0.008}
             smoothness={2}
-            material={SILVER}
+            material={GUNMETAL}
             position={[side * -0.045, -0.275, 0.012]}
             rotation={[0.25, 0, side * -0.35]}
           />
@@ -236,7 +238,7 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
         <mesh material={GUNMETAL}>
           <sphereGeometry args={[0.062, 12, 10]} />
         </mesh>
-        <mesh material={GRAPHITE} position={[0, -0.175, 0]}>
+        <mesh material={SILVER} position={[0, -0.175, 0]}>
           <capsuleGeometry args={[0.06, 0.23, 4, 10]} />
         </mesh>
         <group ref={knee} position={[0, -0.36, 0]}>
@@ -265,12 +267,12 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
     <group scale={scale}>
       <group ref={root}>
         <group ref={pelvis} position={[0, 0.92, 0]}>
-          {/* pelvis: outer shell block; legs hang from it */}
+          {/* pelvis: black undersuit block; legs hang from it */}
           <RoundedBox
             args={[0.27, 0.15, 0.175]}
             radius={0.04}
             smoothness={2}
-            material={SHELL}
+            material={GRAPHITE}
             position={[0, -0.02, 0]}
           />
           {leg(-1, hipL, kneeL, footL)}
@@ -327,11 +329,12 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
             {arm(1, shR, elR)}
 
             <group ref={head} position={[0, HEAD_Y, 0]}>
+              {/* the whole head is one glossy black dome, per the reference */}
               <RoundedBox
                 args={[0.175, 0.21, 0.195]}
                 radius={0.06}
                 smoothness={3}
-                material={SHELL}
+                material={VISOR}
                 position={[0, 0.02, 0]}
               />
               {/* full-width glossy visor band, slightly proud of the skull */}

@@ -20,6 +20,7 @@
 import * as THREE from "three";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Text } from "@react-three/drei";
 
 export interface VehicleProps {
   /** Emissive multiplier, background scenes run dimmer. */
@@ -187,6 +188,13 @@ export function CyberTruck({ dim, speed }: VehicleProps) {
         <boxGeometry args={[1.18, 0.04, 0.03]} />
         <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
       </mesh>
+      {/* mirror-replacement camera pods at the A-pillar */}
+      {([-1, 1] as const).map((side) => (
+        <mesh key={`pod-${side}`} position={[side * 0.6, 0.72, 0.56]} rotation={[0, 0, side * -0.3]}>
+          <capsuleGeometry args={[0.018, 0.06, 3, 8]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+      ))}
       {/* fender flares cut the arches over each wheel */}
       {TRUCK_WHEELS.map((w, i) => (
         <mesh key={i} geometry={g.fender} position={[Math.sign(w.x) * 0.55, 0, w.z]}>
@@ -389,6 +397,22 @@ export function CyberSemi({ dim, speed }: VehicleProps) {
         <boxGeometry args={[1.312, 1.38, 0.018]} />
         <meshStandardMaterial color="#85868c" metalness={0.6} roughness={0.5} />
       </instancedMesh>
+      {/* concept livery: the owner's wordmark down both trailer sides, set
+          like a real fleet brand: dark lettering on the light trailer skin */}
+      {([-1, 1] as const).map((side) => (
+        <Text
+          key={side}
+          position={[side * 0.675, 1.46, -1.1]}
+          rotation={[0, side * (Math.PI / 2), 0]}
+          fontSize={0.34}
+          letterSpacing={0.14}
+          color="#3f424a"
+          anchorX="center"
+          anchorY="middle"
+        >
+          VENKATAPAGADALA
+        </Text>
+      ))}
       {/* amber running dots along the trailer bottom edge */}
       <instancedMesh ref={dots} args={[undefined, undefined, SEMI_DOTS]} frustumCulled={false}>
         <sphereGeometry args={[0.022, 6, 6]} />
@@ -495,6 +519,40 @@ export function Sedan({ dim, speed }: VehicleProps) {
       <mesh geometry={g.rearArc}>
         <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
       </mesh>
+      {/* dark arch trims ground each wheel into the body instead of leaving
+          it floating beside the ellipsoid: the single biggest "real car" cue */}
+      {SEDAN_WHEELS.map((w, i) => (
+        <mesh
+          key={`arch-${i}`}
+          position={[w.x + Math.sign(w.x) * 0.075, SEDAN_WHEEL_R, w.z]}
+          rotation={[0, Math.PI / 2, 0]}
+        >
+          <torusGeometry args={[0.225, 0.022, 8, 22, Math.PI]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+      ))}
+      {/* roof sensor puck: the robotaxi cue, with a faint ice ring */}
+      <group position={[0, 0.705, -0.06]}>
+        <mesh>
+          <cylinderGeometry args={[0.085, 0.1, 0.04, 18]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+        <mesh position={[0, 0.032, 0]}>
+          <cylinderGeometry args={[0.05, 0.06, 0.035, 14]} />
+          <meshPhysicalMaterial {...GLASS} />
+        </mesh>
+        <mesh position={[0, 0.014, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.072, 0.006, 6, 24]} />
+          <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.55 * d} />
+        </mesh>
+      </group>
+      {/* mirror-replacement camera pods at the A-pillar line */}
+      {([-1, 1] as const).map((side) => (
+        <mesh key={`pod-${side}`} position={[side * 0.48, 0.5, 0.4]} rotation={[0, 0, side * -0.35]}>
+          <capsuleGeometry args={[0.016, 0.05, 3, 8]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+      ))}
       {SEDAN_WHEELS.map((w, i) => (
         <group key={i} position={[w.x, SEDAN_WHEEL_R, w.z]}>
           <group
