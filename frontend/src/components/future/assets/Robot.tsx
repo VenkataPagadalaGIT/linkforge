@@ -60,7 +60,7 @@ const HEAD_Y = 0.54;
 const smoothstep = THREE.MathUtils.smoothstep;
 
 export interface RobotProps {
-  pose: "walk" | "run" | "assemble" | "idle" | "carry" | "operate" | "wave";
+  pose: "walk" | "run" | "assemble" | "idle" | "carry" | "operate" | "wave" | "sit" | "press";
   /** Per-instance time offset so multiple robots never move in lockstep. */
   phase: number;
   /** Work coupling: a 0..1 ref the scene mutates per frame. In "assemble"
@@ -235,6 +235,47 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false,
       shR.current.rotation.x = -0.55 + 0.04 * Math.sin(t * 0.8 + phase + 1.9);
       elL.current.rotation.x = -0.85;
       elR.current.rotation.x = -0.85;
+    } else if (pose === "sit") {
+      // seated: pelvis dropped onto the cushion, thighs forward, shins down,
+      // hands resting on the knees. The root drop is what puts the hips on
+      // the seat, so the caller only has to place the rig at seat height.
+      const s1 = Math.sin(t * 0.6 + phase);
+      r.position.y = -0.34 + 0.004 * Math.sin(t * 1.1 + phase);
+      pv.rotation.z = 0.01 * s1;
+      to.rotation.x = 0.1;
+      to.rotation.y = 0.05 * Math.sin(t * 0.3 + phase);
+      hd.position.y = HEAD_Y;
+      hd.rotation.set(0.06, 0.3 * Math.sin(t * 0.22 + phase * 1.4), -0.015 * s1);
+      hipL.current.rotation.x = -1.46;
+      hipR.current.rotation.x = -1.46;
+      kneeL.current.rotation.x = 1.48;
+      kneeR.current.rotation.x = 1.48;
+      footL.current.rotation.x = 0.06;
+      footR.current.rotation.x = 0.06;
+      shL.current.rotation.x = -0.4;
+      shR.current.rotation.x = -0.4;
+      elL.current.rotation.x = -0.95;
+      elR.current.rotation.x = -0.95;
+    } else if (pose === "press") {
+      // reaching a call button: weight forward, right arm extended, forearm
+      // doing a short repeated poke so the press reads as a deliberate act
+      const poke = Math.max(0, Math.sin(t * 3.1 + phase));
+      r.position.y = 0.004 * Math.sin(t * 1.1 + phase);
+      pv.rotation.z = 0.02;
+      to.rotation.x = 0.14;
+      to.rotation.y = -0.05;
+      hd.position.y = HEAD_Y;
+      hd.rotation.set(0.22, -0.04, 0);
+      hipL.current.rotation.x = 0.05;
+      hipR.current.rotation.x = -0.08;
+      kneeL.current.rotation.x = 0.08;
+      kneeR.current.rotation.x = 0.06;
+      footL.current.rotation.x = 0;
+      footR.current.rotation.x = 0;
+      shL.current.rotation.x = 0.08;
+      elL.current.rotation.x = -0.22;
+      shR.current.rotation.x = -1.34 - 0.1 * poke;
+      elR.current.rotation.x = -0.34 + 0.3 * poke;
     } else {
       // idle: micro weight shift plus a slow head sweep
       const s1 = Math.sin(t * 0.55 + phase);

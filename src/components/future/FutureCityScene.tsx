@@ -257,6 +257,13 @@ const TOWERS = [
   { x: 11.6, z: -5, w: 0.7, h: 5 },
 ];
 
+/** How long a machine holds its stop after the way is clear, in seconds.
+ *  Long enough to read as "it saw me and waited", short enough not to jam. */
+const STOP_DWELL = 1.15;
+
+/** Smoothstep for walk and approach easing. */
+const smooth = (k: number) => k * k * (3 - 2 * k);
+
 const STATIC_COLS: { x: number; z: number; r: number }[] = [
   ...TOWERS.map((t) => ({ x: t.x, z: t.z, r: t.w * 0.75 + 0.45 })),
   { x: 6.2, z: 5.8, r: 2.7 }, // the construction site
@@ -1125,6 +1132,13 @@ function PathRider({
   const driven = !!driveId && drive?.sel?.id === driveId;
   const selfR = (hitR ?? (driveKind === "boat" ? 2.6 : 1.4)) * scale;
   const yieldF = useRef(1);
+  const holdUntil = useRef(0);
+  const lamps = useRef<THREE.Group>(null);
+  const lampMat = useMemo(
+    () => new THREE.MeshBasicMaterial({ color: "#ff3524", transparent: true, opacity: 0, toneMapped: false }),
+    []
+  );
+  useEffect(() => () => lampMat.dispose(), [lampMat]);
   useEffect(() => {
     const g = group.current;
     if (!g) return;
@@ -1134,7 +1148,7 @@ function PathRider({
       COLLIDERS.delete(entry);
     };
   }, [selfR]);
-  useFrame((_, delta) => {
+  useFrame((st, delta) => {
     const g = group.current;
     if (!g) return;
     if (driven && drive) {
@@ -1196,16 +1210,25 @@ function PathRider({
       }
       u.current = best;
     }
-    // yield to the player: traffic eases to a stop near the driven machine
-    let want = 1;
-    const pt = drive?.sel ? drive.target.current : null;
+    // Yield: stop for whoever is in the way, hold the stop for a beat, then
+    // go. The target is the player whether they are driving or on foot, so a
+    // walking humanoid gets the same right of way a driven machine does.
+    const now = st.clock.elapsedTime;
+    const pt = drive?.target.current ?? null;
     if (pt && pt !== g) {
       const dx = pt.position.x - g.position.x;
       const dz = pt.position.z - g.position.z;
       const near = selfR + 2.8;
-      if (dx * dx + dz * dz < near * near) want = 0;
+      if (dx * dx + dz * dz < near * near) holdUntil.current = now + STOP_DWELL;
     }
+    const want = now < holdUntil.current ? 0 : 1;
     yieldF.current += (want - yieldF.current) * Math.min(1, delta * 2.5);
+    // brake lamps blink through the pause so the stop reads as a decision
+    if (lamps.current) {
+      const stopped = 1 - yieldF.current;
+      lamps.current.visible = stopped > 0.05;
+      lampMat.opacity = stopped * (now % 0.86 < 0.52 ? 1 : 0.22);
+    }
     if (!ctx.still) u.current = (u.current + lapSpeed * delta * yieldF.current) % 1;
     curve.getPointAt(u.current, p);
     curve.getTangentAt(u.current, tan);
@@ -1245,6 +1268,16 @@ function PathRider({
       onPointerOut={clickable ? () => (document.body.style.cursor = "auto") : undefined}
     >
       {children(wheelSpeed)}
+      {driveKind !== "boat" && (
+        <group ref={lamps} visible={false}>
+          <mesh position={[-0.36, 0.5, -(selfR / scale) * 0.82]} material={lampMat}>
+            <boxGeometry args={[0.2, 0.07, 0.03]} />
+          </mesh>
+          <mesh position={[0.36, 0.5, -(selfR / scale) * 0.82]} material={lampMat}>
+            <boxGeometry args={[0.2, 0.07, 0.03]} />
+          </mesh>
+        </group>
+      )}
     </group>
   );
 }
@@ -1278,6 +1311,15 @@ function FlyoverTraffic() {
             <CyberTruck dim={ctx.dim} speed={s} />
             <ContactShadow w={1.4} l={3.0} opacity={0.4} y={0.012} />
             <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={FLYOVER} offset={0.88} lapSpeed={0.02} y={FLYOVER_Y} scale={0.86} driveId="tourer-3" driveLabel="GRAN TOURER">
+        {(s) => (
+          <>
+            <GranTourer dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
+            <TailTrail y={0.44} z={-1.05} />
           </>
         )}
       </PathRider>
@@ -1535,6 +1577,51 @@ function RingTraffic() {
             <Sedan dim={ctx.dim} speed={s} />
             <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
             <TailTrail y={0.42} z={-1.16} />
+          </>
+        )}
+      </PathRider>
+      {/* the ring fills out: a second tourer, two more taxis, a second pod
+          and a second shuttle, so the loop reads as traffic not a parade */}
+      <PathRider curve={ROAD} offset={0.05} lapSpeed={0.027} y={ROAD_Y} scale={0.88} driveId="sedan-2" driveLabel="ROBOTAXI">
+        {(s) => (
+          <>
+            <Sedan dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
+            <TailTrail y={0.42} z={-1.16} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.18} lapSpeed={0.027} y={ROAD_Y} scale={0.9} driveId="truck-4" driveLabel="CYBERTRUCK">
+        {(s) => (
+          <>
+            <CyberTruck dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.5} l={3.2} opacity={0.48} y={0.012} />
+            <TailTrail y={0.52} z={-1.52} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.36} lapSpeed={0.027} y={ROAD_Y} scale={0.83} driveId="tourer-2" driveLabel="GRAN TOURER">
+        {(s) => (
+          <>
+            <GranTourer dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
+            <TailTrail y={0.44} z={-1.05} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.7} lapSpeed={0.027} y={ROAD_Y} scale={0.84} driveId="podbus-2" driveLabel="SHUTTLE POD" driveMax={3.2} driveChase={9}>
+        {(s) => (
+          <>
+            <PodBus dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.2} l={2.4} opacity={0.42} y={0.012} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.9} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="pod-2" driveLabel="MONOPOD" driveMax={5}>
+        {(s) => (
+          <>
+            <MonoPod dim={ctx.dim} speed={s} />
+            <ContactShadow w={0.55} l={1.4} opacity={0.38} y={0.012} />
           </>
         )}
       </PathRider>
@@ -1893,6 +1980,7 @@ function World() {
       <Towers />
       <HomeBase />
       <BuildSite />
+      <RideHail />
       {WALKERS.map((w, i) => (
         <Walker key={i} {...w} />
       ))}
@@ -1916,6 +2004,199 @@ function World() {
 }
 
 const BG_LOOK = new THREE.Vector3(0, 2.7, 0);
+
+/* ---------------------------------------------------------------- *
+ *  Ride hail: a robot walks to the call post, presses the button, a
+ *  taxi pulls into the bay, and it rides away in the back seat
+ * ---------------------------------------------------------------- */
+
+/** One open curve carries both legs: the taxi arrives over the first half
+ *  and leaves over the second, so the bay is simply the midpoint. */
+const HAIL_PATH = new THREE.CatmullRomCurve3(
+  [v3(6.5, 0, 12.4), v3(1, 0, 10.7), v3(-4.8, 0, 9), v3(-10, 0, 8.2), v3(-14, 0, 6.2)],
+  false,
+  "catmullrom",
+  0.4
+);
+const HAIL_POST = { x: -3.4, z: 7.7 };
+/** Where the robot stands to reach the button, then the curbside door, then
+ *  the spot it waits on between runs. */
+const HAIL_STAND = { x: -3.75, z: 8.2 };
+const HAIL_DOOR = { x: -4.55, z: 7.85 };
+const HAIL_HOME = { x: -1.5, z: 6.3 };
+/** Back seat in the taxi's own frame; +x is the curb side. */
+const SEAT = { x: 0.3, y: 0.36, z: -0.42 };
+
+type HailLeg = "toPost" | "press" | "hail" | "toDoor" | "board" | "ride" | "reset";
+const HAIL_LEGS: { name: HailLeg; dur: number }[] = [
+  { name: "toPost", dur: 2.6 },
+  { name: "press", dur: 1.9 },
+  { name: "hail", dur: 4.6 },
+  { name: "toDoor", dur: 1.5 },
+  { name: "board", dur: 1.1 },
+  { name: "ride", dur: 5.6 },
+  { name: "reset", dur: 2.4 },
+];
+
+function RideHail() {
+  const ctx = useScene();
+  const taxi = useRef<THREE.Group>(null);
+  const bot = useRef<THREE.Group>(null);
+  const button = useRef<THREE.MeshBasicMaterial>(null);
+  const leg = useRef(0);
+  const t = useRef(0);
+  const [pose, setPose] = useState<"walk" | "idle" | "press" | "sit">("idle");
+  const [rolling, setRolling] = useState(false);
+  const poseRef = useRef(pose);
+  const rollRef = useRef(false);
+  useCollider(taxi, 1.3);
+  const p = useMemo(() => new THREE.Vector3(), []);
+  const tan = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame((_, delta) => {
+    const car = taxi.current;
+    const b = bot.current;
+    if (!car || !b) return;
+
+    const setPose_ = (v: typeof pose) => {
+      if (poseRef.current === v) return;
+      poseRef.current = v;
+      setPose(v);
+    };
+    const setRoll = (v: boolean) => {
+      if (rollRef.current === v) return;
+      rollRef.current = v;
+      setRolling(v);
+    };
+    /** Park the taxi at curve param u, facing along the path. */
+    const place = (u: number) => {
+      HAIL_PATH.getPointAt(u, p);
+      HAIL_PATH.getTangentAt(u, tan);
+      car.visible = true;
+      car.position.set(p.x, 0.02, p.z);
+      car.rotation.y = Math.atan2(tan.x, tan.z);
+    };
+    /** Hidden means out of the world, not just invisible, so the collision
+     *  circle does not leave an invisible wall parked in the plaza. */
+    const stow = () => {
+      car.visible = false;
+      car.position.set(90, -6, 90);
+      setRoll(false);
+    };
+    const walkTo = (fx: number, fz: number, tx: number, tz: number, k: number) => {
+      b.position.set(fx + (tx - fx) * k, 0.008, fz + (tz - fz) * k);
+      b.rotation.y = Math.atan2(tx - fx, tz - fz);
+    };
+    /** Ease the robot from wherever it is into the back seat, in the taxi's
+     *  rotated frame, and face it the way the taxi faces. */
+    const seat = (k: number) => {
+      const cy = Math.cos(car.rotation.y);
+      const sy = Math.sin(car.rotation.y);
+      const wx = car.position.x + SEAT.x * cy + SEAT.z * sy;
+      const wz = car.position.z - SEAT.x * sy + SEAT.z * cy;
+      b.position.x += (wx - b.position.x) * k;
+      b.position.z += (wz - b.position.z) * k;
+      b.position.y += (car.position.y + SEAT.y - b.position.y) * k;
+      b.rotation.y = car.rotation.y;
+    };
+
+    // Reduced motion gets the tableau instead of the loop: robot at the post
+    // with a hand on the button, taxi already waiting in the bay.
+    if (ctx.still) {
+      place(0.5);
+      b.position.set(HAIL_STAND.x, 0.008, HAIL_STAND.z);
+      b.rotation.y = Math.atan2(HAIL_POST.x - HAIL_STAND.x, HAIL_POST.z - HAIL_STAND.z);
+      setPose_("press");
+      setRoll(false);
+      return;
+    }
+
+    t.current += delta;
+    const cur = HAIL_LEGS[leg.current];
+    const k = Math.min(1, t.current / cur.dur);
+
+    switch (cur.name) {
+      case "toPost":
+        stow();
+        walkTo(HAIL_HOME.x, HAIL_HOME.z, HAIL_STAND.x, HAIL_STAND.z, smooth(k));
+        setPose_("walk");
+        break;
+      case "press":
+        b.rotation.y = Math.atan2(HAIL_POST.x - b.position.x, HAIL_POST.z - b.position.z);
+        setPose_("press");
+        button.current?.color.set(k > 0.3 ? "#34d399" : "#ffb020");
+        break;
+      case "hail":
+        // ease out of the arrival: quick off the road, gentle into the bay
+        place((1 - Math.pow(1 - k, 2.4)) * 0.5);
+        setRoll(k < 0.94);
+        setPose_("idle");
+        break;
+      case "toDoor":
+        place(0.5);
+        setRoll(false);
+        walkTo(HAIL_STAND.x, HAIL_STAND.z, HAIL_DOOR.x, HAIL_DOOR.z, smooth(k));
+        setPose_("walk");
+        break;
+      case "board":
+        place(0.5);
+        seat(Math.min(1, delta * 6));
+        setPose_("sit");
+        break;
+      case "ride":
+        place(0.5 + Math.pow(k, 1.8) * 0.5);
+        seat(1);
+        setRoll(true);
+        setPose_("sit");
+        break;
+      default:
+        stow();
+        b.position.set(HAIL_HOME.x, 0.008, HAIL_HOME.z);
+        b.rotation.y = 0.6;
+        setPose_("idle");
+        button.current?.color.set("#ffb020");
+    }
+
+    if (k >= 1) {
+      leg.current = (leg.current + 1) % HAIL_LEGS.length;
+      t.current = 0;
+    }
+  });
+
+  return (
+    <>
+      {/* the call post: slim pillar, lit button at hand height */}
+      <group position={[HAIL_POST.x, 0, HAIL_POST.z]}>
+        <mesh position={[0, 0.62, 0]}>
+          <boxGeometry args={[0.13, 1.24, 0.13]} />
+          <meshStandardMaterial color="#2a2c31" roughness={0.5} metalness={0.5} />
+        </mesh>
+        <mesh position={[0, 1.32, 0]}>
+          <boxGeometry args={[0.42, 0.28, 0.06]} />
+          <meshStandardMaterial color="#17181c" roughness={0.4} metalness={0.6} />
+        </mesh>
+        <mesh position={[0, 1.0, 0.075]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.05, 0.05, 0.03, 16]} />
+          <meshBasicMaterial ref={button} color="#ffb020" toneMapped={false} />
+        </mesh>
+        <ContactShadow w={0.4} l={0.4} opacity={0.32} />
+      </group>
+      {/* bay marking, so the stop reads as a designed pickup point */}
+      <mesh position={[-4.8, 0.012, 9]} rotation={[-Math.PI / 2, 0, 0.24]}>
+        <ringGeometry args={[1.5, 1.62, 30]} />
+        <meshBasicMaterial color="#454951" transparent opacity={0.55} toneMapped={false} />
+      </mesh>
+      <group ref={taxi} scale={0.9} visible={false}>
+        <Sedan dim={ctx.dim} speed={rolling ? 5.4 : 0} />
+        <ContactShadow w={1.1} l={2.5} opacity={0.45} y={0.012} />
+      </group>
+      <group ref={bot} position={[HAIL_HOME.x, 0.008, HAIL_HOME.z]}>
+        <Robot pose={pose} phase={2.1} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+        {pose !== "sit" && <ContactShadow w={0.85} l={1.05} opacity={0.4} />}
+      </group>
+    </>
+  );
+}
 
 /** Background mode owns the camera: a slow fixed-radius orbit, no controls. */
 function BackgroundRig() {
