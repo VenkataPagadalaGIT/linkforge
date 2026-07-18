@@ -60,7 +60,7 @@ const HEAD_Y = 0.54;
 const smoothstep = THREE.MathUtils.smoothstep;
 
 export interface RobotProps {
-  pose: "walk" | "assemble" | "idle" | "carry" | "operate";
+  pose: "walk" | "run" | "assemble" | "idle" | "carry" | "operate" | "wave";
   /** Per-instance time offset so multiple robots never move in lockstep. */
   phase: number;
   /** Work coupling: a 0..1 ref the scene mutates per frame. In "assemble"
@@ -111,26 +111,30 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false,
     // reduced-motion page shows varied static poses, not clones.
     const t = frozen ? 0 : clock.elapsedTime;
 
-    if (pose === "walk" || pose === "carry") {
-      const a = t * 3.4 + phase;
+    if (pose === "walk" || pose === "carry" || pose === "run") {
+      // run is the same gait solved harder: quicker cadence, longer stride,
+      // deeper lean, more vertical travel
+      const run = pose === "run";
+      const g = run ? 1.55 : 1; // stride/amplitude gain
+      const a = t * (run ? 5.6 : 3.4) + phase;
       const s = Math.sin(a);
       const cSwingL = Math.max(0, Math.cos(a)); // left mid-swing window
       const cSwingR = Math.max(0, Math.cos(a + Math.PI));
-      const bob = 0.03 * Math.sin(2 * a + 1.1);
+      const bob = (run ? 0.055 : 0.03) * Math.sin(2 * a + 1.1);
 
       r.position.y = bob;
-      pv.rotation.z = 0.062 * s; // ~3.5 degree hip sway
-      to.rotation.x = 0.085; // slight forward lean into the stride
+      pv.rotation.z = 0.062 * s * (run ? 0.8 : 1); // hips stay squarer at speed
+      to.rotation.x = run ? 0.2 : 0.085; // lean into the stride
       to.rotation.y = -0.05 * s; // shoulders counter-rotate the hips
       // stabilized head: cancels most of the sway and half the pelvis bob
       hd.position.y = HEAD_Y - bob * 0.6;
       hd.rotation.set(0.02, 0, -0.05 * s);
 
-      hipL.current.rotation.x = -0.52 * s;
-      hipR.current.rotation.x = 0.52 * s;
+      hipL.current.rotation.x = -0.52 * s * g;
+      hipR.current.rotation.x = 0.52 * s * g;
       // knee flexion only on the swing leg, peaking mid-swing
-      kneeL.current.rotation.x = 0.95 * cSwingL * cSwingL;
-      kneeR.current.rotation.x = 0.95 * cSwingR * cSwingR;
+      kneeL.current.rotation.x = 0.95 * cSwingL * cSwingL * g;
+      kneeR.current.rotation.x = 0.95 * cSwingR * cSwingR * g;
       // heel lift at push-off, a touch of toe-up before heel strike
       const liftL = Math.max(0, -s);
       const liftR = Math.max(0, s);
@@ -146,11 +150,13 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false,
         to.rotation.x = 0.12; // leans back slightly against the weight
         hd.rotation.x = 0.06;
       } else {
-        // arms counter-phase to their own leg, elbow flexing on the fore-swing
-        shL.current.rotation.x = 0.42 * s;
-        shR.current.rotation.x = -0.42 * s;
-        elL.current.rotation.x = -0.28 + 0.25 * Math.min(0, s);
-        elR.current.rotation.x = -0.28 - 0.25 * Math.max(0, s);
+        // arms counter-phase to their own leg, elbow flexing on the fore-swing;
+        // running pumps higher and holds a tighter elbow
+        shL.current.rotation.x = 0.42 * s * g;
+        shR.current.rotation.x = -0.42 * s * g;
+        const eBase = run ? -0.95 : -0.28;
+        elL.current.rotation.x = eBase + 0.25 * Math.min(0, s);
+        elR.current.rotation.x = eBase - 0.25 * Math.max(0, s);
       }
     } else if (pose === "assemble") {
       // kneel-and-reach loop: right knee down, left foot planted forward in a
@@ -189,6 +195,26 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false,
         shL.current.rotation.x = -0.85; // off arm braced on the knee
         elL.current.rotation.x = -0.55;
       }
+    } else if (pose === "wave") {
+      // greeting: weight settled, right arm up, forearm swinging a wave,
+      // head turned toward whoever is being greeted
+      const w = Math.sin(t * 6.4 + phase);
+      r.position.y = 0.005 * Math.sin(t * 1.2 + phase);
+      pv.rotation.z = 0.02;
+      to.rotation.x = 0.02;
+      to.rotation.y = 0.12;
+      hd.position.y = HEAD_Y;
+      hd.rotation.set(0.02, 0.22, 0.03 * w);
+      hipL.current.rotation.x = 0.03;
+      hipR.current.rotation.x = -0.03;
+      kneeL.current.rotation.x = 0.05;
+      kneeR.current.rotation.x = 0.05;
+      footL.current.rotation.x = 0;
+      footR.current.rotation.x = 0;
+      shR.current.rotation.x = -2.35; // arm raised above the shoulder
+      elR.current.rotation.x = -0.5 + 0.42 * w; // forearm does the waving
+      shL.current.rotation.x = 0.06;
+      elL.current.rotation.x = -0.2;
     } else if (pose === "operate") {
       // console stance: weight planted, hands forward at panel height, gaze
       // down at the work surface with a slow scan

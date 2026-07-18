@@ -29,6 +29,7 @@ const STATIC_ROUTES = [
   "/experience",
   "/contact",
   "/guides",
+  "/3d-game",
   // Machine-readable resources for AI answer engines. Self-canonical, so
   // they belong here; the /guides/<slug>.md twins deliberately do NOT (they
   // canonical back to the HTML page).

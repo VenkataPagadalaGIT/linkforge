@@ -289,7 +289,7 @@ export default function ComponentLibrary() {
             <FutureCitySceneLazy />
           </div>
           <p className="font-mono text-[11px] text-muted-foreground/70 mt-2">
-            FutureCityScene: candidate homepage background, year 2040
+            FutureCityScene: candidate homepage background, year 2040. Playable at /3d-game
           </p>
           <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">
             import FutureCitySceneLazy from &quot;@/components/future/FutureCitySceneLazy&quot;

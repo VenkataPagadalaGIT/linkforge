@@ -51,10 +51,14 @@ export interface FutureCitySceneProps {
   background?: boolean;
   /** WebGL powerPreference proven usable by the lazy wrapper's probe. */
   glPower?: "high-performance" | "default";
+  /** Game mode: the hero humanoid is playable from the first frame, arrows
+   *  and WASD walk, shift runs, E greets a nearby unit. */
+  game?: boolean;
 }
 
 interface Ctx {
   background: boolean;
+  game: boolean;
   /** prefers-reduced-motion: freeze every loop, hold one composed frame. */
   still: boolean;
   /** Emissive multiplier; background mode runs everything dimmer. */
@@ -219,6 +223,10 @@ const DRONES = [
  *  themselves on mount; statics are listed once. Crude circles beat objects
  *  passing through each other, which is what breaks the illusion fastest. */
 const COLLIDERS = new Set<{ o: THREE.Object3D; r: number }>();
+
+/** Greetable units: the player finds the nearest and waves; it waves back.
+ *  Registered by every autonomous humanoid, cleared on unmount. */
+const NPCS = new Set<{ o: THREE.Object3D; greet: () => void }>();
 
 /** Register a world-space group as a collision circle for its lifetime.
  *  Anything a driven machine must not pass through has to call this: the
@@ -413,6 +421,23 @@ function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
   const group = useRef<THREE.Group>(null);
   useCollider(group, 0.5);
   const [paused, setPaused] = useState(false);
+  const [greeting, setGreeting] = useState(false);
+  const greetUntil = useRef(0);
+  useEffect(() => {
+    const o = group.current;
+    if (!o || !ctx.game) return;
+    const entry = {
+      o: o as THREE.Object3D,
+      greet: () => {
+        greetUntil.current = performance.now() + 2600;
+        setGreeting(true);
+      },
+    };
+    NPCS.add(entry);
+    return () => {
+      NPCS.delete(entry);
+    };
+  }, [ctx.game]);
   const u = useRef(offset);
   const pauseStart = useRef(0);
   const yaw = useRef<number | null>(null);
@@ -422,7 +447,8 @@ function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
   useFrame(({ clock }, delta) => {
     const g = group.current;
     if (!g) return;
-    if (!ctx.still) {
+    if (greeting && performance.now() > greetUntil.current) setGreeting(false);
+    if (!ctx.still && !greeting) {
       if (paused) {
         if (clock.elapsedTime - pauseStart.current > pauseFor) setPaused(false);
       } else {
@@ -458,7 +484,7 @@ function Walker({ offset, speed, phase, pauseAt, pauseFor = 4 }: WalkerSpec) {
   return (
     <group ref={group}>
       <Robot
-        pose={paused ? "idle" : "walk"}
+        pose={greeting ? "wave" : paused ? "idle" : "walk"}
         phase={phase}
         scale={ROBOT_SCALE}
         dim={ctx.dim}
@@ -478,15 +504,74 @@ function IdleRobot() {
   useCollider(group, 0.5);
   const vel = useRef(0);
   const [moving, setMoving] = useState(false);
-  const driven = drive?.sel?.id === "hero-bot";
+  const [running, setRunning] = useState(false);
+  const [waving, setWaving] = useState(false);
+  const waveUntil = useRef(0);
+  const keys = useRef({ f: 0, b: 0, l: 0, r: 0, run: false });
+  // In game mode the hero unit is the player from the first frame.
+  const driven = ctx.game || drive?.sel?.id === "hero-bot";
+
+  // Game controls: arrows and WASD walk, shift runs, E or G greets the
+  // nearest unit and it waves back. Kept local so drive mode is untouched.
+  useEffect(() => {
+    if (!ctx.game) return;
+    const set = (k: string, v: number, downEvt: boolean) => {
+      const kk = k.toLowerCase();
+      if (["w", "arrowup"].includes(kk)) keys.current.f = v;
+      if (["s", "arrowdown"].includes(kk)) keys.current.b = v;
+      if (["a", "arrowleft"].includes(kk)) keys.current.l = v;
+      if (["d", "arrowright"].includes(kk)) keys.current.r = v;
+      if (kk === "shift") keys.current.run = downEvt;
+    };
+    const greet = () => {
+      const g = group.current;
+      if (!g) return;
+      let best: { greet: () => void } | null = null;
+      let bd = 3.2 * 3.2;
+      NPCS.forEach((n) => {
+        const dx = n.o.position.x - g.position.x;
+        const dz = n.o.position.z - g.position.z;
+        const d2 = dx * dx + dz * dz;
+        if (d2 < bd) {
+          bd = d2;
+          best = n;
+        }
+      });
+      waveUntil.current = performance.now() + 2600;
+      setWaving(true);
+      if (best) (best as { greet: () => void }).greet();
+    };
+    const down = (e: KeyboardEvent) => {
+      if (["e", "g"].includes(e.key.toLowerCase())) greet();
+      set(e.key, 1, true);
+    };
+    const up = (e: KeyboardEvent) => set(e.key, 0, false);
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    (window as unknown as { __vpGreet?: () => void }).__vpGreet = greet;
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      delete (window as unknown as { __vpGreet?: () => void }).__vpGreet;
+    };
+  }, [ctx.game]);
   useFrame((_, delta) => {
     const g = group.current;
-    if (!g || !driven || !drive) return;
-    const inp = drive.input.current;
-    vel.current += (inp.th * 1.7 - vel.current) * Math.min(1, delta * 3);
-    if (Math.abs(inp.th) < 0.05) vel.current *= 1 - Math.min(1, delta * 3);
-    if (inp.bk) vel.current *= 1 - Math.min(1, delta * 6);
-    g.rotation.y -= inp.st * 2.6 * delta;
+    if (!g || !driven) return;
+    if (waving && performance.now() > waveUntil.current) setWaving(false);
+    // game mode reads its own keys; drive mode reads the shared input
+    const k = keys.current;
+    const th = ctx.game ? k.f - k.b * 0.7 : drive?.input.current.th ?? 0;
+    const st = ctx.game ? k.r - k.l : drive?.input.current.st ?? 0;
+    const bk = ctx.game ? 0 : drive?.input.current.bk ?? 0;
+    const wantRun = ctx.game && k.run && k.f > 0;
+    if (wantRun !== running) setRunning(wantRun);
+    const top = wantRun ? 4.1 : 1.7;
+    const target = waving ? 0 : th * top;
+    vel.current += (target - vel.current) * Math.min(1, delta * 3);
+    if (Math.abs(th) < 0.05) vel.current *= 1 - Math.min(1, delta * 3);
+    if (bk) vel.current *= 1 - Math.min(1, delta * 6);
+    g.rotation.y -= st * 2.6 * delta;
     g.position.x += Math.sin(g.rotation.y) * vel.current * delta;
     g.position.z += Math.cos(g.rotation.y) * vel.current * delta;
     // stay inside the fog bowl
@@ -514,7 +599,7 @@ function IdleRobot() {
     for (const sc of STATIC_COLS) resolve(sc.x, sc.z, sc.r);
     const isMoving = Math.abs(vel.current) > 0.12;
     if (isMoving !== moving) setMoving(isMoving);
-    drive.target.current = g;
+    if (drive) drive.target.current = g;
   });
   const clickable = !!drive && !ctx.background;
   return (
@@ -541,7 +626,7 @@ function IdleRobot() {
       onPointerOut={clickable ? () => (document.body.style.cursor = "auto") : undefined}
     >
       <Robot
-        pose={driven && moving ? "walk" : "idle"}
+        pose={waving ? "wave" : driven && moving ? (running ? "run" : "walk") : "idle"}
         phase={0.7}
         scale={ROBOT_SCALE}
         dim={ctx.dim}
@@ -1292,18 +1377,20 @@ function TrafficBeacons() {
 }
 
 /** While driving, the camera falls in behind the controlled machine. */
-function ChaseCam({ controls }: { controls: { current: { enabled: boolean } | null } }) {
+function ChaseCam({ controls, game }: { controls: { current: { enabled: boolean } | null }; game?: boolean }) {
   const drive = useDrive();
   const want = useMemo(() => new THREE.Vector3(), []);
   useFrame(({ camera }, delta) => {
-    const t = drive?.sel ? drive.target.current : null;
+    // game mode keeps the camera on the player unit; drive mode follows the
+    // selected machine
+    const t = drive?.sel || game ? drive?.target.current ?? null : null;
     const oc = controls.current;
     if (!t) {
       if (oc && !oc.enabled) oc.enabled = true;
       return;
     }
     if (oc && oc.enabled) oc.enabled = false;
-    const bot = drive!.sel!.kind === "bot";
+    const bot = game || drive?.sel?.kind === "bot";
     const back = bot ? 4.2 : 7.8;
     const up = bot ? 2.2 : 3.2;
     want
@@ -1786,7 +1873,7 @@ function World() {
       ))}
       {/* the near-field showcase unit is framed for the hero camera; the
           background orbit never reads it, so it stays hero-only */}
-      {!ctx.background && <IdleRobot />}
+      {(!ctx.background || ctx.game) && <IdleRobot />}
       <RingTraffic />
       <FlyoverTraffic />
       {/* one air car cruising the high sweep, rotors always up */}
@@ -2027,6 +2114,78 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
   );
 }
 
+/** Touch and mouse pad for the playable humanoid. It synthesises the same
+ *  key events the controller already listens for, so keyboard and buttons
+ *  share one input path and can never drift apart. */
+function GamePad() {
+  const send = (key: string, type: "keydown" | "keyup") =>
+    window.dispatchEvent(new KeyboardEvent(type, { key, bubbles: true }));
+  const hold = (key: string) => ({
+    onPointerDown: (e: React.PointerEvent) => {
+      e.preventDefault();
+      send(key, "keydown");
+    },
+    onPointerUp: () => send(key, "keyup"),
+    onPointerLeave: () => send(key, "keyup"),
+  });
+  const btn: React.CSSProperties = {
+    userSelect: "none",
+    touchAction: "none",
+    fontFamily: "monospace",
+    fontSize: 15,
+    color: "#cfe4ff",
+    background: "rgba(16,17,20,0.92)",
+    border: "1px solid #2c2e35",
+    borderRadius: 8,
+    padding: "13px 16px",
+    cursor: "pointer",
+    textAlign: "center",
+    minWidth: 46,
+  };
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 16,
+        zIndex: 1000,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 9,
+        pointerEvents: "none",
+      }}
+    >
+      <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.2em", color: "#9a9aa3", background: "rgba(10,10,11,0.82)", padding: "5px 10px", borderRadius: 6 }}>
+        ARROWS OR WASD WALK · SHIFT RUNS · E GREETS · CLICK A VEHICLE TO DRIVE
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 10, pointerEvents: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <div style={btn} {...hold("ArrowUp")}>▲</div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <div style={btn} {...hold("ArrowLeft")}>◀</div>
+            <div style={btn} {...hold("ArrowDown")}>▼</div>
+            <div style={btn} {...hold("ArrowRight")}>▶</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={btn} {...hold("Shift")}>RUN</div>
+          <div
+            style={{ ...btn, color: "#9fd0b4" }}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              (window as unknown as { __vpGreet?: () => void }).__vpGreet?.();
+            }}
+          >
+            GREET
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FutureCityScene(props: FutureCitySceneProps) {
   const background = props.background ?? false;
   const still = usePrefersReducedMotion();
@@ -2039,7 +2198,8 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     () => ({ sel: driveSel, set: setDriveSel, input: driveInput, target: driveTarget }),
     [driveSel]
   );
-  const ctx: Ctx = { background, still, dim: background ? 0.55 : 1 };
+  const game = props.game ?? false;
+  const ctx: Ctx = { background, still, game, dim: background ? 0.55 : 1 };
   const lightDim = background ? 0.8 : 1;
 
   // Same mount nudge as HvacScene/LlmScene: some browsers (notably
@@ -2088,7 +2248,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         <DriveCtx.Provider value={background ? null : driveApi}>
           <World />
           {background && <BackgroundRig />}
-          {!background && <ChaseCam controls={orbitRef} />}
+          {!background && <ChaseCam controls={orbitRef} game={game} />}
           {!background && <CanvasHint />}
         </DriveCtx.Provider>
       </SceneCtx.Provider>
@@ -2150,6 +2310,10 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     {!background &&
       typeof document !== "undefined" &&
       createPortal(<DriveOverlay api={driveApi} sel={driveSel} />, document.body)}
+    {game &&
+      !driveSel &&
+      typeof document !== "undefined" &&
+      createPortal(<GamePad />, document.body)}
     </>
   );
 }
