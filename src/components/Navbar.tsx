@@ -143,7 +143,7 @@ const Navbar = () => {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled || openMenu ? "bg-background/95 backdrop-blur-sm border-b border-border" : "bg-transparent"
+          scrolled || openMenu ? "bg-background border-b border-border" : "bg-transparent"
         }`}
         onMouseLeave={hoverClose}
       >
@@ -222,7 +222,7 @@ const Navbar = () => {
           openMenu === m.id ? (
             <div
               key={m.id}
-              className="hidden md:block absolute left-0 right-0 top-16 bg-background/98 backdrop-blur-md border-b border-border"
+              className="hidden md:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
               onMouseEnter={() => {
                 if (closeTimer.current) window.clearTimeout(closeTimer.current);
               }}
@@ -267,7 +267,7 @@ const Navbar = () => {
       {/* Mobile menu: each mega menu becomes an accordion section */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-background/98 backdrop-blur-md overflow-y-auto md:hidden"
+          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto md:hidden"
           role="dialog"
           aria-modal="true"
           data-testid="mobile-menu-panel"

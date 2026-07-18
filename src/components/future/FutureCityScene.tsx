@@ -44,7 +44,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import Robot from "./assets/Robot";
-import { AirCar, CargoBoat, CyberSemi, CyberTruck, MonoPod, Sedan } from "./assets/Vehicles";
+import { AirCar, CargoBoat, CyberSemi, CyberTruck, GranTourer, MonoPod, PodBus, Sedan } from "./assets/Vehicles";
 
 export interface FutureCitySceneProps {
   /** Background mode: pointer-events off, slow fixed orbit, dimmer, capped dpr. */
@@ -81,6 +81,10 @@ interface DriveSel {
 interface DriveApi {
   sel: DriveSel | null;
   set: (d: DriveSel | null) => void;
+  /** Game mode only: true when the player has stepped out of the humanoid,
+   *  handing the camera back to free orbit. */
+  freeCam: boolean;
+  setFreeCam: (v: boolean) => void;
   /** th: -0.7..1 throttle · st: -1..1 steer · bk: 0/1 held brake. */
   input: { current: { th: number; st: number; bk: number } };
   /** The object the chase camera follows while driving. */
@@ -508,8 +512,9 @@ function IdleRobot() {
   const [waving, setWaving] = useState(false);
   const waveUntil = useRef(0);
   const keys = useRef({ f: 0, b: 0, l: 0, r: 0, run: false });
-  // In game mode the hero unit is the player from the first frame.
-  const driven = ctx.game || drive?.sel?.id === "hero-bot";
+  // In game mode the hero unit is the player from the first frame, unless the
+  // player has stepped out to look around.
+  const driven = (ctx.game && !drive?.freeCam) || drive?.sel?.id === "hero-bot";
 
   // Game controls: arrows and WASD walk, shift runs, E or G greets the
   // nearest unit and it waves back. Kept local so drive mode is untouched.
@@ -1383,7 +1388,8 @@ function ChaseCam({ controls, game }: { controls: { current: { enabled: boolean 
   useFrame(({ camera }, delta) => {
     // game mode keeps the camera on the player unit; drive mode follows the
     // selected machine
-    const t = drive?.sel || game ? drive?.target.current ?? null : null;
+    const following = drive?.sel || (game && !drive?.freeCam);
+    const t = following ? drive?.target.current ?? null : null;
     const oc = controls.current;
     if (!t) {
       if (oc && !oc.enabled) oc.enabled = true;
@@ -1487,12 +1493,20 @@ function RingTraffic() {
         )}
       </PathRider>
       {/* second sedan and a narrow single-track pod fill the ring out */}
-      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="sedan-2" driveLabel="ROBOTAXI">
+      <PathRider curve={ROAD} offset={0.28} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="tourer-1" driveLabel="GRAN TOURER">
         {(s) => (
           <>
-            <Sedan dim={ctx.dim} speed={s} />
+            <GranTourer dim={ctx.dim} speed={s} />
             <ContactShadow w={1.1} l={2.2} opacity={0.4} y={0.012} />
             <TailTrail y={0.44} z={-1.05} />
+          </>
+        )}
+      </PathRider>
+      <PathRider curve={ROAD} offset={0.5} lapSpeed={0.027} y={ROAD_Y} scale={0.85} driveId="podbus-1" driveLabel="SHUTTLE POD" driveMax={3.2}>
+        {(s) => (
+          <>
+            <PodBus dim={ctx.dim} speed={s} />
+            <ContactShadow w={1.2} l={2.4} opacity={0.42} y={0.012} />
           </>
         )}
       </PathRider>
@@ -2117,7 +2131,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
 /** Touch and mouse pad for the playable humanoid. It synthesises the same
  *  key events the controller already listens for, so keyboard and buttons
  *  share one input path and can never drift apart. */
-function GamePad() {
+function GamePad({ onFree }: { onFree: () => void }) {
   const send = (key: string, type: "keydown" | "keyup") =>
     window.dispatchEvent(new KeyboardEvent(type, { key, bubbles: true }));
   const hold = (key: string) => ({
@@ -2161,6 +2175,15 @@ function GamePad() {
         ARROWS OR WASD WALK · SHIFT RUNS · E GREETS · CLICK A VEHICLE TO DRIVE
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 10, pointerEvents: "auto" }}>
+        <div
+          style={{ ...btn, color: "#e2c07e", alignSelf: "center" }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            onFree();
+          }}
+        >
+          ⤢ FREE LOOK
+        </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
           <div style={btn} {...hold("ArrowUp")}>▲</div>
           <div style={{ display: "flex", gap: 6 }}>
@@ -2194,9 +2217,10 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
   const driveInput = useRef({ th: 0, st: 0, bk: 0 });
   const driveTarget = useRef<THREE.Object3D | null>(null);
   const orbitRef = useRef<{ enabled: boolean } | null>(null);
+  const [freeCam, setFreeCam] = useState(false);
   const driveApi = useMemo<DriveApi>(
-    () => ({ sel: driveSel, set: setDriveSel, input: driveInput, target: driveTarget }),
-    [driveSel]
+    () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, input: driveInput, target: driveTarget }),
+    [driveSel, freeCam]
   );
   const game = props.game ?? false;
   const ctx: Ctx = { background, still, game, dim: background ? 0.55 : 1 };
@@ -2311,9 +2335,46 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
       typeof document !== "undefined" &&
       createPortal(<DriveOverlay api={driveApi} sel={driveSel} />, document.body)}
     {game &&
+      freeCam &&
+      typeof document !== "undefined" &&
+      createPortal(
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 16,
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              pointerEvents: "auto",
+              cursor: "pointer",
+              fontFamily: "monospace",
+              fontSize: 11,
+              letterSpacing: "0.16em",
+              color: "#cfe4ff",
+              background: "rgba(16,17,20,0.92)",
+              border: "1px solid #2c2e35",
+              borderRadius: 8,
+              padding: "11px 16px",
+            }}
+            onPointerDown={() => setFreeCam(false)}
+          >
+            FREE LOOK · DRAG TO ORBIT · CLICK HERE TO TAKE THE HUMANOID BACK
+          </div>
+        </div>,
+        document.body
+      )}
+    {game &&
+      !freeCam &&
       !driveSel &&
       typeof document !== "undefined" &&
-      createPortal(<GamePad />, document.body)}
+      createPortal(<GamePad onFree={() => setFreeCam(true)} />, document.body)}
     </>
   );
 }

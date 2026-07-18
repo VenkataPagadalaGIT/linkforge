@@ -108,59 +108,62 @@ function truckGeos(): TruckGeos {
   if (_truck) return _truck;
   // Side profile: sharp nose, one continuous rise to the single roof ridge
   // peak, then one clean taper down the bed to a high tailgate.
+  // Long, low, one uninterrupted wedge: nose starts near the road, climbs in a
+  // single straight line to a peak set well back, then falls away over a low
+  // bed to a short tail. Low beltline is what separates "brutal sports truck"
+  // from "municipal vehicle".
   const body = sideExtrude(
     [
-      [1.4, 0.3],
-      [1.48, 0.5],
-      [0.62, 0.8],
-      [0.1, 1.0],
-      [-1.42, 0.62],
-      [-1.46, 0.34],
-      [-1.4, 0.3],
+      [1.72, 0.2],
+      [1.74, 0.31],
+      [0.35, 0.86],
+      [-0.28, 0.88],
+      [-1.62, 0.5],
+      [-1.66, 0.3],
+      [-1.6, 0.2],
     ],
-    1.14,
+    1.16,
     0.02
   );
   // Tinted canopy: a thin skin that follows the cowl-peak-tail ridge line,
   // slightly proud of the steel, narrower so the roof rails read.
+  // Canopy follows the wedge: a long raked windshield into a fastback drop.
   const glass = sideExtrude(
     [
-      [-0.57, 0.802],
-      [0.1, 0.962],
-      [0.62, 0.76],
-      [0.66, 0.802],
-      [0.105, 1.012],
-      [-0.57, 0.846],
+      [-0.3, 0.845],
+      [0.34, 0.825],
+      [0.36, 0.868],
+      [-0.31, 0.888],
     ],
-    1.0
+    1.02
   );
   // Trapezoid fender flare, one per wheel, overlapping the body side.
   const fender = sideExtrude(
     [
-      [-0.42, 0.18],
-      [0.42, 0.18],
-      [0.26, 0.62],
-      [-0.26, 0.62],
+      [-0.46, 0.1],
+      [0.46, 0.1],
+      [0.3, 0.52],
+      [-0.3, 0.52],
     ],
-    0.16
+    0.17
   );
   _truck = {
     body,
     glass,
     fender,
-    tire: tireGeo(0.26, 0.16),
-    hub: turbineGeo(0.2, 0.05),
+    tire: tireGeo(0.3, 0.19),
+    hub: turbineGeo(0.23, 0.055),
   };
   return _truck;
 }
 
 const TRUCK_WHEELS = [
-  { x: -0.52, z: 0.95 },
-  { x: 0.52, z: 0.95 },
-  { x: -0.52, z: -0.98 },
-  { x: 0.52, z: -0.98 },
+  { x: -0.55, z: 1.16 },
+  { x: 0.55, z: 1.16 },
+  { x: -0.55, z: -1.14 },
+  { x: 0.55, z: -1.14 },
 ];
-const TRUCK_WHEEL_R = 0.26;
+const TRUCK_WHEEL_R = 0.3;
 
 export function CyberTruck({ dim, speed }: VehicleProps) {
   const d = dim ?? 1;
@@ -182,33 +185,33 @@ export function CyberTruck({ dim, speed }: VehicleProps) {
         <meshPhysicalMaterial {...GLASS} flatShading side={THREE.DoubleSide} />
       </mesh>
       {/* full-width light bars: cool white nose, amber-red tail */}
-      <mesh position={[0, 0.5, 1.51]}>
-        <boxGeometry args={[1.22, 0.06, 0.035]} />
+      <mesh position={[0, 0.29, 1.735]}>
+        <boxGeometry args={[1.16, 0.05, 0.03]} />
         <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={d} />
       </mesh>
       {/* solar laminate: hood panel and bed tonneau, tilted to the facets */}
-      <mesh position={[0, 0.675, 1.03]} rotation={[0.335, 0, 0]}>
-        <boxGeometry args={[0.9, 0.012, 0.68]} />
+      <mesh position={[0, 0.6, 0.98]} rotation={[0.372, 0, 0]}>
+        <boxGeometry args={[0.94, 0.012, 1.35]} />
         <meshPhysicalMaterial {...SOLAR} />
       </mesh>
-      <mesh position={[0, 0.84, -0.68]} rotation={[-0.245, 0, 0]}>
-        <boxGeometry args={[0.98, 0.012, 1.32]} />
+      <mesh position={[0, 0.72, -0.95]} rotation={[-0.272, 0, 0]}>
+        <boxGeometry args={[1.0, 0.012, 1.24]} />
         <meshPhysicalMaterial {...SOLAR} />
       </mesh>
-      <mesh position={[0, 0.52, -1.49]}>
-        <boxGeometry args={[1.18, 0.04, 0.03]} />
+      <mesh position={[0, 0.4, -1.655]}>
+        <boxGeometry args={[1.14, 0.045, 0.03]} />
         <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
       </mesh>
       {/* mirror-replacement camera pods at the A-pillar */}
       {([-1, 1] as const).map((side) => (
-        <mesh key={`pod-${side}`} position={[side * 0.6, 0.72, 0.56]} rotation={[0, 0, side * -0.3]}>
+        <mesh key={`pod-${side}`} position={[side * 0.6, 0.8, 0.28]} rotation={[0, 0, side * -0.3]}>
           <capsuleGeometry args={[0.018, 0.06, 3, 8]} />
           <meshStandardMaterial {...DARK_TRIM} />
         </mesh>
       ))}
       {/* fender flares cut the arches over each wheel */}
       {TRUCK_WHEELS.map((w, i) => (
-        <mesh key={i} geometry={g.fender} position={[Math.sign(w.x) * 0.55, 0, w.z]}>
+        <mesh key={i} geometry={g.fender} position={[Math.sign(w.x) * 0.58, 0, w.z]}>
           <meshStandardMaterial {...DARK_TRIM} flatShading />
         </mesh>
       ))}
@@ -847,6 +850,150 @@ export function CargoBoat({ dim, phase = 0 }: { dim?: number; phase?: number }) 
         >
           VENKATAPAGADALA
         </Text>
+      ))}
+    </group>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  GranTourer: the long low luxury EV, one unbroken curve
+ * ---------------------------------------------------------------- */
+
+export function GranTourer({ dim, speed }: VehicleProps) {
+  const d = dim ?? 1;
+  const wheels = useRef<(THREE.Group | null)[]>([]);
+  const roll = useRef(0);
+  const R = 0.22;
+  useFrame((_, delta) => {
+    roll.current += ((speed ?? 0) / R) * delta;
+    for (const w of wheels.current) if (w) w.rotation.x = roll.current;
+  });
+  const pos = [
+    { x: -0.42, z: 0.92 },
+    { x: 0.42, z: 0.92 },
+    { x: -0.42, z: -0.92 },
+    { x: 0.42, z: -0.92 },
+  ];
+  return (
+    <group>
+      {/* one long teardrop volume: the whole car is a single gesture */}
+      <mesh position={[0, 0.4, 0]} scale={[0.52, 0.27, 1.5]}>
+        <sphereGeometry args={[1, 30, 20]} />
+        <meshPhysicalMaterial color="#171a20" metalness={0.75} roughness={0.24} clearcoat={1} clearcoatRoughness={0.08} />
+      </mesh>
+      {/* wraparound glasshouse riding the shoulder line */}
+      <mesh position={[0, 0.55, -0.06]} scale={[0.44, 0.2, 0.86]}>
+        <sphereGeometry args={[1, 26, 16]} />
+        <meshPhysicalMaterial {...GLASS} />
+      </mesh>
+      {/* full-width light blades, front and rear */}
+      <mesh position={[0, 0.42, 1.44]}>
+        <boxGeometry args={[0.86, 0.028, 0.03]} />
+        <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.95 * d} />
+      </mesh>
+      <mesh position={[0, 0.44, -1.44]}>
+        <boxGeometry args={[0.88, 0.026, 0.03]} />
+        <meshBasicMaterial color={TAIL} transparent opacity={0.9 * d} />
+      </mesh>
+      {/* solar roof panel */}
+      <mesh position={[0, 0.672, -0.06]}>
+        <boxGeometry args={[0.4, 0.008, 0.78]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      {/* sill blade grounds the long body */}
+      {([-1, 1] as const).map((sx) => (
+        <mesh key={sx} position={[sx * 0.5, 0.2, 0]}>
+          <boxGeometry args={[0.03, 0.07, 2.1]} />
+          <meshStandardMaterial {...DARK_TRIM} />
+        </mesh>
+      ))}
+      {pos.map((w, i) => (
+        <group key={i} position={[w.x, R, w.z]}>
+          <mesh position={[Math.sign(w.x) * 0.09, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <torusGeometry args={[0.26, 0.024, 8, 22, Math.PI]} />
+            <meshStandardMaterial {...DARK_TRIM} />
+          </mesh>
+          <group
+            ref={(el) => {
+              wheels.current[i] = el;
+            }}
+          >
+            <mesh geometry={tireGeo(R, 0.13, 24)}>
+              <meshStandardMaterial {...TIRE} />
+            </mesh>
+            <mesh geometry={tireGeo(0.155, 0.135, 24)} position={[Math.sign(w.x) * 0.008, 0, 0]}>
+              <meshStandardMaterial color="#9aa0ab" metalness={0.9} roughness={0.25} />
+            </mesh>
+          </group>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ *  PodBus: the six-seat autonomous shuttle, glass box on soft corners
+ * ---------------------------------------------------------------- */
+
+export function PodBus({ dim, speed }: VehicleProps) {
+  const d = dim ?? 1;
+  const wheels = useRef<(THREE.Group | null)[]>([]);
+  const roll = useRef(0);
+  const R = 0.24;
+  useFrame((_, delta) => {
+    roll.current += ((speed ?? 0) / R) * delta;
+    for (const w of wheels.current) if (w) w.rotation.x = roll.current;
+  });
+  const pos = [
+    { x: -0.46, z: 0.78 },
+    { x: 0.46, z: 0.78 },
+    { x: -0.46, z: -0.78 },
+    { x: 0.46, z: -0.78 },
+  ];
+  return (
+    <group>
+      {/* symmetrical body: no front or back, because it never needs to turn around */}
+      <mesh position={[0, 0.66, 0]}>
+        <boxGeometry args={[1.0, 0.86, 2.1]} />
+        <meshPhysicalMaterial color="#2b2f36" metalness={0.6} roughness={0.35} clearcoat={0.5} clearcoatRoughness={0.25} />
+      </mesh>
+      {/* continuous glass band all the way round */}
+      <mesh position={[0, 0.82, 0]}>
+        <boxGeometry args={[1.015, 0.4, 2.115]} />
+        <meshPhysicalMaterial {...GLASS} />
+      </mesh>
+      {/* solar roof */}
+      <mesh position={[0, 1.096, 0]}>
+        <boxGeometry args={[0.9, 0.014, 1.9]} />
+        <meshPhysicalMaterial {...SOLAR} />
+      </mesh>
+      {/* identical light bands at both ends */}
+      {([1, -1] as const).map((sz) => (
+        <mesh key={sz} position={[0, 0.42, sz * 1.055]}>
+          <boxGeometry args={[0.84, 0.05, 0.02]} />
+          <meshBasicMaterial color={sz > 0 ? ICE_BRIGHT : TAIL} transparent opacity={0.9 * d} />
+        </mesh>
+      ))}
+      {/* roof sensor dome: it drives itself */}
+      <mesh position={[0, 1.14, 0.3]}>
+        <sphereGeometry args={[0.07, 12, 10]} />
+        <meshPhysicalMaterial {...GLASS} />
+      </mesh>
+      {pos.map((w, i) => (
+        <group
+          key={i}
+          position={[w.x, R, w.z]}
+          ref={(el) => {
+            wheels.current[i] = el;
+          }}
+        >
+          <mesh geometry={tireGeo(R, 0.14, 20)}>
+            <meshStandardMaterial {...TIRE} />
+          </mesh>
+          <mesh geometry={tireGeo(0.13, 0.145, 20)}>
+            <meshStandardMaterial color="#6f737b" metalness={0.85} roughness={0.3} />
+          </mesh>
+        </group>
       ))}
     </group>
   );
