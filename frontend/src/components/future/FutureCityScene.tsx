@@ -113,15 +113,18 @@ const BYPASS = new THREE.CatmullRomCurve3(
 );
 const BYPASS_Y = 0.082;
 
-/** Elevated flyover: an elongated viaduct oval that crosses OVER the ring
- *  road on both flanks and rides pylons. Unlike the ground loops, this
- *  curve carries real y: the deck height IS the path. */
+/** Elevated flyover: an OPEN viaduct arc that sweeps across the BACK of the
+ *  scene, both ends dissolving into the fog, crossing over the ring road
+ *  behind the plaza and over the bypass on the west. It deliberately never
+ *  encloses the plaza: the camera's foreground stays clear and no pylon can
+ *  land in the pedestrian field. The curve carries real y: deck height IS
+ *  the path (higher over the west bypass crossing for semi clearance). */
 const FLYOVER = new THREE.CatmullRomCurve3(
   [
-    v3(20, 2.4, 0), v3(16, 2.9, 4.5), v3(6, 3.15, 6.5), v3(-6, 3.15, 6.5), v3(-16, 2.9, 4.5),
-    v3(-20, 2.4, 0), v3(-16, 2.9, -4.5), v3(-6, 3.15, -6.5), v3(6, 3.15, -6.5), v3(16, 2.9, -4.5),
+    v3(27, 2.1, 7), v3(19, 2.7, -1), v3(11, 3.1, -7.5), v3(2, 3.2, -11.5),
+    v3(-7, 3.05, -11.8), v3(-15, 2.85, -8.5), v3(-22, 2.6, -2.5), v3(-28, 2.3, 4),
   ],
-  true,
+  false,
   "catmullrom",
   0.5
 );
@@ -551,7 +554,7 @@ function BuildSite() {
       </group>
       {/* the third builder works ON the finished slab, seating the airlifted
           panels at the level-two edge */}
-      <group position={[0.45, 1.155, 0.2]} rotation={[0, -Math.PI / 2 + 0.3, 0]}>
+      <group position={[0.28, 1.155, 0.02]} rotation={[0, -Math.PI / 2 + 0.3, 0]}>
         <Robot pose="assemble" phase={1.5} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
       </group>
     </group>
@@ -693,8 +696,8 @@ function BypassRoad() {
  *  where they will not spear the ring road or the plaza. */
 function FlyoverRoad() {
   const ctx = useScene();
-  const deck = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.62, 8, true), []);
-  const guide = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.02, 6, true), []);
+  const deck = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.62, 8, false), []);
+  const guide = useMemo(() => new THREE.TubeGeometry(FLYOVER, 160, 0.02, 6, false), []);
   // Pylon placement: sample the deck, drop a pier unless it lands on the
   // ring road ribbon, inside the plaza, or on the bypass lane.
   const pylons = useMemo(() => {
