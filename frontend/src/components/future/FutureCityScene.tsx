@@ -426,6 +426,47 @@ function IdleRobot() {
  *  placement, so the kneel-reach loop stays in step with the lift. */
 const BEAM_PERIOD = 9.375;
 
+/** Ground loop the panel carrier walks: past the stack, around the open
+ *  front of the structure, back along the rear, never through the glass. */
+const CARRY_PATH = new THREE.CatmullRomCurve3(
+  [
+    v3(-1.9, 0, -0.6), v3(-2.3, 0, 0.55), v3(-1.3, 0, 1.6), v3(0.4, 0, 1.85),
+    v3(1.7, 0, 1.3), v3(2.2, 0, 0.2), v3(1.5, 0, -1.25), v3(-0.3, 0, -1.5),
+  ],
+  true,
+  "catmullrom",
+  0.5
+);
+
+/** Welder: a kneeling unit works the rear column joint inside the ground
+ *  floor; a spark point flickers deterministically with a matching light. */
+function Welder() {
+  const ctx = useScene();
+  const sparkMat = useRef<THREE.MeshBasicMaterial>(null);
+  const sparkLight = useRef<THREE.PointLight>(null);
+  useFrame(({ clock }) => {
+    const t = ctx.still ? 0 : clock.elapsedTime;
+    // gated flicker: bursts while the internal reach cycle is "on the joint"
+    const cyc = ((t * 0.32 + 0.8 * 0.17) % 1 + 1) % 1;
+    const working = cyc > 0.2 && cyc < 0.75 ? 1 : 0;
+    const flick = working * Math.max(0, Math.sin(t * 31) * Math.sin(t * 17.3) + 0.35);
+    if (sparkMat.current) sparkMat.current.opacity = Math.min(1, flick) * ctx.dim;
+    if (sparkLight.current) sparkLight.current.intensity = flick * 1.6 * ctx.dim;
+  });
+  return (
+    <group>
+      <group position={[0.85, 0, -0.2]} rotation={[0, Math.PI, 0]}>
+        <Robot pose="assemble" phase={0.8} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+      </group>
+      <mesh position={[0.85, 0.38, -0.72]}>
+        <sphereGeometry args={[0.025, 6, 6]} />
+        <meshBasicMaterial ref={sparkMat} color={ICE_BRIGHT} transparent depthWrite={false} />
+      </mesh>
+      <pointLight ref={sparkLight} position={[0.85, 0.45, -0.68]} color={ICE_BRIGHT} distance={2.6} decay={2} />
+    </group>
+  );
+}
+
 /** Panel airlift loop: rise off the stack, ferry across, seat on the slab. */
 const LIFT_PERIOD = 14;
 
@@ -435,6 +476,9 @@ function BuildSite() {
   const beamMat = useRef<THREE.MeshStandardMaterial>(null);
   const lift = useRef<THREE.Group>(null);
   const liftMat = useRef<THREE.MeshStandardMaterial>(null);
+  /** 0..1 beam height each frame; the kneeling pair's guideRef, so their
+   *  hands visibly ride the beam instead of pantomiming beside it. */
+  const riseRef = useRef(0);
   // ghost outline of the floors that do not exist yet
   const holoGeo = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(1.9, 1.05, 1.9)), []);
 
@@ -448,6 +492,7 @@ function BuildSite() {
       m.position.y = 0.3 + rise * 1.9;
       mat.opacity = p > 0.75 ? Math.max(0, 1 - (p - 0.75) / 0.15) : 1;
       m.visible = mat.opacity > 0.01;
+      riseRef.current = rise * mat.opacity;
     }
     const lg = lift.current;
     const lm = liftMat.current;
@@ -543,14 +588,52 @@ function BuildSite() {
           </group>
         ))}
       </group>
-      {/* the kneeling pair at the beam ends, half a cycle apart */}
-      <group position={[1.55, 0, 0.85]} rotation={[0, -Math.PI / 2, 0]}>
-        <Robot pose="assemble" phase={0} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+      {/* the kneeling pair at the beam ends: guideRef couples their hands
+          and gaze to the beam's actual height every frame */}
+      <group position={[1.3, 0, 0.85]} rotation={[0, -Math.PI / 2, 0]}>
+        <Robot pose="assemble" phase={0} guideRef={riseRef} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
         <ContactShadow w={1.0} l={1.3} opacity={0.42} />
       </group>
-      <group position={[-1.55, 0, 0.85]} rotation={[0, Math.PI / 2, 0]}>
-        <Robot pose="assemble" phase={2.94} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+      <group position={[-1.3, 0, 0.85]} rotation={[0, Math.PI / 2, 0]}>
+        <Robot pose="assemble" phase={2.94} guideRef={riseRef} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
         <ContactShadow w={1.0} l={1.3} opacity={0.42} />
+      </group>
+      {/* panel carrier: hauls a panel around the open front on a fixed loop */}
+      <PathRider curve={CARRY_PATH} offset={0.2} lapSpeed={0.05} y={0} scale={ROBOT_SCALE}>
+        {() => (
+          <>
+            <Robot pose="carry" phase={1.1} dim={ctx.dim} frozen={ctx.still} />
+            <mesh position={[0, 0.82, 0.4]} rotation={[0.12, 0, 0]}>
+              <boxGeometry args={[0.62, 0.05, 0.46]} />
+              <meshStandardMaterial {...M.hull} />
+            </mesh>
+            <ContactShadow w={0.9} l={1.2} opacity={0.4} />
+          </>
+        )}
+      </PathRider>
+      {/* welder inside the ground floor, sparking the rear column joint */}
+      <Welder />
+      {/* site supervisor at a holo console, reading the build */}
+      <group position={[2.05, 0, -0.35]} rotation={[0, -Math.PI / 2 - 0.25, 0]}>
+        <Robot pose="operate" phase={2.2} scale={ROBOT_SCALE} dim={ctx.dim} frozen={ctx.still} />
+        <ContactShadow w={0.8} l={0.9} opacity={0.38} />
+        {/* the console it is reading: two legs, tilted holo pane */}
+        <group position={[0, 0, 0.62]}>
+          {([-1, 1] as const).map((side) => (
+            <mesh key={side} position={[side * 0.22, 0.42, 0]}>
+              <cylinderGeometry args={[0.018, 0.024, 0.84, 8]} />
+              <meshStandardMaterial {...M.graphite} />
+            </mesh>
+          ))}
+          <mesh position={[0, 0.88, 0]} rotation={[-0.42, 0, 0]}>
+            <planeGeometry args={[0.6, 0.34]} />
+            <meshBasicMaterial color={ICE} transparent opacity={0.1 * ctx.dim} side={THREE.DoubleSide} depthWrite={false} />
+          </mesh>
+          <mesh position={[0, 0.88, 0.002]} rotation={[-0.42, 0, 0]}>
+            <planeGeometry args={[0.52, 0.05]} />
+            <meshBasicMaterial color={ICE_BRIGHT} transparent opacity={0.2 * ctx.dim} side={THREE.DoubleSide} depthWrite={false} />
+          </mesh>
+        </group>
       </group>
       {/* the third builder works ON the finished slab, seating the airlifted
           panels at the level-two edge */}

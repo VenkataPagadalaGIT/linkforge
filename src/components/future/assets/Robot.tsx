@@ -60,9 +60,14 @@ const HEAD_Y = 0.54;
 const smoothstep = THREE.MathUtils.smoothstep;
 
 export interface RobotProps {
-  pose: "walk" | "assemble" | "idle";
+  pose: "walk" | "assemble" | "idle" | "carry" | "operate";
   /** Per-instance time offset so multiple robots never move in lockstep. */
   phase: number;
+  /** Work coupling: a 0..1 ref the scene mutates per frame. In "assemble"
+   *  the arms and gaze track it (hands follow the object being lifted)
+   *  instead of running the internal reach cycle: contact is what makes
+   *  staged work read as real work. */
+  guideRef?: { current: number };
   scale?: number;
   /** Emissive multiplier; pass the scene dim factor so lights match. */
   dim?: number;
@@ -72,7 +77,7 @@ export interface RobotProps {
 
 type GroupRef = MutableRefObject<THREE.Group | null>;
 
-export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false }: RobotProps) {
+export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false, guideRef }: RobotProps) {
   const root = useRef<THREE.Group | null>(null);
   const pelvis = useRef<THREE.Group | null>(null);
   const torso = useRef<THREE.Group | null>(null);
@@ -106,7 +111,7 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
     // reduced-motion page shows varied static poses, not clones.
     const t = frozen ? 0 : clock.elapsedTime;
 
-    if (pose === "walk") {
+    if (pose === "walk" || pose === "carry") {
       const a = t * 3.4 + phase;
       const s = Math.sin(a);
       const cSwingL = Math.max(0, Math.cos(a)); // left mid-swing window
@@ -132,11 +137,21 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
       footL.current.rotation.x = 0.5 * liftL * liftL * liftL - 0.18 * liftR * liftR;
       footR.current.rotation.x = 0.5 * liftR * liftR * liftR - 0.18 * liftL * liftL;
 
-      // arms counter-phase to their own leg, elbow flexing on the fore-swing
-      shL.current.rotation.x = 0.42 * s;
-      shR.current.rotation.x = -0.42 * s;
-      elL.current.rotation.x = -0.28 + 0.25 * Math.min(0, s);
-      elR.current.rotation.x = -0.28 - 0.25 * Math.max(0, s);
+      if (pose === "carry") {
+        // both arms locked forward under the load; the load does the acting
+        shL.current.rotation.x = -0.95;
+        shR.current.rotation.x = -0.95;
+        elL.current.rotation.x = -0.5;
+        elR.current.rotation.x = -0.5;
+        to.rotation.x = 0.12; // leans back slightly against the weight
+        hd.rotation.x = 0.06;
+      } else {
+        // arms counter-phase to their own leg, elbow flexing on the fore-swing
+        shL.current.rotation.x = 0.42 * s;
+        shR.current.rotation.x = -0.42 * s;
+        elL.current.rotation.x = -0.28 + 0.25 * Math.min(0, s);
+        elR.current.rotation.x = -0.28 - 0.25 * Math.max(0, s);
+      }
     } else if (pose === "assemble") {
       // kneel-and-reach loop: right knee down, left foot planted forward in a
       // lunge, right arm reaches to a low point, pauses, retracts
@@ -158,10 +173,42 @@ export default function Robot({ pose, phase, scale = 1, dim = 1, frozen = false 
       kneeR.current.rotation.x = 1.6;
       footR.current.rotation.x = 0.6;
 
-      shR.current.rotation.x = -0.55 - 0.78 * reach; // working arm
-      elR.current.rotation.x = -0.95 + 0.8 * reach; // extends as it reaches
-      shL.current.rotation.x = -0.85; // off arm braced on the knee
-      elL.current.rotation.x = -0.55;
+      if (guideRef) {
+        // hands and gaze track the external object (0 = at grade, 1 = seated
+        // overhead); both arms guide, torso squares up to the load
+        const g = Math.min(1, Math.max(0, guideRef.current));
+        to.rotation.y = 0;
+        hd.rotation.set(0.32 - 0.58 * g, 0, 0);
+        shL.current.rotation.x = -0.4 - 1.45 * g;
+        shR.current.rotation.x = -0.4 - 1.45 * g;
+        elL.current.rotation.x = -0.55 + 0.4 * g;
+        elR.current.rotation.x = -0.55 + 0.4 * g;
+      } else {
+        shR.current.rotation.x = -0.55 - 0.78 * reach; // working arm
+        elR.current.rotation.x = -0.95 + 0.8 * reach; // extends as it reaches
+        shL.current.rotation.x = -0.85; // off arm braced on the knee
+        elL.current.rotation.x = -0.55;
+      }
+    } else if (pose === "operate") {
+      // console stance: weight planted, hands forward at panel height, gaze
+      // down at the work surface with a slow scan
+      const s1 = Math.sin(t * 0.5 + phase);
+      r.position.y = 0.004 * Math.sin(t * 1.05 + phase);
+      pv.rotation.z = 0.016 * s1;
+      to.rotation.x = 0.07;
+      to.rotation.y = 0.02 * Math.sin(t * 0.27 + phase);
+      hd.position.y = HEAD_Y;
+      hd.rotation.set(0.34, 0.16 * Math.sin(t * 0.23 + phase * 1.3), 0);
+      hipL.current.rotation.x = 0.03;
+      hipR.current.rotation.x = 0.03;
+      kneeL.current.rotation.x = 0.06;
+      kneeR.current.rotation.x = 0.06;
+      footL.current.rotation.x = 0;
+      footR.current.rotation.x = 0;
+      shL.current.rotation.x = -0.55 + 0.04 * Math.sin(t * 0.8 + phase);
+      shR.current.rotation.x = -0.55 + 0.04 * Math.sin(t * 0.8 + phase + 1.9);
+      elL.current.rotation.x = -0.85;
+      elR.current.rotation.x = -0.85;
     } else {
       // idle: micro weight shift plus a slow head sweep
       const s1 = Math.sin(t * 0.55 + phase);
