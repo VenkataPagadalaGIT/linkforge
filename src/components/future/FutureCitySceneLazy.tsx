@@ -10,12 +10,21 @@ const FutureCityScene = dynamic(() => import("./FutureCityScene"), {
   loading: () => <div className="h-full w-full" aria-hidden="true" />,
 });
 
-export default function FutureCitySceneLazy({ background = false, game = false }: { background?: boolean; game?: boolean }) {
+export default function FutureCitySceneLazy({
+  background = false,
+  game = false,
+  // Defaults off, so a caller has to ask for sound rather than opt out of it.
+  audio = false,
+}: {
+  background?: boolean;
+  game?: boolean;
+  audio?: boolean;
+}) {
   const { ok: webgl, power: glPower } = useWebGL();
   // Same three-way gate as LlmExplorer: null while the probe runs (empty
   // shell), false when no context works (quiet fallback, page content is
   // unaffected), true mounts the scene with the proven power mode.
   if (webgl === null) return <div className="h-full w-full" aria-busy="true" />;
   if (webgl === false) return <div className="h-full w-full" aria-hidden="true" />;
-  return <FutureCityScene background={background} game={game} glPower={glPower} />;
+  return <FutureCityScene background={background} game={game} audio={audio} glPower={glPower} />;
 }

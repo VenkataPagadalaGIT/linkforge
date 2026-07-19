@@ -44,6 +44,13 @@ import {
 import Robot from "./assets/Robot";
 import { AirCar, CargoBoat, CyberSemi, CyberTruck, GranTourer, MonoPod, PodBus, Sedan } from "./assets/Vehicles";
 import F1Wheel, { type F1WheelFrame, type F1WheelHandle, type WheelDir } from "@/components/future/F1Wheel";
+import {
+  createAudioFrame,
+  getCityAudio,
+  type CityAudioFrame,
+  type CityAudioHandle,
+  type SpecKey,
+} from "@/components/future/cityAudio";
 
 export interface FutureCitySceneProps {
   /** Background mode: pointer-events off, slow fixed orbit, dimmer, capped dpr. */
@@ -53,6 +60,12 @@ export interface FutureCitySceneProps {
   /** Game mode: the hero humanoid is playable from the first frame, arrows
    *  and WASD walk, shift runs, E greets a nearby unit. */
   game?: boolean;
+  /** Opt-in procedural audio, and deliberately opt-in rather than inferred
+   *  from !background. The component library mounts this scene with NO props
+   *  as a 420px demo tile, so it is in hero mode with clickable machines and
+   *  a live cockpit: gating on !background would put engine noise in a
+   *  component catalog. Only the playable page passes this. */
+  audio?: boolean;
 }
 
 interface Ctx {
@@ -107,6 +120,9 @@ interface DriveApi {
   /** Live chassis state of whatever is being driven, mutated in place. The
    *  chase camera and the cockpit read it every frame without a render. */
   rig: { current: Rig };
+  /** The procedural audio engine, or null when audio is not on offer for
+   *  this mount. Null is the normal case: only the playable page opts in. */
+  audio: CityAudioHandle | null;
 }
 const DriveCtx = createContext<DriveApi | null>(null);
 const useDrive = () => useContext(DriveCtx);
@@ -750,6 +766,13 @@ function resolveSpec(id: string, kind: "car" | "boat" | "bot", driveMax: number,
 
 const DEFAULT_SPEC = resolveSpec("sedan", "car", 4, 1);
 
+/** Which powertrain voice a rider id gets. Same longest-prefix rule and the
+ *  same fallback the chassis tuning uses, so a machine can never be tuned as
+ *  one thing and voiced as another. */
+function audioSpecKey(id: string): SpecKey {
+  return (TUNE_KEYS.find((k) => id.startsWith(k)) ?? "sedan") as SpecKey;
+}
+
 /** Deck centreline samples. Sample spacing is 0.59 units against a 0.62
  *  half-width test, so coverage along the ribbon is continuous. */
 const FLYOVER_PTS = Array.from({ length: 129 }, (_, i) => FLYOVER.getPointAt(i / 128));
@@ -824,6 +847,42 @@ interface Rig {
    *  rejoin blend completes. The button being down is not this. */
   autoActive: boolean;
   spec: VehicleSpec;
+
+  /* ---- Published for audio. Levels and latches, never channels that clear
+   *      themselves, with the two explicit exceptions below. The chassis
+   *      already writes twenty-odd fields per substep, so four more is
+   *      unmeasurable, and it is the honest option: every one of these dies
+   *      as a local inside stepDrive otherwise, and reconstructing them
+   *      downstream conflates things the ear can tell apart. ---- */
+  /** 0..1 drive torque against the rear traction cap. Correctly saturates
+   *  off the line and correctly falls to zero at VMAX through the torque
+   *  droop, which is what makes the engine thin out at top speed. rig.ax
+   *  cannot stand in for it: ax conflates drive, brake and cornering. Nor
+   *  can rig.thSm, which is the throttle REQUEST and freezes forever under
+   *  autopilot because that branch never calls presentDrive. */
+  load: number;
+  /** How far past the traction cap the drive request reached before the
+   *  clamp. There is no wheel-speed state in this chassis, so this is the
+   *  only wheelspin proxy available, and it is used only as a small pitch
+   *  flare rather than as a scream: the wheel meshes spin at road speed, so
+   *  a wheelspin layer would be an audible lie the player can see through. */
+  slipDrive: number;
+  /** Brake deceleration after the traction clamp, u/s^2, magnitude. */
+  aBrake: number;
+  /** 0 at grade, 1 on the flyover deck, 2 on water. Free: the deck query
+   *  already runs once a frame for the ride height. */
+  surface: number;
+  /** Tangential contact speed scaled by severity: a sustained scrape level
+   *  rather than a one-shot, because grinding along a wall is a state. */
+  scrub: number;
+  /** Audio-owned event accumulators. presentDrive folds impact and landing
+   *  into these by max and never clears them; the audio consumer clears them
+   *  after it has read them. Max-accumulate is required rather than tidy:
+   *  resolveContacts runs up to twelve times a frame, so a plain assignment
+   *  would drop all but the last contact and a plain sum would inflate a
+   *  graze into a crash. */
+  aImpact: number;
+  aLanding: number;
 }
 
 function createRig(): Rig {
@@ -840,6 +899,8 @@ function createRig(): Rig {
     boost: 1, boostCool: 0, boostActive: false, boostK: 1, boostV: 1,
     autoActive: false,
     spec: DEFAULT_SPEC,
+    load: 0, slipDrive: 0, aBrake: 0, surface: 0, scrub: 0,
+    aImpact: 0, aLanding: 0,
   };
 }
 
@@ -865,6 +926,13 @@ function stepDrive(rig: Rig, inp: DriveInput, g: THREE.Object3D, h: number) {
     rig.ax = 0;
     rig.ay = -rig.vf * rig.r;
     rig.steer = inp.st * 0.3;
+    // Zeroed before the early return, or a barge inherits the last car's
+    // load and holds a fixed engine note forever: none of the tyre, gearbox
+    // or booster blocks below ever run for a boat.
+    rig.load = 0;
+    rig.slipDrive = 0;
+    rig.aBrake = 0;
+    rig.surface = 2;
     g.rotation.y -= rig.r * h;
     const by = g.rotation.y;
     g.position.x += (Math.sin(by) * rig.vf - Math.cos(by) * rig.vl) * h;
@@ -968,7 +1036,15 @@ function stepDrive(rig: Rig, inp: DriveInput, g: THREE.Object3D, h: number) {
   // the ellipse is not a function of its own output. TRAC is what keeps this
   // ceiling from swallowing the whole authored ACCEL column at launch.
   const tCap = s.MU * s.TRAC * (rig.boostActive ? BOOST_T : 1) * nR * G_REF;
+  // Published before and after the clamp. load is what the tyres are
+  // actually delivering, which is the engine-load axis; slipDrive is what
+  // the clamp threw away, which is the only trace of wheelspin this chassis
+  // has. Both are cheap and neither changes the physics.
+  const aReq = aDrive;
   aDrive = cl(aDrive, -tCap, tCap);
+  rig.aBrake = aBrake;
+  rig.load = cl(Math.abs(aDrive) / (tCap + 1e-4), 0, 1);
+  rig.slipDrive = cl(Math.abs(aReq) / (tCap + 1e-4) - 1, 0, 1);
   // Capping at |vf|/h stops the brake reversing the car through zero inside
   // a single substep, which would read as a bounce off nothing.
   const aBrakeSigned = -Math.sign(rig.vf || 1) * Math.min(aBrake, Math.abs(rig.vf) / h + s.BRAKE);
@@ -1049,8 +1125,13 @@ function stepDrive(rig: Rig, inp: DriveInput, g: THREE.Object3D, h: number) {
  * proper impulse and a spin, and the truck drives on through. That is why
  * REST stays low: a hard bounce off an effectively immovable body looks
  * absurd. Closing it means the lane branch owning two-way resolution.
+ *
+ * `quiet` suppresses the audio channels only, and exists for exactly one
+ * caller: the invisible world boundary. That reflection is a genuine
+ * impulse, but crunching into a wall the player cannot see is worse than an
+ * unexplained deceleration.
  */
-function rigContact(rig: Rig, g: THREE.Object3D, nx: number, nz: number, push: number) {
+function rigContact(rig: Rig, g: THREE.Object3D, nx: number, nz: number, push: number, quiet = false) {
   const p = Math.min(push, CONTACT_MAX_PUSH);
   g.position.x += nx * p;
   g.position.z += nz * p;
@@ -1078,7 +1159,13 @@ function rigContact(rig: Rig, g: THREE.Object3D, nx: number, nz: number, push: n
   rig.vf = sy * wx + cy * wz;
   rig.vl = -cy * wx + sy * wz;
   rig.r *= 1 - 0.18 * sev;
-  rig.impact = Math.max(rig.impact, -vn);
+  if (!quiet) {
+    rig.impact = Math.max(rig.impact, -vn);
+    // Tangential speed times severity: the difference between a bump and a
+    // grind. TANG_KEEP is high, so a scrape genuinely keeps its speed, and
+    // this is the level that says so.
+    rig.scrub = Math.max(rig.scrub, Math.abs(vt) * sev);
+  }
 }
 
 /** Closest-point scratch for the spine solver. JS has no cheap multi-return
@@ -1192,7 +1279,7 @@ function resolveContacts(
   if (!bowl) return;
   const rad = Math.hypot(g.position.x, g.position.z);
   if (rad > BOWL_R) {
-    rigContact(rig, g, -g.position.x / rad, -g.position.z / rad, Math.min(rad - BOWL_R, BOWL_PUSH_MAX));
+    rigContact(rig, g, -g.position.x / rad, -g.position.z / rad, Math.min(rad - BOWL_R, BOWL_PUSH_MAX), true);
   }
 }
 
@@ -1226,8 +1313,20 @@ function presentDrive(rig: Rig, inp: DriveInput, dtP: number) {
   // camera reads the level, because it runs after this and would otherwise
   // only ever see zero.
   rig.hit = Math.max(rig.hit * Math.exp(-SHAKE_DECAY * dtP), rig.impact + rig.landing * 0.6);
+  // The audio consumer gets its OWN accumulators rather than reading rig.hit,
+  // and that is not duplication. hit decays over roughly 400 ms, so a second
+  // smaller impact inside that window produces no rising edge and would be
+  // silently dropped, and hit folds landings in at 0.6, so a viaduct
+  // touchdown and a tower collision are indistinguishable in it. They must
+  // not sound the same.
+  rig.aImpact = Math.max(rig.aImpact, rig.impact);
+  rig.aLanding = Math.max(rig.aLanding, rig.landing);
   rig.impact = 0;
   rig.landing = 0;
+  // Decayed rather than cleared: rigContact re-raises it on every substep it
+  // touches something, so a car still grinding a wall keeps its level while
+  // one that has come free falls away over a few frames.
+  rig.scrub *= 0.55;
 
   rig.speed = Math.hypot(rig.vf, rig.vl);
   rig.norm = cl(rig.speed / rig.spec.VMAX, 0, 1);
@@ -2346,9 +2445,18 @@ function PathRider({
       let surface = ROAD_Y;
       if (driveKind === "boat") {
         surface = 0.02;
+        rig.surface = 2;
       } else {
         const deck = deckHeightAt(g.position.x, g.position.z);
-        if (deck !== null && g.position.y > deck - 0.5) surface = deck;
+        const onDeck = deck !== null && g.position.y > deck - 0.5;
+        if (onDeck) surface = deck as number;
+        // The deck query already ran, so surface type costs nothing extra.
+        // Ribbed viaduct concrete is harder and brighter than the road, and
+        // the expansion joints are what make the flyover a place rather than
+        // a ramp. There is deliberately no plaza case: the plaza is
+        // physically identical to the ring road and looks like the same
+        // polished floor, so a timbre change there would read as a bug.
+        rig.surface = onDeck ? 1 : 0;
       }
       const rest = surface + lift;
       if (g.position.y > rest + 0.05) {
@@ -2650,6 +2758,15 @@ function PathRider({
       rig.boostActive = false;
       rig.boostK = 1;
       rig.boostV = 1;
+      // The audio channels are published from here for the same reason every
+      // other channel is: presentDrive never runs on this path. 0.15 is not
+      // a fudge, an autopilot holding a steady lane speed genuinely is at a
+      // light constant load, and it is what stops the machine going silent
+      // the moment it starts driving itself.
+      rig.load = 0.15;
+      rig.slipDrive = 0;
+      rig.aBrake = 0;
+      rig.scrub = 0;
       // Inverting the lane's own yaw rate through the bicycle relation is
       // what makes the cockpit rim visibly steer itself, which is the entire
       // point of an autopilot telltale.
@@ -4054,6 +4171,12 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
     };
     const down = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
+      // A keyboard-only player never touches the canvas or a cockpit button,
+      // so this is their re-resume path. isTrusted is load-bearing: the game
+      // pad SYNTHESISES KeyboardEvents through dispatchEvent, and a
+      // synthetic event does not satisfy the autoplay policy, so acting on
+      // one would look like it worked and silently do nothing.
+      if (e.isTrusted) api.audio?.resume();
       // Steer, throttle and brake all take the car back off the autopilot.
       if (["w", "s", "a", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(k)) override();
       if (["w", "arrowup"].includes(k)) input.current.th = 1;
@@ -4064,7 +4187,10 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
       if (["d", "arrowright"].includes(k)) input.current.st = 1;
       if (k === " ") input.current.bk = 1;
       if (k === "shift") input.current.hb = 1;
-      if (k === "escape") api.set(null);
+      if (k === "escape") {
+        api.audio?.release();
+        api.set(null);
+      }
       // Repeats would re-fire a toggle thirty times a second.
       if (!e.repeat) {
         if (k === "1") {
@@ -4147,7 +4273,11 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
   const exitBtn = (
     <div
       style={{ ...pedalStyle(false), color: "#e2937e", ...(compact ? { padding: "9px 11px" } : null) }}
-      onPointerDown={() => api.set(null)}
+      onPointerDown={() => {
+        api.audio?.ui("exit");
+        api.audio?.release();
+        api.set(null);
+      }}
     >
       ✕ EXIT
     </div>
@@ -4248,6 +4378,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           <div
             style={{ ...pedalStyle(handbrake), color: handbrake ? "#e2c07e" : "#cfe4ff" }}
             onPointerDown={() => {
+              api.audio?.ui("click");
               override();
               setHandbrake(true);
             }}
@@ -4265,6 +4396,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           machineId={sel.id}
           dir={dir}
           onDir={(d) => {
+            api.audio?.ui("click");
             override();
             setDir(d);
           }}
@@ -4275,6 +4407,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           }}
           auto={api.auto}
           onAuto={(on) => {
+            api.audio?.ui("click");
             if (on) api.setAuto(true);
             else override();
           }}
@@ -4290,6 +4423,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           <div
             style={pedalStyle(pedal === 1)}
             onPointerDown={() => {
+              api.audio?.ui("click");
               override();
               setPedal(1);
             }}
@@ -4301,6 +4435,7 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           <div
             style={pedalStyle(braking)}
             onPointerDown={() => {
+              api.audio?.ui("click");
               override();
               setBraking(true);
             }}
@@ -4397,6 +4532,170 @@ function GamePad({ onFree }: { onFree: () => void }) {
   );
 }
 
+/**
+ * Copy the chassis into the audio engine's frame object. Mutates in place
+ * and allocates nothing, exactly like the cockpit's F1WheelFrame path.
+ *
+ * The powertrain is gated on kind rather than on rig.driven, because the
+ * humanoid is a drive selection like any other and it has no chassis at all:
+ * anything keyed on rig alone would be reading a dead rig while the player
+ * walks around on foot.
+ */
+function fillAudioFrame(f: CityAudioFrame, rig: Rig, sel: DriveSel | null) {
+  f.driven = !!sel && sel.kind !== "bot" && rig.driven;
+  f.kind = sel ? sel.kind : "bot";
+  f.machineId = sel ? sel.id : "";
+  f.specKey = sel ? audioSpecKey(sel.id) : "sedan";
+  f.halfWB = rig.spec.halfWB;
+  f.VMAX = rig.spec.VMAX;
+  f.ACCEL = rig.spec.ACCEL;
+  f.vf = rig.vf;
+  f.speed = rig.speed;
+  f.beta = rig.beta;
+  f.r = rig.r;
+  f.load = rig.load;
+  f.slipDrive = rig.slipDrive;
+  f.aBrake = rig.aBrake;
+  f.gripLoss = rig.gripLoss;
+  f.driftHeat = rig.driftHeat;
+  f.hb = rig.hb;
+  f.gear = rig.gear;
+  f.boost = rig.boost;
+  f.boostK = rig.boostK;
+  f.boostActive = rig.boostActive;
+  f.boostCool = rig.boostCool;
+  f.autoActive = rig.autoActive;
+  f.airborne = rig.airborne;
+  f.surface = rig.surface === 2 ? 2 : rig.surface === 1 ? 1 : 0;
+  f.impact = rig.aImpact;
+  f.landing = rig.aLanding;
+  f.scrub = rig.scrub;
+  // Same expression the cockpit uses, and for the same reason: rig.norm
+  // clamps at 1 and would claim the limiter the instant the booster fires.
+  f.limiter = !rig.boostActive && rig.speed > rig.spec.VMAX * 0.995;
+}
+
+/**
+ * The sound control. It is a sibling of the Canvas rather than part of the
+ * cockpit, because the cockpit unmounts on every selection change, on free
+ * look and on the humanoid, and a mute button that disappears when you get
+ * out of a car is a page that makes noise with no obvious off switch.
+ *
+ * Its onClick is the ONE place an AudioContext is ever constructed. That is
+ * what makes the autoplay policy a non-problem here rather than a race to be
+ * won: the gesture is a press on a control whose entire purpose is sound.
+ *
+ * It has to be click rather than pointerdown, and that is a correctness
+ * matter, not a preference. Under the HTML activation-triggering rules
+ * pointerdown only grants user activation when pointerType is "mouse"; on
+ * touch and pen the activation arrives with pointerup. A pointerdown handler
+ * therefore constructs a context that the browser keeps suspended for every
+ * tap on a phone, which is the one platform where the scene ships a touch
+ * gamepad and a touch cockpit.
+ */
+function SoundToggle({ audio }: { audio: CityAudioHandle }) {
+  const [on, setOn] = useState(false);
+  const [vol, setVol] = useState(0.55);
+  const [dead, setDead] = useState(false);
+
+  // A stored preference sets the target VOLUME. It deliberately does NOT
+  // authorise construction: the user still clicks once per page load, which
+  // is both what the browser requires and what a visitor expects.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("vp.audio");
+      if (raw) {
+        const v = Number(JSON.parse(raw)?.vol);
+        if (Number.isFinite(v)) setVol(cl(v, 0, 1));
+      }
+    } catch {
+      // Private mode, a quota, or a corrupt value. The default stands.
+    }
+  }, []);
+
+  const toggle = async () => {
+    if (dead) return;
+    if (!on) {
+      audio.setVolume(vol);
+      const ok = await audio.enable();
+      if (!ok) {
+        // Only a browser with no AudioContext at all reports "dead", and only
+        // that disables the control. Every other failure (a blocked context,
+        // or the losing half of a double press) leaves the button reading
+        // SOUND OFF and fully retryable, because those are recoverable on the
+        // next gesture and a control that permanently gives up on one unlucky
+        // tap is worse than one that simply did nothing.
+        setDead(audio.state === "dead");
+        return;
+      }
+      setOn(true);
+    } else {
+      audio.setMuted(true);
+      setOn(false);
+    }
+  };
+
+  const panel: React.CSSProperties = {
+    fontFamily: "monospace",
+    fontSize: 11,
+    letterSpacing: "0.16em",
+    color: dead ? "#6b6b73" : "#cfe4ff",
+    background: "rgba(16,17,20,0.92)",
+    border: "1px solid #2c2e35",
+    borderRadius: 8,
+    padding: "11px 16px",
+    userSelect: "none",
+    cursor: dead ? "default" : "pointer",
+    pointerEvents: "auto",
+  };
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        right: 16,
+        bottom: 16,
+        zIndex: 31,
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        pointerEvents: "none",
+      }}
+    >
+      {on && (
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={Math.round(vol * 100)}
+          aria-label="Volume"
+          onChange={(e) => {
+            const v = Number(e.target.value) / 100;
+            setVol(v);
+            audio.setVolume(v);
+            try {
+              window.localStorage.setItem("vp.audio", JSON.stringify({ vol: v }));
+            } catch {
+              // Persistence is a convenience; failing to store it changes nothing.
+            }
+          }}
+          style={{ pointerEvents: "auto", width: 84, accentColor: "#9fb4d0", cursor: "pointer" }}
+        />
+      )}
+      <div
+        style={panel}
+        role="button"
+        aria-pressed={on}
+        aria-disabled={dead}
+        title={dead ? "Audio unavailable" : undefined}
+        onClick={toggle}
+      >
+        {dead ? "SOUND N/A" : on ? "◉ SOUND ON" : "◎ SOUND OFF"}
+      </div>
+    </div>
+  );
+}
+
 export default function FutureCityScene(props: FutureCitySceneProps) {
   const background = props.background ?? false;
   const still = usePrefersReducedMotion();
@@ -4428,11 +4727,30 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     setAutoState(false);
     driveInput.current.auto = 0;
   }, [driveSel?.id]);
-  const driveApi = useMemo<DriveApi>(
-    () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, auto, setAuto, input: driveInput, target: driveTarget, rig: driveRig }),
-    [driveSel, freeCam, auto]
-  );
   const game = props.game ?? false;
+  // Three terms, belt and braces. props.audio is opt-in so a future
+  // decorative mount cannot regress into making noise; !background so the
+  // currently-unused background flag going live cannot either; !still
+  // because a page that makes sound for someone who has explicitly asked
+  // their OS for less stimulation is a liability. That last one is a product
+  // call rather than a mechanical consequence and it is worth being honest
+  // about: the drive branch has no still guard, so a reduced-motion visitor
+  // genuinely can take a car and drive it, and under this gate they get a
+  // moving vehicle in silence. Reduced motion is a vestibular preference,
+  // not an auditory one, so the technically better answer is to keep the
+  // motion bed and the powertrain and drop impacts and joints. It is written
+  // down here so the decision gets re-opened deliberately rather than
+  // rediscovered as a bug.
+  const audioAllowed = (props.audio ?? false) && !background && !still;
+  // getCityAudio constructs nothing, so calling it during render is free.
+  const audio = useMemo(() => (audioAllowed ? getCityAudio() : null), [audioAllowed]);
+  const audioFrame = useRef<CityAudioFrame>(createAudioFrame());
+  const driveSelRef = useRef<DriveSel | null>(null);
+  driveSelRef.current = driveSel;
+  const driveApi = useMemo<DriveApi>(
+    () => ({ sel: driveSel, set: setDriveSel, freeCam, setFreeCam, auto, setAuto, input: driveInput, target: driveTarget, rig: driveRig, audio }),
+    [driveSel, freeCam, auto, audio]
+  );
   const ctx: Ctx = { background, still, game, dim: background ? 0.55 : 1 };
   const lightDim = background ? 0.8 : 1;
 
@@ -4449,8 +4767,68 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
     };
   }, []);
 
+  // The audio driver gets its OWN rAF rather than riding the cockpit's.
+  // That loop early-returns without a selection and the cockpit is not
+  // mounted at all for the humanoid in game mode or during free look, so an
+  // audio layer living inside it would be killed mid-fade and leave a stuck
+  // tone. One extra callback doing about a dozen AudioParam writes is worth
+  // owning its own lifetime.
+  //
+  // The blur and visibilitychange pair is the audible twin of the bug the
+  // cockpit's keyboard handler documents: rAF stops when a tab is hidden but
+  // an AudioContext does not, so a truck left at full throttle would keep
+  // roaring in a background tab with no loop running to update it.
+  useEffect(() => {
+    if (!audio) return;
+    const f = audioFrame.current;
+    const rig = driveRig.current;
+    let raf = 0;
+    let prev = 0;
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      const t = now / 1000;
+      const dt = prev ? Math.min(0.1, t - prev) : 0;
+      prev = t;
+      fillAudioFrame(f, rig, driveSelRef.current);
+      audio.sync(f, dt);
+      // The audio consumer owns the clear, which is what stops it hitting
+      // the trap the camera already hit: a channel that cleared itself
+      // inside presentDrive would read zero from out here, always.
+      rig.aImpact = 0;
+      rig.aLanding = 0;
+    };
+    raf = requestAnimationFrame(tick);
+    // Wrapped rather than passed as method references: these are class
+    // methods, so handing addEventListener a bare audio.resume would call it
+    // with the wrong receiver and throw on the first tab switch.
+    const onBlur = () => audio.suspend();
+    const onFocus = () => audio.resume();
+    const onVis = () => (document.hidden ? audio.suspend() : audio.resume());
+    window.addEventListener("blur", onBlur);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVis);
+      // A route change unmounts this tree, and a leaked AudioContext keeps
+      // running and keeps a hardware audio unit open. Browsers also cap
+      // concurrent contexts at around six, so bouncing between routes a few
+      // times would exhaust them without this.
+      audio.dispose();
+    };
+  }, [audio]);
+
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div
+      style={{ position: "relative", width: "100%", height: "100%" }}
+      // Capture phase, because the cockpit pedals, the wheel, the game pad
+      // and the free-look strip are all SIBLINGS of the Canvas and none of
+      // their events bubble through its own handler. This only ever resumes;
+      // it never constructs.
+      onPointerDownCapture={audio ? () => audio.resume() : undefined}
+    >
     <Canvas
       // Background mode caps dpr: it sits behind content, it does not get to
       // spend retina pixels.
@@ -4474,7 +4852,14 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         // "restored" so three.js rebuilds instead of freezing on a blank canvas.
         gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault(), false);
       }}
-      onPointerDown={background ? undefined : () => setInteracted(true)}
+      onPointerDown={
+        background
+          ? undefined
+          : () => {
+              setInteracted(true);
+              audio?.resume();
+            }
+      }
       style={background ? { pointerEvents: "none", touchAction: "none" } : { touchAction: "none" }}
     >
       <fog attach="fog" args={["#0a0a0b", 18, 56]} />
@@ -4536,6 +4921,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         pad. Outside game mode the humanoid genuinely is driven through the
         shared input, so the cockpit is still correct there. */}
     {!background && <DriveOverlay api={driveApi} sel={game && driveSel?.kind === "bot" ? null : driveSel} />}
+    {audioAllowed && audio && <SoundToggle audio={audio} />}
     {game && freeCam && !driveSel && (
         <div
           style={{

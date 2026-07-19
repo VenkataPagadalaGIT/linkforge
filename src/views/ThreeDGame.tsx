@@ -21,7 +21,10 @@ export default function ThreeDGame() {
       {/* The game IS the page: it fills the viewport under the fixed navbar, so
           the controls dock to the frame the player is actually looking at. */}
       <div className="relative w-full h-[calc(100vh-4rem)] mt-16 border-b border-border overflow-hidden">
-        <FutureCitySceneLazy game />
+        {/* audio is opt-in and this is the only mount that takes it. The
+            component library mounts the same scene as a demo tile, and a
+            catalog page has no business making engine noise. */}
+        <FutureCitySceneLazy game audio />
         <div className="pointer-events-none absolute top-5 left-6 z-20">
           <p className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase mb-1">
             Interactive · year 2040
