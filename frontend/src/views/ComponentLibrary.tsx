@@ -286,7 +286,7 @@ export default function ComponentLibrary() {
           </div>
 
           <div className="h-[420px] border border-border overflow-hidden">
-            <FutureCitySceneLazy />
+            <FutureCitySceneLazy background />
           </div>
           <p className="font-mono text-[11px] text-muted-foreground/70 mt-2">
             FutureCityScene: candidate homepage background, year 2040. Playable at /3d-game
