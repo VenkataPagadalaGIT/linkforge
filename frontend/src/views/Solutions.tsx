@@ -21,7 +21,7 @@ const Solutions = () => {
     <div className="min-h-screen bg-background pt-24 pb-20 px-6 relative overflow-hidden">
       <SEO
         title="AI & SEO Solutions | Enterprise Systems & Automation | Venkata Pagadala"
-        description="Enterprise AI systems, knowledge graphs, RAG engines, technical SEO, AEO, and performance analytics — solutions for Fortune 500 and growth-stage companies."
+        description="Enterprise AI systems, knowledge graphs, RAG engines, technical SEO, AEO, and performance analytics. Solutions for Fortune 500 and growth-stage companies."
         canonical="https://venkatapagadala.com/solutions"
       />
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -38,12 +38,12 @@ const Solutions = () => {
             Solutions
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-12 max-w-2xl">
-            From Fortune 500 AI infrastructure to growth-stage SEO consulting — production systems that drive measurable outcomes.
+            From Fortune 500 AI infrastructure to growth-stage SEO consulting. Production systems that drive measurable outcomes.
           </p>
         </ScrollReveal>
 
         <div className="lg:flex lg:gap-10">
-          <PageSidebar sections={tocSections} shareTitle="Solutions — AI Systems, SEO & Automation | Venkata Pagadala" />
+          <PageSidebar sections={tocSections} shareTitle="Solutions · AI Systems, SEO & Automation | Venkata Pagadala" />
 
           <div className="flex-1 min-w-0">
             <div id="overview" className="scroll-mt-28">
@@ -107,7 +107,7 @@ const Solutions = () => {
                     Need a custom solution?
                   </h3>
                   <p className="font-mono text-xs text-muted-foreground mb-6 max-w-md mx-auto">
-                    From enterprise AI systems to growth-stage SEO consulting — let's build your competitive advantage.
+                    From enterprise AI systems to growth-stage SEO consulting. Let's build your competitive advantage.
                   </p>
                   <Link
                     to="/contact"

@@ -16,8 +16,8 @@ const Home = () => {
   return (
     <div className="relative min-h-screen flex flex-col bg-background overflow-hidden">
       <SEO
-        title="Venkata Pagadala — AI Product Owner & Technical SEO Lead"
-        description="Venkata Pagadala — AI Product Owner, Technical SEO Lead, and Published Researcher. Building production AI systems, knowledge graphs, and enterprise search at scale. 10+ years scaling organic search for Fortune 500 brands."
+        title="Venkata Pagadala · AI Product Owner & Technical SEO Lead"
+        description="Venkata Pagadala · AI Product Owner, Technical SEO Lead, and Published Researcher. Building production AI systems, knowledge graphs, and enterprise search at scale. 10+ years scaling organic search for Fortune 500 brands."
         canonical="https://venkatapagadala.com"
       />
       <div className="relative min-h-screen flex flex-col items-center justify-center">
@@ -115,7 +115,7 @@ const Home = () => {
               The Full Capability Graph
             </h2>
             <p className="font-mono text-xs text-muted-foreground max-w-xl mx-auto">
-              36 capabilities across AI systems, search optimization, and growth engineering — explore the graph to see how they connect.
+              36 capabilities across AI systems, search optimization, and growth engineering. Explore the graph to see how they connect.
             </p>
           </div>
         </ScrollReveal>

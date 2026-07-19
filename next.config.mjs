@@ -37,7 +37,7 @@ const nextConfig = {
         // assistants and crawlers that prefer plain text get the real content
         // instead of a WebGL canvas they cannot read, and the header points
         // every one of them back at the HTML page as the canonical.
-        source: "/3d-game.md",
+        source: "/:page(3d-game).md",
         headers: [
           {
             key: "Link",
