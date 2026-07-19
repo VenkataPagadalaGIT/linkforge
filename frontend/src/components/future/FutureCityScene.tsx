@@ -64,10 +64,17 @@ interface Ctx {
   /** Emissive multiplier; background mode runs everything dimmer. */
   dim: number;
 }
-// Nullable: during HMR a remounting tree can briefly read a stale context
-// module. The non-null assertion below is safe once mounted under the provider.
-const SceneCtx = createContext<Ctx | null>(null);
-const useScene = () => useContext(SceneCtx)!;
+// A real default rather than null. The previous version defaulted to null and
+// papered over it with a non-null assertion, which is a compile-time fiction:
+// at runtime all thirty consumers dereferenced it directly, so any read from
+// outside the provider took the whole render tree down with "Cannot read
+// properties of null". That happens for real during HMR, when a remounting
+// tree briefly resolves a stale copy of this module and the provider it reads
+// is not the provider that was written to. Defaulting to hero mode means such
+// a read renders a correct frame instead of crashing the page.
+const HERO_CTX: Ctx = { background: false, game: false, still: false, dim: 1 };
+const SceneCtx = createContext<Ctx>(HERO_CTX);
+const useScene = () => useContext(SceneCtx);
 
 /* ---------------------------------------------------------------- *
  *  Drive mode: click a machine, take its controls

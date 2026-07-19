@@ -59,7 +59,7 @@ export default function ThreeDGame() {
             "Nothing is downloaded. Every robot, truck, barge and tower is generated geometry, so the whole city ships as code.",
           ].map((t) => (
             <p key={t} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-2">
-              <span className="text-foreground/40">—</span>
+              <span className="text-foreground/40">·</span>
               <span>{t}</span>
             </p>
           ))}
