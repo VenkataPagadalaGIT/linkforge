@@ -32,6 +32,19 @@ const nextConfig = {
           { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
         ],
       },
+      {
+        // The 3D game ships a Markdown twin for the same reason the guides do:
+        // assistants and crawlers that prefer plain text get the real content
+        // instead of a WebGL canvas they cannot read, and the header points
+        // every one of them back at the HTML page as the canonical.
+        source: "/3d-game.md",
+        headers: [
+          {
+            key: "Link",
+            value: '<https://venkatapagadala.com/3d-game>; rel="canonical"',
+          },
+        ],
+      },
     ];
   },
   experimental: {

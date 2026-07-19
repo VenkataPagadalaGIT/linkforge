@@ -78,6 +78,7 @@ const MEGA: MegaMenu[] = [
 /** Plain links after the menus. About sits last and quieter on purpose. */
 const FLAT = [
   { label: "Insights", to: "/insights", dim: false },
+  { label: "3D Game", to: "/3d-game", dim: false },
   { label: "About", to: "/about", dim: true },
 ];
 

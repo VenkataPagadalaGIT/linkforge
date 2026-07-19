@@ -71,6 +71,11 @@ Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration
 - URL: https://venkatapagadala.com/guides/screaming-frog
 - Markdown edition: https://venkatapagadala.com/guides/screaming-frog.md
 
+### 3D Game: Drive and Walk a Year-2040 City
+A playable 2040 city in the browser: walk a humanoid, greet the crew, and take the controls of any truck, robotaxi, semi or cargo barge. Every robot, vehicle and tower is generated geometry, so the whole city ships as code with nothing downloaded. Traffic follows arc-length curves and yields, collision uses oriented capsules, and the cockpit is a Formula-style rim with forward, reverse, booster and autopilot.
+- URL: https://venkatapagadala.com/3d-game
+- Markdown edition: https://venkatapagadala.com/3d-game.md
+
 ## Contact
 
 - Email: vdepagadala@gmail.com

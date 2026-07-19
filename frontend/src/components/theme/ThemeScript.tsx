@@ -26,7 +26,7 @@ const themeScript = `
       root.style.colorScheme = 'light';
     }
   } catch (e) {
-    // Fail silently — default class on <html> remains.
+    // Fail silently: default class on <html> remains.
   }
 })();
 `.trim();
