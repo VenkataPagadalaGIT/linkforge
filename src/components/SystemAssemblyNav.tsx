@@ -23,7 +23,7 @@ const navCards: NavCard[] = [
     category: "CORE MODULE",
     icon: "◎",
     path: "/notebook/ai",
-    description: "Complete AI knowledge hub — research, frameworks, and deep dives.",
+    description: "Complete AI knowledge hub: research, frameworks, and deep dives.",
     cardNumber: "ART · COURSE · FAQ · BREAD",
     network: "MONO",
     schema: "Article + Course",
@@ -62,7 +62,7 @@ const navCards: NavCard[] = [
     category: "REFERENCE",
     icon: "▽",
     path: "/notebook/ai/encyclopedia",
-    description: "110 core AI concepts — attention mechanisms to zero-shot learning.",
+    description: "110 core AI concepts, from attention mechanisms to zero-shot learning.",
     cardNumber: "FAQ · DEFN · BREAD · ART",
     network: "MIND",
     schema: "FAQPage",
@@ -153,7 +153,7 @@ const CreditCard = ({ card }: { card: NavCard }) => {
   return (
     <Link
       to={card.path}
-      aria-label={`${card.label} — ${card.description}`}
+      aria-label={`${card.label}: ${card.description}`}
       title={card.description}
       className="group block focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40"
     >
@@ -305,7 +305,7 @@ const SystemAssemblyNav = () => {
         </header>
       </ScrollReveal>
 
-      {/* Credit Card Grid — pure CSS, fully crawlable */}
+      {/* Credit Card Grid: pure CSS, fully crawlable */}
       <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 list-none p-0 m-0">
         {navCards.map((card) => (
           <li key={card.id}>
