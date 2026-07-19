@@ -23,7 +23,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Environment,
-  Grid,
   Html,
   Lightformer,
   MeshReflectorMaterial,
@@ -510,6 +509,14 @@ const CONTACT_MAX_PUSH = 0.4;
  *  the fog far plane, so nothing pops as the car turns away. Machines on the
  *  viaduct are exempt: the flyover ramps reach radius 31.7, so the bowl cut
  *  across the deck in mid-air and bounced a truck off nothing. */
+/** Water surface height. ABOVE the ground disc, not below it: 3 cm of
+ *  displacement is imperceptible at the chase camera's shallow view angle,
+ *  and putting it under an opaque disc is what hid the canal entirely. */
+const WATER_Y = 0.03;
+/** Ground disc radius. Must fully contain the water plane, whose far corner
+ *  sits at (28, 31.35) and so needs 42; 44 clears it with margin. */
+const GROUND_R = 44;
+
 const BOWL_R = 26;
 /** The bowl's positional correction is deliberately far smaller than a
  *  contact's. A car that lands off the end of a flyover ramp is five units
@@ -2771,12 +2778,12 @@ function Canal() {
   const ctx = useScene();
   return (
     <group>
-      <mesh position={[0, -0.02, 27.05]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[66, 8.6]} />
+      <mesh position={[0, WATER_Y, 27.05]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[56, 8.6, 160, 24]} />
         <meshPhysicalMaterial color="#0a1420" metalness={0.85} roughness={0.22} clearcoat={0.6} clearcoatRoughness={0.3} />
       </mesh>
       {[23.6, 30.5].map((z) => (
-        <mesh key={z} position={[0, 0.015, z]}>
+        <mesh key={z} position={[0, WATER_Y + 0.008, z]}>
           <boxGeometry args={[64, 0.02, 0.06]} />
           <meshBasicMaterial color={ICE} transparent opacity={0.14 * ctx.dim} depthWrite={false} />
         </mesh>
@@ -3331,8 +3338,8 @@ function HomeBase() {
 function GroundPlane() {
   const ctx = useScene();
   return (
-    <mesh position={[0, 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <circleGeometry args={[30, 48]} />
+    <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <circleGeometry args={[GROUND_R, 96]} />
       {ctx.background ? (
         <meshStandardMaterial color="#0e0f12" metalness={0.35} roughness={0.75} />
       ) : (
@@ -3485,19 +3492,19 @@ function RimLight() {
     const s = spot.current;
     if (!s) return;
     // static target: one manual matrix update stands in for scene insertion
-    s.target.position.set(1.5, 0.7, 4.5);
+    s.target.position.set(0.8, 0.9, 3.0);
     s.target.updateMatrixWorld();
   }, []);
   return (
     <spotLight
       ref={spot}
-      position={[-5.5, 1.9, -12.5]}
+      position={[-5.5, 6.8, -12.5]}
       color="#e2a763"
-      intensity={60 * (ctx.background ? 0.7 : 1)}
-      distance={42}
-      angle={0.62}
-      penumbra={0.85}
-      decay={1.45}
+      intensity={170 * (ctx.background ? 0.7 : 1)}
+      distance={26}
+      angle={0.3}
+      penumbra={0.55}
+      decay={2}
     />
   );
 }
@@ -4222,9 +4229,16 @@ function DriveOverlay({ api, sel }: { api: DriveApi; sel: DriveSel | null }) {
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "center",
-          flexWrap: "wrap",
-          gap: 14,
-          maxWidth: "min(96vw, 760px)",
+          // Never wrap. Wrapping is what doubled the stack's height on a
+          // phone and buried the road behind the controls.
+          flexWrap: "nowrap",
+          gap: compact ? 8 : 14,
+          maxWidth: "min(98vw, 760px)",
+          // Shrink the whole cluster on a phone rather than stacking it. The
+          // road stays visible, and every control keeps its hit target because
+          // the scale is modest.
+          transform: compact ? "scale(0.82)" : undefined,
+          transformOrigin: "bottom center",
           pointerEvents: "none",
         }}
       >
@@ -4473,19 +4487,6 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         </DriveCtx.Provider>
       </SceneCtx.Provider>
 
-      <Grid
-        position={[0, 0.005, 0]}
-        args={[40, 40]}
-        cellSize={1}
-        cellThickness={0.35}
-        cellColor="#1c1f24"
-        sectionSize={5}
-        sectionThickness={0.7}
-        sectionColor="#2a2e35"
-        fadeDistance={38}
-        fadeStrength={1.5}
-        infiniteGrid
-      />
 
       {/* fill stays dim: the key and rim do the modelling */}
       <ambientLight intensity={0.18 * lightDim} />

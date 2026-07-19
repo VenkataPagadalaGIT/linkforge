@@ -896,6 +896,22 @@ const F1Wheel = forwardRef<F1WheelHandle, F1WheelProps>(function F1Wheel(
       onPointerCancel={() => {
         if (s.momentary) s.release?.();
       }}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        // Space would otherwise reach the scene's global brake binding while
+        // the player is only trying to work the button they have focused.
+        e.preventDefault();
+        e.stopPropagation();
+        if (s.off || e.repeat) return;
+        s.press();
+      }}
+      onKeyUp={(e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (s.off) return;
+        s.release?.();
+      }}
     >
       <span className="vpw-cap" style={capStyle(s.colour, s.on, s.momentary)} />
       <span className="vpw-lab">{s.label}</span>
