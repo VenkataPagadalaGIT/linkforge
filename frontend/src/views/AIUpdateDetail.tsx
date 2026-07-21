@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
 import { aiUpdates, CATEGORY_META } from "@/data/aiUpdates";
-import { ArrowLeft, ArrowRight, Calendar, ExternalLink, Play, List } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, ExternalLink, FileText, Play, List } from "lucide-react";
 
 const AIUpdateDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,7 +18,10 @@ const AIUpdateDetail = () => {
   const nextUpdate = currentIdx < aiUpdates.length - 1 ? aiUpdates[currentIdx + 1] : null;
 
   const tocSections = [
+    ...(update.highlights?.length ? [{ label: "Key Numbers", id: "numbers" }] : []),
     { label: "Key Takeaways", id: "takeaways" },
+    ...(update.documents?.length ? [{ label: "Primary Documents", id: "documents" }] : []),
+    ...(update.videos?.length ? [{ label: "Watch", id: "watch" }] : []),
     ...update.tocSections.map((s) => ({
       label: s,
       id: s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, ""),
@@ -89,6 +92,26 @@ const AIUpdateDetail = () => {
             </p>
           </ScrollReveal>
 
+          {/* Key numbers: front-page treatment, the whole story in four stats */}
+          {update.highlights && update.highlights.length > 0 && (
+            <ScrollReveal>
+              <section id="numbers" className="scroll-mt-28 mb-10">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border border border-border">
+                  {update.highlights.map((h) => (
+                    <div key={h.stat} className="bg-background p-4 sm:p-5">
+                      <div className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow leading-none mb-2">
+                        {h.stat}
+                      </div>
+                      <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide leading-snug">
+                        {h.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </ScrollReveal>
+          )}
+
           {/* Key Takeaways */}
           <ScrollReveal>
             <section id="takeaways" className="scroll-mt-28 mb-10">
@@ -108,6 +131,95 @@ const AIUpdateDetail = () => {
               </div>
             </section>
           </ScrollReveal>
+
+          {/* Primary documents: the court record, never buried under prose */}
+          {update.documents && update.documents.length > 0 && (
+            <ScrollReveal>
+              <section id="documents" className="scroll-mt-28 mb-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText size={14} className="text-foreground/50" />
+                  <h2 className="font-display text-base font-bold text-foreground">Primary Documents</h2>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {update.documents.map((doc) => (
+                    <a
+                      key={doc.url}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group border border-border p-4 hover:bg-secondary/20 border-glow-hover transition-all"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="font-mono text-xs text-foreground leading-snug mb-1">{doc.label}</div>
+                          <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">{doc.source}</div>
+                        </div>
+                        <ExternalLink size={12} className="text-muted-foreground/40 group-hover:text-foreground flex-shrink-0 mt-0.5 transition-colors" />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            </ScrollReveal>
+          )}
+
+          {/* Watch: a 30-second version and the long version, reader's choice */}
+          {update.videos && update.videos.length > 0 && (
+            <ScrollReveal>
+              <section id="watch" className="scroll-mt-28 mb-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <Play size={14} className="text-foreground/50" />
+                  <h2 className="font-display text-base font-bold text-foreground">Watch</h2>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {update.videos.map((v) =>
+                    v.url.startsWith("/") ? (
+                      <div key={v.url} className="border border-border sm:col-span-2">
+                        <video
+                          controls
+                          preload="metadata"
+                          playsInline
+                          poster={v.url.replace(".mp4", "-poster.png")}
+                          className="w-full block"
+                        >
+                          <source src={v.url} type="video/mp4" />
+                        </video>
+                        <div className="flex items-center justify-between p-3 border-t border-border">
+                          <span className="font-mono text-xs text-foreground">{v.label}</span>
+                          {v.duration && (
+                            <span className="font-mono text-[10px] text-muted-foreground uppercase">{v.duration}</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <a
+                        key={v.url}
+                        href={v.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group border border-border overflow-hidden hover:bg-secondary/20 border-glow-hover transition-all"
+                      >
+                        {v.url.includes("youtube.com") && (
+                          <img
+                            src={`https://img.youtube.com/vi/${extractYouTubeId(v.url)}/hqdefault.jpg`}
+                            alt={v.label}
+                            loading="lazy"
+                            className="w-full aspect-video object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                          />
+                        )}
+                        <div className="flex items-center justify-between p-3 border-t border-border">
+                          <span className="font-mono text-xs text-foreground leading-snug">{v.label}</span>
+                          <span className="font-mono text-[10px] text-muted-foreground uppercase flex-shrink-0 ml-3">
+                            {v.duration ?? "watch"}
+                          </span>
+                        </div>
+                      </a>
+                    ),
+                  )}
+                </div>
+              </section>
+            </ScrollReveal>
+          )}
 
           {/* Article body */}
           <ScrollReveal>
