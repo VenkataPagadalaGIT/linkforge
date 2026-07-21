@@ -67,11 +67,14 @@ const MEGA: MegaMenu[] = [
       { label: "AI Encyclopedia", note: "110 concepts, defined", to: "/notebook/ai/encyclopedia" },
       { label: "Learning Roadmap", note: "zero to hero in 18 weeks", to: "/notebook/ai/roadmap" },
       { label: "AI Contributors", note: "the 100 people building it", to: "/ai-contributors" },
+      { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
+      { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
+      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates", badge: "new" },
     ],
     footnote:
       "The map, the definitions, and the people behind everything above. Where the data studies and benchmarks will live.",
     seeAll: { label: "See the full notebook", to: "/notebook" },
-    active: ["/notebook", "/ai-contributors"],
+    active: ["/notebook", "/ai-contributors", "/ai-updates"],
   },
 ];
 

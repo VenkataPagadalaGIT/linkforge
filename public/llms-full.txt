@@ -111,6 +111,15 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 - URL: https://venkatapagadala.com/3d-game
 - Markdown edition: https://venkatapagadala.com/3d-game.md
 
+## AI Updates
+
+News with primary sources attached: court documents, official filings, and original announcements linked from every article.
+- URL: https://venkatapagadala.com/ai-updates
+
+### Court Gives Final Approval to Anthropic's $1.5 Billion Author Settlement (2026-07-20)
+Final approval of the largest known U.S. copyright settlement: about $3,000 per work across roughly 500,000 books. Includes the full federal docket, Judge Alsup's fair use order, the GovInfo case archive, and the official settlement administrator, all linked.
+- URL: https://venkatapagadala.com/ai-updates/anthropic-copyright-settlement-final-approval
+
 ## Contact
 
 - Email: vdepagadala@gmail.com

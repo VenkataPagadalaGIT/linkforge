@@ -34,6 +34,79 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 
 export const aiUpdates: AIUpdate[] = [
   {
+    id: "anthropic-settlement-final-approval",
+    slug: "anthropic-copyright-settlement-final-approval",
+    title: "Court Gives Final Approval to Anthropic's $1.5 Billion Author Settlement",
+    company: "Anthropic",
+    category: "policy",
+    date: "2026-07-20",
+    summary:
+      "A federal judge granted final approval to Anthropic's $1.5 billion settlement with book authors and publishers on July 20, 2026, the largest known copyright settlement in U.S. history. Roughly 500,000 pirated books, about $3,000 per work, and a fair use ruling on AI training that survives intact.",
+    takeaways: [
+      "U.S. District Judge Araceli Martínez-Olguín granted final approval on July 20, 2026. It is the largest known settlement of a U.S. copyright case.",
+      "The fund pays about $3,000 per work across an estimated 500,000 books, shared by the authors and publishers who hold the rights, with a reported claims rate of 92.77 percent.",
+      "The June 2025 ruling that training on lawfully acquired books is fair use still stands. What Anthropic paid for was downloading and keeping millions of pirated copies.",
+      "The settlement is not binding precedent: it resolved before any appeal, opt-outs are pursuing separate suits, and parallel cases against other AI labs continue.",
+    ],
+    tocSections: [
+      "What the Court Approved",
+      "How the Money Flows",
+      "The Ruling Behind It",
+      "What It Does Not Settle",
+      "Why It Matters",
+      "Primary Sources",
+    ],
+    body: `<h3 id="what-the-court-approved">What the Court Approved</h3>
+<p>On July 20, 2026, U.S. District Judge Araceli Martínez-Olguín of the Northern District of California granted final approval to a $1.5 billion class action settlement between Anthropic and a class of authors and publishers who hold the rights to roughly 500,000 books. It is the largest known settlement of a U.S. copyright case. The court rejected objections that the amount was too low, and Law.com reported that the judge also reduced class counsel's requested attorneys' fee award by about $86 million.</p>
+<p>The case, <em>Bartz et al. v. Anthropic PBC</em>, No. 3:24-cv-05417, was filed in August 2024 by authors Andrea Bartz, Charles Graeber, and Kirk Wallace Johnson. They alleged that Anthropic downloaded pirated copies of books from shadow libraries such as Library Genesis and used them while building its Claude models.</p>
+<h3 id="how-the-money-flows">How the Money Flows</h3>
+<ul>
+<li><strong>About $3,000 per work</strong> across an estimated 500,000 books, shared among the authors and publishers who hold the rights to each work.</li>
+<li><strong>Claims are closed.</strong> The official administrator, JND Legal Administration, set a claims deadline of March 30, 2026, with opt-outs and objections due February 9, 2026. The reported claims rate was 92.77 percent.</li>
+<li><strong>The pirated files must be destroyed.</strong> The agreement also requires Anthropic to destroy the files it downloaded from piracy sites and copies made from them.</li>
+</ul>
+<h3 id="the-ruling-behind-it">The Ruling Behind It</h3>
+<p>The settlement grew out of a June 2025 summary judgment order by Judge William Alsup, who has since retired from the bench and who granted the deal preliminary approval in September 2025. Judge Alsup split the case in two. Training an AI model on books the company had lawfully bought was, in his words, "quintessentially transformative" and protected by fair use. Downloading more than seven million pirated books and keeping them in a central library, however, was infringement, and that claim was headed to a damages trial where the Copyright Act allows statutory damages of up to $150,000 per work for willful infringement (17 U.S.C. § 504(c)). Anthropic settled before that trial. The final fairness hearing took place on May 14, 2026 before Judge Martínez-Olguín.</p>
+<h3 id="what-it-does-not-settle">What It Does Not Settle</h3>
+<ul>
+<li><strong>It sets no binding precedent.</strong> The fair use ruling is a single district court decision and the case resolved before any appellate review, so other courts are free to reach different conclusions.</li>
+<li><strong>Opt-outs are still suing.</strong> Some authors and publishers declined the settlement and have filed separate cases against Anthropic that remain pending.</li>
+<li><strong>The industry question is open.</strong> Copyright suits over AI training remain active against OpenAI, Meta, Google, Midjourney, and others.</li>
+</ul>
+<h3 id="why-it-matters">Why It Matters</h3>
+<ul>
+<li><strong>Pirated training data now has a price.</strong> Three thousand dollars per work, at class scale, is the first hard benchmark a court has blessed. Every AI lab's data diligence now has a number attached to getting acquisition wrong.</li>
+<li><strong>The split matters more than the payout.</strong> The ruling that survives says training on lawfully acquired text is fair use. What cost $1.5 billion was the acquisition path, not the training. Expect licensing deals and provenance audits, not less training.</li>
+<li><strong>Provenance is a balance sheet item.</strong> "Where did the corpus come from" has moved from an engineering footnote to a question boards and acquirers ask first.</li>
+</ul>
+<h3 id="primary-sources">Primary Sources</h3>
+<p>Court records and official documents, all publicly accessible:</p>
+<ul>
+<li><a href="https://www.courtlistener.com/docket/69058235/bartz-v-anthropic-pbc/" target="_blank" rel="noopener noreferrer">Full federal docket, Bartz v. Anthropic PBC, No. 3:24-cv-05417 (CourtListener / RECAP)</a></li>
+<li><a href="https://www.govinfo.gov/app/details/USCOURTS-cand-3_24-cv-05417" target="_blank" rel="noopener noreferrer">Official case archive (GovInfo, U.S. Government Publishing Office)</a></li>
+<li><a href="https://docs.justia.com/cases/federal/district-courts/california/candce/3:2024cv05417/434709/231" target="_blank" rel="noopener noreferrer">Judge Alsup's June 2025 order on fair use (Doc. 231, via Justia)</a></li>
+<li><a href="https://www.anthropiccopyrightsettlement.com/" target="_blank" rel="noopener noreferrer">Official settlement administration site (JND Legal Administration)</a></li>
+<li><a href="https://publishers.org/news/aap-welcomes-courts-final-settlement-approval-in-bartz-v-anthropic/" target="_blank" rel="noopener noreferrer">Association of American Publishers statement on final approval</a></li>
+<li><a href="https://www.reuters.com/world/us-judge-approves-anthropics-15-billion-settlement-copyright-lawsuit-2026-07-20/" target="_blank" rel="noopener noreferrer">Reuters coverage of the approval</a></li>
+<li><a href="https://techcrunch.com/2026/07/20/anthropics-landmark-1-5b-copyright-settlement-is-approved/" target="_blank" rel="noopener noreferrer">TechCrunch coverage</a></li>
+</ul>
+<p><em>This article summarizes public court records and contemporaneous news reports. It is not legal advice.</em></p>`,
+    sourceUrl: "https://www.reuters.com/world/us-judge-approves-anthropics-15-billion-settlement-copyright-lawsuit-2026-07-20/",
+    tags: ["Anthropic", "copyright", "fair use", "class action", "AI training data", "Bartz v. Anthropic"],
+    relatedLinks: [
+      {
+        label: "How LLMs Work",
+        to: "/guides/how-llms-work",
+        description: "What training on text actually means, stage by stage, in an explorable 3D walkthrough.",
+      },
+      {
+        label: "Map of the AI Economy",
+        to: "/notebook/ai/map",
+        description: "Where Anthropic sits among the 471 players in the AI value chain.",
+      },
+    ],
+  },
+  {
     id: "nvidia-nemoclaw",
     slug: "nvidia-nemoclaw-secure-ai-agents",
     title: "NVIDIA NemoClaw: Secure, Always-On AI Agents With One Command",
