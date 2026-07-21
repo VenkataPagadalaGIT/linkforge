@@ -6,6 +6,7 @@
  * rich, crawlable information for each URL.
  */
 import { BACKEND_URL, SITE_URL } from "./site";
+import { aiUpdates as staticUpdates } from "@/data/aiUpdates";
 
 async function fetchJSON<T = unknown>(path: string): Promise<T | null> {
   const url = `${BACKEND_URL}/api${path}`;
@@ -80,8 +81,18 @@ export type Sitemap = {
 export const getContributor = (id: string) =>
   fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
 
-export const getUpdate = (slug: string) =>
-  fetchJSON<AIUpdate>(`/content/updates/${encodeURIComponent(slug)}`);
+// Backend first, static module second. The updates index and the client
+// detail view both read the static module directly, so an article that only
+// exists in the file was listed, rendered, and then 404ed by this server
+// gate. The fallback keeps the three readers agreeing, and it means an
+// article still serves when the backend is down, the same guarantee the
+// guides already make.
+export const getUpdate = async (slug: string): Promise<AIUpdate | null> => {
+  const fromApi = await fetchJSON<AIUpdate>(`/content/updates/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const local = staticUpdates.find((u) => u.slug === slug);
+  return local ? (local as unknown as AIUpdate) : null;
+};
 
 export const getPost = (slug: string) =>
   fetchJSON<BlogPost>(`/content/posts/${encodeURIComponent(slug)}`);

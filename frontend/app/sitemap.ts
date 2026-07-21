@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { aiUpdates } from "@/data/aiUpdates";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
@@ -48,8 +49,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1.0 : path.startsWith("/insights") || path.startsWith("/ai-") ? 0.8 : 0.6,
   }));
 
+  // Updates come from the backend AND the static module, deduped by slug:
+  // an article that ships in the file alone must be crawlable the same day.
+  const seenUpdates = new Set<string>();
   if (data) {
     for (const u of data.updates) {
+      seenUpdates.add(u.slug);
       urls.push({
         url: `${SITE_URL}/ai-updates/${u.slug}`,
         lastModified: u.date ? new Date(u.date) : now,
@@ -104,6 +109,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: n.chokepoint ? 0.7 : 0.6,
+    });
+  }
+
+  for (const u of aiUpdates) {
+    if (seenUpdates.has(u.slug)) continue;
+    urls.push({
+      url: `${SITE_URL}/ai-updates/${u.slug}`,
+      lastModified: new Date(u.date),
+      changeFrequency: "monthly",
+      priority: 0.7,
     });
   }
 
