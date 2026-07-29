@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { toDate } from "@/lib/date";
 import { aiUpdates } from "@/data/aiUpdates";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
@@ -57,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       seenUpdates.add(u.slug);
       urls.push({
         url: `${SITE_URL}/ai-updates/${u.slug}`,
-        lastModified: u.date ? new Date(u.date) : now,
+        lastModified: u.date ? toDate(u.date) : now,
         changeFrequency: "monthly",
         priority: 0.7,
       });
@@ -81,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const p of data.posts) {
       urls.push({
         url: `${SITE_URL}/insights/${p.pillarSlug}/${p.slug}`,
-        lastModified: p.date ? new Date(p.date) : now,
+        lastModified: p.date ? toDate(p.date) : now,
         changeFrequency: "monthly",
         priority: 0.7,
       });
@@ -90,7 +91,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const g of guides) {
     urls.push({
       url: `${SITE_URL}/guides/${g.slug}`,
-      lastModified: g.dateModified ? new Date(g.dateModified) : now,
+      lastModified: g.dateModified ? toDate(g.dateModified) : now,
       changeFrequency: "monthly",
       priority: 0.9,
     });
@@ -116,7 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (seenUpdates.has(u.slug)) continue;
     urls.push({
       url: `${SITE_URL}/ai-updates/${u.slug}`,
-      lastModified: new Date(u.date),
+      lastModified: toDate(u.date),
       changeFrequency: "monthly",
       priority: 0.7,
     });

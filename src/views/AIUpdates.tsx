@@ -1,5 +1,6 @@
 "use client";
 import { Link, useParams } from "@/lib/router-shim";
+import { formatDateShort } from "@/lib/date";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
@@ -115,7 +116,7 @@ const AIUpdatesIndex = () => {
                       </span>
                       <span className="font-mono text-[10px] text-muted-foreground/40 flex items-center gap-1">
                         <Calendar size={10} />
-                        {new Date(update.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        {formatDateShort(update.date)}
                       </span>
                       <span className="font-mono text-[10px] text-muted-foreground/30">{update.company}</span>
                     </div>

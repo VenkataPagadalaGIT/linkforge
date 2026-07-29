@@ -1,10 +1,12 @@
 "use client";
 import { useParams, Link, Navigate } from "@/lib/router-shim";
+import { formatDateLong } from "@/lib/date";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
+import ContributorCards from "@/components/ContributorCards";
 import { aiUpdates, CATEGORY_META } from "@/data/aiUpdates";
-import { ArrowLeft, ArrowRight, Calendar, ExternalLink, FileText, Play, List } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, ExternalLink, FileText, Play, List, Users } from "lucide-react";
 
 const AIUpdateDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -19,6 +21,7 @@ const AIUpdateDetail = () => {
 
   const tocSections = [
     ...(update.highlights?.length ? [{ label: "Key Numbers", id: "numbers" }] : []),
+    ...(update.contributors?.length ? [{ label: "People", id: "people" }] : []),
     { label: "Key Takeaways", id: "takeaways" },
     ...(update.documents?.length ? [{ label: "Primary Documents", id: "documents" }] : []),
     ...(update.videos?.length ? [{ label: "Watch", id: "watch" }] : []),
@@ -76,7 +79,7 @@ const AIUpdateDetail = () => {
               </span>
               <span className="font-mono text-[10px] text-muted-foreground/40 flex items-center gap-1">
                 <Calendar size={10} />
-                {new Date(update.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                {formatDateLong(update.date)}
               </span>
               <span className="font-mono text-[10px] text-muted-foreground/30">{update.company}</span>
             </div>
@@ -108,6 +111,21 @@ const AIUpdateDetail = () => {
                     </div>
                   ))}
                 </div>
+              </section>
+            </ScrollReveal>
+          )}
+
+          {/* Who this is about: face, name, role, and a link to the profile.
+              Paired with the "In the News" block on each profile, this makes
+              the entity relationship legible to crawlers from both ends. */}
+          {update.contributors && update.contributors.length > 0 && (
+            <ScrollReveal>
+              <section id="people" className="scroll-mt-28 mb-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <Users size={14} className="text-foreground/50" />
+                  <h2 className="font-display text-base font-bold text-foreground">People in This Story</h2>
+                </div>
+                <ContributorCards ids={update.contributors} />
               </section>
             </ScrollReveal>
           )}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { aiContributors } from "@/data/aiContributors";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import AIUpdateDetail from "@/views/AIUpdateDetail";
@@ -47,6 +48,10 @@ export default async function Page({ params }: { params: Params }) {
           datePublished: upd.date,
           section: upd.category,
           keywords: [upd.company, upd.category, ...(upd.takeaways || []).slice(0, 3)],
+          mentions: (upd?.contributors ?? [])
+            .map((cid: string) => aiContributors.find((c) => c.id === cid))
+            .filter(Boolean)
+            .map((c) => ({ id: c!.id, name: c!.name, affiliation: c!.affiliation, photoUrl: c!.photoUrl })),
         }),
         breadcrumbJsonLd([
           { name: "AI Updates", url: `${SITE_URL}/ai-updates` },

@@ -48,6 +48,8 @@ export type AIUpdate = {
   date: string;
   summary: string;
   takeaways?: string[];
+  /** Contributor ids named in the story. */
+  contributors?: string[];
 };
 
 export type BlogPost = {
@@ -137,6 +139,8 @@ export function articleJsonLd(opts: {
   authorName?: string;
   schemaType?: string;
   image?: string;
+  /** Contributor ids named in the story, emitted as schema.org mentions. */
+  mentions?: { id: string; name: string; affiliation?: string; photoUrl?: string }[];
 }) {
   return {
     "@context": "https://schema.org",
@@ -159,6 +163,18 @@ export function articleJsonLd(opts: {
       name: "Venkata Pagadala",
       url: SITE_URL,
     },
+    ...(opts.mentions && opts.mentions.length
+      ? {
+          mentions: opts.mentions.map((m) => ({
+            "@type": "Person",
+            "@id": `${SITE_URL}/ai-contributors/${m.id}#person`,
+            name: m.name,
+            url: `${SITE_URL}/ai-contributors/${m.id}`,
+            ...(m.affiliation ? { affiliation: { "@type": "Organization", name: m.affiliation } } : {}),
+            ...(m.photoUrl ? { image: `${SITE_URL}${m.photoUrl}` } : {}),
+          })),
+        }
+      : {}),
     mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
   };
 }
