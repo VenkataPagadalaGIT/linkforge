@@ -5,6 +5,10 @@ export interface RoadmapResource {
    *  clicks through expecting free and hits a paywall. "freemium" means a
    *  real free tier exists that is useful on its own. */
   access?: "paid" | "freemium";
+  /** Contributor ids of the people who PERSONALLY made this, linking the
+   *  resource to their profile. Curated, never inferred from a platform:
+   *  a course hosted by someone is not a course authored by them. */
+  authors?: string[];
 }
 
 export interface RoadmapTopic {
@@ -57,7 +61,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "Stanford HAI AI Index Report 2026 (free)", url: "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf" },
       { title: "Life 3.0 by Max Tegmark", url: "https://www.amazon.com/Life-3-0-Being-Artificial-Intelligence/dp/1101970316", access: "paid" },
-      { title: "Artificial Intelligence: A Modern Approach by Russell & Norvig", url: "https://www.amazon.com/Artificial-Intelligence-Modern-Approach-4th/dp/0134610997", access: "paid" },
+      { title: "Artificial Intelligence: A Modern Approach by Russell & Norvig", url: "https://www.amazon.com/Artificial-Intelligence-Modern-Approach-4th/dp/0134610997", access: "paid", authors: ["russell"] },
     ],
     githubRepos: [
       { title: "awesome-artificial-intelligence · 25K+ stars", url: "https://github.com/owainlewis/awesome-artificial-intelligence" },
@@ -224,7 +228,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     bestCourses: [
       { title: "Andrew Ng's ML Specialization · Coursera", url: "https://www.coursera.org/specializations/machine-learning-introduction", access: "freemium" },
-      { title: "fast.ai · Practical Deep Learning for Coders (Free) (Free)", url: "https://course.fast.ai/" },
+      { title: "fast.ai · Practical Deep Learning for Coders (Free) (Free)", url: "https://course.fast.ai/", authors: ["howard"] },
       { title: "Kaggle Learn · Intro to ML (Free)", url: "https://www.kaggle.com/learn/intro-to-machine-learning" },
       { title: "Google ML Crash Course (Free)", url: "https://developers.google.com/machine-learning/crash-course" },
     ],
@@ -338,14 +342,14 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Neural Networks from Scratch · Sentdex", url: "https://www.youtube.com/playlist?list=PLQVvvaa0QuDcjD5BAw2DxE6OF2tius3V3" },
     ],
     bestCourses: [
-      { title: "fast.ai · Practical Deep Learning for Coders (Free, TOP PICK)", url: "https://course.fast.ai/" },
+      { title: "fast.ai · Practical Deep Learning for Coders (Free, TOP PICK)", url: "https://course.fast.ai/", authors: ["howard"] },
       { title: "Andrew Ng's Deep Learning Specialization · Coursera", url: "https://www.coursera.org/specializations/deep-learning", access: "freemium" },
       { title: "MIT 6.S191 · Full Course Materials", url: "http://introtodeeplearning.com/" },
       { title: "Neural Networks & Deep Learning · Free Online Book by Michael Nielsen", url: "http://neuralnetworksanddeeplearning.com/" },
     ],
     books: [
       { title: "Dive into Deep Learning (d2l.ai) · free, interactive", url: "https://d2l.ai" },
-      { title: "Deep Learning by Goodfellow, Bengio & Courville", url: "http://deeplearningbook.org" },
+      { title: "Deep Learning by Goodfellow, Bengio & Courville", url: "http://deeplearningbook.org", authors: ["goodfellow", "bengio"] },
       { title: "Neural Networks & Deep Learning by Michael Nielsen · free online", url: "http://neuralnetworksanddeeplearning.com/" },
     ],
     githubRepos: [
@@ -363,7 +367,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     bestVideos: [
       { title: "PyTorch Full Course · freeCodeCamp (25hrs)", url: "https://www.youtube.com/watch?v=V_xro1bcAuA" },
       { title: "PyTorch for Deep Learning · Daniel Bourke (Full Course)", url: "https://www.youtube.com/watch?v=Z_ikDlimN6A" },
-      { title: "Andrej Karpathy · Neural Networks: Zero to Hero (LEGENDARY)", url: "https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ" },
+      { title: "Andrej Karpathy · Neural Networks: Zero to Hero (LEGENDARY)", url: "https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ", authors: ["karpathy"] },
       { title: "PyTorch Official Tutorials", url: "https://pytorch.org/tutorials/" },
     ],
     bestCourses: [
@@ -428,17 +432,17 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     bestCourses: [
       { title: "Andrew Ng's Sequence Models · Coursera", url: "https://www.coursera.org/learn/nlp-sequence-models", access: "freemium" },
-      { title: "Understanding LSTM Networks · Chris Olah's Blog (CLASSIC)", url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/" },
-      { title: "The Unreasonable Effectiveness of RNNs · Karpathy Blog", url: "http://karpathy.github.io/2015/05/21/rnn-effectiveness/" },
+      { title: "Understanding LSTM Networks · Chris Olah's Blog (CLASSIC)", url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", authors: ["olah"] },
+      { title: "The Unreasonable Effectiveness of RNNs · Karpathy Blog", url: "http://karpathy.github.io/2015/05/21/rnn-effectiveness/", authors: ["karpathy"] },
       { title: "d2l.ai · Chapter on RNNs", url: "https://d2l.ai/chapter_recurrent-neural-networks/" },
     ],
     books: [
-      { title: "Understanding LSTM Networks · Colah's blog (read this first!)", url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/" },
-      { title: "LSTM paper: Hochreiter & Schmidhuber (1997)", url: "https://deeplearning.cs.cmu.edu/F23/document/readings/LSTM.pdf" },
+      { title: "Understanding LSTM Networks · Colah's blog (read this first!)", url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", authors: ["olah"] },
+      { title: "LSTM paper: Hochreiter & Schmidhuber (1997)", url: "https://deeplearning.cs.cmu.edu/F23/document/readings/LSTM.pdf", authors: ["schmidhuber"] },
       { title: "Dive into Deep Learning Ch. 9-10 · RNNs and Seq2Seq", url: "https://d2l.ai/chapter_recurrent-neural-networks/" },
     ],
     githubRepos: [
-      { title: "karpathy/char-rnn · Character-level RNN (classic)", url: "https://github.com/karpathy/char-rnn" },
+      { title: "karpathy/char-rnn · Character-level RNN (classic)", url: "https://github.com/karpathy/char-rnn", authors: ["karpathy"] },
       { title: "flairNLP/flair · NLP framework with RNN support", url: "https://github.com/flairNLP/flair" },
       { title: "pytorch/examples/word_language_model", url: "https://github.com/pytorch/examples/tree/main/word_language_model" },
     ],
@@ -452,7 +456,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     bestVideos: [
       { title: "Attention is All You Need · Yannic Kilcher (Paper Walkthrough)", url: "https://www.youtube.com/watch?v=iDulhoQ2pro" },
       { title: "Illustrated Transformer · 3Blue1Brown Style (Jay Alammar)", url: "https://www.youtube.com/watch?v=4Bdc55j80l8" },
-      { title: "Andrej Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" },
+      { title: "Andrej Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY", authors: ["karpathy"] },
       { title: "Stanford CS25 · Transformers United (Full Seminar)", url: "https://www.youtube.com/playlist?list=PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM" },
     
       { title: "3Blue1Brown · But what is a GPT? + Attention, step by step", url: "https://www.3blue1brown.com/lessons/gpt" },
@@ -469,10 +473,10 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Formal Algorithms for Transformers · DeepMind", url: "https://arxiv.org/abs/2207.09238" },
     ],
     githubRepos: [
-      { title: "karpathy/nanoGPT · Build GPT from scratch (38K+ stars)", url: "https://github.com/karpathy/nanoGPT" },
+      { title: "karpathy/nanoGPT · Build GPT from scratch (38K+ stars)", url: "https://github.com/karpathy/nanoGPT", authors: ["karpathy"] },
       { title: "huggingface/transformers · THE library (140K+ stars)", url: "https://github.com/huggingface/transformers" },
       { title: "harvardnlp/annotated-transformer · Paper implementation", url: "https://github.com/harvardnlp/annotated-transformer" },
-      { title: "karpathy/minGPT · Minimal GPT implementation", url: "https://github.com/karpathy/minGPT" },
+      { title: "karpathy/minGPT · Minimal GPT implementation", url: "https://github.com/karpathy/minGPT", authors: ["karpathy"] },
     ],
     tools: "Hugging Face Transformers, PyTorch, Google Colab, Weights & Biases",
     proTips: "This is the most important topic in modern AI. Karpathy's 'Let's build GPT from scratch' video (2hrs) is THE best way to learn it, he codes a working GPT character by character. Pair it with Jay Alammar's Illustrated Transformer blog post for the visual intuition.",
@@ -572,16 +576,16 @@ export const roadmapTopics: RoadmapTopic[] = ([
     description: "The era of LLMs. Understand how GPT, BERT, Claude, Llama, and other LLMs work. Learn pre-training, fine-tuning, prompt engineering, RLHF, in-context learning, emergent abilities, and the scaling laws that make them powerful.",
     phase: "🔴 Phase 5: NLP & LLMs", phaseColor: "#ef4444", difficulty: "advanced", order: 13, week: 13,
     bestVideos: [
-      { title: "Andrej Karpathy · Intro to Large Language Models (1hr)", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g" },
-      { title: "Andrej Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY" },
+      { title: "Andrej Karpathy · Intro to Large Language Models (1hr)", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g", authors: ["karpathy"] },
+      { title: "Andrej Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY", authors: ["karpathy"] },
       { title: "BERT Explained · CodeEmporium", url: "https://www.youtube.com/watch?v=xI0HHN5XKDo" },
       { title: "LLM University · Cohere (Free Course)", url: "https://docs.cohere.com/docs/llmu" },
     
-      { title: "Karpathy · Deep Dive into LLMs like ChatGPT (3h31m)", url: "https://www.youtube.com/watch?v=7xTGNNLPyMI" },
+      { title: "Karpathy · Deep Dive into LLMs like ChatGPT (3h31m)", url: "https://www.youtube.com/watch?v=7xTGNNLPyMI", authors: ["karpathy"] },
       { title: "Stanford CS336 · Language Modeling from Scratch", url: "https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_" },
     ],
     bestCourses: [
-      { title: "Karpathy · Deep Dive into LLMs like ChatGPT (3h31m)", url: "https://www.youtube.com/watch?v=7xTGNNLPyMI" },
+      { title: "Karpathy · Deep Dive into LLMs like ChatGPT (3h31m)", url: "https://www.youtube.com/watch?v=7xTGNNLPyMI", authors: ["karpathy"] },
       { title: "LLM University · Cohere (Free)", url: "https://docs.cohere.com/docs/llmu" },
       { title: "The Illustrated GPT-2 · Jay Alammar", url: "https://jalammar.github.io/illustrated-gpt2/" },
     
@@ -591,17 +595,17 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "GPT-3: Language Models are Few-Shot Learners (2020)", url: "https://arxiv.org/abs/2005.14165" },
       { title: "BERT: Pre-training of Deep Bidirectional Transformers (2018)", url: "https://arxiv.org/abs/1810.04805" },
       { title: "Hugging Face LLM Course (free)", url: "https://huggingface.co/learn/llm-course" },
-      { title: "Scaling Laws for Neural Language Models · Kaplan et al.", url: "https://arxiv.org/abs/2001.08361" },
+      { title: "Scaling Laws for Neural Language Models · Kaplan et al.", url: "https://arxiv.org/abs/2001.08361", authors: ["jaredkaplan"] },
     
       { title: "Build a Reasoning Model From Scratch · Raschka (code free)", url: "https://github.com/rasbt/reasoning-from-scratch" },
     ],
     githubRepos: [
       { title: "meta-llama/llama-models · Meta's open LLM family", url: "https://github.com/meta-llama/llama-models" },
-      { title: "karpathy/nanoGPT · Train your own GPT", url: "https://github.com/karpathy/nanoGPT" },
+      { title: "karpathy/nanoGPT · Train your own GPT", url: "https://github.com/karpathy/nanoGPT", authors: ["karpathy"] },
       { title: "ollama/ollama · Run LLMs locally (100K+ stars)", url: "https://github.com/ollama/ollama" },
       { title: "lm-sys/FastChat · LLM serving & eval", url: "https://github.com/lm-sys/FastChat" },
     
-      { title: "karpathy/nanochat · Full ChatGPT clone for ~$100", url: "https://github.com/karpathy/nanochat" },
+      { title: "karpathy/nanochat · Full ChatGPT clone for ~$100", url: "https://github.com/karpathy/nanochat", authors: ["karpathy"] },
     ],
     tools: "Hugging Face, Ollama (run local LLMs), OpenAI API, Anthropic API, LangChain, vLLM",
     proTips: "Karpathy's LLM intro talk is the best 1-hour overview that exists. Then try running a model locally with Ollama (literally one command). Understanding how to USE LLMs well (prompt engineering) is just as important as understanding how they work internally.",
@@ -687,7 +691,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "DDPM · foundational diffusion paper", url: "https://arxiv.org/abs/2006.11239" },
       { title: "High-Resolution Image Synthesis with Latent Diffusion · Stable Diffusion paper", url: "https://arxiv.org/abs/2112.10752" },
-      { title: "GANs by Ian Goodfellow (2014)", url: "https://arxiv.org/abs/1406.2661" },
+      { title: "GANs by Ian Goodfellow (2014)", url: "https://arxiv.org/abs/1406.2661", authors: ["goodfellow"] },
     ],
     githubRepos: [
       { title: "CompVis/stable-diffusion · Original Stable Diffusion", url: "https://github.com/CompVis/stable-diffusion" },
@@ -771,8 +775,8 @@ export const roadmapTopics: RoadmapTopic[] = ([
     description: "Go deeper into RL: Q-learning, Deep Q-Networks (DQN), Policy Gradients, PPO, Actor-Critic methods, and RLHF (how ChatGPT was trained). RL is key to robotics, game AI, and aligning LLMs.",
     phase: "🟣 Phase 6: Specialize & Build", phaseColor: "#a855f7", difficulty: "advanced", order: 16.5, week: 17,
     bestVideos: [
-      { title: "David Silver's RL Course · DeepMind (LEGENDARY)", url: "https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ" },
-      { title: "Deep RL · Pieter Abbeel (UC Berkeley)", url: "https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps" },
+      { title: "David Silver's RL Course · DeepMind (LEGENDARY)", url: "https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ", authors: ["silver"] },
+      { title: "Deep RL · Pieter Abbeel (UC Berkeley)", url: "https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps", authors: ["abbeel"] },
       { title: "RLHF Explained · Hugging Face", url: "https://www.youtube.com/watch?v=2MBJOuVq380" },
       { title: "Hugging Face Deep RL Course (Free)", url: "https://huggingface.co/learn/deep-rl-course" },
     ],
@@ -780,14 +784,14 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Spinning Up in Deep RL · OpenAI (Free)", url: "https://spinningup.openai.com/" },
       { title: "Hugging Face Deep RL Course (Free)", url: "https://huggingface.co/learn/deep-rl-course" },
       { title: "IBM · Reinforcement Learning Explained", url: "https://www.ibm.com/think/topics/reinforcement-learning" },
-      { title: "David Silver's RL Course Materials", url: "https://www.davidsilver.uk/teaching/" },
+      { title: "David Silver's RL Course Materials", url: "https://www.davidsilver.uk/teaching/", authors: ["silver"] },
     ],
     books: [
       { title: "RL: An Introduction by Sutton & Barto · THE RL bible (free)", url: "http://incompleteideas.net/book/the-book-2nd.html" },
       { title: "Playing Atari with Deep RL · DQN paper (2013)", url: "https://arxiv.org/abs/1312.5602" },
       { title: "Proximal Policy Optimization (PPO) paper · used in RLHF", url: "https://arxiv.org/abs/1707.06347" },
     
-      { title: "The RLHF Book · Nathan Lambert (free online)", url: "https://rlhfbook.com/" },
+      { title: "The RLHF Book · Nathan Lambert (free online)", url: "https://rlhfbook.com/", authors: ["lambert"] },
     ],
     githubRepos: [
       { title: "openai/spinningup · RL educational resource", url: "https://github.com/openai/spinningup" },
@@ -833,14 +837,14 @@ export const roadmapTopics: RoadmapTopic[] = ([
     description: "The most important topic in AI that most courses skip. Understand bias in AI, fairness, interpretability/explainability (XAI), alignment, AI governance, hallucinations, deepfakes, and responsible deployment. Every AI practitioner needs this knowledge.",
     phase: "🟣 Phase 6: Specialize & Build", phaseColor: "#a855f7", difficulty: "intermediate", order: 17.5, week: 17,
     bestVideos: [
-      { title: "Eliezer Yudkowsky · AI Alignment (Interview)", url: "https://www.youtube.com/watch?v=EUjc1WuyPT8" },
+      { title: "Eliezer Yudkowsky · AI Alignment (Interview)", url: "https://www.youtube.com/watch?v=EUjc1WuyPT8", authors: ["yudkowsky"] },
       { title: "AI Safety Fundamentals · BlueDot Impact (Free Course)", url: "https://aisafetyfundamentals.com/" },
-      { title: "fast.ai · Ethics & Data Course (Free)", url: "https://ethics.fast.ai/" },
+      { title: "fast.ai · Ethics & Data Course (Free)", url: "https://ethics.fast.ai/", authors: ["howard"] },
       { title: "Anthropic · AI Safety Research", url: "https://www.anthropic.com/research" },
     ],
     bestCourses: [
       { title: "Google · Responsible AI Practices", url: "https://ai.google/responsibility/responsible-ai-practices/" },
-      { title: "fast.ai · Ethics & Data Course (Free)", url: "https://ethics.fast.ai/" },
+      { title: "fast.ai · Ethics & Data Course (Free)", url: "https://ethics.fast.ai/", authors: ["howard"] },
       { title: "AI Safety Fundamentals · BlueDot Impact (Free)", url: "https://aisafetyfundamentals.com/" },
       { title: "Anthropic · AI Safety Research", url: "https://www.anthropic.com/research" },
     ],
@@ -873,7 +877,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "arXiv · Where all AI papers are published", url: "https://arxiv.org/list/cs.AI/recent" },
       { title: "Papers With Code · Papers + Benchmarks + Code", url: "https://paperswithcode.com/" },
       { title: "Semantic Scholar · AI-powered paper search", url: "https://www.semanticscholar.org/" },
-      { title: "The Batch · Andrew Ng's Weekly AI Newsletter", url: "https://www.deeplearning.ai/the-batch/", access: "freemium" },
+      { title: "The Batch · Andrew Ng's Weekly AI Newsletter", url: "https://www.deeplearning.ai/the-batch/", access: "freemium", authors: ["ng"] },
     ],
     books: [
       { title: "Attention Is All You Need (2017) · start here", url: "https://arxiv.org/abs/1706.03762" },

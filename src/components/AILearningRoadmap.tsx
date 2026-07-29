@@ -1,7 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
+import { Link } from "@/lib/router-shim";
 import { roadmapTopics, PHASES, type RoadmapTopic, type RoadmapResource } from "@/data/aiRoadmap";
 import { roadmapToEncyclopedia, roadmapToContributors } from "@/data/crossLinks";
+import { aiContributors } from "@/data/aiContributors";
 import { Search, ChevronDown, ChevronUp, Video, BookOpen, Github, Lightbulb, Wrench, GraduationCap, Flag } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import CrossLinks from "@/components/CrossLinks";
@@ -46,6 +48,26 @@ const ResourceList = ({ items, icon: Icon, label, freeOnly }: { items: RoadmapRe
             )}
           </a>
         ))}
+        {/* Author credits sit outside the resource anchor: a link inside a link
+            is invalid HTML and browsers drop the inner one. */}
+        {shown.some((i) => i.authors?.length) && (
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/30">by</span>
+            {[...new Set(shown.flatMap((i) => i.authors ?? []))].map((id) => {
+              const c = aiContributors.find((x) => x.id === id);
+              if (!c) return null;
+              return (
+                <Link
+                  key={id}
+                  to={`/ai-contributors/${id}`}
+                  className="font-mono text-[10px] text-muted-foreground/70 hover:text-foreground underline decoration-dotted decoration-muted-foreground/30 transition-colors"
+                >
+                  {c.name}
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -41,6 +41,9 @@ export interface AIUpdate {
   videoUrl?: string;
   videoLabel?: string;
   body: string;
+  /** Contributor ids this story is about. Renders as profile links here, and
+   *  lets each profile list the news mentioning that person. */
+  contributors?: string[];
   /** Scannable stat cards rendered above the fold. */
   highlights?: UpdateHighlight[];
   /** Primary documents: court records first, never buried under the text. */
@@ -61,6 +64,119 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 };
 
 export const aiUpdates: AIUpdate[] = [
+  {
+    id: "nvidia-ssi-partnership",
+    slug: "nvidia-safe-superintelligence-5b-partnership",
+    title: "NVIDIA Puts $5 Billion Into Ilya Sutskever's Safe Superintelligence",
+    company: "NVIDIA",
+    category: "industry",
+    date: "2026-07-27",
+    summary:
+      "NVIDIA is investing $5 billion in Safe Superintelligence and giving it access to the Vera Rubin platform, enough to raise SSI's compute by an order of magnitude. NVIDIA says it committed after being granted rare access to research SSI has kept closed for two years.",
+    takeaways: [
+      "NVIDIA invests $5 billion and pairs it with access to its next-generation Vera Rubin platform, which SSI says lifts its compute by an order of magnitude.",
+      "The two companies will also collaborate on NVIDIA's current and future compute platforms, using what NVIDIA calls SSI's insights into where AI is heading.",
+      "NVIDIA states it entered the partnership after obtaining rare access to SSI's closely guarded research. SSI has shipped no product and has no revenue.",
+      "SSI was founded in 2024 and is led by Ilya Sutskever and Daniel Levy. Sutskever became CEO in mid-2025 after co-founder Daniel Gross left for Meta.",
+    ],
+    tocSections: ["What Was Announced", "Why NVIDIA Did It", "What It Signals"],
+    contributors: ["sutskever", "huang"],
+    highlights: [
+      { stat: "$5B", label: "NVIDIA investment in SSI" },
+      { stat: "10x", label: "increase in SSI compute" },
+      { stat: "2024", label: "year SSI was founded" },
+      { stat: "$0", label: "SSI revenue to date" },
+    ],
+    documents: [
+      {
+        label: "Official announcement, NVIDIA investor relations",
+        source: "NVIDIA Corporation",
+        url: "https://investor.nvidia.com/news/press-release-details/2026/Ilya-Sutskevers-Safe-Superintelligence-Inc--and-NVIDIA-Announce-Long-Term-Strategic-Partnership/default.aspx",
+      },
+      {
+        label: "Press release, full text",
+        source: "NVIDIA Newsroom",
+        url: "https://nvidianews.nvidia.com/news/ilya-sutskevers-safe-superintelligence-inc-and-nvidia-announce-long-term-strategic-partnership",
+      },
+      {
+        label: "Wire distribution copy",
+        source: "GlobeNewswire, 27 Jul 2026",
+        url: "https://www.globenewswire.com/news-release/2026/07/27/3333561/0/en/Ilya-Sutskever-s-Safe-Superintelligence-Inc-and-NVIDIA-Announce-Long-Term-Strategic-Partnership.html",
+      },
+    ],
+    body: `<h3 id="what-was-announced">What Was Announced</h3>
+<p>On July 27, 2026, NVIDIA and Safe Superintelligence Inc. announced what both call a long-term strategic partnership. NVIDIA is investing $5 billion and giving SSI access to its next-generation Vera Rubin platform. SSI says the combination raises its available compute by an order of magnitude, and the two companies will work together on NVIDIA's current and future platforms.</p>
+<h3 id="why-nvidia-did-it">Why NVIDIA Did It</h3>
+<p>The detail worth pausing on is in NVIDIA's own wording: it entered the partnership after obtaining rare access to research SSI has kept closed since it was founded. SSI has released no product, published little, and has no revenue. NVIDIA is underwriting a research direction it has seen and the public has not.</p>
+<p>Sutskever's track record is the collateral. He was a co-author on AlexNet, worked on AlphaGo and sequence-to-sequence learning, contributed to the GPT series, and led the research behind OpenAI's reasoning models.</p>
+<h3 id="what-it-signals">What It Signals</h3>
+<ul>
+<li><strong>Compute is the moat, and it is being allocated by conviction.</strong> A pre-product lab getting a ten-fold compute increase says frontier capacity now moves on judgement about people, not on traction.</li>
+<li><strong>The chip supplier is picking winners.</strong> NVIDIA investing in a lab that buys its hardware is a closed loop worth watching, and it is not the first such deal.</li>
+<li><strong>Alignment-first framing is now fundable at scale.</strong> SSI's stated purpose is a safe superintelligence, and that thesis just attracted $5 billion without a product.</li>
+</ul>
+<p><em>This article summarizes NVIDIA's own announcement and contemporaneous reporting.</em></p>`,
+    sourceUrl: "https://nvidianews.nvidia.com/news/ilya-sutskevers-safe-superintelligence-inc-and-nvidia-announce-long-term-strategic-partnership",
+    tags: ["NVIDIA", "Safe Superintelligence", "Ilya Sutskever", "compute", "AI safety"],
+    relatedLinks: [
+      {
+        label: "Ilya Sutskever",
+        to: "/ai-contributors/sutskever",
+        description: "Co-founder and CEO of SSI, and one of the most cited researchers in modern AI.",
+      },
+      {
+        label: "Map of the AI Economy",
+        to: "/notebook/ai/map",
+        description: "Where compute suppliers and frontier labs sit in the value chain.",
+      },
+    ],
+  },
+  {
+    id: "karpathy-joins-anthropic",
+    slug: "andrej-karpathy-joins-anthropic-pretraining",
+    title: "Andrej Karpathy Joins Anthropic's Pre-Training Team",
+    company: "Anthropic",
+    category: "industry",
+    date: "2026-05-19",
+    summary:
+      "The OpenAI founding member and former Tesla AI director has joined Anthropic to work on pre-training, building a group that uses Claude to accelerate pretraining research. Eureka Labs, the education company he founded in 2024, is paused rather than closed.",
+    takeaways: [
+      "Karpathy joined Anthropic's pre-training team in May 2026, forming a group that uses Claude to speed up pretraining research itself.",
+      "He was a founding member of OpenAI, then Director of AI at Tesla, then returned to OpenAI, before founding Eureka Labs in 2024.",
+      "Eureka Labs is paused, not shut down. His teaching work, including Neural Networks: Zero to Hero and nanoGPT, remains free and widely used.",
+      "The move puts one of the field's best-known educators inside a frontier lab's core training effort.",
+    ],
+    tocSections: ["What Happened", "Why It Matters", "What He Leaves Behind"],
+    contributors: ["karpathy", "dario-amodei"],
+    highlights: [
+      { stat: "May 2026", label: "joined Anthropic" },
+      { stat: "2015", label: "OpenAI founding member" },
+      { stat: "5 yrs", label: "Director of AI at Tesla" },
+      { stat: "Free", label: "his courses remain" },
+    ],
+    body: `<h3 id="what-happened">What Happened</h3>
+<p>Andrej Karpathy joined Anthropic's pre-training team in May 2026, reported by TechCrunch on the 19th. The role is not a research-advisor seat: he is building a group that uses Claude to accelerate pretraining research, which means using the model to help improve how the next model is trained.</p>
+<h3 id="why-it-matters">Why It Matters</h3>
+<p>Karpathy is unusual in having been at the centre of three distinct eras: a founding member of OpenAI in 2015, Director of AI at Tesla through the Autopilot years, then back at OpenAI, then out on his own with Eureka Labs. Very few people have built at that level and then taught it publicly for free.</p>
+<p>Pre-training is also the least glamorous and most consequential part of the stack. It is where capability is actually set, before any fine-tuning or product work.</p>
+<h3 id="what-he-leaves-behind">What He Leaves Behind</h3>
+<p>Eureka Labs is paused rather than wound up. His teaching material stays where it was and stays free: Neural Networks: Zero to Hero, Let's build GPT from scratch, nanoGPT, minGPT, and nanochat. Those remain among the most recommended free resources for learning how a language model actually works, and several of them anchor this site's own learning roadmap.</p>
+<p><em>This article summarizes contemporaneous reporting.</em></p>`,
+    sourceUrl: "https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/",
+    tags: ["Anthropic", "Andrej Karpathy", "pre-training", "Claude", "AI education"],
+    relatedLinks: [
+      {
+        label: "Andrej Karpathy",
+        to: "/ai-contributors/karpathy",
+        description: "Full profile: OpenAI founding member, Tesla, Eureka Labs, and now Anthropic.",
+      },
+      {
+        label: "Free AI Roadmap",
+        to: "/notebook/ai/roadmap",
+        description: "His Zero to Hero series and nanoGPT anchor several topics in the curriculum.",
+      },
+    ],
+  },
   {
     id: "anthropic-settlement-final-approval",
     slug: "anthropic-copyright-settlement-final-approval",
