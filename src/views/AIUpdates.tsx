@@ -24,8 +24,8 @@ const AIUpdatesIndex = () => {
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
       <SEO
-        title="AI Updates March 2026 — Latest AI News & Product Launches | Venkata Pagadala"
-        description="Stay updated with the latest AI news — product launches from NVIDIA, Google, OpenAI, Meta, Cloudflare, and more. Curated AI updates for March 2026."
+        title="AI Updates 2026 · Latest AI News & Product Launches | Venkata Pagadala"
+        description="Stay updated with the latest AI news: product launches from NVIDIA, Google, OpenAI, Meta, Cloudflare, and more. Curated AI updates, reviewed July 2026."
         canonical="https://venkatapagadala.com/ai-updates"
         breadcrumbs={[
           { name: "Home", url: "https://venkatapagadala.com" },
@@ -34,7 +34,7 @@ const AIUpdatesIndex = () => {
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          name: "AI Updates March 2026",
+          name: "AI Updates 2026",
           description: "Curated AI news covering product launches, research breakthroughs, and industry developments.",
           url: "https://venkatapagadala.com/ai-updates",
           author: { "@type": "Person", name: "Venkata Pagadala" },
@@ -56,7 +56,7 @@ const AIUpdatesIndex = () => {
                 AI Intelligence Feed
               </p>
               <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-3">
-                AI Updates — March 2026
+                AI Updates 2026
               </h1>
               <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 Curated AI news covering product launches, research breakthroughs, open-source releases, and industry developments from NVIDIA, Google, OpenAI, Meta, Anthropic, Cloudflare, and more.
@@ -67,7 +67,7 @@ const AIUpdatesIndex = () => {
               >
                 <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">See the AI Systems Map →</span>
                 <span className="font-mono text-[10px] text-muted-foreground/60">
-                  every entity these headlines move — labs, chips, foundries, energy — in one dependency graph
+                  every entity these headlines move, labs, chips, foundries, energy, in one dependency graph
                 </span>
               </a>
             </div>
@@ -145,7 +145,7 @@ const AIUpdatesIndex = () => {
           )}
         </div>
 
-        <PageSidebar sections={tocSections} shareTitle="AI Updates March 2026 — Latest AI News" />
+        <PageSidebar sections={tocSections} shareTitle="AI Updates 2026, Latest AI News" />
       </div>
     </div>
   );

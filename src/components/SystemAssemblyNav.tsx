@@ -54,7 +54,7 @@ const navCards: NavCard[] = [
     network: "MONO",
     schema: "Course (Free)",
     pages: "18 wks",
-    keyword: "Free AI Roadmap March 2026",
+    keyword: "Free AI Roadmap 2026",
   },
   {
     id: "encyclopedia",

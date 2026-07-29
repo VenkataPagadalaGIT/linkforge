@@ -115,9 +115,9 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
           )}
 
           {topic.proTips && (
-            <div className="mt-3 flex items-start gap-2 border border-yellow-500/10 bg-yellow-500/[0.02] p-3">
-              <Lightbulb size={12} className="text-yellow-500/50 mt-0.5 shrink-0" />
-              <p className="font-mono text-[11px] text-yellow-200/60 leading-relaxed">
+            <div className="mt-3 flex items-start gap-2 border border-yellow-600/30 bg-yellow-500/[0.06] dark:border-yellow-500/20 dark:bg-yellow-500/[0.03] p-3">
+              <Lightbulb size={12} className="text-yellow-700 dark:text-yellow-500/60 mt-0.5 shrink-0" />
+              <p className="font-mono text-[11px] text-yellow-800 dark:text-yellow-200/70 leading-relaxed">
                 {topic.proTips}
               </p>
             </div>
