@@ -21,6 +21,10 @@ export interface ResearchPaper {
   host: "SSRN" | "ResearchGate" | "Journal";
   /** One line a non-academic reader understands. */
   summary: string;
+  /** Posting or publication date as shown by the repository. */
+  posted?: string;
+  /** The author's own keywords, as listed on the paper. */
+  keywords?: string[];
 }
 
 export const researchPapers: ResearchPaper[] = [
@@ -34,6 +38,18 @@ export const researchPapers: ResearchPaper[] = [
     host: "SSRN",
     summary:
       "A mixed-methods study of what large language models are doing to search behavior, and what that means for how content gets found.",
+    posted: "3 Apr 2026",
+    keywords: [
+      "Large Language Models",
+      "Search Engine Optimization",
+      "Generative Engine Optimization",
+      "AI Overviews",
+      "zero-click search",
+      "organic traffic",
+      "disruptive innovation",
+      "information foraging",
+      "platform economics",
+    ],
   },
   {
     title:
@@ -45,6 +61,8 @@ export const researchPapers: ResearchPaper[] = [
     host: "ResearchGate",
     summary:
       "How AI supports the helpful-content standard on e-commerce sites, from product data quality to editorial signals.",
+    posted: "2024",
+    keywords: ["SEO", "helpful content", "artificial intelligence", "e-commerce"],
   },
   {
     title:
