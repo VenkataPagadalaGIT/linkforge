@@ -106,7 +106,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Feature vector", "Target variable", "Feature engineering", "Feature selection"],
     prerequisites: [],
     learnMore: [
-      { title: "Google: Feature Engineering", url: "https://developers.google.com/machine-learning/data-prep/transform/transform-numeric" },
+      { title: "Google: Feature Engineering", url: "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization" },
     ],
     realWorldApps: "Any ML system, choosing the right features determines model quality",
   },
@@ -200,7 +200,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Pseudo-labels", "Self-training", "Consistency regularization"],
     prerequisites: ["Supervised Learning", "Unsupervised Learning"],
     learnMore: [
-      { title: "Semi-Supervised Learning · Google", url: "https://scikit-learn.org/stable/modules/semi_supervised.html" },
+      { title: "scikit-learn: Semi-Supervised Learning", url: "https://scikit-learn.org/stable/modules/semi_supervised.html" },
     ],
   },
 
@@ -386,7 +386,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "bert", concept: "BERT (Bidirectional Encoder)", emoji: "🏗️",
-    description: "An encoder-only Transformer that reads text bidirectionally (both left-to-right and right-to-left). Trained with masked language modeling. Dominates classification, NER, and search/ranking tasks.",
+    description: "An encoder-only Transformer that reads text bidirectionally (both left-to-right and right-to-left). Trained with masked language modeling. Still a workhorse for cheap, high-volume classification, extraction, and retrieval, where a small encoder beats paying for a generative model.",
     category: "Architectures", difficulty: "intermediate", rank: 33,
     keyTerms: ["Masked language modeling", "Encoder-only", "Bidirectional context", "Fine-tuning"],
     prerequisites: ["Transformer Architecture"],
@@ -454,7 +454,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Search space", "Controller", "Reinforcement learning NAS", "EfficientNet"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Neural Architecture Search · Google AI Blog", url: "https://ai.googleblog.com/2017/05/using-machine-learning-to-explore.html" },
+      { title: "Neural Architecture Search · Google AI Blog", url: "https://research.google/blog/using-machine-learning-to-explore-neural-network-architecture/" },
     ],
   },
   {
@@ -507,7 +507,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Zero-shot", "Few-shot", "Chain-of-thought", "System prompt", "Temperature"],
     prerequisites: [],
     learnMore: [
-      { title: "Anthropic Prompt Engineering Guide", url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" },
+      { title: "Anthropic Prompt Engineering Guide", url: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" },
       { title: "OpenAI Prompt Engineering Guide", url: "https://platform.openai.com/docs/guides/prompt-engineering" },
     ],
     realWorldApps: "Every interaction with ChatGPT, Claude, Gemini, it's the universal AI interface",
@@ -579,7 +579,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "context-window", concept: "Context Window & Long Context", emoji: "🗣️",
-    description: "The maximum number of tokens an LLM can process at once. Frontier models now ship windows from 200K to over 1M tokens, with some advertising 10M. Longer context enables processing entire codebases and books, though effective recall often degrades well before the advertised limit. Longer context enables processing entire codebases and books.",
+    description: "The maximum number of tokens an LLM can process at once. A window of roughly one million tokens is now standard at the frontier, with a few models advertising ten million. That is enough for entire codebases or books, but effective recall degrades well before the advertised limit, so the usable window is usually much smaller than the number on the spec sheet.",
     category: "NLP & Language", difficulty: "intermediate", rank: 51,
     keyTerms: ["Token limit", "Context length", "Needle-in-a-haystack", "KV cache"],
     prerequisites: ["Tokenization", "Transformer Architecture"],
@@ -659,7 +659,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Pixel-wise classification", "U-Net", "Mask", "Instance segmentation"],
     prerequisites: ["CNN"],
     learnMore: [
-      { title: "Papers With Code: Segmentation", url: "https://paperswithcode.com/task/semantic-segmentation" },
+      { title: "Papers With Code: Segmentation", url: "https://huggingface.co/tasks/image-segmentation" },
     ],
   },
   {
@@ -669,7 +669,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Real-time detection", "Grid cells", "Confidence score", "NMS-free inference"],
     prerequisites: ["Object Detection"],
     learnMore: [
-      { title: "Ultralytics YOLOv8", url: "https://github.com/ultralytics/ultralytics" },
+      { title: "Ultralytics YOLO (current models)", url: "https://docs.ultralytics.com/models/" },
     ],
   },
   {
@@ -679,7 +679,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Text-to-image", "Diffusion", "CLIP guidance", "Inpainting"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Stable Diffusion Guide", url: "https://stability.ai/stable-diffusion" },
+      { title: "Stable Diffusion Guide", url: "https://stability.ai/stable-image" },
     ],
   },
   {
@@ -703,9 +703,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     ],
   },
   {
-    id: "time-series", concept: "Time Series Forecasting", emoji: "👁️",
+    id: "time-series", concept: "Time Series Forecasting", emoji: "🧠",
     description: "Predicting future values based on historical temporal data. Traditional methods (ARIMA) are being augmented by deep learning (LSTMs, Transformers). Critical for finance, weather, and demand planning.",
-    category: "Computer Vision", difficulty: "intermediate", rank: 63,
+    category: "Core ML Concepts", difficulty: "intermediate", rank: 63,
     keyTerms: ["ARIMA", "Seasonality", "Trend", "Lag features", "Prophet"],
     prerequisites: ["Machine Learning"],
     learnMore: [
@@ -714,9 +714,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     realWorldApps: "Stock prediction, weather forecasting, demand planning, energy grid",
   },
   {
-    id: "data", concept: "Data · The Fuel of AI", emoji: "👁️",
+    id: "data", concept: "Data · The Fuel of AI", emoji: "🧠",
     description: "AI is only as good as its data. Understanding data quality, bias, preprocessing, augmentation, and the data lifecycle is fundamental. 'More data beats better algorithms', but only if the data is good.",
-    category: "Computer Vision", difficulty: "beginner", rank: 64,
+    category: "Core ML Concepts", difficulty: "beginner", rank: 64,
     keyTerms: ["Data quality", "Data augmentation", "Data pipeline", "Label noise", "Data drift"],
     prerequisites: [],
     learnMore: [
@@ -724,9 +724,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     ],
   },
   {
-    id: "synthetic-data", concept: "Synthetic Data", emoji: "👁️",
+    id: "synthetic-data", concept: "Synthetic Data", emoji: "🎨",
     description: "Artificially generated data that mimics real-world data. Used when real data is scarce, expensive, or privacy-sensitive. GANs and diffusion models can create realistic synthetic training data.",
-    category: "Computer Vision", difficulty: "intermediate", rank: 65,
+    category: "Generative AI", difficulty: "intermediate", rank: 65,
     keyTerms: ["Data augmentation", "Privacy-preserving", "Distribution matching"],
     prerequisites: ["Data, The Fuel of AI"],
     learnMore: [
@@ -737,7 +737,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Generative AI (66–75) ===
   {
     id: "diffusion-models", concept: "Diffusion Models", emoji: "🎨",
-    description: "The architecture behind Stable Diffusion and DALL-E 3. Works by learning to reverse a noise-adding process, start from pure noise, gradually denoise to create an image. Replaced GANs as the dominant generative approach.",
+    description: "The architecture behind most modern image and video generators, including Stable Diffusion and the image models inside the major assistants. Works by learning to reverse a noise-adding process, start from pure noise, gradually denoise to create an image. Replaced GANs as the dominant generative approach.",
     category: "Generative AI", difficulty: "advanced", rank: 66,
     keyTerms: ["DDPM", "Noise schedule", "Denoising", "U-Net backbone", "Classifier-free guidance"],
     prerequisites: ["Deep Learning"],
@@ -774,7 +774,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     prerequisites: ["Diffusion Models"],
     learnMore: [
       { title: "Stable Diffusion WebUI", url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui" },
-      { title: "ComfyUI", url: "https://github.com/comfyanonymous/ComfyUI" },
+      { title: "ComfyUI", url: "https://github.com/Comfy-Org/ComfyUI" },
     ],
     realWorldApps: "AI art, product mockups, game asset generation, marketing visuals",
   },
@@ -795,13 +795,13 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Text-to-speech", "Voice synthesis", "Speaker embedding", "Prosody"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "OpenAI Whisper", url: "https://github.com/openai/whisper" },
+      { title: "Hugging Face Audio Course: Text-to-Speech", url: "https://huggingface.co/learn/audio-course/chapter6/introduction" },
     ],
     realWorldApps: "Audiobooks, dubbing, accessibility, virtual assistants, podcasting",
   },
   {
     id: "music-generation", concept: "AI Music Generation", emoji: "🎨",
-    description: "Creating original music using AI, from background scores to full songs with vocals. Suno and Udio generate music from text prompts. Raises questions about creativity and copyright.",
+    description: "Creating original music using AI, from background scores to full songs with vocals. Suno and Udio generate music from text prompts. The copyright fight moved from open question to concrete outcome: major labels have signed licensing deals with both while other suits continue, and licensed models change what users may download and reuse.",
     category: "Generative AI", difficulty: "intermediate", rank: 72,
     keyTerms: ["Audio tokens", "Music transformer", "MIDI generation", "Audio diffusion"],
     prerequisites: ["Deep Learning"],
@@ -875,7 +875,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ppo", concept: "PPO (Proximal Policy Optimization)", emoji: "🎮",
-    description: "The most widely used RL algorithm, simpler and more stable than predecessors. Used in RLHF to fine-tune ChatGPT, in robotics, and in game AI. Balances exploration with stable training.",
+    description: "For years the default RL algorithm, simpler and more stable than its predecessors, and the method used in the original RLHF pipelines. Newer group-relative variants have largely displaced it for language-model post-training, though PPO remains a standard baseline in robotics and control. Used in RLHF to fine-tune ChatGPT, in robotics, and in game AI. Balances exploration with stable training.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 79,
     keyTerms: ["Clipping", "Trust region", "Surrogate objective", "KL penalty"],
     prerequisites: ["Policy Gradient"],
@@ -915,7 +915,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "world-models", concept: "World Models", emoji: "🎮",
-    description: "AI that builds internal models of how the world works, predicting what happens next without actually experiencing it. Championed by Yann LeCun, who left Meta in 2025 to found a world-model startup, as the next paradigm: learning through observation, not just language.",
+    description: "AI that builds internal models of how the world works, predicting what happens next without actually experiencing it. Championed by Yann LeCun, who left Meta at the end of 2025 to found AMI Labs (Advanced Machine Intelligence) specifically to pursue this, as the next paradigm: learning through observation, not just language.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 83,
     keyTerms: ["Predictive model", "Imagination", "Model-based RL", "JEPA"],
     prerequisites: ["Reinforcement Learning"],
@@ -949,10 +949,10 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     id: "gpu-tpu", concept: "GPU & TPU Computing", emoji: "⚙️",
     description: "GPUs (NVIDIA) and TPUs (Google) are the hardware that makes deep learning possible. Their parallel processing capabilities accelerate matrix operations by 100x+ versus CPUs.",
     category: "MLOps & Infrastructure", difficulty: "beginner", rank: 86,
-    keyTerms: ["CUDA", "Tensor cores", "H100", "Blackwell (B200)", "TPU Ironwood", "Parallelism"],
+    keyTerms: ["CUDA", "Tensor cores", "HBM", "Accelerator generations (Hopper, Blackwell, Rubin)", "TPU", "Parallelism"],
     prerequisites: [],
     learnMore: [
-      { title: "NVIDIA CUDA Guide", url: "https://developer.nvidia.com/cuda-zone" },
+      { title: "NVIDIA CUDA Guide", url: "https://developer.nvidia.com/cuda" },
     ],
   },
   {
@@ -1003,7 +1003,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["LiteRT (formerly TensorFlow Lite)", "CoreML", "ONNX", "Edge TPU", "Model optimization"],
     prerequisites: ["Model Quantization & Compression"],
     learnMore: [
-      { title: "LiteRT (formerly TensorFlow Lite)", url: "https://ai.google.dev/edge/litert" },
+      { title: "LiteRT (formerly TensorFlow Lite)", url: "https://developers.google.com/edge/litert" },
     ],
     realWorldApps: "Smartphone cameras, smart speakers, autonomous vehicles, industrial IoT",
   },
@@ -1014,17 +1014,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Privacy-preserving", "Aggregation", "Non-IID data", "Communication efficiency"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Google: Federated Learning", url: "https://ai.googleblog.com/2017/04/federated-learning-collaborative.html" },
+      { title: "Google: Federated Learning", url: "https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/" },
     ],
   },
   {
     id: "distributed-training", concept: "Distributed Training", emoji: "⚙️",
-    description: "Training models across multiple GPUs or machines. Essential for frontier models, Frontier models are trained on clusters of tens of thousands of GPUs. Techniques: data parallelism, model parallelism, pipeline parallelism.",
+    description: "Training models across multiple GPUs or machines. Essential for frontier models, which are trained on clusters ranging from tens of thousands to several hundred thousand accelerators. Techniques: data parallelism, model parallelism, pipeline parallelism.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 93,
     keyTerms: ["Data parallelism", "Model parallelism", "FSDP", "DeepSpeed", "Gradient sync"],
     prerequisites: ["GPU & TPU Computing"],
     learnMore: [
-      { title: "PyTorch Distributed Training", url: "https://pytorch.org/tutorials/intermediate/ddp_tutorial.html" },
+      { title: "PyTorch Distributed Training", url: "https://docs.pytorch.org/tutorials/intermediate/ddp_tutorial.html" },
     ],
   },
   {
@@ -1034,7 +1034,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Model registry", "Version control", "Lineage", "Rollback", "Staging"],
     prerequisites: ["Experiment Tracking"],
     learnMore: [
-      { title: "MLflow Model Registry", url: "https://mlflow.org/docs/latest/model-registry.html" },
+      { title: "MLflow Model Registry", url: "https://mlflow.org/docs/latest/model-registry/" },
     ],
   },
   {
@@ -1093,7 +1093,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "drug-discovery", concept: "AI-Driven Drug Discovery", emoji: "🤖",
-    description: "Using AI to identify, design, and optimize drug candidates, dramatically accelerating the traditional 10-15 year drug development cycle. AlphaFold solved protein folding; Insilico Medicine created the first AI-designed drug in clinical trials.",
+    description: "Using AI to identify, design, and optimize drug candidates, dramatically accelerating the traditional 10-15 year drug development cycle. AlphaFold made protein structure prediction reliable enough to use as a tool. Insilico Medicine's rentosertib is the first candidate whose biological target and molecule were both found with generative AI, and it cleared a Phase IIa readout in 2025. It is still investigational, not approved, which is the honest state of the field.",
     category: "AI Agents & Applications", difficulty: "advanced", rank: 100,
     keyTerms: ["Protein folding", "AlphaFold", "Molecular generation", "Drug target"],
     prerequisites: ["Deep Learning"],
@@ -1114,7 +1114,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "search-ranking", concept: "AI-Powered Search & Ranking", emoji: "🤖",
-    description: "Using ML to improve search results and ranking. Moved from keyword matching to semantic understanding. BERT transformed Google Search. Vector search enables meaning-based retrieval.",
+    description: "Using ML to improve search results and ranking. Moved from keyword matching to semantic understanding. Encoder models moved search from keyword matching to semantic understanding, and vector search enables meaning-based retrieval. The frontier has moved again: major engines now generate an answer as the primary result and cite sources into it, so visibility increasingly means being cited rather than being ranked.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 102,
     keyTerms: ["Semantic search", "Learning to rank", "BM25", "Cross-encoder", "Bi-encoder"],
     prerequisites: ["Embeddings", "BERT"],
@@ -1149,7 +1149,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["AI art", "AI writing", "Generative design", "Copyright", "Human-AI collaboration"],
     prerequisites: [],
     learnMore: [
-      { title: "Runway ML", url: "https://runwayml.com/" },
+      { title: "Runway ML", url: "https://runway.com/" },
     ],
   },
 
@@ -1161,7 +1161,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Value alignment", "Outer alignment", "Inner alignment", "Reward hacking"],
     prerequisites: [],
     learnMore: [
-      { title: "AI Safety Fundamentals", url: "https://aisafetyfundamentals.com/" },
+      { title: "AI Safety Fundamentals", url: "https://bluedot.org/" },
       { title: "Anthropic: Core Views on AI Safety", url: "https://www.anthropic.com/news/core-views-on-ai-safety" },
     ],
   },
@@ -1199,7 +1199,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ai-regulation", concept: "AI Regulation & Governance", emoji: "🛡️",
-    description: "The emerging legal and policy landscape for AI. The EU AI Act (2024) is the first comprehensive AI law; its obligations phase in over several years, with the high-risk rules deferred to 2027-2028. Understanding regulation is now a career advantage, every AI team needs someone who understands compliance.",
+    description: "The emerging legal and policy landscape for AI. The EU AI Act is the first comprehensive AI law. Its obligations phase in over several years, and a 2026 amendment pushed the high-risk rules for standalone systems to December 2027 and for AI embedded in regulated products to August 2028. Treat the phase-in dates as current as of reading, not fixed. Understanding regulation is now a career advantage, every AI team needs someone who understands compliance.",
     category: "Safety, Ethics & Governance", difficulty: "beginner", rank: 110,
     keyTerms: ["EU AI Act", "Risk categories", "Compliance", "Transparency requirements"],
     prerequisites: [],
@@ -1287,5 +1287,72 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
       { title: "Hugging Face Evaluation Guidebook", url: "https://github.com/huggingface/evaluation-guidebook" },
     ],
     realWorldApps: "Model selection, regression testing, procurement decisions, safety assessment",
+  },
+  {
+    id: "context-engineering", concept: "Context Engineering", emoji: "💬",
+    description: "The practice of deciding what occupies a model's context window on each call: system instructions, tool definitions, retrieved documents, and prior turns. Once an agent runs for many steps the binding constraint stops being prompt wording and becomes the budget of useful tokens, so compaction, summarising older turns, keeping notes outside the window, and retrieving just in time matter more than phrasing.",
+    category: "NLP & Language", difficulty: "intermediate", rank: 118,
+    keyTerms: ["Compaction", "Just-in-time retrieval", "Token budget", "Sub-agents", "Context rot"],
+    prerequisites: ["Prompt Engineering", "Context Window & Long Context"],
+    learnMore: [
+      { title: "Anthropic: Effective context engineering for AI agents", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" },
+    ],
+    realWorldApps: "Long-running coding agents, research assistants, customer support over long histories",
+  },
+  {
+    id: "prompt-injection", concept: "Prompt Injection", emoji: "⚖️",
+    description: "An attack where instructions hidden inside content the model reads are followed as if the user had issued them. Direct injection comes from whoever is typing; indirect injection arrives through a fetched web page, document, or tool result, which makes it the central security problem for tool-using agents. No complete fix exists, so defences layer restricted permissions, separation of instructions from data, and human confirmation before consequential actions.",
+    category: "Safety, Ethics & Governance", difficulty: "intermediate", rank: 119,
+    keyTerms: ["Indirect injection", "Tool poisoning", "Instruction hierarchy", "Least privilege", "Human in the loop"],
+    prerequisites: ["Red Teaming AI Systems", "AI Agents"],
+    learnMore: [
+      { title: "OWASP GenAI Top 10: Prompt Injection", url: "https://genai.owasp.org/llmrisk/llm01-prompt-injection/" },
+    ],
+    realWorldApps: "Agent security review, browser agents, email and document assistants, threat modelling",
+  },
+  {
+    id: "mech-interp", concept: "Mechanistic Interpretability", emoji: "⚖️",
+    description: "Reverse engineering a network's internal computation into human-readable parts: features, the circuits that combine them, and how information moves between layers. Sparse autoencoders are the main tool for pulling interpretable features out of layers whose individual neurons each represent many unrelated things. It differs from feature-attribution methods, which say which inputs mattered without describing the mechanism that used them.",
+    category: "Safety, Ethics & Governance", difficulty: "advanced", rank: 120,
+    keyTerms: ["Sparse autoencoders", "Circuits", "Superposition", "Feature steering", "Attribution graphs"],
+    prerequisites: ["Explainable AI (XAI)", "Transformer Architecture"],
+    learnMore: [
+      { title: "Anthropic: Tracing the thoughts of a large language model", url: "https://www.anthropic.com/research/tracing-thoughts-language-model" },
+      { title: "Transformer Circuits: mechanistic interpretability essay", url: "https://transformer-circuits.pub/2022/mech-interp-essay/index.html" },
+    ],
+    realWorldApps: "Safety auditing, debugging model behaviour, steering outputs, alignment research",
+  },
+  {
+    id: "inference-optimization", concept: "Inference Optimization", emoji: "🔧",
+    description: "The engineering that makes serving a model affordable. Generation splits into a compute-bound prefill over the prompt and a memory-bound decode of one token at a time, so throughput and cost are set by the KV cache, continuous batching, attention memory layout, and speculative decoding, where a small draft model proposes tokens a larger model verifies in one pass. Two deployments of the same weights can differ by an order of magnitude in cost per token.",
+    category: "MLOps & Infrastructure", difficulty: "advanced", rank: 121,
+    keyTerms: ["KV cache", "Continuous batching", "Speculative decoding", "Prefill vs decode", "PagedAttention"],
+    prerequisites: ["Training vs Inference", "Model Quantization & Compression"],
+    learnMore: [
+      { title: "Hugging Face: Optimizing LLM inference", url: "https://huggingface.co/docs/transformers/llm_optims" },
+    ],
+    realWorldApps: "Cost control at scale, latency-sensitive products, self-hosted model serving",
+  },
+  {
+    id: "vla-models", concept: "Vision-Language-Action Models", emoji: "🤖",
+    description: "Models that take camera images plus a natural-language instruction and output robot actions directly, trained across large mixed datasets of demonstrations rather than one policy per task. They port the pretrain-then-adapt pattern from language into physical control. The property under test is generalisation: whether a policy handles objects, scenes, and phrasings it never saw during training.",
+    category: "AI Agents & Applications", difficulty: "advanced", rank: 122,
+    keyTerms: ["Action tokens", "Flow matching policy", "Teleoperation data", "Generalist policy", "Embodied AI"],
+    prerequisites: ["Multimodal Models", "Autonomous Vehicles & Robotics"],
+    learnMore: [
+      { title: "Physical Intelligence: pi-zero, a vision-language-action flow model", url: "https://www.pi.website/blog/pi0" },
+    ],
+    realWorldApps: "Warehouse manipulation, household robots, industrial pick and place, humanoid control",
+  },
+  {
+    id: "multi-agent-orchestration", concept: "Multi-Agent Systems & Orchestration", emoji: "🤖",
+    description: "Splitting a task across several LLM agents with separate contexts and roles, coordinated by an orchestrator that fans out subtasks and merges what comes back. It pays off when subtasks are genuinely independent and each needs its own large context. It also multiplies token spend and makes failures harder to trace, so a single well-scoped agent is often the better answer.",
+    category: "AI Agents & Applications", difficulty: "intermediate", rank: 123,
+    keyTerms: ["Orchestrator", "Fan-out", "Sub-agent", "Handoff", "Token multiplication"],
+    prerequisites: ["AI Agents", "Tool Use & Function Calling"],
+    learnMore: [
+      { title: "Anthropic: How we built our multi-agent research system", url: "https://www.anthropic.com/engineering/multi-agent-research-system" },
+    ],
+    realWorldApps: "Deep research tools, large-scale code migration, parallel document review",
   },
 ];
