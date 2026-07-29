@@ -55,6 +55,14 @@ if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
 logger = logging.getLogger("mono-mind")
+
+if not RESEND_API_KEY:
+    # Said once at boot so the fault is visible before the first lead arrives,
+    # rather than discovered when an enquiry never turns up in the inbox.
+    logger.warning(
+        "RESEND_API_KEY is unset: contact submissions will be STORED but no "
+        "notification email will be sent. Set it on the backend service."
+    )
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # ----- App -----
@@ -306,7 +314,14 @@ async def stats():
 
 async def _send_contact_email(payload: ContactCreate, record_id: str) -> None:
     if not RESEND_API_KEY:
-        logger.info("Resend disabled (no API key); skipping notification email")
+        # WARNING, not INFO: this is an operational fault, not a routine skip.
+        # The lead is safe in Mongo and readable at /admin, but nobody is
+        # being told about it, which is exactly how a real enquiry gets lost.
+        logger.warning(
+            "CONTACT EMAIL NOT SENT: RESEND_API_KEY is unset. Submission %s is stored "
+            "in MongoDB and visible at /admin, but no notification was delivered.",
+            record_id,
+        )
         return
     subj = f"[Mono Mind] New contact: {payload.subject or payload.name}"
     html = f"""

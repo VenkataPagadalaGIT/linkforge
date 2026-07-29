@@ -2,6 +2,7 @@
 import { Link, useLocation } from "@/lib/router-shim";
 import { ArrowRight, Linkedin, Mail as MailIcon } from "lucide-react";
 import KitSignupForm from "@/components/KitSignupForm";
+import { linkedPapers } from "@/data/research";
 
 const Footer = () => {
   const location = useLocation();
@@ -10,7 +11,7 @@ const Footer = () => {
 
   const links = [
     { label: "About", to: "/about" },
-    { label: "Lab", to: "/publications" },
+    { label: "Publications", to: "/publications" },
     { label: "Solutions", to: "/solutions" },
     { label: "Insights", to: "/insights" },
     { label: "Contact", to: "/contact" },
@@ -35,7 +36,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border bg-background">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Brand */}
           <div>
             <Link to="/" className="font-display text-lg font-bold text-foreground">
@@ -79,6 +80,31 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* Published research: direct links, because a citation nobody can
+              open is indistinguishable from a claim */}
+          <div>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">Research</p>
+            <ul className="space-y-2">
+              {linkedPapers.map((paper) => (
+                <li key={paper.url}>
+                  <a
+                    href={paper.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors"
+                  >
+                    {paper.shortTitle}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <Link to="/publications" className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors">
+                  All publications
+                </Link>
+              </li>
             </ul>
           </div>
 

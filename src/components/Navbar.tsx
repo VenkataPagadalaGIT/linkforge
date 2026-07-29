@@ -70,11 +70,12 @@ const MEGA: MegaMenu[] = [
       { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
       { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
       { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates", badge: "new" },
+      { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
     ],
     footnote:
       "The map, the definitions, and the people behind everything above. Where the data studies and benchmarks will live.",
     seeAll: { label: "See the full notebook", to: "/notebook" },
-    active: ["/notebook", "/ai-contributors", "/ai-updates"],
+    active: ["/notebook", "/ai-contributors", "/ai-updates", "/publications"],
   },
 ];
 

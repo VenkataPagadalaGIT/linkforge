@@ -1,6 +1,7 @@
 "use client";
 import { Link } from "@/lib/router-shim";
 import { ArrowDown, ArrowRight, Linkedin } from "lucide-react";
+import { linkedPapers } from "@/data/research";
 import WireframeGrid from "@/components/WireframeGrid";
 import FloatingBlocks from "@/components/FloatingBlocks";
 import TypewriterText from "@/components/TypewriterText";
@@ -82,13 +83,24 @@ const Home = () => {
             <Linkedin size={16} className="group-hover:text-foreground transition-all" />
             Follow
           </a>
-          <Link
-            to="/about"
-            className="inline-flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group mt-2"
+          <button
+            type="button"
+            onClick={() => {
+              // The arrow promises "further down this page", so honour that:
+              // ride to the end of the document rather than navigating away,
+              // and respect a reduced-motion preference on the way.
+              const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: reduce ? "auto" : "smooth",
+              });
+            }}
+            aria-label="Scroll to the bottom of the page"
+            className="inline-flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group mt-2 bg-transparent border-0 cursor-pointer"
           >
             <span className="font-mono text-xs tracking-widest uppercase">Explore</span>
             <ArrowDown size={16} className="group-hover:translate-y-1 transition-transform" />
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -120,6 +132,61 @@ const Home = () => {
           </div>
         </ScrollReveal>
         <SolutionsGraph />
+      </div>
+
+      {/* Published research: the credential almost nobody in this field has,
+          so it earns a place on the homepage rather than only on /publications */}
+      <div className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-16">
+          <ScrollReveal>
+            <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-3 uppercase">
+              Published Research
+            </p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow mb-3">
+              Peer-reviewed, not just practiced
+            </h2>
+            <p className="font-mono text-xs text-muted-foreground mb-8 max-w-2xl leading-relaxed">
+              Work published in academic venues and indexed where researchers actually look.
+              Every paper below opens in full.
+            </p>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {linkedPapers.map((paper, i) => (
+              <ScrollReveal key={paper.url} delay={i * 60}>
+                <a
+                  href={paper.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col h-full border border-border p-5 hover:bg-secondary/20 border-glow-hover transition-all"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[10px] tracking-widest uppercase text-foreground/50">
+                      {paper.host}
+                    </span>
+                    <span className="font-mono text-[10px] text-muted-foreground/40">{paper.year}</span>
+                  </div>
+                  <h3 className="font-display text-base font-bold text-foreground mb-2 leading-snug">
+                    {paper.shortTitle}
+                  </h3>
+                  <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mb-4 flex-1">
+                    {paper.summary}
+                  </p>
+                  <span className="inline-flex items-center gap-1 font-mono text-[11px] text-foreground/70 group-hover:text-foreground transition-colors">
+                    Read the paper <ArrowRight size={12} />
+                  </span>
+                </a>
+              </ScrollReveal>
+            ))}
+          </div>
+          <div className="mt-6">
+            <Link
+              to="/publications"
+              className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              All publications and research systems <ArrowRight size={12} />
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* System Assembly Navigation Hub */}

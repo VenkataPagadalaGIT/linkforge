@@ -1,4 +1,5 @@
 import ScrollReveal from "@/components/ScrollReveal";
+import { linkedPapers } from "@/data/research";
 import SEO from "@/components/SEO";
 import PageSidebar from "@/components/PageSidebar";
 const venkatPhoto = "/venkata-pagadala.jpeg";
@@ -76,6 +77,7 @@ const tocSections = [
   { label: "About", id: "about" },
   { label: "Stats", id: "stats" },
   { label: "Skills", id: "skills" },
+  { label: "Research", id: "research" },
   { label: "Experience", id: "experience" },
   { label: "Education", id: "education" },
 ];
@@ -170,11 +172,50 @@ const About = () => {
               </div>
             </div>
 
+            {/* ── Published Research ── */}
+            <div id="research" className="scroll-mt-28 mb-20">
+              <ScrollReveal>
+                <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
+                  {"{02}"} · Published Research
+                </p>
+                <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+                  Peer-reviewed work on how AI is reshaping search, published in academic
+                  venues and open to read in full.
+                </p>
+              </ScrollReveal>
+              <div className="space-y-3">
+                {linkedPapers.map((paper, i) => (
+                  <ScrollReveal key={paper.url} delay={i * 60}>
+                    <a
+                      href={paper.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block border border-border p-5 hover:bg-secondary/20 border-glow-hover transition-all"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="font-display text-base font-bold text-foreground mb-2 leading-snug">
+                            {paper.title}
+                          </h3>
+                          <p className="font-mono text-[11px] text-muted-foreground">
+                            {paper.venue} · {paper.year}
+                          </p>
+                        </div>
+                        <span className="font-mono text-[10px] tracking-widest uppercase text-foreground/50 flex-shrink-0">
+                          {paper.host}
+                        </span>
+                      </div>
+                    </a>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+
             {/* ── Experience Section ── */}
             <div id="experience" className="scroll-mt-28 mb-20">
               <ScrollReveal>
                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
-                  {"{02}"} · Experience
+                  {"{03}"} · Experience
                 </p>
                 <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-16">
                   Career Timeline

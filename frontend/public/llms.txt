@@ -85,6 +85,19 @@ News with primary sources attached: court documents, official filings, and origi
 Final approval of the largest known U.S. copyright settlement: about $3,000 per work across roughly 500,000 books. Includes the full federal docket, Judge Alsup's fair use order, the GovInfo case archive, and the official settlement administrator, all linked.
 - URL: https://venkatapagadala.com/ai-updates/anthropic-copyright-settlement-final-approval
 
+## Published Research
+
+Peer-reviewed papers on how AI and large language models are reshaping search.
+- URL: https://venkatapagadala.com/publications
+
+### The Disruption of Search Engine Optimization by Large Language Models (2026)
+A mixed-methods analysis of the evolving search landscape. Published on SSRN.
+- Paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878
+
+### Google, SEO and Helpful Content: How AI Can Be Helpful for E-Commerce Websites (2024)
+Journal of Digital & Social Media Marketing.
+- Paper: https://www.researchgate.net/publication/386439374_Google_SEO_and_helpful_content_How_artificial_intelligence_can_be_helpful_for_e-commerce_websites
+
 ## Contact
 
 - Email: vdepagadala@gmail.com
