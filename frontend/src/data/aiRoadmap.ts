@@ -55,7 +55,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "OpenAI Academy · free official learning hub", url: "https://academy.openai.com/" },
     ],
     books: [
-      { title: "AI Superpowers by Kai-Fu Lee", url: "https://www.amazon.com/AI-Superpowers-China-Silicon-Valley/dp/132854639X", access: "paid" },
+      { title: "Stanford HAI AI Index Report 2026 (free)", url: "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf" },
       { title: "Life 3.0 by Max Tegmark", url: "https://www.amazon.com/Life-3-0-Being-Artificial-Intelligence/dp/1101970316", access: "paid" },
       { title: "Artificial Intelligence: A Modern Approach by Russell & Norvig", url: "https://www.amazon.com/Artificial-Intelligence-Modern-Approach-4th/dp/0134610997", access: "paid" },
     ],
@@ -114,8 +114,8 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Mathematics for ML · free PDF at mml-book.github.io", url: "http://mml-book.github.io" },
-      { title: "No Bullshit Guide to Linear Algebra", url: "https://www.amazon.com/No-bullshit-guide-linear-algebra/dp/0992001021", access: "paid" },
-      { title: "Calculus Made Easy by Silvanus Thompson", url: "https://www.amazon.com/Calculus-Made-Easy-Silvanus-Thompson/dp/0312185480", access: "paid" },
+      { title: "Linear Algebra · Hefferon (free, complete)", url: "https://hefferon.net/linearalgebra/" },
+      { title: "Calculus Made Easy · Thompson (free, Project Gutenberg)", url: "https://www.gutenberg.org/ebooks/33283" },
     ],
     githubRepos: [
       { title: "Mathematics-for-ML · Companion notebooks", url: "https://github.com/mml-book/mml-book.github.io" },
@@ -144,7 +144,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "Think Stats by Allen Downey · free, Python-based", url: "https://greenteapress.com/thinkstats2/" },
       { title: "Naked Statistics by Charles Wheelan", url: "https://www.amazon.com/Naked-Statistics-Stripping-Dread-Data/dp/039334777X", access: "paid" },
-      { title: "All of Statistics by Larry Wasserman", url: "https://www.amazon.com/All-Statistics-Statistical-Inference-Springer/dp/0387402721", access: "paid" },
+      { title: "An Introduction to Statistical Learning, Python ed. (free PDF)", url: "https://www.statlearning.com/" },
     ],
     githubRepos: [
       { title: "Think-Stats-2 · Book notebooks", url: "https://github.com/AllenDowney/ThinkStats2" },
@@ -172,8 +172,8 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Python Data Science Handbook by Jake VanderPlas · free", url: "https://jakevdp.github.io/PythonDataScienceHandbook/" },
-      { title: "Python for Data Analysis by Wes McKinney (Pandas creator)", url: "https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1098104032", access: "paid" },
-      { title: "Storytelling with Data by Cole Nussbaumer", url: "https://www.amazon.com/Storytelling-Data-Visualization-Business-Professionals/dp/1119002257", access: "paid" },
+      { title: "Python for Data Analysis · McKinney (free, open access)", url: "https://wesmckinney.com/book/" },
+      { title: "Fundamentals of Data Visualization · Wilke (free)", url: "https://clauswilke.com/dataviz/" },
     ],
     githubRepos: [
       { title: "jakevdp/PythonDataScienceHandbook · 43K+ stars", url: "https://github.com/jakevdp/PythonDataScienceHandbook" },
@@ -200,9 +200,8 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "W3Schools · SQL Tutorial (Free)", url: "https://www.w3schools.com/sql/" },
     ],
     books: [
-      { title: "Python for Data Analysis by Wes McKinney", url: "https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1098104032", access: "paid" },
+      { title: "Python for Data Analysis · McKinney (free, open access)", url: "https://wesmckinney.com/book/" },
       { title: "Fundamentals of Data Engineering by Reis & Housley", url: "https://www.amazon.com/Fundamentals-Data-Engineering-Robust-Systems/dp/1098108302", access: "paid" },
-      { title: "Bad Data Handbook by McCallum", url: "https://www.amazon.com/Bad-Data-Handbook-Cleaning-Back/dp/1449321887", access: "paid" },
     ],
     githubRepos: [
       { title: "apache/airflow · Workflow orchestration (38K+ stars)", url: "https://github.com/apache/airflow" },
@@ -232,7 +231,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "Hands-On ML with Scikit-Learn, Keras & TF by Géron", url: "https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1098125975", access: "paid" },
       { title: "Introduction to Statistical Learning (ISLR) · free PDF", url: "http://statlearning.com" },
-      { title: "Pattern Recognition and Machine Learning by Bishop", url: "https://www.amazon.com/Pattern-Recognition-Learning-Information-Statistics/dp/0387310738", access: "paid" },
+      { title: "Pattern Recognition and ML · Bishop (free PDF, Microsoft Research)", url: "https://www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf" },
     ],
     githubRepos: [
       { title: "scikit-learn · The ML library (60K+ stars)", url: "https://github.com/scikit-learn/scikit-learn" },
@@ -289,8 +288,8 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Hands-On ML Ch. 2-8 by Géron", url: "https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1098125975", access: "paid" },
-      { title: "Feature Engineering for ML by Zheng & Casari", url: "https://www.amazon.com/Feature-Engineering-Machine-Learning-Principles/dp/1491953241", access: "paid" },
-      { title: "Approaching (Almost) Any ML Problem by Abhishek Thakur", url: "https://www.amazon.com/Approaching-Almost-Machine-Learning-Problem/dp/8269211508", access: "paid" },
+      { title: "Kaggle Learn · Feature Engineering (free)", url: "https://www.kaggle.com/learn/feature-engineering" },
+      { title: "Approaching (Almost) Any ML Problem · Thakur (free PDF)", url: "https://github.com/abhishekkrthakur/approachingalmost/blob/master/AAAMLP.pdf" },
     ],
     githubRepos: [
       { title: "ageron/handson-ml3 · Notebooks (28K+ stars)", url: "https://github.com/ageron/handson-ml3" },
@@ -318,7 +317,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Hands-On ML Ch. 2 by Géron · full project walkthrough", url: "https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1098125975", access: "paid" },
-      { title: "Approaching (Almost) Any ML Problem by Abhishek Thakur", url: "https://www.amazon.com/Approaching-Almost-Machine-Learning-Problem/dp/8269211508", access: "paid" },
+      { title: "Approaching (Almost) Any ML Problem · Thakur (free PDF)", url: "https://github.com/abhishekkrthakur/approachingalmost/blob/master/AAAMLP.pdf" },
     ],
     githubRepos: [
       { title: "ageron/handson-ml3 · Follow-along notebooks", url: "https://github.com/ageron/handson-ml3" },
@@ -374,9 +373,10 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Lightning AI · Simplify PyTorch training", url: "https://lightning.ai/" },
     ],
     books: [
-      { title: "Deep Learning with PyTorch · official PyTorch book", url: "https://www.amazon.com/Deep-Learning-PyTorch-Eli-Stevens/dp/1617295264", access: "paid" },
+      { title: "Dive into Deep Learning · d2l.ai (free)", url: "https://d2l.ai/" },
       { title: "Dive into Deep Learning (d2l.ai)", url: "https://d2l.ai" },
-      { title: "Programming PyTorch for Deep Learning by Ian Pointer", url: "https://www.amazon.com/Programming-PyTorch-Deep-Learning-Applications/dp/1492045357", access: "paid" },
+    
+      { title: "Official PyTorch Tutorials (free)", url: "https://docs.pytorch.org/tutorials/" },
     ],
     githubRepos: [
       { title: "pytorch/pytorch · The framework itself (85K+ stars)", url: "https://github.com/pytorch/pytorch" },
@@ -404,7 +404,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Papers With Code · Computer Vision SOTA", url: "https://paperswithcode.com/area/computer-vision" },
     ],
     books: [
-      { title: "Deep Learning for Vision Systems by Mohamed Elgendy", url: "https://www.amazon.com/Deep-Learning-Vision-Systems-Mohamed/dp/1617296198", access: "paid" },
+      { title: "Stanford CS231n · Convolutional Neural Networks (free)", url: "https://cs231n.github.io/" },
       { title: "ResNet paper: Deep Residual Learning (2015)", url: "https://arxiv.org/abs/1512.03385" },
       { title: "Hands-On ML Ch. 14 by Géron · CNNs chapter", url: "https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1098125975", access: "paid" },
     ],
@@ -523,7 +523,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Speech and Language Processing by Jurafsky & Martin · free draft", url: "https://web.stanford.edu/~jurafsky/slp3/" },
-      { title: "Natural Language Processing with Transformers by Tunstall et al.", url: "https://www.amazon.com/Natural-Language-Processing-Transformers-Applications/dp/1098136799", access: "paid" },
+      { title: "Hugging Face LLM Course (free)", url: "https://huggingface.co/learn/llm-course" },
       { title: "Word2Vec paper: Efficient Estimation of Word Representations (2013)", url: "https://arxiv.org/abs/1301.3781" },
     ],
     githubRepos: [
@@ -590,7 +590,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "GPT-3: Language Models are Few-Shot Learners (2020)", url: "https://arxiv.org/abs/2005.14165" },
       { title: "BERT: Pre-training of Deep Bidirectional Transformers (2018)", url: "https://arxiv.org/abs/1810.04805" },
-      { title: "NLP with Transformers · O'Reilly", url: "https://www.amazon.com/Natural-Language-Processing-Transformers-Applications/dp/1098136799", access: "paid" },
+      { title: "Hugging Face LLM Course (free)", url: "https://huggingface.co/learn/llm-course" },
       { title: "Scaling Laws for Neural Language Models · Kaplan et al.", url: "https://arxiv.org/abs/2001.08361" },
     
       { title: "Build a Reasoning Model From Scratch · Raschka (code free)", url: "https://github.com/rasbt/reasoning-from-scratch" },
@@ -627,7 +627,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "LoRA: Low-Rank Adaptation paper (2021)", url: "https://arxiv.org/abs/2106.09685" },
       { title: "Retrieval-Augmented Generation paper · Meta (2020)", url: "https://arxiv.org/abs/2005.11401" },
-      { title: "Building LLM Apps · Hugging Face cookbook", url: "https://huggingface.co/learn/cookbook" },
+      { title: "Hands-On Large Language Models · Alammar & Grootendorst", url: "https://www.amazon.com/Hands-Large-Language-Models-Understanding/dp/1098150961", access: "paid" },
     ],
     githubRepos: [
       { title: "langchain-ai/langchain · LLM framework (100K+ stars)", url: "https://github.com/langchain-ai/langchain" },
@@ -816,7 +816,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     books: [
       { title: "Introduction to ML Interviews by Chip Huyen · free", url: "https://huyenchip.com/ml-interviews-book/" },
-      { title: "Cracking the Coding Interview by Gayle McDowell", url: "https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850", access: "paid" },
+      { title: "Tech Interview Handbook (free)", url: "https://techinterviewhandbook.org/" },
       { title: "Designing ML Systems by Chip Huyen", url: "https://www.amazon.com/Designing-Machine-Learning-Systems-Production-Ready/dp/1098107969", access: "paid" },
     ],
     githubRepos: [
@@ -847,7 +847,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     books: [
       { title: "Weapons of Math Destruction by Cathy O'Neil", url: "https://www.amazon.com/Weapons-Math-Destruction-Increases-Inequality/dp/0553418815", access: "paid" },
       { title: "The Alignment Problem by Brian Christian", url: "https://www.amazon.com/Alignment-Problem-Machine-Learning-Values/dp/0393635821", access: "paid" },
-      { title: "Superintelligence by Nick Bostrom", url: "https://www.amazon.com/Superintelligence-Dangers-Strategies-Nick-Bostrom/dp/0198739834", access: "paid" },
+      { title: "AI Safety, Ethics and Society · CAIS (free book)", url: "https://www.aisafetybook.com/" },
       { title: "EU AI Act documentation · regulatory framework", url: "https://artificialintelligenceact.eu/" },
     ],
     githubRepos: [

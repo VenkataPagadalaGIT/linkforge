@@ -398,7 +398,7 @@ const AIContributors = () => {
                    🗺️ Free AI Roadmap, Zero to Hero · July 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 88% are completely free. Every link was opened and checked in July 2026.
+                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked in July 2026.
                  </p>
               </div>
               <AILearningRoadmap />
