@@ -78,8 +78,18 @@ export type Sitemap = {
 };
 
 // ----- Fetch helpers -----
-export const getContributor = (id: string) =>
-  fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
+// STATIC FIRST, backend second: the opposite precedence from getUpdate, and
+// deliberately so. The contributors dataset is maintained in the TS module
+// (the client explorer and profile view both render from it), while the Mongo
+// copy is a seed that goes stale the moment the file is edited. If the
+// backend won here, a refreshed bio would ship in the page body while the
+// title, description and JSON-LD kept serving the old Mongo text.
+export const getContributor = async (id: string): Promise<Contributor | null> => {
+  const { aiContributors } = await import("@/data/aiContributors");
+  const local = aiContributors.find((c) => c.id === id);
+  if (local) return local as unknown as Contributor;
+  return fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
+};
 
 // Backend first, static module second. The updates index and the client
 // detail view both read the static module directly, so an article that only

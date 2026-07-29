@@ -55,7 +55,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "supervised-learning", concept: "Supervised Learning", emoji: "🧠",
-    description: "Learning from labeled examples — the model sees inputs paired with correct outputs and learns to predict outputs for new inputs. Includes classification and regression.",
+    description: "Learning from labeled examples, the model sees inputs paired with correct outputs and learns to predict outputs for new inputs. Includes classification and regression.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 2,
     keyTerms: ["Labels", "Classification", "Regression", "Training set", "Test set"],
     prerequisites: ["Machine Learning"],
@@ -66,7 +66,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "unsupervised-learning", concept: "Unsupervised Learning", emoji: "🧠",
-    description: "Learning patterns from unlabeled data — the model discovers hidden structure without being told the 'right answer'. Includes clustering, dimensionality reduction, and anomaly detection.",
+    description: "Learning patterns from unlabeled data, the model discovers hidden structure without being told the 'right answer'. Includes clustering, dimensionality reduction, and anomaly detection.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 3,
     keyTerms: ["Clustering", "Dimensionality reduction", "Anomaly detection", "K-Means"],
     prerequisites: ["Machine Learning"],
@@ -83,36 +83,36 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "3Blue1Brown: Neural Networks", url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" },
-      { title: "Neural Networks & Deep Learning — free book", url: "http://neuralnetworksanddeeplearning.com/" },
+      { title: "Neural Networks & Deep Learning · free book", url: "http://neuralnetworksanddeeplearning.com/" },
     ],
     realWorldApps: "Image recognition, speech synthesis, game playing, autonomous vehicles",
   },
   {
     id: "deep-learning", concept: "Deep Learning", emoji: "🧠",
-    description: "A subset of ML using neural networks with many layers (hence 'deep'). Excels at learning hierarchical representations from raw data — each layer learns increasingly abstract features.",
+    description: "A subset of ML using neural networks with many layers (hence 'deep'). Excels at learning hierarchical representations from raw data, each layer learns increasingly abstract features.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 5,
     keyTerms: ["Hidden layers", "Feature hierarchy", "Representation learning", "End-to-end learning"],
     prerequisites: ["Neural Network"],
     learnMore: [
-      { title: "fast.ai — Practical Deep Learning", url: "https://course.fast.ai/" },
+      { title: "fast.ai · Practical Deep Learning", url: "https://course.fast.ai/" },
       { title: "Dive into Deep Learning", url: "https://d2l.ai" },
     ],
     realWorldApps: "Self-driving cars, language translation, drug discovery, artistic generation",
   },
   {
     id: "features-labels", concept: "Features & Labels", emoji: "🧠",
-    description: "Features are the input variables (columns) used to make predictions. Labels are the output variable (what you're trying to predict). Feature engineering — crafting good inputs — is often more important than the model choice.",
+    description: "Features are the input variables (columns) used to make predictions. Labels are the output variable (what you're trying to predict). Feature engineering, crafting good inputs, is often more important than the model choice.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 6,
     keyTerms: ["Feature vector", "Target variable", "Feature engineering", "Feature selection"],
     prerequisites: [],
     learnMore: [
       { title: "Google: Feature Engineering", url: "https://developers.google.com/machine-learning/data-prep/transform/transform-numeric" },
     ],
-    realWorldApps: "Any ML system — choosing the right features determines model quality",
+    realWorldApps: "Any ML system, choosing the right features determines model quality",
   },
   {
     id: "overfitting-underfitting", concept: "Overfitting & Underfitting", emoji: "🧠",
-    description: "Overfitting: the model memorizes training data but fails on new data (too complex). Underfitting: the model is too simple to capture patterns. The goal is the sweet spot — generalizing well to unseen data.",
+    description: "Overfitting: the model memorizes training data but fails on new data (too complex). Underfitting: the model is too simple to capture patterns. The goal is the sweet spot, generalizing well to unseen data.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 7,
     keyTerms: ["Generalization", "Training error", "Validation error", "Model complexity"],
     prerequisites: ["Machine Learning"],
@@ -122,7 +122,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "bias-variance", concept: "Bias-Variance Tradeoff", emoji: "🧠",
-    description: "Bias: error from overly simplistic assumptions (underfitting). Variance: error from sensitivity to training data fluctuations (overfitting). The tradeoff is fundamental — reducing one often increases the other.",
+    description: "Bias: error from overly simplistic assumptions (underfitting). Variance: error from sensitivity to training data fluctuations (overfitting). The tradeoff is fundamental, reducing one often increases the other.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 8,
     keyTerms: ["Bias", "Variance", "Tradeoff", "Model complexity", "Generalization"],
     prerequisites: ["Overfitting & Underfitting"],
@@ -143,12 +143,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "transfer-learning", concept: "Transfer Learning", emoji: "🧠",
-    description: "Using a model trained on one task as the starting point for a different task. Instead of training from scratch, you fine-tune a pretrained model — dramatically reducing data and compute requirements.",
+    description: "Using a model trained on one task as the starting point for a different task. Instead of training from scratch, you fine-tune a pretrained model, dramatically reducing data and compute requirements.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 10,
     keyTerms: ["Pre-training", "Fine-tuning", "Domain adaptation", "Feature extraction"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Transfer Learning — CS231n", url: "https://cs231n.github.io/transfer-learning/" },
+      { title: "Transfer Learning · CS231n", url: "https://cs231n.github.io/transfer-learning/" },
     ],
     realWorldApps: "Medical imaging with limited data, NLP with pretrained LLMs, custom image classifiers",
   },
@@ -174,7 +174,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "few-shot-zero-shot", concept: "Few-Shot & Zero-Shot Learning", emoji: "🧠",
-    description: "Few-shot: learning from just a handful of examples. Zero-shot: performing tasks with no examples, using only a description. LLMs excel at both — GPT-3 showed that scale enables few-shot learning.",
+    description: "Few-shot: learning from just a handful of examples. Zero-shot: performing tasks with no examples, using only a description. LLMs excel at both, GPT-3 showed that scale enables few-shot learning.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 13,
     keyTerms: ["In-context learning", "Prompt engineering", "Meta-learning", "Generalization"],
     prerequisites: ["Transfer Learning"],
@@ -185,7 +185,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "linear-regression", concept: "Linear Regression", emoji: "🧠",
-    description: "The simplest ML model — fits a straight line (or hyperplane) through data points to predict a continuous value. Despite its simplicity, it's the starting point for understanding all regression models.",
+    description: "The simplest ML model, fits a straight line (or hyperplane) through data points to predict a continuous value. Despite its simplicity, it's the starting point for understanding all regression models.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 14,
     keyTerms: ["Slope", "Intercept", "Least squares", "R-squared", "Coefficients"],
     prerequisites: [],
@@ -195,19 +195,19 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "semi-supervised", concept: "Semi-Supervised Learning", emoji: "🧠",
-    description: "A hybrid approach using a small amount of labeled data with a large amount of unlabeled data. Leverages the structure in unlabeled data to improve learning — practical when labeling is expensive.",
+    description: "A hybrid approach using a small amount of labeled data with a large amount of unlabeled data. Leverages the structure in unlabeled data to improve learning, practical when labeling is expensive.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 15,
     keyTerms: ["Pseudo-labels", "Self-training", "Consistency regularization"],
     prerequisites: ["Supervised Learning", "Unsupervised Learning"],
     learnMore: [
-      { title: "Semi-Supervised Learning — Google", url: "https://ai.google/research/pubs/pub41473" },
+      { title: "Semi-Supervised Learning · Google", url: "https://scikit-learn.org/stable/modules/semi_supervised.html" },
     ],
   },
 
   // === Math & Optimization (16–25) ===
   {
     id: "gradient-descent", concept: "Gradient Descent", emoji: "📐",
-    description: "The fundamental optimization algorithm for training neural networks. It iteratively adjusts model parameters in the direction that reduces the loss function — like walking downhill to find the valley.",
+    description: "The fundamental optimization algorithm for training neural networks. It iteratively adjusts model parameters in the direction that reduces the loss function, like walking downhill to find the valley.",
     category: "Math & Optimization", difficulty: "beginner", rank: 16,
     keyTerms: ["Learning rate", "Stochastic gradient descent (SGD)", "Minibatch", "Convergence"],
     prerequisites: [],
@@ -238,7 +238,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "activation-functions", concept: "Activation Functions", emoji: "📐",
-    description: "Non-linear functions applied to neuron outputs — they give neural networks the ability to learn complex patterns. ReLU, Sigmoid, Tanh, GELU, and Swish are the most common.",
+    description: "Non-linear functions applied to neuron outputs, they give neural networks the ability to learn complex patterns. ReLU, Sigmoid, Tanh, GELU, and Swish are the most common.",
     category: "Math & Optimization", difficulty: "beginner", rank: 19,
     keyTerms: ["ReLU", "Sigmoid", "Tanh", "GELU", "Vanishing gradient"],
     prerequisites: ["Neural Network"],
@@ -259,7 +259,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "dimensionality-reduction", concept: "Dimensionality Reduction", emoji: "📐",
-    description: "Reducing the number of features while preserving important information. PCA, t-SNE, and UMAP are the main techniques — essential for visualization and fighting the curse of dimensionality.",
+    description: "Reducing the number of features while preserving important information. PCA, t-SNE, and UMAP are the main techniques, essential for visualization and fighting the curse of dimensionality.",
     category: "Math & Optimization", difficulty: "intermediate", rank: 21,
     keyTerms: ["PCA", "t-SNE", "UMAP", "Curse of dimensionality", "Feature compression"],
     prerequisites: ["Unsupervised Learning"],
@@ -269,7 +269,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "feature-engineering", concept: "Feature Engineering", emoji: "📐",
-    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice — 'garbage in, garbage out' applies doubly to ML.",
+    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice, 'garbage in, garbage out' applies doubly to ML.",
     category: "Math & Optimization", difficulty: "intermediate", rank: 22,
     keyTerms: ["Feature scaling", "One-hot encoding", "Feature crosses", "Polynomial features"],
     prerequisites: ["Features & Labels"],
@@ -279,7 +279,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "k-means", concept: "K-Means Clustering", emoji: "📐",
-    description: "The simplest clustering algorithm — assigns data points to K groups by iteratively moving cluster centers to minimize within-cluster distances. Fast, intuitive, but requires choosing K upfront.",
+    description: "The simplest clustering algorithm, assigns data points to K groups by iteratively moving cluster centers to minimize within-cluster distances. Fast, intuitive, but requires choosing K upfront.",
     category: "Math & Optimization", difficulty: "beginner", rank: 23,
     keyTerms: ["Centroids", "Elbow method", "Inertia", "K selection"],
     prerequisites: ["Unsupervised Learning"],
@@ -318,7 +318,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Self-attention", "Multi-head attention", "Positional encoding", "Encoder-decoder"],
     prerequisites: ["Neural Network", "Attention Mechanism"],
     learnMore: [
-      { title: "The Illustrated Transformer — Jay Alammar", url: "https://jalammar.github.io/illustrated-transformer/" },
+      { title: "The Illustrated Transformer · Jay Alammar", url: "https://jalammar.github.io/illustrated-transformer/" },
       { title: "Attention Is All You Need (paper)", url: "https://arxiv.org/abs/1706.03762" },
     ],
   },
@@ -334,7 +334,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "self-attention", concept: "Self-Attention", emoji: "🏗️",
-    description: "A special case of attention where a sequence attends to itself — each token computes relationships with every other token. This is the core mechanism powering Transformers.",
+    description: "A special case of attention where a sequence attends to itself, each token computes relationships with every other token. This is the core mechanism powering Transformers.",
     category: "Architectures", difficulty: "intermediate", rank: 28,
     keyTerms: ["QKV matrices", "Attention score", "Multi-head", "Causal masking"],
     prerequisites: ["Attention Mechanism"],
@@ -344,18 +344,18 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "cnn", concept: "Convolutional Neural Network (CNN)", emoji: "🏗️",
-    description: "Architecture designed for grid-like data (images). Uses learned filters (kernels) to detect features at different scales — edges → textures → objects. Revolutionized computer vision.",
+    description: "Architecture designed for grid-like data (images). Uses learned filters (kernels) to detect features at different scales, edges → textures → objects. Revolutionized computer vision.",
     category: "Architectures", difficulty: "intermediate", rank: 29,
     keyTerms: ["Convolution", "Kernel", "Pooling", "Feature map", "Stride"],
     prerequisites: ["Neural Network"],
     learnMore: [
-      { title: "CNN Explainer — Interactive Visualization", url: "https://poloclub.github.io/cnn-explainer/" },
+      { title: "CNN Explainer · Interactive Visualization", url: "https://poloclub.github.io/cnn-explainer/" },
       { title: "Stanford CS231n", url: "https://cs231n.github.io/" },
     ],
   },
   {
     id: "rnn", concept: "Recurrent Neural Network (RNN)", emoji: "🏗️",
-    description: "Architecture for sequential data that maintains a hidden state across time steps. Suffers from vanishing gradients for long sequences — largely replaced by Transformers but still relevant for understanding.",
+    description: "Architecture for sequential data that maintains a hidden state across time steps. Suffers from vanishing gradients for long sequences, largely replaced by Transformers but still relevant for understanding.",
     category: "Architectures", difficulty: "intermediate", rank: 30,
     keyTerms: ["Hidden state", "Vanishing gradient", "Sequence-to-sequence", "Time steps"],
     prerequisites: ["Neural Network"],
@@ -375,7 +375,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "gpt", concept: "GPT (Generative Pre-trained Transformer)", emoji: "🏗️",
-    description: "A decoder-only Transformer trained to predict the next token. GPT-1 → GPT-2 → GPT-3 → GPT-4 showed that scaling this simple idea produces increasingly capable AI. The architecture behind ChatGPT.",
+    description: "A decoder-only Transformer trained to predict the next token. Each GPT generation, from GPT-1 through GPT-5 and beyond, showed that scaling this simple idea produces increasingly capable AI. The architecture behind ChatGPT.",
     category: "Architectures", difficulty: "intermediate", rank: 32,
     keyTerms: ["Autoregressive", "Next-token prediction", "Decoder-only", "Scaling laws"],
     prerequisites: ["Transformer Architecture"],
@@ -397,7 +397,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ssm-mamba", concept: "State Space Models (Mamba)", emoji: "🏗️",
-    description: "An alternative to Transformers that processes sequences with linear-time complexity instead of quadratic attention. Mamba and S4 are leading SSM architectures, offering advantages for very long sequences.",
+    description: "An alternative to Transformers that processes sequences with linear-time complexity instead of quadratic attention. Mamba and S4 are the foundational SSM architectures, and hybrid attention-SSM designs now appear in production models, offering advantages for very long sequences.",
     category: "Architectures", difficulty: "advanced", rank: 34,
     keyTerms: ["Linear complexity", "Selective SSM", "S4", "Long-range dependencies"],
     prerequisites: ["Transformer Architecture"],
@@ -412,17 +412,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Patch embedding", "Position embedding", "CLS token", "Image patches"],
     prerequisites: ["Transformer Architecture", "CNN"],
     learnMore: [
-      { title: "ViT Paper — An Image is Worth 16x16 Words", url: "https://arxiv.org/abs/2010.11929" },
+      { title: "ViT Paper · An Image is Worth 16x16 Words", url: "https://arxiv.org/abs/2010.11929" },
     ],
   },
   {
     id: "multimodal-models", concept: "Multimodal Models", emoji: "🏗️",
-    description: "AI models that process multiple types of data — text, images, audio, video — simultaneously. GPT-4V, Gemini, and Claude 3 are multimodal. The future of AI is not text-only.",
+    description: "AI models that process multiple types of data, text, images, audio, video, simultaneously. Today's frontier models from OpenAI, Google, and Anthropic are all natively multimodal; text-only models are the exception, not the rule.",
     category: "Architectures", difficulty: "advanced", rank: 36,
     keyTerms: ["Cross-modal attention", "Vision-language", "Contrastive learning", "CLIP"],
     prerequisites: ["Transformer Architecture"],
     learnMore: [
-      { title: "CLIP Paper — OpenAI", url: "https://arxiv.org/abs/2103.00020" },
+      { title: "CLIP Paper · OpenAI", url: "https://arxiv.org/abs/2103.00020" },
     ],
     realWorldApps: "Image captioning, visual Q&A, document understanding, video analysis",
   },
@@ -433,7 +433,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Teacher model", "Student model", "Soft labels", "Temperature scaling"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Distilling the Knowledge in a Neural Network — Hinton", url: "https://arxiv.org/abs/1503.02531" },
+      { title: "Distilling the Knowledge in a Neural Network · Hinton", url: "https://arxiv.org/abs/1503.02531" },
     ],
   },
   {
@@ -449,17 +449,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "nas", concept: "Neural Architecture Search (NAS)", emoji: "🏗️",
-    description: "Using AI to design AI architectures. Instead of hand-designing networks, NAS automatically searches for optimal architectures — the meta approach to building neural networks.",
+    description: "Using AI to design AI architectures. Instead of hand-designing networks, NAS automatically searches for optimal architectures, the meta approach to building neural networks.",
     category: "Architectures", difficulty: "advanced", rank: 39,
     keyTerms: ["Search space", "Controller", "Reinforcement learning NAS", "EfficientNet"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Neural Architecture Search — Google AI Blog", url: "https://ai.googleblog.com/2017/05/using-machine-learning-to-explore.html" },
+      { title: "Neural Architecture Search · Google AI Blog", url: "https://ai.googleblog.com/2017/05/using-machine-learning-to-explore.html" },
     ],
   },
   {
     id: "neuro-symbolic", concept: "Neuro-Symbolic AI", emoji: "🏗️",
-    description: "Combining neural networks (learning from data) with symbolic AI (logical reasoning). Aims to get the best of both worlds — learning ability plus interpretable, compositional reasoning.",
+    description: "Combining neural networks (learning from data) with symbolic AI (logical reasoning). Aims to get the best of both worlds, learning ability plus interpretable, compositional reasoning.",
     category: "Architectures", difficulty: "advanced", rank: 40,
     keyTerms: ["Symbolic reasoning", "Knowledge graphs", "Logical rules", "Hybrid systems"],
     prerequisites: ["Neural Network"],
@@ -476,18 +476,18 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Tokenization", "Parsing", "NER", "Sentiment analysis", "Machine translation"],
     prerequisites: ["Machine Learning"],
     learnMore: [
-      { title: "Hugging Face NLP Course (Free)", url: "https://huggingface.co/learn/nlp-course" },
+      { title: "Hugging Face NLP Course (Free)", url: "https://huggingface.co/learn/llm-course" },
       { title: "Stanford CS224n", url: "https://web.stanford.edu/class/cs224n/" },
     ],
   },
   {
     id: "tokenization", concept: "Tokenization", emoji: "🗣️",
-    description: "Breaking text into smaller units (tokens) for processing. Modern tokenizers use subword methods (BPE, SentencePiece) — 'unhappiness' → ['un', 'happiness']. Token count determines cost and context window usage.",
+    description: "Breaking text into smaller units (tokens) for processing. Modern tokenizers use subword methods (BPE, SentencePiece), 'unhappiness' → ['un', 'happiness']. Token count determines cost and context window usage.",
     category: "NLP & Language", difficulty: "beginner", rank: 42,
     keyTerms: ["BPE", "SentencePiece", "WordPiece", "Token", "Vocabulary"],
     prerequisites: ["NLP"],
     learnMore: [
-      { title: "Hugging Face: Tokenizers", url: "https://huggingface.co/learn/nlp-course/chapter6/1" },
+      { title: "Hugging Face: Tokenizers", url: "https://huggingface.co/learn/llm-course/chapter6/1" },
     ],
   },
   {
@@ -502,7 +502,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "prompt-engineering", concept: "Prompt Engineering", emoji: "🗣️",
-    description: "The art and science of crafting inputs to LLMs to get optimal outputs. Techniques include zero-shot, few-shot, chain-of-thought, ReAct, and system prompts. The most practical AI skill of 2025–2026.",
+    description: "The art and science of crafting inputs to LLMs to get optimal outputs. Techniques include zero-shot, few-shot, chain-of-thought, ReAct, and system prompts. One of the most practical everyday AI skills.",
     category: "NLP & Language", difficulty: "beginner", rank: 44,
     keyTerms: ["Zero-shot", "Few-shot", "Chain-of-thought", "System prompt", "Temperature"],
     prerequisites: [],
@@ -510,17 +510,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
       { title: "Anthropic Prompt Engineering Guide", url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" },
       { title: "OpenAI Prompt Engineering Guide", url: "https://platform.openai.com/docs/guides/prompt-engineering" },
     ],
-    realWorldApps: "Every interaction with ChatGPT, Claude, Gemini — it's the universal AI interface",
+    realWorldApps: "Every interaction with ChatGPT, Claude, Gemini, it's the universal AI interface",
   },
   {
     id: "rag", concept: "Retrieval-Augmented Generation (RAG)", emoji: "🗣️",
-    description: "Combining LLMs with external knowledge retrieval. Instead of relying solely on training data, RAG retrieves relevant documents and passes them to the LLM — reducing hallucinations and adding current information.",
+    description: "Combining LLMs with external knowledge retrieval. Instead of relying solely on training data, RAG retrieves relevant documents and passes them to the LLM, reducing hallucinations and adding current information.",
     category: "NLP & Language", difficulty: "intermediate", rank: 45,
     keyTerms: ["Retriever", "Generator", "Vector search", "Chunking", "Context window"],
     prerequisites: ["Embeddings", "Transformer Architecture"],
     learnMore: [
-      { title: "RAG Paper — Meta", url: "https://arxiv.org/abs/2005.11401" },
-      { title: "LangChain RAG Tutorial", url: "https://python.langchain.com/docs/tutorials/rag/" },
+      { title: "RAG Paper · Meta", url: "https://arxiv.org/abs/2005.11401" },
+      { title: "LangChain RAG Tutorial", url: "https://docs.langchain.com/oss/python/deepagents/rag" },
     ],
     realWorldApps: "Enterprise chatbots, document Q&A, customer support, legal research",
   },
@@ -542,12 +542,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Step-by-step reasoning", "Scratchpad", "Tree-of-thought", "Self-consistency"],
     prerequisites: ["Prompt Engineering"],
     learnMore: [
-      { title: "Chain-of-Thought Paper — Google (2022)", url: "https://arxiv.org/abs/2201.11903" },
+      { title: "Chain-of-Thought Paper · Google (2022)", url: "https://arxiv.org/abs/2201.11903" },
     ],
   },
   {
     id: "vector-databases", concept: "Vector Databases", emoji: "🗣️",
-    description: "Specialized databases optimized for storing and searching high-dimensional vectors (embeddings). Enable fast similarity search — the backbone of RAG, recommendation systems, and semantic search.",
+    description: "Specialized databases optimized for storing and searching high-dimensional vectors (embeddings). Enable fast similarity search, the backbone of RAG, recommendation systems, and semantic search.",
     category: "NLP & Language", difficulty: "intermediate", rank: 48,
     keyTerms: ["HNSW", "ANN search", "Cosine similarity", "Pinecone", "ChromaDB", "Weaviate"],
     prerequisites: ["Embeddings"],
@@ -563,7 +563,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Chinchilla", "Compute-optimal", "Emergent abilities", "Power law"],
     prerequisites: ["GPT"],
     learnMore: [
-      { title: "Chinchilla Paper — DeepMind", url: "https://arxiv.org/abs/2203.15556" },
+      { title: "Chinchilla Paper · DeepMind", url: "https://arxiv.org/abs/2203.15556" },
     ],
   },
   {
@@ -573,23 +573,23 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Reward model", "PPO", "Preference data", "Constitutional AI", "DPO"],
     prerequisites: ["Fine-Tuning LLMs", "Reinforcement Learning"],
     learnMore: [
-      { title: "InstructGPT Paper — OpenAI", url: "https://arxiv.org/abs/2203.02155" },
+      { title: "InstructGPT Paper · OpenAI", url: "https://arxiv.org/abs/2203.02155" },
       { title: "Hugging Face TRL", url: "https://huggingface.co/docs/trl" },
     ],
   },
   {
     id: "context-window", concept: "Context Window & Long Context", emoji: "🗣️",
-    description: "The maximum number of tokens an LLM can process at once. GPT-4 Turbo: 128K tokens. Claude 3: 200K tokens. Gemini 1.5: 1M+ tokens. Longer context enables processing entire codebases and books.",
+    description: "The maximum number of tokens an LLM can process at once. Frontier models now ship windows from 200K to over 1M tokens, with some advertising 10M. Longer context enables processing entire codebases and books, though effective recall often degrades well before the advertised limit. Longer context enables processing entire codebases and books.",
     category: "NLP & Language", difficulty: "intermediate", rank: 51,
     keyTerms: ["Token limit", "Context length", "Needle-in-a-haystack", "KV cache"],
     prerequisites: ["Tokenization", "Transformer Architecture"],
     learnMore: [
-      { title: "Anthropic: Long Context", url: "https://www.anthropic.com/research/many-shot-jailbreaking" },
+      { title: "Anthropic: Long Context", url: "https://platform.claude.com/docs/en/build-with-claude/context-windows" },
     ],
   },
   {
     id: "text-generation", concept: "Text Generation & Sampling", emoji: "🗣️",
-    description: "How LLMs produce text — sampling from probability distributions over tokens. Temperature controls randomness. Top-k and top-p (nucleus) sampling balance creativity and coherence.",
+    description: "How LLMs produce text, sampling from probability distributions over tokens. Temperature controls randomness. Top-k and top-p (nucleus) sampling balance creativity and coherence.",
     category: "NLP & Language", difficulty: "intermediate", rank: 52,
     keyTerms: ["Temperature", "Top-k", "Top-p (nucleus)", "Beam search", "Greedy decoding"],
     prerequisites: ["GPT"],
@@ -599,7 +599,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "sentiment-analysis", concept: "Sentiment Analysis", emoji: "🗣️",
-    description: "Determining the emotional tone of text — positive, negative, or neutral. One of the most common NLP applications. Modern approaches use fine-tuned BERT or zero-shot LLMs.",
+    description: "Determining the emotional tone of text, positive, negative, or neutral. One of the most common NLP applications. Modern approaches use fine-tuned BERT or zero-shot LLMs.",
     category: "NLP & Language", difficulty: "beginner", rank: 53,
     keyTerms: ["Polarity", "Aspect-based", "Opinion mining", "Valence"],
     prerequisites: ["NLP"],
@@ -620,7 +620,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "named-entity", concept: "Named Entity Recognition (NER)", emoji: "🗣️",
-    description: "Identifying and classifying named entities in text — persons, organizations, locations, dates, etc. A fundamental NLP task used in information extraction, search, and knowledge graphs.",
+    description: "Identifying and classifying named entities in text, persons, organizations, locations, dates, etc. A fundamental NLP task used in information extraction, search, and knowledge graphs.",
     category: "NLP & Language", difficulty: "intermediate", rank: 55,
     keyTerms: ["Entity types", "BIO tagging", "SpaCy", "Token classification"],
     prerequisites: ["NLP"],
@@ -633,7 +633,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Computer Vision (56–65) ===
   {
     id: "image-classification", concept: "Image Classification", emoji: "👁️",
-    description: "Assigning a label to an entire image. The task that started the deep learning revolution — AlexNet won ImageNet 2012 by a huge margin, proving deep learning works.",
+    description: "Assigning a label to an entire image. The task that started the deep learning revolution, AlexNet won ImageNet 2012 by a huge margin, proving deep learning works.",
     category: "Computer Vision", difficulty: "beginner", rank: 56,
     keyTerms: ["ImageNet", "Top-5 accuracy", "Softmax", "ResNet", "EfficientNet"],
     prerequisites: ["CNN"],
@@ -654,7 +654,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "semantic-segmentation", concept: "Semantic Segmentation", emoji: "👁️",
-    description: "Classifying every pixel in an image — assigning each pixel to a category. More granular than object detection. Used in autonomous driving, medical imaging, and satellite imagery.",
+    description: "Classifying every pixel in an image, assigning each pixel to a category. More granular than object detection. Used in autonomous driving, medical imaging, and satellite imagery.",
     category: "Computer Vision", difficulty: "intermediate", rank: 58,
     keyTerms: ["Pixel-wise classification", "U-Net", "Mask", "Instance segmentation"],
     prerequisites: ["CNN"],
@@ -664,9 +664,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "yolo", concept: "YOLO (You Only Look Once)", emoji: "👁️",
-    description: "A real-time object detection system that processes the entire image in a single forward pass. YOLOv8 is the latest version — incredibly fast and accurate, making it the go-to for practical deployment.",
+    description: "A real-time object detection system that processes the entire image in a single forward pass. The family is updated almost yearly (YOLOv8, YOLO11, YOLO26 and beyond), each generation faster and more accurate, keeping it the go-to for practical deployment.",
     category: "Computer Vision", difficulty: "intermediate", rank: 59,
-    keyTerms: ["Real-time detection", "Grid cells", "Confidence score", "YOLOv8"],
+    keyTerms: ["Real-time detection", "Grid cells", "Confidence score", "NMS-free inference"],
     prerequisites: ["Object Detection"],
     learnMore: [
       { title: "Ultralytics YOLOv8", url: "https://github.com/ultralytics/ultralytics" },
@@ -674,7 +674,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "image-generation", concept: "Image Generation", emoji: "👁️",
-    description: "Creating new images from text descriptions or other inputs. Stable Diffusion, DALL-E, and Midjourney can generate photorealistic images from text prompts.",
+    description: "Creating new images from text descriptions or other inputs. Stable Diffusion, Midjourney, FLUX, and the image models built into ChatGPT and Gemini can generate photorealistic images from text prompts.",
     category: "Computer Vision", difficulty: "intermediate", rank: 60,
     keyTerms: ["Text-to-image", "Diffusion", "CLIP guidance", "Inpainting"],
     prerequisites: ["Deep Learning"],
@@ -684,7 +684,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "neural-style-transfer", concept: "Neural Style Transfer", emoji: "👁️",
-    description: "Applying the artistic style of one image to the content of another — e.g., making your photo look like a Van Gogh painting. Uses CNN feature representations to separate content from style.",
+    description: "Applying the artistic style of one image to the content of another, e.g., making your photo look like a Van Gogh painting. Uses CNN feature representations to separate content from style.",
     category: "Computer Vision", difficulty: "intermediate", rank: 61,
     keyTerms: ["Content loss", "Style loss", "Gram matrix", "Feature extraction"],
     prerequisites: ["CNN"],
@@ -714,8 +714,8 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     realWorldApps: "Stock prediction, weather forecasting, demand planning, energy grid",
   },
   {
-    id: "data", concept: "Data — The Fuel of AI", emoji: "👁️",
-    description: "AI is only as good as its data. Understanding data quality, bias, preprocessing, augmentation, and the data lifecycle is fundamental. 'More data beats better algorithms' — but only if the data is good.",
+    id: "data", concept: "Data · The Fuel of AI", emoji: "👁️",
+    description: "AI is only as good as its data. Understanding data quality, bias, preprocessing, augmentation, and the data lifecycle is fundamental. 'More data beats better algorithms', but only if the data is good.",
     category: "Computer Vision", difficulty: "beginner", rank: 64,
     keyTerms: ["Data quality", "Data augmentation", "Data pipeline", "Label noise", "Data drift"],
     prerequisites: [],
@@ -728,7 +728,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Artificially generated data that mimics real-world data. Used when real data is scarce, expensive, or privacy-sensitive. GANs and diffusion models can create realistic synthetic training data.",
     category: "Computer Vision", difficulty: "intermediate", rank: 65,
     keyTerms: ["Data augmentation", "Privacy-preserving", "Distribution matching"],
-    prerequisites: ["Data — The Fuel of AI"],
+    prerequisites: ["Data, The Fuel of AI"],
     learnMore: [
       { title: "NVIDIA: Synthetic Data", url: "https://developer.nvidia.com/blog/synthetic-data/" },
     ],
@@ -737,7 +737,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Generative AI (66–75) ===
   {
     id: "diffusion-models", concept: "Diffusion Models", emoji: "🎨",
-    description: "The architecture behind Stable Diffusion and DALL-E 3. Works by learning to reverse a noise-adding process — start from pure noise, gradually denoise to create an image. Replaced GANs as the dominant generative approach.",
+    description: "The architecture behind Stable Diffusion and DALL-E 3. Works by learning to reverse a noise-adding process, start from pure noise, gradually denoise to create an image. Replaced GANs as the dominant generative approach.",
     category: "Generative AI", difficulty: "advanced", rank: 66,
     keyTerms: ["DDPM", "Noise schedule", "Denoising", "U-Net backbone", "Classifier-free guidance"],
     prerequisites: ["Deep Learning"],
@@ -753,7 +753,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Generator", "Discriminator", "Adversarial training", "Mode collapse"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Original GAN Paper — Goodfellow", url: "https://arxiv.org/abs/1406.2661" },
+      { title: "Original GAN Paper · Goodfellow", url: "https://arxiv.org/abs/1406.2661" },
     ],
   },
   {
@@ -763,12 +763,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Latent space", "KL divergence", "Encoder", "Decoder", "Reparameterization"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "Understanding VAEs — Towards Data Science", url: "https://towardsdatascience.com/understanding-variational-autoencoders-vaes-f70510919f73" },
+      { title: "Understanding VAEs · Towards Data Science", url: "https://lilianweng.github.io/posts/2018-08-12-vae/" },
     ],
   },
   {
     id: "stable-diffusion", concept: "Stable Diffusion & Text-to-Image", emoji: "🎨",
-    description: "The open-source text-to-image model that democratized AI art. Works in a compressed latent space (not pixel space) for efficiency. SDXL and SD3 produce photorealistic images from text prompts.",
+    description: "The open-source text-to-image model that democratized AI art. Works in a compressed latent space (not pixel space) for efficiency. SDXL and SD 3.5 produce photorealistic images from text prompts, and open-weight successors such as FLUX build on the same latent-diffusion recipe.",
     category: "Generative AI", difficulty: "intermediate", rank: 69,
     keyTerms: ["Latent diffusion", "CLIP text encoder", "U-Net", "ControlNet", "LoRA"],
     prerequisites: ["Diffusion Models"],
@@ -780,7 +780,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "text-to-video", concept: "Text-to-Video Generation", emoji: "🎨",
-    description: "Generating video from text descriptions. Sora (OpenAI), Runway Gen-3, and Kling represent the frontier. Extends diffusion models with temporal consistency — the next frontier of generative AI.",
+    description: "Generating video from text descriptions. Google's Veo, Runway's Gen models, Kling, and OpenAI's Sora pushed the field from short silent clips to video with native synchronized audio; the leaderboard changes every few months. Extends diffusion models with temporal consistency, the next frontier of generative AI.",
     category: "Generative AI", difficulty: "advanced", rank: 70,
     keyTerms: ["Temporal consistency", "Video diffusion", "Frame interpolation", "Sora"],
     prerequisites: ["Diffusion Models"],
@@ -801,7 +801,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "music-generation", concept: "AI Music Generation", emoji: "🎨",
-    description: "Creating original music using AI — from background scores to full songs with vocals. Suno and Udio generate music from text prompts. Raises questions about creativity and copyright.",
+    description: "Creating original music using AI, from background scores to full songs with vocals. Suno and Udio generate music from text prompts. Raises questions about creativity and copyright.",
     category: "Generative AI", difficulty: "intermediate", rank: 72,
     keyTerms: ["Audio tokens", "Music transformer", "MIDI generation", "Audio diffusion"],
     prerequisites: ["Deep Learning"],
@@ -811,7 +811,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "code-generation", concept: "AI Code Generation", emoji: "🎨",
-    description: "LLMs trained on code that can write, debug, and explain programs. GitHub Copilot, Claude, and GPT-4 can generate working code from natural language descriptions. Transforming software development.",
+    description: "LLMs trained on code that can write, debug, and explain programs. GitHub Copilot, Claude, and other frontier models can generate working code from natural language descriptions, and coding agents can now carry out whole tasks. Transforming software development.",
     category: "Generative AI", difficulty: "intermediate", rank: 73,
     keyTerms: ["Code completion", "Copilot", "CodeLlama", "Code review", "Agentic coding"],
     prerequisites: ["GPT"],
@@ -822,7 +822,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "3d-generation", concept: "3D Generation & NeRFs", emoji: "🎨",
-    description: "Creating 3D objects and scenes from text or 2D images. Neural Radiance Fields (NeRFs) reconstruct 3D scenes from photos. Gaussian Splatting is the latest breakthrough for real-time 3D rendering.",
+    description: "Creating 3D objects and scenes from text or 2D images. Neural Radiance Fields (NeRFs) reconstruct 3D scenes from photos. Gaussian Splatting (2023) was a breakthrough for real-time 3D rendering and is now the standard approach.",
     category: "Generative AI", difficulty: "advanced", rank: 74,
     keyTerms: ["NeRF", "Gaussian splatting", "3D reconstruction", "Point clouds"],
     prerequisites: ["Deep Learning"],
@@ -832,7 +832,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "image-editing", concept: "AI Image Editing & Inpainting", emoji: "🎨",
-    description: "Using AI to edit specific parts of an image — removing objects, changing backgrounds, adding elements. Inpainting fills in missing or masked regions. Powered by diffusion models.",
+    description: "Using AI to edit specific parts of an image, removing objects, changing backgrounds, adding elements. Inpainting fills in missing or masked regions. Powered by diffusion models.",
     category: "Generative AI", difficulty: "intermediate", rank: 75,
     keyTerms: ["Inpainting", "Outpainting", "Mask", "ControlNet", "Image-to-image"],
     prerequisites: ["Diffusion Models"],
@@ -844,23 +844,23 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Reinforcement Learning (76–85) ===
   {
     id: "reinforcement-learning", concept: "Reinforcement Learning (RL)", emoji: "🎮",
-    description: "Learning through trial and error — an agent takes actions in an environment, receives rewards/penalties, and learns a policy to maximize cumulative reward. Behind AlphaGo and game-playing AI.",
+    description: "Learning through trial and error, an agent takes actions in an environment, receives rewards/penalties, and learns a policy to maximize cumulative reward. Behind AlphaGo and game-playing AI.",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 76,
     keyTerms: ["Agent", "Environment", "Reward", "Policy", "Episode"],
     prerequisites: ["Machine Learning"],
     learnMore: [
-      { title: "Spinning Up in Deep RL — OpenAI", url: "https://spinningup.openai.com/" },
+      { title: "Spinning Up in Deep RL · OpenAI", url: "https://spinningup.openai.com/" },
       { title: "David Silver's RL Course", url: "https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ" },
     ],
   },
   {
     id: "q-learning", concept: "Q-Learning & Deep Q-Networks (DQN)", emoji: "🎮",
-    description: "Q-Learning estimates the value of actions in each state. Deep Q-Networks (DQN) use neural networks to approximate Q-values — DeepMind's DQN played Atari games at superhuman level (2013).",
+    description: "Q-Learning estimates the value of actions in each state. Deep Q-Networks (DQN) use neural networks to approximate Q-values, DeepMind's DQN played Atari games at superhuman level (2013).",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 77,
     keyTerms: ["Q-value", "Bellman equation", "Experience replay", "Target network"],
     prerequisites: ["Reinforcement Learning"],
     learnMore: [
-      { title: "DQN Paper — DeepMind", url: "https://arxiv.org/abs/1312.5602" },
+      { title: "DQN Paper · DeepMind", url: "https://arxiv.org/abs/1312.5602" },
     ],
   },
   {
@@ -875,12 +875,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ppo", concept: "PPO (Proximal Policy Optimization)", emoji: "🎮",
-    description: "The most widely used RL algorithm — simpler and more stable than predecessors. Used in RLHF to fine-tune ChatGPT, in robotics, and in game AI. Balances exploration with stable training.",
+    description: "The most widely used RL algorithm, simpler and more stable than predecessors. Used in RLHF to fine-tune ChatGPT, in robotics, and in game AI. Balances exploration with stable training.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 79,
     keyTerms: ["Clipping", "Trust region", "Surrogate objective", "KL penalty"],
     prerequisites: ["Policy Gradient"],
     learnMore: [
-      { title: "PPO Paper — OpenAI", url: "https://arxiv.org/abs/1707.06347" },
+      { title: "PPO Paper · OpenAI", url: "https://arxiv.org/abs/1707.06347" },
     ],
   },
   {
@@ -905,17 +905,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "multi-agent-rl", concept: "Multi-Agent Reinforcement Learning", emoji: "🎮",
-    description: "Multiple agents learning simultaneously in a shared environment — they can cooperate, compete, or both. Adds complexity: each agent's optimal strategy depends on what others do.",
+    description: "Multiple agents learning simultaneously in a shared environment, they can cooperate, compete, or both. Adds complexity: each agent's optimal strategy depends on what others do.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 82,
     keyTerms: ["Nash equilibrium", "Cooperative", "Competitive", "Self-play"],
     prerequisites: ["Reinforcement Learning"],
     learnMore: [
-      { title: "OpenAI Five — Dota 2", url: "https://openai.com/research/openai-five" },
+      { title: "OpenAI Five · Dota 2", url: "https://openai.com/research/openai-five" },
     ],
   },
   {
     id: "world-models", concept: "World Models", emoji: "🎮",
-    description: "AI that builds internal models of how the world works — predicting what happens next without actually experiencing it. LeCun's vision for the next paradigm: learning through observation, not just language.",
+    description: "AI that builds internal models of how the world works, predicting what happens next without actually experiencing it. Championed by Yann LeCun, who left Meta in 2025 to found a world-model startup, as the next paradigm: learning through observation, not just language.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 83,
     keyTerms: ["Predictive model", "Imagination", "Model-based RL", "JEPA"],
     prerequisites: ["Reinforcement Learning"],
@@ -935,7 +935,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "inverse-rl", concept: "Inverse Reinforcement Learning", emoji: "🎮",
-    description: "Learning the reward function from observing expert behavior — inferring WHAT the expert is optimizing, not just imitating their actions. Key for building AI that understands human preferences.",
+    description: "Learning the reward function from observing expert behavior, inferring WHAT the expert is optimizing, not just imitating their actions. Key for building AI that understands human preferences.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 85,
     keyTerms: ["Reward inference", "Expert demonstrations", "Imitation learning", "IRL"],
     prerequisites: ["Reinforcement Learning"],
@@ -949,7 +949,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     id: "gpu-tpu", concept: "GPU & TPU Computing", emoji: "⚙️",
     description: "GPUs (NVIDIA) and TPUs (Google) are the hardware that makes deep learning possible. Their parallel processing capabilities accelerate matrix operations by 100x+ versus CPUs.",
     category: "MLOps & Infrastructure", difficulty: "beginner", rank: 86,
-    keyTerms: ["CUDA", "Tensor cores", "A100", "H100", "TPUv5", "Parallelism"],
+    keyTerms: ["CUDA", "Tensor cores", "H100", "Blackwell (B200)", "TPU Ironwood", "Parallelism"],
     prerequisites: [],
     learnMore: [
       { title: "NVIDIA CUDA Guide", url: "https://developer.nvidia.com/cuda-zone" },
@@ -962,7 +962,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Docker", "FastAPI", "TensorRT", "vLLM", "Latency", "Throughput"],
     prerequisites: ["Training vs Inference"],
     learnMore: [
-      { title: "Made With ML — MLOps", url: "https://madewithml.com/" },
+      { title: "Made With ML · MLOps", url: "https://madewithml.com/" },
     ],
   },
   {
@@ -983,7 +983,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Hyperparameters", "Metrics logging", "Artifact tracking", "Reproducibility"],
     prerequisites: ["Machine Learning"],
     learnMore: [
-      { title: "Weights & Biases — Free Courses", url: "https://wandb.ai/site/courses" },
+      { title: "Weights & Biases · Free Courses", url: "https://wandb.ai/site/courses" },
     ],
   },
   {
@@ -1000,16 +1000,16 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     id: "edge-ai", concept: "Edge AI & On-Device ML", emoji: "⚙️",
     description: "Running AI models directly on devices (phones, IoT, cars) instead of in the cloud. Enables low-latency, privacy-preserving AI. Requires model compression and optimization.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 91,
-    keyTerms: ["TensorFlow Lite", "CoreML", "ONNX", "Edge TPU", "Model optimization"],
+    keyTerms: ["LiteRT (formerly TensorFlow Lite)", "CoreML", "ONNX", "Edge TPU", "Model optimization"],
     prerequisites: ["Model Quantization & Compression"],
     learnMore: [
-      { title: "TensorFlow Lite", url: "https://www.tensorflow.org/lite" },
+      { title: "LiteRT (formerly TensorFlow Lite)", url: "https://ai.google.dev/edge/litert" },
     ],
     realWorldApps: "Smartphone cameras, smart speakers, autonomous vehicles, industrial IoT",
   },
   {
     id: "federated-learning", concept: "Federated Learning", emoji: "⚙️",
-    description: "Training ML models across multiple devices/organizations without sharing raw data — each participant trains locally and shares only model updates. Preserves privacy while enabling collaborative learning.",
+    description: "Training ML models across multiple devices/organizations without sharing raw data, each participant trains locally and shares only model updates. Preserves privacy while enabling collaborative learning.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 92,
     keyTerms: ["Privacy-preserving", "Aggregation", "Non-IID data", "Communication efficiency"],
     prerequisites: ["Deep Learning"],
@@ -1019,7 +1019,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "distributed-training", concept: "Distributed Training", emoji: "⚙️",
-    description: "Training models across multiple GPUs or machines. Essential for frontier models — GPT-4 was trained on thousands of GPUs. Techniques: data parallelism, model parallelism, pipeline parallelism.",
+    description: "Training models across multiple GPUs or machines. Essential for frontier models, Frontier models are trained on clusters of tens of thousands of GPUs. Techniques: data parallelism, model parallelism, pipeline parallelism.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 93,
     keyTerms: ["Data parallelism", "Model parallelism", "FSDP", "DeepSpeed", "Gradient sync"],
     prerequisites: ["GPU & TPU Computing"],
@@ -1044,26 +1044,26 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Data drift", "Concept drift", "Model degradation", "Alerting", "Retraining"],
     prerequisites: ["Model Deployment"],
     learnMore: [
-      { title: "Evidently AI — ML Monitoring", url: "https://www.evidentlyai.com/" },
+      { title: "Evidently AI · ML Monitoring", url: "https://www.evidentlyai.com/" },
     ],
   },
 
   // === AI Agents & Applications (96–105) ===
   {
     id: "ai-agents", concept: "AI Agents", emoji: "🤖",
-    description: "AI systems that can plan, use tools, browse the web, write code, and complete multi-step tasks autonomously. The hottest frontier in AI (2025–2026). LangGraph, CrewAI, and AutoGen are leading frameworks.",
+    description: "AI systems that can plan, use tools, browse the web, write code, and complete multi-step tasks autonomously. The defining frontier of the current AI era. Frameworks such as LangGraph and CrewAI, plus vendor SDKs (OpenAI Agents SDK, Claude Agent SDK, Microsoft Agent Framework), are common starting points.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 96,
     keyTerms: ["Tool use", "Planning", "ReAct", "Reasoning loop", "Autonomy"],
     prerequisites: ["Prompt Engineering", "GPT"],
     learnMore: [
-      { title: "Anthropic: Building Effective Agents", url: "https://docs.anthropic.com/en/docs/build-with-claude/agentic" },
+      { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
       { title: "LangGraph Documentation", url: "https://langchain-ai.github.io/langgraph/" },
     ],
     realWorldApps: "Coding assistants, research automation, customer service, data analysis",
   },
   {
     id: "tool-use", concept: "Tool Use & Function Calling", emoji: "🤖",
-    description: "LLMs that can call external tools — APIs, databases, calculators, web browsers. Transforms LLMs from text generators into action-taking agents. OpenAI function calling and Claude tool use are leading implementations.",
+    description: "LLMs that can call external tools, APIs, databases, calculators, web browsers. Transforms LLMs from text generators into action-taking agents. Function calling is now supported by every major vendor, and the Model Context Protocol (MCP) has become the industry-standard way to connect models to tools.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 97,
     keyTerms: ["Function calling", "API integration", "MCP", "Tool selection"],
     prerequisites: ["AI Agents"],
@@ -1093,12 +1093,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "drug-discovery", concept: "AI-Driven Drug Discovery", emoji: "🤖",
-    description: "Using AI to identify, design, and optimize drug candidates — dramatically accelerating the traditional 10-15 year drug development cycle. AlphaFold solved protein folding; Insilico Medicine created the first AI-designed drug in clinical trials.",
+    description: "Using AI to identify, design, and optimize drug candidates, dramatically accelerating the traditional 10-15 year drug development cycle. AlphaFold solved protein folding; Insilico Medicine created the first AI-designed drug in clinical trials.",
     category: "AI Agents & Applications", difficulty: "advanced", rank: 100,
     keyTerms: ["Protein folding", "AlphaFold", "Molecular generation", "Drug target"],
     prerequisites: ["Deep Learning"],
     learnMore: [
-      { title: "AlphaFold — DeepMind", url: "https://alphafold.ebi.ac.uk/" },
+      { title: "AlphaFold · DeepMind", url: "https://alphafold.ebi.ac.uk/" },
     ],
   },
   {
@@ -1124,7 +1124,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "conversational-ai", concept: "Conversational AI & Chatbots", emoji: "🤖",
-    description: "AI systems for natural dialogue — from simple rule-based chatbots to LLM-powered assistants. Key challenges: maintaining context, handling ambiguity, knowing when to escalate to humans.",
+    description: "AI systems for natural dialogue, from simple rule-based chatbots to LLM-powered assistants. Key challenges: maintaining context, handling ambiguity, knowing when to escalate to humans.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 103,
     keyTerms: ["Dialog management", "Intent recognition", "Slot filling", "Conversation memory"],
     prerequisites: ["NLP", "GPT"],
@@ -1162,7 +1162,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     prerequisites: [],
     learnMore: [
       { title: "AI Safety Fundamentals", url: "https://aisafetyfundamentals.com/" },
-      { title: "Anthropic: Core Views on AI Safety", url: "https://www.anthropic.com/research" },
+      { title: "Anthropic: Core Views on AI Safety", url: "https://www.anthropic.com/news/core-views-on-ai-safety" },
     ],
   },
   {
@@ -1179,12 +1179,12 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "hallucination", concept: "AI Hallucinations", emoji: "🛡️",
-    description: "When AI generates confident but factually incorrect or fabricated information. A fundamental limitation of current LLMs — they predict plausible text, not truthful text. RAG and grounding techniques help reduce it.",
+    description: "When AI generates confident but factually incorrect or fabricated information. A fundamental limitation of current LLMs, they predict plausible text, not truthful text. RAG and grounding techniques help reduce it.",
     category: "Safety, Ethics & Governance", difficulty: "beginner", rank: 108,
     keyTerms: ["Confabulation", "Grounding", "Factual accuracy", "RAG as mitigation"],
     prerequisites: ["GPT"],
     learnMore: [
-      { title: "Anthropic: Reducing Hallucinations", url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/reduce-hallucinations" },
+      { title: "Anthropic: Reducing Hallucinations", url: "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations" },
     ],
   },
   {
@@ -1199,13 +1199,93 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ai-regulation", concept: "AI Regulation & Governance", emoji: "🛡️",
-    description: "The emerging legal and policy landscape for AI. The EU AI Act (2024) is the first comprehensive AI law. Understanding regulation is now a career advantage — every AI team needs someone who understands compliance.",
+    description: "The emerging legal and policy landscape for AI. The EU AI Act (2024) is the first comprehensive AI law; its obligations phase in over several years, with the high-risk rules deferred to 2027-2028. Understanding regulation is now a career advantage, every AI team needs someone who understands compliance.",
     category: "Safety, Ethics & Governance", difficulty: "beginner", rank: 110,
     keyTerms: ["EU AI Act", "Risk categories", "Compliance", "Transparency requirements"],
     prerequisites: [],
     learnMore: [
       { title: "EU AI Act Overview", url: "https://artificialintelligenceact.eu/" },
-      { title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/artificial-intelligence/executive-order-safe-secure-and-trustworthy-artificial-intelligence" },
+      { title: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework" },
     ],
+  },
+  {
+    id: "mcp", concept: "Model Context Protocol (MCP)", emoji: "🔌",
+    description: "An open standard, introduced by Anthropic in late 2024, for connecting AI models to external tools, data sources, and applications through one common interface. Developers expose a capability once as an MCP server and any compatible model can use it, replacing per-model custom integrations. By 2026 it is supported by every major AI vendor.",
+    category: "AI Agents & Applications", difficulty: "intermediate", rank: 111,
+    keyTerms: ["MCP server", "MCP client", "Tool discovery", "Transport", "Capability"],
+    prerequisites: ["Tool Use & Function Calling", "AI Agents"],
+    learnMore: [
+      { title: "Model Context Protocol (official)", url: "https://modelcontextprotocol.io/" },
+      { title: "Hugging Face MCP Course (free)", url: "https://huggingface.co/learn/mcp-course" },
+    ],
+    realWorldApps: "Connecting assistants to codebases, databases, design tools, and internal APIs",
+  },
+  {
+    id: "reasoning-models", concept: "Reasoning Models & Test-Time Compute", emoji: "🧩",
+    description: "LLMs trained to produce a long internal chain of reasoning before answering, spending extra compute at inference time to get better answers on math, code, and logic. OpenAI's o-series and DeepSeek-R1 established this as a second scaling axis alongside model size. Most frontier assistants now offer a thinking mode built on this idea.",
+    category: "NLP & Language", difficulty: "intermediate", rank: 112,
+    keyTerms: ["Test-time compute", "Thinking tokens", "RLVR", "Verifiable rewards", "Long CoT"],
+    prerequisites: ["Chain-of-Thought Reasoning", "LLM Scaling Laws"],
+    learnMore: [
+      { title: "DeepSeek-R1 paper", url: "https://arxiv.org/abs/2501.12948" },
+      { title: "The RLHF Book (free)", url: "https://rlhfbook.com/" },
+    ],
+    realWorldApps: "Competition math, code debugging, scientific analysis, agentic planning",
+  },
+  {
+    id: "moe", concept: "Mixture-of-Experts (MoE)", emoji: "🔀",
+    description: "A Transformer variant where each layer holds many parallel expert subnetworks and a router activates only a few per token. This decouples total parameter count from per-token compute, so models can grow far larger without proportional cost. Many frontier and open-weight LLMs use MoE.",
+    category: "Architectures", difficulty: "advanced", rank: 113,
+    keyTerms: ["Router", "Sparse activation", "Expert", "Load balancing", "Active parameters"],
+    prerequisites: ["Transformer Architecture", "LLM Scaling Laws"],
+    learnMore: [
+      { title: "Hugging Face: Mixture of Experts explained", url: "https://huggingface.co/blog/moe" },
+    ],
+    realWorldApps: "Frontier LLMs, cost-efficient serving, large open-weight models",
+  },
+  {
+    id: "computer-use", concept: "Computer Use & Browser Agents", emoji: "🖱️",
+    description: "Agents that operate software the way a person does: looking at the screen, moving the cursor, clicking, and typing, or driving a web browser directly. Introduced commercially in 2024-2025 and now built into AI-enabled browsers. It turns any existing application into something an AI can operate, with no API required.",
+    category: "AI Agents & Applications", difficulty: "intermediate", rank: 114,
+    keyTerms: ["Screen understanding", "GUI automation", "Browser agent", "Action space", "Grounding"],
+    prerequisites: ["AI Agents", "Multimodal Models"],
+    learnMore: [
+      { title: "Anthropic: Developing computer use", url: "https://www.anthropic.com/news/developing-computer-use" },
+    ],
+    realWorldApps: "Form filling, QA testing, legacy software automation, research workflows",
+  },
+  {
+    id: "agentic-coding", concept: "Agentic Coding", emoji: "⌨️",
+    description: "Coding assistance that goes beyond autocomplete: an agent reads the codebase, plans, edits multiple files, runs tests and commands, and iterates until the task is done. Tools built on this pattern made it the dominant developer AI workflow.",
+    category: "AI Agents & Applications", difficulty: "intermediate", rank: 115,
+    keyTerms: ["Codebase context", "Multi-file edit", "Test loop", "Tool permissions", "Plan mode"],
+    prerequisites: ["AI Code Generation", "AI Agents"],
+    learnMore: [
+      { title: "Claude Code best practices", url: "https://code.claude.com/docs/en/best-practices" },
+    ],
+    realWorldApps: "Feature implementation, refactoring, migrations, bug fixing, code review",
+  },
+  {
+    id: "grpo", concept: "GRPO (Group Relative Policy Optimization)", emoji: "📊",
+    description: "A reinforcement learning algorithm that simplifies PPO by dropping the value network: it samples a group of responses per prompt and scores each one against the group average. Introduced in DeepSeekMath and used to train DeepSeek-R1, it became a standard recipe for training reasoning models on verifiable rewards like math and unit tests.",
+    category: "Reinforcement Learning", difficulty: "advanced", rank: 116,
+    keyTerms: ["Group baseline", "No value network", "Verifiable reward", "Policy gradient", "Rollouts"],
+    prerequisites: ["PPO (Proximal Policy Optimization)", "RLHF (Reinforcement Learning from Human Feedback)"],
+    learnMore: [
+      { title: "DeepSeekMath paper (GRPO)", url: "https://arxiv.org/abs/2402.03300" },
+      { title: "The RLHF Book (free)", url: "https://rlhfbook.com/" },
+    ],
+    realWorldApps: "Training reasoning models, math and code post-training, open-weight R1 replications",
+  },
+  {
+    id: "llm-eval", concept: "LLM Evaluation & Benchmarks", emoji: "📏",
+    description: "Measuring what language models can actually do, via static benchmarks, head-to-head human preference arenas, and LLM-as-judge scoring. Benchmark saturation and training-data contamination make honest evaluation one of the field's hardest open problems: leaderboard gains do not always translate to real-world capability.",
+    category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 117,
+    keyTerms: ["MMLU", "SWE-bench", "LLM-as-judge", "Contamination", "Elo arena"],
+    prerequisites: ["LLM Scaling Laws", "AI Hallucinations"],
+    learnMore: [
+      { title: "Hugging Face Evaluation Guidebook", url: "https://github.com/huggingface/evaluation-guidebook" },
+    ],
+    realWorldApps: "Model selection, regression testing, procurement decisions, safety assessment",
   },
 ];
