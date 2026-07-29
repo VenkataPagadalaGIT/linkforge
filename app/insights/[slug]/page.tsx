@@ -56,7 +56,7 @@ export default async function Page({ params }: { params: Params }) {
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
       ))}
       <Suspense fallback={null}>
-        <PillarPage />
+        <PillarPage initialPillar={pillar as never} />
       </Suspense>
     </>
   );

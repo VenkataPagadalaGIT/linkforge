@@ -94,7 +94,7 @@ export default async function Page({ params }: { params: Params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }}
         />
       ))}
-      <BlogPostPage />
+      <BlogPostPage initialPost={post as never} />
     </>
   );
 }

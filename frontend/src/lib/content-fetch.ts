@@ -104,11 +104,24 @@ export const getUpdate = async (slug: string): Promise<AIUpdate | null> => {
   return local ? (local as unknown as AIUpdate) : null;
 };
 
-export const getPost = (slug: string) =>
-  fetchJSON<BlogPost>(`/content/posts/${encodeURIComponent(slug)}`);
+// Backend first, static module second, matching getUpdate. Insights content is
+// authored in both places: the CMS writes to Mongo, and src/data/insights.ts
+// ships with the build. Whichever holds a slug, the page must resolve.
+export const getPost = async (slug: string): Promise<BlogPost | null> => {
+  const fromApi = await fetchJSON<BlogPost>(`/content/posts/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const { getBlogBySlug } = await import("@/data/insights");
+  const local = getBlogBySlug(slug);
+  return local ? (local as unknown as BlogPost) : null;
+};
 
-export const getPillar = (slug: string) =>
-  fetchJSON<Pillar>(`/content/pillars/${encodeURIComponent(slug)}`);
+export const getPillar = async (slug: string): Promise<Pillar | null> => {
+  const fromApi = await fetchJSON<Pillar>(`/content/pillars/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const { getPillarBySlug } = await import("@/data/insights");
+  const local = getPillarBySlug(slug);
+  return local ? (local as unknown as Pillar) : null;
+};
 
 export const getSitemapData = () => fetchJSON<Sitemap>("/content/sitemap");
 
