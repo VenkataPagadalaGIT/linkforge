@@ -300,7 +300,7 @@ const AIContributors = () => {
               Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ free resources, {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
-              Last reviewed and updated July 2026. Every profile, resource link and definition re-verified.
+              Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
             </p>
             <a
               href="/notebook/ai/map"
@@ -395,10 +395,10 @@ const AIContributors = () => {
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                  <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                   🗺️ Free AI Roadmap, Zero to Hero (2026)
+                   🗺️ Free AI Roadmap, Zero to Hero · July 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                   A free, structured AI curriculum with 400+ curated free resources: videos, courses, books, repos, and pro tips. Reviewed and updated July 2026.
+                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 88% are completely free. Every link was opened and checked in July 2026.
                  </p>
               </div>
               <AILearningRoadmap />
@@ -412,10 +412,10 @@ const AIContributors = () => {
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                  🧠 AI Concepts Encyclopedia, Zero to Hero (2026)
+                  🧠 AI Concepts Encyclopedia · July 2026
                 </h2>
                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                  117 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Filter by category and difficulty.
+                  117 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed July 2026.
                 </p>
               </div>
               <AIEncyclopedia />

@@ -618,7 +618,7 @@ export const aiContributors: AIContributor[] = [
     quote: "Deep learning is hitting a wall. We need hybrid AI that combines neural networks with symbolic reasoning.",
     myTake: "Marcus is the contrarian the AI field needs. While everyone's on the LLM hype train, he consistently points out fundamental limitations. His debates with LeCun are must-watch content. Even if you disagree with him, engaging with his arguments makes you a sharper thinker about AI.",
     resources: [
-      { title: "Rebooting AI", type: "book", url: "https://garymarcus.com/rebooting-ai/", year: "2019" },
+      { title: "Rebooting AI", type: "book", url: "https://garymarcus.substack.com/", year: "2019" },
     ],
     connections: ["lecun", "bender", "harris"],
   },

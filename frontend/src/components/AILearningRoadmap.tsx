@@ -12,24 +12,38 @@ const difficultyColors: Record<string, string> = {
   advanced: "border-red-500/30 text-red-400",
 };
 
-const ResourceList = ({ items, icon: Icon, label }: { items: RoadmapResource[]; icon: React.ElementType; label: string }) => {
-  if (!items.length) return null;
+/** When on, only resources that cost nothing are shown. This is the default
+ *  because the roadmap's promise is free learning; the toggle exists so the
+ *  paid classics are still discoverable for anyone who can buy them. */
+const ResourceList = ({ items, icon: Icon, label, freeOnly }: { items: RoadmapResource[]; icon: React.ElementType; label: string; freeOnly?: boolean }) => {
+  const shown = freeOnly ? items.filter((i) => i.access !== "paid") : items;
+  if (!shown.length) return null;
   return (
     <div>
       <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/40 mb-2">
-        <Icon size={11} /> {label} ({items.length})
+        <Icon size={11} /> {label} ({shown.length})
       </p>
       <div className="space-y-1">
-        {items.map((item, i) => (
+        {shown.map((item, i) => (
           <a
             key={i}
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-xs text-muted-foreground hover:text-foreground transition-colors truncate"
+            className="flex items-baseline gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            <span className="text-muted-foreground/30 mr-2">{i + 1}.</span>
-            {item.title}
+            <span className="text-muted-foreground/30 shrink-0">{i + 1}.</span>
+            <span className="truncate">{item.title}</span>
+            {item.access === "paid" && (
+              <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider border border-orange-600/40 text-orange-700 dark:text-orange-400/80 px-1 leading-[1.4]">
+                paid
+              </span>
+            )}
+            {item.access === "freemium" && (
+              <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider border border-sky-600/40 text-sky-700 dark:text-sky-400/80 px-1 leading-[1.4]">
+                free tier
+              </span>
+            )}
           </a>
         ))}
       </div>
@@ -37,7 +51,7 @@ const ResourceList = ({ items, icon: Icon, label }: { items: RoadmapResource[]; 
   );
 };
 
-const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
+const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolean }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -98,10 +112,10 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <ResourceList items={topic.bestVideos} icon={Video} label="Best Videos" />
-            <ResourceList items={topic.bestCourses} icon={GraduationCap} label="Courses & Sites" />
-            <ResourceList items={topic.books} icon={BookOpen} label="Books & Papers" />
-            <ResourceList items={topic.githubRepos} icon={Github} label="GitHub Repos" />
+            <ResourceList items={topic.bestVideos} icon={Video} label="Best Videos" freeOnly={freeOnly} />
+            <ResourceList items={topic.bestCourses} icon={GraduationCap} label="Courses & Sites" freeOnly={freeOnly} />
+            <ResourceList items={topic.books} icon={BookOpen} label="Books & Papers" freeOnly={freeOnly} />
+            <ResourceList items={topic.githubRepos} icon={Github} label="GitHub Repos" freeOnly={freeOnly} />
           </div>
 
           {topic.tools && (
@@ -134,6 +148,8 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
 
 const AILearningRoadmap = () => {
   const [search, setSearch] = useState("");
+  // Default ON: the page is a free-learning roadmap first.
+  const [freeOnly, setFreeOnly] = useState(true);
   const [activePhase, setActivePhase] = useState<string>("");
 
   const filtered = useMemo(() => {
@@ -220,13 +236,27 @@ const AILearningRoadmap = () => {
             {phase.emoji} {phase.label.split(": ")[1]}
           </button>
         ))}
+      
+        <button
+          type="button"
+          onClick={() => setFreeOnly((v) => !v)}
+          aria-pressed={freeOnly}
+          className={`font-mono text-[10px] uppercase tracking-wider border px-2.5 py-1.5 transition-all ${
+            freeOnly
+              ? "border-green-600/50 text-green-700 dark:text-green-400 bg-green-500/[0.06]"
+              : "border-border text-muted-foreground/60 hover:text-foreground"
+          }`}
+          title="Hide anything that costs money"
+        >
+          {freeOnly ? "✓ Free only" : "Free only"}
+        </button>
       </div>
 
       {/* Topics */}
       <div className="space-y-2">
         {filtered.map((topic) => (
           <ScrollReveal key={topic.id} delay={0}>
-            <TopicCard topic={topic} />
+            <TopicCard topic={topic} freeOnly={freeOnly} />
           </ScrollReveal>
         ))}
       </div>

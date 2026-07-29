@@ -159,7 +159,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Training loop", "Forward pass", "Batch size", "Epoch", "Latency"],
     prerequisites: ["Neural Network"],
     learnMore: [
-      { title: "NVIDIA: Training vs Inference", url: "https://blogs.nvidia.com/blog/whats-the-difference-between-deep-learning-training-and-inference-ai-explained/" },
+      { title: "NVIDIA: Training vs Inference", url: "https://blogs.nvidia.com/blog/difference-deep-learning-training-inference-ai/" },
     ],
   },
   {
@@ -730,7 +730,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Data augmentation", "Privacy-preserving", "Distribution matching"],
     prerequisites: ["Data, The Fuel of AI"],
     learnMore: [
-      { title: "NVIDIA: Synthetic Data", url: "https://developer.nvidia.com/blog/synthetic-data/" },
+      { title: "NVIDIA: Synthetic Data", url: "https://developer.nvidia.com/blog/tag/synthetic-data/" },
     ],
   },
 
@@ -910,7 +910,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Nash equilibrium", "Cooperative", "Competitive", "Self-play"],
     prerequisites: ["Reinforcement Learning"],
     learnMore: [
-      { title: "OpenAI Five · Dota 2", url: "https://openai.com/research/openai-five" },
+      { title: "OpenAI Five · Dota 2", url: "https://openai.com/index/openai-five/" },
     ],
   },
   {
@@ -930,7 +930,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Domain randomization", "Simulation", "Reality gap", "Digital twin"],
     prerequisites: ["Reinforcement Learning"],
     learnMore: [
-      { title: "OpenAI: Sim-to-Real Robotics", url: "https://openai.com/research/solving-rubiks-cube" },
+      { title: "OpenAI: Sim-to-Real Robotics", url: "https://openai.com/index/solving-rubiks-cube/" },
     ],
   },
   {
@@ -1194,7 +1194,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Jailbreaking", "Adversarial attacks", "Safety evaluation", "Prompt injection"],
     prerequisites: ["Prompt Engineering"],
     learnMore: [
-      { title: "Anthropic: Red Teaming", url: "https://www.anthropic.com/research/red-teaming" },
+      { title: "Anthropic: Red Teaming", url: "https://arxiv.org/abs/2209.07858" },
     ],
   },
   {
