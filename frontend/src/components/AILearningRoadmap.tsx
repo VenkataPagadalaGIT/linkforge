@@ -50,6 +50,8 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
     >
       <button
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        aria-controls={`topic-panel-${topic.id}`}
         className="w-full text-left px-5 py-4 flex items-start gap-4"
       >
         <div className="shrink-0 mt-0.5">
@@ -82,8 +84,15 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
         </div>
       </button>
 
-      {expanded && (
-        <div className="px-5 pb-5 border-t border-border pt-4">
+      {/* Always rendered, collapsed with CSS rather than removed from the DOM.
+          Conditional rendering kept every resource link out of the server HTML,
+          so search engines and AI crawlers never saw the 400+ free resources
+          this page exists to surface. */}
+      <div
+        id={`topic-panel-${topic.id}`}
+        hidden={!expanded}
+        className="px-5 pb-5 border-t border-border pt-4"
+      >
           <p className="font-mono text-xs text-muted-foreground/60 leading-relaxed mb-5">
             {topic.description}
           </p>
@@ -118,8 +127,7 @@ const TopicCard = ({ topic }: { topic: RoadmapTopic }) => {
             relatedConcepts={roadmapToEncyclopedia[topic.id]}
             relatedContributors={roadmapToContributors[topic.id]}
           />
-        </div>
-      )}
+      </div>
     </div>
   );
 };
