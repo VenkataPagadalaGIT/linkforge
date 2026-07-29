@@ -2,8 +2,6 @@
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
 import NeuralNetBackground from "@/components/NeuralNetBackground";
-import KnowledgeGraph from "@/components/KnowledgeGraph";
-import SolutionsGraph from "@/components/SolutionsGraph";
 import PageSidebar from "@/components/PageSidebar";
 
 import { ExternalLink, ArrowRight, FlaskConical, Brain, TrendingUp } from "lucide-react";
@@ -92,8 +90,6 @@ const tocSections = [
   { label: "Research Interests", id: "research-interests" },
   { label: "Featured System", id: "featured-system" },
   { label: "Active Systems", id: "active-systems" },
-  { label: "Topic Explorer", id: "topic-explorer" },
-  { label: "Solutions", id: "solutions" },
 ];
 
 const Lab = () => {
@@ -287,34 +283,8 @@ const Lab = () => {
             {/* ── Published Research ── */}
 
             {/* ── Topic Explorer ── */}
-            <div id="topic-explorer" className="mb-20 scroll-mt-28">
-              <ScrollReveal>
-                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-4">
-                  Topic Explorer
-                </p>
-                <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
-                  An interactive map of topics across AI systems, enterprise SEO, and machine learning. Hover to explore, click to drill down.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={200}>
-                <KnowledgeGraph />
-              </ScrollReveal>
-            </div>
 
             {/* ── Solutions Overview ── */}
-            <div id="solutions" className="mb-20 scroll-mt-28">
-              <ScrollReveal>
-                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-4">
-                  Solutions
-                </p>
-                <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
-                  From Fortune 500 AI infrastructure to growth-stage consulting. Explore what I build and offer.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={200}>
-                <SolutionsGraph />
-              </ScrollReveal>
-            </div>
 
             {/* ── CTA ── */}
             <ScrollReveal>
