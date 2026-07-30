@@ -697,6 +697,13 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // An embedded shelf must never steal keys from form fields, and only
+      // owns the arrows while it is actually on screen.
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable))
+        return;
+      const rect = wrap.current?.getBoundingClientRect();
+      if (!rect || rect.bottom < 80 || rect.top > window.innerHeight - 80) return;
       if (e.key === "ArrowRight") {
         e.preventDefault();
         step(1);

@@ -10,6 +10,8 @@ import AITimeline from "@/components/AITimeline";
 import AIGlossary from "@/components/AIGlossary";
 import CuratedReadingLists from "@/components/CuratedReadingLists";
 import AILearningRoadmap from "@/components/AILearningRoadmap";
+import BookShelfLazy from "@/components/library/BookShelfLazy";
+import { roadmapShelfVolumes, roadmapShelfStats } from "@/data/roadmapShelf";
 import AIEncyclopedia from "@/components/AIEncyclopedia";
 import { aiContributors } from "@/data/aiContributors";
 import { roadmapTopics } from "@/data/aiRoadmap";
@@ -297,7 +299,7 @@ const AIContributors = () => {
               {topTab === "roadmap" ? "Free AI Roadmap 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
             </h1>
             <p className="font-mono text-xs text-muted-foreground/60 max-w-xl leading-relaxed">
-              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ free resources, {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
+              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (93% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
               Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
@@ -404,6 +406,29 @@ const AIContributors = () => {
         {topTab === "roadmap" && (
           <div>
             <div className="flex-1 min-w-0">
+              {/* The roadmap as a shelf: 28 topics as volumes, browse along
+                  the curriculum, pull one out, jump into its resources below.
+                  Quietly absent without WebGL; the list below is the truth. */}
+              <ScrollReveal>
+                <div className="relative h-[62vh] min-h-[380px] border border-border mb-8 overflow-hidden">
+                  <BookShelfLazy
+                    volumes={roadmapShelfVolumes}
+                    coverBrand="The AI Roadmap"
+                    captions={[
+                      `${roadmapShelfStats.volumes} topics · ${roadmapShelfStats.weeks} weeks`,
+                      "01 continuous curriculum",
+                    ]}
+                  />
+                  <div className="pointer-events-none absolute top-4 left-5 z-10">
+                    <p className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#2e2418" }}>
+                      The AI Roadmap, as a shelf
+                    </p>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase mt-1" style={{ color: "#8a7860" }}>
+                      every volume is a topic · click a spine
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
               <div className="mb-6">
                  <h2 className="font-display text-xl font-bold text-foreground mb-1">
                    🗺️ Free AI Roadmap, Zero to Hero · July 2026

@@ -78,7 +78,10 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
 
   return (
     <div
-      className={`border transition-all ${
+      // Anchor target for the 3D roadmap shelf: scroll-mt clears the fixed
+      // navbar so #topic-<id> lands with the card fully visible.
+      id={`topic-${topic.id}`}
+      className={`scroll-mt-24 border transition-all ${
         topic.isMilestone
           ? "border-yellow-500/30 bg-yellow-500/[0.03]"
           : "border-border hover:border-foreground/20"
