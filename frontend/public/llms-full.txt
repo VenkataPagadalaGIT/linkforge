@@ -145,12 +145,16 @@ The authoritative directory of 100 AI pioneers shaping the field in 2026. Profil
 - URL: https://venkatapagadala.com/notebook/ai
 
 ### AI Learning Roadmap — Zero to Hero (2026)
-A structured 18-week curriculum covering 24 topics with 67+ curated videos, 71+ courses, 62+ GitHub repos, 43+ books, and expert pro tips. Organized into three phases: Foundations, Core AI & ML, and Advanced & Applied. Each topic includes difficulty level, estimated duration, and hand-picked resources.
+A structured 18-week curriculum across 28 topics with 419 curated resources: 115 videos, 120 courses, 84 books and 100 GitHub repos, organized in six phases from Foundations to Specialize & Build. 390 of the 419 resources (93%) are free; the rest carry explicit freemium or paid badges so nobody clicks through expecting free and hits a paywall. Each topic includes difficulty level, week number, tools, and pro tips. Reviewed July 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-110 AI concepts across 10 categories (Foundations, Machine Learning, Deep Learning, NLP, Computer Vision, Reinforcement Learning, Generative AI, Ethics & Safety, Infrastructure, and Emerging Topics). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links.
+123 AI concepts across 10 categories (Foundations, Machine Learning, Deep Learning, NLP, Computer Vision, Reinforcement Learning, Generative AI, Ethics & Safety, Infrastructure, and Emerging Topics). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
+
+### The Complete Shelf — 19 Free AI Books in 3D (2026)
+A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum: Think Python and the mathematics you need (Mathematics for Machine Learning, Hefferon's Linear Algebra, Calculus Made Easy, Think Stats), classical ML (An Introduction to Statistical Learning, Pattern Recognition and Machine Learning, Approaching Almost Any Machine Learning Problem), the data stack (Python Data Science Handbook, Python for Data Analysis, Fundamentals of Data Visualization), deep learning (Dive into Deep Learning, the Goodfellow-Bengio-Courville Deep Learning book, Nielsen's Neural Networks and Deep Learning), then Speech and Language Processing, Machine Learning Engineering, Sutton and Barto's Reinforcement Learning, the RLHF Book, and AI Safety Ethics and Society. Sources are author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain: no trials, no sample chapters, nothing pirated. Authors profiled in the Top 100 link to their contributor pages, and the page lists all nineteen titles as plain links for readers without WebGL.
+- URL: https://venkatapagadala.com/notebook/ai/shelf
 
 ## Reference Guides
 
