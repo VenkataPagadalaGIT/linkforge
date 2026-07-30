@@ -534,27 +534,36 @@ function Rig({ controls }: { controls: React.MutableRefObject<{ enabled: boolean
   const look = useMemo(() => new THREE.Vector3(), []);
   const want = useMemo(() => new THREE.Vector3(), []);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const k = Math.min(1, delta * 3.2);
     const b = layout[focus];
     if (!b) return;
+    // Portrait framing is a camera problem, not a layout problem: the
+    // vertical field of view is fixed, so a narrow frame shrinks only the
+    // horizontal span. Pull back proportionally to keep the featured cover
+    // fully inside the frame, and aim below the volume so it rides above the
+    // docked panel instead of behind it.
+    const aspect = state.size.width / Math.max(1, state.size.height);
+    const portrait = aspect < 0.9;
+    const browseZ = Math.max(0.77, 0.6 / aspect);
+    const yOff = portrait ? 0.05 : 0;
     const centerY = DECK_TOP + b.dims[0] / 2 + LIFT;
     if (!inspecting) {
       if (controls.current) controls.current.enabled = false;
       camera.position.x += (target - camera.position.x) * k;
       camera.position.y += (0.045 - camera.position.y) * k;
-      camera.position.z += (0.77 - camera.position.z) * k;
-      look.set(camera.position.x, 0.015, 0.04);
+      camera.position.z += (browseZ - camera.position.z) * k;
+      look.set(camera.position.x, 0.015 - yOff, 0.04);
       camera.lookAt(look);
     } else {
       // Far enough back that the whole case fits the frame on arrival.
-      want.set(b.x, centerY, OUT_Z + 0.42);
+      want.set(b.x, centerY, OUT_Z + Math.max(0.42, 0.55 / aspect - 0.1));
       if (controls.current?.enabled !== true) {
         camera.position.lerp(want, k);
-        look.set(b.x, centerY, OUT_Z);
+        look.set(b.x, centerY - yOff, OUT_Z);
         camera.lookAt(look);
         if (camera.position.distanceTo(want) <= 0.02 && controls.current) {
-          controls.current.target.set(b.x, centerY, OUT_Z);
+          controls.current.target.set(b.x, centerY - yOff, OUT_Z);
           controls.current.enabled = true;
         }
       }
@@ -665,6 +674,17 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
   const drag = useRef<{ x: number; base: number; moved: boolean } | null>(null);
   const wheelSnap = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
+
+  // Container width, not viewport width, decides the chrome: an embedded
+  // shelf in a narrow column needs the phone treatment even on a desktop.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setNarrow(entry.contentRect.width < 620));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const minX = layout[0]?.x ?? 0;
   const maxX = layout[layout.length - 1]?.x ?? 0;
@@ -789,7 +809,7 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
         </div>
       )}
 
-      {!inspecting && (
+      {!inspecting && !narrow && (
         <>
           <button
             type="button"
@@ -812,7 +832,7 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
         </>
       )}
 
-      {book && !inspecting && (
+      {book && !inspecting && !narrow && (
         <div
           className="absolute left-0 bottom-10 sm:bottom-12 pt-10 pb-6 pl-6 sm:pl-10 pr-16 sm:pr-24 max-w-[92%] sm:max-w-[46%] pointer-events-none"
           style={{
@@ -854,10 +874,10 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
       )}
 
       {book && inspecting && (
-        <div className="absolute left-0 right-0 bottom-8 p-5 sm:p-7 pointer-events-none">
+        <div className={`absolute left-0 right-0 pointer-events-none ${narrow ? "bottom-0" : "bottom-8 p-5 sm:p-7"}`}>
           <div
-            className="max-w-xl mx-auto p-5 sm:p-6 border pointer-events-auto"
-            style={{ background: "rgba(255,253,248,0.94)", borderColor: "#d8cbb4" }}
+            className={`max-w-xl mx-auto border pointer-events-auto ${narrow ? "p-4 border-x-0 border-b-0" : "p-5 sm:p-6"}`}
+            style={{ background: narrow ? "rgba(247,242,232,0.97)" : "rgba(255,253,248,0.94)", borderColor: "#d8cbb4" }}
           >
             <p className="font-mono text-[10px] uppercase tracking-[0.2em]" style={{ color: "#8a7860" }}>
               {book.eyebrow}
@@ -951,7 +971,80 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
         </div>
       )}
 
-      {!inspecting && (
+      {/* Phone treatment: the featured volume rides above a docked card that
+          carries the index, arrows, title and actions, with a progress strip
+          instead of tap-proof ruler ticks. Swipe on the canvas still browses. */}
+      {book && !inspecting && narrow && (
+        <div
+          className="absolute left-0 right-0 bottom-0 border-t"
+          style={{ background: "rgba(247,242,232,0.97)", borderColor: "#d8cbb4" }}
+        >
+          <div className="absolute -top-px left-0 right-0 h-[3px]" style={{ background: "rgba(201,187,161,0.4)" }}>
+            <div
+              className="absolute top-0 bottom-0 transition-all"
+              style={{ width: `${((focus + 1) / layout.length) * 100}%`, background: "#7a5c2e" }}
+            />
+          </div>
+          <div className="px-4 pt-3.5 pb-4">
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="font-mono text-[10px] tracking-[0.2em]" style={{ color: "#8a7860" }}>
+                {String(focus + 1).padStart(2, "0")} / {String(layout.length).padStart(2, "0")}
+                <span className="ml-3 normal-case" style={{ color: "#b3a58c" }}>
+                  swipe to browse
+                </span>
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  aria-label="Previous volume"
+                  onClick={() => step(-1)}
+                  className="w-9 h-9 border grid place-items-center"
+                  style={{ borderColor: "#c9bba1", color: "#6b5c46", background: "rgba(255,253,248,0.7)" }}
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next volume"
+                  onClick={() => step(1)}
+                  className="w-9 h-9 border grid place-items-center"
+                  style={{ borderColor: "#c9bba1", color: "#6b5c46", background: "rgba(255,253,248,0.7)" }}
+                >
+                  →
+                </button>
+              </div>
+            </div>
+            <h2
+              className="text-xl font-bold leading-tight mb-0.5 line-clamp-2"
+              style={{ fontFamily: SERIF, color: INK }}
+            >
+              {book.title}
+            </h2>
+            <p className="italic text-sm mb-2.5" style={{ fontFamily: SERIF, color: "#6b5c46" }}>
+              {book.byline}
+            </p>
+            <div className="flex items-center gap-5 flex-wrap">
+              <button
+                type="button"
+                onClick={enterInspect}
+                className="font-mono text-[10px] uppercase tracking-[0.16em] pb-0.5 border-b whitespace-nowrap"
+                style={{ color: INK, borderColor: INK }}
+              >
+                Inspect volume ↗
+              </button>
+              {book.primary && (
+                <ActionLink
+                  action={book.primary}
+                  className="font-mono text-[10px] uppercase tracking-[0.16em] whitespace-nowrap"
+                  style={{ color: "#8a7860" }}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!inspecting && !narrow && (
         <div className="absolute left-0 right-0 bottom-0 h-10 flex items-center px-6 sm:px-10 gap-4">
           <div className="relative flex-1 h-full">
             {layout.map((b, i) => (
