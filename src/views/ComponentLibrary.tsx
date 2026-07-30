@@ -133,7 +133,7 @@ const THREE_D_INDEX = [
     label: "ContributorAlbum",
     href: "/notebook/ai",
     importPath: "@/components/library/ContributorAlbumLazy",
-    note: "One book, a hundred photo pages: the Top 100 as a single opened volume with page-turn animation. Each page is one person (photo or monogram, name, affiliation, rank) and clicking a page opens the profile. Two page planes over growing stacks plus one flying leaf, so fifty leaves never exist at once; pages typeset on canvas, photos loaded lazily, sixteen-slot texture LRU.",
+    note: "One glass-bound book, a hundred photo pages: the Top 100 as a single volume that starts closed, its first page shimmering through the frosted case under an etched title, then opens itself (or the reader pulls the cover; past a third of the arc it commits). Each page is one person (photo or monogram, name, affiliation, rank) and clicking a page opens the profile. Two page planes over growing stacks plus one flying leaf; pages typeset on canvas, photos loaded lazily, sixteen-slot texture LRU.",
   },
   {
     label: "LlmExplorer",

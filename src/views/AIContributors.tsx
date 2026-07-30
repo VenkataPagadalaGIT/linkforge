@@ -78,14 +78,19 @@ const AIContributors = () => {
     0,
   );
 
-  const [exploredIds, setExploredIds] = useState<Set<string>>(() => {
+  // localStorage must not feed the FIRST render: the server prerendered this
+  // page with an empty set, and hydration demands the client's first pass
+  // match it ("0/100" vs "1/100" was an unhandled runtime error). Start
+  // empty, then load after mount.
+  const [exploredIds, setExploredIds] = useState<Set<string>>(() => new Set());
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? new Set(JSON.parse(stored)) : new Set();
+      if (stored) setExploredIds(new Set(JSON.parse(stored)));
     } catch {
-      return new Set();
+      /* first visit or blocked storage: the empty set is already right */
     }
-  });
+  }, []);
 
   const [activeSection, setActiveSection] = useState<string>("explorer");
   
