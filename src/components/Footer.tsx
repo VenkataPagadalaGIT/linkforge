@@ -14,6 +14,7 @@ const Footer = () => {
     { label: "Publications", to: "/publications" },
     { label: "Solutions", to: "/solutions" },
     { label: "Insights", to: "/insights" },
+    { label: "Credits & Inspiration", to: "/credits" },
     { label: "Contact", to: "/contact" },
   ];
 

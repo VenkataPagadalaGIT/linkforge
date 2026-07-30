@@ -131,6 +131,23 @@ export default function AIShelf() {
               </div>
             ))}
           </div>
+          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mb-10">
+            The interaction design of this shelf is inspired by{" "}
+            <a
+              href="https://play.mint.gg/complete-shelf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted hover:text-foreground transition-colors"
+            >
+              The Complete Shelf by Mint
+            </a>
+            , re-implemented from scratch as procedural geometry. Every source this site
+            learns from is named on the{" "}
+            <Link to="/credits" className="underline decoration-dotted hover:text-foreground transition-colors">
+              credits and inspiration page
+            </Link>
+            .
+          </p>
         </ScrollReveal>
 
         <ScrollReveal delay={140}>
