@@ -27,13 +27,24 @@ const Home = () => {
       <FloatingBlocks />
 
       <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-16 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
-        {/* The portrait assembles itself from thirty-six thousand mosaic
-            tiles, one per pixel, laid bottom-up. The cursor stirs the tiles
-            and the face heals; a click scatters and rebuilds it. Beside the
-            name on desktop, above it on a phone. */}
-        <div className="shrink-0 order-first lg:order-last w-[min(34vh,260px)] h-[min(34vh,260px)] lg:w-[380px] lg:h-[380px]">
-          <PortraitAssemblyLazy />
-        </div>
+        {/* The portrait assembles itself from mosaic tiles, wears a neural
+            net, and settles into the crisp photograph. A dark photo cannot
+            blend into a light page, so it does not pretend to: it is framed
+            in the site's own blueprint language, with corner ticks and a
+            caption plate that tells the reader the thing is alive. */}
+        <figure className="shrink-0 order-first lg:order-last">
+          <div className="relative w-[min(34vh,260px)] h-[min(34vh,260px)] lg:w-[380px] lg:h-[380px] border border-border overflow-hidden">
+            <span className="pointer-events-none absolute -top-px -left-px w-3 h-3 border-t-2 border-l-2 border-foreground/60 z-10" />
+            <span className="pointer-events-none absolute -top-px -right-px w-3 h-3 border-t-2 border-r-2 border-foreground/60 z-10" />
+            <span className="pointer-events-none absolute -bottom-px -left-px w-3 h-3 border-b-2 border-l-2 border-foreground/60 z-10" />
+            <span className="pointer-events-none absolute -bottom-px -right-px w-3 h-3 border-b-2 border-r-2 border-foreground/60 z-10" />
+            <PortraitAssemblyLazy />
+          </div>
+          <figcaption className="flex items-center justify-between gap-3 mt-2 font-mono text-[9px] tracking-[0.18em] uppercase text-muted-foreground/50">
+            <span>Self-assembling portrait</span>
+            <span>click to fire the net</span>
+          </figcaption>
+        </figure>
 
         <div className="text-center lg:text-left min-w-0">
         <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">

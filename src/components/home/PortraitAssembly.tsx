@@ -76,9 +76,9 @@ function sampleImage(img: HTMLImageElement): Sampled {
       colors[i * 3 + 2] = data[px + 2] / 255;
       // laid bottom-up, with grain so rows shimmer instead of snapping
       delays[i] = (1 - (ny + 0.5)) * 0.55 + Math.random() * 0.22;
-      // square vignette: the portrait dissolves at its edges
+      // full bleed to the frame: tiles fade only in the outermost sliver
       const edge = Math.max(Math.abs(nx), Math.abs(ny)) * 2; // 0 centre, 1 edge
-      alphas[i] = THREE.MathUtils.smoothstep(1.0 - edge, 0.0, 0.24);
+      alphas[i] = THREE.MathUtils.smoothstep(1.0 - edge, 0.0, 0.02);
       i++;
     }
   }
@@ -333,7 +333,8 @@ function CrispPhoto({
           void main(){
             vec2 c = abs(vUv - 0.5) * 2.0;
             float edge = max(c.x, c.y);
-            float a = smoothstep(1.0, 0.76, edge) * uOpacity;
+            // full bleed inside the frame; only a hair of antialiasing
+            float a = smoothstep(1.0, 0.99, edge) * uOpacity;
             gl_FragColor = vec4(texture2D(uMap, vUv).rgb, a);
           }`}
       />
@@ -553,7 +554,9 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [0, 0, 0.9], fov: 40, near: 0.01, far: 10 }}
+        // z = 0.5 / tan(fov/2): the 1x1 portrait fills the square frame
+        // exactly, nothing cropped. Closer distances cut the head off.
+        camera={{ position: [0, 0, 0.5 / Math.tan((20 * Math.PI) / 180), ], fov: 40, near: 0.01, far: 10 }}
         gl={{ antialias: false, alpha: true, powerPreference: glPower }}
       >
         <Cloud sampled={sampled} clockRef={clockRef} fireRef={fireRef} />
