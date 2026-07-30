@@ -11,6 +11,7 @@ import Holographic3DWrapper from "@/components/Holographic3DWrapper";
 import ServicesShowcase from "@/components/ServicesShowcase";
 import SEO from "@/components/SEO";
 import SystemAssemblyNav from "@/components/SystemAssemblyNav";
+import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
 
 const Home = () => {
 
@@ -25,19 +26,28 @@ const Home = () => {
       <WireframeGrid />
       <FloatingBlocks />
 
-      <div className="relative z-10 text-center px-6 max-w-4xl">
-        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-6 uppercase">
+      <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-16 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
+        {/* The portrait assembles itself from thirty-six thousand mosaic
+            tiles, one per pixel, laid bottom-up. The cursor stirs the tiles
+            and the face heals; a click scatters and rebuilds it. Beside the
+            name on desktop, above it on a phone. */}
+        <div className="shrink-0 order-first lg:order-last w-[min(34vh,260px)] h-[min(34vh,260px)] lg:w-[380px] lg:h-[380px]">
+          <PortraitAssemblyLazy />
+        </div>
+
+        <div className="text-center lg:text-left min-w-0">
+        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
           [ Portfolio ]
         </p>
 
-        <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-foreground text-glow mb-2">
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-foreground text-glow mb-2">
           Venkata Pagadala
         </h1>
         <p className="font-mono text-xs sm:text-sm text-foreground/50 mb-4 tracking-wide">
           AI Systems · Business Research · Search
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6">
+        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 mb-6">
           {[
             { label: "Impressions", value: "404K+" },
             { label: "Followers", value: "18K+" },
@@ -51,20 +61,21 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="h-8 flex items-center justify-center">
+        <div className="h-8 flex items-center justify-center lg:justify-start">
           <TypewriterText
             words={[
               "AI Systems Architect",
               "Published Researcher",
               "Business & Market Intelligence",
-              "Enterprise SEO & Automation",
+              "AI Consultant",
+              "Forward Deployment Engineer & SEO",
               "Building the Future of Search",
             ]}
             className="font-mono text-sm sm:text-base text-foreground/60"
           />
         </div>
 
-        <div className="mt-16 flex flex-col items-center gap-5">
+        <div className="mt-10 flex flex-col items-center lg:items-start gap-5">
           <a
             href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7434105581101133824"
             target="_blank"
@@ -101,6 +112,7 @@ const Home = () => {
             <span className="font-mono text-xs tracking-widest uppercase">Explore</span>
             <ArrowDown size={16} className="group-hover:translate-y-1 transition-transform" />
           </button>
+        </div>
         </div>
       </div>
 

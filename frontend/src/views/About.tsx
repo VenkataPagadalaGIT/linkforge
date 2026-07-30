@@ -6,6 +6,7 @@ const venkatPhoto = "/venkata-pagadala.jpeg";
 
 const stats = [
   { value: "10+", label: "Years Experience" },
+  { value: "160B+", label: "Digital Assets Handled" },
   { value: "50M+", label: "Pages Managed" },
   { value: "25M+", label: "Pages Audited Bi-Weekly" },
   { value: "5.3M", label: "Keywords Classified" },
@@ -138,7 +139,7 @@ const About = () => {
 
             {/* Stats */}
             <div id="stats" className="scroll-mt-28 mb-20">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                 {stats.map((stat, i) => (
                   <ScrollReveal key={stat.label} delay={i * 100}>
                     <div className="border border-border p-6 text-center border-glow-hover">
