@@ -124,6 +124,12 @@ const demoGuide: Guide = {
 
 const THREE_D_INDEX = [
   {
+    label: "BookShelf",
+    href: "/notebook/ai/shelf",
+    importPath: "@/components/library/BookShelfLazy",
+    note: "Generic browsable 3D library: any array of volumes becomes a walnut shelf with typeset covers and spines, a featured volume, and inspect mode. Powers The Complete Shelf (19 free books), the AI Roadmap shelf (28 topics), and the Top 100 Contributors shelf (100 people). Canvas-typeset textures, LRU cover cache, no asset files. Interaction grammar credited to Mint on /credits.",
+  },
+  {
     label: "LlmExplorer",
     href: "/guides/how-llms-work",
     importPath: "@/components/guides/LlmExplorerLazy",
