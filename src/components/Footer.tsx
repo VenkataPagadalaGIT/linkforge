@@ -18,10 +18,10 @@ const Footer = () => {
   ];
 
   const notebookLinks = [
-    { label: "AI Notebook", to: "/notebook/ai" },
-    { label: "Top 100 Contributors", to: "/notebook/ai" },
-    { label: "Learning Roadmap", to: "/notebook/ai/roadmap" },
-    { label: "Concepts Encyclopedia", to: "/notebook/ai/encyclopedia" },
+    { label: "AI Roadmap", to: "/notebook/ai/roadmap" },
+    { label: "AI Encyclopedia", to: "/notebook/ai/encyclopedia" },
+    { label: "AI Contributors", to: "/notebook/ai" },
+    { label: "The Complete Shelf", to: "/notebook/ai/shelf" },
     { label: "Business Notebook", to: "/notebook/business" },
     { label: "Conference Notebook", to: "/notebook/conference" },
   ];

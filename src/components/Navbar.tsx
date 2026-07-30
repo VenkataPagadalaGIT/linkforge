@@ -63,13 +63,14 @@ const MEGA: MegaMenu[] = [
     label: "Research",
     heading: "The reference layer",
     items: [
-      { label: "Map of the AI Economy", note: "471 players, who controls what", to: "/notebook/ai/map" },
-      { label: "AI Encyclopedia", note: "110 concepts, defined", to: "/notebook/ai/encyclopedia" },
-      { label: "Learning Roadmap", note: "zero to hero in 18 weeks", to: "/notebook/ai/roadmap" },
+      { label: "AI Roadmap", note: "zero to hero in 18 weeks, 93% free", to: "/notebook/ai/roadmap" },
+      { label: "AI Encyclopedia", note: "123 concepts, defined", to: "/notebook/ai/encyclopedia" },
       { label: "AI Contributors", note: "the 100 people building it", to: "/ai-contributors" },
+      { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf", badge: "new" },
+      { label: "Map of the AI Economy", note: "471 players, who controls what", to: "/notebook/ai/map" },
       { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
       { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
-      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates", badge: "new" },
+      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates" },
       { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
     ],
     footnote:

@@ -31,9 +31,9 @@ const STORAGE_KEY = "ai-contributors-explored";
 type TopLevelTab = "contributors" | "roadmap" | "encyclopedia";
 
 const topTabs = [
-  { id: "contributors" as TopLevelTab, path: "/notebook/ai", label: "📚 Top 100 Contributors", shortLabel: "Contributors" },
-  { id: "roadmap" as TopLevelTab, path: "/notebook/ai/roadmap", label: "🗺️ Learning Roadmap", shortLabel: "Roadmap" },
-  { id: "encyclopedia" as TopLevelTab, path: "/notebook/ai/encyclopedia", label: "🧠 Concepts Encyclopedia", shortLabel: "Encyclopedia" },
+  { id: "contributors" as TopLevelTab, path: "/notebook/ai", label: "📚 AI Contributors", shortLabel: "Contributors" },
+  { id: "roadmap" as TopLevelTab, path: "/notebook/ai/roadmap", label: "🗺️ AI Roadmap", shortLabel: "Roadmap" },
+  { id: "encyclopedia" as TopLevelTab, path: "/notebook/ai/encyclopedia", label: "🧠 AI Encyclopedia", shortLabel: "Encyclopedia" },
 ];
 
 const TAB_META: Record<TopLevelTab, { title: string; description: string; canonical: string; ogTitle: string }> = {
