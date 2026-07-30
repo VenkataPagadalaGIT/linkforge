@@ -302,15 +302,26 @@ const AIContributors = () => {
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
               Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
             </p>
-            <a
-              href="/notebook/ai/map"
-              className="mt-4 inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
-            >
-              <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The AI Systems Map →</span>
-              <span className="font-mono text-[10px] text-muted-foreground/60">
-                471 entities · 7 layers · the whole AI value chain as one dependency graph
-              </span>
-            </a>
+            <div className="mt-4 flex flex-col gap-2 items-start">
+              <a
+                href="/notebook/ai/map"
+                className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
+              >
+                <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The AI Systems Map →</span>
+                <span className="font-mono text-[10px] text-muted-foreground/60">
+                  471 entities · 7 layers · the whole AI value chain as one dependency graph
+                </span>
+              </a>
+              <a
+                href="/notebook/ai/shelf"
+                className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
+              >
+                <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The Complete Shelf →</span>
+                <span className="font-mono text-[10px] text-muted-foreground/60">
+                  19 free books in 3D · browse the shelf, pull one out, read it free
+                </span>
+              </a>
+            </div>
           </div>
 
             {/* Author card */}
