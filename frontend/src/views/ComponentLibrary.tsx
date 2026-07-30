@@ -127,7 +127,13 @@ const THREE_D_INDEX = [
     label: "BookShelf",
     href: "/notebook/ai/shelf",
     importPath: "@/components/library/BookShelfLazy",
-    note: "Generic browsable 3D library: any array of volumes becomes a walnut shelf with typeset covers and spines, a featured volume, and inspect mode. Powers The Complete Shelf (19 free books), the AI Roadmap shelf (28 topics), and the Top 100 Contributors shelf (100 people). Canvas-typeset textures, LRU cover cache, no asset files. Interaction grammar credited to Mint on /credits.",
+    note: "Generic browsable 3D library: any array of volumes becomes a walnut shelf with typeset covers and spines, a featured volume, and inspect mode. Powers The Complete Shelf (19 free books) and the AI Roadmap shelf (28 topics). Canvas-typeset textures, LRU cover cache, no asset files, container-based phone treatment. Interaction grammar credited to Mint on /credits.",
+  },
+  {
+    label: "ContributorAlbum",
+    href: "/notebook/ai",
+    importPath: "@/components/library/ContributorAlbumLazy",
+    note: "One book, a hundred photo pages: the Top 100 as a single opened volume with page-turn animation. Each page is one person (photo or monogram, name, affiliation, rank) and clicking a page opens the profile. Two page planes over growing stacks plus one flying leaf, so fifty leaves never exist at once; pages typeset on canvas, photos loaded lazily, sixteen-slot texture LRU.",
   },
   {
     label: "LlmExplorer",

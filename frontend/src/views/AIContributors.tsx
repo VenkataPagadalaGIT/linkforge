@@ -12,7 +12,7 @@ import CuratedReadingLists from "@/components/CuratedReadingLists";
 import AILearningRoadmap from "@/components/AILearningRoadmap";
 import BookShelfLazy from "@/components/library/BookShelfLazy";
 import { roadmapShelfVolumes, roadmapShelfStats } from "@/data/roadmapShelf";
-import { contributorShelfVolumes, contributorShelfStats } from "@/data/contributorShelf";
+import ContributorAlbumLazy from "@/components/library/ContributorAlbumLazy";
 import AIEncyclopedia from "@/components/AIEncyclopedia";
 import { aiContributors } from "@/data/aiContributors";
 import { roadmapTopics } from "@/data/aiRoadmap";
@@ -463,24 +463,17 @@ const AIContributors = () => {
         {/* === CONTRIBUTORS TAB === */}
         {topTab === "contributors" && (
           <>
-            {/* The hundred as a shelf: one volume per person, rank order.
-                A directory is skimmed; a shelf is browsed. */}
+            {/* The hundred as ONE book: a page per person, with their photo.
+                A directory is skimmed; an album is browsed. */}
             <ScrollReveal>
-              <div className="relative h-[62vh] min-h-[380px] border border-border mb-10 overflow-hidden">
-                <BookShelfLazy
-                  volumes={contributorShelfVolumes}
-                  coverBrand="Top 100 AI Contributors"
-                  captions={[
-                    `${contributorShelfStats.volumes} volumes · one per person`,
-                    "ranked · 01 continuous shelf",
-                  ]}
-                />
+              <div className="relative h-[62vh] min-h-[420px] border border-border mb-10 overflow-hidden">
+                <ContributorAlbumLazy />
                 <div className="pointer-events-none absolute top-4 left-5 z-10">
                   <p className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#2e2418" }}>
-                    The Top 100, as a shelf
+                    The Top 100, as one book
                   </p>
                   <p className="font-mono text-[10px] tracking-[0.18em] uppercase mt-1" style={{ color: "#8a7860" }}>
-                    every volume is a person · click a spine
+                    a page per person · turn the pages
                   </p>
                 </div>
               </div>
