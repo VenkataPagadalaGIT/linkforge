@@ -86,8 +86,8 @@ function sampleImage(img: HTMLImageElement): Sampled {
       // No rectangle anywhere: density falls off radially, so the portrait
       // condenses out of the page instead of sitting on it as a card. The
       // centre sits at the face, not the geometric middle.
-      const r = Math.hypot(nx * 2, (ny - 0.08) * 1.85);
-      alphas[i] = THREE.MathUtils.smoothstep(1.0 - r, 0.0, 0.5);
+      const radial = Math.hypot(nx * 2, (ny - 0.08) * 1.85);
+      alphas[i] = THREE.MathUtils.smoothstep(1.0 - radial, 0.0, 0.5);
       i++;
     }
   }
@@ -348,9 +348,12 @@ function CrispPhoto({
   useFrame((state, delta) => {
     const m = mat.current;
     if (!m) return;
+    // The face stays crisp at all times: it steps aside only for the click
+    // shatter, when the pieces ARE the picture. Hovering no longer dims it;
+    // the dust rim carries the pointer reaction instead.
     const fireAge = state.clock.elapsedTime - fireRef.current.vec.z;
-    const fireActive = fireRef.current.vec.z > 0 && fireAge < 2.5;
-    const want = clockRef.current.t >= 1.28 && !fireRef.current.hover && !fireActive ? 1 : 0;
+    const fireActive = fireRef.current.vec.z > 0 && fireAge < 2.0;
+    const want = clockRef.current.t >= 1.28 && !fireActive ? 1 : 0;
     const cur = m.uniforms.uOpacity.value as number;
     m.uniforms.uOpacity.value = cur + (want - cur) * Math.min(1, delta * (want ? 2.2 : 8));
   });
