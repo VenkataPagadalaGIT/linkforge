@@ -53,6 +53,10 @@ A structured 18-week curriculum across 28 topics with 420 curated resources: 115
 A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum from a first Python program through mathematics, classical ML, deep learning, NLP, deploying models and reinforcement learning to AI safety. Author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain only: no free trials, no sample chapters, nothing pirated. Books by a profiled author link to that contributor's page. All nineteen titles are also listed as plain links on the page for anyone without WebGL.
 - URL: https://venkatapagadala.com/notebook/ai/shelf
 
+### Everything in 3D (hub)
+Every interactive 3D experience on the site in one place: the playable 2040 city, the explorable LLM machine, the 3D HVAC system, the Complete Shelf of free books, the AI Roadmap shelf, the Top 100 glass album, the AI Economy map, and the homepage's living portrait. All generated geometry running in the browser; no downloads, no model files.
+- URL: https://venkatapagadala.com/3d
+
 ## Reference Guides
 
 ### Graph Types for AI Agents (2026)

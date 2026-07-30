@@ -59,6 +59,25 @@ const MEGA: MegaMenu[] = [
     active: ["/guides", "/3d-game"],
   },
   {
+    id: "threed",
+    label: "3D",
+    heading: "Explorable, in three dimensions",
+    items: [
+      { label: "3D Game: the 2040 City", note: "walk and drive a 2040 city", to: "/3d-game" },
+      { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/", badge: "new" },
+      { label: "How LLMs Work", note: "21 stages, explorable in 3D", to: "/guides/how-llms-work" },
+      { label: "Inside a Home HVAC System", note: "same method, physical hardware", to: "/guides/hvac-system-troubleshooting" },
+      { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf" },
+      { label: "The AI Roadmap Shelf", note: "28 topics as clothbound volumes", to: "/notebook/ai/roadmap" },
+      { label: "The Top 100 Album", note: "a glass book of 100 faces", to: "/notebook/ai", badge: "new" },
+      { label: "Map of the AI Economy", note: "471 players, flat or in 3D", to: "/notebook/ai/map" },
+    ],
+    footnote:
+      "Every one of these is generated geometry running in your browser. No downloads, no model files: the whole third dimension ships as code.",
+    seeAll: { label: "See everything in 3D", to: "/3d" },
+    active: ["/3d-game", "/3d"],
+  },
+  {
     id: "research",
     label: "Research",
     heading: "The reference layer",
@@ -80,10 +99,10 @@ const MEGA: MegaMenu[] = [
   },
 ];
 
-/** Plain links after the menus. About sits last and quieter on purpose. */
+/** Plain links after the menus. About sits last and quieter on purpose.
+ *  The old flat "3D Game" link grew into the 3D mega menu above. */
 const FLAT = [
   { label: "Insights", to: "/insights", dim: false },
-  { label: "3D Game", to: "/3d-game", dim: false },
   { label: "About", to: "/about", dim: true },
 ];
 

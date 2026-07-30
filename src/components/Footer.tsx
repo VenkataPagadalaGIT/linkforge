@@ -11,6 +11,7 @@ const Footer = () => {
 
   const links = [
     { label: "About", to: "/about" },
+    { label: "Everything in 3D", to: "/3d" },
     { label: "Publications", to: "/publications" },
     { label: "Solutions", to: "/solutions" },
     { label: "Insights", to: "/insights" },
