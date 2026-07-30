@@ -300,7 +300,7 @@ const AIContributors = () => {
               {topTab === "roadmap" ? "Free AI Roadmap 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
             </h1>
             <p className="font-mono text-xs text-muted-foreground/60 max-w-xl leading-relaxed">
-              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (93% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
+              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (92% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
               Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
@@ -435,7 +435,7 @@ const AIContributors = () => {
                    🗺️ Free AI Roadmap, Zero to Hero · July 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked in July 2026.
+                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 92% are completely free. Every link was opened and checked in July 2026.
                  </p>
               </div>
               <AILearningRoadmap />

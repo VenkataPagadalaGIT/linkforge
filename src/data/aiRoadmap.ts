@@ -82,13 +82,18 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Python for Everybody · Full University Course (Dr. Chuck)", url: "https://www.youtube.com/watch?v=8DvywoWv6fI" },
     ],
     bestCourses: [
+      { title: "MIT 6.0001 · Intro to CS and Programming in Python (OpenCourseWare)", url: "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/" },
       { title: "Python.org Official Tutorial", url: "https://docs.python.org/3/tutorial/" },
       { title: "Automate the Boring Stuff · Free Book", url: "https://automatetheboringstuff.com/" },
-      { title: "Codecademy Python", url: "https://www.codecademy.com/learn/learn-python-3" },
+      // Codecademy's own page metadata declares isAccessibleForFree: false
+      // with a $29.99/mo offer (verified 2026-07-29), so it carries the badge.
+      { title: "Codecademy Python", url: "https://www.codecademy.com/learn/learn-python-3", access: "paid" },
       { title: "Google's Python Class", url: "https://developers.google.com/edu/python" },
     ],
     books: [
-      { title: "Python Crash Course by Eric Matthes", url: "https://ehmatthes.github.io/pcc/" },
+      // The link is the author's free companion site (cheat sheets, code),
+      // but the book itself is a paid No Starch title, so it carries the badge.
+      { title: "Python Crash Course by Eric Matthes", url: "https://ehmatthes.github.io/pcc/", access: "paid" },
       { title: "Fluent Python by Luciano Ramalho", url: "https://www.amazon.com/Fluent-Python-Concise-Effective-Programming/dp/1492056359", access: "paid" },
       { title: "Think Python by Allen Downey · free online", url: "https://greenteapress.com/thinkpython2/" },
     ],
@@ -200,7 +205,9 @@ export const roadmapTopics: RoadmapTopic[] = ([
     bestCourses: [
       { title: "Kaggle Learn · Data Cleaning (Free)", url: "https://www.kaggle.com/learn/data-cleaning" },
       { title: "Mode Analytics · SQL Tutorial", url: "https://mode.com/sql-tutorial/" },
-      { title: "DataCamp · Data Engineering Track", url: "https://www.datacamp.com/tracks/data-engineer" },
+      // Track content is subscription-gated; only a first-chapter slice is
+      // free (verified 2026-07-29), so it is freemium, not free.
+      { title: "DataCamp · Data Engineering Track", url: "https://www.datacamp.com/tracks/data-engineer", access: "freemium" },
       { title: "W3Schools · SQL Tutorial (Free)", url: "https://www.w3schools.com/sql/" },
     ],
     books: [

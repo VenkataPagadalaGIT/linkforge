@@ -145,7 +145,7 @@ The authoritative directory of 100 AI pioneers shaping the field in 2026. Profil
 - URL: https://venkatapagadala.com/notebook/ai
 
 ### AI Learning Roadmap — Zero to Hero (2026)
-A structured 18-week curriculum across 28 topics with 419 curated resources: 115 videos, 120 courses, 84 books and 100 GitHub repos, organized in six phases from Foundations to Specialize & Build. 390 of the 419 resources (93%) are free; the rest carry explicit freemium or paid badges so nobody clicks through expecting free and hits a paywall. Each topic includes difficulty level, week number, tools, and pro tips. Reviewed July 2026.
+A structured 18-week curriculum across 28 topics with 420 curated resources: 115 videos, 121 courses, 84 books and 100 GitHub repos, organized in six phases from Foundations to Specialize & Build. 388 of the 420 resources (92%) are free; the rest carry explicit freemium or paid badges so nobody clicks through expecting free and hits a paywall. Each topic includes difficulty level, week number, tools, and pro tips. Reviewed July 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
