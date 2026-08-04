@@ -30,6 +30,7 @@ const Footer = () => {
 
   const files = [
     { name: "llms.txt", path: "/llms.txt" },
+    { name: "okf/index.md", path: "/okf/index.md" },
     { name: "sitemap.xml", path: "/sitemap.xml" },
     { name: "rss.xml", path: "/rss.xml" },
     { name: "robots.txt", path: "/robots.txt" },
