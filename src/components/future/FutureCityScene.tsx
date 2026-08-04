@@ -31,6 +31,7 @@ import {
 } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
+import { captureBuffer } from "@/lib/captureFlag";
 import {
   createContext,
   useContext,
@@ -4844,6 +4845,7 @@ export default function FutureCityScene(props: FutureCitySceneProps) {
         alpha: false,
         powerPreference: props.glPower ?? "high-performance",
         failIfMajorPerformanceCaveat: false,
+        preserveDrawingBuffer: captureBuffer(),
       }}
       onCreated={({ gl }) => {
         gl.setClearColor("#0a0a0b");

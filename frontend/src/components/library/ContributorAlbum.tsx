@@ -20,6 +20,7 @@ import { Suspense, useEffect, useMemo, useRef, useState, useCallback } from "rea
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { RoundedBox, ContactShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
+import { captureBuffer } from "@/lib/captureFlag";
 import { Link, useNavigate } from "@/lib/router-shim";
 import { aiContributors, type AIContributor } from "@/data/aiContributors";
 
@@ -670,7 +671,7 @@ const ContributorAlbum = ({ glPower = "high-performance" }: { glPower?: "high-pe
       <Canvas
         dpr={[1, 1.75]}
         camera={{ position: [0, BOOK_Y + 0.02, 0.6], fov: 34, near: 0.01, far: 12 }}
-        gl={{ antialias: true, powerPreference: glPower }}
+        gl={{ antialias: true, powerPreference: glPower, preserveDrawingBuffer: captureBuffer() }}
         onPointerDown={(e) => {
           if (openPRef.current >= 0.985) swipe.current = { x: e.clientX };
         }}

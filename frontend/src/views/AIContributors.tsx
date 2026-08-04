@@ -418,6 +418,8 @@ const AIContributors = () => {
               <ScrollReveal>
                 <div className="relative h-[62vh] min-h-[380px] border border-border mb-8 overflow-hidden">
                   <BookShelfLazy
+                    poster="/posters/roadmap-shelf.jpg"
+                    posterAlt="The AI Roadmap shelf: the What is AI? volume pulled forward"
                     volumes={roadmapShelfVolumes}
                     coverBrand="The AI Roadmap"
                     captions={[

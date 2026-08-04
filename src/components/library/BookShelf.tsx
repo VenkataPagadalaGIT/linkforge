@@ -22,6 +22,7 @@ import { Suspense, useEffect, useMemo, useRef, useState, createContext, useConte
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, RoundedBox, ContactShadows, Environment } from "@react-three/drei";
 import * as THREE from "three";
+import { captureBuffer } from "@/lib/captureFlag";
 import { Link } from "@/lib/router-shim";
 
 /* ---------------------------------------------------------------- *
@@ -757,7 +758,7 @@ const BookShelf = ({ volumes, coverBrand, shelfMark = "VP_", captions, glPower =
       <Canvas
         dpr={[1, 1.75]}
         camera={{ position: [layout[0]?.x ?? 0, 0.045, 0.77], fov: 34, near: 0.01, far: 12 }}
-        gl={{ antialias: true, powerPreference: glPower }}
+        gl={{ antialias: true, powerPreference: glPower, preserveDrawingBuffer: captureBuffer() }}
         onWheel={(e) => {
           if (inspecting) return;
           setTargetRaw((t) => clamp(t + e.deltaY * 0.0006));

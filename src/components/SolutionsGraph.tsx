@@ -5,6 +5,32 @@ import { Link, useNavigate } from "@/lib/router-shim";
 import { ArrowRight, Network, Brain, List, ExternalLink } from "lucide-react";
 import { services } from "@/components/ServicesGrid";
 import ContextGraphCanvas from "@/components/ContextGraphCanvas";
+
+/**
+ * A poster still that yields to its live canvas on mount. The canvases here
+ * are transparent 2D, so layering does not work; instead the still is
+ * removed once the effect runs. On script-blocked corporate networks the
+ * effect never runs and the reader sees the settled graph instead of an
+ * empty box.
+ */
+function PosterUntilLive({ children }: { children: React.ReactNode }) {
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    setLive(true);
+  }, []);
+  return (
+    <>
+      {!live && (
+        <img
+          src="/posters/solutions.jpg"
+          alt="The capability graph: six service pillars with their offerings"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {children}
+    </>
+  );
+}
 import { useCanvasThemeColors } from "@/lib/canvas-theme";
 
 type ViewMode = "graph" | "neural" | "structured";
@@ -888,7 +914,9 @@ const SolutionsGraph = () => {
         {viewMode === "neural" && (
           <motion.div key="neural" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             <div className="border border-border relative overflow-hidden" style={{ minHeight: 640 }}>
-              <NeuralSolutionsCanvas />
+              <PosterUntilLive>
+                <NeuralSolutionsCanvas />
+              </PosterUntilLive>
               {/* Overlay labels, top-right so we don't collide with the
                   in-canvas legend pinned at bottom-left */}
               <div className="absolute top-4 right-4 font-mono text-[9px] text-muted-foreground/40 tracking-widest uppercase pointer-events-none">
@@ -924,7 +952,9 @@ const SolutionsGraph = () => {
 
               {/* Canvas Graph */}
               <div className="flex-1 border border-border relative overflow-hidden" style={{ minHeight: 640 }}>
+                <PosterUntilLive>
                 <ContextGraphCanvas />
+              </PosterUntilLive>
               </div>
             </div>
           </motion.div>
