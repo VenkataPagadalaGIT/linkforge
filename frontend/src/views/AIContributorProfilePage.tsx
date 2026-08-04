@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { photoCreditFor } from "@/data/photoCredits";
 import { useParams, Link, useNavigate } from "@/lib/router-shim";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
@@ -180,12 +181,24 @@ const AIContributorProfilePage = () => {
             <div className="flex items-start gap-6 mb-8">
               <div className="shrink-0">
                 {contributor.photoUrl ? (
-                  <img
-                    src={contributor.photoUrl}
-                    alt={`Photo of ${contributor.name}`}
-                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-sm"
-                    loading="lazy"
-                  />
+                  <div>
+                    <img
+                      src={contributor.photoUrl}
+                      alt={`Photo of ${contributor.name}`}
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-sm"
+                      loading="lazy"
+                    />
+                    {photoCreditFor(contributor.id) && (
+                      <a
+                        href={photoCreditFor(contributor.id)!.source}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block mt-1 font-mono text-[8px] leading-tight text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors max-w-24"
+                      >
+                        Photo: {photoCreditFor(contributor.id)!.author}, {photoCreditFor(contributor.id)!.license}
+                      </a>
+                    )}
+                  </div>
                 ) : (
                   <div
                     className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center font-mono text-xl sm:text-2xl font-bold text-background"
@@ -194,7 +207,10 @@ const AIContributorProfilePage = () => {
                     {contributor.name.split(" ").map((w) => w[0]).join("")}
                   </div>
                 )}
-                {contributor.photoCredit && (
+                {/* The structured credit (author, license, source link) wins;
+                    the legacy free-text string renders only where no verified
+                    entry exists yet. */}
+                {contributor.photoCredit && !photoCreditFor(contributor.id) && (
                   <p className="font-mono text-[8px] text-muted-foreground/25 mt-1 max-w-24 leading-tight">
                     {contributor.photoCredit}
                   </p>

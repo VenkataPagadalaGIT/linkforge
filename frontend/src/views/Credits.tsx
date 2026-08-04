@@ -4,6 +4,8 @@ import SEO from "@/components/SEO";
 import { ExternalLink } from "lucide-react";
 import { Link } from "@/lib/router-shim";
 import { inspirations } from "@/data/inspirations";
+import { photoCredits } from "@/data/photoCredits";
+import { aiContributors } from "@/data/aiContributors";
 
 /**
  * Credits and inspiration, as a first-class page.
@@ -79,6 +81,45 @@ const Credits = () => {
             </ScrollReveal>
           ))}
         </div>
+
+        <ScrollReveal>
+          <h2 className="font-display text-2xl font-bold text-foreground mt-14 mb-3">Photography</h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-6 max-w-2xl">
+            Contributor portraits sourced from Wikimedia Commons under Creative Commons
+            licenses, credited to their photographers. Each link opens the original file
+            page with the full license terms.
+          </p>
+          <div className="border border-border divide-y divide-border/60 mb-4">
+            {photoCredits.map((c) => {
+              const person = aiContributors.find((p) => p.id === c.id);
+              return (
+                <div key={c.id} className="p-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <span className="font-display text-sm font-bold text-foreground w-40">
+                    {person?.name ?? c.id}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground/70">
+                    Photo by {c.author}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/50 border border-border/60 px-1.5 py-0.5">
+                    {c.license}
+                  </span>
+                  <a
+                    href={c.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[11px] underline decoration-dotted text-muted-foreground/60 hover:text-foreground transition-colors"
+                  >
+                    original
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mb-10">
+            Remaining portraits were collected from public appearances and are being
+            progressively replaced with licensed Commons images.
+          </p>
+        </ScrollReveal>
 
         <ScrollReveal>
           <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mt-10">
