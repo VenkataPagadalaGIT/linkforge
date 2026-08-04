@@ -181,11 +181,19 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-8">
             {MEGA.map((m) => (
               <div key={m.id} onMouseEnter={() => hoverOpen(m.id)} className="relative">
-                <button
-                  type="button"
+                {/* A real link, JS-enhanced into a menu toggle. On locked-down
+                    corporate networks the security proxy blocks our scripts
+                    (Chrome reports it as CORB), so with no JS this navigates
+                    to the section's hub page instead of clicking into nothing.
+                    With JS, preventDefault keeps the click-to-toggle behavior. */}
+                <a
+                  href={m.seeAll.to}
                   aria-expanded={openMenu === m.id}
                   aria-haspopup="true"
-                  onClick={() => setOpenMenu(openMenu === m.id ? null : m.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenMenu(openMenu === m.id ? null : m.id);
+                  }}
                   className={`font-mono text-xs tracking-wider uppercase transition-all hover:text-foreground flex items-center gap-1 ${
                     isActive(m.active) || openMenu === m.id ? "text-foreground" : "text-muted-foreground"
                   }`}
@@ -196,7 +204,7 @@ const Navbar = () => {
                     className={`transition-transform ${openMenu === m.id ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   />
-                </button>
+                </a>
               </div>
             ))}
             {FLAT.map((l) => (
@@ -300,10 +308,16 @@ const Navbar = () => {
           <div className="px-6 py-8 flex flex-col gap-6">
             {MEGA.map((m) => (
               <div key={m.id}>
-                <button
-                  type="button"
+                {/* Same progressive enhancement as desktop: without JS the
+                    drawer never opens anyway, but keeping the label a real
+                    link means any rendering of this list stays navigable. */}
+                <a
+                  href={m.seeAll.to}
                   aria-expanded={mobileSection === m.id}
-                  onClick={() => setMobileSection(mobileSection === m.id ? null : m.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileSection(mobileSection === m.id ? null : m.id);
+                  }}
                   className="w-full flex items-center justify-between font-mono text-base tracking-widest uppercase text-foreground"
                 >
                   {m.label}
@@ -312,7 +326,7 @@ const Navbar = () => {
                     className={`transition-transform ${mobileSection === m.id ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   />
-                </button>
+                </a>
                 {mobileSection === m.id && (
                   <div className="mt-4 pl-3 border-l border-border flex flex-col gap-4">
                     {m.items.map((it) => (

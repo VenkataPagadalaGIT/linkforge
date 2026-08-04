@@ -13,7 +13,7 @@ sources:
     author: human:venkata-pagadala
     last_modified: 2026-07-13
 ---
-# Shape
+# Schema
 
 | Field | Meaning |
 |---|---|
