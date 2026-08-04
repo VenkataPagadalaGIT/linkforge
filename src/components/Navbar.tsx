@@ -1,18 +1,20 @@
 "use client";
 /**
- * Navbar: two mega menus (Teardowns, Research), one direct link, About last,
- * and Contact as the CTA.
+ * Navbar: three mega menus (Teardowns, 3D, Research), plain links after them,
+ * About last, and Contact as the CTA.
  *
- * This is a LABELS-AND-STRUCTURE change only. Every href below is an existing
- * URL, unchanged: the section a visitor reads as "Teardowns" is still served
- * from /guides/*, and "Research" is still /notebook/* and /ai-contributors.
- * Labels and slugs are independent, so the site reads differently without
- * moving a single page while the domain is rebuilding its index.
+ * Labels and slugs are independent: the section a visitor reads as
+ * "Teardowns" is still served from /guides/*, so the site can read
+ * differently without moving a single page.
  *
- * The menus render real <a href> links at all times (no JS-gated hrefs), so
- * they double as crawlable internal links to the flagships from every page.
- * Desktop opens on hover with a short intent delay and on click/keyboard;
- * mobile turns each menu into an accordion inside the existing drawer.
+ * Progressive enhancement, and it is load-bearing rather than theoretical.
+ * Corporate proxies intercept .js and answer with their own block page;
+ * Chrome refuses the non-script response (reported as CORB) and NOTHING on
+ * the site runs. So every menu label is a real <a href> to its section hub,
+ * upgraded by JS into a menu toggle. With scripts blocked, clicking a label
+ * navigates to a page listing that whole section; with scripts alive, the
+ * panel opens as before. The panel itself renders only while open, so its
+ * deep links live in the hubs, the footer and the sitemap instead.
  */
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
@@ -250,7 +252,12 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mega panel: full-bleed under the bar, desktop only */}
+        {/* Mega panel: full-bleed under the bar, desktop only. Rendered on
+            open, so its destinations are not in the server HTML; the label
+            above is a real link to the section hub, which is how a
+            script-blocked browser (and a crawler that does not run JS)
+            reaches everything inside. Hubs, footer and sitemap carry the
+            deep links. */}
         {MEGA.map((m) =>
           openMenu === m.id ? (
             <div
