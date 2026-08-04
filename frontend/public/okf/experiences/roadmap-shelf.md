@@ -4,7 +4,8 @@ title: The AI Roadmap Shelf
 description: The 18-week AI curriculum as twenty-eight clothbound volumes; every volume opens into its real resources.
 resource: https://venkatapagadala.com/notebook/ai/roadmap
 tags: [education, roadmap, library]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
 ---
 # What it holds
 

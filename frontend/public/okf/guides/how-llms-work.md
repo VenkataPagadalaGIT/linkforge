@@ -4,7 +4,8 @@ title: How LLMs Work
 description: Every stage a prompt passes through, modeled as an explorable 3D machine, with a guided token journey and full crawlable text.
 resource: https://venkatapagadala.com/guides/how-llms-work
 tags: [llm, transformers, 3d, education]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
 ---
 # What it covers
 

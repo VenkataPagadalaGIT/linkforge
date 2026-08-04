@@ -4,7 +4,8 @@ title: The Disruption of Search Engine Optimization by Large Language Models
 description: A mixed-methods analysis of the evolving search landscape. SSRN, posted 3 Apr 2026.
 resource: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878
 tags: [seo, llm, research]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
 ---
 # Summary
 

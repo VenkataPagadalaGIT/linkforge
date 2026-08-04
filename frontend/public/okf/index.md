@@ -1,26 +1,20 @@
 ---
-type: Site
-title: venkatapagadala.com
-description: Personal research hub of Venkata Pagadala. AI systems teardowns, interactive 3D experiences, curated AI learning datasets, and published research.
-resource: https://venkatapagadala.com
-tags: [ai, seo, research, 3d, education]
-timestamp: 2026-07-30T05:30:00Z
+okf_version: "0.2"
 ---
 # venkatapagadala.com
 
-The knowledge on this site, packaged as an Open Knowledge Format bundle so
-humans and agents read the same files. Everything described here is live and
-free to use.
+The knowledge on this site as an Open Knowledge Format bundle: humans and
+agents read the same files. Everything described here is live and free.
 
 # Concepts
 
-- [Guides](guides/index.md): long-form teardowns of complex systems.
-- [3D Experiences](experiences/index.md): interactive geometry, generated in code.
-- [Datasets](datasets/index.md): curated, hand-audited learning data.
-- [Research](research/index.md): peer-reviewed publications.
+* [Guides](guides/) - long-form interactive teardowns of complex systems.
+* [3D Experiences](experiences/) - interactive geometry, generated in code.
+* [Datasets](datasets/) - curated, hand-audited learning data.
+* [Research](research/) - peer-reviewed publications.
 
 # Companion surfaces
 
-- Machine index: https://venkatapagadala.com/llms.txt
-- Full documentation: https://venkatapagadala.com/llms-full.txt
-- Sitemap: https://venkatapagadala.com/sitemap.xml
+* [llms.txt](https://venkatapagadala.com/llms.txt) - machine index of the site.
+* [llms-full.txt](https://venkatapagadala.com/llms-full.txt) - full documentation.
+* [sitemap.xml](https://venkatapagadala.com/sitemap.xml) - crawl surface.

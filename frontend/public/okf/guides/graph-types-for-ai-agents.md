@@ -4,7 +4,8 @@ title: Graph Types for AI Agents
 description: Ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index, defined and visualized with one dataset modeled six ways.
 resource: https://venkatapagadala.com/guides/graph-types-for-ai-agents
 tags: [knowledge-graphs, ontology, agents, seo]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
 ---
 # What it covers
 

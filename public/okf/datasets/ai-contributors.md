@@ -4,7 +4,14 @@ title: Top 100 AI Contributors
 description: One hundred profiled people shaping AI, ranked, with bios, affiliations, education, timelines and curated reading lists.
 resource: https://venkatapagadala.com/ai-contributors
 tags: [people, directory]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
+sources:
+  - id: contributors-module
+    resource: src/data/aiContributors.ts in the venkatapagadala.com repository
+    title: Contributors data module (single source of truth)
+    author: human:venkata-pagadala
+    last_modified: 2026-07-27
 ---
 # Shape
 

@@ -4,7 +4,8 @@ title: Inside a Home HVAC System
 description: An interactive 3D home HVAC system with a fault library, guided scenarios, and symptom-based diagnosis.
 resource: https://venkatapagadala.com/guides/hvac-system-troubleshooting
 tags: [hvac, 3d, diagnosis, teardown]
-timestamp: 2026-07-30T05:30:00Z
+generated: { by: claude-code/fable-5, at: 2026-07-30T05:30:00Z }
+verified: { by: claude-code/fable-5, at: 2026-08-04T11:30:00Z }
 ---
 # What it covers
 

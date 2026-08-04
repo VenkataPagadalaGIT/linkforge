@@ -1,14 +1,6 @@
----
-type: Index
-title: Datasets
-description: The curated, hand-audited datasets behind the site's learning surfaces.
-resource: https://venkatapagadala.com/notebook/ai
-tags: [datasets, curation]
-timestamp: 2026-07-30T05:30:00Z
----
 # Datasets
 
-- [AI Learning Roadmap](ai-roadmap.md): 420 resources across 28 topics.
-- [Top 100 AI Contributors](ai-contributors.md): 100 profiled people.
-- [AI Concepts Encyclopedia](ai-encyclopedia.md): 123 concepts.
-- [AI Industry Ontology](ai-ontology.md): 471 entities, 1,245 edges.
+* [AI Learning Roadmap](ai-roadmap.md) - 420 resources across 28 topics, 92% free, audited by hand.
+* [Top 100 AI Contributors](ai-contributors.md) - 100 profiled people with timelines and reading lists.
+* [AI Concepts Encyclopedia](ai-encyclopedia.md) - 123 concepts across 10 categories.
+* [AI Industry Ontology](ai-ontology.md) - 471 entities, 1,245 hand-reviewed edges.

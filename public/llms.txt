@@ -54,7 +54,7 @@ A browsable 3D walnut shelf of nineteen AI and machine learning books that are g
 - URL: https://venkatapagadala.com/notebook/ai/shelf
 
 ### Open Knowledge Format bundle
-The site's knowledge packaged as an Open Knowledge Format (OKF v0.1) bundle: markdown with YAML frontmatter, one file per concept, cross-linked. Guides, 3D experiences, datasets and research, readable by humans and parseable by agents from the same files.
+The site's knowledge packaged as an Open Knowledge Format (OKF v0.2) bundle: markdown with YAML frontmatter, one file per concept, cross-linked, with generated/verified trust metadata and per-dataset sources. Guides, 3D experiences, datasets and research, readable by humans and parseable by agents from the same files.
 - URL: https://venkatapagadala.com/okf/index.md
 
 ### Everything in 3D (hub)
