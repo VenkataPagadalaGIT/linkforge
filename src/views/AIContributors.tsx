@@ -48,15 +48,15 @@ const TAB_META: Record<TopLevelTab, { title: string; description: string; canoni
   },
   roadmap: {
     title: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks | Venkata Pagadala",
-    description: "The best free AI roadmap for 2026. A structured 28-topic curriculum with 400+ curated free resources: videos, courses, books, repos, and pro tips. From beginner to advanced, completely free.",
+    description: "The best free AI roadmap for 2026. An 18-week core plus seven depth tracks, 35 topics, 473 curated resources (93% free): videos, courses, books, repos, and pro tips. From beginner to advanced.",
     canonical: "https://venkatapagadala.com/notebook/ai/roadmap",
     ogTitle: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks",
   },
   encyclopedia: {
-    title: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained | Venkata Pagadala",
+    title: "Best AI Concepts Encyclopedia 2026 · 154 Concepts Explained | Venkata Pagadala",
     description: "The best AI concepts encyclopedia: 154 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
     canonical: "https://venkatapagadala.com/notebook/ai/encyclopedia",
-    ogTitle: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained",
+    ogTitle: "Best AI Concepts Encyclopedia 2026 · 154 Concepts Explained",
   },
 };
 
@@ -174,7 +174,7 @@ const AIContributors = () => {
         url: "https://venkatapagadala.com",
       },
       datePublished: "2026-01-15",
-      dateModified: "2026-03-19",
+      dateModified: "2026-08-08",
       inLanguage: "en-US",
       isPartOf: {
         "@type": "WebSite",
@@ -308,7 +308,7 @@ const AIContributors = () => {
               Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (93% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
-              Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
+              Last reviewed August 2026. Every profile, every link and every definition checked by hand, not assumed.
             </p>
             <div className="mt-4 flex flex-col gap-2 items-start">
               <a
@@ -439,7 +439,7 @@ const AIContributors = () => {
               </ScrollReveal>
               <div className="mb-6">
                  <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                   🗺️ Free AI Roadmap, Zero to Hero · July 2026
+                   🗺️ Free AI Roadmap, Zero to Hero · August 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
                    A structured AI curriculum with 473 curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked, July and August 2026 passes.

@@ -145,11 +145,11 @@ The authoritative directory of 100 AI pioneers shaping the field in 2026. Profil
 - URL: https://venkatapagadala.com/notebook/ai
 
 ### AI Learning Roadmap — Zero to Hero (2026)
-A structured 18-week curriculum across 28 topics with 420 curated resources: 115 videos, 121 courses, 84 books and 100 GitHub repos, organized in six phases from Foundations to Specialize & Build. 388 of the 420 resources (92%) are free; the rest carry explicit freemium or paid badges so nobody clicks through expecting free and hits a paywall. Each topic includes difficulty level, week number, tools, and pro tips. Reviewed July 2026.
+An 18-week core curriculum plus seven elective depth tracks (multimodal, speech and audio, robotics, efficient inference, recommenders, time series, graph ML): 35 topics with 473 curated resources, 127 videos, 134 courses, 93 books and 119 GitHub repos, organized in seven phases from Foundations to Depth Tracks. 440 of the 473 resources (93%) are free; the rest carry explicit freemium or paid badges so nobody clicks through expecting free and hits a paywall. Each topic includes difficulty level, week number, tools, and pro tips. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-123 AI concepts across 10 categories (Foundations, Machine Learning, Deep Learning, NLP, Computer Vision, Reinforcement Learning, Generative AI, Ethics & Safety, Infrastructure, and Emerging Topics). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026.
+154 AI concepts across 10 categories (Core ML Concepts, Math & Optimization, Architectures, NLP & Language, Computer Vision, Generative AI, Reinforcement Learning, MLOps & Infrastructure, AI Agents & Applications, and Safety, Ethics & Governance). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
