@@ -26,7 +26,7 @@ const AIUpdatesIndex = () => {
     <div className="min-h-screen bg-background pt-24 pb-20">
       <SEO
         title="AI Updates 2026 · Latest AI News & Product Launches | Venkata Pagadala"
-        description="Stay updated with the latest AI news: product launches from NVIDIA, Google, OpenAI, Meta, Cloudflare, and more. Curated AI updates, reviewed July 2026."
+        description="Stay updated with the latest AI news: product launches from NVIDIA, Google, OpenAI, Meta, Cloudflare, and more. Curated AI updates, reviewed August 2026."
         canonical="https://venkatapagadala.com/ai-updates"
         breadcrumbs={[
           { name: "Home", url: "https://venkatapagadala.com" },

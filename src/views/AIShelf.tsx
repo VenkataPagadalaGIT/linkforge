@@ -104,7 +104,7 @@ export default function AIShelf() {
           </p>
           <p className="font-mono text-xs text-muted-foreground/50 mb-10">
             Drag, scroll or use the arrow keys to move along the shelf. Click a spine to
-            pull the book out, then orbit and zoom it. Reviewed July 2026.
+            pull the book out, then orbit and zoom it. Reviewed August 2026.
           </p>
         </ScrollReveal>
 

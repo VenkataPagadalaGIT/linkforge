@@ -70,5 +70,8 @@ export const roadmapShelfVolumes: ShelfVolume[] = roadmapTopics.map((t, i) => {
 
 export const roadmapShelfStats = {
   volumes: roadmapShelfVolumes.length,
-  weeks: Math.max(...roadmapTopics.map((t) => t.week)),
+  /** The taught core only. Weeks past this are elective depth tracks, so the
+   *  old max-week reading advertised a 25-week march nobody is asked to do. */
+  coreWeeks: Math.max(...roadmapTopics.filter((t) => t.week <= 18).map((t) => t.week)),
+  electives: roadmapTopics.filter((t) => t.week > 18).length,
 };

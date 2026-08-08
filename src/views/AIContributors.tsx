@@ -423,8 +423,8 @@ const AIContributors = () => {
                     volumes={roadmapShelfVolumes}
                     coverBrand="The AI Roadmap"
                     captions={[
-                      `${roadmapShelfStats.volumes} topics · ${roadmapShelfStats.weeks} weeks`,
-                      "01 continuous curriculum",
+                      `${roadmapShelfStats.volumes} topics · ${roadmapShelfStats.coreWeeks}-week core`,
+                      `${roadmapShelfStats.electives} depth tracks`,
                     ]}
                   />
                   <div className="pointer-events-none absolute top-4 left-5 z-10">
@@ -456,7 +456,7 @@ const AIContributors = () => {
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                  🧠 AI Concepts Encyclopedia · July 2026
+                  🧠 AI Concepts Encyclopedia · August 2026
                 </h2>
                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
                   175 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed, July and August 2026 passes.
