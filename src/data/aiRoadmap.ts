@@ -37,6 +37,7 @@ export const PHASES = [
   { id: "deep-learning", label: "Phase 4: Deep Learning", color: "#f97316", emoji: "🟠" },
   { id: "nlp-llms", label: "Phase 5: NLP & LLMs", color: "#ef4444", emoji: "🔴" },
   { id: "specialize", label: "Phase 6: Specialize & Build", color: "#a855f7", emoji: "🟣" },
+  { id: "depth-tracks", label: "Phase 7: Depth Tracks", color: "#06b6d4", emoji: "🧭" },
 ];
 
 export const roadmapTopics: RoadmapTopic[] = ([
@@ -897,5 +898,169 @@ export const roadmapTopics: RoadmapTopic[] = ([
     ],
     tools: "arXiv, Papers With Code, Semantic Scholar, Google Scholar, Zotero (reference manager), Notion (paper notes)",
     proTips: "Don't read papers cover-to-cover, read Abstract → Conclusion → Figures → Methods. Yannic Kilcher's channel is the best for paper walkthroughs. Subscribe to The Batch (Andrew Ng) and Import AI (Jack Clark).",
+  },
+
+  // === Phase 7: Depth Tracks ===
+  // The 18-week core takes you from zero to employable. These electives are
+  // where you go deep in the direction your work actually points: pick one or
+  // two, not all seven. Every resource below is free, because the best
+  // material in each of these fields genuinely is.
+  {
+    id: "multimodal-vlms", topic: "Multimodal AI & Vision-Language Models",
+    description: "Models that see and read at once. CLIP-style contrastive pretraining, vision-language models like LLaVA, and how image encoders get bolted onto LLMs. This is the layer behind screenshot understanding, visual search, and every model that answers questions about a photo.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "advanced", order: 19, week: 19,
+    bestVideos: [
+      { title: "Stanford CS231n · Deep Learning for Computer Vision (Spring 2017 lectures)", url: "https://www.youtube.com/playlist?list=PLC1qU-LWwrF64f4QKQT-Vg5Wr4qEE1Zxk", authors: ["fei-fei-li", "karpathy"] },
+      { title: "Stanford CS25 · Transformers United (multimodal sessions)", url: "https://web.stanford.edu/class/cs25/" },
+      { title: "Multimodality and Large Multimodal Models · Chip Huyen", url: "https://huyenchip.com/2023/10/10/multimodal.html" },
+    ],
+    bestCourses: [
+      { title: "Hugging Face · Community Computer Vision Course", url: "https://huggingface.co/learn/computer-vision-course" },
+      { title: "OpenAI CLIP · the paper that started contrastive VLMs", url: "https://openai.com/index/clip/" },
+      { title: "Stanford CS231n course site (notes free)", url: "https://cs231n.stanford.edu/" },
+    ],
+    books: [
+      { title: "Foundations of Computer Vision · Torralba, Isola & Freeman (free online, MIT Press)", url: "https://visionbook.mit.edu/" },
+      { title: "Dive into Deep Learning · attention & vision chapters", url: "https://d2l.ai/" },
+    ],
+    githubRepos: [
+      { title: "openai/CLIP · the original contrastive model", url: "https://github.com/openai/CLIP" },
+      { title: "haotian-liu/LLaVA · open vision-language assistant", url: "https://github.com/haotian-liu/LLaVA" },
+      { title: "salesforce/LAVIS · one library, many VLM recipes", url: "https://github.com/salesforce/LAVIS" },
+    ],
+    tools: "CLIP in a Colab notebook, LLaVA locally via Ollama, any frontier API with vision (all have free tiers)",
+    proTips: "Start with CLIP zero-shot classification in Colab, it is ten lines of code and the aha moment of the whole field: images and text living in one embedding space. Everything else in multimodal is elaboration on that trick.",
+  },
+  {
+    id: "speech-audio", topic: "Speech & Audio AI",
+    description: "The ear and the voice: speech recognition (ASR) with models like Whisper, text-to-speech, speaker identification, and audio classification. Voice is becoming a default interface for AI, and the tooling is almost entirely open source.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "intermediate", order: 20, week: 20,
+    bestVideos: [
+      { title: "The Sound of AI · Valerio Velardo (audio ML from scratch)", url: "https://www.youtube.com/@ValerioVelardoTheSoundofAI" },
+      { title: "OpenAI Whisper · how it works and why it matters", url: "https://openai.com/index/whisper/" },
+    ],
+    bestCourses: [
+      { title: "Hugging Face Audio Course · free, hands-on", url: "https://huggingface.co/learn/audio-course/chapter0/introduction" },
+      { title: "Stanford CS224S · Spoken Language Processing", url: "https://web.stanford.edu/class/cs224s/" },
+    ],
+    books: [
+      { title: "Speech and Language Processing · Jurafsky & Martin (free draft, speech chapters)", url: "https://web.stanford.edu/~jurafsky/slp3/" },
+    ],
+    githubRepos: [
+      { title: "openai/whisper · open ASR that changed the field", url: "https://github.com/openai/whisper" },
+      { title: "SYSTRAN/faster-whisper · production-speed Whisper", url: "https://github.com/SYSTRAN/faster-whisper" },
+      { title: "espnet/espnet · end-to-end speech toolkit", url: "https://github.com/espnet/espnet" },
+    ],
+    tools: "Whisper (runs on a laptop), faster-whisper, Hugging Face pipelines, Audacity for inspecting audio",
+    proTips: "Transcribe a podcast episode with Whisper on your own machine in week one, it works out of the box and makes the whole field concrete. Then learn what a mel spectrogram is: audio models are image models wearing headphones.",
+  },
+  {
+    id: "robotics-embodied", topic: "Robotics & Embodied AI",
+    description: "AI that acts in the physical world. Simulation, reinforcement learning for control, imitation learning from teleoperation, and the new generation of vision-language-action models. The hardest open problem in AI, and the one hiring is quietly exploding around.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "advanced", order: 21, week: 21,
+    bestVideos: [
+      { title: "Berkeley CS285 · Deep Reinforcement Learning (Sergey Levine)", url: "https://rail.eecs.berkeley.edu/deeprlcourse/" },
+      { title: "MIT Robotic Manipulation · Russ Tedrake (lectures + free text)", url: "https://manipulation.mit.edu/" },
+    ],
+    bestCourses: [
+      { title: "Underactuated Robotics · MIT, free text and lectures", url: "https://underactuated.mit.edu/" },
+      { title: "Hugging Face LeRobot · open robot learning stack", url: "https://github.com/huggingface/lerobot" },
+    ],
+    books: [
+      { title: "Robotic Manipulation · Tedrake (free online textbook)", url: "https://manipulation.mit.edu/" },
+      { title: "Underactuated Robotics · Tedrake (free online textbook)", url: "https://underactuated.mit.edu/" },
+    ],
+    githubRepos: [
+      { title: "huggingface/lerobot · imitation learning on real cheap arms", url: "https://github.com/huggingface/lerobot" },
+      { title: "google-deepmind/mujoco · the standard physics simulator", url: "https://github.com/google-deepmind/mujoco" },
+      { title: "Genesis-Embodied-AI/Genesis · generative physics engine", url: "https://github.com/Genesis-Embodied-AI/Genesis" },
+    ],
+    tools: "MuJoCo (free), LeRobot, a SO-100/SO-101 arm kit if you want hardware for a few hundred dollars",
+    proTips: "Simulation first: MuJoCo plus CS285 teaches you control without owning a robot. The field's big bet is that imitation learning plus VLA models does for robots what GPT did for text, watch pi.website and LeRobot to follow it live.",
+  },
+  {
+    id: "efficient-ai", topic: "Efficient AI · Quantization & Fast Inference",
+    description: "Making models small and fast enough to actually ship: quantization, pruning, distillation, KV-cache management, speculative decoding, and serving engines like vLLM. The skills that turn a demo into a product with margins.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "advanced", order: 22, week: 22,
+    bestVideos: [
+      { title: "MIT 6.5940 · EfficientML.ai (Song Han, full lectures)", url: "https://efficientml.ai/" },
+      { title: "Making LLMs 4-bit · Hugging Face on quantization", url: "https://huggingface.co/blog/4bit-transformers-bitsandbytes" },
+    ],
+    bestCourses: [
+      { title: "vLLM documentation · paged attention and serving", url: "https://docs.vllm.ai/" },
+      { title: "Hugging Face · quantization concepts guide", url: "https://huggingface.co/docs/optimum/concept_guides/quantization" },
+    ],
+    books: [
+      { title: "Machine Learning Systems · Reddi (free open textbook)", url: "https://mlsysbook.ai/" },
+    ],
+    githubRepos: [
+      { title: "ggml-org/llama.cpp · LLMs on a laptop, the proof", url: "https://github.com/ggml-org/llama.cpp" },
+      { title: "vllm-project/vllm · the standard serving engine", url: "https://github.com/vllm-project/vllm" },
+      { title: "microsoft/DeepSpeed · training and inference at scale", url: "https://github.com/microsoft/DeepSpeed" },
+    ],
+    tools: "llama.cpp, Ollama, vLLM, bitsandbytes, a consumer GPU or Apple Silicon Mac is genuinely enough",
+    proTips: "Run a 7B model quantized to 4-bit on your own machine, then serve it with vLLM and measure tokens per second. Inference cost is the number that decides which AI products survive, engineers who can cut it are never unemployed.",
+  },
+  {
+    id: "recommender-systems", topic: "Recommender Systems",
+    description: "The most deployed ML on earth: every feed, storefront, and streaming queue. Collaborative filtering, matrix factorization, two-tower retrieval, and ranking. Quietly, it is also where many production ML careers actually happen.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "intermediate", order: 23, week: 23,
+    bestVideos: [
+      { title: "Machine Learning Specialization · Andrew Ng (course 3 covers recommenders)", url: "https://www.coursera.org/specializations/machine-learning-introduction", access: "freemium", authors: ["ng"] },
+    ],
+    bestCourses: [
+      { title: "Google · Recommendation Systems course (free)", url: "https://developers.google.com/machine-learning/recommendation" },
+    ],
+    books: [
+      { title: "Mining of Massive Datasets · Stanford (free PDF)", url: "http://www.mmds.org/" },
+    ],
+    githubRepos: [
+      { title: "recommenders-team/recommenders · Microsoft's best-practice notebooks", url: "https://github.com/recommenders-team/recommenders" },
+      { title: "pytorch/torchrec · recommenders at production scale", url: "https://github.com/pytorch/torchrec" },
+    ],
+    tools: "pandas + scikit-learn for a first collaborative filter, the MovieLens dataset, implicit or torchrec when it gets real",
+    proTips: "Build a MovieLens recommender from scratch before touching a library: user-item matrix, cosine similarity, done in an afternoon. Then read Google's course on why production recommenders are retrieval plus ranking, not one model.",
+  },
+  {
+    id: "time-series", topic: "Time Series & Forecasting",
+    description: "Predicting demand, traffic, revenue, and failures from data with a clock in it. Classical methods that still win (ARIMA, exponential smoothing), modern gradient-boosted and deep approaches, and the new pretrained forecasting models.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "intermediate", order: 24, week: 24,
+    bestVideos: [
+      { title: "Modern Time Series Analysis · SciPy 2019 tutorial (Aileen Nielsen, 3 hrs)", url: "https://www.youtube.com/watch?v=v5ijNXvlC5A" },
+    ],
+    bestCourses: [
+      { title: "Kaggle Learn · Time Series (free micro-course)", url: "https://www.kaggle.com/learn/time-series" },
+    ],
+    books: [
+      { title: "Forecasting: Principles and Practice · Hyndman & Athanasopoulos (free online)", url: "https://otexts.com/fpp3/" },
+    ],
+    githubRepos: [
+      { title: "sktime/sktime · scikit-learn for time series", url: "https://github.com/sktime/sktime" },
+      { title: "unit8co/darts · one API over classical and deep models", url: "https://github.com/unit8co/darts" },
+      { title: "amazon-science/chronos-forecasting · pretrained forecasting models", url: "https://github.com/amazon-science/chronos-forecasting" },
+    ],
+    tools: "statsmodels, sktime, darts, Prophet for quick baselines, and always a naive-forecast baseline first",
+    proTips: "The embarrassing secret of the field: a seasonal naive forecast beats fancy models on many real series. Always compute it first, and read Hyndman's fpp3 cover to cover, it is the rare free book that is also the field's standard reference.",
+  },
+  {
+    id: "graph-ml", topic: "Graph Machine Learning",
+    description: "Learning on networks: fraud rings, molecules, knowledge graphs, social graphs, recommendation graphs. Graph neural networks, node embeddings, and message passing. The structure-aware corner of ML that tabular and text models cannot see.",
+    phase: "🧭 Phase 7: Depth Tracks", phaseColor: "#06b6d4", difficulty: "advanced", order: 25, week: 25,
+    bestVideos: [
+      { title: "Stanford CS224W · Machine Learning with Graphs (full lectures)", url: "https://www.youtube.com/playlist?list=PLoROMvodv4rPLKxIpqhjhPgdQy7imNkDn" },
+    ],
+    bestCourses: [
+      { title: "A Gentle Introduction to Graph Neural Networks · Distill", url: "https://distill.pub/2021/gnn-intro/" },
+      { title: "Stanford CS224W course site", url: "https://web.stanford.edu/class/cs224w/" },
+    ],
+    books: [
+      { title: "Graph Representation Learning · William Hamilton (free pre-print)", url: "https://www.cs.mcgill.ca/~wlh/grl_book/" },
+    ],
+    githubRepos: [
+      { title: "pyg-team/pytorch_geometric · the standard GNN library", url: "https://github.com/pyg-team/pytorch_geometric" },
+      { title: "dmlc/dgl · deep graph library", url: "https://github.com/dmlc/dgl" },
+    ],
+    tools: "NetworkX for thinking, PyTorch Geometric for building, Neo4j free tier for a real graph database",
+    proTips: "Start with the Distill article, it is the best visual explanation in the field. Then do Cora node classification in PyTorch Geometric, the MNIST of graphs. This site's own Graph Types for AI Agents teardown pairs well as the applied view.",
   },
 ] as RoadmapTopic[]).sort((a, b) => a.order - b.order);
