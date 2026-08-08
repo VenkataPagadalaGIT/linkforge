@@ -416,7 +416,7 @@ const AIContributors = () => {
                   the curriculum, pull one out, jump into its resources below.
                   Quietly absent without WebGL; the list below is the truth. */}
               <ScrollReveal>
-                <div className="relative h-[62vh] min-h-[380px] border border-border mb-8 overflow-hidden">
+                <div id="roadmap-shelf" className="relative h-[62vh] min-h-[380px] border border-border mb-8 overflow-hidden scroll-mt-24">
                   <BookShelfLazy
                     poster="/posters/roadmap-shelf.jpg"
                     posterAlt="The AI Roadmap shelf: the What is AI? volume pulled forward"
@@ -473,7 +473,7 @@ const AIContributors = () => {
             {/* The hundred as ONE book: a page per person, with their photo.
                 A directory is skimmed; an album is browsed. */}
             <ScrollReveal>
-              <div className="relative h-[62vh] min-h-[420px] border border-border mb-10 overflow-hidden">
+              <div id="contributor-album" className="relative h-[62vh] min-h-[420px] border border-border mb-10 overflow-hidden scroll-mt-24">
                 <ContributorAlbumLazy />
                 <div className="pointer-events-none absolute top-4 left-5 z-10">
                   <p className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#2e2418" }}>

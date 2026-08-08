@@ -29,7 +29,7 @@ export const threeDExperiences: ThreeDExperience[] = [
   },
   {
     title: "The Living Portrait",
-    to: "/",
+    to: "/#living-portrait",
     note: "65k tiles wearing a neural net",
     blurb:
       "The homepage portrait assembles from sixty-five thousand mosaic tiles, wears a pulsing neural net, tilts with your pointer, and shatters and heals when you click it.",
@@ -62,7 +62,7 @@ export const threeDExperiences: ThreeDExperience[] = [
   },
   {
     title: "The AI Roadmap, as a Shelf",
-    to: "/notebook/ai/roadmap",
+    to: "/notebook/ai/roadmap#roadmap-shelf",
     note: "35 topics as clothbound volumes",
     blurb:
       "The 18-week core and seven depth tracks as a shelf of thirty-five volumes: cloth colour from the phase, thickness from the resource count, and every volume opens into its real resources.",
@@ -70,7 +70,7 @@ export const threeDExperiences: ThreeDExperience[] = [
   },
   {
     title: "The Top 100, as One Book",
-    to: "/notebook/ai",
+    to: "/notebook/ai#contributor-album",
     note: "a glass album of 100 faces",
     blurb:
       "One glass-bound album with a hundred photo pages, one per contributor. It starts closed with an etched title, opens itself or lets you pull the cover, and every page opens a profile.",

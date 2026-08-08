@@ -32,7 +32,14 @@ const Home = () => {
             photo-coloured dust that belongs to the same quiet system as the
             background. Interactions are discovered, not labelled: the
             pointer breaks pieces loose, a click shatters and heals it. */}
-        <div className="shrink-0 order-first lg:order-last w-[min(38vh,300px)] h-[min(38vh,300px)] lg:w-[420px] lg:h-[420px]">
+        {/* Anchor target: the 3D menu and the /3d hub link here by name.
+            Without it those entries pointed at "/" and appeared to do
+            nothing when clicked from the homepage itself. scroll-mt clears
+            the fixed navbar so the face is not hidden under it. */}
+        <div
+          id="living-portrait"
+          className="shrink-0 order-first lg:order-last w-[min(38vh,300px)] h-[min(38vh,300px)] lg:w-[420px] lg:h-[420px] scroll-mt-24"
+        >
           <PortraitAssemblyLazy />
         </div>
 

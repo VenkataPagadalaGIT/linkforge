@@ -65,9 +65,9 @@ const MEGA: MegaMenu[] = [
     heading: "Explorable, in three dimensions",
     items: [
       { label: "3D Game: the 2040 City", note: "walk and drive a 2040 city", to: "/3d-game" },
-      { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/", badge: "new" },
+      { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badge: "new" },
       { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf" },
-      { label: "The Top 100 Album", note: "a glass book of 100 faces", to: "/notebook/ai", badge: "new" },
+      { label: "The Top 100 Album", note: "a glass book of 100 faces", to: "/notebook/ai#contributor-album", badge: "new" },
     ],
     footnote:
       "Generated geometry running in your browser, no downloads, no model files. The LLM and HVAC teardowns, the roadmap shelf, and the AI map are fully 3D too: every scene is indexed under See everything in 3D.",
