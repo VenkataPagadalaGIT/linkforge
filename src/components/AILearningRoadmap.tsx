@@ -110,9 +110,15 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
               {topic.difficulty}
             </span>
           </div>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
-            {topic.description}
-          </p>
+          {/* Teaser only while collapsed: the panel below always renders the
+              full description (kept in the DOM for crawlers), so leaving this
+              visible when open printed the first two lines twice. Server
+              HTML is unaffected, where expanded is always false. */}
+          {!expanded && (
+            <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
+              {topic.description}
+            </p>
+          )}
         </div>
         <div className="shrink-0 mt-1">
           {expanded ? (

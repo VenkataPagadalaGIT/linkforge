@@ -28,9 +28,14 @@ const ConceptCard = ({ concept, isOpen, onToggle }: { concept: EncyclopediaConce
               {concept.difficulty}
             </span>
           </div>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
-            {concept.description}
-          </p>
+          {/* Teaser only while collapsed. Open, the panel below prints the
+              full description, so leaving this here repeated its first two
+              lines immediately above itself. */}
+          {!isOpen && (
+            <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
+              {concept.description}
+            </p>
+          )}
         </div>
         <div className="shrink-0 mt-1">
           {isOpen ? (
