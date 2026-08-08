@@ -63,10 +63,10 @@ export const threeDExperiences: ThreeDExperience[] = [
   {
     title: "The AI Roadmap, as a Shelf",
     to: "/notebook/ai/roadmap",
-    note: "28 topics as clothbound volumes",
+    note: "35 topics as clothbound volumes",
     blurb:
-      "The 18-week curriculum as a shelf of twenty-eight volumes: cloth colour from the phase, thickness from the resource count, and every volume opens into its real resources.",
-    tags: ["28 topics", "92% free", "curriculum"],
+      "The 18-week core and seven depth tracks as a shelf of thirty-five volumes: cloth colour from the phase, thickness from the resource count, and every volume opens into its real resources.",
+    tags: ["35 topics", "93% free", "curriculum"],
   },
   {
     title: "The Top 100, as One Book",

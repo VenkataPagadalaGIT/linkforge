@@ -79,8 +79,8 @@ const MEGA: MegaMenu[] = [
     label: "Research",
     heading: "The reference layer",
     items: [
-      { label: "AI Roadmap", note: "zero to hero in 18 weeks, 92% free", to: "/notebook/ai/roadmap" },
-      { label: "AI Encyclopedia", note: "123 concepts, defined", to: "/notebook/ai/encyclopedia" },
+      { label: "AI Roadmap", note: "18-week core + depth tracks, 93% free", to: "/notebook/ai/roadmap" },
+      { label: "AI Encyclopedia", note: "154 concepts, defined", to: "/notebook/ai/encyclopedia" },
       { label: "AI Contributors", note: "the 100 people building it", to: "/ai-contributors" },
       { label: "Map of the AI Economy", note: "455 players, who controls what", to: "/notebook/ai/map" },
       { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },

@@ -1606,7 +1606,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Models whose weights you can download, run, and tune yourself: the Llama, Qwen, DeepSeek, and Mistral lines. Small language models in the 1B to 14B range now do real work on laptops and phones. The open-versus-closed gap keeps narrowing, and pricing power follows it.",
     category: "NLP & Language", difficulty: "intermediate", rank: 145,
     keyTerms: ["Open weights vs open source", "SLM", "Local inference", "Model licenses", "Distilled models"],
-    prerequisites: ["Large Language Models (LLMs)"],
+    prerequisites: ["LLMs"],
     learnMore: [
       { title: "LMArena: community leaderboard across open and closed models", url: "https://lmarena.ai/" },
       { title: "Ollama: run open models locally", url: "https://ollama.com/" },
@@ -1687,7 +1687,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The contested idea of AI matching humans across most cognitive work, rather than excelling at one task. Definitions vary so much that serious frameworks now grade levels of generality and autonomy instead of arguing over a single finish line. The term drives lab missions, policy, and billions in capital.",
     category: "Safety, Ethics & Governance", difficulty: "intermediate", rank: 152,
     keyTerms: ["Narrow vs general AI", "Levels of AGI", "Autonomy", "Superintelligence", "Capability thresholds"],
-    prerequisites: ["Large Language Models (LLMs)"],
+    prerequisites: ["LLMs"],
     learnMore: [
       { title: "Levels of AGI (Google DeepMind)", url: "https://arxiv.org/abs/2311.02462" },
     ],

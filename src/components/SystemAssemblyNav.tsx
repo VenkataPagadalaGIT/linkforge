@@ -49,7 +49,7 @@ const navCards: NavCard[] = [
     category: "LEARNING",
     icon: "△",
     path: "/notebook/ai/roadmap",
-    description: "18-week zero-to-hero AI curriculum. Foundations to applied engineering.",
+    description: "18-week zero-to-hero AI curriculum plus seven depth tracks. Foundations to applied engineering.",
     cardNumber: "COURSE · BREAD · HOW · FAQ",
     network: "MONO",
     schema: "Course (Free)",

@@ -127,7 +127,7 @@ const THREE_D_INDEX = [
     label: "BookShelf",
     href: "/notebook/ai/shelf",
     importPath: "@/components/library/BookShelfLazy",
-    note: "Generic browsable 3D library: any array of volumes becomes a walnut shelf with typeset covers and spines, a featured volume, and inspect mode. Powers The Complete Shelf (19 free books) and the AI Roadmap shelf (28 topics). Canvas-typeset textures, LRU cover cache, no asset files, container-based phone treatment. Interaction grammar credited to Mint on /credits.",
+    note: "Generic browsable 3D library: any array of volumes becomes a walnut shelf with typeset covers and spines, a featured volume, and inspect mode. Powers The Complete Shelf (19 free books) and the AI Roadmap shelf (35 topics). Canvas-typeset textures, LRU cover cache, no asset files, container-based phone treatment. Interaction grammar credited to Mint on /credits.",
   },
   {
     label: "ContributorAlbum",

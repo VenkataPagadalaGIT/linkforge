@@ -54,7 +54,7 @@ const TAB_META: Record<TopLevelTab, { title: string; description: string; canoni
   },
   encyclopedia: {
     title: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained | Venkata Pagadala",
-    description: "The best AI concepts encyclopedia: 123 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
+    description: "The best AI concepts encyclopedia: 154 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
     canonical: "https://venkatapagadala.com/notebook/ai/encyclopedia",
     ogTitle: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained",
   },
@@ -305,7 +305,7 @@ const AIContributors = () => {
               {topTab === "roadmap" ? "Free AI Roadmap 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
             </h1>
             <p className="font-mono text-xs text-muted-foreground/60 max-w-xl leading-relaxed">
-              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (92% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
+              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (93% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
             <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
               Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
@@ -412,7 +412,7 @@ const AIContributors = () => {
         {topTab === "roadmap" && (
           <div>
             <div className="flex-1 min-w-0">
-              {/* The roadmap as a shelf: 28 topics as volumes, browse along
+              {/* The roadmap as a shelf: 35 topics as volumes, browse along
                   the curriculum, pull one out, jump into its resources below.
                   Quietly absent without WebGL; the list below is the truth. */}
               <ScrollReveal>
@@ -442,7 +442,7 @@ const AIContributors = () => {
                    🗺️ Free AI Roadmap, Zero to Hero · July 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 92% are completely free. Every link was opened and checked in July 2026.
+                   A structured AI curriculum with 473 curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked, July and August 2026 passes.
                  </p>
               </div>
               <AILearningRoadmap />
@@ -459,7 +459,7 @@ const AIContributors = () => {
                   🧠 AI Concepts Encyclopedia · July 2026
                 </h2>
                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                  123 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed July 2026.
+                  154 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed, July and August 2026 passes.
                 </p>
               </div>
               <AIEncyclopedia />
