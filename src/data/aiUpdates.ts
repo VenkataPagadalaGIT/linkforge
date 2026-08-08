@@ -272,7 +272,7 @@ export const aiUpdates: AIUpdate[] = [
       {
         label: "Map of the AI Economy",
         to: "/notebook/ai/map",
-        description: "Where Anthropic sits among the 471 players in the AI value chain.",
+        description: "Where Anthropic sits among the 455 players in the AI value chain.",
       },
     ],
   },

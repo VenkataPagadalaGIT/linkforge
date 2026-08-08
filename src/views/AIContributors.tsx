@@ -317,7 +317,7 @@ const AIContributors = () => {
               >
                 <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The AI Systems Map →</span>
                 <span className="font-mono text-[10px] text-muted-foreground/60">
-                  471 entities · 7 layers · the whole AI value chain as one dependency graph
+                  455 entities · 7 layers · the whole AI value chain as one dependency graph
                 </span>
               </a>
               <a

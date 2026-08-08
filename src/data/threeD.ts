@@ -80,9 +80,9 @@ export const threeDExperiences: ThreeDExperience[] = [
   {
     title: "Map of the AI Economy",
     to: "/notebook/ai/map",
-    note: "471 players, who controls what",
+    note: "455 players, who controls what",
     blurb:
-      "The whole AI value chain as one dependency graph: 471 entities across 7 layers, explorable flat or in 3D, with every edge reviewed by hand.",
-    tags: ["471 entities", "7 layers", "graph"],
+      "The whole AI value chain as one dependency graph: 455 entities across 7 layers, explorable flat or in 3D, with every edge reviewed by hand.",
+    tags: ["455 entities", "7 layers", "graph"],
   },
 ];
