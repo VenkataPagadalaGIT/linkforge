@@ -104,7 +104,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "python-guide · Hitchhiker's Guide", url: "https://github.com/realpython/python-guide" },
     ],
     tools: "VS Code, Google Colab (free GPU!), Jupyter Notebooks, Replit",
-    proTips: "Focus on: lists, dictionaries, functions, loops, and classes. Practice on LeetCode Easy or HackerRank. Google Colab is your best friend, free, browser-based, no setup needed.",
+    proTips: "Focus on: lists, dictionaries, functions, loops, and classes. Practice on LeetCode Easy or HackerRank. Google Colab is your best friend, free, browser-based, no setup needed. And if you are weighing Python against R: Python won for AI and production systems, R remains lovely for pure statistics.",
   },
   {
     id: "math", topic: "Math for AI · Linear Algebra & Calculus",

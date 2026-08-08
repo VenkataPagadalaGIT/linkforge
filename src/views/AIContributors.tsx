@@ -53,10 +53,10 @@ const TAB_META: Record<TopLevelTab, { title: string; description: string; canoni
     ogTitle: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks",
   },
   encyclopedia: {
-    title: "Best AI Concepts Encyclopedia 2026 · 154 Concepts Explained | Venkata Pagadala",
-    description: "The best AI concepts encyclopedia: 154 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
+    title: "Best AI Concepts Encyclopedia 2026 · 167 Concepts Explained | Venkata Pagadala",
+    description: "The best AI concepts encyclopedia: 167 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
     canonical: "https://venkatapagadala.com/notebook/ai/encyclopedia",
-    ogTitle: "Best AI Concepts Encyclopedia 2026 · 154 Concepts Explained",
+    ogTitle: "Best AI Concepts Encyclopedia 2026 · 167 Concepts Explained",
   },
 };
 
@@ -459,7 +459,7 @@ const AIContributors = () => {
                   🧠 AI Concepts Encyclopedia · July 2026
                 </h2>
                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                  154 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed, July and August 2026 passes.
+                  167 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed, July and August 2026 passes.
                 </p>
               </div>
               <AIEncyclopedia />

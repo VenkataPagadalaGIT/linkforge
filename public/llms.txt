@@ -46,7 +46,7 @@ An 18-week core plus seven elective depth tracks: 35 topics with 473 curated res
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-154 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
+167 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)

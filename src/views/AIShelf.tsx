@@ -154,7 +154,7 @@ export default function AIShelf() {
           <div className="grid sm:grid-cols-3 gap-3">
             {[
               { to: "/notebook/ai/roadmap", label: "The full roadmap", note: "440 free resources across 35 topics" },
-              { to: "/notebook/ai/encyclopedia", label: "Concepts encyclopedia", note: "154 concepts, explained and cross-linked" },
+              { to: "/notebook/ai/encyclopedia", label: "Concepts encyclopedia", note: "167 concepts, explained and cross-linked" },
               { to: "/ai-contributors", label: "Top 100 contributors", note: "The people who built the field" },
             ].map((c) => (
               <Link

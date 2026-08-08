@@ -55,9 +55,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "supervised-learning", concept: "Supervised Learning", emoji: "🧠",
-    description: "Learning from labeled examples, the model sees inputs paired with correct outputs and learns to predict outputs for new inputs. Includes classification and regression.",
+    description: "Learning from labeled examples, the model sees inputs paired with correct outputs and learns to predict outputs for new inputs. Includes classification and regression. In business language this is predictive AI, the discriminative counterpart of generative AI: it scores and forecasts instead of creating content.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 2,
-    keyTerms: ["Labels", "Classification", "Regression", "Training set", "Test set"],
+    keyTerms: ["Labels", "Classification", "Regression", "Training set", "Test set", "Predictive AI"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "StatQuest: Supervised Learning", url: "https://www.youtube.com/watch?v=nKW8Ndu7Mjw" },
@@ -66,9 +66,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "unsupervised-learning", concept: "Unsupervised Learning", emoji: "🧠",
-    description: "Learning patterns from unlabeled data, the model discovers hidden structure without being told the 'right answer'. Includes clustering, dimensionality reduction, and anomaly detection.",
+    description: "Learning patterns from unlabeled data, the model discovers hidden structure without being told the 'right answer'. Includes clustering, dimensionality reduction, and anomaly detection. A fourth classic task is association-rule mining (Apriori), the market-basket analysis behind frequently-bought-together.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 3,
-    keyTerms: ["Clustering", "Dimensionality reduction", "Anomaly detection", "K-Means"],
+    keyTerms: ["Clustering", "Dimensionality reduction", "Anomaly detection", "K-Means", "Association rules (Apriori)"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "StatQuest: K-Means Clustering", url: "https://www.youtube.com/watch?v=4b5d3muPQmA" },
@@ -259,9 +259,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "dimensionality-reduction", concept: "Dimensionality Reduction", emoji: "📐",
-    description: "Reducing the number of features while preserving important information. PCA, t-SNE, and UMAP are the main techniques, essential for visualization and fighting the curse of dimensionality.",
+    description: "Reducing the number of features while preserving important information. PCA, t-SNE, and UMAP are the main techniques, essential for visualization and fighting the curse of dimensionality. LDA is the supervised counterpart: it projects using class labels, where PCA ignores them.",
     category: "Math & Optimization", difficulty: "intermediate", rank: 21,
-    keyTerms: ["PCA", "t-SNE", "UMAP", "Curse of dimensionality", "Feature compression"],
+    keyTerms: ["PCA", "t-SNE", "UMAP", "Curse of dimensionality", "Feature compression", "LDA (Linear Discriminant Analysis)"],
     prerequisites: ["Unsupervised Learning"],
     learnMore: [
       { title: "StatQuest: PCA", url: "https://www.youtube.com/watch?v=FgakZw6K1QQ" },
@@ -269,9 +269,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "feature-engineering", concept: "Feature Engineering", emoji: "📐",
-    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice, 'garbage in, garbage out' applies doubly to ML.",
+    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice, 'garbage in, garbage out' applies doubly to ML. Feature selection is its own toolkit: filter methods score features statistically, wrappers like RFE search subsets, and embedded methods like L1 select while training.",
     category: "Math & Optimization", difficulty: "intermediate", rank: 22,
-    keyTerms: ["Feature scaling", "One-hot encoding", "Feature crosses", "Polynomial features"],
+    keyTerms: ["Feature scaling", "One-hot encoding", "Feature crosses", "Polynomial features", "Feature selection", "RFE & mutual information"],
     prerequisites: ["Features & Labels"],
     learnMore: [
       { title: "Kaggle: Feature Engineering", url: "https://www.kaggle.com/learn/feature-engineering" },
@@ -279,9 +279,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "k-means", concept: "K-Means Clustering", emoji: "📐",
-    description: "The simplest clustering algorithm, assigns data points to K groups by iteratively moving cluster centers to minimize within-cluster distances. Fast, intuitive, but requires choosing K upfront.",
+    description: "The simplest clustering algorithm, assigns data points to K groups by iteratively moving cluster centers to minimize within-cluster distances. Fast, intuitive, but requires choosing K upfront. It is one member of a family: hierarchical clustering builds a dendrogram of merges, DBSCAN finds arbitrary shapes by density, and Gaussian mixtures soften assignments via EM.",
     category: "Math & Optimization", difficulty: "beginner", rank: 23,
-    keyTerms: ["Centroids", "Elbow method", "Inertia", "K selection"],
+    keyTerms: ["Centroids", "Elbow method", "Inertia", "K selection", "Hierarchical clustering", "DBSCAN", "Gaussian mixtures & EM"],
     prerequisites: ["Unsupervised Learning"],
     learnMore: [
       { title: "StatQuest: K-Means", url: "https://www.youtube.com/watch?v=4b5d3muPQmA" },
@@ -471,9 +471,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === NLP & Language (41–55) ===
   {
     id: "nlp", concept: "Natural Language Processing (NLP)", emoji: "🗣️",
-    description: "The branch of AI focused on enabling computers to understand, interpret, and generate human language. Encompasses tasks from sentiment analysis to machine translation to question answering.",
+    description: "The branch of AI focused on enabling computers to understand, interpret, and generate human language. Encompasses tasks from sentiment analysis to machine translation to question answering. Two umbrella terms live underneath: understanding (NLU) versus generation (NLG), plus text mining, the enterprise word for extracting signal from document piles.",
     category: "NLP & Language", difficulty: "beginner", rank: 41,
-    keyTerms: ["Tokenization", "Parsing", "NER", "Sentiment analysis", "Machine translation"],
+    keyTerms: ["Tokenization", "Parsing", "NER", "Sentiment analysis", "Machine translation", "NLU & NLG", "Text mining"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "Hugging Face NLP Course (Free)", url: "https://huggingface.co/learn/llm-course" },
@@ -482,9 +482,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "tokenization", concept: "Tokenization", emoji: "🗣️",
-    description: "Breaking text into smaller units (tokens) for processing. Modern tokenizers use subword methods (BPE, SentencePiece), 'unhappiness' → ['un', 'happiness']. Token count determines cost and context window usage.",
+    description: "Breaking text into smaller units (tokens) for processing. Modern tokenizers use subword methods (BPE, SentencePiece), 'unhappiness' → ['un', 'happiness']. Token count determines cost and context window usage. Classical pipelines normalized words first: stemming crudely chops endings, lemmatization maps to dictionary forms; subword tokenizers made most of that unnecessary.",
     category: "NLP & Language", difficulty: "beginner", rank: 42,
-    keyTerms: ["BPE", "SentencePiece", "WordPiece", "Token", "Vocabulary"],
+    keyTerms: ["BPE", "SentencePiece", "WordPiece", "Token", "Vocabulary", "Stemming & lemmatization"],
     prerequisites: ["NLP"],
     learnMore: [
       { title: "Hugging Face: Tokenizers", url: "https://huggingface.co/learn/llm-course/chapter6/1" },
@@ -492,9 +492,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "word2vec", concept: "Word2Vec & Word Embeddings", emoji: "🗣️",
-    description: "Representing words as dense vectors where semantic relationships are captured geometrically. The famous result: king - man + woman ≈ queen. Predecessor to modern embeddings used in LLMs.",
+    description: "Representing words as dense vectors where semantic relationships are captured geometrically. The famous result: king - man + woman ≈ queen. Predecessor to modern embeddings used in LLMs. Before neural embeddings, LSA reached similar ground statistically by factorizing the term-document matrix with SVD.",
     category: "NLP & Language", difficulty: "intermediate", rank: 43,
-    keyTerms: ["Skip-gram", "CBOW", "GloVe", "Cosine similarity", "Embedding space"],
+    keyTerms: ["Skip-gram", "CBOW", "GloVe", "Cosine similarity", "Embedding space", "LSA (latent semantic analysis)"],
     prerequisites: ["Embeddings"],
     learnMore: [
       { title: "Jay Alammar: Illustrated Word2Vec", url: "https://jalammar.github.io/illustrated-word2vec/" },
@@ -715,9 +715,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "data", concept: "Data · The Fuel of AI", emoji: "🧠",
-    description: "AI is only as good as its data. Understanding data quality, bias, preprocessing, augmentation, and the data lifecycle is fundamental. 'More data beats better algorithms', but only if the data is good.",
+    description: "AI is only as good as its data. Understanding data quality, bias, preprocessing, augmentation, and the data lifecycle is fundamental. 'More data beats better algorithms', but only if the data is good. Ground-truth labeling (annotation workflows, human-in-the-loop review, active learning) and class imbalance, fixed by resampling like SMOTE or by class weights, are the two practical crafts here.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 64,
-    keyTerms: ["Data quality", "Data augmentation", "Data pipeline", "Label noise", "Data drift"],
+    keyTerms: ["Data quality", "Data augmentation", "Data pipeline", "Label noise", "Data drift", "Data labeling & ground truth", "Class imbalance & SMOTE", "Active learning"],
     prerequisites: [],
     learnMore: [
       { title: "Andrew Ng: Data-Centric AI", url: "https://datacentricai.org/" },
@@ -967,7 +967,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "mlops", concept: "MLOps (ML Operations)", emoji: "⚙️",
-    description: "The practice of deploying, monitoring, and maintaining ML models in production. Combines ML, DevOps, and data engineering. The difference between a notebook prototype and a reliable production system.",
+    description: "The practice of deploying, monitoring, and maintaining ML models in production. Combines ML, DevOps, and data engineering. The difference between a notebook prototype and a reliable production system. CI/CD carries over from software engineering: every model change flows through automated test, build, and deploy stages.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 88,
     keyTerms: ["CI/CD for ML", "Model registry", "Feature store", "A/B testing", "Monitoring"],
     prerequisites: ["Model Deployment"],
@@ -988,9 +988,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "data-pipeline", concept: "Data Pipelines & ETL", emoji: "⚙️",
-    description: "Automated workflows for collecting, cleaning, transforming, and loading data for ML. The unsexy but critical infrastructure that makes everything else possible.",
+    description: "Automated workflows for collecting, cleaning, transforming, and loading data for ML. The unsexy but critical infrastructure that makes everything else possible. At big-data scale the same jobs run on engines like Spark over data lakes, while SQL over relational databases remains where most structured training data actually lives.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 90,
-    keyTerms: ["ETL", "Apache Airflow", "dbt", "Data warehouse", "Feature store"],
+    keyTerms: ["ETL", "Apache Airflow", "dbt", "Data warehouse", "Feature store", "Apache Spark & data lakes", "SQL & relational databases"],
     prerequisites: [],
     learnMore: [
       { title: "Apache Airflow", url: "https://airflow.apache.org/" },
@@ -1051,9 +1051,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === AI Agents & Applications (96–105) ===
   {
     id: "ai-agents", concept: "AI Agents", emoji: "🤖",
-    description: "AI systems that can plan, use tools, browse the web, write code, and complete multi-step tasks autonomously. The defining frontier of the current AI era. Frameworks such as LangGraph and CrewAI, plus vendor SDKs (OpenAI Agents SDK, Claude Agent SDK, Microsoft Agent Framework), are common starting points.",
+    description: "AI systems that can plan, use tools, browse the web, write code, and complete multi-step tasks autonomously. The defining frontier of the current AI era. Frameworks such as LangGraph and CrewAI, plus vendor SDKs (OpenAI Agents SDK, Claude Agent SDK, Microsoft Agent Framework), are common starting points. The 2023 Auto-GPT and BabyAGI wave proved both the appetite and the limits; today's agents descend from those loops running on far better models.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 96,
-    keyTerms: ["Tool use", "Planning", "ReAct", "Reasoning loop", "Autonomy"],
+    keyTerms: ["Tool use", "Planning", "ReAct", "Reasoning loop", "Autonomy", "Auto-GPT era"],
     prerequisites: ["Prompt Engineering", "GPT"],
     learnMore: [
       { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
@@ -1063,9 +1063,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "tool-use", concept: "Tool Use & Function Calling", emoji: "🤖",
-    description: "LLMs that can call external tools, APIs, databases, calculators, web browsers. Transforms LLMs from text generators into action-taking agents. Function calling is now supported by every major vendor, and the Model Context Protocol (MCP) has become the industry-standard way to connect models to tools.",
+    description: "LLMs that can call external tools, APIs, databases, calculators, web browsers. Transforms LLMs from text generators into action-taking agents. Function calling is now supported by every major vendor, and the Model Context Protocol (MCP) has become the industry-standard way to connect models to tools. The substrate is the humble API, a documented endpoint the model can call, which is why giving a model an API and giving it a tool mean the same thing.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 97,
-    keyTerms: ["Function calling", "API integration", "MCP", "Tool selection"],
+    keyTerms: ["Function calling", "API integration", "MCP", "Tool selection", "APIs"],
     prerequisites: ["AI Agents"],
     learnMore: [
       { title: "OpenAI: Function Calling", url: "https://platform.openai.com/docs/guides/function-calling" },
@@ -1199,9 +1199,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ai-regulation", concept: "AI Regulation & Governance", emoji: "🛡️",
-    description: "The emerging legal and policy landscape for AI. The EU AI Act is the first comprehensive AI law. Its obligations phase in over several years, and a 2026 amendment pushed the high-risk rules for standalone systems to December 2027 and for AI embedded in regulated products to August 2028. Treat the phase-in dates as current as of reading, not fixed. Understanding regulation is now a career advantage, every AI team needs someone who understands compliance.",
+    description: "The emerging legal and policy landscape for AI. The EU AI Act is the first comprehensive AI law. Its obligations phase in over several years, and a 2026 amendment pushed the high-risk rules for standalone systems to December 2027 and for AI embedded in regulated products to August 2028. Treat the phase-in dates as current as of reading, not fixed. Understanding regulation is now a career advantage, every AI team needs someone who understands compliance. Inside companies this arrives as model governance: model cards, model risk management, and the audit trails standards like ISO/IEC 42001 formalize.",
     category: "Safety, Ethics & Governance", difficulty: "beginner", rank: 110,
-    keyTerms: ["EU AI Act", "Risk categories", "Compliance", "Transparency requirements"],
+    keyTerms: ["EU AI Act", "Risk categories", "Compliance", "Transparency requirements", "Model governance & model cards"],
     prerequisites: [],
     learnMore: [
       { title: "EU AI Act Overview", url: "https://artificialintelligenceact.eu/" },
@@ -1256,9 +1256,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "agentic-coding", concept: "Agentic Coding", emoji: "⌨️",
-    description: "Coding assistance that goes beyond autocomplete: an agent reads the codebase, plans, edits multiple files, runs tests and commands, and iterates until the task is done. Tools built on this pattern made it the dominant developer AI workflow.",
+    description: "Coding assistance that goes beyond autocomplete: an agent reads the codebase, plans, edits multiple files, runs tests and commands, and iterates until the task is done. Tools built on this pattern made it the dominant developer AI workflow. Vibe coding names the casual end of the spectrum, prompt and accept whatever runs, in contrast to disciplined workflows with tests and review.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 115,
-    keyTerms: ["Codebase context", "Multi-file edit", "Test loop", "Tool permissions", "Plan mode"],
+    keyTerms: ["Codebase context", "Multi-file edit", "Test loop", "Tool permissions", "Plan mode", "Vibe coding"],
     prerequisites: ["AI Code Generation", "AI Agents"],
     learnMore: [
       { title: "Claude Code best practices", url: "https://code.claude.com/docs/en/best-practices" },
@@ -1324,9 +1324,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "inference-optimization", concept: "Inference Optimization", emoji: "🔧",
-    description: "The engineering that makes serving a model affordable. Generation splits into a compute-bound prefill over the prompt and a memory-bound decode of one token at a time, so throughput and cost are set by the KV cache, continuous batching, attention memory layout, and speculative decoding, where a small draft model proposes tokens a larger model verifies in one pass. Two deployments of the same weights can differ by an order of magnitude in cost per token.",
+    description: "The engineering that makes serving a model affordable. Generation splits into a compute-bound prefill over the prompt and a memory-bound decode of one token at a time, so throughput and cost are set by the KV cache, continuous batching, attention memory layout, and speculative decoding, where a small draft model proposes tokens a larger model verifies in one pass. Two deployments of the same weights can differ by an order of magnitude in cost per token. Attention itself gets slimmed too: multi-query and grouped-query attention shrink the KV cache that dominates serving memory.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 121,
-    keyTerms: ["KV cache", "Continuous batching", "Speculative decoding", "Prefill vs decode", "PagedAttention"],
+    keyTerms: ["KV cache", "Continuous batching", "Speculative decoding", "Prefill vs decode", "PagedAttention", "MQA & GQA"],
     prerequisites: ["Training vs Inference", "Model Quantization & Compression"],
     learnMore: [
       { title: "Hugging Face: Optimizing LLM inference", url: "https://huggingface.co/docs/transformers/llm_optims" },
@@ -1383,9 +1383,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "evaluation-metrics", concept: "Evaluation Metrics & Cross-Validation", emoji: "🧠",
-    description: "How you know a model works: accuracy, precision, recall, F1, ROC curves, and cross-validation to test on data the model never saw. Choosing the wrong metric is the classic silent failure, a 99% accurate cancer detector that never says cancer is worthless.",
+    description: "How you know a model works: accuracy, precision, recall, F1, ROC curves, and cross-validation to test on data the model never saw. Choosing the wrong metric is the classic silent failure, a 99% accurate cancer detector that never says cancer is worthless. Class imbalance is the classic trap here; the fixes, resampling and class weights, live in the Data entry.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 126,
-    keyTerms: ["Precision & recall", "F1 score", "ROC-AUC", "Confusion matrix", "K-fold cross-validation"],
+    keyTerms: ["Precision & recall", "F1 score", "ROC-AUC", "Confusion matrix", "K-fold cross-validation", "Class imbalance"],
     prerequisites: ["Supervised Learning"],
     learnMore: [
       { title: "scikit-learn: model evaluation guide", url: "https://scikit-learn.org/stable/modules/model_evaluation.html" },
@@ -1451,9 +1451,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "linear-algebra-ml", concept: "Linear Algebra for ML", emoji: "📐",
-    description: "The substrate everything runs on: data is vectors, models are matrices, and a forward pass is matrix multiplication. You need a working feel for dot products, matrix shapes, and eigenvectors, not proofs. GPUs exist because this one operation dominates all of AI.",
+    description: "The substrate everything runs on: data is vectors, models are matrices, and a forward pass is matrix multiplication. You need a working feel for dot products, matrix shapes, and eigenvectors, not proofs. GPUs exist because this one operation dominates all of AI. SVD, the workhorse matrix decomposition, is the machinery behind PCA and the low-rank idea LoRA reuses.",
     category: "Math & Optimization", difficulty: "beginner", rank: 132,
-    keyTerms: ["Vector", "Matrix multiplication", "Dot product", "Eigenvalues", "Rank"],
+    keyTerms: ["Vector", "Matrix multiplication", "Dot product", "Eigenvalues", "Rank", "SVD (singular value decomposition)"],
     prerequisites: [],
     learnMore: [
       { title: "3Blue1Brown: Essence of Linear Algebra", url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" },
@@ -1706,13 +1706,168 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "hyperparameter-tuning", concept: "Hyperparameter Tuning", emoji: "⚙️",
-    description: "The knobs you set before training, learning rate, batch size, architecture width, decide whether a run converges or burns money. Tuning ranges from grid and random search to Bayesian optimization, and in deep learning the learning-rate schedule is almost always the knob that matters most.",
+    description: "The knobs you set before training, learning rate, batch size, architecture width, decide whether a run converges or burns money. Tuning ranges from grid and random search to Bayesian optimization, and in deep learning the learning-rate schedule is almost always the knob that matters most. AutoML pushes the same search over whole models and features, and Neural Architecture Search applies it to the architecture itself.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 154,
-    keyTerms: ["Learning rate", "Grid vs random search", "Bayesian optimization", "Early stopping", "Sweeps"],
+    keyTerms: ["Learning rate", "Grid vs random search", "Bayesian optimization", "Early stopping", "Sweeps", "AutoML"],
     prerequisites: ["Gradient Descent", "Overfitting & Underfitting"],
     learnMore: [
       { title: "Google Research: Deep Learning Tuning Playbook", url: "https://github.com/google-research/tuning_playbook" },
     ],
     realWorldApps: "Every serious training run; sweep tooling in W&B and Optuna exists for exactly this",
+  },
+
+  // === Market-coverage pass, 2026-08-08: gaps confirmed by the IBM Think
+  // audit after adversarial verification. The intro-classifier family is now
+  // complete, and the data-practice layer (leakage, EDA, augmentation) that
+  // practitioner curricula lead with finally has teaching targets here. ===
+  {
+    id: "logistic-regression", concept: "Logistic Regression", emoji: "🧠",
+    description: "The industry-default baseline classifier: a linear model pushed through a sigmoid so its output reads as a probability. It is also the bridge to deep learning, since a single sigmoid neuron trained with cross-entropy IS logistic regression. Interpretable, fast, and the first thing to try before anything fancier.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 155,
+    keyTerms: ["Sigmoid", "Decision boundary", "Log odds", "Cross-entropy", "Baseline model"],
+    prerequisites: ["Linear Regression", "Classification vs Regression"],
+    learnMore: [
+      { title: "scikit-learn: Logistic regression guide", url: "https://scikit-learn.org/stable/modules/linear_model.html" },
+    ],
+    realWorldApps: "Credit default scoring, click-through prediction, medical risk models, every A/B test readout",
+  },
+  {
+    id: "data-leakage", concept: "Data Leakage", emoji: "🧠",
+    description: "When information from outside the training set sneaks into training, so the model aces validation and faceplants in production. Classic forms: preprocessing before the split, target information hiding in a feature, duplicate rows across splits, and peeking into the future on time series. The number-one practical reason ML projects report great numbers and then fail.",
+    category: "Core ML Concepts", difficulty: "intermediate", rank: 156,
+    keyTerms: ["Target leakage", "Train-test contamination", "Temporal look-ahead", "Pipeline ordering", "Benchmark contamination"],
+    prerequisites: ["Evaluation Metrics & Cross-Validation"],
+    learnMore: [
+      { title: "scikit-learn: common pitfalls (leakage section)", url: "https://scikit-learn.org/stable/common_pitfalls.html" },
+      { title: "Kaggle: Data Leakage lesson", url: "https://www.kaggle.com/code/alexisbcook/data-leakage" },
+    ],
+    realWorldApps: "Why deployed models underperform their offline metrics; also why LLM benchmark scores get contested",
+  },
+  {
+    id: "eda", concept: "Exploratory Data Analysis (EDA)", emoji: "🧠",
+    description: "The discipline of looking at the data before modeling it: distributions, missing values, outliers, correlations, and the weird rows that reveal how the data was actually collected. An hour of EDA routinely saves a week of debugging a model trained on data you did not understand.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 157,
+    keyTerms: ["Distributions", "Outliers", "Missing values", "Correlation matrix", "Data profiling"],
+    prerequisites: [],
+    learnMore: [
+      { title: "NIST Engineering Statistics Handbook: EDA", url: "https://www.itl.nist.gov/div898/handbook/eda/eda.htm" },
+    ],
+    realWorldApps: "The first day of every real ML project; where data leakage and label problems get caught early",
+  },
+  {
+    id: "data-augmentation", concept: "Data Augmentation", emoji: "🧠",
+    description: "Stretching a dataset by transforming what you have: flips, crops, and color jitter for images, mixup and CutMix across examples, back-translation for text, SpecAugment for audio. A data-side regularizer that buys accuracy for free when labels are expensive, and standard practice in every vision pipeline.",
+    category: "Core ML Concepts", difficulty: "intermediate", rank: 158,
+    keyTerms: ["Flips & crops", "Mixup & CutMix", "Back-translation", "SpecAugment", "Label-preserving transforms"],
+    prerequisites: ["Overfitting & Underfitting"],
+    learnMore: [
+      { title: "torchvision transforms (the standard toolkit)", url: "https://pytorch.org/vision/stable/transforms.html" },
+      { title: "A survey on image data augmentation (open access)", url: "https://journalofbigdata.springeropen.com/articles/10.1186/s40537-019-0197-0" },
+    ],
+    realWorldApps: "Every vision model in production, low-data medical imaging, robust speech recognition",
+  },
+  {
+    id: "knn", concept: "k-Nearest Neighbors (kNN)", emoji: "🧠",
+    description: "Classify a point by asking what its k closest neighbors are. No training at all, just distance and a vote, which makes it the clearest intuition pump in ML and a surprisingly modern one: nearest-neighbor search over embeddings is exactly how vector databases retrieve, so kNN quietly powers RAG.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 159,
+    keyTerms: ["Distance metrics", "Choice of k", "Lazy learning", "Curse of dimensionality", "Nearest-neighbor search"],
+    prerequisites: ["Supervised Learning"],
+    learnMore: [
+      { title: "scikit-learn: Nearest Neighbors guide", url: "https://scikit-learn.org/stable/modules/neighbors.html" },
+    ],
+    realWorldApps: "Similarity search, recommendation fallbacks, anomaly detection, the retrieval half of RAG",
+  },
+  {
+    id: "naive-bayes", concept: "Naive Bayes", emoji: "🧠",
+    description: "A classifier that applies Bayes' theorem with one bold simplification: treat every feature as independent. Wrong assumption, great results, especially on text, where it filtered spam for a decade and still makes a hard-to-beat baseline. Also the cleanest example of a generative classifier next to logistic regression's discriminative approach.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 160,
+    keyTerms: ["Conditional independence", "Prior & likelihood", "Generative vs discriminative", "Spam filtering", "Laplace smoothing"],
+    prerequisites: ["Probability & Bayes' Theorem", "Classification vs Regression"],
+    learnMore: [
+      { title: "scikit-learn: Naive Bayes guide", url: "https://scikit-learn.org/stable/modules/naive_bayes.html" },
+    ],
+    realWorldApps: "Spam and abuse filters, quick text classification baselines, medical triage scoring",
+  },
+  {
+    id: "data-science", concept: "Data Science vs ML vs AI", emoji: "🧠",
+    description: "The disambiguation everyone needs once: AI is the goal (machines doing intelligent things), ML is the dominant method (learning from data), deep learning is ML with neural networks, and data science is the wider craft of extracting insight from data, modeling included but also analysis, experimentation, and communication. Data engineering builds the pipelines all of them stand on.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 161,
+    keyTerms: ["AI vs ML vs DL", "Analytics", "Data engineering", "Statistics", "Decision science"],
+    prerequisites: [],
+    learnMore: [
+      { title: "IBM: What is data science?", url: "https://www.ibm.com/think/topics/data-science" },
+    ],
+    realWorldApps: "Reading job postings correctly, scoping projects, knowing which specialist a problem needs",
+  },
+  {
+    id: "monte-carlo", concept: "Monte Carlo Methods", emoji: "📐",
+    description: "Answering hard questions by random sampling: estimate what you cannot compute by simulating it many times. The name behind MCMC in Bayesian inference, Monte Carlo returns in reinforcement learning, dropout-based uncertainty, and the tree search that powered AlphaGo. One idea, remarkable reach.",
+    category: "Math & Optimization", difficulty: "advanced", rank: 162,
+    keyTerms: ["Random sampling", "MCMC", "Monte Carlo Tree Search", "Simulation", "Variance reduction"],
+    prerequisites: ["Probability & Bayes' Theorem"],
+    learnMore: [
+      { title: "Sutton & Barto: RL, An Introduction (free, MC chapters)", url: "http://incompleteideas.net/book/the-book-2nd.html" },
+      { title: "Bayesian Methods for Hackers (MCMC in practice)", url: "https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers" },
+    ],
+    realWorldApps: "AlphaGo's tree search, risk simulation in finance, Bayesian posterior sampling, uncertainty estimates",
+  },
+  {
+    id: "bag-of-words", concept: "Bag-of-Words & TF-IDF", emoji: "🗣️",
+    description: "The pre-neural way to turn text into numbers: count the words, weight the rare ones higher (TF-IDF), ignore the order. Crude and still load-bearing, since BM25, its direct descendant, powers the sparse half of hybrid retrieval in modern RAG stacks and remains the search baseline to beat.",
+    category: "NLP & Language", difficulty: "beginner", rank: 163,
+    keyTerms: ["Term frequency", "TF-IDF", "BM25", "Sparse vectors", "N-grams"],
+    prerequisites: ["Tokenization"],
+    learnMore: [
+      { title: "scikit-learn: text feature extraction", url: "https://scikit-learn.org/stable/modules/feature_extraction.html" },
+      { title: "Speech and Language Processing (Jurafsky & Martin, free draft)", url: "https://web.stanford.edu/~jurafsky/slp3/" },
+    ],
+    realWorldApps: "Search engines, the sparse side of hybrid RAG retrieval, quick text classifiers, deduplication",
+  },
+  {
+    id: "text-summarization", concept: "Text Summarization", emoji: "🗣️",
+    description: "Compressing a document while keeping what matters, either by extracting the key sentences or by generating new text (abstractive). LLMs made the abstractive kind everyday technology, and moved the hard problem to faithfulness: a fluent summary that quietly invents a detail is worse than a clumsy accurate one.",
+    category: "NLP & Language", difficulty: "intermediate", rank: 164,
+    keyTerms: ["Extractive vs abstractive", "ROUGE", "Faithfulness", "Hallucinated details", "Long-document summarization"],
+    prerequisites: ["Large Language Models (LLMs)"],
+    learnMore: [
+      { title: "Hugging Face: the summarization task", url: "https://huggingface.co/tasks/summarization" },
+    ],
+    realWorldApps: "Meeting notes, news digests, legal document review, the TLDR button in every product",
+  },
+  {
+    id: "topic-modeling", concept: "Topic Modeling", emoji: "🗣️",
+    description: "Discovering what a pile of documents is about without reading them: classic LDA finds word-cooccurrence themes, modern BERTopic clusters documents in embedding space and labels the clusters. The workhorse of content intelligence, from research-literature mapping to SEO keyword clustering.",
+    category: "NLP & Language", difficulty: "intermediate", rank: 165,
+    keyTerms: ["LDA (Latent Dirichlet Allocation)", "NMF", "BERTopic", "Embedding clustering", "Topic coherence"],
+    prerequisites: ["Unsupervised Learning", "Embeddings"],
+    learnMore: [
+      { title: "BERTopic documentation", url: "https://maartengr.github.io/BERTopic/" },
+      { title: "scikit-learn: LDA and NMF decomposition", url: "https://scikit-learn.org/stable/modules/decomposition.html" },
+    ],
+    realWorldApps: "Voice-of-customer mining, SEO content clustering, research trend mapping, feed curation",
+  },
+  {
+    id: "information-extraction", concept: "Information Extraction", emoji: "🗣️",
+    description: "Turning free text into structured facts: the umbrella above named entity recognition that adds relation extraction, event extraction, and entity linking. LLMs with structured output turned this from a pipeline of brittle models into a prompt, and it is exactly how knowledge graphs get built from documents.",
+    category: "NLP & Language", difficulty: "intermediate", rank: 166,
+    keyTerms: ["Relation extraction", "Entity linking", "Event extraction", "Structured output", "Knowledge graph construction"],
+    prerequisites: ["Named Entity Recognition (NER)"],
+    learnMore: [
+      { title: "Speech and Language Processing: IE chapters (free draft)", url: "https://web.stanford.edu/~jurafsky/slp3/" },
+      { title: "spaCy: industrial-strength NLP", url: "https://spacy.io/" },
+    ],
+    realWorldApps: "Building knowledge graphs, contract analysis, pharma literature mining, CRM auto-fill",
+  },
+  {
+    id: "ai-stack", concept: "The AI Stack", emoji: "⚙️",
+    description: "How the pieces fit: silicon and clouds at the bottom, then data infrastructure, then foundation models, then orchestration and tooling, then the applications people actually touch. Knowing the layers turns a soup of company names into a map, and explains who depends on whom when one layer wobbles.",
+    category: "MLOps & Infrastructure", difficulty: "beginner", rank: 167,
+    keyTerms: ["Infrastructure layer", "Model layer", "Orchestration", "Application layer", "Value chain"],
+    prerequisites: [],
+    learnMore: [
+      { title: "This site's Map of the AI Economy (455 entities, 7 layers)", url: "/notebook/ai/map" },
+      { title: "a16z: Emerging Architectures for LLM Applications", url: "https://a16z.com/emerging-architectures-for-llm-applications/" },
+    ],
+    realWorldApps: "Vendor decisions, reading AI news critically, spotting chokepoints and single points of failure",
   },
 ];

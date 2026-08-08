@@ -2,6 +2,8 @@
 
 ## 2026-08-08
 
+* **Update**: Market-coverage audit versus IBM Think's 2026 ML guide (215 topics, adversarially verified): 13 concepts added (logistic regression, data leakage, EDA, data augmentation, kNN, Naive Bayes, data science disambiguation, bag-of-words and TF-IDF, text summarization, topic modeling, information extraction, Monte Carlo methods, the AI stack) and 20 subtopics folded into existing entries as key terms. Encyclopedia now 167 concepts.
+
 * **Update**: Roadmap dataset extended with a seventh phase, Depth Tracks: 7 elective topics (multimodal, speech, robotics, efficient inference, recommenders, time series, graph ML), 473 resources total, 440 free (93%), every new link opened and checked.
 * **Update**: Encyclopedia dataset extended from 123 to 154 concepts, filling foundational gaps (trees and forests, SVM, evaluation metrics, linear algebra, probability, information theory, optimizers) and frontier gaps (self-supervised learning, GNNs, DPO, LoRA, flow matching, constitutional AI, watermarking, agent memory).
 * **Correction**: Ontology dataset counts aligned with the shipped data module: 455 entities and 1,161 edges. The two review passes covered 1,245 candidate edges; 84 were cut.

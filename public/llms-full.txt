@@ -149,7 +149,7 @@ An 18-week core curriculum plus seven elective depth tracks (multimodal, speech 
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-154 AI concepts across 10 categories (Core ML Concepts, Math & Optimization, Architectures, NLP & Language, Computer Vision, Generative AI, Reinforcement Learning, MLOps & Infrastructure, AI Agents & Applications, and Safety, Ethics & Governance). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026, extended August 2026.
+167 AI concepts across 10 categories (Core ML Concepts, Math & Optimization, Architectures, NLP & Language, Computer Vision, Generative AI, Reinforcement Learning, MLOps & Infrastructure, AI Agents & Applications, and Safety, Ethics & Governance). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
