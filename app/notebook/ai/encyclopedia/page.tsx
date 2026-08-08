@@ -1,3 +1,4 @@
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import AIContributors from "@/views/AIContributors";
 
@@ -5,7 +6,8 @@ export const metadata: Metadata = {
   title: "AI Encyclopedia",
   description: "Comprehensive AI concepts encyclopedia, curated by Venkata Pagadala.",
   alternates: { canonical: "/notebook/ai/encyclopedia" },
-  openGraph: { url: "/notebook/ai/encyclopedia", title: "AI Encyclopedia" },
+  openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: "/notebook/ai/encyclopedia", title: "AI Encyclopedia" },
 };
 
 export default function Page() {

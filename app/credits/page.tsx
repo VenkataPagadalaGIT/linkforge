@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Credits from "@/views/Credits";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { inspirations } from "@/data/inspirations";
 
 export const dynamic = "force-static";
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "The designs, explainers, and makers this site learned from, credited openly, with what each one taught us and where it shows up.",
   alternates: { canonical: "/credits" },
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     type: "website",
     url: `${SITE_URL}/credits`,
     title: "Credits & Inspiration · Venkata Pagadala",

@@ -93,6 +93,42 @@ def main():
     print("      " + ", ".join(f"{k}={v}" for k, v in sorted(truth.items())))
 
     failures = []
+
+    # A hand-listed claim table only checks the places someone remembered to
+    # list. Three OKF files kept stale counts (471 entities, twenty-eight
+    # volumes) straight through a release because they were not on it. So
+    # also sweep the whole bundle for numbers that LOOK like our headline
+    # counts but are not the current ones.
+    stale = {
+        "471": "entities (now %d)" % truth["entities"],
+        "1,245": "edges (now %d, 1,245 was the candidate count)" % truth["edges"],
+        "twenty-eight": "roadmap volumes (now %d)" % truth["topics"],
+        "123 concepts": "concepts (now %d)" % truth["concepts"],
+        "154 concepts": "concepts (now %d)" % truth["concepts"],
+        "420 resources": "resources (now %d)" % truth["resources"],
+    }
+    okf_root = os.path.join(REPO, "public", "okf")
+    for dirpath, _, filenames in os.walk(okf_root):
+        for fn in filenames:
+            if not fn.endswith(".md"):
+                continue
+            full = os.path.join(dirpath, fn)
+            rel = os.path.relpath(full, REPO)
+            text = open(full, encoding="utf-8").read()
+            # log.md is a history; old numbers there are the point.
+            if fn == "log.md":
+                continue
+            for needle, meaning in stale.items():
+                for line in text.splitlines():
+                    if needle not in line:
+                        continue
+                    # An old number is fine when the prose is explicitly
+                    # about the past: "1,245 candidate edges, 84 were cut".
+                    if re.search(r"candidate|was |were |previously|before|superseded|historic",
+                                 line, re.I):
+                        continue
+                    failures.append(f"{rel}: stale {needle} for {meaning} -> {line.strip()[:90]}")
+
     for rel, pattern, key in CLAIMS:
         try:
             text = read_local(rel)

@@ -6,7 +6,7 @@ import {
   getConferenceBySlug,
   listConferenceSessions,
 } from "@/data/conferences";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 interface Props {
   params: { slug: string };
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: [c.name, c.topic, c.city, c.country, "field notes", ...uniqueSpeakers],
     alternates: { canonical: url },
     openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
       url,
       type: "article",
       title: `${title}`,

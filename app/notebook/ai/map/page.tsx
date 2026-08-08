@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AiSystemsMapView from "@/views/AiSystemsMapView";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { ONTOLOGY_COUNTS, LAYERS } from "@/data/aiOntology";
 
 const desc = `An interactive ontology of the AI industry: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers — frontier labs, cloud, accelerators, foundries, equipment, memory, materials and energy — wired by ${ONTOLOGY_COUNTS.edges} typed dependencies, with ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on and what feeds it.`;
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/notebook/ai/map" },
   keywords: ["AI supply chain", "AI value chain", "semiconductors", "GPU", "foundry", "HBM", "data centers", "AI ontology", "Nvidia", "TSMC", "ASML"],
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     url: "/notebook/ai/map",
     type: "website",
     title: "The AI Systems Map",

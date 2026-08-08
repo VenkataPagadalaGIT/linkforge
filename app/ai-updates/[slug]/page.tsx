@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import AIUpdateDetail from "@/views/AIUpdateDetail";
 import { getUpdate, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 type Params = { slug: string };
 
@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: upd.summary,
     alternates: { canonical: `/ai-updates/${params.slug}` },
     openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
       type: "article",
       url: `/ai-updates/${params.slug}`,
       title: upd.title,

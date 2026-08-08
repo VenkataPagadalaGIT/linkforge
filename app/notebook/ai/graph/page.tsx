@@ -1,3 +1,4 @@
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import AiGraphView from "@/views/AiGraphView";
 import { ONTOLOGY_COUNTS } from "@/data/aiOntology";
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/notebook/ai/graph" },
   keywords: ["AI dependency graph", "AI value chain graph", "AI ontology", "semiconductors", "GPU", "foundry"],
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     url: "/notebook/ai/graph",
     type: "website",
     title: "The AI Systems Map: Graph view",

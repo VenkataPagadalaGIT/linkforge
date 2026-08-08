@@ -1,3 +1,4 @@
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import AIUpdatesIndex from "@/views/AIUpdates";
 
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   description:
     "Curated AI updates — the latest in models, papers, and systems, summarised by Venkata Pagadala.",
   alternates: { canonical: "/ai-updates" },
-  openGraph: { url: "/ai-updates", title: "AI Updates · Venkata Pagadala" },
+  openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: "/ai-updates", title: "AI Updates · Venkata Pagadala" },
 };
 
 export default function Page() {

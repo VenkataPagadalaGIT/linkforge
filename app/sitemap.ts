@@ -5,6 +5,8 @@ import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
 import { nodes as aiOntologyNodes } from "@/data/aiOntology";
+import { conferences, listConferenceSessions } from "@/data/conferences";
+import { speakers } from "@/data/speakers";
 
 // Re-generate the sitemap at most once per hour so new content appears
 // without a rebuild.
@@ -113,6 +115,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: n.chokepoint ? 0.7 : 0.6,
+    });
+  }
+
+  // Conference notebook: conferences, their sessions, and speaker profiles.
+  // These are indexable and internally linked, but were absent from the
+  // sitemap entirely (an audit found 154 such URLs), so search engines only
+  // ever reached them by crawling.
+  for (const c of conferences) {
+    urls.push({
+      url: `${SITE_URL}/notebook/conference/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+    // urlSlug is the form the conference page links and the route resolves.
+    for (const { urlSlug } of listConferenceSessions(c)) {
+      urls.push({
+        url: `${SITE_URL}/notebook/conference/${c.slug}/sessions/${urlSlug}`,
+        lastModified: now,
+        changeFrequency: "yearly",
+        priority: 0.4,
+      });
+    }
+  }
+  for (const s of speakers) {
+    urls.push({
+      url: `${SITE_URL}/notebook/conference/speakers/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
     });
   }
 

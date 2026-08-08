@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AiNodeView from "@/views/AiNodeView";
 import { getNode, LAYER_BY_ID, NODE_TYPE_META } from "@/data/aiOntology";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 interface Props {
   params: { id: string };
@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: desc,
     keywords: [n.name, NODE_TYPE_META[n.type].label, LAYER_BY_ID.get(n.layer)?.label || "", "AI supply chain", n.chokepoint ? "chokepoint" : ""].filter(Boolean),
     alternates: { canonical: url },
-    openGraph: { url, type: "article", title, description: desc, siteName: "Venkata Pagadala · Mono Mind" },
+    openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url, type: "article", title, description: desc, siteName: "Venkata Pagadala · Mono Mind" },
     twitter: { card: "summary", title, description: desc },
   };
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AIShelf from "@/views/AIShelf";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { shelfBooks } from "@/data/libraryShelf";
 
 export const dynamic = "force-static";
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "Browse a 3D shelf of nineteen genuinely free AI and machine learning books, from your first line of Python to AI safety. Every one is free to read at the publisher. Reviewed July 2026.",
   alternates: { canonical: "/notebook/ai/shelf" },
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     type: "website",
     url: `${SITE_URL}/notebook/ai/shelf`,
     title: "The Complete Shelf · 19 Free AI Books in 3D",

@@ -1,3 +1,4 @@
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import ServiceLanding from "@/views/ServiceLanding";
 
@@ -30,7 +31,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description: `${title}: AI solution details, delivery model, and case studies by Venkata Pagadala.`,
     alternates: { canonical: `/solutions/${params.slug}` },
-    openGraph: { url: `/solutions/${params.slug}`, title, type: "article" },
+    openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: `/solutions/${params.slug}`, title, type: "article" },
   };
 }
 

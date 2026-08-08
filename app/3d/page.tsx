@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ThreeDHub from "@/views/ThreeDHub";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { threeDExperiences } from "@/data/threeD";
 
 export const dynamic = "force-static";
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "Eight interactive 3D experiences built as code: a playable 2040 city, an explorable LLM, a browsable library of free AI books, a glass album of 100 AI contributors, and more.",
   alternates: { canonical: "/3d" },
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     type: "website",
     url: `${SITE_URL}/3d`,
     title: "Everything in 3D · Venkata Pagadala",

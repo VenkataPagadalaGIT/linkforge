@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Publications from "@/views/Publications";
 import { researchPapers, linkedPapers } from "@/data/research";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Publications · Peer-Reviewed Research on AI and Search",
@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     "Peer-reviewed papers by Venkata Pagadala on how large language models are disrupting search, AI-assisted SEO, and helpful content for e-commerce. Published on SSRN and in academic journals.",
   alternates: { canonical: "/publications" },
   openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     url: "/publications",
     title: "Publications · Venkata Pagadala",
     description:

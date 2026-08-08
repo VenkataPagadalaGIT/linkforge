@@ -45,6 +45,31 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // Fingerprinted build assets never change under the same URL, so the
+        // revalidation round trip they were making on every page load bought
+        // nothing. Everything else keeps its default.
+        source: "/_next/static/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        // Posters, photos and the OG card change only on deploy: a day of
+        // caching with revalidation is honest and stops the repeat fetches.
+        source: "/:file(.*\\.(?:png|jpg|jpeg|webp|avif|svg|ico|woff2))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        // www served the entire site at 200 with no redirect, so every URL had
+        // a crawlable twin held together only by a canonical tag.
+        source: "/:path*",
+        has: [{ type: "host", value: "www.venkatapagadala.com" }],
+        destination: "https://venkatapagadala.com/:path*",
+        permanent: true,
+      },
     ];
   },
   experimental: {

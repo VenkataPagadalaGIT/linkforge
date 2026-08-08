@@ -8,11 +8,11 @@ agents read the same files. Everything described here is live and free.
 
 # Concepts
 
-* [Guides](guides/) - long-form interactive teardowns of complex systems.
-* [Attested Computations](computations/) - the sanctioned way to compute the numbers this site publishes, with a checker.
-* [3D Experiences](experiences/) - interactive geometry, generated in code.
-* [Datasets](datasets/) - curated, hand-audited learning data.
-* [Research](research/) - peer-reviewed publications.
+* [Guides](guides/index.md) - long-form interactive teardowns of complex systems.
+* [Attested Computations](computations/index.md) - the sanctioned way to compute the numbers this site publishes, with a checker.
+* [3D Experiences](experiences/index.md) - interactive geometry, generated in code.
+* [Datasets](datasets/index.md) - curated, hand-audited learning data.
+* [Research](research/index.md) - peer-reviewed publications.
 
 # Companion surfaces
 

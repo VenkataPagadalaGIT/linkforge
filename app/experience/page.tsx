@@ -1,3 +1,4 @@
+import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import Experience from "@/views/Experience";
 
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   title: "Experience",
   description: "Work experience, roles, and engagements: Venkata Pagadala, AI Systems Architect.",
   alternates: { canonical: "/experience" },
-  openGraph: { url: "/experience", title: "Experience · Venkata Pagadala" },
+  openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: "/experience", title: "Experience · Venkata Pagadala" },
 };
 
 export default function Page() {

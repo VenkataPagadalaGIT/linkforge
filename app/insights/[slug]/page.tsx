@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import PillarPage from "@/views/PillarPage";
 import { getPillar, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 type Params = { slug: string };
 
@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: pillar.metaDescription,
     alternates: { canonical: `/insights/${params.slug}` },
     openGraph: {
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
       type: "article",
       url: `/insights/${params.slug}`,
       title: pillar.title,
