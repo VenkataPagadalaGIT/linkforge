@@ -58,7 +58,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Learning from labeled examples, the model sees inputs paired with correct outputs and learns to predict outputs for new inputs. Includes classification and regression. In business language this is predictive AI, the discriminative counterpart of generative AI: it scores and forecasts instead of creating content.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 2,
     keyTerms: ["Labels", "Classification", "Regression", "Training set", "Test set", "Predictive AI"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "StatQuest: Supervised Learning", url: "https://www.youtube.com/watch?v=nKW8Ndu7Mjw" },
     ],
@@ -69,7 +69,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Learning patterns from unlabeled data, the model discovers hidden structure without being told the 'right answer'. Includes clustering, dimensionality reduction, and anomaly detection. A fourth classic task is association-rule mining (Apriori), the market-basket analysis behind frequently-bought-together.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 3,
     keyTerms: ["Clustering", "Dimensionality reduction", "Anomaly detection", "K-Means", "Association rules (Apriori)"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "StatQuest: K-Means Clustering", url: "https://www.youtube.com/watch?v=4b5d3muPQmA" },
     ],
@@ -80,7 +80,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "A computing system inspired by biological brains, composed of layers of interconnected nodes (neurons). Each connection has a weight that's adjusted during training. The foundation of deep learning. The lineage starts at the 1958 perceptron; stack layers of them and you have the feedforward multilayer perceptron every deep net elaborates.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 4,
     keyTerms: ["Neurons", "Layers", "Weights", "Bias", "Activation function", "Perceptron", "Feedforward MLP"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "3Blue1Brown: Neural Networks", url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" },
       { title: "Neural Networks & Deep Learning · free book", url: "http://neuralnetworksanddeeplearning.com/" },
@@ -115,7 +115,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Overfitting: the model memorizes training data but fails on new data (too complex). Underfitting: the model is too simple to capture patterns. The goal is the sweet spot, generalizing well to unseen data.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 7,
     keyTerms: ["Generalization", "Training error", "Validation error", "Model complexity"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "StatQuest: Overfitting & Underfitting", url: "https://www.youtube.com/watch?v=EuBBz3bI-aA" },
     ],
@@ -231,7 +231,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "A function that measures how wrong the model's predictions are. Training = minimizing the loss. Common losses: MSE (regression), cross-entropy (classification), contrastive (embeddings). The formal name for training-by-average-loss is empirical risk minimization.",
     category: "Math & Optimization", difficulty: "beginner", rank: 18,
     keyTerms: ["MSE", "Cross-entropy", "Contrastive loss", "Objective function", "Empirical risk minimization"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "StatQuest: Cross Entropy", url: "https://www.youtube.com/watch?v=6ArSys5qHAU" },
     ],
@@ -368,7 +368,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "An RNN variant that solves the vanishing gradient problem using gates (forget, input, output) that control information flow. Was the dominant sequence architecture before Transformers.",
     category: "Architectures", difficulty: "intermediate", rank: 31,
     keyTerms: ["Forget gate", "Input gate", "Output gate", "Cell state", "GRU"],
-    prerequisites: ["RNN"],
+    prerequisites: ["Recurrent Neural Network (RNN)"],
     learnMore: [
       { title: "Colah: Understanding LSTMs (MUST READ)", url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/" },
     ],
@@ -410,7 +410,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Applying the Transformer architecture to images by splitting them into patches and treating each patch as a token. Showed that attention can match or exceed CNNs for vision tasks at scale.",
     category: "Architectures", difficulty: "advanced", rank: 35,
     keyTerms: ["Patch embedding", "Position embedding", "CLS token", "Image patches"],
-    prerequisites: ["Transformer Architecture", "CNN"],
+    prerequisites: ["Transformer Architecture", "Convolutional Neural Network (CNN)"],
     learnMore: [
       { title: "ViT Paper · An Image is Worth 16x16 Words", url: "https://arxiv.org/abs/2010.11929" },
     ],
@@ -474,7 +474,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The branch of AI focused on enabling computers to understand, interpret, and generate human language. Encompasses tasks from sentiment analysis to machine translation to question answering. Two umbrella terms live underneath: understanding (NLU) versus generation (NLG), plus text mining, the enterprise word for extracting signal from document piles.",
     category: "NLP & Language", difficulty: "beginner", rank: 41,
     keyTerms: ["Tokenization", "Parsing", "NER", "Sentiment analysis", "Machine translation", "NLU & NLG", "Text mining"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "Hugging Face NLP Course (Free)", url: "https://huggingface.co/learn/llm-course" },
       { title: "Stanford CS224n", url: "https://web.stanford.edu/class/cs224n/" },
@@ -485,7 +485,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Breaking text into smaller units (tokens) for processing. Modern tokenizers use subword methods (BPE, SentencePiece), 'unhappiness' → ['un', 'happiness']. Token count determines cost and context window usage. Classical pipelines normalized words first: stemming crudely chops endings, lemmatization maps to dictionary forms; subword tokenizers made most of that unnecessary.",
     category: "NLP & Language", difficulty: "beginner", rank: 42,
     keyTerms: ["BPE", "SentencePiece", "WordPiece", "Token", "Vocabulary", "Stemming & lemmatization"],
-    prerequisites: ["NLP"],
+    prerequisites: ["Natural Language Processing (NLP)"],
     learnMore: [
       { title: "Hugging Face: Tokenizers", url: "https://huggingface.co/learn/llm-course/chapter6/1" },
     ],
@@ -561,7 +561,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The empirical finding that LLM performance improves predictably with more data, compute, and parameters. Chinchilla scaling laws (2022) showed that most models were undertrained relative to their size.",
     category: "NLP & Language", difficulty: "advanced", rank: 49,
     keyTerms: ["Chinchilla", "Compute-optimal", "Emergent abilities", "Power law"],
-    prerequisites: ["GPT"],
+    prerequisites: ["GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "Chinchilla Paper · DeepMind", url: "https://arxiv.org/abs/2203.15556" },
     ],
@@ -571,7 +571,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The technique that made ChatGPT helpful and safe. Trains a reward model on human preferences, then optimizes the LLM against it. The key ingredient between a base model and a useful assistant.",
     category: "NLP & Language", difficulty: "advanced", rank: 50,
     keyTerms: ["Reward model", "PPO", "Preference data", "Constitutional AI", "DPO"],
-    prerequisites: ["Fine-Tuning LLMs", "Reinforcement Learning"],
+    prerequisites: ["Fine-Tuning LLMs", "Reinforcement Learning (RL)"],
     learnMore: [
       { title: "InstructGPT Paper · OpenAI", url: "https://arxiv.org/abs/2203.02155" },
       { title: "Hugging Face TRL", url: "https://huggingface.co/docs/trl" },
@@ -592,7 +592,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "How LLMs produce text, sampling from probability distributions over tokens. Temperature controls randomness. Top-k and top-p (nucleus) sampling balance creativity and coherence.",
     category: "NLP & Language", difficulty: "intermediate", rank: 52,
     keyTerms: ["Temperature", "Top-k", "Top-p (nucleus)", "Beam search", "Greedy decoding"],
-    prerequisites: ["GPT"],
+    prerequisites: ["GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "Hugging Face: Text Generation", url: "https://huggingface.co/blog/how-to-generate" },
     ],
@@ -602,7 +602,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Determining the emotional tone of text, positive, negative, or neutral. One of the most common NLP applications. Modern approaches use fine-tuned BERT or zero-shot LLMs.",
     category: "NLP & Language", difficulty: "beginner", rank: 53,
     keyTerms: ["Polarity", "Aspect-based", "Opinion mining", "Valence"],
-    prerequisites: ["NLP"],
+    prerequisites: ["Natural Language Processing (NLP)"],
     learnMore: [
       { title: "Hugging Face: Sentiment Analysis", url: "https://huggingface.co/tasks/text-classification" },
     ],
@@ -623,7 +623,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Identifying and classifying named entities in text, persons, organizations, locations, dates, etc. A fundamental NLP task used in information extraction, search, and knowledge graphs.",
     category: "NLP & Language", difficulty: "intermediate", rank: 55,
     keyTerms: ["Entity types", "BIO tagging", "SpaCy", "Token classification"],
-    prerequisites: ["NLP"],
+    prerequisites: ["Natural Language Processing (NLP)"],
     learnMore: [
       { title: "spaCy NER Tutorial", url: "https://spacy.io/usage/linguistic-features#named-entities" },
     ],
@@ -636,7 +636,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Assigning a label to an entire image. The task that started the deep learning revolution, AlexNet won ImageNet 2012 by a huge margin, proving deep learning works.",
     category: "Computer Vision", difficulty: "beginner", rank: 56,
     keyTerms: ["ImageNet", "Top-5 accuracy", "Softmax", "ResNet", "EfficientNet"],
-    prerequisites: ["CNN"],
+    prerequisites: ["Convolutional Neural Network (CNN)"],
     learnMore: [
       { title: "Kaggle: Computer Vision", url: "https://www.kaggle.com/learn/computer-vision" },
     ],
@@ -646,7 +646,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Locating and classifying multiple objects within an image with bounding boxes. YOLO (You Only Look Once) made real-time detection practical. Used in autonomous driving, security, and robotics.",
     category: "Computer Vision", difficulty: "intermediate", rank: 57,
     keyTerms: ["Bounding box", "IoU", "YOLO", "Anchor boxes", "Non-max suppression"],
-    prerequisites: ["CNN"],
+    prerequisites: ["Convolutional Neural Network (CNN)"],
     learnMore: [
       { title: "Ultralytics YOLO Docs", url: "https://docs.ultralytics.com/" },
     ],
@@ -657,7 +657,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Classifying every pixel in an image, assigning each pixel to a category. More granular than object detection. Used in autonomous driving, medical imaging, and satellite imagery.",
     category: "Computer Vision", difficulty: "intermediate", rank: 58,
     keyTerms: ["Pixel-wise classification", "U-Net", "Mask", "Instance segmentation"],
-    prerequisites: ["CNN"],
+    prerequisites: ["Convolutional Neural Network (CNN)"],
     learnMore: [
       { title: "Papers With Code: Segmentation", url: "https://huggingface.co/tasks/image-segmentation" },
     ],
@@ -687,7 +687,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Applying the artistic style of one image to the content of another, e.g., making your photo look like a Van Gogh painting. Uses CNN feature representations to separate content from style.",
     category: "Computer Vision", difficulty: "intermediate", rank: 61,
     keyTerms: ["Content loss", "Style loss", "Gram matrix", "Feature extraction"],
-    prerequisites: ["CNN"],
+    prerequisites: ["Convolutional Neural Network (CNN)"],
     learnMore: [
       { title: "A Neural Algorithm of Artistic Style", url: "https://arxiv.org/abs/1508.06576" },
     ],
@@ -697,7 +697,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI-generated fake videos and images that swap faces or create entirely synthetic people. Uses GANs and diffusion models. Raises serious ethical concerns about misinformation.",
     category: "Computer Vision", difficulty: "advanced", rank: 62,
     keyTerms: ["Face swap", "Face reenactment", "Detection methods", "DeepFaceLab"],
-    prerequisites: ["GANs", "Image Generation"],
+    prerequisites: ["GANs (Generative Adversarial Networks)", "Image Generation"],
     learnMore: [
       { title: "MIT Media Lab: Detecting Deepfakes", url: "https://www.media.mit.edu/projects/detect-fakes/overview/" },
     ],
@@ -707,7 +707,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Predicting future values based on historical temporal data. Traditional methods (ARIMA) are being augmented by deep learning (LSTMs, Transformers). Critical for finance, weather, and demand planning. Stationarity, whether the series' statistics drift over time, decides which methods are even valid.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 63,
     keyTerms: ["ARIMA", "Seasonality", "Trend", "Lag features", "Prophet", "Stationarity"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "Facebook Prophet", url: "https://facebook.github.io/prophet/" },
     ],
@@ -728,7 +728,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Artificially generated data that mimics real-world data. Used when real data is scarce, expensive, or privacy-sensitive. GANs and diffusion models can create realistic synthetic training data.",
     category: "Generative AI", difficulty: "intermediate", rank: 65,
     keyTerms: ["Data augmentation", "Privacy-preserving", "Distribution matching"],
-    prerequisites: ["Data, The Fuel of AI"],
+    prerequisites: ["Data · The Fuel of AI"],
     learnMore: [
       { title: "NVIDIA: Synthetic Data", url: "https://developer.nvidia.com/blog/tag/synthetic-data/" },
     ],
@@ -814,7 +814,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "LLMs trained on code that can write, debug, and explain programs. GitHub Copilot, Claude, and other frontier models can generate working code from natural language descriptions, and coding agents can now carry out whole tasks. Transforming software development.",
     category: "Generative AI", difficulty: "intermediate", rank: 73,
     keyTerms: ["Code completion", "Copilot", "CodeLlama", "Code review", "Agentic coding"],
-    prerequisites: ["GPT"],
+    prerequisites: ["GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "GitHub Copilot", url: "https://github.com/features/copilot" },
     ],
@@ -847,7 +847,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Learning through trial and error, an agent takes actions in an environment, receives rewards/penalties, and learns a policy to maximize cumulative reward. Behind AlphaGo and game-playing AI. The multi-armed bandit is RL stripped to a single state, where the explore-exploit tradeoff appears in its purest form.",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 76,
     keyTerms: ["Agent", "Environment", "Reward", "Policy", "Episode", "Multi-armed bandits"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "Spinning Up in Deep RL · OpenAI", url: "https://spinningup.openai.com/" },
       { title: "David Silver's RL Course", url: "https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ" },
@@ -858,7 +858,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Q-Learning estimates the value of actions in each state. Deep Q-Networks (DQN) use neural networks to approximate Q-values, DeepMind's DQN played Atari games at superhuman level (2013). SARSA is Q-learning's on-policy sibling: it learns from the action actually taken rather than the greedy one.",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 77,
     keyTerms: ["Q-value", "Bellman equation", "Experience replay", "Target network", "SARSA"],
-    prerequisites: ["Reinforcement Learning"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "DQN Paper · DeepMind", url: "https://arxiv.org/abs/1312.5602" },
     ],
@@ -868,7 +868,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Policy gradient methods directly optimize the policy (action selection) rather than value estimates. Actor-Critic combines both: the actor selects actions, the critic evaluates them.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 78,
     keyTerms: ["REINFORCE", "Advantage function", "A2C", "A3C", "Baseline"],
-    prerequisites: ["Q-Learning"],
+    prerequisites: ["Q-Learning & Deep Q-Networks (DQN)"],
     learnMore: [
       { title: "OpenAI Spinning Up: Policy Gradient", url: "https://spinningup.openai.com/en/latest/algorithms/vpg.html" },
     ],
@@ -878,7 +878,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "For years the default RL algorithm, simpler and more stable than its predecessors, and the method used in the original RLHF pipelines. Newer group-relative variants have largely displaced it for language-model post-training, though PPO remains a standard baseline in robotics and control. Used in RLHF to fine-tune ChatGPT, in robotics, and in game AI. Balances exploration with stable training.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 79,
     keyTerms: ["Clipping", "Trust region", "Surrogate objective", "KL penalty"],
-    prerequisites: ["Policy Gradient"],
+    prerequisites: ["Policy Gradient & Actor-Critic"],
     learnMore: [
       { title: "PPO Paper · OpenAI", url: "https://arxiv.org/abs/1707.06347" },
     ],
@@ -898,7 +898,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Designing reward functions is RL's hardest problem. Reward hacking: agents find unintended shortcuts to maximize reward without actually solving the task. A core challenge in AI alignment.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 81,
     keyTerms: ["Sparse rewards", "Reward shaping", "Goodhart's law", "Specification gaming"],
-    prerequisites: ["Reinforcement Learning"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "DeepMind: Specification Gaming", url: "https://deepmindsafetyresearch.medium.com/specification-gaming-the-flip-side-of-ai-ingenuity-c85bdb0deeb4" },
     ],
@@ -908,7 +908,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Multiple agents learning simultaneously in a shared environment, they can cooperate, compete, or both. Adds complexity: each agent's optimal strategy depends on what others do.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 82,
     keyTerms: ["Nash equilibrium", "Cooperative", "Competitive", "Self-play"],
-    prerequisites: ["Reinforcement Learning"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "OpenAI Five · Dota 2", url: "https://openai.com/index/openai-five/" },
     ],
@@ -918,17 +918,17 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI that builds internal models of how the world works, predicting what happens next without actually experiencing it. Championed by Yann LeCun, who left Meta at the end of 2025 to found AMI Labs (Advanced Machine Intelligence) specifically to pursue this, as the next paradigm: learning through observation, not just language.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 83,
     keyTerms: ["Predictive model", "Imagination", "Model-based RL", "JEPA"],
-    prerequisites: ["Reinforcement Learning"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "LeCun: A Path Towards Autonomous Machine Intelligence", url: "https://openreview.net/forum?id=BZ5a1r-kVsf" },
     ],
   },
   {
     id: "sim-to-real", concept: "Sim-to-Real Transfer", emoji: "🎮",
-    description: "Training RL agents in simulation and deploying them in the real world. Overcomes the cost and danger of real-world training. Domain randomization helps bridge the gap between sim and reality.",
+    description: "Training RL agents in simulation and deploying them in the real world. Overcomes the cost and danger of real-world training. Domain randomization helps bridge the gap between sim and reality. The wider framing is physical AI: models trained largely in simulated worlds and digital twins before they ever touch hardware.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 84,
-    keyTerms: ["Domain randomization", "Simulation", "Reality gap", "Digital twin"],
-    prerequisites: ["Reinforcement Learning"],
+    keyTerms: ["Domain randomization", "Simulation", "Reality gap", "Digital twin", "Physical AI"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "OpenAI: Sim-to-Real Robotics", url: "https://openai.com/index/solving-rubiks-cube/" },
     ],
@@ -938,7 +938,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Learning the reward function from observing expert behavior, inferring WHAT the expert is optimizing, not just imitating their actions. Key for building AI that understands human preferences.",
     category: "Reinforcement Learning", difficulty: "advanced", rank: 85,
     keyTerms: ["Reward inference", "Expert demonstrations", "Imitation learning", "IRL"],
-    prerequisites: ["Reinforcement Learning"],
+    prerequisites: ["Reinforcement Learning (RL)"],
     learnMore: [
       { title: "Ng & Russell: IRL Paper", url: "https://ai.stanford.edu/~ang/papers/icml00-irl.pdf" },
     ],
@@ -947,9 +947,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === MLOps & Infrastructure (86–95) ===
   {
     id: "gpu-tpu", concept: "GPU & TPU Computing", emoji: "⚙️",
-    description: "GPUs (NVIDIA) and TPUs (Google) are the hardware that makes deep learning possible. Their parallel processing capabilities accelerate matrix operations by 100x+ versus CPUs.",
+    description: "GPUs (NVIDIA) and TPUs (Google) are the hardware that makes deep learning possible. Their parallel processing capabilities accelerate matrix operations by 100x+ versus CPUs. This is the same lineage as high-performance computing: AI clusters are supercomputers, ranked and benchmarked as such.",
     category: "MLOps & Infrastructure", difficulty: "beginner", rank: 86,
-    keyTerms: ["CUDA", "Tensor cores", "HBM", "Accelerator generations (Hopper, Blackwell, Rubin)", "TPU", "Parallelism"],
+    keyTerms: ["CUDA", "Tensor cores", "HBM", "Accelerator generations (Hopper, Blackwell, Rubin)", "TPU", "Parallelism", "HPC & supercomputing"],
     prerequisites: [],
     learnMore: [
       { title: "NVIDIA CUDA Guide", url: "https://developer.nvidia.com/cuda" },
@@ -957,9 +957,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "model-deployment", concept: "Model Deployment & Serving", emoji: "⚙️",
-    description: "Getting trained models into production where they serve real users. Involves containerization (Docker), API frameworks (FastAPI), model servers (TensorRT, vLLM), and monitoring.",
+    description: "Getting trained models into production where they serve real users. Involves containerization (Docker), API frameworks (FastAPI), model servers (TensorRT, vLLM), and monitoring. Serving splits two ways: real-time endpoints optimized for latency, and batch jobs optimized for throughput and cost.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 87,
-    keyTerms: ["Docker", "FastAPI", "TensorRT", "vLLM", "Latency", "Throughput"],
+    keyTerms: ["Docker", "FastAPI", "TensorRT", "vLLM", "Latency", "Throughput", "Triton & inference servers", "Batch vs real-time"],
     prerequisites: ["Training vs Inference"],
     learnMore: [
       { title: "Made With ML · MLOps", url: "https://madewithml.com/" },
@@ -970,7 +970,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The practice of deploying, monitoring, and maintaining ML models in production. Combines ML, DevOps, and data engineering. The difference between a notebook prototype and a reliable production system. CI/CD carries over from software engineering: every model change flows through automated test, build, and deploy stages. LLMOps is the same discipline rebuilt around LLM apps, where prompts and evals become the artifacts under version control.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 88,
     keyTerms: ["CI/CD for ML", "Model registry", "Feature store", "A/B testing", "Monitoring", "LLMOps"],
-    prerequisites: ["Model Deployment"],
+    prerequisites: ["Model Deployment & Serving"],
     learnMore: [
       { title: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com/" },
       { title: "Chip Huyen: Designing ML Systems", url: "https://www.amazon.com/Designing-Machine-Learning-Systems-Production-Ready/dp/1098107969" },
@@ -981,7 +981,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Systematically logging hyperparameters, metrics, and artifacts for every ML experiment. Without it, ML research is unreproducible chaos. Weights & Biases and MLflow are the standards.",
     category: "MLOps & Infrastructure", difficulty: "beginner", rank: 89,
     keyTerms: ["Hyperparameters", "Metrics logging", "Artifact tracking", "Reproducibility"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "Weights & Biases · Free Courses", url: "https://wandb.ai/site/courses" },
     ],
@@ -1000,7 +1000,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     id: "edge-ai", concept: "Edge AI & On-Device ML", emoji: "⚙️",
     description: "Running AI models directly on devices (phones, IoT, cars) instead of in the cloud. Enables low-latency, privacy-preserving AI. Requires model compression and optimization.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 91,
-    keyTerms: ["LiteRT (formerly TensorFlow Lite)", "CoreML", "ONNX", "Edge TPU", "Model optimization"],
+    keyTerms: ["LiteRT (formerly TensorFlow Lite)", "CoreML", "ONNX", "Edge TPU", "Model optimization", "On-device NPUs"],
     prerequisites: ["Model Quantization & Compression"],
     learnMore: [
       { title: "LiteRT (formerly TensorFlow Lite)", url: "https://developers.google.com/edge/litert" },
@@ -1042,7 +1042,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Watching ML models in production for degradation. Models decay over time as data distributions shift. Monitoring detects data drift, concept drift, and performance drops before they impact users. Training-serving skew, features computed differently offline and online, is the classic silent killer here.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 95,
     keyTerms: ["Data drift", "Concept drift", "Model degradation", "Alerting", "Retraining", "Training-serving skew"],
-    prerequisites: ["Model Deployment"],
+    prerequisites: ["Model Deployment & Serving"],
     learnMore: [
       { title: "Evidently AI · ML Monitoring", url: "https://www.evidentlyai.com/" },
     ],
@@ -1054,7 +1054,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI systems that can plan, use tools, browse the web, write code, and complete multi-step tasks autonomously. The defining frontier of the current AI era. Frameworks such as LangGraph and CrewAI, plus vendor SDKs (OpenAI Agents SDK, Claude Agent SDK, Microsoft Agent Framework), are common starting points. The 2023 Auto-GPT and BabyAGI wave proved both the appetite and the limits; today's agents descend from those loops running on far better models.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 96,
     keyTerms: ["Tool use", "Planning", "ReAct", "Reasoning loop", "Autonomy", "Auto-GPT era"],
-    prerequisites: ["Prompt Engineering", "GPT"],
+    prerequisites: ["Prompt Engineering", "GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
       { title: "LangGraph Documentation", url: "https://langchain-ai.github.io/langgraph/" },
@@ -1076,7 +1076,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Self-driving cars and intelligent robots that perceive, plan, and act in the physical world. Combines computer vision, RL, sensor fusion, and path planning. Tesla, Waymo, and Figure lead the field.",
     category: "AI Agents & Applications", difficulty: "advanced", rank: 98,
     keyTerms: ["Lidar", "Sensor fusion", "Path planning", "SLAM", "End-to-end driving"],
-    prerequisites: ["Computer Vision", "Reinforcement Learning"],
+    prerequisites: ["Image Classification", "Reinforcement Learning (RL)"],
     learnMore: [
       { title: "Waymo Research", url: "https://waymo.com/research/" },
     ],
@@ -1086,7 +1086,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI that suggests content, products, or connections based on user behavior and preferences. Powers Netflix, YouTube, Amazon, and TikTok. Uses collaborative filtering, content-based, and hybrid approaches.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 99,
     keyTerms: ["Collaborative filtering", "Content-based", "Matrix factorization", "Cold start"],
-    prerequisites: ["Machine Learning", "Embeddings"],
+    prerequisites: ["Machine Learning (ML)", "Embeddings"],
     learnMore: [
       { title: "Google: Recommendation Systems Course", url: "https://developers.google.com/machine-learning/recommendation" },
     ],
@@ -1106,7 +1106,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Techniques to make AI decisions interpretable by humans. SHAP and LIME explain individual predictions. Critical for healthcare, finance, and legal applications where decisions must be justified.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 101,
     keyTerms: ["SHAP", "LIME", "Feature importance", "Attention visualization", "Interpretability"],
-    prerequisites: ["Machine Learning"],
+    prerequisites: ["Machine Learning (ML)"],
     learnMore: [
       { title: "SHAP Documentation", url: "https://shap.readthedocs.io/" },
       { title: "Christoph Molnar: Interpretable ML (Free Book)", url: "https://christophm.github.io/interpretable-ml-book/" },
@@ -1117,7 +1117,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Using ML to improve search results and ranking. Moved from keyword matching to semantic understanding. Encoder models moved search from keyword matching to semantic understanding, and vector search enables meaning-based retrieval. The frontier has moved again: major engines now generate an answer as the primary result and cite sources into it, so visibility increasingly means being cited rather than being ranked.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 102,
     keyTerms: ["Semantic search", "Learning to rank", "BM25", "Cross-encoder", "Bi-encoder"],
-    prerequisites: ["Embeddings", "BERT"],
+    prerequisites: ["Embeddings", "BERT (Bidirectional Encoder)"],
     learnMore: [
       { title: "Pinecone: Semantic Search", url: "https://www.pinecone.io/learn/semantic-search/" },
     ],
@@ -1127,7 +1127,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI systems for natural dialogue, from simple rule-based chatbots to LLM-powered assistants. Key challenges: maintaining context, handling ambiguity, knowing when to escalate to humans.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 103,
     keyTerms: ["Dialog management", "Intent recognition", "Slot filling", "Conversation memory"],
-    prerequisites: ["NLP", "GPT"],
+    prerequisites: ["Natural Language Processing (NLP)", "GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "Rasa Documentation", url: "https://rasa.com/docs/" },
     ],
@@ -1137,7 +1137,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "AI for diagnosis, treatment planning, drug discovery, and medical imaging. CNNs match or exceed radiologists for certain diagnoses. Faces unique challenges: regulation, liability, bias in clinical data.",
     category: "AI Agents & Applications", difficulty: "advanced", rank: 104,
     keyTerms: ["Medical imaging", "Clinical NLP", "FDA approval", "Diagnostic AI"],
-    prerequisites: ["CNN", "Deep Learning"],
+    prerequisites: ["Convolutional Neural Network (CNN)", "Deep Learning"],
     learnMore: [
       { title: "Google Health AI", url: "https://health.google/" },
     ],
@@ -1182,7 +1182,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "When AI generates confident but factually incorrect or fabricated information. A fundamental limitation of current LLMs, they predict plausible text, not truthful text. RAG and grounding techniques help reduce it.",
     category: "Safety, Ethics & Governance", difficulty: "beginner", rank: 108,
     keyTerms: ["Confabulation", "Grounding", "Factual accuracy", "RAG as mitigation"],
-    prerequisites: ["GPT"],
+    prerequisites: ["GPT (Generative Pre-trained Transformer)"],
     learnMore: [
       { title: "Anthropic: Reducing Hallucinations", url: "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations" },
     ],
@@ -1606,7 +1606,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "Models whose weights you can download, run, and tune yourself: the Llama, Qwen, DeepSeek, and Mistral lines. Small language models in the 1B to 14B range now do real work on laptops and phones. The open-versus-closed gap keeps narrowing, and pricing power follows it.",
     category: "NLP & Language", difficulty: "intermediate", rank: 145,
     keyTerms: ["Open weights vs open source", "SLM", "Local inference", "Model licenses", "Distilled models"],
-    prerequisites: ["LLMs"],
+    prerequisites: ["Large Language Models (LLMs)"],
     learnMore: [
       { title: "LMArena: community leaderboard across open and closed models", url: "https://lmarena.ai/" },
       { title: "Ollama: run open models locally", url: "https://ollama.com/" },
@@ -1687,7 +1687,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     description: "The contested idea of AI matching humans across most cognitive work, rather than excelling at one task. Definitions vary so much that serious frameworks now grade levels of generality and autonomy instead of arguing over a single finish line. The term drives lab missions, policy, and billions in capital.",
     category: "Safety, Ethics & Governance", difficulty: "intermediate", rank: 152,
     keyTerms: ["Narrow vs general AI", "Levels of AGI", "Autonomy", "Superintelligence", "Capability thresholds"],
-    prerequisites: ["LLMs"],
+    prerequisites: ["Large Language Models (LLMs)"],
     learnMore: [
       { title: "Levels of AGI (Google DeepMind)", url: "https://arxiv.org/abs/2311.02462" },
     ],
@@ -1930,5 +1930,46 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
       { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
     ],
     realWorldApps: "Coding agents like Claude Code, computer-use products, production agent reliability work",
+  },
+
+  // === Infrastructure layer, 2026-08-08: the accelerated-computing angle
+  // NVIDIA's glossary teaches and general AI references skip. We had the
+  // chip (GPU & TPU) and the job (Distributed Training) but nothing about
+  // the building they live in, or the number format the math runs in. ===
+  {
+    id: "ai-datacenter", concept: "AI Data Centers & the AI Factory", emoji: "⚙️",
+    description: "Frontier training does not run on a server, it runs on a building. Thousands of accelerators wired by high-bandwidth interconnects, fed by megawatts of power and liquid cooling, scheduled as one machine. The industry calls these AI factories because they convert electricity and data into tokens, and their power budgets are now a real constraint on how fast AI can scale.",
+    category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 173,
+    keyTerms: ["Interconnect (NVLink, InfiniBand)", "Cluster scheduling", "Power & cooling", "Compute capex", "AI factory"],
+    prerequisites: ["GPU & TPU Computing", "Distributed Training"],
+    learnMore: [
+      { title: "IEA: Energy and AI (free report)", url: "https://www.iea.org/reports/energy-and-ai" },
+      { title: "This site's Map of the AI Economy: the infrastructure layer", url: "/notebook/ai/map" },
+    ],
+    realWorldApps: "Why AI capex is measured in gigawatts, why cloud regions gate model launches, chokepoint analysis",
+  },
+  {
+    id: "numerical-precision", concept: "Numerical Precision & Mixed-Precision Training", emoji: "⚙️",
+    description: "How many bits each number gets, and why halving them roughly doubles your throughput. Training moved from FP32 to mixed precision with BF16, and frontier runs now use FP8 for parts of the math while keeping sensitive accumulations wider. Push too far and gradients underflow or the loss diverges, so precision is a tuning decision, not just a hardware feature.",
+    category: "MLOps & Infrastructure", difficulty: "advanced", rank: 174,
+    keyTerms: ["FP32 & BF16", "FP8", "Mixed precision", "Loss scaling", "Numerical stability"],
+    prerequisites: ["Distributed Training"],
+    learnMore: [
+      { title: "Mixed Precision Training (the original paper)", url: "https://arxiv.org/abs/1710.03740" },
+      { title: "PyTorch: automatic mixed precision", url: "https://pytorch.org/docs/stable/amp.html" },
+    ],
+    realWorldApps: "Every large training run's cost model; the difference between a run that fits your budget and one that does not",
+  },
+  {
+    id: "llm", concept: "Large Language Models (LLMs)", emoji: "🗣️",
+    description: "Transformers trained on internet-scale text to predict the next token, then tuned to follow instructions. That single objective, done at enough scale, produces translation, code, reasoning and conversation as side effects nobody explicitly programmed. Everything downstream on this page, prompting, RAG, fine-tuning, agents, is a technique for getting more out of that one capability.",
+    category: "NLP & Language", difficulty: "beginner", rank: 175,
+    keyTerms: ["Next-token prediction", "Pretraining & post-training", "Parameters", "Emergent abilities", "Frontier models"],
+    prerequisites: ["Transformer Architecture", "Tokenization"],
+    learnMore: [
+      { title: "This site's teardown: How LLMs Work, 21 stages in 3D", url: "/guides/how-llms-work" },
+      { title: "Andrej Karpathy: Intro to Large Language Models", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g" },
+    ],
+    realWorldApps: "ChatGPT and Claude, coding assistants, search summaries, translation, and most of the AI economy",
   },
 ];

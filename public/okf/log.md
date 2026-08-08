@@ -2,6 +2,7 @@
 
 ## 2026-08-08
 
+* **Correction**: The encyclopedia had no Large Language Models entry, caught by a prerequisite-integrity check; added, and all 175 prerequisite references now resolve to real concept titles. Infrastructure layer added too (AI data centers and the AI factory, numerical precision and mixed-precision training) after the NVIDIA accelerated-computing angle showed a structural gap. /brand is now noindex, matching /library.
 * **Update**: Nine-source market sweep (Google ML glossary 739 terms, Hugging Face Learn, DeepLearning.AI catalog, MIT 6.S191 and 6.036, Anthropic courses and engineering, Wikipedia ML outline, AWS AI topics; 1,187 unique topics): 5 further concepts added (probabilistic graphical models and HMMs, evolutionary and swarm optimization, face detection and recognition, quantum ML, agent harnesses) plus 21 more folds. Encyclopedia now 172 concepts.
 * **Update**: Market-coverage audit versus IBM Think's 2026 ML guide (215 topics, adversarially verified): 13 concepts added (logistic regression, data leakage, EDA, data augmentation, kNN, Naive Bayes, data science disambiguation, bag-of-words and TF-IDF, text summarization, topic modeling, information extraction, Monte Carlo methods, the AI stack) and 20 subtopics folded into existing entries as key terms. Encyclopedia now 167 concepts.
 
