@@ -9,6 +9,7 @@ agents read the same files. Everything described here is live and free.
 # Concepts
 
 * [Guides](guides/) - long-form interactive teardowns of complex systems.
+* [Attested Computations](computations/) - the sanctioned way to compute the numbers this site publishes, with a checker.
 * [3D Experiences](experiences/) - interactive geometry, generated in code.
 * [Datasets](datasets/) - curated, hand-audited learning data.
 * [Research](research/) - peer-reviewed publications.

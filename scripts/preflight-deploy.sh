@@ -49,6 +49,17 @@ else
   bad "next build failed; see /tmp/preflight-build.log"
 fi
 
+# Published counts must match the data they describe. This is the OKF
+# attested computation running as a gate: it re-derives every number from
+# the data modules and fails if any surface still states an old one. Counts
+# drifted silently for weeks before this existed.
+if python3 scripts/okf_corpus_counts.py > /tmp/preflight-receipt.json 2>/tmp/preflight-counts.log \
+   && python3 scripts/okf_attest.py /tmp/preflight-receipt.json >> /tmp/preflight-counts.log 2>&1; then
+  ok "published counts match the data (OKF attester)"
+else
+  bad "published counts disagree with the data; see /tmp/preflight-counts.log"
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   say ""
   say "PREFLIGHT FAILED. Do NOT run railway up."
