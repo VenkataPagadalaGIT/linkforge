@@ -1021,7 +1021,7 @@ const sfBlocks: Block[] = [
 export const sfGuide: Guide = {
   slug: "screaming-frog",
   title: "Screaming Frog: The Complete 2026 Guide",
-  metaTitle: "Screaming Frog SEO Spider: The Complete 2026 Guide (v24)",
+  metaTitle: "Screaming Frog SEO Spider: The Complete 2026 Guide",
   metaDescription:
     "Every screen of Screaming Frog v24, explained with 76 real screenshots: crawl config, JavaScript rendering, embeddings and semantic search, GSC and AI integrations, scheduling, and the MCP server.",
   kicker: "The 2026 field guide · v24 · 76 screenshots",

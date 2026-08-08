@@ -86,11 +86,15 @@ export type Sitemap = {
 // copy is a seed that goes stale the moment the file is edited. If the
 // backend won here, a refreshed bio would ship in the page body while the
 // title, description and JSON-LD kept serving the old Mongo text.
+// No backend fallback, deliberately. The profile VIEW renders only from the
+// file, so an id the backend knows and the file does not produced a 200 page
+// whose body read "Contributor not found" while its title, canonical and
+// Person JSON-LD described a real person. Five such soft 404s were live and
+// in the sitemap. If the file does not have them, the page is a real 404.
 export const getContributor = async (id: string): Promise<Contributor | null> => {
   const { aiContributors } = await import("@/data/aiContributors");
   const local = aiContributors.find((c) => c.id === id);
-  if (local) return local as unknown as Contributor;
-  return fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
+  return local ? (local as unknown as Contributor) : null;
 };
 
 // Backend first, static module second. The updates index and the client

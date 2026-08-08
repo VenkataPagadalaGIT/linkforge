@@ -6,15 +6,15 @@ import { shelfBooks } from "@/data/libraryShelf";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "The Complete Shelf · 19 Free AI Books in 3D",
+  title: "The Complete Shelf: 19 Free AI Books",
   description:
-    "Browse a 3D shelf of nineteen genuinely free AI and machine learning books, from your first line of Python to AI safety. Every one is free to read at the publisher. Reviewed July 2026.",
+    "Browse a 3D shelf of nineteen genuinely free AI and machine learning books, from your first line of Python through to AI safety. Pull one out and read it free.",
   alternates: { canonical: "/notebook/ai/shelf" },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     type: "website",
     url: `${SITE_URL}/notebook/ai/shelf`,
-    title: "The Complete Shelf · 19 Free AI Books in 3D",
+    title: "The Complete Shelf: 19 Free AI Books in 3D",
     description:
       "A walnut shelf of nineteen free AI books you can browse and pull out, each linking to the publisher's free copy.",
   },

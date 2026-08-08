@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "Everything in 3D",
   description:
-    "Eight interactive 3D experiences built as code: a playable 2040 city, an explorable LLM, a browsable library of free AI books, a glass album of 100 AI contributors, and more.",
+    "Eight interactive 3D experiences built as code, no downloads: a playable 2040 city, an explorable LLM, a library of free AI books, and a living portrait.",
   alternates: { canonical: "/3d" },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],

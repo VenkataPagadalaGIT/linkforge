@@ -7,6 +7,7 @@ import { guides } from "@/data/guides";
 import { nodes as aiOntologyNodes } from "@/data/aiOntology";
 import { conferences, listConferenceSessions } from "@/data/conferences";
 import { speakers } from "@/data/speakers";
+import { aiContributors } from "@/data/aiContributors";
 
 // Re-generate the sitemap at most once per hour so new content appears
 // without a rebuild.
@@ -68,14 +69,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       });
     }
-    for (const c of data.contributors) {
-      urls.push({
-        url: `${SITE_URL}/ai-contributors/${c.id}`,
-        lastModified: now,
-        changeFrequency: "monthly",
-        priority: 0.6,
-      });
-    }
+    // Contributors deliberately do NOT come from the backend here. The
+    // profile page renders from src/data/aiContributors.ts, so listing the
+    // Mongo copy advertised five ids that render "not found" while omitting
+    // five that render fine. Enumerated below from the file instead.
     for (const p of data.pillars) {
       urls.push({
         url: `${SITE_URL}/insights/${p.slug}`,
@@ -115,6 +112,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: n.chokepoint ? 0.7 : 0.6,
+    });
+  }
+
+  // One contributor URL per profile the site can actually render.
+  for (const c of aiContributors) {
+    urls.push({
+      url: `${SITE_URL}/ai-contributors/${c.id}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
     });
   }
 

@@ -21,7 +21,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const guide = getGuideBySlug(params.slug);
   if (!guide) return { title: "Guide not found" };
   return {
-    title: guide.metaTitle,
+    // absolute: the layout appends ' · Venkata Pagadala', which pushed
+    // these keyword-dense titles past the SERP truncation point.
+    title: { absolute: guide.metaTitle },
     description: guide.metaDescription,
     keywords: guide.tags,
     alternates: { canonical: `/guides/${guide.slug}` },

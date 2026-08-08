@@ -6,7 +6,7 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 export const metadata: Metadata = {
   // The root layout appends " · Venkata Pagadala", so naming the brand here
   // too produced "... | Venkata Pagadala · Venkata Pagadala" in the tab.
-  title: "Teardowns: AI, Graphs & Search, Taken Apart",
+  title: "Teardowns: AI, Graphs and Search",
   description:
     "Complex systems taken apart: citable reference guides on AI systems, knowledge graphs, and search, built for humans and answer engines.",
   alternates: { canonical: "/guides" },

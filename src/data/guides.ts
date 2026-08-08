@@ -1345,8 +1345,7 @@ export const guides: Guide[] = [
   {
     slug: "graph-types-for-ai-agents",
     title: "Graph Types for AI Agents",
-    metaTitle:
-      "Knowledge Graph vs Vector Database vs Ontology: The 2026 Reference for AI Agents, RAG & GraphRAG",
+    metaTitle: "Knowledge Graph vs Vector Database vs Ontology (2026)",
     metaDescription:
       "Knowledge graph, ontology, taxonomy, information graph, context graph, vector database — what each one is, how they differ, and which to use for RAG, GraphRAG, semantic search, AEO and GEO. One dataset modeled six ways, with runnable code, primary sources, and interactive 3D.",
     kicker: "The 2026 reference · For AI agents, RAG & GraphRAG",
@@ -1387,7 +1386,7 @@ export const guides: Guide[] = [
   {
     slug: "hvac-system-troubleshooting",
     title: "3D HVAC Troubleshooting",
-    metaTitle: "Interactive 3D HVAC Troubleshooting: Diagnose AC & Furnace Problems (2026 Guide)",
+    metaTitle: "Interactive 3D HVAC Troubleshooting Guide (2026)",
     metaDescription:
       "Explore a full 3D model of a home HVAC system, then diagnose it: pick your symptoms — warm air, ice on lines, short cycling — and get ranked causes, step-by-step checks, DIY-vs-pro calls, and real repair costs.",
     headline: "The Interactive 3D HVAC Troubleshooter",
@@ -1413,7 +1412,7 @@ export const guides: Guide[] = [
   {
     slug: "how-llms-work",
     title: "How LLMs Work",
-    metaTitle: "How LLMs Work: Interactive 3D Walkthrough — Tokens, Attention, MoE & Reasoning (2026)",
+    metaTitle: "How LLMs Work: An Interactive 3D Walkthrough",
     metaDescription:
       "Watch a prompt become an answer inside a 3D model of a large language model: tokenization, embeddings, attention, mixture-of-experts, the KV cache, sampling, and the 2025-2026 reasoning-RL frontier — one animated stage at a time.",
     headline: "How LLMs Work — Watch a Thought Get Computed",

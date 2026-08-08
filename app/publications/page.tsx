@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Publications from "@/views/Publications";
-import { researchPapers, linkedPapers } from "@/data/research";
+import { researchPapers } from "@/data/research";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Publications · Peer-Reviewed Research on AI and Search",
+  title: "Peer-Reviewed Research on AI and Search",
   description:
-    "Peer-reviewed papers by Venkata Pagadala on how large language models are disrupting search, AI-assisted SEO, and helpful content for e-commerce. Published on SSRN and in academic journals.",
+    "Peer-reviewed papers on how large language models are disrupting search, AI-assisted SEO, and helpful content for e-commerce. Published on SSRN and in journals.",
   alternates: { canonical: "/publications" },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
@@ -29,7 +29,10 @@ export default function Page() {
       description:
         "Peer-reviewed research on how AI and large language models are reshaping search and content discovery.",
     },
-    ...linkedPapers.map((paper) => ({
+    // Every paper the page shows, not just the ones with an external URL.
+    // linkedPapers filters on url !== "", which silently dropped a visible
+    // publication from the structured data.
+    ...researchPapers.map((paper) => ({
       "@context": "https://schema.org",
       "@type": "ScholarlyArticle",
       headline: paper.title,
@@ -37,8 +40,7 @@ export default function Page() {
       author: { "@id": `${SITE_URL}/#person` },
       datePublished: paper.year,
       publisher: { "@type": "Organization", name: paper.venue },
-      url: paper.url,
-      sameAs: paper.url,
+      ...(paper.url ? { url: paper.url, sameAs: paper.url } : {}),
       abstract: paper.summary,
       isAccessibleForFree: true,
     })),

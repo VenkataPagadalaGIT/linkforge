@@ -64,17 +64,25 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  // favicon.png was JPEG data served as image/png, and favicon.ico was a
+  // single 256px image weighing 125KB for a 16px slot. Both are now real
+  // files at real sizes.
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/favicon.png", type: "image/png", sizes: "192x192" },
     ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 
+// This node is the one canonical description of the person. Pages across the
+// site reference it as { "@id": SITE_URL + "/#person" }; without the @id here
+// every one of those references dangled.
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${SITE_URL}/#person`,
   name: "Venkata Pagadala",
   url: SITE_URL,
   image: OG_IMAGE,

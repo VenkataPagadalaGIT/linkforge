@@ -7,7 +7,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "3D Game: Drive and Walk a Year-2040 City",
   description:
-    "A playable 2040 city in the browser. Walk a humanoid, greet the crew, and take the controls of any truck, robotaxi, semi or cargo barge. Generated geometry, no downloads.",
+    "A playable 2040 city in the browser. Walk a humanoid, greet the crew, and take the controls of any truck, robotaxi or semi. Generated geometry, no downloads.",
   alternates: { canonical: "/3d-game" },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
