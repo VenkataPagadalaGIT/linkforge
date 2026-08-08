@@ -2,6 +2,7 @@
 
 ## 2026-08-08
 
+* **Update**: Nine-source market sweep (Google ML glossary 739 terms, Hugging Face Learn, DeepLearning.AI catalog, MIT 6.S191 and 6.036, Anthropic courses and engineering, Wikipedia ML outline, AWS AI topics; 1,187 unique topics): 5 further concepts added (probabilistic graphical models and HMMs, evolutionary and swarm optimization, face detection and recognition, quantum ML, agent harnesses) plus 21 more folds. Encyclopedia now 172 concepts.
 * **Update**: Market-coverage audit versus IBM Think's 2026 ML guide (215 topics, adversarially verified): 13 concepts added (logistic regression, data leakage, EDA, data augmentation, kNN, Naive Bayes, data science disambiguation, bag-of-words and TF-IDF, text summarization, topic modeling, information extraction, Monte Carlo methods, the AI stack) and 20 subtopics folded into existing entries as key terms. Encyclopedia now 167 concepts.
 
 * **Update**: Roadmap dataset extended with a seventh phase, Depth Tracks: 7 elective topics (multimodal, speech, robotics, efficient inference, recommenders, time series, graph ML), 473 resources total, 440 free (93%), every new link opened and checked.

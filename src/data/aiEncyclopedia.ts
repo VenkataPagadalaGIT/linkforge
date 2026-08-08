@@ -77,9 +77,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "neural-network", concept: "Neural Network", emoji: "🧠",
-    description: "A computing system inspired by biological brains, composed of layers of interconnected nodes (neurons). Each connection has a weight that's adjusted during training. The foundation of deep learning.",
+    description: "A computing system inspired by biological brains, composed of layers of interconnected nodes (neurons). Each connection has a weight that's adjusted during training. The foundation of deep learning. The lineage starts at the 1958 perceptron; stack layers of them and you have the feedforward multilayer perceptron every deep net elaborates.",
     category: "Core ML Concepts", difficulty: "beginner", rank: 4,
-    keyTerms: ["Neurons", "Layers", "Weights", "Bias", "Activation function"],
+    keyTerms: ["Neurons", "Layers", "Weights", "Bias", "Activation function", "Perceptron", "Feedforward MLP"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "3Blue1Brown: Neural Networks", url: "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" },
@@ -122,9 +122,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "bias-variance", concept: "Bias-Variance Tradeoff", emoji: "🧠",
-    description: "Bias: error from overly simplistic assumptions (underfitting). Variance: error from sensitivity to training data fluctuations (overfitting). The tradeoff is fundamental, reducing one often increases the other.",
+    description: "Bias: error from overly simplistic assumptions (underfitting). Variance: error from sensitivity to training data fluctuations (overfitting). The tradeoff is fundamental, reducing one often increases the other. Every architecture also carries an inductive bias, assumptions baked into its structure, like CNNs assuming nearby pixels matter most.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 8,
-    keyTerms: ["Bias", "Variance", "Tradeoff", "Model complexity", "Generalization"],
+    keyTerms: ["Bias", "Variance", "Tradeoff", "Model complexity", "Generalization", "Inductive bias"],
     prerequisites: ["Overfitting & Underfitting"],
     learnMore: [
       { title: "StatQuest: Bias-Variance", url: "https://www.youtube.com/watch?v=EuBBz3bI-aA" },
@@ -143,9 +143,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "transfer-learning", concept: "Transfer Learning", emoji: "🧠",
-    description: "Using a model trained on one task as the starting point for a different task. Instead of training from scratch, you fine-tune a pretrained model, dramatically reducing data and compute requirements.",
+    description: "Using a model trained on one task as the starting point for a different task. Instead of training from scratch, you fine-tune a pretrained model, dramatically reducing data and compute requirements. Multi-task learning is the sibling trick: one model trained on several tasks at once, sharing what transfers.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 10,
-    keyTerms: ["Pre-training", "Fine-tuning", "Domain adaptation", "Feature extraction"],
+    keyTerms: ["Pre-training", "Fine-tuning", "Domain adaptation", "Feature extraction", "Multi-task learning"],
     prerequisites: ["Deep Learning"],
     learnMore: [
       { title: "Transfer Learning · CS231n", url: "https://cs231n.github.io/transfer-learning/" },
@@ -207,9 +207,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Math & Optimization (16–25) ===
   {
     id: "gradient-descent", concept: "Gradient Descent", emoji: "📐",
-    description: "The fundamental optimization algorithm for training neural networks. It iteratively adjusts model parameters in the direction that reduces the loss function, like walking downhill to find the valley.",
+    description: "The fundamental optimization algorithm for training neural networks. It iteratively adjusts model parameters in the direction that reduces the loss function, like walking downhill to find the valley. Convex problems have a single global minimum, which is why classical optimization loved them; deep networks are wildly non-convex and work anyway.",
     category: "Math & Optimization", difficulty: "beginner", rank: 16,
-    keyTerms: ["Learning rate", "Stochastic gradient descent (SGD)", "Minibatch", "Convergence"],
+    keyTerms: ["Learning rate", "Stochastic gradient descent (SGD)", "Minibatch", "Convergence", "Convexity"],
     prerequisites: [],
     learnMore: [
       { title: "3Blue1Brown: Gradient Descent", url: "https://www.youtube.com/watch?v=IHZwWFHWa-w" },
@@ -228,9 +228,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "loss-function", concept: "Loss Function", emoji: "📐",
-    description: "A function that measures how wrong the model's predictions are. Training = minimizing the loss. Common losses: MSE (regression), cross-entropy (classification), contrastive (embeddings).",
+    description: "A function that measures how wrong the model's predictions are. Training = minimizing the loss. Common losses: MSE (regression), cross-entropy (classification), contrastive (embeddings). The formal name for training-by-average-loss is empirical risk minimization.",
     category: "Math & Optimization", difficulty: "beginner", rank: 18,
-    keyTerms: ["MSE", "Cross-entropy", "Contrastive loss", "Objective function"],
+    keyTerms: ["MSE", "Cross-entropy", "Contrastive loss", "Objective function", "Empirical risk minimization"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "StatQuest: Cross Entropy", url: "https://www.youtube.com/watch?v=6ArSys5qHAU" },
@@ -269,9 +269,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "feature-engineering", concept: "Feature Engineering", emoji: "📐",
-    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice, 'garbage in, garbage out' applies doubly to ML. Feature selection is its own toolkit: filter methods score features statistically, wrappers like RFE search subsets, and embedded methods like L1 select while training.",
+    description: "The art of creating, transforming, and selecting input features to improve model performance. Often more impactful than model choice, 'garbage in, garbage out' applies doubly to ML. Feature selection is its own toolkit: filter methods score features statistically, wrappers like RFE search subsets, and embedded methods like L1 select while training. Imputation, filling missing values sensibly, is the unglamorous step most real datasets need first.",
     category: "Math & Optimization", difficulty: "intermediate", rank: 22,
-    keyTerms: ["Feature scaling", "One-hot encoding", "Feature crosses", "Polynomial features", "Feature selection", "RFE & mutual information"],
+    keyTerms: ["Feature scaling", "One-hot encoding", "Feature crosses", "Polynomial features", "Feature selection", "RFE & mutual information", "Missing-value imputation"],
     prerequisites: ["Features & Labels"],
     learnMore: [
       { title: "Kaggle: Feature Engineering", url: "https://www.kaggle.com/learn/feature-engineering" },
@@ -281,7 +281,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     id: "k-means", concept: "K-Means Clustering", emoji: "📐",
     description: "The simplest clustering algorithm, assigns data points to K groups by iteratively moving cluster centers to minimize within-cluster distances. Fast, intuitive, but requires choosing K upfront. It is one member of a family: hierarchical clustering builds a dendrogram of merges, DBSCAN finds arbitrary shapes by density, and Gaussian mixtures soften assignments via EM.",
     category: "Math & Optimization", difficulty: "beginner", rank: 23,
-    keyTerms: ["Centroids", "Elbow method", "Inertia", "K selection", "Hierarchical clustering", "DBSCAN", "Gaussian mixtures & EM"],
+    keyTerms: ["Centroids", "Elbow method", "Inertia", "K selection", "Hierarchical clustering", "DBSCAN", "Gaussian mixtures & EM", "Spectral clustering"],
     prerequisites: ["Unsupervised Learning"],
     learnMore: [
       { title: "StatQuest: K-Means", url: "https://www.youtube.com/watch?v=4b5d3muPQmA" },
@@ -449,9 +449,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "nas", concept: "Neural Architecture Search (NAS)", emoji: "🏗️",
-    description: "Using AI to design AI architectures. Instead of hand-designing networks, NAS automatically searches for optimal architectures, the meta approach to building neural networks.",
+    description: "Using AI to design AI architectures. Instead of hand-designing networks, NAS automatically searches for optimal architectures, the meta approach to building neural networks. Evolutionary search, mutating and selecting architectures, was an early NAS engine and still wins where gradients cannot go.",
     category: "Architectures", difficulty: "advanced", rank: 39,
-    keyTerms: ["Search space", "Controller", "Reinforcement learning NAS", "EfficientNet"],
+    keyTerms: ["Search space", "Controller", "Reinforcement learning NAS", "EfficientNet", "Evolutionary search"],
     prerequisites: ["Deep Learning"],
     learnMore: [
       { title: "Neural Architecture Search · Google AI Blog", url: "https://research.google/blog/using-machine-learning-to-explore-neural-network-architecture/" },
@@ -514,9 +514,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "rag", concept: "Retrieval-Augmented Generation (RAG)", emoji: "🗣️",
-    description: "Combining LLMs with external knowledge retrieval. Instead of relying solely on training data, RAG retrieves relevant documents and passes them to the LLM, reducing hallucinations and adding current information.",
+    description: "Combining LLMs with external knowledge retrieval. Instead of relying solely on training data, RAG retrieves relevant documents and passes them to the LLM, reducing hallucinations and adding current information. Contextual retrieval prepends document context to each chunk before embedding, a simple fix for chunks that lose their meaning alone.",
     category: "NLP & Language", difficulty: "intermediate", rank: 45,
-    keyTerms: ["Retriever", "Generator", "Vector search", "Chunking", "Context window"],
+    keyTerms: ["Retriever", "Generator", "Vector search", "Chunking", "Context window", "Contextual retrieval"],
     prerequisites: ["Embeddings", "Transformer Architecture"],
     learnMore: [
       { title: "RAG Paper · Meta", url: "https://arxiv.org/abs/2005.11401" },
@@ -579,9 +579,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "context-window", concept: "Context Window & Long Context", emoji: "🗣️",
-    description: "The maximum number of tokens an LLM can process at once. A window of roughly one million tokens is now standard at the frontier, with a few models advertising ten million. That is enough for entire codebases or books, but effective recall degrades well before the advertised limit, so the usable window is usually much smaller than the number on the spec sheet.",
+    description: "The maximum number of tokens an LLM can process at once. A window of roughly one million tokens is now standard at the frontier, with a few models advertising ten million. That is enough for entire codebases or books, but effective recall degrades well before the advertised limit, so the usable window is usually much smaller than the number on the spec sheet. Long context has a known failure mode: models attend best to the start and end of the window, the lost-in-the-middle effect.",
     category: "NLP & Language", difficulty: "intermediate", rank: 51,
-    keyTerms: ["Token limit", "Context length", "Needle-in-a-haystack", "KV cache"],
+    keyTerms: ["Token limit", "Context length", "Needle-in-a-haystack", "KV cache", "Lost-in-the-middle"],
     prerequisites: ["Tokenization", "Transformer Architecture"],
     learnMore: [
       { title: "Anthropic: Long Context", url: "https://platform.claude.com/docs/en/build-with-claude/context-windows" },
@@ -704,9 +704,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "time-series", concept: "Time Series Forecasting", emoji: "🧠",
-    description: "Predicting future values based on historical temporal data. Traditional methods (ARIMA) are being augmented by deep learning (LSTMs, Transformers). Critical for finance, weather, and demand planning.",
+    description: "Predicting future values based on historical temporal data. Traditional methods (ARIMA) are being augmented by deep learning (LSTMs, Transformers). Critical for finance, weather, and demand planning. Stationarity, whether the series' statistics drift over time, decides which methods are even valid.",
     category: "Core ML Concepts", difficulty: "intermediate", rank: 63,
-    keyTerms: ["ARIMA", "Seasonality", "Trend", "Lag features", "Prophet"],
+    keyTerms: ["ARIMA", "Seasonality", "Trend", "Lag features", "Prophet", "Stationarity"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "Facebook Prophet", url: "https://facebook.github.io/prophet/" },
@@ -844,9 +844,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   // === Reinforcement Learning (76–85) ===
   {
     id: "reinforcement-learning", concept: "Reinforcement Learning (RL)", emoji: "🎮",
-    description: "Learning through trial and error, an agent takes actions in an environment, receives rewards/penalties, and learns a policy to maximize cumulative reward. Behind AlphaGo and game-playing AI.",
+    description: "Learning through trial and error, an agent takes actions in an environment, receives rewards/penalties, and learns a policy to maximize cumulative reward. Behind AlphaGo and game-playing AI. The multi-armed bandit is RL stripped to a single state, where the explore-exploit tradeoff appears in its purest form.",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 76,
-    keyTerms: ["Agent", "Environment", "Reward", "Policy", "Episode"],
+    keyTerms: ["Agent", "Environment", "Reward", "Policy", "Episode", "Multi-armed bandits"],
     prerequisites: ["Machine Learning"],
     learnMore: [
       { title: "Spinning Up in Deep RL · OpenAI", url: "https://spinningup.openai.com/" },
@@ -855,9 +855,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "q-learning", concept: "Q-Learning & Deep Q-Networks (DQN)", emoji: "🎮",
-    description: "Q-Learning estimates the value of actions in each state. Deep Q-Networks (DQN) use neural networks to approximate Q-values, DeepMind's DQN played Atari games at superhuman level (2013).",
+    description: "Q-Learning estimates the value of actions in each state. Deep Q-Networks (DQN) use neural networks to approximate Q-values, DeepMind's DQN played Atari games at superhuman level (2013). SARSA is Q-learning's on-policy sibling: it learns from the action actually taken rather than the greedy one.",
     category: "Reinforcement Learning", difficulty: "intermediate", rank: 77,
-    keyTerms: ["Q-value", "Bellman equation", "Experience replay", "Target network"],
+    keyTerms: ["Q-value", "Bellman equation", "Experience replay", "Target network", "SARSA"],
     prerequisites: ["Reinforcement Learning"],
     learnMore: [
       { title: "DQN Paper · DeepMind", url: "https://arxiv.org/abs/1312.5602" },
@@ -967,9 +967,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "mlops", concept: "MLOps (ML Operations)", emoji: "⚙️",
-    description: "The practice of deploying, monitoring, and maintaining ML models in production. Combines ML, DevOps, and data engineering. The difference between a notebook prototype and a reliable production system. CI/CD carries over from software engineering: every model change flows through automated test, build, and deploy stages.",
+    description: "The practice of deploying, monitoring, and maintaining ML models in production. Combines ML, DevOps, and data engineering. The difference between a notebook prototype and a reliable production system. CI/CD carries over from software engineering: every model change flows through automated test, build, and deploy stages. LLMOps is the same discipline rebuilt around LLM apps, where prompts and evals become the artifacts under version control.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 88,
-    keyTerms: ["CI/CD for ML", "Model registry", "Feature store", "A/B testing", "Monitoring"],
+    keyTerms: ["CI/CD for ML", "Model registry", "Feature store", "A/B testing", "Monitoring", "LLMOps"],
     prerequisites: ["Model Deployment"],
     learnMore: [
       { title: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com/" },
@@ -1019,9 +1019,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "distributed-training", concept: "Distributed Training", emoji: "⚙️",
-    description: "Training models across multiple GPUs or machines. Essential for frontier models, which are trained on clusters ranging from tens of thousands to several hundred thousand accelerators. Techniques: data parallelism, model parallelism, pipeline parallelism.",
+    description: "Training models across multiple GPUs or machines. Essential for frontier models, which are trained on clusters ranging from tens of thousands to several hundred thousand accelerators. Techniques: data parallelism, model parallelism, pipeline parallelism. Gradient accumulation fakes bigger batches on small GPUs, and checkpointing is what lets thousand-GPU runs survive hardware failures.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 93,
-    keyTerms: ["Data parallelism", "Model parallelism", "FSDP", "DeepSpeed", "Gradient sync"],
+    keyTerms: ["Data parallelism", "Model parallelism", "FSDP", "DeepSpeed", "Gradient sync", "Gradient accumulation", "Checkpointing"],
     prerequisites: ["GPU & TPU Computing"],
     learnMore: [
       { title: "PyTorch Distributed Training", url: "https://docs.pytorch.org/tutorials/intermediate/ddp_tutorial.html" },
@@ -1039,9 +1039,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "monitoring", concept: "ML Monitoring & Observability", emoji: "⚙️",
-    description: "Watching ML models in production for degradation. Models decay over time as data distributions shift. Monitoring detects data drift, concept drift, and performance drops before they impact users.",
+    description: "Watching ML models in production for degradation. Models decay over time as data distributions shift. Monitoring detects data drift, concept drift, and performance drops before they impact users. Training-serving skew, features computed differently offline and online, is the classic silent killer here.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 95,
-    keyTerms: ["Data drift", "Concept drift", "Model degradation", "Alerting", "Retraining"],
+    keyTerms: ["Data drift", "Concept drift", "Model degradation", "Alerting", "Retraining", "Training-serving skew"],
     prerequisites: ["Model Deployment"],
     learnMore: [
       { title: "Evidently AI · ML Monitoring", url: "https://www.evidentlyai.com/" },
@@ -1167,9 +1167,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "ai-bias", concept: "AI Bias & Fairness", emoji: "🛡️",
-    description: "AI systems can perpetuate and amplify societal biases present in training data. Understanding, measuring, and mitigating bias is critical for responsible AI deployment.",
+    description: "AI systems can perpetuate and amplify societal biases present in training data. Understanding, measuring, and mitigating bias is critical for responsible AI deployment. Formal fairness metrics (demographic parity, equalized odds, predictive parity) famously conflict: satisfying all of them at once is mathematically impossible in most real settings.",
     category: "Safety, Ethics & Governance", difficulty: "intermediate", rank: 107,
-    keyTerms: ["Training data bias", "Algorithmic fairness", "Disparate impact", "Fairlearn"],
+    keyTerms: ["Training data bias", "Algorithmic fairness", "Disparate impact", "Fairlearn", "Demographic parity", "Equalized odds"],
     prerequisites: [],
     learnMore: [
       { title: "Fairlearn Documentation", url: "https://fairlearn.org/" },
@@ -1210,9 +1210,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "mcp", concept: "Model Context Protocol (MCP)", emoji: "🔌",
-    description: "An open standard, introduced by Anthropic in late 2024, for connecting AI models to external tools, data sources, and applications through one common interface. Developers expose a capability once as an MCP server and any compatible model can use it, replacing per-model custom integrations. By 2026 it is supported by every major AI vendor.",
+    description: "An open standard, introduced by Anthropic in late 2024, for connecting AI models to external tools, data sources, and applications through one common interface. Developers expose a capability once as an MCP server and any compatible model can use it, replacing per-model custom integrations. By 2026 it is supported by every major AI vendor. MCP standardizes model-to-tool wiring; the sibling A2A protocol aims to do the same for agent-to-agent communication.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 111,
-    keyTerms: ["MCP server", "MCP client", "Tool discovery", "Transport", "Capability"],
+    keyTerms: ["MCP server", "MCP client", "Tool discovery", "Transport", "Capability", "A2A (Agent2Agent protocol)"],
     prerequisites: ["Tool Use & Function Calling", "AI Agents"],
     learnMore: [
       { title: "Model Context Protocol (official)", url: "https://modelcontextprotocol.io/" },
@@ -1279,9 +1279,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "llm-eval", concept: "LLM Evaluation & Benchmarks", emoji: "📏",
-    description: "Measuring what language models can actually do, via static benchmarks, head-to-head human preference arenas, and LLM-as-judge scoring. Benchmark saturation and training-data contamination make honest evaluation one of the field's hardest open problems: leaderboard gains do not always translate to real-world capability.",
+    description: "Measuring what language models can actually do, via static benchmarks, head-to-head human preference arenas, and LLM-as-judge scoring. Benchmark saturation and training-data contamination make honest evaluation one of the field's hardest open problems: leaderboard gains do not always translate to real-world capability. In practice evals are the CI of AI products: rubric-scored suites run on every prompt or model change, increasingly with agent trajectories under test.",
     category: "MLOps & Infrastructure", difficulty: "intermediate", rank: 117,
-    keyTerms: ["MMLU", "SWE-bench", "LLM-as-judge", "Contamination", "Elo arena"],
+    keyTerms: ["MMLU", "SWE-bench", "LLM-as-judge", "Contamination", "Elo arena", "Agent evals", "Prompt evals"],
     prerequisites: ["LLM Scaling Laws", "AI Hallucinations"],
     learnMore: [
       { title: "Hugging Face Evaluation Guidebook", url: "https://github.com/huggingface/evaluation-guidebook" },
@@ -1324,9 +1324,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "inference-optimization", concept: "Inference Optimization", emoji: "🔧",
-    description: "The engineering that makes serving a model affordable. Generation splits into a compute-bound prefill over the prompt and a memory-bound decode of one token at a time, so throughput and cost are set by the KV cache, continuous batching, attention memory layout, and speculative decoding, where a small draft model proposes tokens a larger model verifies in one pass. Two deployments of the same weights can differ by an order of magnitude in cost per token. Attention itself gets slimmed too: multi-query and grouped-query attention shrink the KV cache that dominates serving memory.",
+    description: "The engineering that makes serving a model affordable. Generation splits into a compute-bound prefill over the prompt and a memory-bound decode of one token at a time, so throughput and cost are set by the KV cache, continuous batching, attention memory layout, and speculative decoding, where a small draft model proposes tokens a larger model verifies in one pass. Two deployments of the same weights can differ by an order of magnitude in cost per token. Attention itself gets slimmed too: multi-query and grouped-query attention shrink the KV cache that dominates serving memory. Routing sends easy queries to cheap models and hard ones to frontier models; cascades escalate only on failure.",
     category: "MLOps & Infrastructure", difficulty: "advanced", rank: 121,
-    keyTerms: ["KV cache", "Continuous batching", "Speculative decoding", "Prefill vs decode", "PagedAttention", "MQA & GQA"],
+    keyTerms: ["KV cache", "Continuous batching", "Speculative decoding", "Prefill vs decode", "PagedAttention", "MQA & GQA", "Model routing & cascades"],
     prerequisites: ["Training vs Inference", "Model Quantization & Compression"],
     learnMore: [
       { title: "Hugging Face: Optimizing LLM inference", url: "https://huggingface.co/docs/transformers/llm_optims" },
@@ -1346,9 +1346,9 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
   },
   {
     id: "multi-agent-orchestration", concept: "Multi-Agent Systems & Orchestration", emoji: "🤖",
-    description: "Splitting a task across several LLM agents with separate contexts and roles, coordinated by an orchestrator that fans out subtasks and merges what comes back. It pays off when subtasks are genuinely independent and each needs its own large context. It also multiplies token spend and makes failures harder to trace, so a single well-scoped agent is often the better answer.",
+    description: "Splitting a task across several LLM agents with separate contexts and roles, coordinated by an orchestrator that fans out subtasks and merges what comes back. It pays off when subtasks are genuinely independent and each needs its own large context. It also multiplies token spend and makes failures harder to trace, so a single well-scoped agent is often the better answer. Research simulacra like Stanford's generative agents showed dozens of LLM agents producing believable social behavior.",
     category: "AI Agents & Applications", difficulty: "intermediate", rank: 123,
-    keyTerms: ["Orchestrator", "Fan-out", "Sub-agent", "Handoff", "Token multiplication"],
+    keyTerms: ["Orchestrator", "Fan-out", "Sub-agent", "Handoff", "Token multiplication", "Generative agents (simulacra)"],
     prerequisites: ["AI Agents", "Tool Use & Function Calling"],
     learnMore: [
       { title: "Anthropic: How we built our multi-agent research system", url: "https://www.anthropic.com/engineering/multi-agent-research-system" },
@@ -1869,5 +1869,66 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
       { title: "a16z: Emerging Architectures for LLM Applications", url: "https://a16z.com/emerging-architectures-for-llm-applications/" },
     ],
     realWorldApps: "Vendor decisions, reading AI news critically, spotting chokepoints and single points of failure",
+  },
+
+  // === Market sweep round 2, 2026-08-08: gaps confirmed against the union
+  // catalog of Google's ML glossary, Hugging Face Learn, DeepLearning.AI,
+  // MIT 6.S191/6.036, Anthropic's courses, Wikipedia's ML outline, and AWS. ===
+  {
+    id: "pgm-hmm", concept: "Probabilistic Graphical Models & HMMs", emoji: "📐",
+    description: "Networks of random variables whose edges encode dependence: Bayesian networks for causal structure, hidden Markov models for sequences with hidden state. Pre-deep-learning speech recognition and gene finding ran on HMMs and Viterbi decoding, and the toolkit (EM, Kalman filters) still runs tracking, robotics, and diagnosis systems today.",
+    category: "Math & Optimization", difficulty: "advanced", rank: 168,
+    keyTerms: ["Bayesian networks", "Hidden Markov Models", "Viterbi algorithm", "Expectation-Maximization", "Kalman filters"],
+    prerequisites: ["Probability & Bayes' Theorem"],
+    learnMore: [
+      { title: "Stanford CS228: Probabilistic Graphical Models (free notes)", url: "https://ermongroup.github.io/cs228-notes/" },
+      { title: "Speech and Language Processing: HMM chapters (free draft)", url: "https://web.stanford.edu/~jurafsky/slp3/" },
+    ],
+    realWorldApps: "Object tracking, medical diagnosis networks, gene finding, GPS sensor fusion via Kalman filters",
+  },
+  {
+    id: "evolutionary-algorithms", concept: "Evolutionary & Swarm Optimization", emoji: "📐",
+    description: "Optimization by natural selection: keep a population of candidate solutions, score them with a fitness function, breed and mutate the winners. Genetic algorithms, genetic programming, and particle swarms search spaces gradients cannot touch, which is why neuroevolution keeps resurfacing for architecture search and game agents.",
+    category: "Math & Optimization", difficulty: "intermediate", rank: 169,
+    keyTerms: ["Genetic algorithms", "Fitness function", "Mutation & crossover", "Particle swarm", "Neuroevolution"],
+    prerequisites: ["Machine Learning (ML)"],
+    learnMore: [
+      { title: "Essentials of Metaheuristics (free book, Sean Luke)", url: "https://cs.gmu.edu/~sean/book/metaheuristics/" },
+    ],
+    realWorldApps: "Scheduling and routing, NASA's evolved antenna designs, architecture search, game-playing agents",
+  },
+  {
+    id: "face-recognition", concept: "Face Detection & Recognition", emoji: "👁️",
+    description: "Finding faces in images, then matching them to identities via face embeddings, where verification is one-to-one and identification is one-to-many. Accuracy went superhuman in the deep-learning era, which is exactly why the ethics got harder: demographic error gaps, surveillance concerns, and outright bans in some jurisdictions are part of the topic, not a footnote.",
+    category: "Computer Vision", difficulty: "intermediate", rank: 170,
+    keyTerms: ["Face embeddings", "Verification vs identification", "Liveness detection", "NIST FRVT", "Demographic error gaps"],
+    prerequisites: ["Convolutional Neural Network (CNN)", "Embeddings"],
+    learnMore: [
+      { title: "NIST FRVT: the standard face-recognition evaluation", url: "https://pages.nist.gov/frvt/html/frvt11.html" },
+      { title: "OpenCV documentation", url: "https://docs.opencv.org/4.x/" },
+    ],
+    realWorldApps: "Phone unlock, passport e-gates, photo library grouping, and the regulation debates around all three",
+  },
+  {
+    id: "quantum-ml", concept: "Quantum Machine Learning", emoji: "⚙️",
+    description: "Running learning algorithms on quantum hardware: variational circuits as models, qubits as the substrate. The honest status in 2026 is that no practical ML advantage exists yet, today's NISQ devices are small and noisy, and classical hardware keeps winning. Worth understanding because the mathematics is elegant and the hardware curve is real; not worth switching careers for.",
+    category: "MLOps & Infrastructure", difficulty: "advanced", rank: 171,
+    keyTerms: ["Qubits", "Variational quantum circuits", "NISQ era", "Quantum advantage", "Hybrid quantum-classical"],
+    prerequisites: ["Linear Algebra for ML"],
+    learnMore: [
+      { title: "PennyLane: hands-on quantum ML (free)", url: "https://pennylane.ai/qml/" },
+    ],
+    realWorldApps: "Research labs, chemistry and materials simulation, long-horizon bets by IBM and Google",
+  },
+  {
+    id: "agent-harness", concept: "Agent Harnesses & Scaffolding", emoji: "🤖",
+    description: "The engineering around the model that turns it into a dependable agent: the loop that feeds observations back, permissions and sandboxing that bound what it may touch, subagents for parallel work, and skills or hooks that package procedures. Model quality sets the ceiling; the harness decides how close you get, and it is where most real agent engineering happens.",
+    category: "AI Agents & Applications", difficulty: "advanced", rank: 172,
+    keyTerms: ["Agent loop", "Permissions & sandboxing", "Subagents", "Skills & hooks", "Long-running agents"],
+    prerequisites: ["AI Agents", "Tool Use & Function Calling"],
+    learnMore: [
+      { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
+    ],
+    realWorldApps: "Coding agents like Claude Code, computer-use products, production agent reliability work",
   },
 ];
