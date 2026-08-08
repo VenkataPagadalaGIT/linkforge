@@ -75,7 +75,14 @@ def get(p):
         with urllib.request.urlopen(urllib.request.Request(base+p, headers={"User-Agent":"rehearsal"}), timeout=90) as r:
             return r.status, r.read().decode("utf-8","replace"), dict(r.headers)
     except urllib.error.HTTPError as e:
-        return e.code, "", dict(e.headers)
+        # Read the body on error responses too. Discarding it made every
+        # assertion about a 404 page unfalsifiable: the noindex check could
+        # only pass while the page was wrongly answering 200.
+        try:
+            body = e.read().decode("utf-8", "replace")
+        except Exception:
+            body = ""
+        return e.code, body, dict(e.headers)
     except Exception as e:
         return 0, f"ERR {e}", {}
 
@@ -117,10 +124,11 @@ for p in ["/guides/definitely-not-a-real-guide-xyz", "/notebook/fake-xyz-9911"]:
     st, _, _ = get(p)
     c[f"hard-404 {p}"] = st == 404
 
-# The four API-backed routes are force-dynamic, where Next 14 streams the shell
-# before notFound() can set the status, so they answer 200. KNOWN AND TRACKED.
-# What must never regress is the security property: a bogus slug must not be
-# indexable and must not reflect an attacker-chosen title back into <title>.
+# Contributors, speakers and sessions now pre-render their params, so a bogus
+# slug is a routing 404. The insights and updates routes stay backend-driven,
+# so their valid set is unknowable at build time and they answer 200 with the
+# not-found body. Either way the security property must hold: a bogus slug
+# must not be indexable and must not reflect an attacker-chosen title.
 for p in ["/ai-contributors/best-cheap-payday-loans-online",
           "/insights/totally-fake-slug-xyz",
           "/insights/fake-category-xyz/fake-child-xyz",
