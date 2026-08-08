@@ -10,7 +10,15 @@ interface Props {
 
 // Render on-demand at request time. 78 speakers as SSG was using too much
 // build memory; on-request render still produces full HTML for SEO bots.
-export const dynamic = "force-dynamic";
+// dynamicParams:false so an unknown slug is a routing 404. Under dynamic
+// rendering notFound() rendered the right page but the response had already
+// committed 200, which search engines read as a soft 404.
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const { speakers } = await import("@/data/speakers");
+  return speakers.map((sp) => ({ slug: sp.slug }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sp = getSpeakerBySlug(params.slug);

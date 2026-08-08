@@ -20,7 +20,14 @@ interface Props {
 }
 
 // Server-render on demand. Bots get full HTML; readers cached after first hit.
-export const dynamic = "force-dynamic";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const { conferences, listConferenceSessions } = await import("@/data/conferences");
+  return conferences.flatMap((c) =>
+    listConferenceSessions(c).map((f) => ({ slug: c.slug, sessionId: f.urlSlug })),
+  );
+}
 
 function resolveContext(slug: string, sessionParam: string): SessionDetailContext | null {
   const c = getConferenceBySlug(slug);

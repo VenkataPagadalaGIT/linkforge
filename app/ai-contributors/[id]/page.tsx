@@ -7,9 +7,18 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 
 type Params = { id: string };
 
-// Render on-demand at request time so 100 contributor SSG pages don't bloat
-// build memory. Bots still get fully-rendered HTML.
-export const dynamic = "force-dynamic";
+// Pre-render the known profiles and refuse everything else at the routing
+// layer. dynamicParams:false is what makes an unknown id a real 404: with
+// dynamic rendering, notFound() still rendered the not-found page but the
+// response had already committed 200, which is the definition of a soft 404.
+// The old comment here cited build memory on a 1Gi Emergent pod; we build on
+// Railway now and 100 more pages is affordable.
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const { aiContributors } = await import("@/data/aiContributors");
+  return aiContributors.map((c) => ({ id: c.id }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const c = await getContributor(params.id);
