@@ -57,7 +57,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   };
 
   return (
-    <LearnShell activeSlug={topic.slug}>
+    <LearnShell activeSlug={topic.slug} crossLink={{ href: "/learn/reference", label: "The AI Reference →" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <LearnTopicView topic={topic} />
       {/* crawlable hint of the linear order for engines */}

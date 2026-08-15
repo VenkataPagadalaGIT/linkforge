@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
 import { allLearnTopics } from "@/data/learn";
+import { refConcepts } from "@/data/learnReference";
 import { nodes as aiOntologyNodes } from "@/data/aiOntology";
 import { conferences, listConferenceSessions } from "@/data/conferences";
 import { speakers } from "@/data/speakers";
@@ -39,6 +40,7 @@ const STATIC_ROUTES = [
   "/contact",
   "/guides",
   "/learn",
+  "/learn/reference",
   "/3d-game",
   // Machine-readable resources for AI answer engines. Self-canonical, so
   // they belong here; the /guides/<slug>.md twins deliberately do NOT (they
@@ -106,6 +108,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.8,
+    });
+  }
+  for (const c of refConcepts) {
+    urls.push({
+      url: `${SITE_URL}/learn/reference/${c.id}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
     });
   }
   // Solutions detail pages — internally linked and indexable, but were absent

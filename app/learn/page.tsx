@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LearnShell activeSlug={null}>
+    <LearnShell activeSlug={null} crossLink={{ href: "/learn/reference", label: "The AI Reference →" }}>
       <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
         Free · {LEARN_COUNTS.topics} lessons · about {LEARN_COUNTS.minutes} minutes
       </p>
