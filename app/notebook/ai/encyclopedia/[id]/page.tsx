@@ -15,6 +15,7 @@ import {
   DEEP_DIVES,
 } from "@/data/learnReference";
 import { learnTopicBySlug } from "@/data/learn";
+import { VIDEOS_FOR, GUIDES_FOR } from "@/data/encyclopediaResources";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
 import DeepDive from "@/components/learn/DeepDive";
 
@@ -111,15 +112,21 @@ export default function Page({ params }: { params: { id: string } }) {
     .filter((other) => other.prerequisites.some((p) => refConceptByName(p)?.id === c.id))
     .slice(0, 6);
 
-  // Deep-dive resources merge into the concept's, deduplicated by URL.
-  const seen = new Set(c.learnMore.map((r) => r.url));
-  const extraResources = dives
-    .flatMap((d) => d.resources)
-    .filter((r) => {
-      if (seen.has(r.url)) return false;
-      seen.add(r.url);
-      return true;
-    });
+  // Segmented resources: curated videos, brand guides, then the concept's
+  // own curated list (minus anything already shown), plus deep-dive extras.
+  const videos = VIDEOS_FOR[c.id] ?? [];
+  const brandGuides = GUIDES_FOR[c.id] ?? [];
+  const seen = new Set<string>([...videos.map((v) => v.url), ...brandGuides.map((g) => g.url)]);
+  const isYt = (u: string) => u.includes("youtube.com") || u.includes("youtu.be");
+  const more = [
+    ...c.learnMore.map((r) => ({ title: r.title, url: r.url, note: "" })),
+    ...dives.flatMap((d) => d.resources),
+  ].filter((r) => {
+    if (seen.has(r.url)) return false;
+    if (isYt(r.url) && videos.length > 0 && videos.some((v) => v.url === r.url)) return false;
+    seen.add(r.url);
+    return true;
+  });
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -236,47 +243,83 @@ export default function Page({ params }: { params: { id: string } }) {
           <DeepDive key={d.slug} topic={d} />
         ))}
 
-        <div className="my-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
-            Top free resources
-          </p>
-          <div className="space-y-2">
-            {c.learnMore.map((r) => (
-              <div key={r.url}>
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
-                >
-                  {r.title} ↗
-                </a>
-              </div>
-            ))}
-            {extraResources.map((r) => (
-              <div key={r.url}>
-                {r.url.startsWith("/") ? (
-                  <Link
-                    href={r.url}
-                    className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
-                  >
-                    {r.title}
-                  </Link>
-                ) : (
+        {videos.length > 0 && (
+          <div className="my-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+              Videos
+            </p>
+            <div className="space-y-2.5">
+              {videos.map((v) => (
+                <div key={v.url}>
                   <a
-                    href={r.url}
+                    href={v.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
                   >
-                    {r.title} ↗
+                    ▶ {v.title} ↗
                   </a>
-                )}
-                <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-0.5">{r.note}</p>
-              </div>
-            ))}
+                  <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">{v.channel} · YouTube</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {brandGuides.length > 0 && (
+          <div className="my-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+              Guides and articles
+            </p>
+            <div className="space-y-2.5">
+              {brandGuides.map((g) => (
+                <div key={g.url}>
+                  <a
+                    href={g.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                  >
+                    {g.title} ↗
+                  </a>
+                  <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">{g.brand}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {more.length > 0 && (
+          <div className="my-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+              Courses, papers, and more
+            </p>
+            <div className="space-y-2">
+              {more.map((r) => (
+                <div key={r.url}>
+                  {r.url.startsWith("/") ? (
+                    <Link
+                      href={r.url}
+                      className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                    >
+                      {r.title}
+                    </Link>
+                  ) : (
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                    >
+                      {r.title} ↗
+                    </a>
+                  )}
+                  {r.note && <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-0.5">{r.note}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {dependents.length > 0 && (
           <div className="my-6">
