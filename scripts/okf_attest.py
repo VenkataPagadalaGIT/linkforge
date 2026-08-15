@@ -38,7 +38,7 @@ CLAIMS = [
     ("public/okf/datasets/index.md", r"(\d+) resources across", "resources"),
     ("public/okf/datasets/ai-ontology.md", r"(\d+) entities across 7 layers", "entities"),
     ("public/okf/datasets/index.md", r"(\d+) entities,", "entities"),
-    ("src/components/Navbar.tsx", r'note: "(\d+) concepts, defined"', "concepts"),
+    ("src/components/Navbar.tsx", r'note: "(\d+) concepts, one page each"', "concepts"),
     ("app/notebook/ai/encyclopedia/page.tsx", r"(\d+) AI concepts across 10 categories", "concepts"),
     ("app/projects/page.tsx", r"(\d+)-entity map of the AI economy", "entities"),
     ("app/notebook/ai/map/page.tsx", r"(\d+) Entities, 7 Layers", "entities"),
