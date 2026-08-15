@@ -25,6 +25,7 @@ import {
   NN_ACTS,
   NN_JOURNEY,
   NN_COUNTS,
+  NN_STAGES,
   nnStageById,
   nnStagesInAct,
   type NnAct,
@@ -473,6 +474,9 @@ export default function NnExplorer() {
           {mode === "explore" &&
             (selected ? (
               <div data-testid="nn-detail">
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
+                  Station {NN_STAGES.findIndex((s) => s.id === selected.id) + 1} of {NN_STAGES.length}
+                </p>
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <h3 className="font-display text-lg font-bold text-foreground">{selected.name}</h3>
                   <button
@@ -516,6 +520,31 @@ export default function NnExplorer() {
                     <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{selected.paper}</p>
                   </div>
                 )}
+                {(() => {
+                  const idx = NN_STAGES.findIndex((s) => s.id === selected.id);
+                  return (
+                    <div className="flex items-center gap-2 mt-4">
+                      <button
+                        type="button"
+                        disabled={idx <= 0}
+                        onClick={() => setSelectedId(NN_STAGES[idx - 1].id)}
+                        className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                        data-testid="nn-station-back"
+                      >
+                        ← Back
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx >= NN_STAGES.length - 1}
+                        onClick={() => setSelectedId(NN_STAGES[idx + 1].id)}
+                        className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-foreground/50 text-foreground hover:bg-secondary/40 disabled:opacity-30 transition-colors"
+                        data-testid="nn-station-next"
+                      >
+                        Next →
+                      </button>
+                    </div>
+                  );
+                })()}
               </div>
             ) : (
               <div data-testid="nn-explore-index">
