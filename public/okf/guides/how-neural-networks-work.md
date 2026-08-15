@@ -1,7 +1,7 @@
 ---
 type: Guide
 title: How Neural Networks Work
-description: The canonical 784-16-16-10 MNIST network as an explorable 3D machine, with every parameter rendered and every claim traced to a primary source.
+description: The canonical 784-16-16-10 MNIST network as an explorable 3D machine, with every weight connection drawn and every claim traced to a primary source.
 resource: https://venkatapagadala.com/guides/how-neural-networks-work
 tags: [neural-networks, deep-learning, 3d, education]
 generated: { by: claude-code/fable-5, at: 2026-08-15T05:30:00Z }

@@ -768,7 +768,9 @@ function ReluStation() {
 function SoftmaxBoard() {
   const ctx = useScene();
   const bars = useRef<(THREE.Mesh | null)[]>([]);
-  // raw pre-softmax "scores" chosen so their softmax is the demo distribution
+  // illustrative raw-score heights: same ordering as the demo distribution,
+  // before softmax squashes them into probabilities (exact inversion is
+  // impossible to display because zero-probability scores sit at minus infinity)
   const raw = useMemo(() => NN_DEMO_PROBS.map((d) => 0.15 + d.p * 0.55), []);
   useFrame(() => {
     const norm = ctx.program === "softmax" || ctx.program === "loss" ||
@@ -877,8 +879,8 @@ function terrainGrad(u: number, v: number): [number, number] {
 function descentPaths() {
   const sgd: [number, number][] = [];
   const adam: [number, number][] = [];
-  let su = 2.3, sv = 1.6;
-  let au = 2.3, av = 1.6;
+  let su = 1.3, sv = 0.9;
+  let au = 1.3, av = 0.9;
   let mu = 0, mv = 0;
   for (let i = 0; i < 260; i++) {
     // SGD: bigger steps + deterministic noise = zigzag
@@ -925,7 +927,9 @@ function LossTerrain() {
     const place = (ball: THREE.Mesh | null, path: [number, number][]) => {
       if (!ball) return;
       const [u, v] = path[Math.min(i, path.length - 1)];
-      ball.position.set(u * 1.6 * (4.6 / 3.2) * 0.695, terrainH(u, v) + 0.09, -v * 1.6 * (3.4 / 3.2) * 0.63);
+      // plane vertex (x, y) maps to world (x, terrainH(x/1.6, y/1.6), -y),
+      // so parameter (u, v) rides the surface at world (1.6u, H+r, -1.6v).
+      ball.position.set(u * 1.6, terrainH(u, v) + 0.35, -v * 1.6);
     };
     place(sgdBall.current, paths.sgd);
     place(adamBall.current, paths.adam);

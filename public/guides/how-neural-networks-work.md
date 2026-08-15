@@ -2,7 +2,7 @@
 
 A handwritten five becomes 784 numbers, ripples through a lattice you can orbit, and comes out as a belief. Then the error flows backward and you watch the machine learn. Every fiber drawn, every claim from the original papers.
 
-> The canonical 784-16-16-10 MNIST network as an explorable 3D machine: 16 stations across 4 acts, a 16-step guided journey from pixels to the brain question, all 13,002 parameters really rendered, and a training row where gradient descent actually runs on the loss terrain.
+> The canonical 784-16-16-10 MNIST network as an explorable 3D machine: 16 stations across 4 acts, a 16-step guided journey from pixels to the brain question, all 12,960 weight connections really drawn, and a training row where gradient descent is really computed on an illustrative loss terrain.
 
 By Venkata Pagadala, AI Product Manager (Search · SEO · GEO), AT&T · Updated 2026-08-15 · 20 min read
 
@@ -15,7 +15,9 @@ Strip away the mythology and a neural network is a small machine: numbers flow l
 
 *(Interactive 3D content: explore it at https://venkatapagadala.com/guides/how-neural-networks-work)*
 
-> **What you're looking at:** **Blue**, left: a handwritten five dissolving into 784 pixels, and the lattice they feed. **Violet**, center: the forward pass, the ReLU gates, softmax and the loss meter. **Amber**, back row: the training machinery, a real loss terrain with racing descent balls, the Adam formulas, an accuracy monitor. **Green**, front row: dropout, what the layers detect, and the honest brain question.
+> **What you're looking at:** **Blue**, left: a handwritten five dissolving into 784 pixels, and the lattice they feed. **Violet**, center: the forward pass, the ReLU gates, softmax and the loss meter. **Amber**, back row: the training machinery, a loss terrain with racing descent balls, the Adam formulas, an accuracy monitor. **Green**, back row right: dropout, what the layers detect, and the honest brain question.
+
+> **What is computed and what is staged:** **Real:** the lattice is the true 784-16-16-10 wiring with all **12,960 weight fibers drawn one for one**; the descent balls follow paths produced by **actually running gradient descent and momentum** on the terrain function; every number, formula, and quote comes from the cited paper. **Staged for teaching:** the network is not live-trained in your browser, the five is drawn rather than sampled from MNIST, the terrain is a 2D stand-in for a 13,002-dimensional loss surface, and the accuracy curve is shaped to Nielsen's reported endpoint rather than logged from a run. An explainer that blurs this line does not deserve your trust, so here it is in writing.
 
 ## The journey, in plain text
 
@@ -42,7 +44,7 @@ The same 16 steps the interactive journey walks through, as text, for reading (a
 
 | Station | Act | What happens | Real numbers | Primary source |
 |---|---|---|---|---|
-| A Digit Becomes Numbers | machine | The network never sees a five. It sees 784 brightness values. Start with one handwritten digit from MNIST, the dataset this network learns from: 28 by 28 pixels, greyscale. Unroll the grid into a single column of 784 numbers between 0 (black) and 1 (white). That column is the entire input. No shapes, no strokes, no idea of 'five': just 784 brightnesses in a fixed order. | Image size: 28 x 28 = 784 pixels · Training set: 60,000 images · Test set: 10,000 images · Writers: ~250 people | MNIST as described in Nielsen, Neural Networks and Deep Learning, chapter 1 (the official dataset description). |
+| A Digit Becomes Numbers | machine | The network never sees a five. It sees 784 brightness values. Start with one handwritten digit from MNIST, the dataset this network learns from: 28 by 28 pixels, grayscale. Unroll the grid into a single column of 784 numbers between 0 (black) and 1 (white). That column is the entire input. No shapes, no strokes, no idea of 'five': just 784 brightnesses in a fixed order. | Image size: 28 x 28 = 784 pixels · Training set: 60,000 images · Test set: 10,000 images · Training-set writers: ~250 people · Test-set writers: a different ~250 people | MNIST as described in Nielsen, Neural Networks and Deep Learning, chapter 1 (the official dataset description). |
 | The Shape of the Machine | machine | Four columns of neurons, connected left to right. The classic teaching network: 784 input values, two hidden layers of 16 neurons each, and 10 output neurons, one per digit. Information only flows left to right. Each neuron in one layer connects to every neuron in the next: that is where the machine's flexibility lives, and its entire 'knowledge' will be stored in the strengths of those connections. | Layers: 784 in, 16, 16, 10 out · Connections (weights): 12,544 + 256 + 160 = 12,960 · Output meaning: one neuron per digit 0-9 | computed in this guide |
 | One Neuron, One Decision | machine | Multiply each input by a weight, add them up, add a bias. Zoom into a single hidden neuron. It takes all 784 pixel values, multiplies each by its own private weight, sums the lot, and adds one more number, the bias. Big positive weights mean 'this pixel being bright excites me'; negative weights mean the opposite. The sum then passes through a gate (next act) to become the neuron's activation. | Weights into one hidden neuron: 784 · Bias per neuron: 1 · First artificial neuron: 1943, a logic gate, no learning | McCulloch & Pitts 1943, Bulletin of Mathematical Biophysics 5:115-133, DOI 10.1007/BF02478259; Rosenblatt 1958, Psychological Review 65(6):386-408, DOI 10.1037/h0042519. |
 | 13,002 Dials | machine | Every connection drawn. This lattice IS the network's memory. Here is every parameter at once: 12,544 fibers from pixels to the first hidden layer, 256 between the hidden layers, 160 into the output, plus 42 biases. 13,002 adjustable numbers. Training will touch nothing else: no code changes, no new wiring. Learning is only this: nudging 13,002 dials until the machine stops being wrong. | Weights: 12,960 · Biases: 42 · Total parameters: 13,002 exactly | computed in this guide |
@@ -161,7 +163,7 @@ Cybenko 1989 and Hornik, Stinchcombe and White 1989 proved versions of this inde
 - **Example:** A width-limited two-layer ReLU network can fit any curve you can draw, given enough neurons.
 - **Why it matters:** The most misquoted theorem in AI; citing it correctly signals you read past the headline.
 
-## Eighty years, six eras
+## Six eras, 1943 to today
 
 The unit barely changed since 1958: weighted sum, bias, nonlinearity. What changed is everything around it, and most popular histories get the credits wrong. This table keeps them straight.
 
@@ -242,7 +244,7 @@ In big convolutional networks, projected visualizations show a real hierarchy: *
 - [Glorot, Bordes & Bengio (2011): Deep sparse rectifier neural networks](https://proceedings.mlr.press/v15/glorot11a.html) · Plain ReLU: deep supervised training without pre-training
 - [Bengio, Simard & Frasconi (1994): Learning long-term dependencies with gradient descent is difficult](https://doi.org/10.1109/72.279181) · Vanishing gradients, IEEE TNN
 - [Hendrycks & Gimpel (2016): Gaussian Error Linear Units](https://arxiv.org/abs/1606.08415) · GELU = x · Phi(x)
-- [Bridle (1989): Training stochastic model recognition algorithms as networks](https://proceedings.neurips.cc/paper/1989) · Softmax's entry into neural networks
+- [Bridle (1989): Training stochastic model recognition algorithms as networks](https://proceedings.neurips.cc/paper_files/paper/1989/hash/0336dcbab05b9d5ad24f4333c7658a0e-Abstract.html) · Softmax's entry into neural networks
 - [Robbins & Monro (1951): A stochastic approximation method](https://doi.org/10.1214/aoms/1177729586) · The ancestor of SGD
 - [Polyak (1964): Some methods of speeding up the convergence of iteration methods](https://doi.org/10.1016/0041-5553(64)90137-5) · Momentum
 - [Kingma & Ba (2015): Adam: a method for stochastic optimization](https://arxiv.org/abs/1412.6980) · Algorithm 1 and the defaults quoted in this guide

@@ -80,16 +80,17 @@ export const NN_STAGES: NnStage[] = [
     act: "machine",
     tagline: "The network never sees a five. It sees 784 brightness values.",
     story:
-      "Start with one handwritten digit from MNIST, the dataset this network learns from: 28 by 28 pixels, greyscale. Unroll the grid into a single column of 784 numbers between 0 (black) and 1 (white). That column is the entire input. No shapes, no strokes, no idea of 'five': just 784 brightnesses in a fixed order.",
+      "Start with one handwritten digit from MNIST, the dataset this network learns from: 28 by 28 pixels, grayscale. Unroll the grid into a single column of 784 numbers between 0 (black) and 1 (white). That column is the entire input. No shapes, no strokes, no idea of 'five': just 784 brightnesses in a fixed order.",
     tech:
-      "MNIST holds 60,000 training images and 10,000 test images of digits written by about 250 people, half US Census Bureau employees and half high school students. Each 28x28 image flattens to a 784-dimensional vector. Pixel values are scaled to [0, 1] before entering the network.",
+      "MNIST holds 60,000 training images written by about 250 people, half US Census Bureau employees and half high school students, plus 10,000 test images written by a different 250 people, so the test really is unseen handwriting. Each 28x28 image flattens to a 784-dimensional vector. Pixel values are scaled to [0, 1] before entering the network.",
     analogy:
       "A player piano roll: the song exists only as hole positions. The machine reads holes, not music.",
     numbers: [
       { label: "Image size", value: "28 x 28 = 784 pixels" },
       { label: "Training set", value: "60,000 images" },
       { label: "Test set", value: "10,000 images" },
-      { label: "Writers", value: "~250 people" },
+      { label: "Training-set writers", value: "~250 people" },
+      { label: "Test-set writers", value: "a different ~250 people" },
     ],
     paper:
       "MNIST as described in Nielsen, Neural Networks and Deep Learning, chapter 1 (the official dataset description).",

@@ -185,7 +185,7 @@ export default function LlmExplorer() {
             }}
             className={`font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 border transition-colors mr-2 ${
               autoPlay
-                ? "border-emerald-400/60 text-emerald-300 bg-emerald-400/10"
+                ? "border-emerald-400/60 text-emerald-700 dark:text-emerald-300 bg-emerald-400/10"
                 : "border-foreground/70 text-foreground bg-foreground/10 hover:bg-foreground/20"
             }`}
             title="Watch one token get generated, start to finish"
@@ -212,7 +212,7 @@ export default function LlmExplorer() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Toggle label="Data flow" value={running} onChange={setRunning} />
           <Toggle label="Labels" value={labels} onChange={setLabels} />
           <button
@@ -254,7 +254,7 @@ export default function LlmExplorer() {
               <Suspense
                 fallback={
                   <div className="h-full flex items-center justify-center">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 animate-pulse">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 animate-pulse">
                       Loading 3D model…
                     </p>
                   </div>
@@ -280,7 +280,7 @@ export default function LlmExplorer() {
               </Suspense>
             </SceneErrorBoundary>
           )}
-          <p className="absolute bottom-2 left-3 font-mono text-[9px] text-muted-foreground/40 pointer-events-none">
+          <p className="absolute bottom-2 left-3 font-mono text-[9px] text-muted-foreground/70 pointer-events-none">
             drag to orbit · scroll to zoom · click a stage
           </p>
         </div>
@@ -297,7 +297,7 @@ export default function LlmExplorer() {
           {mode === "journey" && step && (
             <div data-testid="llm-journey-panel">
               <div className="flex items-center justify-between gap-2 mb-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/60">
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70">
                   Step {stepIdx + 1} of {JOURNEY.length}
                   {step.training ? " · training" : " · inference"}
                 </p>
@@ -338,7 +338,7 @@ export default function LlmExplorer() {
                 </button>
               </div>
               {stepIdx === JOURNEY.length - 1 && (
-                <p className="font-mono text-[10px] text-muted-foreground/60 mt-4">
+                <p className="font-mono text-[10px] text-muted-foreground/70 mt-4">
                   That&apos;s the whole machine. Switch to <span className="text-foreground">Explore</span> and click any
                   part for the deep dive — real parameter counts, the 2026 frontier, the works.
                 </p>
@@ -367,18 +367,18 @@ export default function LlmExplorer() {
                 </p>
                 <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4">{selected.story}</p>
                 <div className="border border-border/60 p-3 mb-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">How it works</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">How it works</p>
                   <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{selected.tech}</p>
                 </div>
                 <div className="border border-border/60 p-3 mb-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">Analogy</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">Analogy</p>
                   <p className="font-mono text-[11px] text-muted-foreground leading-relaxed italic">{selected.analogy}</p>
                 </div>
                 <table className="w-full mb-3">
                   <tbody>
                     {selected.numbers.map((n) => (
                       <tr key={n.label} className="border-b border-border/40">
-                        <td className="py-1.5 pr-2 font-mono text-[10px] text-muted-foreground/60">{n.label}</td>
+                        <td className="py-1.5 pr-2 font-mono text-[10px] text-muted-foreground/70">{n.label}</td>
                         <td className="py-1.5 font-mono text-[11px] text-foreground text-right">{n.value}</td>
                       </tr>
                     ))}
@@ -386,7 +386,7 @@ export default function LlmExplorer() {
                 </table>
                 {selected.now && (
                   <div className="border border-amber-400/30 bg-amber-400/[0.04] p-3">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-300/80 mb-1.5">2025-2026</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-700/80 dark:text-amber-300/80 mb-1.5">2025-2026</p>
                     <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{selected.now}</p>
                   </div>
                 )}
