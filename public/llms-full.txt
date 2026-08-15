@@ -149,7 +149,7 @@ An 18-week core curriculum plus seven elective depth tracks (multimodal, speech 
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-175 AI concepts across 10 categories (Core ML Concepts, Math & Optimization, Architectures, NLP & Language, Computer Vision, Generative AI, Reinforcement Learning, MLOps & Infrastructure, AI Agents & Applications, and Safety, Ethics & Governance). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026, extended August 2026.
+176 AI concepts across 10 categories (Core ML Concepts, Math & Optimization, Architectures, NLP & Language, Computer Vision, Generative AI, Reinforcement Learning, MLOps & Infrastructure, AI Agents & Applications, and Safety, Ethics & Governance). Each concept includes descriptions, key terms, prerequisites, difficulty levels, and curated learn-more links. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
@@ -182,6 +182,11 @@ Each guide ships a plain-markdown edition for AI assistants and answer engines. 
 Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration, JavaScript rendering, content embeddings and semantic search, Google Search Console and AI integrations, scheduling, and the MCP server. Includes a recommended agency configuration.
 - Web: https://venkatapagadala.com/guides/screaming-frog
 - Markdown: https://venkatapagadala.com/guides/screaming-frog.md
+
+### How Neural Networks Work: 3D Interactive Guide (2026)
+The 784-16-16-10 MNIST network as an explorable 3D machine: forward pass, ReLU, softmax, cross-entropy, gradient descent, backpropagation, Adam, initialization, dropout, and the brain question, all primary-sourced.
+- Web: https://venkatapagadala.com/guides/how-neural-networks-work
+- Markdown: https://venkatapagadala.com/guides/how-neural-networks-work.md
 
 ### How LLMs Work: Interactive 3D Walkthrough (2026)
 Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL.

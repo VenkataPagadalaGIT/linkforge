@@ -122,16 +122,29 @@ export const INTERACTIVE_FOR: Record<string, RefInteractive> = {
   },
 };
 
-/** Tutorial lessons that pair naturally with each category (cross-links). */
-export const TUTORIAL_FOR_CATEGORY: Record<string, { label: string; href: string }> = {
-  "Core ML Concepts": { label: "Tutorial: What Is Machine Learning?", href: "/learn/what-is-machine-learning" },
-  "Math & Optimization": { label: "Tutorial: How a Network Learns", href: "/learn/how-a-network-learns" },
-  "Architectures": { label: "Tutorial: What Is a Neural Network?", href: "/learn/what-is-a-neural-network" },
-  "NLP & Language": { label: "Tutorial: From Neural Networks to LLMs", href: "/learn/from-networks-to-llms" },
-  "Computer Vision": { label: "Tutorial: Supervised Learning (MNIST)", href: "/learn/supervised-learning" },
-  "Generative AI": { label: "Tutorial: Types of AI", href: "/learn/types-of-ai" },
-  "Reinforcement Learning": { label: "Tutorial: Reinforcement Learning", href: "/learn/reinforcement-learning" },
-  "MLOps & Infrastructure": { label: "Tutorial: Training in Practice", href: "/learn/training-in-practice" },
-  "AI Agents & Applications": { label: "Tutorial: Types of AI (agents)", href: "/learn/types-of-ai" },
-  "Safety, Ethics & Governance": { label: "Tutorial: What Networks Can and Cannot Do", href: "/learn/what-networks-can-and-cannot-do" },
+/** Base path of the one-and-only learning surface. */
+export const REF_BASE = "/notebook/ai/encyclopedia";
+
+export const refHref = (id: string) => `${REF_BASE}/${id}`;
+
+/* ------------------------------------------------------------------ *
+ *  Deep dives: the fact-checked lesson content, merged into concepts.
+ *  Concept id -> lesson slugs from src/data/learn.ts, rendered inline
+ *  on the concept's page. One place to read; nothing behind a hop.
+ * ------------------------------------------------------------------ */
+
+export const DEEP_DIVES: Record<string, string[]> = {
+  "artificial-intelligence": ["what-is-ai", "history-of-ai"],
+  "machine-learning": ["what-is-machine-learning"],
+  "deep-learning": ["ai-vs-ml-vs-deep-learning", "training-in-practice"],
+  "agi": ["types-of-ai"],
+  "gradient-descent": ["how-machines-learn"],
+  "supervised-learning": ["supervised-learning"],
+  "unsupervised-learning": ["unsupervised-learning"],
+  "reinforcement-learning": ["reinforcement-learning"],
+  "overfitting-underfitting": ["overfitting-and-generalization"],
+  "neural-network": ["what-is-a-neural-network"],
+  "backpropagation": ["how-a-network-learns"],
+  "llm": ["from-networks-to-llms"],
+  "hallucination": ["what-networks-can-and-cannot-do"],
 };

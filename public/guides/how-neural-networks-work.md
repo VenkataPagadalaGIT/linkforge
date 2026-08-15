@@ -228,7 +228,7 @@ In big convolutional networks, projected visualizations show a real hierarchy: *
 
 - [How LLMs Work: the same treatment for the transformer that grew out of this machine](https://venkatapagadala.com/guides/how-llms-work)
 - [The AI Learning Roadmap: where neural networks sit in an 18-week path](https://venkatapagadala.com/notebook/ai)
-- [The AI Concepts Encyclopedia: 175 concepts with definitions and sources](https://venkatapagadala.com/notebook/ai/encyclopedia)
+- [The AI Concepts Encyclopedia: 176 concepts with definitions and sources](https://venkatapagadala.com/notebook/ai/encyclopedia)
 
 ## Sources & further reading
 

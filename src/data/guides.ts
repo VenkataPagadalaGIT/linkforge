@@ -24,6 +24,7 @@ import {
   type HvacPath,
 } from "./hvac";
 import { LLM_COUNTS } from "./llm";
+import { NN_COUNTS, NN_PARAMS, NN_WEIGHTS } from "./nn";
 import { sfGuide } from "./sfGuide";
 
 export interface DefinedTerm {
@@ -87,6 +88,12 @@ export type Block =
   | { kind: "llmstages" }
   /** Static, crawlable transcript of the guided token-generation journey. */
   | { kind: "llmjourney" }
+  /** Interactive 3D neural-network explorer + guided journey (lazy-loaded). */
+  | { kind: "nn" }
+  /** Static, crawlable table of every neural-network station with sources. */
+  | { kind: "nnstages" }
+  /** Static, crawlable transcript of the guided digit-recognition journey. */
+  | { kind: "nnjourney" }
   /** External sources / further-reading links. */
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
   | { kind: "details"; summary: string; blocks: Block[] };
@@ -1340,6 +1347,326 @@ const llmBlocks: Block[] = [
   },
 ];
 
+/* ==================================================================== *
+ *  GUIDE 4: How Neural Networks Work (interactive 3D)
+ *  Every claim traces to docs/research/neural-net-explainer-kb.md.
+ * ==================================================================== */
+
+const nnTerms: DefinedTerm[] = [
+  {
+    slug: "artificial-neuron",
+    term: "Artificial Neuron",
+    aka: ["unit", "perceptron unit"],
+    oneLiner: "A function that multiplies each input by a weight, sums them, adds a bias, and passes the result through a nonlinearity.",
+    inDepth:
+      "The modern unit computes a = f(w · x + b). Its 1943 ancestor from McCulloch and Pitts was a binary logic gate with an integer threshold and no learning rule at all; even calling it a weighted sum modernizes it. Rosenblatt's 1958 perceptron paper described a probabilistic theory of a hypothetical nervous system, and its learning rule was a value-gain rule, not the error-correction rule usually taught. The convergence theorem arrived in 1962 work by Rosenblatt, Block, and Novikoff.",
+    analogy: "A judge with hundreds of informants: each tip weighted by trust, tallied, and nudged by the judge's mood before the verdict.",
+    example: "One hidden neuron in this guide's network holds 784 weights and 1 bias: 785 of the 13,002 parameters.",
+    agentRole: "Every parameter count you read about any model, from this 13,002 to hundreds of billions, is counting these weights and biases.",
+  },
+  {
+    slug: "relu",
+    term: "ReLU",
+    aka: ["rectified linear unit"],
+    oneLiner: "The activation max(0, z): negatives become zero, positives pass through unchanged.",
+    inDepth:
+      "Without a nonlinearity, stacked layers collapse into one matrix multiply. ReLU's kink is the cheapest possible bend. Nair and Hinton introduced noisy rectified units in restricted Boltzmann machines in 2010; Glorot, Bordes and Bengio showed in 2011 that plain ReLU lets deep supervised networks train without pre-training, producing sparse representations with true zeros. It also sidesteps the vanishing gradients that saturating sigmoids caused, a disease diagnosed by Hochreiter in 1991 and Bengio, Simard and Frasconi in 1994.",
+    analogy: "A one-way valve: forward pressure flows, backward pressure reads zero.",
+    example: "ReLU(2.3) = 2.3, ReLU(-0.7) = 0.",
+    agentRole: "The default hidden activation in modern networks; its smooth cousin GELU, x times the Gaussian CDF, powers transformers.",
+  },
+  {
+    slug: "softmax-layer",
+    term: "Softmax",
+    oneLiner: "The output layer that exponentiates ten raw scores and normalizes them into probabilities summing to one.",
+    inDepth:
+      "softmax(z)_i = exp(z_i) / sum_j exp(z_j). Its use as a neural output layer traces to John Bridle's papers around 1989-1990. Exponentiation makes the contest rich-get-richer: modest score gaps become decisive probability gaps. Softmax can saturate when one input towers over the rest, which is exactly why it must be paired with a log-based loss.",
+    analogy: "An auction where every bid is compounded before comparison.",
+    example: "Scores (2.0, 1.0, 0.1) become probabilities (0.66, 0.24, 0.10).",
+    agentRole: "The same layer produces every LLM's next-token distribution; temperature is a dial on this exact formula.",
+  },
+  {
+    slug: "cross-entropy",
+    term: "Cross-Entropy Loss",
+    aka: ["negative log-likelihood"],
+    oneLiner: "The training loss: minus the log of the probability the network gave the correct answer.",
+    inDepth:
+      "Confidently right costs nearly nothing; confidently wrong costs enormously. The pairing with softmax is mechanical, not aesthetic: the log undoes the exp, log softmax(z)_i = z_i - log sum_j exp(z_j), so the gradient survives even when softmax saturates. Goodfellow, Bengio and Courville state it directly: squared error is a poor loss for softmax units because when the exp saturates, the gradient vanishes and learning stalls. The 1986 backprop paper itself still used squared error.",
+    analogy: "A fine scaled to confident wrongness: whisper a wrong guess, small fine; pound the table wrongly, enormous fine.",
+    example: "p(correct) = 0.7 gives loss 0.36; p(correct) = 0.01 gives loss 4.61.",
+    agentRole: "Perplexity, the standard language-model metric, is this loss exponentiated.",
+  },
+  {
+    slug: "gradient-descent",
+    term: "Gradient Descent",
+    aka: ["SGD", "stochastic gradient descent"],
+    oneLiner: "Repeatedly measure the loss's slope and step the parameters against it: theta becomes theta minus eta times the gradient.",
+    inDepth:
+      "The loss is a landscape over all 13,002 parameters; training walks downhill using only the local slope. The stochastic variant estimates that slope from small random mini-batches instead of all 60,000 images, which is faster and noisier. Its ancestral citation is Robbins and Monro's 1951 stochastic approximation method: converge to a root using only noisy measurements. Nielsen's framing: polling instead of running the full election.",
+    analogy: "Descending a mountain at night with a flashlight pointed at your boots.",
+    example: "With learning rate 0.001, a weight with gradient +2.0 moves by -0.002.",
+    agentRole: "Every modern model, including every LLM, is trained by a descendant of this loop.",
+  },
+  {
+    slug: "backpropagation",
+    term: "Backpropagation",
+    aka: ["reverse-mode autodiff"],
+    oneLiner: "The chain rule run backward through the network, delivering the gradient for every parameter in one cheap backward sweep.",
+    inDepth:
+      "Backprop is reverse-mode automatic differentiation applied to the loss. The cheap gradient principle says the full gradient over all n parameters costs a small constant multiple of one forward pass, typically 2-3x and provably under about 6x, independent of n. The credit history is layered: Linnainmaa published reverse-mode in 1970 for rounding-error analysis, Werbos formalized it for networks, and Rumelhart, Hinton and Williams independently rediscovered and popularized it in 1986; their stated headline was that hidden units come to represent important features of the task domain.",
+    analogy: "After a lost relay race, the blame report writes itself backward from the finish line, at the cost of rerunning the race twice.",
+    example: "This network: all 13,002 gradients for roughly the price of 2-3 forward passes, versus 13,002 passes done naively.",
+    agentRole: "The reason deep learning is economically possible; PyTorch's autograd and JAX's grad are this algorithm, industrialized.",
+  },
+  {
+    slug: "adam",
+    term: "Adam",
+    aka: ["adaptive moment estimation"],
+    oneLiner: "The default optimizer: gradient descent with a momentum memory and a per-parameter step size learned from recent gradient magnitudes.",
+    inDepth:
+      "Adam keeps two exponential moving averages: m (the mean of gradients, decay 0.9) and v (the mean of squared gradients, decay 0.999). Both start at zero and are bias-corrected, then the update is alpha times m-hat over the square root of v-hat. The paper's own tested defaults: alpha 0.001, beta1 0.9, beta2 0.999, epsilon 1e-8. Momentum itself goes back to Polyak, 1964.",
+    analogy: "A bowling ball with a co-pilot: inertia smooths the washboard, and the co-pilot eases the throttle on any axis that has been violent lately.",
+    example: "A parameter with consistently tiny gradients gets larger effective steps; a violent one gets damped.",
+    agentRole: "The optimizer behind most modern training runs; its defaults are the most-typed hyperparameters in machine learning.",
+  },
+  {
+    slug: "weight-initialization",
+    term: "Weight Initialization",
+    aka: ["Glorot init", "He init"],
+    oneLiner: "Starting weights drawn randomly with a variance tuned to layer width, so signals neither explode nor vanish across depth.",
+    inDepth:
+      "All-zero starts make neurons identical forever; careless randomness kills deep networks before training begins. Glorot and Bengio 2010 proposed uniform draws in plus or minus sqrt(6)/sqrt(n_in + n_out), keeping activation and gradient variances steady (tanh-era analysis). He et al. 2015 derived the ReLU version, a zero-mean Gaussian with standard deviation sqrt(2/n); the 2 exists because ReLU zeroes half the variance. That paper's PReLU plus this init produced 4.94% top-5 ImageNet error, the first past the 5.1% human benchmark.",
+    analogy: "Tuning the orchestra before rehearsal: nobody plays the symphony yet, but starting wildly out of tune breaks rehearsal itself.",
+    example: "A 784-input ReLU layer initializes with std sqrt(2/784), roughly 0.05.",
+    agentRole: "Why 'just train it' works at all today; bad init was a silent killer of the field's first three decades.",
+  },
+  {
+    slug: "dropout-regularization",
+    term: "Dropout",
+    oneLiner: "During training, randomly silence each hidden neuron (classically keep with p = 0.5) so no neuron can rely on another.",
+    inDepth:
+      "Each training step samples a thinned subnetwork; over a run this implicitly trains an ensemble of 2^n networks with shared weights. At test time the full network runs with each unit's outgoing weights multiplied by its retention probability, making expected training output equal actual test output. The JMLR 2014 paper's MNIST setting: retain hidden units with p = 0.5 and inputs with p = 0.8.",
+    analogy: "A team where random members skip each rehearsal: nobody can hide behind the star, so everyone learns the whole play.",
+    example: "A 16-neuron layer under p = 0.5 trains a different 8-ish-neuron layer every step.",
+    agentRole: "The classic weapon against overfitting, and the cleanest example of why forcing redundancy improves generalization.",
+  },
+  {
+    slug: "universal-approximation",
+    term: "Universal Approximation Theorem",
+    oneLiner: "One hidden layer with enough units can approximate any continuous function: an existence result, not a training guarantee.",
+    inDepth:
+      "Cybenko 1989 and Hornik, Stinchcombe and White 1989 proved versions of this independently. Read the fine print the authors themselves wrote: the results do not say how many units are needed, and they do not promise gradient descent will find the approximation. Hornik's paper explicitly blames practical failures on inadequate learning, inadequate units, or noisy data. The theorem explains why networks are expressive, never why training works.",
+    analogy: "A proof that a perfect key exists somewhere in an infinite keyshop, with no directions to the right drawer.",
+    example: "A width-limited two-layer ReLU network can fit any curve you can draw, given enough neurons.",
+    agentRole: "The most misquoted theorem in AI; citing it correctly signals you read past the headline.",
+  },
+];
+
+const nnComparison: ComparisonRow[] = [
+  {
+    type: "1943 · Logic neuron",
+    isA: "McCulloch & Pitts: neurons as propositional logic",
+    answers: "Binary threshold gates can express logical claims; nets with loops sketched",
+    structure: "No learning rule at all; fixed integer thresholds, veto inhibition",
+    example: "The original paper, Bulletin of Mathematical Biophysics 5:115-133",
+    bestFor: "Founding abstraction: computation from neuron-like parts",
+    limit: "Cannot learn; the 'weighted sum' reading is a later modernization",
+  },
+  {
+    type: "1958 · Perceptron",
+    isA: "Rosenblatt: a probabilistic theory of a hypothetical nervous system",
+    answers: "Randomly connected units can learn associations from random stimuli",
+    structure: "Value-gain learning (alpha system); error-correction rule came in 1962",
+    example: "Psychological Review 65(6):386-408; Mark I machine built ~1959-60",
+    bestFor: "First learning claim; birth of trainable networks",
+    limit: "Single layer; the famous convergence theorem is 1962 (Block, Novikoff)",
+  },
+  {
+    type: "1986 · Backprop era",
+    isA: "Rumelhart, Hinton & Williams popularize gradient learning in depth",
+    answers: "Hidden units learn useful internal representations",
+    structure: "Squared-error gradient descent via the chain rule run backward",
+    example: "Nature 323:533-536; reverse mode itself dates to Linnainmaa 1970",
+    bestFor: "Multi-layer training that actually works",
+    limit: "Saturating sigmoids: gradients vanish with depth (Hochreiter 1991)",
+  },
+  {
+    type: "2010-2012 · ReLU + depth",
+    isA: "Rectifiers, GPUs and data make deep supervised learning practical",
+    answers: "Deep nets train from scratch, no unsupervised pre-training needed",
+    structure: "max(0, z) activations, cross-entropy loss, minibatch SGD",
+    example: "Nair & Hinton 2010; Glorot, Bordes & Bengio, AISTATS 2011",
+    bestFor: "The activation switch that unlocked modern depth",
+    limit: "Still needed init and regularization science to be reliable",
+  },
+  {
+    type: "2014-2015 · Training science",
+    isA: "Adam, dropout, and principled initialization mature the recipe",
+    answers: "Training becomes robust and mostly hyperparameter-forgiving",
+    structure: "Adam (alpha 0.001), dropout p 0.5, He init sqrt(2/n)",
+    example: "Kingma & Ba ICLR 2015; Srivastava et al. JMLR 2014; He et al. 2015",
+    bestFor: "The default stack this guide animates",
+    limit: "Why some pieces work is still argued (see the BatchNorm debate)",
+  },
+  {
+    type: "Today · Honest open questions",
+    isA: "The same loop at billion-parameter scale, with humility required",
+    answers: "Networks work; several whys remain contested",
+    structure: "Double descent bends the curves; brain-backprop link unresolved",
+    example: "Nakkiran et al. 2019; Lillicrap, Santoro, Marris, Akerman & Hinton 2020",
+    bestFor: "Reading the field without the folklore",
+    limit: "An explainer that hides these caveats is selling, not teaching",
+  },
+];
+
+const nnFaqs: FaqItem[] = [
+  {
+    q: "How many parameters does this network have, exactly?",
+    a: "13,002. Computed, not quoted: 784x16 + 16x16 + 16x10 = 12,544 + 256 + 160 = **12,960 weights**, plus 16 + 16 + 10 = **42 biases**. The 3D scene draws every one of the 12,960 weight fibers.",
+  },
+  {
+    q: "Is a neural network really like a brain?",
+    a: "No, and the caveat has pedigree. Francis Crick wrote in Nature in 1989 that these nets are 'unrealistic in important respects' as brain models. The sharpest problem is backpropagation itself: cortex has no evident mechanism for shipping exact error signals backward. Lillicrap, Santoro, Marris, Akerman and Hinton's 2020 review argues feedback connections may **locally approximate** those signals. Open question; treat 'neural' as branding.",
+  },
+  {
+    q: "Who invented backpropagation?",
+    a: "No single person. Reverse-mode differentiation was published by **Linnainmaa in 1970** (for rounding-error analysis, not learning), applied toward networks by **Werbos**, and independently rediscovered and popularized by **Rumelhart, Hinton and Williams in 1986**, whose real headline was representation learning. Saying '1986 invented backprop' fails a history check.",
+  },
+  {
+    q: "Why is ReLU such a big deal? It's just max(0, z).",
+    a: "Two reasons. Without any nonlinearity, stacked layers collapse into a single matrix multiply, so depth means nothing. And the saturating curves used before it (sigmoid, tanh) made gradients **vanish** across depth, a failure diagnosed by Hochreiter (1991) and Bengio, Simard and Frasconi (1994). Glorot, Bordes and Bengio showed in 2011 that the rectifier lets deep networks train from scratch, no pre-training required.",
+  },
+  {
+    q: "Why cross-entropy loss instead of squared error?",
+    a: "Because of softmax's exp. Goodfellow, Bengio and Courville put it plainly: the **log in the log-likelihood undoes the exp of the softmax**, so gradients survive saturation; squared error 'is a poor loss function for softmax units' because its gradient vanishes exactly when the network is most confidently wrong.",
+  },
+  {
+    q: "What does Adam actually do?",
+    a: "It keeps two running memories per parameter: the average gradient (momentum, decay 0.9) and the average squared gradient (decay 0.999), corrects both for starting at zero, and steps each parameter by **alpha times m-hat over sqrt(v-hat)**. The 2015 paper's tested defaults, alpha 0.001, beta1 0.9, beta2 0.999, are still the ones everyone types.",
+  },
+  {
+    q: "How accurate does this little network get on MNIST?",
+    a: "Over **96 percent** on the 10,000 held-out test digits, per Nielsen's book, whose 74-line implementation is this exact architecture. For context, he cites the 2013 record of 9,979/10,000 (Wan, Zeiler, Zhang, LeCun, Fergus) and notes a well-tuned SVM exceeds 98.5 percent. Modern convolutional nets essentially saturate the benchmark.",
+  },
+  {
+    q: "Does the loss always go down while training?",
+    a: "No. Curves wobble batch to batch, and the **deep double descent** results (Nakkiran et al., 2019) show test error can get worse before better as models grow or train longer; in specific regimes, even adding training data hurts. Distrust any explainer whose curves only glide smoothly downward.",
+  },
+  {
+    q: "Can one hidden layer really approximate any function?",
+    a: "Yes, with the fine print the theorem's own authors wrote. Cybenko (1989) and Hornik, Stinchcombe and White (1989) proved **existence**: some width suffices for any continuous function. Hornik's paper explicitly does not say how many units, and blames real-world failures on 'inadequate learning' among other things. The theorem never promised gradient descent would find the solution.",
+  },
+  {
+    q: "What do the hidden layers actually learn?",
+    a: "In big convolutional networks, projected visualizations show a real hierarchy: **corners and edge/color pairs in layer 2, textures in layer 3, class-specific parts like dog faces in layer 4** (Zeiler and Fergus, 2013). In this guide's 16-neuron layers, the honest answer is fuzzier brightness templates that defy tidy labels; the clean hierarchy story belongs to CNNs.",
+  },
+];
+
+const nnBlocks: Block[] = [
+  {
+    kind: "p",
+    text:
+      "Strip away the mythology and a neural network is a small machine: numbers flow left to right through weighted connections, one gate keeps things nonlinear, and learning is nothing but nudging **13,002 dials** downhill against an error signal. The model below is that machine, drawn honestly: every one of its 12,960 weight fibers is really rendered, the descent balls really run gradient descent on the terrain, and every claim traces to the original paper. **Play the journey**, or click any station.",
+  },
+  { kind: "h2", text: "Watch a digit get recognized, then watch the network learn", id: "interactive" },
+  { kind: "nn" },
+  {
+    kind: "callout",
+    title: "What you're looking at",
+    text:
+      "**Blue**, left: a handwritten five dissolving into 784 pixels, and the lattice they feed. **Violet**, center: the forward pass, the ReLU gates, softmax and the loss meter. **Amber**, back row: the training machinery, a loss terrain with racing descent balls, the Adam formulas, an accuracy monitor. **Green**, back row right: dropout, what the layers detect, and the honest brain question.",
+  },
+  {
+    kind: "callout",
+    title: "What is computed and what is staged",
+    text:
+      "**Real, always:** the lattice is the true 784-16-16-10 wiring with all **12,960 weight fibers drawn one for one**; the descent balls follow paths produced by **actually running gradient descent and momentum** on the terrain function; every number, formula, and quote comes from the cited paper. **Real, in Train mode:** press Train and this exact network **genuinely trains in your browser** on 10,000 real MNIST digits: the wall shows the digit being learned, the neurons carry its actual activations, the belief bars are the network's live output, fiber brightness tracks learned weight magnitudes, and the accuracy curve is a real log against 1,000 held-out digits (the seeded reference run reaches 92.8% in 20 epochs; Nielsen reports 96%+ with the full 60,000). **Staged in the guided journey:** the choreographed signal flows, the hand-drawn five, and the terrain, a 2D stand-in for a 13,002-dimensional loss surface. An explainer that blurs this line does not deserve your trust, so here it is in writing.",
+  },
+  { kind: "h3", text: "Train it yourself, for real" },
+  {
+    kind: "p",
+    text:
+      "Open the **Train** tab in the explorer above. The browser fetches 10,000 genuine MNIST digits (a deterministic first-10,000 slice, so nothing is cherry-picked) plus 1,000 held-out test digits, and runs the same loop this guide teaches: forward pass, cross-entropy, backpropagation, Adam with the paper's default settings. Early on the belief bars flail and the amber truth marker disagrees with the green guess; a minute later the network is right about nine times in ten on handwriting it has never seen. That transition, chaos becoming competence with nothing but gradient nudges, is the entire field in one minute.",
+  },
+  { kind: "h2", text: "The journey, in plain text", id: "journey" },
+  {
+    kind: "p",
+    text:
+      "The same 16 steps the interactive journey walks through, as text, for reading (and for the crawlers and answer engines that can't run WebGL).",
+  },
+  { kind: "nnjourney" },
+  { kind: "h2", text: "Every station, with sources", id: "stations" },
+  { kind: "nnstages" },
+  { kind: "h2", text: "The vocabulary that unlocks the papers", id: "terms" },
+  { kind: "termcard", termSlug: "artificial-neuron" },
+  { kind: "termcard", termSlug: "relu" },
+  { kind: "termcard", termSlug: "softmax-layer" },
+  { kind: "termcard", termSlug: "cross-entropy" },
+  { kind: "termcard", termSlug: "gradient-descent" },
+  { kind: "termcard", termSlug: "backpropagation" },
+  { kind: "termcard", termSlug: "adam" },
+  { kind: "termcard", termSlug: "weight-initialization" },
+  { kind: "termcard", termSlug: "dropout-regularization" },
+  { kind: "termcard", termSlug: "universal-approximation" },
+  { kind: "h2", text: "Six eras, 1943 to today", id: "eras" },
+  {
+    kind: "p",
+    text:
+      "The unit barely changed since 1958: weighted sum, bias, nonlinearity. What changed is everything around it, and most popular histories get the credits wrong. This table keeps them straight.",
+  },
+  { kind: "comparison" },
+  {
+    kind: "callout",
+    title: "Why this guide is unusually careful",
+    text:
+      "Every fact here survived a two-round, adversarially verified research pass against primary sources: the original 1943 and 1958 papers, the 1986 Nature paper, the Adam and dropout papers, PubMed abstracts for the brain debate. Where the field itself is uncertain (why BatchNorm helps, whether cortex approximates backprop), the guide says **contested** instead of picking a side. The knowledge base with every citation is linked in the sources.",
+  },
+  { kind: "h2", text: "Questions everyone asks", id: "faq" },
+  { kind: "faq" },
+  {
+    kind: "related",
+    items: [
+      { label: "How LLMs Work: the same treatment for the transformer that grew out of this machine", href: "/guides/how-llms-work" },
+      { label: "The AI Learning Roadmap: where neural networks sit in an 18-week path", href: "/notebook/ai" },
+      { label: "The AI Concepts Encyclopedia: 176 concepts with definitions and sources", href: "/notebook/ai/encyclopedia" },
+    ],
+  },
+  {
+    kind: "sources",
+    items: [
+      { label: "3Blue1Brown: But what is a neural network? (Deep learning chapter 1)", href: "https://www.youtube.com/watch?v=aircAruvnKk", note: "The visual grammar this guide builds on; chapters 1-4 cover network, gradient descent, backprop" },
+      { label: "Nielsen: Neural Networks and Deep Learning (free book)", href: "http://neuralnetworksanddeeplearning.com/", note: "The 784-16-16-10 network, MNIST facts, and the over-96% figure come from chapter 1" },
+      { label: "Karpathy: Neural Networks: Zero to Hero", href: "https://karpathy.ai/zero-to-hero.html", note: "Backprop-first teaching: building micrograd from scratch" },
+      { label: "Deng (2012): The MNIST database of handwritten digit images for machine learning research", href: "https://doi.org/10.1109/MSP.2012.2211477", note: "IEEE Signal Processing Magazine; the dataset the Train mode really trains on" },
+      { label: "Goodfellow, Bengio & Courville: Deep Learning, ch. 6 (free)", href: "https://www.deeplearningbook.org/contents/mlp.html", note: "Softmax-with-log-likelihood argument, section 6.2.2.3" },
+      { label: "McCulloch & Pitts (1943): A logical calculus of the ideas immanent in nervous activity", href: "https://doi.org/10.1007/BF02478259", note: "The 1943 unit: a logic gate, no learning rule" },
+      { label: "Rosenblatt (1958): The perceptron: a probabilistic model", href: "https://doi.org/10.1037/h0042519", note: "Psychological Review 65(6); a theory paper, not the Mark I machine" },
+      { label: "Cybenko (1989): Approximation by superpositions of a sigmoidal function", href: "https://doi.org/10.1007/BF02551274", note: "Universal approximation: existence only" },
+      { label: "Hornik, Stinchcombe & White (1989): Multilayer feedforward networks are universal approximators", href: "https://doi.org/10.1016/0893-6080(89)90020-8", note: "With the authors' own disclaimers about unit counts and learning" },
+      { label: "Rumelhart, Hinton & Williams (1986): Learning representations by back-propagating errors", href: "https://doi.org/10.1038/323533a0", note: "Nature 323; the popularizing paper, squared-error loss" },
+      { label: "Linnainmaa (1976): Taylor expansion of the accumulated rounding error", href: "https://doi.org/10.1007/BF01931367", note: "Reverse-mode differentiation, published before backprop was backprop" },
+      { label: "Griewank (2012): Who invented the reverse mode of differentiation?", href: "https://ftp.gwdg.de/pub/misc/EMIS/journals/DMJDMV/vol-ismp/52_griewank-andreas-b.pdf", note: "The credit history and the cheap gradient principle" },
+      { label: "Baydin, Pearlmutter, Radul & Siskind (2018): Automatic differentiation in ML: a survey", href: "https://arxiv.org/abs/1502.05767", note: "Backprop as reverse-mode AD; cost bounds" },
+      { label: "Nair & Hinton (2010): Rectified linear units improve restricted Boltzmann machines", href: "https://www.cs.toronto.edu/~hinton/absps/reluICML.pdf", note: "Noisy ReLUs in RBMs, NORB and LFW gains" },
+      { label: "Glorot, Bordes & Bengio (2011): Deep sparse rectifier neural networks", href: "https://proceedings.mlr.press/v15/glorot11a.html", note: "Plain ReLU: deep supervised training without pre-training" },
+      { label: "Bengio, Simard & Frasconi (1994): Learning long-term dependencies with gradient descent is difficult", href: "https://doi.org/10.1109/72.279181", note: "Vanishing gradients, IEEE TNN" },
+      { label: "Hendrycks & Gimpel (2016): Gaussian Error Linear Units", href: "https://arxiv.org/abs/1606.08415", note: "GELU = x · Phi(x)" },
+      { label: "Bridle (1989): Training stochastic model recognition algorithms as networks", href: "https://proceedings.neurips.cc/paper_files/paper/1989/hash/0336dcbab05b9d5ad24f4333c7658a0e-Abstract.html", note: "Softmax's entry into neural networks" },
+      { label: "Robbins & Monro (1951): A stochastic approximation method", href: "https://doi.org/10.1214/aoms/1177729586", note: "The ancestor of SGD" },
+      { label: "Polyak (1964): Some methods of speeding up the convergence of iteration methods", href: "https://doi.org/10.1016/0041-5553(64)90137-5", note: "Momentum" },
+      { label: "Kingma & Ba (2015): Adam: a method for stochastic optimization", href: "https://arxiv.org/abs/1412.6980", note: "Algorithm 1 and the defaults quoted in this guide" },
+      { label: "Glorot & Bengio (2010): Understanding the difficulty of training deep feedforward networks", href: "https://proceedings.mlr.press/v9/glorot10a.html", note: "Normalized initialization, eq. 16" },
+      { label: "He, Zhang, Ren & Sun (2015): Delving deep into rectifiers", href: "https://arxiv.org/abs/1502.01852", note: "sqrt(2/n) init; 4.94% vs 5.1% human top-5" },
+      { label: "Srivastava, Hinton, Krizhevsky, Sutskever & Salakhutdinov (2014): Dropout", href: "https://jmlr.org/papers/v15/srivastava14a.html", note: "JMLR 15(56); p values and the test-time scaling rule" },
+      { label: "Zeiler & Fergus (2013): Visualizing and understanding convolutional networks", href: "https://arxiv.org/abs/1311.2901", note: "The layer-hierarchy evidence, scoped to CNNs" },
+      { label: "Olah, Mordvintsev & Schubert (2017): Feature visualization", href: "https://distill.pub/2017/feature-visualization/", note: "Distill; what is shown vs interpreted" },
+      { label: "Crick (1989): The recent excitement about neural networks", href: "https://doi.org/10.1038/337129a0", note: "Nature 337; the canonical brain-model objection" },
+      { label: "Lillicrap, Santoro, Marris, Akerman & Hinton (2020): Backpropagation and the brain", href: "https://doi.org/10.1038/s41583-020-0277-3", note: "Nature Reviews Neuroscience; the NGRAD reply" },
+      { label: "Nakkiran, Kaplun, Bansal, Yang, Barak & Sutskever (2019): Deep double descent", href: "https://arxiv.org/abs/1912.02292", note: "Worse before better; more data can hurt" },
+    ],
+  },
+];
+
 export const guides: Guide[] = [
   sfGuide,
   {
@@ -1438,6 +1765,39 @@ export const guides: Guide[] = [
     termRoleLabel: "Why it matters",
     comparisonHeaders: ["Era / model", "Scale", "Key innovation", "Training recipe", "Example systems", "What it unlocked", "Limit"],
     howTos: llmHowTos,
+  },
+
+  /* ==================================================================== *
+   *  GUIDE 4: How Neural Networks Work (interactive 3D)
+   * ==================================================================== */
+  {
+    slug: "how-neural-networks-work",
+    title: "How Neural Networks Work",
+    metaTitle: "How Neural Networks Work: 3D Interactive Guide",
+    metaDescription:
+      "A 3D neural network with all 13,002 parameters drawn: the forward pass, ReLU, softmax, backprop, gradient descent, Adam, dropout. Every claim primary-sourced.",
+    headline: "How Neural Networks Work: Fly Through 13,002 Parameters",
+    kicker: "Interactive Explainer",
+    subhead:
+      "A handwritten five becomes 784 numbers, ripples through a lattice you can orbit, and comes out as a belief. Then the error flows backward and you watch the machine learn. Every fiber drawn, every claim from the original papers.",
+    deck: `The canonical 784-16-16-10 MNIST network as an explorable 3D machine: ${NN_COUNTS.stages} stations across ${NN_COUNTS.acts} acts, a ${NN_COUNTS.journeySteps}-step guided journey from pixels to the brain question, all ${NN_WEIGHTS.toLocaleString("en-US")} weight connections really drawn, and a training row where gradient descent is really computed on an illustrative loss terrain, and a Train mode where the network genuinely learns 10,000 real MNIST digits in your browser.`,
+    author: {
+      name: "Venkata Pagadala",
+      title: "AI Product Manager (Search · SEO · GEO)",
+      org: "AT&T",
+      url: "/about",
+      bio: "10+ years building entity systems and knowledge graphs at enterprise scale; published the AI Systems Map and the How LLMs Work 3D explainer on this site.",
+    },
+    datePublished: "2026-08-15",
+    dateModified: "2026-08-15",
+    readingTime: "20 min read",
+    tags: ["Neural Networks", "Deep Learning", "Backpropagation", "Gradient Descent", "MNIST", "3D Interactive", "AI Explainer"],
+    terms: nnTerms,
+    comparison: nnComparison,
+    faqs: nnFaqs,
+    blocks: nnBlocks,
+    termRoleLabel: "Why it matters",
+    comparisonHeaders: ["Era", "What it was", "What it established", "Mechanism", "Anchor", "What it unlocked", "Limit"],
   },
 ];
 

@@ -1,5 +1,7 @@
 /**
- * learn.ts: The AI Tutorial, a W3Schools-style structured curriculum.
+ * learn.ts: the fact-checked lesson library, rendered as deep dives on
+ * encyclopedia concept pages (see learnReference.ts DEEP_DIVES). Not a
+ * routed section of its own.
  *
  * Chapters hold topics; topics are complete lessons with sections, key
  * points, an optional interactive slot (a 3D explainer today, videos as
@@ -94,8 +96,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Turing (1950): Computing Machinery and Intelligence", url: "https://doi.org/10.1093/mind/LIX.236.433", note: "The paper that asked 'can machines think?' and proposed the imitation game" },
         ],
         related: [
-          { label: "AI vs ML vs Deep Learning: how the words nest", href: "/learn/ai-vs-ml-vs-deep-learning" },
-          { label: "The AI Concepts Encyclopedia: 175 terms in plain words", href: "/notebook/ai/encyclopedia" },
+          { label: "AI vs ML vs Deep Learning: how the words nest", href: "/notebook/ai/encyclopedia/deep-learning" },
+          { label: "The AI Concepts Encyclopedia: 176 terms in plain words", href: "/notebook/ai/encyclopedia" },
         ],
       },
       {
@@ -131,8 +133,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Goodfellow, Bengio & Courville: Deep Learning (free book)", url: "https://www.deeplearningbook.org/", note: "Chapter 1 draws exactly this nesting" },
         ],
         related: [
-          { label: "What is machine learning, precisely", href: "/learn/what-is-machine-learning" },
-          { label: "What is a neural network (with the 3D machine)", href: "/learn/what-is-a-neural-network" },
+          { label: "What is machine learning, precisely", href: "/notebook/ai/encyclopedia/machine-learning" },
+          { label: "What is a neural network (with the 3D machine)", href: "/notebook/ai/encyclopedia/neural-network" },
         ],
       },
       {
@@ -168,7 +170,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Karpathy: Intro to Large Language Models", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g", note: "What today's most capable narrow systems actually are" },
         ],
         related: [
-          { label: "From networks to LLMs", href: "/learn/from-networks-to-llms" },
+          { label: "From networks to LLMs", href: "/notebook/ai/encyclopedia/llm" },
           { label: "The AI Systems Map: who builds what", href: "/notebook/ai/map" },
         ],
       },
@@ -216,8 +218,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Google ML Crash Course: Descending into ML", url: "https://developers.google.com/machine-learning/crash-course", note: "Hands-on loss and gradient exercises" },
         ],
         related: [
-          { label: "How a network learns (the full mechanics)", href: "/learn/how-a-network-learns" },
-          { label: "Overfitting and generalization", href: "/learn/overfitting-and-generalization" },
+          { label: "How a network learns (the full mechanics)", href: "/notebook/ai/encyclopedia/backpropagation" },
+          { label: "Overfitting and generalization", href: "/notebook/ai/encyclopedia/overfitting-underfitting" },
         ],
       },
       {
@@ -308,7 +310,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "fast.ai: Practical Deep Learning for Coders", url: "https://course.fast.ai/", note: "Free course that gets you training real models fast" },
         ],
         related: [
-          { label: "Supervised learning", href: "/learn/supervised-learning" },
+          { label: "Supervised learning", href: "/notebook/ai/encyclopedia/supervised-learning" },
           { label: "The 13,002 dials, drawn in 3D", href: "/guides/how-neural-networks-work" },
         ],
       },
@@ -346,7 +348,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
         ],
         related: [
           { label: "Train on MNIST live in your browser", href: "/guides/how-neural-networks-work" },
-          { label: "Overfitting and generalization", href: "/learn/overfitting-and-generalization" },
+          { label: "Overfitting and generalization", href: "/notebook/ai/encyclopedia/overfitting-underfitting" },
         ],
       },
       {
@@ -382,7 +384,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "How LLMs Work: our 3D walkthrough", url: "/guides/how-llms-work", note: "Watch next-token prediction, the self-supervised objective, run" },
         ],
         related: [
-          { label: "From networks to LLMs", href: "/learn/from-networks-to-llms" },
+          { label: "From networks to LLMs", href: "/notebook/ai/encyclopedia/llm" },
           { label: "Graph Types for AI Agents: embeddings vs graphs", href: "/guides/graph-types-for-ai-agents" },
         ],
       },
@@ -420,7 +422,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
         ],
         related: [
           { label: "How LLMs Work: the training story incl. RLHF", href: "/guides/how-llms-work" },
-          { label: "How machines learn: the shared loop", href: "/learn/how-machines-learn" },
+          { label: "How machines learn: the shared loop", href: "/notebook/ai/encyclopedia/gradient-descent" },
         ],
       },
       {
@@ -462,7 +464,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
         ],
         related: [
           { label: "Watch the overfitting gap live in Train mode", href: "/guides/how-neural-networks-work" },
-          { label: "Training in practice", href: "/learn/training-in-practice" },
+          { label: "Training in practice", href: "/notebook/ai/encyclopedia/deep-learning" },
         ],
       },
     ],
@@ -515,8 +517,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Nielsen: Neural Networks and Deep Learning, ch. 1", url: "http://neuralnetworksanddeeplearning.com/chap1.html", note: "The free book this teaching tradition comes from" },
         ],
         related: [
-          { label: "How a network learns", href: "/learn/how-a-network-learns" },
-          { label: "History: where this unit came from", href: "/learn/history-of-ai" },
+          { label: "How a network learns", href: "/notebook/ai/encyclopedia/backpropagation" },
+          { label: "History: where this unit came from", href: "/notebook/ai/encyclopedia/artificial-intelligence" },
         ],
       },
       {
@@ -563,8 +565,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Rumelhart, Hinton & Williams (1986)", url: "https://doi.org/10.1038/323533a0", note: "The Nature paper itself" },
         ],
         related: [
-          { label: "How machines learn: the gentle version", href: "/learn/how-machines-learn" },
-          { label: "Training in practice", href: "/learn/training-in-practice" },
+          { label: "How machines learn: the gentle version", href: "/notebook/ai/encyclopedia/gradient-descent" },
+          { label: "Training in practice", href: "/notebook/ai/encyclopedia/deep-learning" },
         ],
       },
       {
@@ -611,8 +613,8 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "CS231n notes: Neural networks part 2", url: "https://cs231n.github.io/", note: "Stanford's free practical notes on exactly this craft" },
         ],
         related: [
-          { label: "Overfitting and generalization", href: "/learn/overfitting-and-generalization" },
-          { label: "How a network learns", href: "/learn/how-a-network-learns" },
+          { label: "Overfitting and generalization", href: "/notebook/ai/encyclopedia/overfitting-underfitting" },
+          { label: "How a network learns", href: "/notebook/ai/encyclopedia/backpropagation" },
         ],
       },
       {
@@ -659,7 +661,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
           { title: "Karpathy: Deep dive into LLMs like ChatGPT", url: "https://www.youtube.com/watch?v=7xTGNNLPyMI", note: "The full modern pipeline in one lecture" },
         ],
         related: [
-          { label: "Unsupervised and self-supervised learning", href: "/learn/unsupervised-learning" },
+          { label: "Unsupervised and self-supervised learning", href: "/notebook/ai/encyclopedia/unsupervised-learning" },
           { label: "The AI Systems Map: the industry that builds these", href: "/notebook/ai/map" },
         ],
       },

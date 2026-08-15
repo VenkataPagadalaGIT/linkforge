@@ -31,8 +31,8 @@ export default function LearnShell({
   activeHref,
   groups,
   treeLabel,
-  homeHref = "/learn",
-  homeLabel = "Tutorial home",
+  homeHref = "/notebook/ai/encyclopedia",
+  homeLabel = "Encyclopedia home",
   crossLink,
   children,
 }: {

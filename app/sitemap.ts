@@ -4,8 +4,7 @@ import { aiUpdates } from "@/data/aiUpdates";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
-import { allLearnTopics } from "@/data/learn";
-import { refConcepts } from "@/data/learnReference";
+import { refConcepts, REF_BASE } from "@/data/learnReference";
 import { nodes as aiOntologyNodes } from "@/data/aiOntology";
 import { conferences, listConferenceSessions } from "@/data/conferences";
 import { speakers } from "@/data/speakers";
@@ -39,8 +38,6 @@ const STATIC_ROUTES = [
   "/experience",
   "/contact",
   "/guides",
-  "/learn",
-  "/learn/reference",
   "/3d-game",
   // Machine-readable resources for AI answer engines. Self-canonical, so
   // they belong here; the /guides/<slug>.md twins deliberately do NOT (they
@@ -102,20 +99,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     });
   }
-  for (const t of allLearnTopics) {
-    urls.push({
-      url: `${SITE_URL}/learn/${t.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    });
-  }
   for (const c of refConcepts) {
     urls.push({
-      url: `${SITE_URL}/learn/reference/${c.id}`,
+      url: `${SITE_URL}${REF_BASE}/${c.id}`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.7,
     });
   }
   // Solutions detail pages — internally linked and indexable, but were absent

@@ -8,11 +8,15 @@ import {
   refConceptByName,
   refPrevNext,
   refCategoryMeta,
-  INTERACTIVE_FOR,
-  TUTORIAL_FOR_CATEGORY,
+  refHref,
+  REF_BASE,
   REF_COUNTS,
+  INTERACTIVE_FOR,
+  DEEP_DIVES,
 } from "@/data/learnReference";
+import { learnTopicBySlug } from "@/data/learn";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
+import DeepDive from "@/components/learn/DeepDive";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -30,14 +34,14 @@ const metaDescription = (s: string) => {
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const c = refConceptById(params.id);
   if (!c) return {};
-  const title = `${c.concept} · AI Reference`;
+  const title = `${c.concept} · AI Encyclopedia`;
   return {
     title: { absolute: title.length <= 60 ? title : c.concept },
     description: metaDescription(c.description),
-    alternates: { canonical: `/learn/reference/${c.id}` },
+    alternates: { canonical: `${REF_BASE}/${c.id}` },
     openGraph: {
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
-      url: `/learn/reference/${c.id}`,
+      url: `${REF_BASE}/${c.id}`,
       title: c.concept,
     },
   };
@@ -49,7 +53,7 @@ const groups = (): ShellGroup[] =>
     color: cat.color,
     items: refConcepts
       .filter((c) => c.category === cat.label)
-      .map((c) => ({ href: `/learn/reference/${c.id}`, label: c.concept })),
+      .map((c) => ({ href: refHref(c.id), label: c.concept })),
   }));
 
 function PrevNext({ id, bottom = false }: { id: string; bottom?: boolean }) {
@@ -58,7 +62,7 @@ function PrevNext({ id, bottom = false }: { id: string; bottom?: boolean }) {
     <div className={`flex items-center justify-between gap-3 ${bottom ? "mt-10 pt-6 border-t border-border" : "mb-8"}`}>
       {prev ? (
         <Link
-          href={`/learn/reference/${prev.id}`}
+          href={refHref(prev.id)}
           rel="prev"
           className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-border text-muted-foreground hover:text-foreground transition-colors max-w-[45%] truncate"
         >
@@ -66,15 +70,15 @@ function PrevNext({ id, bottom = false }: { id: string; bottom?: boolean }) {
         </Link>
       ) : (
         <Link
-          href="/learn/reference"
+          href={REF_BASE}
           className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-border text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← Reference home
+          ← Encyclopedia home
         </Link>
       )}
       {next ? (
         <Link
-          href={`/learn/reference/${next.id}`}
+          href={refHref(next.id)}
           rel="next"
           className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-foreground/50 text-foreground hover:bg-secondary/40 transition-colors max-w-[45%] truncate"
         >
@@ -82,10 +86,10 @@ function PrevNext({ id, bottom = false }: { id: string; bottom?: boolean }) {
         </Link>
       ) : (
         <Link
-          href="/learn"
+          href="/notebook/ai"
           className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-foreground/50 text-foreground hover:bg-secondary/40 transition-colors"
         >
-          The AI Tutorial →
+          The 18-week roadmap →
         </Link>
       )}
     </div>
@@ -97,13 +101,25 @@ export default function Page({ params }: { params: { id: string } }) {
   const cat = refCategoryMeta(c.category);
   const idx = refConcepts.findIndex((x) => x.id === c.id);
   const interactive = INTERACTIVE_FOR[c.id];
-  const tutorial = TUTORIAL_FOR_CATEGORY[c.category];
+  const dives = (DEEP_DIVES[c.id] ?? [])
+    .map((slug) => learnTopicBySlug(slug))
+    .filter((t): t is NonNullable<typeof t> => Boolean(t));
   const prereqs = c.prerequisites
     .map((name) => ({ name, concept: refConceptByName(name) }))
     .filter((p) => p.concept);
   const dependents = refConcepts
     .filter((other) => other.prerequisites.some((p) => refConceptByName(p)?.id === c.id))
     .slice(0, 6);
+
+  // Deep-dive resources merge into the concept's, deduplicated by URL.
+  const seen = new Set(c.learnMore.map((r) => r.url));
+  const extraResources = dives
+    .flatMap((d) => d.resources)
+    .filter((r) => {
+      if (seen.has(r.url)) return false;
+      seen.add(r.url);
+      return true;
+    });
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -112,19 +128,19 @@ export default function Page({ params }: { params: { id: string } }) {
         "@type": "DefinedTerm",
         name: c.concept,
         description: c.description,
-        url: `${SITE_URL}/learn/reference/${c.id}`,
+        url: `${SITE_URL}${REF_BASE}/${c.id}`,
         inDefinedTermSet: {
           "@type": "DefinedTermSet",
-          name: "The AI Reference",
-          url: `${SITE_URL}/learn/reference`,
+          name: "The AI Encyclopedia",
+          url: `${SITE_URL}${REF_BASE}`,
         },
       },
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "AI Reference", item: `${SITE_URL}/learn/reference` },
+          { "@type": "ListItem", position: 1, name: "AI Encyclopedia", item: `${SITE_URL}${REF_BASE}` },
           { "@type": "ListItem", position: 2, name: c.category },
-          { "@type": "ListItem", position: 3, name: c.concept, item: `${SITE_URL}/learn/reference/${c.id}` },
+          { "@type": "ListItem", position: 3, name: c.concept, item: `${SITE_URL}${REF_BASE}/${c.id}` },
         ],
       },
     ],
@@ -132,12 +148,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <LearnShell
-      activeHref={`/learn/reference/${c.id}`}
+      activeHref={refHref(c.id)}
       groups={groups()}
-      treeLabel={`Reference · ${REF_COUNTS.concepts} concepts`}
-      homeHref="/learn/reference"
-      homeLabel="Reference home"
-      crossLink={{ href: "/learn", label: "← The AI Tutorial" }}
+      treeLabel={`Encyclopedia · ${REF_COUNTS.concepts} concepts`}
+      homeHref={REF_BASE}
+      homeLabel="Encyclopedia home"
+      crossLink={{ href: "/notebook/ai", label: "← AI Notebook hub" }}
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article>
@@ -195,7 +211,7 @@ export default function Page({ params }: { params: { id: string } }) {
               {prereqs.map((p) => (
                 <li key={p.concept!.id}>
                   <Link
-                    href={`/learn/reference/${p.concept!.id}`}
+                    href={refHref(p.concept!.id)}
                     className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     ← {p.concept!.concept}
@@ -215,6 +231,11 @@ export default function Page({ params }: { params: { id: string } }) {
           </div>
         )}
 
+        {/* The full fact-checked read lives right here on the concept. */}
+        {dives.map((d) => (
+          <DeepDive key={d.slug} topic={d} />
+        ))}
+
         <div className="my-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
             Top free resources
@@ -232,6 +253,28 @@ export default function Page({ params }: { params: { id: string } }) {
                 </a>
               </div>
             ))}
+            {extraResources.map((r) => (
+              <div key={r.url}>
+                {r.url.startsWith("/") ? (
+                  <Link
+                    href={r.url}
+                    className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                  >
+                    {r.title}
+                  </Link>
+                ) : (
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                  >
+                    {r.title} ↗
+                  </a>
+                )}
+                <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-0.5">{r.note}</p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -244,7 +287,7 @@ export default function Page({ params }: { params: { id: string } }) {
               {dependents.map((d) => (
                 <li key={d.id}>
                   <Link
-                    href={`/learn/reference/${d.id}`}
+                    href={refHref(d.id)}
                     className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {d.concept} →
@@ -252,17 +295,6 @@ export default function Page({ params }: { params: { id: string } }) {
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-
-        {tutorial && (
-          <div className="my-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
-              Narrative version
-            </p>
-            <Link href={tutorial.href} className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {tutorial.label} →
-            </Link>
           </div>
         )}
 

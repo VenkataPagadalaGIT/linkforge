@@ -40,6 +40,19 @@ export const ENCYCLOPEDIA_CATEGORIES: { label: EncyclopediaCategory; emoji: stri
 ];
 
 export const encyclopediaConcepts: EncyclopediaConcept[] = [
+  {
+    id: "artificial-intelligence", concept: "Artificial Intelligence (AI)", emoji: "🧠",
+    description: "Software that performs tasks which normally require human judgment: recognizing images, understanding language, ranking results, flagging fraud. There are two ways to build it, hand-written rules or machine learning from examples, and nearly everything called AI today is the learning kind. The term was coined for the 1956 Dartmouth workshop; today's systems are superhuman at many narrow tasks and human-level at no broad ones.",
+    category: "Core ML Concepts", difficulty: "beginner", rank: 0,
+    keyTerms: ["Narrow AI", "Rules vs learning", "Dartmouth workshop", "Turing test"],
+    prerequisites: [],
+    learnMore: [
+      { title: "Elements of AI (University of Helsinki)", url: "https://www.elementsofai.com/" },
+      { title: "The Dartmouth proposal (1955)", url: "http://jmc.stanford.edu/articles/dartmouth.html" },
+      { title: "Turing (1950): Computing Machinery and Intelligence", url: "https://doi.org/10.1093/mind/LIX.236.433" },
+    ],
+    realWorldApps: "Spam filters, maps routing, recommendations, fraud scoring, chat assistants",
+  },
   // === Core ML Concepts (1–15) ===
   {
     id: "machine-learning", concept: "Machine Learning (ML)", emoji: "🧠",

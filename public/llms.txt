@@ -46,7 +46,7 @@ An 18-week core plus seven elective depth tracks: 35 topics with 473 curated res
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-175 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
+176 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
@@ -67,6 +67,11 @@ Every interactive 3D experience on the site in one place: the playable 2040 city
 The definitive guide to ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index — defined, compared in one table, and visualized with a single dataset modeled six ways. Explains which layer matters for SEO, AEO, GEO, and AI agents, with runnable graphology code examples.
 - URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
 - Markdown edition: https://venkatapagadala.com/guides/graph-types-for-ai-agents.md
+
+### How Neural Networks Work: 3D Interactive Guide (2026)
+The canonical 784-16-16-10 MNIST network as an explorable 3D machine: a handwritten digit dissolves into 784 pixels, all 12,960 weight connections are really drawn, gradient descent runs on a real loss terrain, and the guide ends with the honest brain question. 16 stations, a 16-step guided journey, every claim traced to the original papers.
+- URL: https://venkatapagadala.com/guides/how-neural-networks-work
+- Markdown edition: https://venkatapagadala.com/guides/how-neural-networks-work.md
 
 ### How LLMs Work: Interactive 3D Walkthrough (2026)
 Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL. 21 stages, a 15-step guided journey, full crawlable text.
