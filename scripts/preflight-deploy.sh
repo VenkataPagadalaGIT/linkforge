@@ -60,6 +60,14 @@ else
   bad "published counts disagree with the data; see /tmp/preflight-counts.log"
 fi
 
+# Brand and accessibility gate: accent colors carry theme pairs, readable
+# text never drops below the /70 floor. See docs/BRAND_GUIDELINES.md.
+if python3 scripts/check-brand.py > /tmp/preflight-brand.log 2>&1; then
+  ok "brand gate: accent pairs and text-contrast floor hold"
+else
+  bad "brand gate failed; see /tmp/preflight-brand.log"
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   say ""
   say "PREFLIGHT FAILED. Do NOT run railway up."

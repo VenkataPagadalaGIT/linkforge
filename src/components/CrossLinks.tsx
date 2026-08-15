@@ -33,7 +33,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
     <div className="mt-4 space-y-3">
       {concepts.length > 0 && (
         <div>
-          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/30 mb-1.5">
+          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 mb-1.5">
             <Brain size={10} /> Related Concepts
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -41,7 +41,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
               <Link
                 key={c!.id}
                 to="/notebook/ai/encyclopedia"
-                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/50 hover:text-foreground hover:border-foreground/30 transition-all"
+                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-all"
               >
                 {c!.emoji} {c!.concept}
               </Link>
@@ -52,7 +52,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
 
       {topics.length > 0 && (
         <div>
-          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/30 mb-1.5">
+          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 mb-1.5">
             <Map size={10} /> Related Roadmap Topics
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -60,7 +60,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
               <Link
                 key={t!.id}
                 to="/notebook/ai/roadmap"
-                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/50 hover:text-foreground hover:border-foreground/30 transition-all"
+                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-all"
               >
                 W{t!.week} {t!.topic}
               </Link>
@@ -71,7 +71,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
 
       {contributors.length > 0 && (
         <div>
-          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/30 mb-1.5">
+          <p className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 mb-1.5">
             <Users size={10} /> Key Contributors
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -79,7 +79,7 @@ const CrossLinks = ({ relatedConcepts, relatedContributors, relatedTopics }: Cro
               <Link
                 key={c!.id}
                 to={`/ai-contributors/${c!.id}`}
-                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/50 hover:text-foreground hover:border-foreground/30 transition-all"
+                className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-all"
               >
                 {c!.name}
               </Link>

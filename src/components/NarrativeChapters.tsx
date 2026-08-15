@@ -28,17 +28,17 @@ const NarrativeChapters = ({ onSelectContributor }: Props) => {
             >
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="font-mono text-[10px] text-muted-foreground/30 tracking-widest">
+                  <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest">
                     CH.{String(chapter.number).padStart(2, "0")}
                   </span>
-                  <BookOpen size={12} className="text-muted-foreground/20" />
+                  <BookOpen size={12} className="text-muted-foreground/70" />
                 </div>
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground group-hover:text-glow transition-all mb-1">
                   {chapter.title}
                 </h3>
-                <p className="font-mono text-xs text-muted-foreground/60">{chapter.subtitle}</p>
+                <p className="font-mono text-xs text-muted-foreground/70">{chapter.subtitle}</p>
               </div>
-              <div className="text-muted-foreground/30 mt-2 shrink-0">
+              <div className="text-muted-foreground/70 mt-2 shrink-0">
                 {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </div>
             </button>
@@ -66,7 +66,7 @@ const NarrativeChapters = ({ onSelectContributor }: Props) => {
 
                 {/* Featured contributors */}
                 <div>
-                  <p className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-3">
+                  <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-3">
                     Featured in this chapter
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -92,7 +92,7 @@ const NarrativeChapters = ({ onSelectContributor }: Props) => {
                             <p className="font-mono text-[11px] text-foreground group-hover/chip:text-glow transition-all">
                               {c.name}
                             </p>
-                            <p className="font-mono text-[9px] text-muted-foreground/30">
+                            <p className="font-mono text-[9px] text-muted-foreground/70">
                               #{c.rank} · {c.expertType}
                             </p>
                           </div>

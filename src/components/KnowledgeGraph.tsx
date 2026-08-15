@@ -172,7 +172,7 @@ const KnowledgeGraph = () => {
           ].map((stat) => (
             <div key={stat.label} className="text-right">
               <p className="font-mono text-sm font-bold text-foreground">{stat.value}</p>
-              <p className="font-mono text-[9px] tracking-widest text-muted-foreground/50">{stat.label}</p>
+              <p className="font-mono text-[9px] tracking-widest text-muted-foreground/70">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -181,7 +181,7 @@ const KnowledgeGraph = () => {
       <div className="flex gap-6">
         {/* Categories panel */}
         <div className="hidden lg:block w-64 flex-shrink-0 border border-border p-4">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/50 uppercase mb-4">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-4">
             Categories ▾
           </p>
           <div className="space-y-1">
@@ -207,8 +207,8 @@ const KnowledgeGraph = () => {
                   >
                     {cat.name}
                   </span>
-                  <span className="font-mono text-[9px] text-muted-foreground/30">{cat.keywords}</span>
-                  <span className="font-mono text-[9px] text-muted-foreground/20">{cat.topics}</span>
+                  <span className="font-mono text-[9px] text-muted-foreground/70">{cat.keywords}</span>
+                  <span className="font-mono text-[9px] text-muted-foreground/70">{cat.topics}</span>
                 </button>
               );
             })}
@@ -390,18 +390,18 @@ const KnowledgeGraph = () => {
               <div className="grid grid-cols-3 gap-3 border-b border-border pb-4 mb-4">
                 <div>
                   <p className="font-mono text-sm font-bold text-foreground">{selectedNode.keywords}</p>
-                  <p className="font-mono text-[8px] text-muted-foreground/40 tracking-widest">KEYWORDS</p>
+                  <p className="font-mono text-[8px] text-muted-foreground/70 tracking-widest">KEYWORDS</p>
                 </div>
                 <div>
                   <p className="font-mono text-sm font-bold text-foreground">{selectedNode.volume}</p>
-                  <p className="font-mono text-[8px] text-muted-foreground/40 tracking-widest">VOLUME</p>
+                  <p className="font-mono text-[8px] text-muted-foreground/70 tracking-widest">VOLUME</p>
                 </div>
                 <div>
                   <p className="font-mono text-sm font-bold text-foreground">{selectedNode.topics}</p>
-                  <p className="font-mono text-[8px] text-muted-foreground/40 tracking-widest">TOPICS</p>
+                  <p className="font-mono text-[8px] text-muted-foreground/70 tracking-widest">TOPICS</p>
                 </div>
               </div>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-3">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-3">
                 Subtopics ({selectedNode.children?.length})
               </p>
               <div className="space-y-2">
@@ -421,10 +421,10 @@ const KnowledgeGraph = () => {
             </motion.div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center py-20">
-              <p className="font-mono text-[10px] text-muted-foreground/30 tracking-widest uppercase mb-2">
+              <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-2">
                 Select a node
               </p>
-              <p className="font-mono text-[10px] text-muted-foreground/20 leading-relaxed">
+              <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
                 Click on any topic to explore its subtopics and metrics
               </p>
             </div>

@@ -67,12 +67,12 @@ export default function AiSystemsMap() {
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="flex items-center gap-2 flex-1 min-w-[220px] border border-border px-3 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">Find</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Find</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Nvidia, TSMC, HBM, ASML, energy…"
-            className="flex-1 bg-transparent outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground/40"
+            className="flex-1 bg-transparent outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground/70"
             data-testid="ai-map-search"
           />
         </div>
@@ -80,7 +80,7 @@ export default function AiSystemsMap() {
           onClick={() => setChokeOnly((v) => !v)}
           className={`font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 border transition-all ${
             chokeOnly
-              ? "border-amber-400/60 text-amber-300 bg-amber-400/[0.06]"
+              ? "border-amber-400/60 text-amber-700 dark:text-amber-300 bg-amber-400/[0.06]"
               : "border-border text-muted-foreground/70 hover:border-foreground/40"
           }`}
           data-testid="ai-map-chokepoints"
@@ -94,17 +94,17 @@ export default function AiSystemsMap() {
         >
           Graph view →
         </a>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
           {ONTOLOGY_COUNTS.nodes} nodes · {ONTOLOGY_COUNTS.edges} links
         </span>
       </div>
 
       {focus && (
         <div className="mb-4 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em]">
-          <span className="text-muted-foreground/50">Highlighting</span>
-          <span className="inline-flex items-center gap-1 text-emerald-300"><i className="w-2 h-2 inline-block bg-emerald-400" /> depends on ↑</span>
-          <span className="inline-flex items-center gap-1 text-sky-300"><i className="w-2 h-2 inline-block bg-sky-400" /> feeds ↓</span>
-          <button onClick={() => setFocus(null)} className="text-muted-foreground/60 hover:text-foreground underline">clear</button>
+          <span className="text-muted-foreground/70">Highlighting</span>
+          <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300"><i className="w-2 h-2 inline-block bg-emerald-400" /> depends on ↑</span>
+          <span className="inline-flex items-center gap-1 text-sky-700 dark:text-sky-300"><i className="w-2 h-2 inline-block bg-sky-400" /> feeds ↓</span>
+          <button onClick={() => setFocus(null)} className="text-muted-foreground/70 hover:text-foreground underline">clear</button>
         </div>
       )}
 
@@ -133,8 +133,8 @@ export default function AiSystemsMap() {
                     </span>
                     <h3 className="font-display text-sm font-bold text-foreground">{layer.label}</h3>
                   </div>
-                  <p className="font-mono text-[10px] leading-relaxed text-muted-foreground/60">{layer.blurb}</p>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 mt-2">
+                  <p className="font-mono text-[10px] leading-relaxed text-muted-foreground/70">{layer.blurb}</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mt-2">
                     {layerNodes.length} entities
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default function AiSystemsMap() {
                         onMouseEnter={() => setFocus(n.id)}
                         onMouseLeave={() => setFocus((f) => (f === n.id ? null : f))}
                         onFocus={() => setFocus(n.id)}
-                        title={`${n.name} — ${n.tagline}`}
+                        title={`${n.name}: ${n.tagline}`}
                         className={`group inline-flex items-center gap-1.5 border px-2 py-1 transition-all ${ring} ${
                           dimmed ? "opacity-25" : "opacity-100"
                         } border-border hover:border-foreground/50`}
@@ -173,7 +173,7 @@ export default function AiSystemsMap() {
                           {n.name}
                         </span>
                         {n.chokepoint && (
-                          <span className="text-amber-300 text-[10px] leading-none" title="Supply-chain chokepoint">
+                          <span className="text-amber-700 dark:text-amber-300 text-[10px] leading-none" title="Supply-chain chokepoint">
                             ⬦
                           </span>
                         )}
@@ -187,9 +187,9 @@ export default function AiSystemsMap() {
         })}
       </div>
 
-      <p className="mt-6 font-mono text-[10px] text-muted-foreground/50 leading-relaxed">
-        Hover any entity to light up what it <span className="text-emerald-300">depends on</span> and what it{" "}
-        <span className="text-sky-300">feeds</span>. Tap to open its topic — story, 3D placement in the stack, and the
+      <p className="mt-6 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
+        Hover any entity to light up what it <span className="text-emerald-700 dark:text-emerald-300">depends on</span> and what it{" "}
+        <span className="text-sky-700 dark:text-sky-300">feeds</span>. Tap to open its topic: story, 3D placement in the stack, and the
         news attached to it. ⬦ marks a supply-chain chokepoint.
       </p>
     </div>

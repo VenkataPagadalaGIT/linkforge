@@ -238,11 +238,11 @@ const About = () => {
                               </h3>
                               <p className="font-mono text-sm text-muted-foreground mt-1">{exp.role}</p>
                             </div>
-                            <div className="font-mono text-xs text-muted-foreground/60 mt-2 sm:mt-0 tracking-wider">
+                            <div className="font-mono text-xs text-muted-foreground/70 mt-2 sm:mt-0 tracking-wider">
                               {exp.period}
                             </div>
                           </div>
-                          <p className="font-mono text-[10px] text-muted-foreground/40 mb-4 tracking-wider uppercase">
+                          <p className="font-mono text-[10px] text-muted-foreground/70 mb-4 tracking-wider uppercase">
                             {exp.location}
                           </p>
                           <ul className="space-y-2">

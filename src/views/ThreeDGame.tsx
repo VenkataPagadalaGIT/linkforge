@@ -26,7 +26,7 @@ export default function ThreeDGame() {
             catalog page has no business making engine noise. */}
         <FutureCitySceneLazy game audio />
         <div className="pointer-events-none absolute top-5 left-6 z-20">
-          <p className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase mb-1">
+          <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-1">
             Interactive · year 2040
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow leading-none">

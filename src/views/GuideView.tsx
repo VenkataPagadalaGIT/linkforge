@@ -31,7 +31,7 @@ export default function GuideView({ guide }: { guide: Guide }) {
 
         <ScrollReveal>
           {guide.kicker && (
-            <p className="font-mono text-[10px] text-muted-foreground/50 tracking-widest uppercase mb-4">
+            <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-4">
               {guide.kicker}
             </p>
           )}
@@ -61,7 +61,7 @@ export default function GuideView({ guide }: { guide: Guide }) {
           )}
           <div className="flex flex-wrap gap-2 mb-10">
             {guide.tags.map((tag) => (
-              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/60">
+              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">
                 {tag}
               </span>
             ))}

@@ -31,8 +31,8 @@ const BusinessNotebook = () => {
 
             <div className="mb-16">
               <div className="flex items-center gap-3 mb-4">
-                <Briefcase size={18} className="text-muted-foreground/50" />
-                <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em]">
+                <Briefcase size={18} className="text-muted-foreground/70" />
+                <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em]">
                   Business Notebook
                 </p>
               </div>
@@ -50,7 +50,7 @@ const BusinessNotebook = () => {
             <ScrollReveal>
               <div className="border border-border p-8">
                 <div className="flex items-center gap-2 mb-4">
-                  <FileText size={14} className="text-muted-foreground/40" />
+                  <FileText size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">Overview</h2>
                 </div>
                 <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-6">
@@ -73,9 +73,9 @@ const BusinessNotebook = () => {
           <section id="frameworks" className="scroll-mt-28 mb-16">
             <ScrollReveal>
               <div className="border border-border border-dashed p-8 text-center">
-                <BookOpen size={24} className="text-muted-foreground/20 mx-auto mb-3" />
+                <BookOpen size={24} className="text-muted-foreground/70 mx-auto mb-3" />
                 <h2 className="font-display text-lg font-bold text-foreground/60 mb-2">Frameworks</h2>
-                <p className="font-mono text-[11px] text-muted-foreground/40">Coming soon</p>
+                <p className="font-mono text-[11px] text-muted-foreground/70">Coming soon</p>
               </div>
             </ScrollReveal>
           </section>
@@ -84,9 +84,9 @@ const BusinessNotebook = () => {
           <section id="case-studies" className="scroll-mt-28 mb-16">
             <ScrollReveal>
               <div className="border border-border border-dashed p-8 text-center">
-                <Briefcase size={24} className="text-muted-foreground/20 mx-auto mb-3" />
+                <Briefcase size={24} className="text-muted-foreground/70 mx-auto mb-3" />
                 <h2 className="font-display text-lg font-bold text-foreground/60 mb-2">Case Studies</h2>
-                <p className="font-mono text-[11px] text-muted-foreground/40">Coming soon</p>
+                <p className="font-mono text-[11px] text-muted-foreground/70">Coming soon</p>
               </div>
             </ScrollReveal>
           </section>

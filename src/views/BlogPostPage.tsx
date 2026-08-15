@@ -102,7 +102,7 @@ const BlogPostPage = ({ initialPost }: { initialPost?: BlogPost | null } = {}) =
 
         {/* Article Header */}
         <ScrollReveal>
-          <p className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase mb-4">
+          <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-4">
             {post.date}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-6">
@@ -110,7 +110,7 @@ const BlogPostPage = ({ initialPost }: { initialPost?: BlogPost | null } = {}) =
           </h1>
           <div className="flex flex-wrap gap-2 mb-4">
             {post.tags.map((tag) => (
-              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/60">
+              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">
                 {tag}
               </span>
             ))}
@@ -118,7 +118,7 @@ const BlogPostPage = ({ initialPost }: { initialPost?: BlogPost | null } = {}) =
           {/* Link to pillar page */}
           <Link
             to={`/insights/${pillar.slug}`}
-            className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/60 hover:text-foreground transition-all mb-12"
+            className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-all mb-12"
           >
             Part of: <span className="underline">{pillar.title}</span>
           </Link>
@@ -173,7 +173,7 @@ const BlogPostPage = ({ initialPost }: { initialPost?: BlogPost | null } = {}) =
                         <h3 className="font-display text-base font-semibold text-foreground group-hover:text-glow transition-all">
                           {related.title}
                         </h3>
-                        <p className="font-mono text-[10px] text-muted-foreground/40 mt-1">{related.date}</p>
+                        <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">{related.date}</p>
                       </div>
                       <ArrowRight size={14} className="text-muted-foreground group-hover:text-foreground transition-all flex-shrink-0" />
                     </div>

@@ -41,9 +41,9 @@ import { BACKEND_URL } from "@/lib/site";
 
 const statusStyles: Record<string, string> = {
   attended: "border-foreground/20 text-foreground/70",
-  upcoming: "border-emerald-400/40 text-emerald-300/90",
-  speaking: "border-amber-400/40 text-amber-300/90",
-  watching: "border-sky-400/40 text-sky-300/90",
+  upcoming: "border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90",
+  speaking: "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
+  watching: "border-sky-400/40 text-sky-700/90 dark:text-sky-300/90",
 };
 
 const statusLabel: Record<string, string> = {
@@ -54,13 +54,13 @@ const statusLabel: Record<string, string> = {
 };
 
 const sessionTypeColor: Record<SessionType, string> = {
-  keynote: "border-amber-400/40 text-amber-300/90",
+  keynote: "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
   talk: "border-foreground/30 text-foreground/80",
-  panel: "border-fuchsia-400/40 text-fuchsia-300/90",
-  break: "border-border text-muted-foreground/60",
-  meal: "border-border text-muted-foreground/60",
-  social: "border-emerald-400/40 text-emerald-300/90",
-  registration: "border-border text-muted-foreground/50",
+  panel: "border-fuchsia-400/40 text-fuchsia-700/90 dark:text-fuchsia-300/90",
+  break: "border-border text-muted-foreground/70",
+  meal: "border-border text-muted-foreground/70",
+  social: "border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90",
+  registration: "border-border text-muted-foreground/70",
 };
 
 const sessionIcon: Record<SessionType, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -285,8 +285,8 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
             {/* Hero */}
             <section id="overview" className="scroll-mt-28 mb-14">
               <div className="flex items-center gap-3 mb-4">
-                <Mic size={18} className="text-muted-foreground/50" />
-                <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em]">
+                <Mic size={18} className="text-muted-foreground/70" />
+                <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em]">
                   {c.organizer || "Conference"} · Live Notebook
                 </p>
               </div>
@@ -338,7 +338,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                     className="border border-border px-4 py-5"
                     data-testid={`conference-detail-stat-${s.label.toLowerCase()}`}
                   >
-                    <span className="block font-mono text-[9px] tracking-[0.2em] text-muted-foreground/50 uppercase mb-2">
+                    <span className="block font-mono text-[9px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-2">
                       {s.label}
                     </span>
                     <span className="font-display text-3xl font-bold text-foreground text-glow">{s.value}</span>
@@ -373,7 +373,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
           <section id="speakers" className="scroll-mt-28 mb-14">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-5">
-                <Mic size={14} className="text-muted-foreground/50" />
+                <Mic size={14} className="text-muted-foreground/70" />
                 <h2 className="font-display text-xl font-bold text-foreground">
                   Speakers · {speakers.length}
                 </h2>
@@ -411,7 +411,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                           </p>
                           <ArrowUpRight
                             size={11}
-                            className="text-muted-foreground/30 group-hover:text-foreground transition-colors shrink-0"
+                            className="text-muted-foreground/70 group-hover:text-foreground transition-colors shrink-0"
                           />
                         </div>
                         {sp.affiliation && (
@@ -419,7 +419,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                             {sp.affiliation}
                           </p>
                         )}
-                        <p className="font-mono text-[9px] text-muted-foreground/50 mt-1 truncate">
+                        <p className="font-mono text-[9px] text-muted-foreground/70 mt-1 truncate">
                           <Clock size={9} className="inline mr-1" />
                           {sp.start} · {sp.dayLabel}
                         </p>
@@ -436,7 +436,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
             <ScrollReveal>
               <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
                 <div className="flex items-center gap-2">
-                  <CalendarDays size={14} className="text-muted-foreground/50" />
+                  <CalendarDays size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">
                     Agenda · 4-Day Timeline
                   </h2>
@@ -503,7 +503,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                   className="flex items-center gap-1.5 overflow-x-auto no-scrollbar"
                   data-testid="conference-time-slots"
                 >
-                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mr-2">
+                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mr-2">
                     <Clock size={9} /> Jump to
                   </span>
                   {c.days[activeDay]?.sessions
@@ -537,7 +537,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
                 {c.days.map((d, i) => (
                   <div key={d.date} id={`day-${i}`} className="scroll-mt-32">
                     <div className="border-l-2 border-foreground/30 pl-5 mb-6">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 mb-2">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">
                         {d.date}
                       </p>
                       {d.theme && (
@@ -609,13 +609,13 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
           {/* Live notes signal in the sidebar */}
           <div className="mt-8 border border-border p-4">
             <div className="flex items-center gap-2 mb-2">
-              <NotebookIcon size={11} className="text-emerald-300/80" />
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+              <NotebookIcon size={11} className="text-emerald-700/80 dark:text-emerald-300/80" />
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
                 Live Notes
               </p>
             </div>
             <p className="font-mono text-[11px] text-foreground/80 leading-relaxed">
-              Click any session to take notes — saves automatically. Toggle <span className="text-emerald-300/90">Public</span> to publish on the speaker&apos;s profile.
+              Click any session to take notes — saves automatically. Toggle <span className="text-emerald-700/90 dark:text-emerald-300/90">Public</span> to publish on the speaker&apos;s profile.
             </p>
           </div>
         </PageSidebar>
@@ -670,7 +670,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
           {/* Time column */}
           <div className="w-24 shrink-0">
             <p className="font-mono text-[10px] text-foreground/80">{s.start}</p>
-            <p className="font-mono text-[9px] text-muted-foreground/50">{s.end}</p>
+            <p className="font-mono text-[9px] text-muted-foreground/70">{s.end}</p>
           </div>
 
           {/* Type icon */}
@@ -687,7 +687,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                 {s.type}
               </span>
               {note?.status && (
-                <span className="font-mono text-[8px] tracking-[0.2em] uppercase border px-1.5 py-0.5 border-emerald-400/40 text-emerald-300/90 inline-flex items-center gap-1">
+                <span className="font-mono text-[8px] tracking-[0.2em] uppercase border px-1.5 py-0.5 border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90 inline-flex items-center gap-1">
                   <CheckCircle2 size={9} /> {note.status}
                 </span>
               )}
@@ -749,7 +749,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                           href={s.speakerUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-muted-foreground/50 hover:text-foreground transition-colors"
+                          className="text-muted-foreground/70 hover:text-foreground transition-colors"
                           aria-label={`${s.speaker} on LinkedIn`}
                         >
                           <Linkedin size={10} />
@@ -757,7 +757,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                       )}
                     </div>
                     {s.affiliation && (
-                      <p className="font-mono text-[10px] text-muted-foreground/60">{s.affiliation}</p>
+                      <p className="font-mono text-[10px] text-muted-foreground/70">{s.affiliation}</p>
                     )}
                   </div>
                 </div>
@@ -789,11 +789,11 @@ const SessionCard: React.FC<SessionCardProps> = ({
                 data-testid={`session-my-notes-${anchor}`}
               >
                 <div className="flex items-center gap-2 flex-wrap mb-3">
-                  <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/55 inline-flex items-center gap-1.5">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/70 inline-flex items-center gap-1.5">
                     <NotebookIcon size={10} /> My Notes
                   </span>
                   {note?.is_public && note.note && (
-                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] px-1.5 py-0.5 inline-flex items-center gap-1">
+                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] border border-emerald-400/45 text-emerald-700/95 dark:text-emerald-300/95 bg-emerald-400/[0.04] px-1.5 py-0.5 inline-flex items-center gap-1">
                       <Globe2 size={9} /> Published
                     </span>
                   )}
@@ -808,7 +808,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                     </span>
                   )}
                   {note?.note && (
-                    <span className="ml-auto font-mono text-[10px] text-muted-foreground/55">
+                    <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">
                       {(note.note.match(/\b[\w'-]+\b/g) || []).length} words
                     </span>
                   )}
@@ -850,7 +850,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                     testId={`note-${anchor}`}
                   />
                 ) : (
-                  <p className="font-mono text-[11px] text-muted-foreground/50 italic">
+                  <p className="font-mono text-[11px] text-muted-foreground/70 italic">
                     {authed
                       ? "No notes yet — tap Add below to start writing."
                       : "Notes will appear here once published."}
@@ -860,7 +860,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
             )}
 
             {s.room && (
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-3">
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-3">
                 <MapPin size={9} className="inline mr-1" />
                 {s.room}
               </p>
@@ -886,7 +886,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                   onClick={() => setOpen((o) => !o)}
                   className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] border px-2.5 py-1.5 transition-all ${
                     note?.note
-                      ? "border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] hover:bg-emerald-400/[0.08]"
+                      ? "border-emerald-400/45 text-emerald-700/95 dark:text-emerald-300/95 bg-emerald-400/[0.04] hover:bg-emerald-400/[0.08]"
                       : "border-border text-foreground/85 hover:border-foreground/40"
                   }`}
                   data-testid={`session-notes-toggle-${anchor}`}
@@ -1076,7 +1076,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
     <div className="border-t border-border bg-foreground/[0.015] p-5" data-testid={`note-editor-${sessionId}`}>
       {/* Status flags + publish */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
           Status
         </span>
         {(["attended", "skipped", "revisit"] as NoteStatus[]).map((s) => (
@@ -1096,14 +1096,14 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
         ))}
 
         <span className="ml-auto inline-flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
             Visibility
           </span>
           <button
             onClick={togglePublish}
             className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] border px-2 py-1 transition-colors ${
               isPublic
-                ? "border-emerald-400/50 text-emerald-300/90 bg-emerald-400/[0.04]"
+                ? "border-emerald-400/50 text-emerald-700/90 dark:text-emerald-300/90 bg-emerald-400/[0.04]"
                 : "border-border text-muted-foreground/70 hover:border-foreground/30"
             }`}
             data-testid={`publish-toggle-${sessionId}`}
@@ -1124,7 +1124,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
       <div className="flex flex-wrap items-center gap-1 mb-2" data-testid={`note-toolbar-${sessionId}`}>
         <button
           onClick={applyTemplate}
-          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
+          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-700/90 dark:text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
           data-testid={`note-template-${sessionId}`}
           title="Insert the field-notes template (Speaker → Key thesis → Takeaways → My take → Open questions)"
         >
@@ -1153,13 +1153,13 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
         onChange={(e) => onTextChange(e.target.value)}
         placeholder="Live notes from this session — quotes, signal, links, ideas you want to revisit later. Click ★ Template for the field-notes scaffold."
         rows={text ? 18 : 5}
-        className="w-full bg-background border border-border p-3 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-relaxed"
+        className="w-full bg-background border border-border p-3 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/40 resize-y leading-relaxed"
         data-testid={`note-textarea-${sessionId}`}
       />
 
       {/* Takeaways */}
       <div className="mt-3">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 block mb-2">
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 block mb-2">
           My Takeaways
         </span>
         <div className="flex flex-wrap gap-1.5 mb-2">
@@ -1167,12 +1167,12 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
             <button
               key={`editor-takeaway-${sessionId}-${i}-${t.slice(0, 30)}`}
               onClick={() => removeTakeaway(i)}
-              className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-300/90 transition-colors"
+              className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-700/90 dark:text-rose-300/90 transition-colors"
               data-testid={`takeaway-${sessionId}-${i}`}
               title="Click to remove"
             >
               {t}
-              <span className="ml-1.5 text-muted-foreground/40 group-hover:text-rose-400/70">×</span>
+              <span className="ml-1.5 text-muted-foreground/70 group-hover:text-rose-400/70">×</span>
             </button>
           ))}
         </div>
@@ -1187,7 +1187,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
               }
             }}
             placeholder="Add a takeaway and press Enter…"
-            className="flex-1 bg-background border border-border px-3 py-2 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40"
+            className="flex-1 bg-background border border-border px-3 py-2 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/40"
             data-testid={`takeaway-input-${sessionId}`}
           />
           <button
@@ -1201,12 +1201,12 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ sessionId, conferenceSlug, sess
       </div>
 
       {/* Save state */}
-      <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-muted-foreground/60">
+      <div className="mt-3 flex items-center gap-2 font-mono text-[10px] text-muted-foreground/70">
         <Save size={10} />
         {saveState === "saving" && "Saving…"}
-        {saveState === "saved" && <span className="text-emerald-300/80">Saved</span>}
+        {saveState === "saved" && <span className="text-emerald-700/80 dark:text-emerald-300/80">Saved</span>}
         {saveState === "idle" && (note?.updated_at ? `Last saved ${new Date(note.updated_at).toLocaleString()}` : "Auto-saves as you type")}
-        {saveState === "error" && <span className="text-rose-300/80">Save failed — retrying on next change</span>}
+        {saveState === "error" && <span className="text-rose-700/80 dark:text-rose-300/80">Save failed — retrying on next change</span>}
       </div>
     </div>
   );
@@ -1264,7 +1264,7 @@ const GridSpeakerCard = ({
         />
         {hasNote && (
           <span
-            className="absolute top-2 right-2 z-10 font-mono text-[8px] uppercase tracking-[0.15em] border border-emerald-400/50 text-emerald-300/95 bg-background/80 backdrop-blur px-1.5 py-0.5"
+            className="absolute top-2 right-2 z-10 font-mono text-[8px] uppercase tracking-[0.15em] border border-emerald-400/50 text-emerald-700/95 dark:text-emerald-300/95 bg-background/80 backdrop-blur px-1.5 py-0.5"
             title="Has notes"
           >
             Notes
@@ -1272,7 +1272,7 @@ const GridSpeakerCard = ({
         )}
       </div>
       <div className="p-4 flex-1 flex flex-col">
-        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
           {session.start} · {session.type}
         </p>
         <p className="font-display text-sm font-bold text-foreground leading-tight mb-1.5 group-hover:text-glow transition-all line-clamp-2">
@@ -1284,7 +1284,7 @@ const GridSpeakerCard = ({
           </p>
         )}
         {session.affiliation && (
-          <p className="font-mono text-[10px] text-muted-foreground/60 truncate">
+          <p className="font-mono text-[10px] text-muted-foreground/70 truncate">
             {session.affiliation}
           </p>
         )}

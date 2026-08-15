@@ -37,13 +37,13 @@ import { adminApi, getToken } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
 
 const sessionTypeColor: Record<SessionType, string> = {
-  keynote: "border-amber-400/40 text-amber-300/90",
+  keynote: "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
   talk: "border-foreground/30 text-foreground/80",
-  panel: "border-fuchsia-400/40 text-fuchsia-300/90",
-  break: "border-border text-muted-foreground/60",
-  meal: "border-border text-muted-foreground/60",
-  social: "border-emerald-400/40 text-emerald-300/90",
-  registration: "border-border text-muted-foreground/50",
+  panel: "border-fuchsia-400/40 text-fuchsia-700/90 dark:text-fuchsia-300/90",
+  break: "border-border text-muted-foreground/70",
+  meal: "border-border text-muted-foreground/70",
+  social: "border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90",
+  registration: "border-border text-muted-foreground/70",
 };
 
 const sessionIcon: Record<SessionType, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -212,7 +212,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 data-testid="session-time-jump"
               >
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mr-2">
+                  <span className="shrink-0 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mr-2">
                     <Clock size={9} /> {dayTheme || dayDate}
                   </span>
                   {dayJumpSessions.map((j) => {
@@ -245,14 +245,14 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 >
                   <Icon size={10} /> {s.type}
                 </span>
-                <span className="font-mono text-[10px] text-muted-foreground/60 inline-flex items-center gap-1">
+                <span className="font-mono text-[10px] text-muted-foreground/70 inline-flex items-center gap-1">
                   <CalendarDays size={11} /> {dayDate}
                 </span>
-                <span className="font-mono text-[10px] text-muted-foreground/60 inline-flex items-center gap-1">
+                <span className="font-mono text-[10px] text-muted-foreground/70 inline-flex items-center gap-1">
                   <Clock size={11} /> {s.start} – {s.end}
                 </span>
                 {dayTheme && (
-                  <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60">
+                  <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">
                     · {dayTheme}
                   </span>
                 )}
@@ -270,7 +270,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                   <MapPin size={11} /> {c.venues[0]?.name || c.city}
                 </span>
                 {note?.is_public && (
-                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase border border-emerald-400/50 text-emerald-300/90 px-2 py-1 inline-flex items-center gap-1.5">
+                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase border border-emerald-400/50 text-emerald-700/90 dark:text-emerald-300/90 px-2 py-1 inline-flex items-center gap-1.5">
                     <Globe2 size={10} /> Field notes published
                   </span>
                 )}
@@ -288,7 +288,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
             <section id="speaker" className="scroll-mt-28 mb-12">
               <ScrollReveal>
                 <div className="flex items-center gap-2 mb-4">
-                  <Mic size={14} className="text-muted-foreground/50" />
+                  <Mic size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">Speaker</h2>
                 </div>
                 <div className="border border-border p-6 grid sm:grid-cols-[120px_1fr] gap-5 items-start">
@@ -320,7 +320,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                         className="font-display text-2xl font-bold text-foreground hover:text-glow transition-all inline-flex items-center gap-2"
                       >
                         {s.speaker}
-                        <ArrowRight size={14} className="text-muted-foreground/40" />
+                        <ArrowRight size={14} className="text-muted-foreground/70" />
                       </Link>
                     ) : (
                       <p className="font-display text-2xl font-bold text-foreground">{s.speaker}</p>
@@ -375,7 +375,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
             <section id="abstract" className="scroll-mt-28 mb-12">
               <ScrollReveal>
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles size={14} className="text-muted-foreground/50" />
+                  <Sparkles size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">Abstract</h2>
                 </div>
                 <p className="font-mono text-sm text-foreground/85 leading-relaxed border-l-2 border-foreground/20 pl-5 max-w-3xl">
@@ -390,7 +390,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
             <section id="suggested" className="scroll-mt-28 mb-12">
               <ScrollReveal>
                 <div className="flex items-center gap-2 mb-4">
-                  <NotebookIcon size={14} className="text-muted-foreground/50" />
+                  <NotebookIcon size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">
                     Suggested takeaways
                   </h2>
@@ -414,7 +414,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
           <section id="my-notes" className="scroll-mt-28 mb-12">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-5">
-                <NotebookIcon size={14} className="text-muted-foreground/50" />
+                <NotebookIcon size={14} className="text-muted-foreground/70" />
                 <h2 className="font-display text-xl font-bold text-foreground">My notes</h2>
               </div>
 
@@ -424,17 +424,17 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 className="block mb-5 group"
                 data-testid="my-notes-attribution"
               >
-                <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-muted-foreground/45 mb-1">
+                <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-muted-foreground/70 mb-1">
                   From
                 </p>
                 <p className="font-display text-base text-foreground/90 group-hover:text-glow transition-all">
                   {c.name} {c.edition || c.year} ·{" "}
                   <span className="text-foreground/70">{s.title}</span>
                 </p>
-                <p className="font-mono text-[10px] text-muted-foreground/60 mt-0.5">
+                <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">
                   {dayDate}
                   {s.speaker && (
-                    <span className="text-muted-foreground/40">
+                    <span className="text-muted-foreground/70">
                       {" "}· {s.speaker}
                     </span>
                   )}
@@ -461,8 +461,8 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
               ) : (
                 <div className="border border-dashed border-border px-5 py-8 max-w-3xl">
                   <div className="flex items-center gap-2 mb-3">
-                    <Lock size={12} className="text-muted-foreground/50" />
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                    <Lock size={12} className="text-muted-foreground/70" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
                       Notes coming soon
                     </span>
                   </div>
@@ -484,13 +484,13 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 className="group border border-border p-5 hover:border-foreground/30 transition-colors"
                 data-testid="session-prev"
               >
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2 inline-flex items-center gap-1.5">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2 inline-flex items-center gap-1.5">
                   <ArrowLeft size={10} /> Previous
                 </p>
                 <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all line-clamp-2">
                   {prev.title}
                 </p>
-                <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">{prev.start}</p>
+                <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">{prev.start}</p>
               </Link>
             ) : <span />}
             {next ? (
@@ -499,13 +499,13 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
                 className="group border border-border p-5 hover:border-foreground/30 transition-colors text-right sm:col-start-2"
                 data-testid="session-next"
               >
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2 inline-flex items-center gap-1.5 justify-end">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2 inline-flex items-center gap-1.5 justify-end">
                   Next <ArrowRight size={10} />
                 </p>
                 <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all line-clamp-2">
                   {next.title}
                 </p>
-                <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">{next.start}</p>
+                <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">{next.start}</p>
               </Link>
             ) : null}
           </section>
@@ -751,7 +751,7 @@ _Where I agree, push back, or extend with my own context…_
     <div className="border border-border p-6 max-w-3xl" data-testid="session-note-editor-full">
       {/* Top row: status pills + visibility */}
       <div className="flex items-center gap-2 flex-wrap mb-4">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
           Status
         </span>
         {(["attended", "skipped", "revisit"] as NoteStatus[]).map((s) => (
@@ -771,14 +771,14 @@ _Where I agree, push back, or extend with my own context…_
         ))}
 
         <span className="ml-auto inline-flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
             Visibility
           </span>
           <button
             onClick={togglePublish}
             className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] border px-2 py-1 transition-colors ${
               isPublic
-                ? "border-emerald-400/50 text-emerald-300/90 bg-emerald-400/[0.04]"
+                ? "border-emerald-400/50 text-emerald-700/90 dark:text-emerald-300/90 bg-emerald-400/[0.04]"
                 : "border-border text-muted-foreground/70 hover:border-foreground/30"
             }`}
             data-testid="publish-toggle"
@@ -797,7 +797,7 @@ _Where I agree, push back, or extend with my own context…_
           onClick={applyTemplate}
           title="Insert the field-notes template (Speaker → Key thesis → H3 sections → Takeaways → My take → Open questions)"
           data-testid="md-template"
-          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
+          className="font-mono text-[10px] uppercase tracking-[0.15em] border border-emerald-400/30 text-emerald-700/90 dark:text-emerald-300/90 px-2 py-1 hover:bg-emerald-400/[0.06] transition-colors"
         >
           ★ Template
         </button>
@@ -841,7 +841,7 @@ _Where I agree, push back, or extend with my own context…_
               className="!max-w-none"
             />
           ) : (
-            <p className="font-mono text-xs text-muted-foreground/50 italic">
+            <p className="font-mono text-xs text-muted-foreground/70 italic">
               Nothing to preview yet — switch back to Edit and start writing.
             </p>
           )}
@@ -853,17 +853,17 @@ _Where I agree, push back, or extend with my own context…_
           onChange={(e) => onTextChange(e.target.value)}
           placeholder={"Markdown supported. Examples:\n\n## A heading\n**bold** and *italic*\n- bullet\n> quote\n\nPaste image / YouTube / Vimeo URLs on their own line and they auto-embed.\n\nAutosaves every 1.2s."}
           rows={26}
-          className="w-full bg-background border border-t-0 border-border p-4 font-mono text-[13.5px] text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 resize-y leading-[1.85]"
+          className="w-full bg-background border border-t-0 border-border p-4 font-mono text-[13.5px] text-foreground/90 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/40 resize-y leading-[1.85]"
           data-testid="session-note-textarea"
         />
       )}
 
-      <p className="mt-2 font-mono text-[10px] text-muted-foreground/55">
+      <p className="mt-2 font-mono text-[10px] text-muted-foreground/70">
         {text.length.toLocaleString()} characters · ~{(text.trim().match(/\b[\w'-]+\b/g) || []).length.toLocaleString()} words
       </p>
 
       <div className="mt-4">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 block mb-2">
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 block mb-2">
           My takeaways
         </span>
         <div className="flex flex-wrap gap-1.5 mb-2">
@@ -871,11 +871,11 @@ _Where I agree, push back, or extend with my own context…_
             <button
               key={`editor-takeaway-${i}-${t.slice(0, 30)}`}
               onClick={() => removeTakeaway(i)}
-              className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-300/90 transition-colors"
+              className="group font-mono text-[10px] border border-foreground/20 text-foreground/80 px-2 py-1 hover:border-rose-400/40 hover:text-rose-700/90 dark:text-rose-300/90 transition-colors"
               title="Click to remove"
             >
               {t}
-              <span className="ml-1.5 text-muted-foreground/40 group-hover:text-rose-400/70">×</span>
+              <span className="ml-1.5 text-muted-foreground/70 group-hover:text-rose-400/70">×</span>
             </button>
           ))}
         </div>
@@ -890,7 +890,7 @@ _Where I agree, push back, or extend with my own context…_
               }
             }}
             placeholder="Add a takeaway and press Enter…"
-            className="flex-1 bg-background border border-border px-3 py-2 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40"
+            className="flex-1 bg-background border border-border px-3 py-2 font-mono text-xs text-foreground/90 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/40"
             data-testid="session-takeaway-input"
           />
           <button
@@ -903,16 +903,16 @@ _Where I agree, push back, or extend with my own context…_
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-2 font-mono text-[10px] text-muted-foreground/60">
+      <div className="mt-4 flex items-center gap-2 font-mono text-[10px] text-muted-foreground/70">
         <Save size={10} />
         {saveState === "saving" && "Saving…"}
-        {saveState === "saved" && <span className="text-emerald-300/80">Saved</span>}
+        {saveState === "saved" && <span className="text-emerald-700/80 dark:text-emerald-300/80">Saved</span>}
         {saveState === "idle" &&
           (initial?.updated_at
             ? `Last saved ${new Date(initial.updated_at).toLocaleString()}`
             : "Auto-saves as you type")}
         {saveState === "error" && (
-          <span className="text-rose-300/80">Save failed — retrying on next change</span>
+          <span className="text-rose-700/80 dark:text-rose-300/80">Save failed — retrying on next change</span>
         )}
       </div>
     </div>

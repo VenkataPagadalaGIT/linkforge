@@ -166,7 +166,7 @@ const HolographicCard = ({ card, index }: { card: CardData; index: number }) => 
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="0.5"
-                  className="text-muted-foreground/30 group-hover:text-foreground/60 transition-colors duration-500"
+                  className="text-muted-foreground/70 group-hover:text-foreground/60 transition-colors duration-500"
                   animate={isHovered ? { rotate: 45, scale: 0.8 } : { rotate: 0, scale: 1 }}
                   style={{ transformOrigin: "12px 12px" }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -176,24 +176,24 @@ const HolographicCard = ({ card, index }: { card: CardData; index: number }) => 
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="0.5"
-                  className="text-muted-foreground/20 group-hover:text-foreground/40 transition-colors duration-500"
+                  className="text-muted-foreground/70 group-hover:text-foreground/40 transition-colors duration-500"
                   animate={isHovered ? { rotate: -45, scale: 1.1 } : { rotate: 0, scale: 1 }}
                   style={{ transformOrigin: "20px 20px" }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 />
                 {/* Connecting lines (4th dimension edges) */}
                 <motion.line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" strokeWidth="0.3"
-                  className="text-muted-foreground/15 group-hover:text-foreground/30 transition-colors duration-500" />
+                  className="text-muted-foreground/70 group-hover:text-foreground/30 transition-colors duration-500" />
                 <motion.line x1="20" y1="4" x2="28" y2="12" stroke="currentColor" strokeWidth="0.3"
-                  className="text-muted-foreground/15 group-hover:text-foreground/30 transition-colors duration-500" />
+                  className="text-muted-foreground/70 group-hover:text-foreground/30 transition-colors duration-500" />
                 <motion.line x1="4" y1="20" x2="12" y2="28" stroke="currentColor" strokeWidth="0.3"
-                  className="text-muted-foreground/15 group-hover:text-foreground/30 transition-colors duration-500" />
+                  className="text-muted-foreground/70 group-hover:text-foreground/30 transition-colors duration-500" />
                 <motion.line x1="20" y1="20" x2="28" y2="28" stroke="currentColor" strokeWidth="0.3"
-                  className="text-muted-foreground/15 group-hover:text-foreground/30 transition-colors duration-500" />
+                  className="text-muted-foreground/70 group-hover:text-foreground/30 transition-colors duration-500" />
               </svg>
             </div>
             <div>
-              <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/40 uppercase">
+              <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase">
                 Phase {(card.phase * 360).toFixed(0)}°
               </p>
             </div>
@@ -203,7 +203,7 @@ const HolographicCard = ({ card, index }: { card: CardData; index: number }) => 
           <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
             {card.title}
           </h3>
-          <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/50 uppercase mb-6">
+          <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-6">
             {card.subtitle}
           </p>
 
@@ -216,13 +216,13 @@ const HolographicCard = ({ card, index }: { card: CardData; index: number }) => 
             >
               {card.metric}
             </motion.span>
-            <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/40 uppercase mt-1">
+            <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase mt-1">
               {card.metricLabel}
             </p>
           </div>
 
           {/* Description */}
-          <p className="font-mono text-xs text-muted-foreground/60 leading-relaxed mb-6 max-w-sm">
+          <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mb-6 max-w-sm">
             {card.description}
           </p>
 
@@ -231,7 +231,7 @@ const HolographicCard = ({ card, index }: { card: CardData; index: number }) => 
             {card.tags.map((tag, i) => (
               <motion.span
                 key={tag}
-                className="font-mono text-[9px] tracking-wider uppercase px-3 py-1 border border-border text-muted-foreground/40 group-hover:text-muted-foreground/70 group-hover:border-foreground/20 transition-all duration-500"
+                className="font-mono text-[9px] tracking-wider uppercase px-3 py-1 border border-border text-muted-foreground/70 group-hover:text-muted-foreground/70 group-hover:border-foreground/20 transition-all duration-500"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.15 + i * 0.05 + 0.5 }}
@@ -319,7 +319,7 @@ const HolographicCards = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
       >
-        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/20 uppercase">
+        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase">
           Phase Space · W-Axis Projection · 4D → 3D
         </p>
       </motion.div>

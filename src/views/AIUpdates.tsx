@@ -53,7 +53,7 @@ const AIUpdatesIndex = () => {
             </Link>
 
             <div className="mb-10">
-              <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em] mb-3">
+              <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em] mb-3">
                 AI Intelligence Feed
               </p>
               <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-3">
@@ -67,7 +67,7 @@ const AIUpdatesIndex = () => {
                 className="mt-4 inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
               >
                 <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">See the AI Systems Map →</span>
-                <span className="font-mono text-[10px] text-muted-foreground/60">
+                <span className="font-mono text-[10px] text-muted-foreground/70">
                   every entity these headlines move, labs, chips, foundries, energy, in one dependency graph
                 </span>
               </a>
@@ -114,11 +114,11 @@ const AIUpdatesIndex = () => {
                       >
                         {catMeta.label}
                       </span>
-                      <span className="font-mono text-[10px] text-muted-foreground/40 flex items-center gap-1">
+                      <span className="font-mono text-[10px] text-muted-foreground/70 flex items-center gap-1">
                         <Calendar size={10} />
                         {formatDateShort(update.date)}
                       </span>
-                      <span className="font-mono text-[10px] text-muted-foreground/30">{update.company}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground/70">{update.company}</span>
                     </div>
                     <h2 className="font-display text-lg sm:text-xl font-bold text-foreground group-hover:text-glow transition-all mb-2">
                       {update.title}
@@ -128,7 +128,7 @@ const AIUpdatesIndex = () => {
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {update.tags.slice(0, 4).map((tag) => (
-                        <span key={tag} className="font-mono text-[9px] text-muted-foreground/30 border border-border/50 px-2 py-0.5">
+                        <span key={tag} className="font-mono text-[9px] text-muted-foreground/70 border border-border/50 px-2 py-0.5">
                           {tag}
                         </span>
                       ))}
@@ -141,7 +141,7 @@ const AIUpdatesIndex = () => {
 
           {filtered.length === 0 && (
             <div className="text-center py-20">
-              <p className="font-mono text-sm text-muted-foreground/40">No updates in this category yet.</p>
+              <p className="font-mono text-sm text-muted-foreground/70">No updates in this category yet.</p>
             </div>
           )}
         </div>

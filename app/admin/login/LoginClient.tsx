@@ -33,12 +33,12 @@ export default function LoginClient() {
         className="w-full max-w-sm border border-border/40 bg-card/30 backdrop-blur-sm p-8 font-mono"
         data-testid="admin-login-form"
       >
-        <p className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase mb-2">
+        <p className="text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-2">
           Mono Mind · Admin
         </p>
         <h1 className="font-display text-3xl font-bold text-foreground text-glow mb-8">Sign in</h1>
 
-        <label className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">Email</label>
+        <label className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">Email</label>
         <input
           type="email"
           required
@@ -50,7 +50,7 @@ export default function LoginClient() {
           data-testid="admin-login-email"
         />
 
-        <label className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">Password</label>
+        <label className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">Password</label>
         <input
           type="password"
           required

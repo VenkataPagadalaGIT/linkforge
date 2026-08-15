@@ -49,7 +49,7 @@ export default function ContactForm() {
       noValidate
     >
       <div>
-        <label htmlFor="cf-name" className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">
+        <label htmlFor="cf-name" className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">
           Name
         </label>
         <input
@@ -61,14 +61,14 @@ export default function ContactForm() {
           required
           maxLength={200}
           disabled={disabled}
-          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/40 transition-all"
+          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/70 transition-all"
           placeholder="Your name"
           data-testid="contact-form-name-input"
         />
       </div>
 
       <div>
-        <label htmlFor="cf-email" className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">
+        <label htmlFor="cf-email" className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">
           Email
         </label>
         <input
@@ -79,14 +79,14 @@ export default function ContactForm() {
           onChange={onChange}
           required
           disabled={disabled}
-          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/40 transition-all"
+          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/70 transition-all"
           placeholder="you@example.com"
           data-testid="contact-form-email-input"
         />
       </div>
 
       <div>
-        <label htmlFor="cf-subject" className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">
+        <label htmlFor="cf-subject" className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">
           Subject
         </label>
         <input
@@ -97,14 +97,14 @@ export default function ContactForm() {
           onChange={onChange}
           maxLength={300}
           disabled={disabled}
-          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/40 transition-all"
+          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/70 transition-all"
           placeholder="What is this about? (optional)"
           data-testid="contact-form-subject-input"
         />
       </div>
 
       <div>
-        <label htmlFor="cf-message" className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-2">
+        <label htmlFor="cf-message" className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-2">
           Message
         </label>
         <textarea
@@ -116,7 +116,7 @@ export default function ContactForm() {
           rows={5}
           maxLength={5000}
           disabled={disabled}
-          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/40 transition-all resize-none"
+          className="w-full bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-4 py-3 text-foreground placeholder:text-muted-foreground/70 transition-all resize-none"
           placeholder="Tell me about your project, problem, or idea."
           data-testid="contact-form-message-input"
         />

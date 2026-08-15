@@ -290,7 +290,7 @@ const AIContributors = () => {
         {/* Breadcrumb */}
         <Link
           to="/notebook"
-          className="inline-flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40 hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-muted-foreground/70 hover:text-foreground transition-colors mb-6"
         >
           <ArrowLeft size={12} /> Back to Notebooks
         </Link>
@@ -298,16 +298,16 @@ const AIContributors = () => {
         {/* Hero: compact two column */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
           <div className="flex-1">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/30 mb-2 uppercase">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 mb-2 uppercase">
               The AI Notebook · 2026 Edition
             </p>
             <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-1">
               {topTab === "roadmap" ? "Free AI Roadmap 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
             </h1>
-            <p className="font-mono text-xs text-muted-foreground/60 max-w-xl leading-relaxed">
+            <p className="font-mono text-xs text-muted-foreground/70 max-w-xl leading-relaxed">
               Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (93% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
-            <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
+            <p className="font-mono text-[10px] text-muted-foreground/70 mt-2">
               Last reviewed August 2026. Every profile, every link and every definition checked by hand, not assumed.
             </p>
             <div className="mt-4 flex flex-col gap-2 items-start">
@@ -316,7 +316,7 @@ const AIContributors = () => {
                 className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
               >
                 <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The AI Systems Map →</span>
-                <span className="font-mono text-[10px] text-muted-foreground/60">
+                <span className="font-mono text-[10px] text-muted-foreground/70">
                   455 entities · 7 layers · the whole AI value chain as one dependency graph
                 </span>
               </a>
@@ -325,7 +325,7 @@ const AIContributors = () => {
                 className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
               >
                 <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The Complete Shelf →</span>
-                <span className="font-mono text-[10px] text-muted-foreground/60">
+                <span className="font-mono text-[10px] text-muted-foreground/70">
                   19 free books in 3D · browse the shelf, pull one out, read it free
                 </span>
               </a>
@@ -343,10 +343,10 @@ const AIContributors = () => {
                   />
                   <div>
                     <h3 className="font-display text-sm font-bold text-foreground">Venkata Pagadala</h3>
-                    <p className="font-mono text-[9px] text-muted-foreground/40">Curator</p>
+                    <p className="font-mono text-[9px] text-muted-foreground/70">Curator</p>
                   </div>
                 </div>
-                <p className="font-mono text-[10px] text-muted-foreground/50 leading-relaxed mb-3">
+                <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mb-3">
                   AI Product & Research. Search, SEO, GEO & Automation at enterprise level. 10M+ pages managed.
                 </p>
                 <div className="flex flex-wrap gap-3 mb-3">
@@ -356,7 +356,7 @@ const AIContributors = () => {
                   ].map((s) => (
                     <div key={s.label}>
                       <p className="font-mono text-xs font-bold text-foreground">{s.value}</p>
-                      <p className="font-mono text-[8px] text-muted-foreground/30 uppercase tracking-widest">{s.label}</p>
+                      <p className="font-mono text-[8px] text-muted-foreground/70 uppercase tracking-widest">{s.label}</p>
                     </div>
                   ))}
                 </div>
@@ -365,7 +365,7 @@ const AIContributors = () => {
                     href="https://www.linkedin.com/in/venkata-pagadala/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
                     <Linkedin size={10} /> Follow on LinkedIn
                   </a>
@@ -373,13 +373,13 @@ const AIContributors = () => {
                     href="https://www.linkedin.com/newsletters/7286801553498583041/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
                     <ArrowRight size={10} /> Subscribe Newsletter
                   </a>
                   <a
                     href="mailto:vdepagadala@gmail.com"
-                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+                    className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
                     <Mail size={10} /> Get in Touch
                   </a>
@@ -398,7 +398,7 @@ const AIContributors = () => {
                 className={`px-5 py-3 font-mono text-[11px] uppercase tracking-wider transition-all border-b-2 -mb-px ${
                   topTab === tab.id
                     ? "border-foreground text-foreground"
-                    : "border-transparent text-muted-foreground/30 hover:text-muted-foreground/60"
+                    : "border-transparent text-muted-foreground/70 hover:text-muted-foreground/70"
                 }`}
               >
                 <span className="hidden sm:inline">{tab.label}</span>
@@ -441,7 +441,7 @@ const AIContributors = () => {
                  <h2 className="font-display text-xl font-bold text-foreground mb-1">
                    🗺️ Free AI Roadmap, Zero to Hero · August 2026
                  </h2>
-                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
+                 <p className="font-mono text-[11px] text-muted-foreground/70 max-w-2xl leading-relaxed">
                    A structured AI curriculum with 473 curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked, July and August 2026 passes.
                  </p>
               </div>
@@ -458,7 +458,7 @@ const AIContributors = () => {
                 <h2 className="font-display text-xl font-bold text-foreground mb-1">
                   🧠 AI Concepts Encyclopedia · August 2026
                 </h2>
-                <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
+                <p className="font-mono text-[11px] text-muted-foreground/70 max-w-2xl leading-relaxed">
                   175 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed, July and August 2026 passes.
                 </p>
               </div>
@@ -497,7 +497,7 @@ const AIContributors = () => {
                 ].map((stat) => (
                   <div key={stat.label}>
                     <p className="font-mono text-lg font-bold text-foreground">{stat.value}</p>
-                    <p className="font-mono text-[9px] text-muted-foreground/25 uppercase tracking-widest">{stat.label}</p>
+                    <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -514,14 +514,14 @@ const AIContributors = () => {
                 {activeSection === "essay" && (
                   <div id="essay" className="scroll-mt-28">
                     <h2 className="font-display text-xl font-bold text-foreground mb-1">The State of AI, 2026</h2>
-                    <p className="font-mono text-[10px] text-muted-foreground/25 uppercase tracking-widest mb-8">An introduction</p>
+                    <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-8">An introduction</p>
                     <StateOfAIEssay />
                   </div>
                 )}
                 {activeSection === "timeline" && (
                   <div id="timeline" className="scroll-mt-28">
                     <h2 className="font-display text-xl font-bold text-foreground mb-1">AI Timeline</h2>
-                    <p className="font-mono text-[11px] text-muted-foreground/40 mb-8 max-w-2xl leading-relaxed">
+                    <p className="font-mono text-[11px] text-muted-foreground/70 mb-8 max-w-2xl leading-relaxed">
                       Key milestones from 1986 to today.
                     </p>
                     <AITimeline onSelectContributor={handleSelectFromOutside} />
@@ -530,7 +530,7 @@ const AIContributors = () => {
                 {activeSection === "glossary" && (
                   <div id="glossary" className="scroll-mt-28">
                     <h2 className="font-display text-xl font-bold text-foreground mb-1">AI Concepts Glossary</h2>
-                    <p className="font-mono text-[11px] text-muted-foreground/40 mb-8 max-w-2xl leading-relaxed">
+                    <p className="font-mono text-[11px] text-muted-foreground/70 mb-8 max-w-2xl leading-relaxed">
                       20 essential AI concepts linked to the contributors who pioneered them.
                     </p>
                     <AIGlossary onSelectContributor={handleSelectFromOutside} />
@@ -539,7 +539,7 @@ const AIContributors = () => {
                 {activeSection === "reading" && (
                   <div id="reading" className="scroll-mt-28">
                     <h2 className="font-display text-xl font-bold text-foreground mb-1">Curated Reading Lists</h2>
-                    <p className="font-mono text-[11px] text-muted-foreground/40 mb-8 max-w-2xl leading-relaxed">
+                    <p className="font-mono text-[11px] text-muted-foreground/70 mb-8 max-w-2xl leading-relaxed">
                       The papers, podcasts, and talks that matter most.
                     </p>
                     <CuratedReadingLists />

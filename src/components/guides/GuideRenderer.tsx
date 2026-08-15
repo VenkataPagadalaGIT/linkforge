@@ -16,7 +16,9 @@ import {
 } from "@/data/hvac";
 import HvacExplorerLazy from "./HvacExplorerLazy";
 import LlmExplorerLazy from "./LlmExplorerLazy";
+import NnExplorerLazy from "./NnExplorerLazy";
 import { JOURNEY, STAGES, ZONES } from "@/data/llm";
+import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "@/data/nn";
 
 // Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
 // matters — links run first so a URL containing ** or _ never gets caught by a
@@ -38,7 +40,7 @@ function TermCard({ term, roleLabel = "Role for AI agents" }: { term: DefinedTer
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
         <h3 className="font-display text-xl font-bold text-foreground">{term.term}</h3>
         {term.aka && term.aka.length > 0 && (
-          <span className="font-mono text-[10px] text-muted-foreground/60">
+          <span className="font-mono text-[10px] text-muted-foreground/70">
             aka {term.aka.join(" · ")}
           </span>
         )}
@@ -58,7 +60,7 @@ function TermCard({ term, roleLabel = "Role for AI agents" }: { term: DefinedTer
           [roleLabel, term.agentRole],
         ].map(([label, body]) => (
           <div key={label} className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-4">
-            <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/50 pt-0.5">{label}</dt>
+            <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 pt-0.5">{label}</dt>
             <dd
               className="font-mono text-xs text-muted-foreground leading-relaxed"
               dangerouslySetInnerHTML={{ __html: inline(body) }}
@@ -138,7 +140,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
     case "tasks":
       return (
         <div className="my-6 border border-border bg-card/20">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 px-5 pt-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 px-5 pt-4">
             {block.title ?? "What teams use this for"}
           </p>
           <div className="px-5 pb-4 divide-y divide-border/40">
@@ -190,7 +192,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
     case "callout":
       return (
         <div className="my-6 border border-foreground/20 bg-foreground/[0.03] p-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">{block.title}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">{block.title}</p>
           <p
             className="font-mono text-sm text-foreground/90 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: bold(block.text) }}
@@ -227,7 +229,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
     case "related":
       return (
         <div className="my-8 border-t border-border pt-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">Go deeper</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">Go deeper</p>
           <div className="space-y-2">
             {block.items.map((it) => (
               <Link
@@ -256,20 +258,20 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                     <h3 className="font-display text-lg font-semibold" style={{ color: meta.color }}>
                       {meta.label}
                     </h3>
-                    <span className="font-mono text-[10px] text-muted-foreground/60">{faults.length} faults live here</span>
+                    <span className="font-mono text-[10px] text-muted-foreground/70">{faults.length} faults live here</span>
                   </div>
                   <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-3">{meta.description}</p>
                   <p className="font-mono text-[11px] text-muted-foreground/80 leading-relaxed mb-3">
-                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/50 mr-2">Flow</span>
+                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/70 mr-2">Flow</span>
                     {meta.flow.map((c, i) => (
                       <span key={i}>
-                        {i > 0 && <span className="text-muted-foreground/40"> → </span>}
+                        {i > 0 && <span className="text-muted-foreground/70"> → </span>}
                         <span className="text-foreground/80">{componentById(c)?.name ?? c}</span>
                       </span>
                     ))}
                   </p>
                   <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mb-4">
-                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/50 mr-2">How it fails</span>
+                    <span className="uppercase text-[9px] tracking-[0.2em] text-muted-foreground/70 mr-2">How it fails</span>
                     {meta.failureSignature}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
@@ -292,7 +294,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
           {SCENARIOS.map((sc) => (
             <div key={sc.id} className="border border-border/70 p-5">
               {sc.kind === "healthy" && (
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-300/80 mb-2">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-700/80 dark:text-emerald-300/80 mb-2">
                   Baseline — how it's supposed to work
                 </p>
               )}
@@ -311,7 +313,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                 ))}
               </ol>
               <p className="font-mono text-xs text-foreground/90 leading-relaxed bg-foreground/[0.03] border border-foreground/15 p-3">
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 mr-2">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mr-2">
                   {sc.kind === "healthy" ? "Takeaway" : "Verdict"}
                 </span>
                 {sc.verdict}
@@ -350,7 +352,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                   </td>
                   <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{f.checks[0]}</td>
                   <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
-                    {f.fix} <span className="text-muted-foreground/60 whitespace-nowrap">({f.costHint})</span>
+                    {f.fix} <span className="text-muted-foreground/70 whitespace-nowrap">({f.costHint})</span>
                   </td>
                 </tr>
               ))}
@@ -371,7 +373,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                   <strong className="text-foreground font-semibold">{st.title}.</strong>{" "}
                   {st.narration}
                   {st.training && (
-                    <span className="ml-2 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border border-amber-400/40 text-amber-300/90">
+                    <span className="ml-2 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border border-amber-400/40 text-amber-700/90 dark:text-amber-300/90">
                       training
                     </span>
                   )}
@@ -417,10 +419,64 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
           </table>
         </div>
       );
+    case "nn":
+      return <NnExplorerLazy />;
+    case "nnjourney":
+      return (
+        <div className="my-6 border border-border/70 p-5">
+          <ol className="space-y-4">
+            {NN_JOURNEY.map((st, i) => (
+              <li key={st.id} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-3">
+                <span className="text-foreground/40 flex-shrink-0 w-5 text-right">{i + 1}.</span>
+                <span>
+                  <strong className="text-foreground font-semibold">{st.title}.</strong>{" "}
+                  {st.narration}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "nnstages":
+      return (
+        <div className="my-6 overflow-x-auto border border-border">
+          <table className="w-full border-collapse min-w-[900px]">
+            <thead>
+              <tr className="bg-secondary/30">
+                {["Station", "Act", "What happens", "Real numbers", "Primary source"].map((h) => (
+                  <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {NN_STAGES.map((s) => (
+                <tr key={s.id} className="align-top hover:bg-secondary/10 transition-colors">
+                  <td className="font-mono text-xs text-foreground font-semibold p-3 border-b border-border/50 whitespace-nowrap">{s.name}</td>
+                  <td className="p-3 border-b border-border/50 whitespace-nowrap">
+                    <span
+                      className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border"
+                      style={{ color: NN_ACTS[s.act].color, borderColor: `${NN_ACTS[s.act].color}66` }}
+                    >
+                      {s.act}
+                    </span>
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{s.tagline} {s.story}</td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {s.numbers.map((n) => `${n.label}: ${n.value}`).join(" · ")}
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{s.paper ?? "computed in this guide"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     case "sources":
       return (
         <div className="my-8 border-t border-border pt-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">
             Sources & further reading
           </p>
           <div className="space-y-2.5">
@@ -429,7 +485,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
                 <a href={it.href} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors">
                   {it.label} ↗
                 </a>
-                {it.note && <p className="font-mono text-[10px] text-muted-foreground/60 leading-relaxed mt-0.5">{it.note}</p>}
+                {it.note && <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-0.5">{it.note}</p>}
               </div>
             ))}
           </div>

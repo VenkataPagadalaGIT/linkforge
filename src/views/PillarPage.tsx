@@ -55,7 +55,7 @@ const PillarPage = ({ initialPillar }: { initialPillar?: PillarPage_ | null } = 
           </p>
           <div className="flex flex-wrap gap-2 mb-16">
             {pillar.tags.map((tag) => (
-              <span key={tag} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/60">
+              <span key={tag} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/70">
                 {tag}
               </span>
             ))}
@@ -96,7 +96,7 @@ const PillarPage = ({ initialPillar }: { initialPillar?: PillarPage_ | null } = 
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-mono text-[10px] text-muted-foreground/40 mb-2">{post.date}</p>
+                        <p className="font-mono text-[10px] text-muted-foreground/70 mb-2">{post.date}</p>
                         <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-glow transition-all">
                           {post.title}
                         </h3>

@@ -58,7 +58,7 @@ const ServicesShowcase = () => {
     <div className="relative z-10 w-full max-w-7xl mx-auto px-6 mt-24">
       <ScrollReveal>
         <div className="text-center mb-16">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-4">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-4">
             AI-Native Consulting
           </p>
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-4">
@@ -79,7 +79,7 @@ const ServicesShowcase = () => {
             >
               {/* Category badge */}
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase">
                   {pillar.category}
                 </span>
                 <div className="flex-1 h-px bg-border" />
@@ -91,7 +91,7 @@ const ServicesShowcase = () => {
               </h3>
 
               {/* Tagline */}
-              <p className="font-mono text-[11px] text-muted-foreground/60 mb-5 leading-relaxed">
+              <p className="font-mono text-[11px] text-muted-foreground/70 mb-5 leading-relaxed">
                 {pillar.tagline}
               </p>
 
@@ -129,7 +129,7 @@ const ServicesShowcase = () => {
       <ScrollReveal delay={400}>
         <div className="mt-10 flex items-center justify-center gap-4">
           <div className="h-px flex-1 max-w-20 bg-border" />
-          <p className="font-mono text-[10px] text-muted-foreground/40 tracking-[0.3em] uppercase">
+          <p className="font-mono text-[10px] text-muted-foreground/70 tracking-[0.3em] uppercase">
             AI-Native · Expert-Led · Production-Grade
           </p>
           <div className="h-px flex-1 max-w-20 bg-border" />

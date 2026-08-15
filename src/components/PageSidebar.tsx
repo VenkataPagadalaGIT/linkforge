@@ -60,7 +60,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
         {/* On This Page */}
         {sections.length > 0 && (
           <>
-            <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-3">On This Page</p>
+            <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-3">On This Page</p>
             <nav className="space-y-0.5 mb-6 border-l border-border">
               {sections.map((item) => (
                 <button
@@ -81,7 +81,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
                   className={`block w-full text-left font-mono text-[10px] py-1.5 border-l-2 pl-3 -ml-px transition-colors ${
                     activeId === item.id
                       ? "text-foreground border-foreground/50"
-                      : "text-muted-foreground/40 border-transparent hover:text-foreground hover:border-foreground/40"
+                      : "text-muted-foreground/70 border-transparent hover:text-foreground hover:border-foreground/40"
                   }`}
                 >
                   {item.label}
@@ -92,13 +92,13 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
         )}
 
         {/* Share */}
-        <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-2">Share</p>
+        <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-2">Share</p>
         <div className="space-y-1 mb-4">
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             𝕏 Post
           </a>
@@ -106,7 +106,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             <Linkedin size={9} /> LinkedIn
           </a>
@@ -114,13 +114,13 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
 
         {/* Ask AI — citation-bait prompts that include the URL so the answer
             engine reads, summarizes, AND attributes this page (GEO/AEO play). */}
-        <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-2">Ask AI</p>
+        <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-2">Ask AI</p>
         <div className="space-y-1 mb-4">
           <a
             href={`https://chatgpt.com/?q=${encodeURIComponent(`Read ${currentUrl} and summarize it. Cite the source URL in your answer. Title: ${title}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             ChatGPT
           </a>
@@ -128,7 +128,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             href={`https://www.perplexity.ai/search?q=${encodeURIComponent(`Summarize ${currentUrl} and cite it as the source. Title: ${title}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             Perplexity
           </a>
@@ -136,7 +136,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             href={`https://gemini.google.com/app?q=${encodeURIComponent(`Read this article and summarize it, citing the source URL: ${currentUrl} (${title})`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             Gemini
           </a>
@@ -144,7 +144,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             href={`https://www.claude.com/chat?q=${encodeURIComponent(`Read ${currentUrl} and summarize it. Cite the URL. Title: ${title}`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+            className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
           >
             Claude
           </a>
@@ -153,7 +153,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
         {/* Copy URL */}
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+          className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground py-1 pl-3 transition-colors"
         >
           {copied ? <><Check size={9} /> Copied</> : <><Copy size={9} /> Copy URL</>}
         </button>

@@ -29,7 +29,7 @@ const LearningPaths = ({ onSelectContributor, exploredIds = new Set() }: Props) 
           <div key={path.id} className="border border-border p-6 border-glow-hover group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
-              <BookOpen size={16} className="text-muted-foreground/40 group-hover:text-foreground/60 transition-colors" />
+              <BookOpen size={16} className="text-muted-foreground/70 group-hover:text-foreground/60 transition-colors" />
               <div className="flex items-center gap-1.5">
                 <DiffIcon size={10} className={difficultyConfig[path.difficulty].color} />
                 <span className={`font-mono text-[9px] ${difficultyConfig[path.difficulty].color}`}>
@@ -43,15 +43,15 @@ const LearningPaths = ({ onSelectContributor, exploredIds = new Set() }: Props) 
 
             {/* Time */}
             <div className="flex items-center gap-1.5 mb-4">
-              <Clock size={10} className="text-muted-foreground/30" />
-              <span className="font-mono text-[9px] text-muted-foreground/40">{path.estimatedTime}</span>
+              <Clock size={10} className="text-muted-foreground/70" />
+              <span className="font-mono text-[9px] text-muted-foreground/70">{path.estimatedTime}</span>
             </div>
 
             {/* Progress bar */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-mono text-[9px] text-muted-foreground/30">Progress</span>
-                <span className="font-mono text-[9px] text-muted-foreground/40">{explored}/{total}</span>
+                <span className="font-mono text-[9px] text-muted-foreground/70">Progress</span>
+                <span className="font-mono text-[9px] text-muted-foreground/70">{explored}/{total}</span>
               </div>
               <div className="h-1 bg-border">
                 <div
@@ -74,7 +74,7 @@ const LearningPaths = ({ onSelectContributor, exploredIds = new Set() }: Props) 
                     className={`font-mono text-[9px] px-2 py-1 border transition-all ${
                       isExplored
                         ? "border-foreground/30 text-foreground"
-                        : "border-border text-muted-foreground/40 hover:text-foreground hover:border-foreground/20"
+                        : "border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
                     <span

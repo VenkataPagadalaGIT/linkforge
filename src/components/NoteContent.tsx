@@ -71,7 +71,7 @@ const Embed: React.FC<{ kind: EmbedKind }> = ({ kind }) => {
         rel="noopener noreferrer"
         className="my-6 block border border-border p-4 hover:border-foreground/40 transition-colors"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
           X / Twitter post
         </p>
         <p className="font-mono text-[12px] text-foreground/80 break-all">{kind.url}</p>
@@ -211,7 +211,7 @@ const mdComponents = {
     <ul className="my-4 space-y-1.5 list-none pl-0" {...props} />
   ),
   ol: (props: React.ComponentProps<"ol">) => (
-    <ol className="my-4 space-y-1.5 list-decimal pl-5 marker:text-muted-foreground/50" {...props} />
+    <ol className="my-4 space-y-1.5 list-decimal pl-5 marker:text-muted-foreground/70" {...props} />
   ),
   li: (props: React.ComponentProps<"li"> & { children?: React.ReactNode }) => (
     <li
@@ -253,7 +253,7 @@ const mdComponents = {
           {...optimized}
         />
         {props.alt && (
-          <figcaption className="mt-2 font-mono text-[10px] text-muted-foreground/60">
+          <figcaption className="mt-2 font-mono text-[10px] text-muted-foreground/70">
             {props.alt}
           </figcaption>
         )}
@@ -342,7 +342,7 @@ const NoteContent: React.FC<NoteContentProps> = ({
       {/* Header */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         {isPublic ? (
-          <span className="font-mono text-[9px] tracking-[0.2em] uppercase border border-emerald-400/45 text-emerald-300/95 bg-emerald-400/[0.04] px-2 py-1 inline-flex items-center gap-1.5">
+          <span className="font-mono text-[9px] tracking-[0.2em] uppercase border border-emerald-400/45 text-emerald-700/95 dark:text-emerald-300/95 bg-emerald-400/[0.04] px-2 py-1 inline-flex items-center gap-1.5">
             <Globe2 size={10} /> Field notes
           </span>
         ) : (
@@ -355,7 +355,7 @@ const NoteContent: React.FC<NoteContentProps> = ({
             {status}
           </span>
         )}
-        <span className="font-mono text-[10px] text-muted-foreground/60 ml-auto">
+        <span className="font-mono text-[10px] text-muted-foreground/70 ml-auto">
           {wc.toLocaleString()} words · {rt} min read
         </span>
       </div>
@@ -366,17 +366,17 @@ const NoteContent: React.FC<NoteContentProps> = ({
           className="block mb-5 group"
           data-testid={`${testId}-attribution`}
         >
-          <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-muted-foreground/45 mb-1">
+          <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-muted-foreground/70 mb-1">
             From
           </p>
           <p className="font-display text-base text-foreground/90 group-hover:text-glow transition-all">
             {attribution.conferenceName} {attribution.conferenceEdition || ""} ·{" "}
             <span className="text-foreground/70">{attribution.sessionTitle}</span>
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground/60 mt-0.5">
+          <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">
             {attribution.conferenceDate}
             {updatedAt && (
-              <span className="text-muted-foreground/40">
+              <span className="text-muted-foreground/70">
                 {" "}· last updated {new Date(updatedAt).toLocaleDateString()}
               </span>
             )}
@@ -406,7 +406,7 @@ const NoteContent: React.FC<NoteContentProps> = ({
 
       {takeaways.length > 0 && !truncated && (
         <div className="mt-7 pt-5 border-t border-border/60">
-          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/55 mb-3 inline-flex items-center gap-1.5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-3 inline-flex items-center gap-1.5">
             <Hash size={10} /> Takeaways
           </p>
           <ul className="space-y-2">

@@ -30,7 +30,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
       {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-muted-foreground/40 hover:text-foreground transition-colors z-10"
+        className="absolute top-4 right-4 text-muted-foreground/70 hover:text-foreground transition-colors z-10"
       >
         <X size={16} />
       </button>
@@ -46,7 +46,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-mono text-[10px] text-muted-foreground/30">#{contributor.rank}</span>
+              <span className="font-mono text-[10px] text-muted-foreground/70">#{contributor.rank}</span>
               <span
                 className="font-mono text-[9px] px-1.5 py-0.5 border uppercase tracking-wider"
                 style={{ borderColor: `${color}40`, color }}
@@ -62,7 +62,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {/* Quote */}
         {contributor.quote && (
           <div className="border-l-2 border-foreground/20 pl-4 mb-6">
-            <Quote size={12} className="text-muted-foreground/20 mb-1" />
+            <Quote size={12} className="text-muted-foreground/70 mb-1" />
             <p className="font-mono text-[11px] text-foreground/70 italic leading-relaxed">
               "{contributor.quote}"
             </p>
@@ -74,7 +74,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
 
         {/* Key Influence */}
         <div className="border border-foreground/10 p-4 mb-6">
-          <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-2">Key Influence</p>
+          <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Key Influence</p>
           <p className="font-mono text-xs text-foreground/80 leading-relaxed">{contributor.keyInfluence}</p>
         </div>
 
@@ -90,8 +90,8 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {contributor.resources && contributor.resources.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <BookOpen size={12} className="text-muted-foreground/40" />
-              <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">Key Resources</p>
+              <BookOpen size={12} className="text-muted-foreground/70" />
+              <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">Key Resources</p>
             </div>
             <div className="space-y-2">
               {contributor.resources.map((res, i) => (
@@ -108,11 +108,11 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
                       {res.title}
                     </p>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[9px] text-muted-foreground/30 capitalize">{res.type}</span>
-                      {res.year && <span className="font-mono text-[9px] text-muted-foreground/20">{res.year}</span>}
+                      <span className="font-mono text-[9px] text-muted-foreground/70 capitalize">{res.type}</span>
+                      {res.year && <span className="font-mono text-[9px] text-muted-foreground/70">{res.year}</span>}
                     </div>
                   </div>
-                  <ExternalLink size={8} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                  <ExternalLink size={8} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                 </a>
               ))}
             </div>
@@ -122,13 +122,13 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {/* Milestones */}
         {contributor.milestones && contributor.milestones.length > 0 && (
           <div className="mb-6">
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-3">Milestones</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-3">Milestones</p>
             <div className="relative pl-4">
               <div className="absolute left-1 top-1 bottom-1 w-px bg-border" />
               {contributor.milestones.map((m, i) => (
                 <div key={i} className="flex items-start gap-3 mb-2 relative">
                   <div className="absolute left-[-12px] top-1.5 w-2 h-2 border border-border bg-background rounded-full" />
-                  <span className="font-mono text-[9px] text-muted-foreground/30 shrink-0 w-8">{m.year}</span>
+                  <span className="font-mono text-[9px] text-muted-foreground/70 shrink-0 w-8">{m.year}</span>
                   <span className="font-mono text-[10px] text-muted-foreground leading-relaxed">{m.event}</span>
                 </div>
               ))}
@@ -139,30 +139,30 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {/* Details Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">AI Segment</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">AI Segment</p>
             <p className="font-mono text-xs" style={{ color }}>{contributor.segment}</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">Specialty</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">Specialty</p>
             <div className="flex flex-wrap gap-1">
               {contributor.specialty.map((s) => (
-                <span key={s} className="font-mono text-[10px] border border-border px-1.5 py-0.5 text-muted-foreground/60">
+                <span key={s} className="font-mono text-[10px] border border-border px-1.5 py-0.5 text-muted-foreground/70">
                   {s}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">Country</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">Country</p>
             <div className="flex items-center gap-1">
-              <MapPin size={10} className="text-muted-foreground/40" />
+              <MapPin size={10} className="text-muted-foreground/70" />
               <span className="font-mono text-xs text-muted-foreground">{contributor.country}</span>
             </div>
           </div>
           <div>
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">Education</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">Education</p>
             <div className="flex items-start gap-1">
-              <GraduationCap size={10} className="text-muted-foreground/40 mt-0.5 shrink-0" />
+              <GraduationCap size={10} className="text-muted-foreground/70 mt-0.5 shrink-0" />
               <span className="font-mono text-[10px] text-muted-foreground leading-relaxed">{contributor.education}</span>
             </div>
           </div>
@@ -171,9 +171,9 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {/* Awards */}
         {contributor.awards && (
           <div className="mb-6">
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">Awards</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">Awards</p>
             <div className="flex items-start gap-1">
-              <Award size={10} className="text-muted-foreground/40 mt-0.5 shrink-0" />
+              <Award size={10} className="text-muted-foreground/70 mt-0.5 shrink-0" />
               <span className="font-mono text-[10px] text-muted-foreground leading-relaxed">{contributor.awards}</span>
             </div>
           </div>
@@ -183,8 +183,8 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
         {connectedContributors.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <Link2 size={12} className="text-muted-foreground/40" />
-              <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">Connected To</p>
+              <Link2 size={12} className="text-muted-foreground/70" />
+              <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">Connected To</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {connectedContributors.map((c) => {
@@ -194,7 +194,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
                   <button
                     key={c.id}
                     onClick={() => onSelectContributor?.(c.id)}
-                    className="font-mono text-[9px] px-2 py-1 border border-border text-muted-foreground/50 hover:text-foreground hover:border-foreground/20 transition-all"
+                    className="font-mono text-[9px] px-2 py-1 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/20 transition-all"
                   >
                     <span
                       className="inline-block w-1.5 h-1.5 rounded-full mr-1.5"
@@ -210,7 +210,7 @@ const AIContributorProfile = ({ contributor, onClose, onSelectContributor }: Pro
 
         {/* Links */}
         <div className="border-t border-border pt-4">
-          <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-3">Links</p>
+          <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-3">Links</p>
           <div className="flex flex-wrap gap-2">
             {contributor.twitter && (
               <a href={contributor.twitter} target="_blank" rel="noopener noreferrer"

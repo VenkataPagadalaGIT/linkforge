@@ -167,7 +167,7 @@ function FaultCard({
         <div className="px-3 pb-3 space-y-3">
           <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{fault.cause}</p>
           <div>
-            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
               Check in this order
             </p>
             <ol className="space-y-1.5">
@@ -180,14 +180,14 @@ function FaultCard({
             </ol>
           </div>
           <p className="font-mono text-[11px] text-foreground/85 leading-relaxed">
-            <span className="text-muted-foreground/50 uppercase text-[9px] tracking-[0.2em] mr-2">Fix</span>
+            <span className="text-muted-foreground/70 uppercase text-[9px] tracking-[0.2em] mr-2">Fix</span>
             {fault.fix}
           </p>
           <p className="font-mono text-[10px] text-muted-foreground/70">
             <span className="uppercase text-[9px] tracking-[0.2em] mr-2">Typical cost</span>
             {fault.costHint}
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground/50">
+          <p className="font-mono text-[10px] text-muted-foreground/70">
             Involves: {fault.components.map((c) => componentById(c)?.name ?? c).join(" · ")}
           </p>
         </div>
@@ -361,7 +361,7 @@ const HvacExplorer = () => {
             onClick={() => (autoPlay ? setAutoPlay(false) : startDemo())}
             className={`font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 border transition-colors mr-2 ${
               autoPlay
-                ? "border-emerald-400/60 text-emerald-300 bg-emerald-400/10"
+                ? "border-emerald-400/60 text-emerald-700 dark:text-emerald-300 bg-emerald-400/10"
                 : "border-foreground/70 text-foreground bg-foreground/10 hover:bg-foreground/20"
             }`}
             title="Watch the whole system power on, from breaker to cold air"
@@ -427,7 +427,7 @@ const HvacExplorer = () => {
               <Suspense
                 fallback={
                   <div className="h-full flex items-center justify-center">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 animate-pulse">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 animate-pulse">
                       Loading 3D model…
                     </p>
                   </div>
@@ -451,7 +451,7 @@ const HvacExplorer = () => {
               </Suspense>
             </SceneErrorBoundary>
           )}
-          <p className="absolute bottom-2 left-3 font-mono text-[9px] text-muted-foreground/40 pointer-events-none">
+          <p className="absolute bottom-2 left-3 font-mono text-[9px] text-muted-foreground/70 pointer-events-none">
             drag to orbit · scroll to zoom · click a part
           </p>
         </div>
@@ -472,7 +472,7 @@ const HvacExplorer = () => {
                   </button>
                 </div>
                 <div className="flex items-center gap-2 mb-4">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/50">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/70">
                     {selected.zone} unit
                   </p>
                   <PathBadge path={selected.path} />
@@ -480,7 +480,7 @@ const HvacExplorer = () => {
                 <p className="font-mono text-xs text-foreground/85 leading-relaxed border-l-2 border-foreground/30 pl-3 mb-4">
                   {selected.role}
                 </p>
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
                   When it's the problem
                 </p>
                 <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mb-5">
@@ -488,7 +488,7 @@ const HvacExplorer = () => {
                 </p>
                 {selectedFaults.length > 0 && (
                   <>
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
                       Faults involving this part
                     </p>
                     <div className="space-y-1.5">
@@ -527,7 +527,7 @@ const HvacExplorer = () => {
 
           {mode === "diagnose" && (
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
                 My system is
               </p>
               <div className="flex flex-wrap gap-1.5 mb-4">
@@ -552,7 +552,7 @@ const HvacExplorer = () => {
                   </button>
                 ))}
               </div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
                 What are you seeing? Pick all that apply
               </p>
               <div className="flex flex-wrap gap-1.5 mb-5">
@@ -568,8 +568,8 @@ const HvacExplorer = () => {
                       className={`font-mono text-[10px] px-2 py-1.5 border transition-colors text-left ${
                         danger
                           ? on
-                            ? "border-red-400 text-red-300 bg-red-500/15"
-                            : "border-red-400/40 text-red-300/80 hover:border-red-400"
+                            ? "border-red-400 text-red-700 dark:text-red-300 bg-red-500/15"
+                            : "border-red-400/40 text-red-700/80 dark:text-red-300/80 hover:border-red-400"
                           : on
                             ? "border-foreground/70 text-foreground bg-secondary/50"
                             : "border-border/60 text-muted-foreground hover:text-foreground hover:border-foreground/30"
@@ -583,34 +583,34 @@ const HvacExplorer = () => {
 
               {emergencySelected ? (
                 <div className="border-2 border-red-500/70 bg-red-500/10 p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-red-300 mb-3">
-                    ⚠ Stop — this is not a troubleshooting moment
+                  <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-red-700 dark:text-red-300 mb-3">
+                    ⚠ Stop. This is not a troubleshooting moment
                   </p>
                   <ol className="space-y-2 mb-3">
                     {[
-                      "Leave the house NOW. Take everyone, including pets. Don't flip switches, don't unplug anything, don't start the car in an attached garage — a spark is the danger.",
+                      "Leave the house NOW. Take everyone, including pets. Don't flip switches, don't unplug anything, don't start the car in an attached garage. A spark is the danger.",
                       "From OUTSIDE: gas smell → call your gas utility's emergency line (free, 24/7) or 911. CO alarm → call 911. Both will come out immediately.",
                       "Don't go back in until they clear the house. The furnace stays off until a professional finds the source.",
                     ].map((t, i) => (
-                      <li key={i} className="font-mono text-[11px] text-red-100/90 leading-relaxed flex gap-2">
-                        <span className="text-red-300 flex-shrink-0">{i + 1}.</span>
+                      <li key={i} className="font-mono text-[11px] text-foreground/90 leading-relaxed flex gap-2">
+                        <span className="text-red-700 dark:text-red-300 flex-shrink-0">{i + 1}.</span>
                         <span>{t}</span>
                       </li>
                     ))}
                   </ol>
-                  <p className="font-mono text-[10px] text-red-200/60 leading-relaxed">
+                  <p className="font-mono text-[10px] text-red-700/60 dark:text-red-200/60 leading-relaxed">
                     Once you're cleared and safe, come back — the fault library below covers what they
                     likely found (cracked heat exchanger, gas leak at a fitting).
                   </p>
                 </div>
               ) : symptoms.length === 0 ? (
                 <div>
-                  <p className="font-mono text-[11px] text-muted-foreground/60 leading-relaxed mb-4">
+                  <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mb-4">
                     Select symptoms above and ranked causes appear here, with suspect parts glowing
                     amber in the model.
                   </p>
                   <div className="border border-emerald-400/30 bg-emerald-400/5 p-4">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-300/80 mb-2">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-700/80 dark:text-emerald-300/80 mb-2">
                       System completely dead? Five $0 checks first
                     </p>
                     <ol className="space-y-1.5">
@@ -622,7 +622,7 @@ const HvacExplorer = () => {
                         "Water in the drain pan? A tripped float switch plays dead on purpose.",
                       ].map((t, i) => (
                         <li key={i} className="font-mono text-[11px] text-muted-foreground leading-relaxed flex gap-2">
-                          <span className="text-emerald-300/70 flex-shrink-0">{i + 1}.</span>
+                          <span className="text-emerald-700/70 dark:text-emerald-300/70 flex-shrink-0">{i + 1}.</span>
                           <span>{t}</span>
                         </li>
                       ))}
@@ -632,7 +632,7 @@ const HvacExplorer = () => {
               ) : (
                 <>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
                       Most likely causes
                     </p>
                     <button
@@ -657,7 +657,7 @@ const HvacExplorer = () => {
                       />
                     ))}
                   </div>
-                  <p className="font-mono text-[10px] text-muted-foreground/50 leading-relaxed mt-3">
+                  <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-3">
                     None of these fit? Zoned systems (dampers), mini-splits, whole-home humidifiers,
                     and standing-pilot furnaces aren't modeled yet — for those, copy the report below
                     and book a pro intake.
@@ -674,7 +674,7 @@ const HvacExplorer = () => {
                       {reportText}
                     </pre>
                   )}
-                  <p className="font-mono text-[10px] text-muted-foreground/50 leading-relaxed mt-3">
+                  <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mt-3">
                     The report packages your symptoms, ranked causes, suspect parts, and costs — ready to
                     hand to a technician or attach to a service request. Refrigerant, gas, and high
                     voltage are licensed-pro work; gas smell or CO alarm means leave first, call after.
@@ -698,7 +698,7 @@ const HvacExplorer = () => {
                   ] as const
                 ).map(([groupTitle, group]) => (
                   <div key={groupTitle} className="mb-5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
                       {groupTitle}
                     </p>
                     <div className="space-y-2">
@@ -759,7 +759,7 @@ const HvacExplorer = () => {
                   ))}
                 </div>
 
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
                   Step {stepIdx + 1} of {scenario.steps.length}
                   {scenario.steps[stepIdx].running ? " · system running" : " · system OFF"}
                   {scenario.steps[stepIdx].drip ? " · drain dripping" : ""}
@@ -789,7 +789,7 @@ const HvacExplorer = () => {
                       Next →
                     </button>
                   ) : (
-                    <span className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border border-emerald-400/40 text-emerald-300">
+                    <span className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border border-emerald-400/40 text-emerald-700 dark:text-emerald-300">
                       {scenario.kind === "healthy" ? "Cycle complete" : "Solved"}
                     </span>
                   )}
@@ -797,7 +797,7 @@ const HvacExplorer = () => {
 
                 {stepIdx === scenario.steps.length - 1 && (
                   <div className="border border-foreground/20 bg-foreground/[0.03] p-4">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
                       {scenario.kind === "healthy" ? "The takeaway" : "The verdict"}
                     </p>
                     <p className="font-mono text-[11px] text-foreground/90 leading-relaxed">

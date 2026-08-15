@@ -6,7 +6,7 @@ const authorPhoto = "/venkata-pagadala.jpeg";
 const AuthorSidebar = () => (
   <aside className="hidden lg:block lg:w-52 shrink-0">
     <div className="sticky top-28">
-      <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-4">
+      <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-4">
         About the Author
       </p>
 
@@ -19,7 +19,7 @@ const AuthorSidebar = () => (
       <h3 className="font-display text-sm font-bold text-foreground mb-1">
         Venkata Pagadala
       </h3>
-      <p className="font-mono text-[10px] text-muted-foreground/60 leading-relaxed mb-4">
+      <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed mb-4">
         AI Systems Architect & Venture Builder. Building the future of search and agentic automation. Harvard &amp; MIT certified.
       </p>
 
@@ -31,7 +31,7 @@ const AuthorSidebar = () => (
         ].map((s) => (
           <div key={s.label}>
             <p className="font-mono text-xs font-bold text-foreground">{s.value}</p>
-            <p className="font-mono text-[8px] text-muted-foreground/30 uppercase tracking-widest">{s.label}</p>
+            <p className="font-mono text-[8px] text-muted-foreground/70 uppercase tracking-widest">{s.label}</p>
           </div>
         ))}
       </div>
@@ -42,7 +42,7 @@ const AuthorSidebar = () => (
           href="https://www.linkedin.com/in/venkata-pagadala/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           <Linkedin size={10} /> Follow on LinkedIn
         </a>
@@ -50,38 +50,38 @@ const AuthorSidebar = () => (
           href="https://www.linkedin.com/newsletters/7286801553498583041/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           <ArrowRight size={10} /> Subscribe Newsletter
         </a>
         <a
           href="mailto:vdepagadala@gmail.com"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           <Mail size={10} /> Get in Touch
         </a>
       </div>
 
       {/* Explore More */}
-      <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-2">
+      <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-2">
         Explore
       </p>
       <div className="space-y-1">
         <Link
           to="/about"
-          className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground transition-colors"
+          className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           About Me
         </Link>
         <Link
           to="/solutions"
-          className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground transition-colors"
+          className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           Solutions
         </Link>
         <Link
           to="/publications"
-          className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground transition-colors"
+          className="block font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors"
         >
           Lab & Research
         </Link>

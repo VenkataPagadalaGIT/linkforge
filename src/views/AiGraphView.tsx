@@ -22,14 +22,14 @@ export default function AiGraphView() {
             ← The AI Systems Map (stack view)
           </Link>
 
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/50 mb-3">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
             AI Notebook · Dependency graph
           </p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-4">
-            The AI Systems Map — Graph
+            The AI Systems Map: Graph View
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-5">
-            The whole ontology as one node-edge graph — {ONTOLOGY_COUNTS.nodes} entities in {ONTOLOGY_COUNTS.layers} layers.
+            The whole ontology as one node-edge graph: {ONTOLOGY_COUNTS.nodes} entities in {ONTOLOGY_COUNTS.layers} layers.
             Hover any node and its edges light up, each <span className="text-foreground">coloured and labelled by the actual
             relation</span> (an investor shows as “invests in”, not “depends on”). Click a node to open its topic page.
             ⬦ rings mark chokepoints.
@@ -48,12 +48,12 @@ export default function AiGraphView() {
           {/* Controls */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <div className="flex items-center gap-2 flex-1 min-w-[220px] border border-border px-3 py-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">Find</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Find</span>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Nvidia, TSMC, HBM, energy…"
-                className="flex-1 bg-transparent outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground/40"
+                className="flex-1 bg-transparent outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground/70"
                 data-testid="ai-graph-search"
               />
             </div>
@@ -61,13 +61,13 @@ export default function AiGraphView() {
               onClick={() => setChokeOnly((v) => !v)}
               className={`font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 border transition-all ${
                 chokeOnly
-                  ? "border-amber-400/60 text-amber-300 bg-amber-400/[0.06]"
+                  ? "border-amber-400/60 text-amber-700 dark:text-amber-300 bg-amber-400/[0.06]"
                   : "border-border text-muted-foreground/70 hover:border-foreground/40"
               }`}
             >
               ⬦ Chokepoints · {ONTOLOGY_COUNTS.chokepoints}
             </button>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
               {ONTOLOGY_COUNTS.nodes} nodes · {ONTOLOGY_COUNTS.edges} links
             </span>
           </div>

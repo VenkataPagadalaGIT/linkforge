@@ -732,7 +732,7 @@ const ContextGraphCanvas = () => {
                   {activeService.title}
                 </h3>
               </div>
-              <ExternalLink size={12} className="text-muted-foreground/40 group-hover:text-foreground transition-colors" />
+              <ExternalLink size={12} className="text-muted-foreground/70 group-hover:text-foreground transition-colors" />
             </div>
             <p className="font-mono text-[10px] text-muted-foreground/70 mb-3 leading-relaxed">
               {activeService.tagline}
@@ -805,7 +805,7 @@ const ContextGraphCanvas = () => {
             );
           })}
         </div>
-        <p className="font-mono text-[8px] text-muted-foreground/20 mt-2 tracking-widest uppercase pointer-events-none">
+        <p className="font-mono text-[8px] text-muted-foreground/70 mt-2 tracking-widest uppercase pointer-events-none">
           Click domain to explore · Drag to move · Click background to reset
         </p>
       </div>

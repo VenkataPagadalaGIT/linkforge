@@ -91,7 +91,7 @@ export default function DashboardClient() {
 
   if (status !== "authed") {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/60">
+      <div className="min-h-[60vh] flex items-center justify-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/70">
         {status === "checking" ? "Checking session…" : "Redirecting…"}
       </div>
     );
@@ -102,7 +102,7 @@ export default function DashboardClient() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-muted-foreground/60 uppercase mb-2 font-mono">
+            <p className="text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-2 font-mono">
               Mono Mind · Admin
             </p>
             <h1 className="font-display text-4xl font-bold text-foreground text-glow">Dashboard</h1>
@@ -162,7 +162,7 @@ export default function DashboardClient() {
                 className="border border-border/40 px-4 py-5 bg-card/20"
                 data-testid={`admin-tile-${t.k.toLowerCase()}`}
               >
-                <p className="text-[9px] tracking-[0.2em] text-muted-foreground/50 uppercase font-mono mb-2">
+                <p className="text-[9px] tracking-[0.2em] text-muted-foreground/70 uppercase font-mono mb-2">
                   {t.k}
                 </p>
                 <p className="font-display text-3xl font-bold text-foreground text-glow">{t.v}</p>
@@ -207,7 +207,7 @@ export default function DashboardClient() {
         {tab === "contacts" && (
           <div className="border border-border/40 overflow-x-auto" data-testid="admin-contacts-table">
             <table className="w-full font-mono text-xs">
-              <thead className="text-[10px] tracking-[0.2em] text-muted-foreground/60 uppercase">
+              <thead className="text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase">
                 <tr className="border-b border-border/40">
                   <th className="text-left px-4 py-3">Date</th>
                   <th className="text-left px-4 py-3">Name</th>
@@ -219,7 +219,7 @@ export default function DashboardClient() {
               <tbody>
                 {contacts.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground/50">
+                    <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground/70">
                       No submissions yet.
                     </td>
                   </tr>
@@ -241,7 +241,7 @@ export default function DashboardClient() {
                         </a>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{c.subject || "—"}</td>
-                      <td className="px-4 py-3 text-muted-foreground/60">{c.source || "—"}</td>
+                      <td className="px-4 py-3 text-muted-foreground/70">{c.source || "—"}</td>
                     </tr>
                     {expanded === c.id && (
                       <tr className="bg-muted/10">
@@ -260,7 +260,7 @@ export default function DashboardClient() {
         {tab === "subscribers" && (
           <div className="border border-border/40 overflow-x-auto" data-testid="admin-subs-table">
             <table className="w-full font-mono text-xs">
-              <thead className="text-[10px] tracking-[0.2em] text-muted-foreground/60 uppercase">
+              <thead className="text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase">
                 <tr className="border-b border-border/40">
                   <th className="text-left px-4 py-3">Date</th>
                   <th className="text-left px-4 py-3">Email</th>
@@ -271,7 +271,7 @@ export default function DashboardClient() {
               <tbody>
                 {subs.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground/50">
+                    <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground/70">
                       No subscribers yet.
                     </td>
                   </tr>

@@ -69,7 +69,7 @@ export const LAYERS: LayerMeta[] = [
   { id: 1, label: "Cloud & compute", short: "Cloud", color: "#60a5fa",
     blurb: "Hyperscalers and neoclouds that rent the compute the labs train and serve on." },
   { id: 2, label: "Accelerators & chips", short: "Chips", color: "#34d399",
-    blurb: "GPU, TPU and custom-silicon designers — the engines of AI compute." },
+    blurb: "GPU, TPU and custom-silicon designers: the engines of AI compute." },
   { id: 3, label: "Foundries & packaging", short: "Fabs", color: "#fbbf24",
     blurb: "The factories that physically manufacture and package the chips." },
   { id: 4, label: "Equipment, EDA & memory", short: "Tools", color: "#f472b6",

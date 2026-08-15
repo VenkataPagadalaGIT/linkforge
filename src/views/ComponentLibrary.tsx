@@ -197,7 +197,7 @@ export default function ComponentLibrary() {
   return (
     <div className="min-h-screen bg-background pt-24 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
-        <p className="font-mono text-[10px] text-muted-foreground/50 tracking-widest uppercase mb-4">
+        <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-4">
           Internal · noindex
         </p>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -216,26 +216,26 @@ export default function ComponentLibrary() {
           <div className="space-y-6">
             <div>
               <p className="font-display text-4xl font-bold text-foreground">Display heading</p>
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">font-display text-4xl font-bold text-foreground</p>
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">font-display text-4xl font-bold text-foreground</p>
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-foreground">Section heading</p>
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">font-display text-2xl font-bold text-foreground</p>
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">font-display text-2xl font-bold text-foreground</p>
             </div>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">Mono kicker label</p>
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Mono kicker label</p>
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70</p>
             </div>
             <div>
               <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 Body copy is mono, small, and muted. Emphasis is done by switching to
                 <span className="text-foreground font-semibold"> text-foreground</span>, not by size.
               </p>
-              <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">font-mono text-sm text-muted-foreground leading-relaxed</p>
+              <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">font-mono text-sm text-muted-foreground leading-relaxed</p>
             </div>
 
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">Color tokens</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">Color tokens</p>
               <div className="flex flex-wrap gap-4">
                 {SWATCHES.map((s) => (
                   <div key={s.name} className="text-center">
@@ -247,7 +247,7 @@ export default function ComponentLibrary() {
             </div>
 
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">Border treatment</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">Border treatment</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
                 <div className="border border-border p-4">
                   <p className="font-mono text-xs text-muted-foreground">Square corners, 1px border-border. No rounded corners, no shadows.</p>
@@ -288,7 +288,7 @@ export default function ComponentLibrary() {
                 </Link>
                 <div>
                   <p className="font-mono text-xs text-muted-foreground leading-relaxed">{item.note}</p>
-                  <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">
+                  <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">
                     import from &quot;{item.importPath}&quot; · live at{" "}
                     <Link href={item.href} className="hover:text-foreground transition-colors">{item.href}</Link>
                   </p>
@@ -303,7 +303,7 @@ export default function ComponentLibrary() {
           <p className="font-mono text-[11px] text-muted-foreground/70 mt-2">
             FutureCityScene: candidate homepage background, year 2040. Playable at /3d-game
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">
+          <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">
             import FutureCitySceneLazy from &quot;@/components/future/FutureCitySceneLazy&quot;
           </p>
         </Section>
@@ -318,7 +318,7 @@ export default function ComponentLibrary() {
                 <p className="font-mono text-xs text-foreground font-semibold">{u.name}</p>
                 <div>
                   <p className="font-mono text-xs text-muted-foreground leading-relaxed">{u.note}</p>
-                  <p className="font-mono text-[10px] text-muted-foreground/60 mt-1">{u.path}</p>
+                  <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">{u.path}</p>
                 </div>
               </div>
             ))}

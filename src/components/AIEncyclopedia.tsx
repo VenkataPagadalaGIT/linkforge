@@ -32,29 +32,29 @@ const ConceptCard = ({ concept, isOpen, onToggle }: { concept: EncyclopediaConce
               full description, so leaving this here repeated its first two
               lines immediately above itself. */}
           {!isOpen && (
-            <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
+            <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed line-clamp-2">
               {concept.description}
             </p>
           )}
         </div>
         <div className="shrink-0 mt-1">
           {isOpen ? (
-            <ChevronUp size={14} className="text-muted-foreground/30" />
+            <ChevronUp size={14} className="text-muted-foreground/70" />
           ) : (
-            <ChevronDown size={14} className="text-muted-foreground/30" />
+            <ChevronDown size={14} className="text-muted-foreground/70" />
           )}
         </div>
       </button>
 
       {isOpen && (
         <div className="px-5 pb-5 border-t border-border pt-4 space-y-4">
-          <p className="font-mono text-xs text-muted-foreground/60 leading-relaxed">
+          <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed">
             {concept.description}
           </p>
 
           {cat && (
             <div className="flex items-center gap-2">
-              <Tag size={10} className="text-muted-foreground/30" />
+              <Tag size={10} className="text-muted-foreground/70" />
               <span className="font-mono text-[10px]" style={{ color: cat.color }}>
                 {cat.emoji} {cat.label}
               </span>
@@ -63,10 +63,10 @@ const ConceptCard = ({ concept, isOpen, onToggle }: { concept: EncyclopediaConce
 
           {concept.keyTerms.length > 0 && (
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/30 mb-2">Key Terms</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mb-2">Key Terms</p>
               <div className="flex flex-wrap gap-1.5">
                 {concept.keyTerms.map((term) => (
-                  <span key={term} className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/50">
+                  <span key={term} className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/70">
                     {term}
                   </span>
                 ))}
@@ -76,10 +76,10 @@ const ConceptCard = ({ concept, isOpen, onToggle }: { concept: EncyclopediaConce
 
           {concept.prerequisites.length > 0 && (
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/30 mb-2">Prerequisites</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mb-2">Prerequisites</p>
               <div className="flex flex-wrap gap-1.5">
                 {concept.prerequisites.map((p) => (
-                  <span key={p} className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/40 italic">
+                  <span key={p} className="font-mono text-[10px] px-2 py-0.5 border border-border text-muted-foreground/70 italic">
                     {p}
                   </span>
                 ))}
@@ -89,14 +89,14 @@ const ConceptCard = ({ concept, isOpen, onToggle }: { concept: EncyclopediaConce
 
           {concept.realWorldApps && (
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/30 mb-1">Real-World Applications</p>
-              <p className="font-mono text-[11px] text-muted-foreground/50">{concept.realWorldApps}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mb-1">Real-World Applications</p>
+              <p className="font-mono text-[11px] text-muted-foreground/70">{concept.realWorldApps}</p>
             </div>
           )}
 
           {concept.learnMore.length > 0 && (
             <div>
-              <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/30 mb-2">
+              <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mb-2">
                 <BookOpen size={10} /> Learn More
               </p>
               <div className="space-y-1">
@@ -170,20 +170,20 @@ const AIEncyclopedia = () => {
         ].map((s) => (
           <div key={s.label}>
             <p className="font-mono text-lg font-bold text-foreground">{s.value}</p>
-            <p className="font-mono text-[9px] text-muted-foreground/25 uppercase tracking-widest">{s.label}</p>
+            <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
         <input
           type="text"
           placeholder="Search concepts, terms, categories..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:border-foreground/30"
+          className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/30"
         />
       </div>
 
@@ -192,7 +192,7 @@ const AIEncyclopedia = () => {
         <button
           onClick={() => setActiveCategory("")}
           className={`font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
-            !activeCategory ? "border-foreground text-foreground" : "border-border text-muted-foreground/30 hover:text-muted-foreground"
+            !activeCategory ? "border-foreground text-foreground" : "border-border text-muted-foreground/70 hover:text-muted-foreground"
           }`}
         >
           All ({encyclopediaConcepts.length})
@@ -204,7 +204,7 @@ const AIEncyclopedia = () => {
             className={`font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
               activeCategory === cat.label
                 ? "text-foreground"
-                : "border-border text-muted-foreground/30 hover:text-muted-foreground"
+                : "border-border text-muted-foreground/70 hover:text-muted-foreground"
             }`}
             style={
               activeCategory === cat.label
@@ -226,7 +226,7 @@ const AIEncyclopedia = () => {
             className={`font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
               activeDifficulty === d
                 ? diffBadge[d]
-                : "border-border text-muted-foreground/30 hover:text-muted-foreground"
+                : "border-border text-muted-foreground/70 hover:text-muted-foreground"
             }`}
           >
             {d}
@@ -247,7 +247,7 @@ const AIEncyclopedia = () => {
       </div>
 
       {filtered.length === 0 && (
-        <p className="font-mono text-xs text-muted-foreground/30 text-center py-10">
+        <p className="font-mono text-xs text-muted-foreground/70 text-center py-10">
           No concepts found matching your search.
         </p>
       )}

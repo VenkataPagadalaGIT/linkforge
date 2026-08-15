@@ -64,7 +64,7 @@ const Home = () => {
           ].map((stat) => (
             <div key={stat.label} className="flex items-center gap-1.5">
               <span className="font-mono text-sm sm:text-base font-bold text-foreground">{stat.value}</span>
-              <span className="font-mono text-[10px] text-muted-foreground/50 uppercase tracking-wider">{stat.label}</span>
+              <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-wider">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -125,10 +125,10 @@ const Home = () => {
       </div>
 
       {/* Bottom coordinates */}
-      <div className="absolute bottom-8 left-8 font-mono text-[10px] text-muted-foreground/40">
+      <div className="absolute bottom-8 left-8 font-mono text-[10px] text-muted-foreground/70">
         33.7490° N, 84.3880° W
       </div>
-      <div className="absolute bottom-8 right-8 font-mono text-[10px] text-muted-foreground/40">
+      <div className="absolute bottom-8 right-8 font-mono text-[10px] text-muted-foreground/70">
         ATLANTA, GA
       </div>
       </div>
@@ -140,7 +140,7 @@ const Home = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 mt-16">
         <ScrollReveal>
           <div className="text-center mb-12">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-3">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-3">
               Interactive Explorer
             </p>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow mb-3">
@@ -183,7 +183,7 @@ const Home = () => {
                     <span className="font-mono text-[10px] tracking-widest uppercase text-foreground/50">
                       {paper.host}
                     </span>
-                    <span className="font-mono text-[10px] text-muted-foreground/40">{paper.year}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground/70">{paper.year}</span>
                   </div>
                   <h3 className="font-display text-base font-bold text-foreground mb-2 leading-snug">
                     {paper.shortTitle}

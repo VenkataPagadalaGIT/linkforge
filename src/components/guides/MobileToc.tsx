@@ -36,7 +36,7 @@ const MobileToc = ({ sections }: { sections: TocItem[] }) => {
         className="w-full flex items-center justify-between px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
       >
         <span>
-          On this page <span className="text-muted-foreground/50">· {sections.length}</span>
+          On this page <span className="text-muted-foreground/70">· {sections.length}</span>
         </span>
         <ChevronDown
           size={14}

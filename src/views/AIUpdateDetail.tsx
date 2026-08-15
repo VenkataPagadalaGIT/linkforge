@@ -77,11 +77,11 @@ const AIUpdateDetail = () => {
               >
                 {catMeta.label}
               </span>
-              <span className="font-mono text-[10px] text-muted-foreground/40 flex items-center gap-1">
+              <span className="font-mono text-[10px] text-muted-foreground/70 flex items-center gap-1">
                 <Calendar size={10} />
                 {formatDateLong(update.date)}
               </span>
-              <span className="font-mono text-[10px] text-muted-foreground/30">{update.company}</span>
+              <span className="font-mono text-[10px] text-muted-foreground/70">{update.company}</span>
             </div>
 
             {/* H1 */}
@@ -141,7 +141,7 @@ const AIUpdateDetail = () => {
                 <ul className="space-y-3">
                   {update.takeaways.map((t, i) => (
                     <li key={i} className="flex gap-3">
-                      <span className="font-mono text-[10px] text-muted-foreground/30 mt-1 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground/70 mt-1 shrink-0">{String(i + 1).padStart(2, "0")}</span>
                       <p className="font-mono text-xs text-muted-foreground leading-relaxed">{t}</p>
                     </li>
                   ))}
@@ -172,7 +172,7 @@ const AIUpdateDetail = () => {
                           <div className="font-mono text-xs text-foreground leading-snug mb-1">{doc.label}</div>
                           <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">{doc.source}</div>
                         </div>
-                        <ExternalLink size={12} className="text-muted-foreground/40 group-hover:text-foreground flex-shrink-0 mt-0.5 transition-colors" />
+                        <ExternalLink size={12} className="text-muted-foreground/70 group-hover:text-foreground flex-shrink-0 mt-0.5 transition-colors" />
                       </div>
                     </a>
                   ))}
@@ -294,7 +294,7 @@ const AIUpdateDetail = () => {
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 mt-6 mb-8">
             {update.tags.map((tag) => (
-              <span key={tag} className="font-mono text-[9px] text-muted-foreground/40 border border-border/50 px-2 py-0.5">
+              <span key={tag} className="font-mono text-[9px] text-muted-foreground/70 border border-border/50 px-2 py-0.5">
                 {tag}
               </span>
             ))}
@@ -327,11 +327,11 @@ const AIUpdateDetail = () => {
                           <h3 className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">
                             {link.label}
                           </h3>
-                          <p className="font-mono text-[10px] text-muted-foreground/50 mt-0.5">
+                          <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">
                             {link.description}
                           </p>
                         </div>
-                        <ArrowRight size={14} className="text-muted-foreground/30 group-hover:text-foreground shrink-0 transition-colors" />
+                        <ArrowRight size={14} className="text-muted-foreground/70 group-hover:text-foreground shrink-0 transition-colors" />
                       </div>
                     </Link>
                   ))}
@@ -347,7 +347,7 @@ const AIUpdateDetail = () => {
                 to={`/ai-updates/${prevUpdate.slug}`}
                 className="flex-1 border border-border p-4 hover:border-foreground/30 transition-all group"
               >
-                <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest">← Previous</span>
+                <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">← Previous</span>
                 <p className="font-mono text-xs text-muted-foreground group-hover:text-foreground transition-colors mt-1 line-clamp-2">
                   {prevUpdate.title}
                 </p>
@@ -358,7 +358,7 @@ const AIUpdateDetail = () => {
                 to={`/ai-updates/${nextUpdate.slug}`}
                 className="flex-1 border border-border p-4 hover:border-foreground/30 transition-all group text-right"
               >
-                <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest">Next →</span>
+                <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">Next →</span>
                 <p className="font-mono text-xs text-muted-foreground group-hover:text-foreground transition-colors mt-1 line-clamp-2">
                   {nextUpdate.title}
                 </p>

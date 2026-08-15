@@ -29,7 +29,7 @@ const ThemeToggle: React.FC<{ className?: string }> = ({ className = "" }) => {
   if (!mounted) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 px-2 py-1 border border-border ${className}`}
+        className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 px-2 py-1 border border-border ${className}`}
         aria-hidden="true"
       >
         <Monitor size={12} strokeWidth={1.75} />

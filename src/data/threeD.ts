@@ -37,6 +37,15 @@ export const threeDExperiences: ThreeDExperience[] = [
     badge: "new",
   },
   {
+    title: "How Neural Networks Work",
+    to: "/guides/how-neural-networks-work",
+    note: "13,002 parameters, every fiber drawn",
+    blurb:
+      "The canonical 784-16-16-10 MNIST network as a film-set machine: a digit dissolves into pixels, the forward pass ripples through every rendered weight, and gradient descent really runs on the loss terrain.",
+    tags: ["13,002 params", "guided journey", "primary-sourced"],
+    badge: "new",
+  },
+  {
     title: "How LLMs Work",
     to: "/guides/how-llms-work",
     note: "21 stages, explorable in 3D",

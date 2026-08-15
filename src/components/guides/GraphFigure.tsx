@@ -243,7 +243,7 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
           (incl. JS-off AI bots) and screen readers get the entities AND the
           relationships, not just disconnected SVG labels or WebGL pixels. */}
       <details className="mt-2">
-        <summary className="font-mono text-[10px] text-muted-foreground/50 cursor-pointer hover:text-muted-foreground transition-colors">
+        <summary className="font-mono text-[10px] text-muted-foreground/70 cursor-pointer hover:text-muted-foreground transition-colors">
           Graph data (text) — {view.nodes.length} entities, {view.edges.length} relationships
         </summary>
         <ul className="mt-2 space-y-0.5 pl-1">

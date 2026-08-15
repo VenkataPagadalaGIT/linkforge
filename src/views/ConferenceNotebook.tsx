@@ -25,9 +25,9 @@ const tocSections = [
 
 const statusStyles: Record<string, string> = {
   attended: "border-foreground/20 text-foreground/70",
-  upcoming: "border-emerald-400/40 text-emerald-300/90",
-  speaking: "border-amber-400/40 text-amber-300/90",
-  watching: "border-sky-400/40 text-sky-300/90",
+  upcoming: "border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90",
+  speaking: "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
+  watching: "border-sky-400/40 text-sky-700/90 dark:text-sky-300/90",
 };
 
 const statusLabel: Record<string, string> = {
@@ -64,8 +64,8 @@ const ConferenceNotebook = () => {
 
             <div className="mb-16">
               <div className="flex items-center gap-3 mb-4">
-                <Mic size={18} className="text-muted-foreground/50" />
-                <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em]">
+                <Mic size={18} className="text-muted-foreground/70" />
+                <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em]">
                   Conference Notebook
                 </p>
               </div>
@@ -97,8 +97,8 @@ const ConferenceNotebook = () => {
                       data-testid={`conference-stat-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <I size={12} className="text-muted-foreground/40" />
-                        <span className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/50 uppercase">
+                        <I size={12} className="text-muted-foreground/70" />
+                        <span className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/70 uppercase">
                           {s.label}
                         </span>
                       </div>
@@ -115,7 +115,7 @@ const ConferenceNotebook = () => {
             <section id="featured" className="scroll-mt-28 mb-16">
               <ScrollReveal>
                 <div className="flex items-center gap-2 mb-6">
-                  <Sparkles size={14} className="text-muted-foreground/50" />
+                  <Sparkles size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">Featured · Live Notebook</h2>
                 </div>
                 <FeaturedCard c={featured} />
@@ -128,7 +128,7 @@ const ConferenceNotebook = () => {
             <section id="all" className="scroll-mt-28 mb-16">
               <ScrollReveal>
                 <div className="flex items-center gap-2 mb-6">
-                  <CalendarDays size={14} className="text-muted-foreground/50" />
+                  <CalendarDays size={14} className="text-muted-foreground/70" />
                   <h2 className="font-display text-xl font-bold text-foreground">Upcoming</h2>
                 </div>
                 <div className="space-y-3" data-testid="conference-upcoming-list">
@@ -144,11 +144,11 @@ const ConferenceNotebook = () => {
           <section id="notes" className="scroll-mt-28 mb-16">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-6">
-                <BookOpen size={14} className="text-muted-foreground/50" />
+                <BookOpen size={14} className="text-muted-foreground/70" />
                 <h2 className="font-display text-xl font-bold text-foreground">Field Notes</h2>
               </div>
               {attended.length === 0 ? (
-                <p className="font-mono text-xs text-muted-foreground/60 border border-dashed border-border/50 px-4 py-6">
+                <p className="font-mono text-xs text-muted-foreground/70 border border-dashed border-border/50 px-4 py-6">
                   No field notes published yet — first one drops alongside the next conference.
                 </p>
               ) : (
@@ -201,7 +201,7 @@ const FeaturedCard = ({ c }: { c: Conference }) => {
         </div>
         <ArrowRight
           size={18}
-          className="text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-2 shrink-0"
+          className="text-muted-foreground/70 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-2 shrink-0"
         />
       </div>
       <div className="flex flex-wrap gap-2">
@@ -212,7 +212,7 @@ const FeaturedCard = ({ c }: { c: Conference }) => {
           { label: "Hours", value: c.hoursOfTalks ?? 0 },
         ].map((s) => (
           <div key={s.label} className="border border-border px-3 py-2">
-            <span className="font-mono text-[9px] text-muted-foreground/50 uppercase tracking-wider mr-2">
+            <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-wider mr-2">
               {s.label}
             </span>
             <span className="font-mono text-xs text-foreground/80">{s.value}</span>
@@ -253,7 +253,7 @@ const ConferenceCard = ({ c }: { c: Conference }) => {
         </div>
         <ArrowRight
           size={14}
-          className="text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-1 shrink-0"
+          className="text-muted-foreground/70 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-1 shrink-0"
         />
       </div>
       <p className="font-mono text-xs text-muted-foreground leading-relaxed">{c.topic}</p>

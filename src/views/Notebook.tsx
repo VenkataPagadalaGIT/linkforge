@@ -62,7 +62,7 @@ const Notebook = () => {
         <div className="flex-1 min-w-0">
           <ScrollReveal>
             <div className="mb-16">
-              <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em] mb-4">
+              <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em] mb-4">
                 Notebook
               </p>
               <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-4">
@@ -96,7 +96,7 @@ const Notebook = () => {
                             {nb.description}
                           </p>
                         </div>
-                        <ArrowRight size={16} className="text-muted-foreground/30 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-1 shrink-0" />
+                        <ArrowRight size={16} className="text-muted-foreground/70 group-hover:text-foreground group-hover:translate-x-1 transition-all mt-1 shrink-0" />
                       </div>
 
                       <div className="flex flex-wrap gap-4">
@@ -104,8 +104,8 @@ const Notebook = () => {
                           const StatIcon = stat.icon;
                           return (
                             <div key={stat.label} className="flex items-center gap-2 border border-border px-3 py-2">
-                              <StatIcon size={12} className="text-muted-foreground/40" />
-                              <span className="font-mono text-[10px] text-muted-foreground/50 uppercase tracking-wider">{stat.label}</span>
+                              <StatIcon size={12} className="text-muted-foreground/70" />
+                              <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-wider">{stat.label}</span>
                               <span className="font-mono text-xs text-foreground/80">{stat.value}</span>
                             </div>
                           );

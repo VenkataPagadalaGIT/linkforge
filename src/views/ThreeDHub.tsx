@@ -60,7 +60,7 @@ const ThreeDHub = () => {
                     {x.tags.map((t) => (
                       <span
                         key={t}
-                        className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/50 border border-border/60 px-1.5 py-0.5"
+                        className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/70 border border-border/60 px-1.5 py-0.5"
                       >
                         {t}
                       </span>
@@ -68,7 +68,7 @@ const ThreeDHub = () => {
                   </div>
                   <ArrowRight
                     size={14}
-                    className="text-muted-foreground/40 group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0"
+                    className="text-muted-foreground/70 group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0"
                   />
                 </div>
               </Link>
@@ -77,7 +77,7 @@ const ThreeDHub = () => {
         </div>
 
         <ScrollReveal>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mt-10 max-w-2xl">
+          <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mt-10 max-w-2xl">
             How they are built: parameterized geometry, canvas-typeset textures, and
             custom shaders on three.js. The sources this work learned from are named on
             the{" "}

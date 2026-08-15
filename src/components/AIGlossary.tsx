@@ -30,13 +30,13 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
     <div>
       {/* Search */}
       <div className="relative mb-6">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search concepts..."
-          className="w-full bg-background border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:border-foreground/30 transition-colors"
+          className="w-full bg-background border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/30 transition-colors"
         />
       </div>
 
@@ -103,7 +103,7 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
                   {/* Pioneered by */}
                   {pioneers.length > 0 && (
                     <div className="mb-3">
-                      <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest">
+                      <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">
                         Pioneered by:{" "}
                       </span>
                       {pioneers.map((c, i) => {
@@ -116,7 +116,7 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
                             >
                               {c.name}
                             </button>
-                            {i < pioneers.length - 1 && <span className="text-muted-foreground/20">, </span>}
+                            {i < pioneers.length - 1 && <span className="text-muted-foreground/70">, </span>}
                           </span>
                         );
                       })}
@@ -126,7 +126,7 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
                   {/* Related terms */}
                   {term.relatedTerms && term.relatedTerms.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
-                      <span className="font-mono text-[9px] text-muted-foreground/20 self-center mr-1">Related:</span>
+                      <span className="font-mono text-[9px] text-muted-foreground/70 self-center mr-1">Related:</span>
                       {term.relatedTerms.map((rt) => (
                         <button
                           key={rt}
@@ -134,7 +134,7 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
                             setExpandedTerm(rt);
                             setSearch("");
                           }}
-                          className="font-mono text-[9px] px-2 py-0.5 border border-border text-muted-foreground/40 hover:text-foreground hover:border-foreground/20 transition-all"
+                          className="font-mono text-[9px] px-2 py-0.5 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/20 transition-all"
                         >
                           {rt}
                         </button>
@@ -149,7 +149,7 @@ const AIGlossary = ({ onSelectContributor }: Props) => {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center font-mono text-xs text-muted-foreground/30 py-8">No concepts found</p>
+        <p className="text-center font-mono text-xs text-muted-foreground/70 py-8">No concepts found</p>
       )}
     </div>
   );

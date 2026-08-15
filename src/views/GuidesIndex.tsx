@@ -29,7 +29,7 @@ export default function GuidesIndex() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase mb-3">
+                    <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-3">
                       Reference Guide · {g.readingTime}
                     </p>
                     <h2 className="font-display text-2xl font-bold text-foreground mb-3 group-hover:text-glow transition-all">
@@ -40,7 +40,7 @@ export default function GuidesIndex() {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {g.tags.slice(0, 6).map((tag) => (
-                        <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/60">
+                        <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">
                           {tag}
                         </span>
                       ))}

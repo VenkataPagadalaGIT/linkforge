@@ -40,7 +40,7 @@ const ContributorCards = ({ ids }: { ids: string[] }) => {
               className="w-14 h-14 object-cover border border-border shrink-0 grayscale group-hover:grayscale-0 transition-all"
             />
           ) : (
-            <div className="w-14 h-14 border border-border shrink-0 grid place-items-center font-display text-lg font-bold text-muted-foreground/50">
+            <div className="w-14 h-14 border border-border shrink-0 grid place-items-center font-display text-lg font-bold text-muted-foreground/70">
               {c.name
                 .split(" ")
                 .map((n) => n[0])
@@ -52,11 +52,11 @@ const ContributorCards = ({ ids }: { ids: string[] }) => {
             <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all leading-snug">
               {c.name}
             </p>
-            <p className="font-mono text-[10px] text-muted-foreground/60 mb-1">{c.affiliation}</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 mb-1">{c.affiliation}</p>
             <p className="font-mono text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
               {c.bio}
             </p>
-            <span className="inline-block mt-1.5 font-mono text-[10px] text-muted-foreground/50 group-hover:text-foreground transition-colors">
+            <span className="inline-block mt-1.5 font-mono text-[10px] text-muted-foreground/70 group-hover:text-foreground transition-colors">
               Full profile →
             </span>
           </div>

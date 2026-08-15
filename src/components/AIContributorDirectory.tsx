@@ -35,13 +35,13 @@ const AIContributorDirectory = ({ onSelect, selectedId, filterSegment }: Props) 
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, affiliation, specialty..."
-            className="w-full bg-background border border-border pl-9 pr-4 py-2 font-mono text-xs text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-foreground/30 transition-colors"
+            className="w-full bg-background border border-border pl-9 pr-4 py-2 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/30 transition-colors"
           />
         </div>
         <select
@@ -57,7 +57,7 @@ const AIContributorDirectory = ({ onSelect, selectedId, filterSegment }: Props) 
       </div>
 
       {/* Count */}
-      <p className="font-mono text-[10px] text-muted-foreground/40 mb-4 tracking-wider">
+      <p className="font-mono text-[10px] text-muted-foreground/70 mb-4 tracking-wider">
         {filtered.length} CONTRIBUTOR{filtered.length !== 1 ? "S" : ""}
       </p>
 
@@ -83,7 +83,7 @@ const AIContributorDirectory = ({ onSelect, selectedId, filterSegment }: Props) 
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-mono text-[10px] text-muted-foreground/30">#{contributor.rank}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground/70">#{contributor.rank}</span>
                     <h4 className="font-display text-sm font-bold text-foreground truncate">{contributor.name}</h4>
                   </div>
                   <p className="font-mono text-[10px] text-muted-foreground truncate">{contributor.affiliation}</p>
@@ -94,7 +94,7 @@ const AIContributorDirectory = ({ onSelect, selectedId, filterSegment }: Props) 
                     >
                       {contributor.segment.split(" ")[0]}
                     </span>
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 border border-border text-muted-foreground/50">
+                    <span className="font-mono text-[9px] px-1.5 py-0.5 border border-border text-muted-foreground/70">
                       {contributor.expertType}
                     </span>
                   </div>
@@ -107,7 +107,7 @@ const AIContributorDirectory = ({ onSelect, selectedId, filterSegment }: Props) 
 
       {filtered.length === 0 && (
         <div className="text-center py-12">
-          <p className="font-mono text-xs text-muted-foreground/40">No contributors match your filters</p>
+          <p className="font-mono text-xs text-muted-foreground/70">No contributors match your filters</p>
         </div>
       )}
     </div>

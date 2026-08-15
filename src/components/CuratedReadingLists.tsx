@@ -34,7 +34,7 @@ const CuratedReadingLists = () => {
               className={`font-mono text-[10px] px-3 py-2 border transition-all ${
                 activeList === rl.id
                   ? "bg-foreground text-background border-foreground"
-                  : "border-border text-muted-foreground/50 hover:text-foreground hover:border-foreground/20"
+                  : "border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/20"
               }`}
             >
               {config.icon} {rl.title}
@@ -68,17 +68,17 @@ const CuratedReadingLists = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div>
-                        <span className="font-mono text-[10px] text-muted-foreground/20 mr-2">
+                        <span className="font-mono text-[10px] text-muted-foreground/70 mr-2">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <span className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">
                           {item.title}
                         </span>
                       </div>
-                      <ExternalLink size={10} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                      <ExternalLink size={10} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                     </div>
-                    <p className="font-mono text-[10px] text-muted-foreground/40 mb-2">{item.author}</p>
-                    <p className="font-mono text-[11px] text-muted-foreground/60 leading-relaxed group-hover:text-muted-foreground transition-colors">
+                    <p className="font-mono text-[10px] text-muted-foreground/70 mb-2">{item.author}</p>
+                    <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">
                       {item.why}
                     </p>
                   </div>

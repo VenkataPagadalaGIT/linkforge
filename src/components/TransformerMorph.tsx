@@ -350,13 +350,13 @@ const TransformerMorph = () => {
     <div className="relative">
       {/* Title */}
       <div className="text-center mb-8">
-        <p className="font-mono text-[9px] tracking-[0.4em] text-muted-foreground/30 uppercase mb-2">
+        <p className="font-mono text-[9px] tracking-[0.4em] text-muted-foreground/70 uppercase mb-2">
           [ Morphic Engine ]
         </p>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground text-glow mb-2">
           Transformer Sequence
         </h2>
-        <p className="font-mono text-[10px] text-muted-foreground/40 max-w-md mx-auto">
+        <p className="font-mono text-[10px] text-muted-foreground/70 max-w-md mx-auto">
           Click to initiate phase-shift transformation between vehicle and autonomous mech configurations.
         </p>
       </div>
@@ -405,7 +405,7 @@ const TransformerMorph = () => {
             exit={{ opacity: 0, y: -10 }}
             className="flex justify-center mt-4"
           >
-            <span className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/30 uppercase animate-pulse">
+            <span className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase animate-pulse">
               ◆ Transforming...
             </span>
           </motion.div>

@@ -47,7 +47,7 @@ export default function NewsletterForm({ source = "kit_signup", tag }: { source?
           onChange={(e) => setEmail(e.target.value)}
           disabled={state.kind === "loading"}
           placeholder="your@email.com"
-          className="flex-1 bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-3 py-2 text-foreground font-mono text-sm placeholder:text-muted-foreground/40 transition-all"
+          className="flex-1 bg-transparent border border-border/40 focus:border-foreground/40 outline-none px-3 py-2 text-foreground font-mono text-sm placeholder:text-muted-foreground/70 transition-all"
           data-testid="newsletter-form-email"
         />
         <button

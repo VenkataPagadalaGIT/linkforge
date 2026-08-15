@@ -30,7 +30,7 @@ const ComponentCard = ({ entry, index }: { entry: ComponentEntry; index: number 
       {/* Component header */}
       <div className="flex items-start gap-4 mb-6">
         {/* Index marker */}
-        <div className="flex-shrink-0 w-12 h-12 border border-border/20 flex items-center justify-center font-mono text-[10px] text-muted-foreground/40">
+        <div className="flex-shrink-0 w-12 h-12 border border-border/20 flex items-center justify-center font-mono text-[10px] text-muted-foreground/70">
           {String(index + 1).padStart(2, "0")}
         </div>
 
@@ -39,18 +39,18 @@ const ComponentCard = ({ entry, index }: { entry: ComponentEntry; index: number 
             <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground tracking-tight">
               {entry.name}
             </h2>
-            <span className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/25 uppercase border border-border/15 px-2 py-0.5">
+            <span className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase border border-border/15 px-2 py-0.5">
               {entry.tag}
             </span>
           </div>
-          <p className="font-mono text-[10px] text-muted-foreground/40 leading-relaxed max-w-xl">
+          <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed max-w-xl">
             {entry.description}
           </p>
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             {entry.tech.map((t) => (
               <span
                 key={t}
-                className="font-mono text-[8px] tracking-wider text-muted-foreground/20 uppercase"
+                className="font-mono text-[8px] tracking-wider text-muted-foreground/70 uppercase"
               >
                 {t}
               </span>
@@ -61,7 +61,7 @@ const ComponentCard = ({ entry, index }: { entry: ComponentEntry; index: number 
         {/* Toggle */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex-shrink-0 font-mono text-[9px] tracking-[0.2em] text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors uppercase border border-border/10 px-3 py-1.5 hover:border-border/25"
+          className="flex-shrink-0 font-mono text-[9px] tracking-[0.2em] text-muted-foreground/70 hover:text-muted-foreground/70 transition-colors uppercase border border-border/10 px-3 py-1.5 hover:border-border/25"
         >
           {expanded ? "Collapse" : "Expand"}
         </button>
@@ -74,11 +74,11 @@ const ComponentCard = ({ entry, index }: { entry: ComponentEntry; index: number 
           <div className="flex items-center justify-between px-4 py-2 border-b border-border/10 bg-background/50">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
-              <span className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/20 uppercase">
+              <span className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
                 {entry.id}
               </span>
             </div>
-            <span className="font-mono text-[8px] text-muted-foreground/15 uppercase">
+            <span className="font-mono text-[8px] text-muted-foreground/70 uppercase">
               Interactive Preview
             </span>
           </div>
@@ -149,14 +149,14 @@ const Experience = () => {
           <div className="mb-20">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-[1px] bg-border/20" />
-              <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/25 uppercase">
+              <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase">
                 Component Library
               </p>
             </div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mb-4">
               Interactive Systems
             </h1>
-            <p className="font-mono text-xs text-muted-foreground/40 max-w-lg leading-relaxed">
+            <p className="font-mono text-xs text-muted-foreground/70 max-w-lg leading-relaxed">
               A curated collection of cinematic, interactive components.
               Each module is self-contained, mouse-reactive, and built
               for high-fidelity visual storytelling.
@@ -171,7 +171,7 @@ const Experience = () => {
               ].map((stat) => (
                 <div key={stat.label}>
                   <p className="font-mono text-lg font-semibold text-foreground/80">{stat.value}</p>
-                  <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/25 uppercase mt-0.5">
+                  <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase mt-0.5">
                     {stat.label}
                   </p>
                 </div>
@@ -191,7 +191,7 @@ const Experience = () => {
 
         {/* Footer */}
         <div className="mt-32 pt-8 border-t border-border/10 text-center">
-          <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/15 uppercase">
+          <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             {components.length} components · WebGL + CSS 3D + Framer Motion
           </p>
         </div>

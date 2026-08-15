@@ -39,7 +39,7 @@ const AITimeline = ({ onSelectContributor }: Props) => {
                         style={{ backgroundColor: color }}
                       />
                       <div>
-                        <span className="font-mono text-[10px] text-muted-foreground/40 group-hover:text-muted-foreground transition-colors">
+                        <span className="font-mono text-[10px] text-muted-foreground/70 group-hover:text-muted-foreground transition-colors">
                           {contributor?.name || event.contributorId}
                         </span>
                         <p className="font-mono text-xs text-muted-foreground group-hover:text-foreground transition-colors leading-relaxed">

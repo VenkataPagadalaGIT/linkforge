@@ -45,13 +45,17 @@ const nextConfig = {
           },
         ],
       },
-      {
-        // Fingerprinted build assets never change under the same URL, so the
-        // revalidation round trip they were making on every page load bought
-        // nothing. Everything else keeps its default.
-        source: "/_next/static/:path*",
-        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
-      },
+      // Fingerprinted build assets never change under the same URL, so the
+      // revalidation round trip bought nothing. PRODUCTION ONLY: dev chunk
+      // URLs are stable across edits, so marking them immutable made every
+      // browser hydrate fresh HTML with year-old cached JS. That served
+      // stale pages on localhost no matter how hard anyone reloaded.
+      ...(process.env.NODE_ENV === "production"
+        ? [{
+            source: "/_next/static/:path*",
+            headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+          }]
+        : []),
       {
         // Posters, photos and the OG card change only on deploy: a day of
         // caching with revalidation is honest and stops the repeat fetches.

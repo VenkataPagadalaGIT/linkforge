@@ -44,7 +44,7 @@ const ResourceThumbnail = ({ url, fullWidth }: { url: string; fullWidth?: boolea
   if (!thumb) {
     return (
       <div className={`${sizeClass} border border-border flex items-center justify-center shrink-0 bg-muted/20 group-hover:border-foreground/30 transition-colors`}>
-        <Play size={fullWidth ? 24 : 16} className="text-muted-foreground/30 group-hover:text-foreground transition-colors" />
+        <Play size={fullWidth ? 24 : 16} className="text-muted-foreground/70 group-hover:text-foreground transition-colors" />
       </div>
     );
   }
@@ -141,12 +141,12 @@ const AIContributorProfilePage = () => {
         <div className="max-w-6xl mx-auto">
           {/* Breadcrumb */}
           <ScrollReveal>
-            <nav className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40 mb-10">
+            <nav className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-10">
               <Link to="/ai-contributors" className="hover:text-foreground transition-colors">
                 AI Notebook
               </Link>
               <span>/</span>
-              <span className="text-muted-foreground/60">{contributor.name}</span>
+              <span className="text-muted-foreground/70">{contributor.name}</span>
             </nav>
           </ScrollReveal>
 
@@ -193,7 +193,7 @@ const AIContributorProfilePage = () => {
                         href={photoCreditFor(contributor.id)!.source}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block mt-1 font-mono text-[8px] leading-tight text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors max-w-24"
+                        className="block mt-1 font-mono text-[8px] leading-tight text-muted-foreground/70 hover:text-muted-foreground/70 transition-colors max-w-24"
                       >
                         Photo: {photoCreditFor(contributor.id)!.author}, {photoCreditFor(contributor.id)!.license}
                       </a>
@@ -211,14 +211,14 @@ const AIContributorProfilePage = () => {
                     the legacy free-text string renders only where no verified
                     entry exists yet. */}
                 {contributor.photoCredit && !photoCreditFor(contributor.id) && (
-                  <p className="font-mono text-[8px] text-muted-foreground/25 mt-1 max-w-24 leading-tight">
+                  <p className="font-mono text-[8px] text-muted-foreground/70 mt-1 max-w-24 leading-tight">
                     {contributor.photoCredit}
                   </p>
                 )}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <span className="font-mono text-xs text-muted-foreground/30">#{contributor.rank}</span>
+                  <span className="font-mono text-xs text-muted-foreground/70">#{contributor.rank}</span>
                   <span
                     className="font-mono text-[10px] px-2 py-0.5 border uppercase tracking-wider"
                     style={{ borderColor: `${color}40`, color }}
@@ -244,42 +244,42 @@ const AIContributorProfilePage = () => {
           <ScrollReveal delay={30}>
             <div id="details" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 scroll-mt-24">
               <div className="border border-border p-4">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">Specialties</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Specialties</h3>
                 <div className="flex flex-wrap gap-1.5">
                   {contributor.specialty.map((s) => (
-                    <span key={s} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/60">{s}</span>
+                    <span key={s} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">{s}</span>
                   ))}
                 </div>
               </div>
               <div className="border border-border p-4">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">Location</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Location</h3>
                 <div className="flex items-center gap-2">
-                  <MapPin size={12} className="text-muted-foreground/30" />
+                  <MapPin size={12} className="text-muted-foreground/70" />
                   <span className="font-mono text-sm text-muted-foreground">{contributor.country}</span>
                 </div>
               </div>
               <div className="border border-border p-4">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">Education</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Education</h3>
                 <div className="flex items-start gap-2">
-                  <GraduationCap size={12} className="text-muted-foreground/30 mt-0.5 shrink-0" />
+                  <GraduationCap size={12} className="text-muted-foreground/70 mt-0.5 shrink-0" />
                   <span className="font-mono text-[11px] text-muted-foreground leading-relaxed">{contributor.education}</span>
                 </div>
               </div>
               {/* GitHub Stats */}
               {contributor.github && (contributor.githubFollowers || contributor.githubPinnedRepos) && (
                 <div className="border border-border p-4" id="github-stats">
-                  <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">
+                  <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">
                     <Github size={10} className="inline mr-1" />GitHub
                   </h3>
                   {contributor.githubFollowers && (
                     <div className="flex items-center gap-1.5 mb-2">
-                      <Users size={10} className="text-muted-foreground/40" />
+                      <Users size={10} className="text-muted-foreground/70" />
                       <span className="font-mono text-sm text-foreground/70">{contributor.githubFollowers} followers</span>
                     </div>
                   )}
                   {contributor.githubPinnedRepos && contributor.githubPinnedRepos.length > 0 && (
                     <div>
-                      <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-1.5">Pinned Repos</p>
+                      <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-1.5">Pinned Repos</p>
                       <div className="flex flex-wrap gap-1">
                         {contributor.githubPinnedRepos.map((repo) => (
                           <a
@@ -287,7 +287,7 @@ const AIContributorProfilePage = () => {
                             href={`${contributor.github}/${repo}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-mono text-[10px] border border-border px-2 py-0.5 text-muted-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors"
+                            className="font-mono text-[10px] border border-border px-2 py-0.5 text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-colors"
                           >
                             {repo}
                           </a>
@@ -299,7 +299,7 @@ const AIContributorProfilePage = () => {
               )}
               {/* Links & Profiles - inline in grid */}
               <div className="border border-border p-4 sm:col-span-2 lg:col-span-3" id="links">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">Links & Profiles</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Links & Profiles</h3>
                 <div className="flex flex-wrap gap-2">
                   {contributor.linkedin && (
                     <a href={contributor.linkedin} target="_blank" rel="noopener noreferrer"
@@ -346,7 +346,7 @@ const AIContributorProfilePage = () => {
           {contributor.milestones && contributor.milestones.length > 0 && (
             <ScrollReveal delay={40}>
               <div id="timeline" className="mb-10 scroll-mt-24">
-                <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                   Timeline
                 </h2>
                 <div className="relative pl-6">
@@ -357,7 +357,7 @@ const AIContributorProfilePage = () => {
                         className="absolute left-[-16px] top-1.5 w-3 h-3 border-2 bg-background rounded-full"
                         style={{ borderColor: color }}
                       />
-                      <span className="font-mono text-xs text-muted-foreground/30 shrink-0 w-10 font-bold">{m.year}</span>
+                      <span className="font-mono text-xs text-muted-foreground/70 shrink-0 w-10 font-bold">{m.year}</span>
                       <span className="font-mono text-sm text-muted-foreground leading-relaxed">{m.event}</span>
                     </div>
                   ))}
@@ -369,7 +369,7 @@ const AIContributorProfilePage = () => {
 
               {/* Mobile inline nav */}
               <div className="lg:hidden border border-border p-4 mb-6">
-                <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-2">Jump to Section</p>
+                <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-2">Jump to Section</p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {[
                     contributor.quote && { label: "Quote", id: "quote" },
@@ -381,19 +381,19 @@ const AIContributorProfilePage = () => {
                     contributor.featuredMedia?.length && { label: "Media", id: "media" },
                   ].filter(Boolean).map((item: any) => (
                     <a key={item.id} href={`#${item.id}`}
-                      className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors">
+                      className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-colors">
                       {item.label}
                     </a>
                   ))}
                 </div>
                 <div className="border-t border-border pt-3 flex flex-wrap items-center gap-1.5">
-                  <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mr-1">AI</span>
+                  <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mr-1">AI</span>
                   <a href={`https://chatgpt.com/?q=${encodeURIComponent(`Tell me about ${contributor.name}`)}`} target="_blank" rel="noopener noreferrer"
-                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/50 hover:text-foreground transition-colors">ChatGPT</a>
+                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/70 hover:text-foreground transition-colors">ChatGPT</a>
                   <a href={`https://www.perplexity.ai/search?q=${encodeURIComponent(`${contributor.name} AI researcher`)}`} target="_blank" rel="noopener noreferrer"
-                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/50 hover:text-foreground transition-colors">Perplexity</a>
+                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/70 hover:text-foreground transition-colors">Perplexity</a>
                   <a href={`https://gemini.google.com/app?q=${encodeURIComponent(`Tell me about ${contributor.name}`)}`} target="_blank" rel="noopener noreferrer"
-                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/50 hover:text-foreground transition-colors">Gemini</a>
+                    className="font-mono text-[9px] border border-border px-2 py-1 text-muted-foreground/70 hover:text-foreground transition-colors">Gemini</a>
                 </div>
               </div>
 
@@ -401,7 +401,7 @@ const AIContributorProfilePage = () => {
           {contributor.quote && (
             <ScrollReveal delay={50}>
               <div id="quote" className="border-l-2 border-foreground/20 pl-6 mb-10 scroll-mt-24">
-                <Quote size={16} className="text-muted-foreground/15 mb-2" />
+                <Quote size={16} className="text-muted-foreground/70 mb-2" />
                 <p className="font-mono text-sm text-foreground/70 italic leading-[1.9] max-w-2xl">
                   "{contributor.quote}"
                 </p>
@@ -412,7 +412,7 @@ const AIContributorProfilePage = () => {
           {/* ── Bio ── */}
           <ScrollReveal delay={100}>
             <div id="biography" className="mb-10 scroll-mt-24">
-              <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-4">Biography</h2>
+              <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-4">Biography</h2>
               <p className="font-mono text-sm text-muted-foreground leading-[1.9] max-w-3xl">
                 {contributor.longBio || contributor.bio}
               </p>
@@ -450,7 +450,7 @@ const AIContributorProfilePage = () => {
           {/* ── Key Influence ── */}
           <ScrollReveal delay={100}>
             <div id="influence" className="border border-border p-6 mb-10 scroll-mt-24">
-              <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-3">Key Influence</h2>
+              <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-3">Key Influence</h2>
               <p className="font-mono text-sm text-foreground/80 leading-relaxed">{contributor.keyInfluence}</p>
             </div>
           </ScrollReveal>
@@ -462,7 +462,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={100}>
                 <div id="papers" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     📄 Research Papers
                   </h2>
                   <div className="space-y-3">
@@ -474,13 +474,13 @@ const AIContributorProfilePage = () => {
                           <div className="flex-1">
                             <div className="flex items-start justify-between gap-2 mb-1">
                               <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">{res.title}</p>
-                              <ExternalLink size={10} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                              <ExternalLink size={10} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                             </div>
                             <div className="flex items-center gap-3 mb-2">
-                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/20">{res.year}</span>}
+                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/70">{res.year}</span>}
                             </div>
                             {res.description && (
-                              <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
+                              <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
                             )}
                           </div>
                         </div>
@@ -499,7 +499,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={100}>
                 <div id="videos" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     🎙️ Videos & Interviews
                   </h2>
                   <div className="space-y-3">
@@ -511,14 +511,14 @@ const AIContributorProfilePage = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2 mb-1">
                               <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">{res.title}</p>
-                              <ExternalLink size={10} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                              <ExternalLink size={10} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                             </div>
                             <div className="flex items-center gap-3 mb-2">
-                              <span className="font-mono text-[9px] text-muted-foreground/30 capitalize">{res.type}</span>
-                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/20">{res.year}</span>}
+                              <span className="font-mono text-[9px] text-muted-foreground/70 capitalize">{res.type}</span>
+                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/70">{res.year}</span>}
                             </div>
                             {res.description && (
-                              <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
+                              <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
                             )}
                           </div>
                         </div>
@@ -537,7 +537,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={100}>
                 <div id="podcasts-res" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     🎧 Podcasts
                   </h2>
                   <div className="space-y-3">
@@ -549,13 +549,13 @@ const AIContributorProfilePage = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2 mb-1">
                               <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">{res.title}</p>
-                              <ExternalLink size={10} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                              <ExternalLink size={10} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                             </div>
                             <div className="flex items-center gap-3 mb-2">
-                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/20">{res.year}</span>}
+                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/70">{res.year}</span>}
                             </div>
                             {res.description && (
-                              <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
+                              <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
                             )}
                           </div>
                         </div>
@@ -576,7 +576,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={80}>
                 <div id="in-the-news" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     📰 In the News
                   </h2>
                   <div className="space-y-3">
@@ -584,8 +584,8 @@ const AIContributorProfilePage = () => {
                       <Link key={u.slug} to={`/ai-updates/${u.slug}`}
                         className="block border border-border p-5 hover:border-foreground/20 transition-all group">
                         <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all mb-1">{u.title}</p>
-                        <p className="font-mono text-[9px] text-muted-foreground/30 mb-2">{u.date}</p>
-                        <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed">{u.summary}</p>
+                        <p className="font-mono text-[9px] text-muted-foreground/70 mb-2">{u.date}</p>
+                        <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed">{u.summary}</p>
                       </Link>
                     ))}
                   </div>
@@ -607,7 +607,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={90}>
                 <div id="in-the-roadmap" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     🗺️ In the Learning Roadmap
                   </h2>
                   <div className="space-y-2">
@@ -615,11 +615,11 @@ const AIContributorProfilePage = () => {
                       <a key={r.url} href={r.url} target="_blank" rel="noopener noreferrer"
                         className="flex items-baseline gap-2 border border-border p-3 hover:border-foreground/20 transition-all group">
                         <span className="font-mono text-[11px] text-foreground group-hover:text-glow transition-all flex-1">{r.title}</span>
-                        <span className="font-mono text-[9px] text-muted-foreground/30 shrink-0">{r.topicTitle}</span>
+                        <span className="font-mono text-[9px] text-muted-foreground/70 shrink-0">{r.topicTitle}</span>
                       </a>
                     ))}
                   </div>
-                  <Link to="/notebook/ai/roadmap" className="inline-block mt-3 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors">
+                  <Link to="/notebook/ai/roadmap" className="inline-block mt-3 font-mono text-[10px] text-muted-foreground/70 hover:text-foreground transition-colors">
                     See the full free roadmap →
                   </Link>
                 </div>
@@ -633,7 +633,7 @@ const AIContributorProfilePage = () => {
             return (
               <ScrollReveal delay={100}>
                 <div id="other-resources" className="mb-10 scroll-mt-24">
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                     📚 Other Resources
                   </h2>
                   <div className="space-y-3">
@@ -645,14 +645,14 @@ const AIContributorProfilePage = () => {
                           <div className="flex-1">
                             <div className="flex items-start justify-between gap-2 mb-1">
                               <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">{res.title}</p>
-                              <ExternalLink size={10} className="text-muted-foreground/20 group-hover:text-foreground/40 shrink-0 mt-1" />
+                              <ExternalLink size={10} className="text-muted-foreground/70 group-hover:text-foreground/40 shrink-0 mt-1" />
                             </div>
                             <div className="flex items-center gap-3 mb-2">
-                              <span className="font-mono text-[9px] text-muted-foreground/30 capitalize">{res.type}</span>
-                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/20">{res.year}</span>}
+                              <span className="font-mono text-[9px] text-muted-foreground/70 capitalize">{res.type}</span>
+                              {res.year && <span className="font-mono text-[9px] text-muted-foreground/70">{res.year}</span>}
                             </div>
                             {res.description && (
-                              <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
+                              <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">{res.description}</p>
                             )}
                           </div>
                         </div>
@@ -668,7 +668,7 @@ const AIContributorProfilePage = () => {
           {contributor.featuredMedia && contributor.featuredMedia.length > 0 && (
             <ScrollReveal delay={100}>
               <div id="media" className="mb-10 scroll-mt-24">
-                <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-6">
                   🎬 Featured Media
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -685,18 +685,18 @@ const AIContributorProfilePage = () => {
                         <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all mb-1 line-clamp-2">
                           {media.title}
                         </p>
-                        <p className="font-mono text-[10px] text-muted-foreground/40 mb-1">
+                        <p className="font-mono text-[10px] text-muted-foreground/70 mb-1">
                           {media.host}
                         </p>
                         <div className="flex items-center gap-3">
-                          <span className="font-mono text-[9px] text-muted-foreground/20 capitalize">{media.type}</span>
+                          <span className="font-mono text-[9px] text-muted-foreground/70 capitalize">{media.type}</span>
                           {media.duration && (
-                            <span className="flex items-center gap-1 font-mono text-[9px] text-muted-foreground/20">
+                            <span className="flex items-center gap-1 font-mono text-[9px] text-muted-foreground/70">
                               <Clock size={8} /> {media.duration}
                             </span>
                           )}
                           {media.year && (
-                            <span className="font-mono text-[9px] text-muted-foreground/20">{media.year}</span>
+                            <span className="font-mono text-[9px] text-muted-foreground/70">{media.year}</span>
                           )}
                         </div>
                       </div>
@@ -711,9 +711,9 @@ const AIContributorProfilePage = () => {
           {contributor.awards && (
             <ScrollReveal delay={100}>
               <div id="awards" className="border border-border p-5 mb-10 scroll-mt-24">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-2">Awards & Recognition</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-2">Awards & Recognition</h3>
                 <div className="flex items-start gap-2">
-                  <Award size={12} className="text-muted-foreground/30 mt-0.5 shrink-0" />
+                  <Award size={12} className="text-muted-foreground/70 mt-0.5 shrink-0" />
                   <span className="font-mono text-sm text-muted-foreground leading-relaxed">{contributor.awards}</span>
                 </div>
               </div>
@@ -724,7 +724,7 @@ const AIContributorProfilePage = () => {
           {(contributorToRoadmap[contributor.id] || contributorToEncyclopedia[contributor.id]) && (
             <ScrollReveal delay={100}>
               <div id="related-content" className="border border-border p-5 mb-10 scroll-mt-24">
-                <h3 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-3">Explore Related Content</h3>
+                <h3 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-3">Explore Related Content</h3>
                 <CrossLinks
                   relatedTopics={contributorToRoadmap[contributor.id]}
                   relatedConcepts={contributorToEncyclopedia[contributor.id]}
@@ -738,8 +738,8 @@ const AIContributorProfilePage = () => {
             <ScrollReveal delay={100}>
               <div id="connections" className="mb-10 scroll-mt-24">
                 <div className="flex items-center gap-2 mb-6">
-                  <Link2 size={14} className="text-muted-foreground/30" />
-                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+                  <Link2 size={14} className="text-muted-foreground/70" />
+                  <h2 className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">
                     Connected Contributors
                   </h2>
                 </div>
@@ -763,7 +763,7 @@ const AIContributorProfilePage = () => {
                           <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">
                             {c.name}
                           </p>
-                          <p className="font-mono text-[9px] text-muted-foreground/30">
+                          <p className="font-mono text-[9px] text-muted-foreground/70">
                             #{c.rank} · {c.segment}
                           </p>
                         </div>
@@ -784,13 +784,13 @@ const AIContributorProfilePage = () => {
                   className="border border-border p-4 hover:border-foreground/20 transition-all group"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <ArrowLeft size={12} className="text-muted-foreground/30" />
-                    <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest">Previous</span>
+                    <ArrowLeft size={12} className="text-muted-foreground/70" />
+                    <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">Previous</span>
                   </div>
                   <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">
                     {prev.name}
                   </p>
-                  <p className="font-mono text-[9px] text-muted-foreground/30">#{prev.rank}</p>
+                  <p className="font-mono text-[9px] text-muted-foreground/70">#{prev.rank}</p>
                 </Link>
               ) : <div />}
               {next ? (
@@ -799,13 +799,13 @@ const AIContributorProfilePage = () => {
                   className="border border-border p-4 hover:border-foreground/20 transition-all group text-right"
                 >
                   <div className="flex items-center gap-2 mb-1 justify-end">
-                    <span className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest">Next</span>
-                    <ArrowRight size={12} className="text-muted-foreground/30" />
+                    <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">Next</span>
+                    <ArrowRight size={12} className="text-muted-foreground/70" />
                   </div>
                   <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all">
                     {next.name}
                   </p>
-                  <p className="font-mono text-[9px] text-muted-foreground/30">#{next.rank}</p>
+                  <p className="font-mono text-[9px] text-muted-foreground/70">#{next.rank}</p>
                 </Link>
               ) : <div />}
             </div>

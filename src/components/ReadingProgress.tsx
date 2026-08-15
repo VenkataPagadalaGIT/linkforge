@@ -23,7 +23,7 @@ const ReadingProgress = ({ exploredIds }: Props) => {
     <div className="border border-border p-6">
       {/* Overall */}
       <div className="flex items-center justify-between mb-2">
-        <span className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">Your Progress</span>
+        <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">Your Progress</span>
         <span className="font-mono text-sm font-bold text-foreground">{explored}/{total}</span>
       </div>
       <div className="h-2 bg-border mb-6">
@@ -45,11 +45,11 @@ const ReadingProgress = ({ exploredIds }: Props) => {
                   {data.explored === data.total ? (
                     <CheckCircle2 size={10} style={{ color }} />
                   ) : (
-                    <Circle size={10} className="text-muted-foreground/20" />
+                    <Circle size={10} className="text-muted-foreground/70" />
                   )}
-                  <span className="font-mono text-[9px] text-muted-foreground/50">{segment}</span>
+                  <span className="font-mono text-[9px] text-muted-foreground/70">{segment}</span>
                 </div>
-                <span className="font-mono text-[9px] text-muted-foreground/30">{data.explored}/{data.total}</span>
+                <span className="font-mono text-[9px] text-muted-foreground/70">{data.explored}/{data.total}</span>
               </div>
               <div className="h-0.5 bg-border ml-5">
                 <div

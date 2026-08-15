@@ -54,7 +54,7 @@ const Solutions = () => {
 
             <div id="all-solutions" className="mt-20 scroll-mt-28">
               <ScrollReveal>
-                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-8">
+                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-8">
                   All Solutions
                 </p>
               </ScrollReveal>
@@ -69,30 +69,30 @@ const Solutions = () => {
                       <div className="flex items-start justify-between gap-6">
                         <div className="flex-1">
                           <div className="flex items-center gap-4 mb-2">
-                            <span className="font-mono text-[10px] text-muted-foreground/30">
+                            <span className="font-mono text-[10px] text-muted-foreground/70">
                               {String(i + 1).padStart(2, "0")}
                             </span>
                             <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground group-hover:text-glow transition-all">
                               {service.title}
                             </h2>
                           </div>
-                          <p className="font-mono text-xs text-muted-foreground/50 mb-5 ml-10">
+                          <p className="font-mono text-xs text-muted-foreground/70 mb-5 ml-10">
                             {service.tagline}
                           </p>
                           <div className="flex flex-wrap gap-2 ml-10">
                             {service.items.slice(0, 5).map((item) => (
-                              <span key={item} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/60">
+                              <span key={item} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/70">
                                 {item}
                               </span>
                             ))}
                             {service.items.length > 5 && (
-                              <span className="font-mono text-[10px] px-3 py-1 text-muted-foreground/30">
+                              <span className="font-mono text-[10px] px-3 py-1 text-muted-foreground/70">
                                 +{service.items.length - 5} more
                               </span>
                             )}
                           </div>
                         </div>
-                        <ArrowRight size={18} className="text-muted-foreground/30 group-hover:text-foreground transition-all mt-2 flex-shrink-0" />
+                        <ArrowRight size={18} className="text-muted-foreground/70 group-hover:text-foreground transition-all mt-2 flex-shrink-0" />
                       </div>
                     </Link>
                   </ScrollReveal>

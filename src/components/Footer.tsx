@@ -45,14 +45,14 @@ const Footer = () => {
             <Link to="/" className="font-display text-lg font-bold text-foreground">
               Venkata Pagadala
             </Link>
-            <p className="font-mono text-[11px] text-muted-foreground/60 mt-3 leading-relaxed">
+            <p className="font-mono text-[11px] text-muted-foreground/70 mt-3 leading-relaxed">
               AI Systems Builder & Researcher. Production AI, business intelligence, and enterprise search at scale.
             </p>
             <div className="flex items-center gap-4 mt-4">
-              <a href="https://www.linkedin.com/in/venkata-pagadala/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground transition-colors">
+              <a href="https://www.linkedin.com/in/venkata-pagadala/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/70 hover:text-foreground transition-colors">
                 <Linkedin size={14} />
               </a>
-              <a href="mailto:vdepagadala@gmail.com" className="text-muted-foreground/40 hover:text-foreground transition-colors">
+              <a href="mailto:vdepagadala@gmail.com" className="text-muted-foreground/70 hover:text-foreground transition-colors">
                 <MailIcon size={14} />
               </a>
             </div>
@@ -60,11 +60,11 @@ const Footer = () => {
 
           {/* Navigation */}
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">Navigate</p>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-4">Navigate</p>
             <ul className="space-y-2">
               {links.map((link) => (
                 <li key={link.to}>
-                  <Link to={link.to} className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors">
+                  <Link to={link.to} className="font-mono text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -74,11 +74,11 @@ const Footer = () => {
 
           {/* AI Notebook */}
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">AI Notebook</p>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-4">AI Notebook</p>
             <ul className="space-y-2">
               {notebookLinks.map((link) => (
                 <li key={link.to + link.label}>
-                  <Link to={link.to} className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors">
+                  <Link to={link.to} className="font-mono text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -89,7 +89,7 @@ const Footer = () => {
           {/* Published research: direct links, because a citation nobody can
               open is indistinguishable from a claim */}
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">Research</p>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-4">Research</p>
             <ul className="space-y-2">
               {linkedPapers.map((paper) => (
                 <li key={paper.url}>
@@ -97,14 +97,14 @@ const Footer = () => {
                     href={paper.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors"
+                    className="font-mono text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
                     {paper.shortTitle}
                   </a>
                 </li>
               ))}
               <li>
-                <Link to="/publications" className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors">
+                <Link to="/publications" className="font-mono text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors">
                   All publications
                 </Link>
               </li>
@@ -112,11 +112,11 @@ const Footer = () => {
           </div>
 
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">For Machines</p>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-4">For Machines</p>
             <ul className="space-y-2">
               {files.map((f) => (
                 <li key={f.name}>
-                  <a href={f.path} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors">
+                  <a href={f.path} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] text-muted-foreground/70 hover:text-foreground transition-colors">
                     {f.name}
                   </a>
                 </li>
@@ -126,8 +126,8 @@ const Footer = () => {
 
           {/* CTA */}
           <div>
-            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase mb-4">Newsletter</p>
-            <p className="font-mono text-[11px] text-muted-foreground/60 leading-relaxed mb-3">
+            <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/70 uppercase mb-4">Newsletter</p>
+            <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mb-3">
               Get AI & SEO insights delivered to your inbox.
             </p>
             <KitSignupForm />
@@ -142,10 +142,10 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="border-t border-border/50 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="font-mono text-[10px] text-muted-foreground/30">
+          <span className="font-mono text-[10px] text-muted-foreground/70">
             © {new Date().getFullYear()} Venkata Pagadala. All rights reserved.
           </span>
-          <span className="font-mono text-[10px] text-muted-foreground/20">
+          <span className="font-mono text-[10px] text-muted-foreground/70">
             Atlanta, GA · 33.7490° N, 84.3880° W
           </span>
         </div>

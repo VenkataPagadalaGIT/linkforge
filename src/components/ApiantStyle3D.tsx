@@ -414,13 +414,13 @@ const ApiantStyle3D = () => {
     <div className="relative">
       {/* Header */}
       <div className="text-center mb-8">
-        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/30 uppercase mb-3">
+        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase mb-3">
           [ Integration Matrix ]
         </p>
         <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3 tracking-tight">
           System Assembly
         </h2>
-        <p className="font-mono text-[10px] text-muted-foreground/40 max-w-lg mx-auto leading-relaxed">
+        <p className="font-mono text-[10px] text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">
           Modular AI subsystems self-organize above the deployment platform.
           Move your cursor to inspect the orbital field.
         </p>
@@ -468,18 +468,18 @@ const ApiantStyle3D = () => {
 
         {/* HUD corners */}
         <div className="absolute top-4 left-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/15 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             PLATFORM.ACTIVE
           </p>
         </div>
         <div className="absolute top-4 right-4 z-10 pointer-events-none flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-orange-500/60 animate-pulse" />
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/20 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             LIVE
           </p>
         </div>
         <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/10 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             13 MODULES LOADED
           </p>
         </div>

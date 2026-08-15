@@ -35,16 +35,16 @@ interface NoteRecord {
 }
 
 const trackColor: Record<string, string> = {
-  "The Science": "border-amber-400/40 text-amber-300/90",
-  "The Psychology": "border-fuchsia-400/40 text-fuchsia-300/90",
-  "The Ecosystem": "border-emerald-400/40 text-emerald-300/90",
-  "The Future": "border-sky-400/40 text-sky-300/90",
+  "The Science": "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
+  "The Psychology": "border-fuchsia-400/40 text-fuchsia-700/90 dark:text-fuchsia-300/90",
+  "The Ecosystem": "border-emerald-400/40 text-emerald-700/90 dark:text-emerald-300/90",
+  "The Future": "border-sky-400/40 text-sky-700/90 dark:text-sky-300/90",
 };
 
 const sessionTypeStyle: Record<string, string> = {
-  keynote: "border-amber-400/40 text-amber-300/90",
+  keynote: "border-amber-400/40 text-amber-700/90 dark:text-amber-300/90",
   talk: "border-foreground/30 text-foreground/80",
-  panel: "border-fuchsia-400/40 text-fuchsia-300/90",
+  panel: "border-fuchsia-400/40 text-fuchsia-700/90 dark:text-fuchsia-300/90",
 };
 
 const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
@@ -166,7 +166,7 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
                       .map((n) => n[0])
                       .join("")}
                   />
-                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40" data-testid="speaker-photo-source">
+                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70" data-testid="speaker-photo-source">
                     {(() => {
                       const src = photoSourceFor(speaker.slug);
                       if (src === "seoweek") return "Photo · seoweek.org";
@@ -178,8 +178,8 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
 
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <Mic size={16} className="text-muted-foreground/50" />
-                    <p className="font-mono text-[11px] text-muted-foreground/50 uppercase tracking-[0.3em]">
+                    <Mic size={16} className="text-muted-foreground/70" />
+                    <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em]">
                       Speaker Profile
                     </p>
                   </div>
@@ -253,7 +253,7 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
           <section id="about" className="scroll-mt-28 mb-14">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-5">
-                <Sparkles size={14} className="text-muted-foreground/50" />
+                <Sparkles size={14} className="text-muted-foreground/70" />
                 <h2 className="font-display text-xl font-bold text-foreground">About</h2>
               </div>
               <p
@@ -269,13 +269,13 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
           <section id="talks" className="scroll-mt-28 mb-14">
             <ScrollReveal>
               <div className="flex items-center gap-2 mb-5">
-                <BookOpen size={14} className="text-muted-foreground/50" />
+                <BookOpen size={14} className="text-muted-foreground/70" />
                 <h2 className="font-display text-xl font-bold text-foreground">
                   Talks · {talks.length}
                 </h2>
               </div>
               {talks.length === 0 ? (
-                <p className="font-mono text-xs text-muted-foreground/60 border border-dashed border-border/50 px-4 py-6">
+                <p className="font-mono text-xs text-muted-foreground/70 border border-dashed border-border/50 px-4 py-6">
                   No talks indexed yet.
                 </p>
               ) : (
@@ -300,8 +300,8 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
         <PageSidebar sections={tocSections} shareTitle={speaker.name}>
           <div className="mt-8 border border-border p-4">
             <div className="flex items-center gap-2 mb-2">
-              <NotebookIcon size={11} className="text-muted-foreground/50" />
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+              <NotebookIcon size={11} className="text-muted-foreground/70" />
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
                 Notes Status
               </p>
             </div>
@@ -336,19 +336,19 @@ const TalkCard = ({
     >
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <span
-          className={`font-mono text-[8px] tracking-[0.2em] uppercase border px-1.5 py-0.5 ${sessionTypeStyle[talk.type] || "border-border text-muted-foreground/60"}`}
+          className={`font-mono text-[8px] tracking-[0.2em] uppercase border px-1.5 py-0.5 ${sessionTypeStyle[talk.type] || "border-border text-muted-foreground/70"}`}
         >
           {talk.type}
         </span>
-        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60">
+        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground/70">
           {talk.conferenceName} {talk.conferenceEdition || ""}
         </span>
-        <span className="font-mono text-[10px] text-muted-foreground/50">·</span>
-        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/60">
+        <span className="font-mono text-[10px] text-muted-foreground/70">·</span>
+        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70">
           <CalendarDays size={10} /> {talk.dayDate}
         </span>
-        <span className="font-mono text-[10px] text-muted-foreground/50">·</span>
-        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/60">
+        <span className="font-mono text-[10px] text-muted-foreground/70">·</span>
+        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70">
           <MapPin size={10} /> {talk.city}
         </span>
       </div>

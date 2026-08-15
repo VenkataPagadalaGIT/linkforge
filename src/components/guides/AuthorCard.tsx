@@ -53,7 +53,7 @@ const AuthorCard = ({ author, dateModified, readingTime }: Props) => {
         {initials}
       </Link>
       <div className="flex-1 min-w-0">
-        <p className="font-mono text-[10px] text-muted-foreground/50 uppercase tracking-widest mb-1">
+        <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">
           Written by
         </p>
         <p className="font-mono text-sm text-foreground">
@@ -77,7 +77,7 @@ const AuthorCard = ({ author, dateModified, readingTime }: Props) => {
         >
           {author.bio}
         </p>
-        <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
+        <p className="font-mono text-[10px] text-muted-foreground/70 mt-2">
           {readingTime}
           <span aria-hidden="true"> · </span>
           Updated{" "}

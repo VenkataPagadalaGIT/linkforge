@@ -20,7 +20,7 @@ const RelationList = ({ title, arrow, items, tone }: { title: string; arrow: str
   if (!items.length) return null;
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 mb-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
         {title} <span className={tone}>{arrow}</span> · {items.length}
       </p>
       <div className="space-y-1.5">
@@ -35,8 +35,8 @@ const RelationList = ({ title, arrow, items, tone }: { title: string; arrow: str
             </span>
             <span className="flex-1 min-w-0">
               <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">{r.node.name}</span>
-              {r.node.chokepoint && <span className="text-amber-300 text-[10px] ml-1">⬦</span>}
-              {r.note && <span className="block font-mono text-[10px] text-muted-foreground/60 leading-relaxed">{r.note}</span>}
+              {r.node.chokepoint && <span className="text-amber-700 dark:text-amber-300 text-[10px] ml-1">⬦</span>}
+              {r.note && <span className="block font-mono text-[10px] text-muted-foreground/70 leading-relaxed">{r.note}</span>}
             </span>
           </Link>
         ))}
@@ -79,11 +79,11 @@ export default function AiNodeView({ id }: { id: string }) {
             <span className="px-1.5 py-0.5 text-black font-bold" style={{ background: layer.color }}>
               L{layer.id} · {layer.short}
             </span>
-            <span className="text-muted-foreground/60 border border-border px-2 py-0.5">{NODE_TYPE_META[node.type].label}</span>
-            {node.chokepoint && <span className="text-amber-300 border border-amber-400/40 px-2 py-0.5">⬦ Chokepoint</span>}
-            {node.hq && <span className="text-muted-foreground/50">{node.hq}</span>}
+            <span className="text-muted-foreground/70 border border-border px-2 py-0.5">{NODE_TYPE_META[node.type].label}</span>
+            {node.chokepoint && <span className="text-amber-700 dark:text-amber-300 border border-amber-400/40 px-2 py-0.5">⬦ Chokepoint</span>}
+            {node.hq && <span className="text-muted-foreground/70">{node.hq}</span>}
             {node.ticker && node.ticker !== "private" && node.ticker !== "nonprofit" && (
-              <span className="text-muted-foreground/50">{node.ticker}</span>
+              <span className="text-muted-foreground/70">{node.ticker}</span>
             )}
           </div>
 
@@ -111,7 +111,7 @@ export default function AiNodeView({ id }: { id: string }) {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12">
               {node.keyFacts.map((f, i) => (
                 <div key={i} className="border border-border p-4">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1">{f.label}</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">{f.label}</p>
                   <p className="font-display text-sm font-bold text-foreground">{f.value}</p>
                 </div>
               ))}
@@ -140,15 +140,15 @@ export default function AiNodeView({ id }: { id: string }) {
         {/* Relationships */}
         <ScrollReveal>
           <section className="grid md:grid-cols-2 gap-8 mb-14">
-            <RelationList title="Depends on" arrow="↑" items={up} tone="text-emerald-300" />
-            <RelationList title="Feeds" arrow="↓" items={down} tone="text-sky-300" />
+            <RelationList title="Depends on" arrow="↑" items={up} tone="text-emerald-700 dark:text-emerald-300" />
+            <RelationList title="Feeds" arrow="↓" items={down} tone="text-sky-700 dark:text-sky-300" />
           </section>
         </ScrollReveal>
 
         {context.length > 0 && (
           <ScrollReveal>
             <section className="mb-14">
-              <RelationList title="Context — capital, rivals, policy" arrow="·" items={context} tone="text-fuchsia-300" />
+              <RelationList title="Context — capital, rivals, policy" arrow="·" items={context} tone="text-fuchsia-700 dark:text-fuchsia-300" />
             </section>
           </ScrollReveal>
         )}
@@ -157,13 +157,13 @@ export default function AiNodeView({ id }: { id: string }) {
         {news.length > 0 && (
           <ScrollReveal>
             <section className="mb-14">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 mb-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-4">
                 In the news · {news.length}
               </p>
               <div className="space-y-2">
                 {news.map((u) => (
                   <Link key={u.id} to={`/ai-updates/${u.slug}`} className="group block border border-border p-4 hover:border-foreground/30 transition-all">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
                       {u.company} · {u.date}
                     </p>
                     <p className="font-display text-sm font-bold text-foreground group-hover:text-glow">{u.title}</p>

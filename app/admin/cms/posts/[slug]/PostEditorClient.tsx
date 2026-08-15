@@ -286,7 +286,7 @@ export default function PostEditorClient({ slug }: { slug: string }) {
                 className="w-full bg-background border border-foreground/15 px-3 py-2 text-sm font-mono leading-relaxed min-h-[480px] resize-vertical focus:border-foreground/40 outline-none"
                 data-testid="cms-content-textarea"
               />
-              <div className="text-[11px] text-muted-foreground/60 mt-1.5 font-mono">
+              <div className="text-[11px] text-muted-foreground/70 mt-1.5 font-mono">
                 {form.content.length} chars · ~{Math.max(1, Math.round((form.content.match(/\b\w+\b/g) || []).length / 230))} min read
               </div>
             </>
@@ -431,6 +431,6 @@ const Field = ({ label, hint, children }: { label: string; hint?: string; childr
   <div className="mb-3">
     <label className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">{label}</label>
     {children}
-    {hint && <div className="text-[10px] text-muted-foreground/60 mt-0.5">{hint}</div>}
+    {hint && <div className="text-[10px] text-muted-foreground/70 mt-0.5">{hint}</div>}
   </div>
 );

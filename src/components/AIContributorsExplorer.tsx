@@ -51,10 +51,10 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
   const SortHeader = ({ label, sortId, className = "" }: { label: string; sortId: SortKey; className?: string }) => (
     <button
       onClick={() => handleSort(sortId)}
-      className={`flex items-center gap-1 font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest hover:text-muted-foreground transition-colors ${className}`}
+      className={`flex items-center gap-1 font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest hover:text-muted-foreground transition-colors ${className}`}
     >
       {label}
-      <ArrowUpDown size={9} className={sortKey === sortId ? "text-foreground/50" : "text-muted-foreground/20"} />
+      <ArrowUpDown size={9} className={sortKey === sortId ? "text-foreground/50" : "text-muted-foreground/70"} />
     </button>
   );
 
@@ -63,13 +63,13 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search contributors..."
-            className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/25 focus:outline-none focus:border-foreground/20 transition-colors"
+            className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/20 transition-colors"
           />
         </div>
         <select
@@ -95,7 +95,7 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
       </div>
 
       {/* Count */}
-      <p className="font-mono text-[10px] text-muted-foreground/30 mb-4 tracking-wider">
+      <p className="font-mono text-[10px] text-muted-foreground/70 mb-4 tracking-wider">
         {filtered.length} contributor{filtered.length !== 1 ? "s" : ""}
       </p>
 
@@ -105,7 +105,7 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
         <SortHeader label="Name" sortId="name" />
         <SortHeader label="Affiliation" sortId="affiliation" />
         <SortHeader label="Segment" sortId="segment" />
-        <span className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">Type</span>
+        <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">Type</span>
         <span />
       </div>
 
@@ -142,13 +142,13 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
                 <p className="font-mono text-sm text-foreground group-hover:text-foreground truncate">
                   {contributor.name}
                 </p>
-                <p className="sm:hidden font-mono text-[10px] text-muted-foreground/40 truncate">
+                <p className="sm:hidden font-mono text-[10px] text-muted-foreground/70 truncate">
                   {contributor.affiliation}
                 </p>
               </div>
 
               {/* Affiliation */}
-              <p className="hidden sm:block font-mono text-[11px] text-muted-foreground/50 truncate">
+              <p className="hidden sm:block font-mono text-[11px] text-muted-foreground/70 truncate">
                 {contributor.affiliation}
               </p>
 
@@ -161,12 +161,12 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
               </span>
 
               {/* Type */}
-              <span className="hidden sm:block font-mono text-[10px] text-muted-foreground/30">
+              <span className="hidden sm:block font-mono text-[10px] text-muted-foreground/70">
                 {contributor.expertType}
               </span>
 
               {/* Arrow */}
-              <ChevronRight size={14} className="hidden sm:block text-muted-foreground/15 group-hover:text-muted-foreground/40 transition-colors" />
+              <ChevronRight size={14} className="hidden sm:block text-muted-foreground/70 group-hover:text-muted-foreground/70 transition-colors" />
             </Link>
           );
         })}
@@ -174,7 +174,7 @@ const AIContributorsExplorer = ({ onExplore }: Props) => {
 
       {filtered.length === 0 && (
         <div className="text-center py-16">
-          <p className="font-mono text-xs text-muted-foreground/30">No contributors match your search</p>
+          <p className="font-mono text-xs text-muted-foreground/70">No contributors match your search</p>
         </div>
       )}
     </div>

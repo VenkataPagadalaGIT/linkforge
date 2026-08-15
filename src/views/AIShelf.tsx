@@ -18,7 +18,7 @@ function BookList({ compact = false }: { compact?: boolean }) {
     <ol className="border border-border divide-y divide-border/60">
       {shelfBooks.map((b, i) => (
         <li key={b.id} className="p-4 sm:p-5 flex items-start gap-4">
-          <span className="font-mono text-[10px] text-muted-foreground/30 pt-1 w-6 shrink-0 tabular-nums">
+          <span className="font-mono text-[10px] text-muted-foreground/70 pt-1 w-6 shrink-0 tabular-nums">
             {String(i + 1).padStart(2, "0")}
           </span>
           <div className="min-w-0 flex-1">
@@ -30,7 +30,7 @@ function BookList({ compact = false }: { compact?: boolean }) {
             >
               {b.title}
             </a>
-            <p className="font-mono text-[11px] text-muted-foreground/60 mt-0.5">
+            <p className="font-mono text-[11px] text-muted-foreground/70 mt-0.5">
               {b.author}
               {b.contributorId && (
                 <>
@@ -44,7 +44,7 @@ function BookList({ compact = false }: { compact?: boolean }) {
                 </>
               )}
               {" · "}
-              <span className="text-muted-foreground/40">{b.topic}</span>
+              <span className="text-muted-foreground/70">{b.topic}</span>
             </p>
             {!compact && (
               <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-1.5">
@@ -52,7 +52,7 @@ function BookList({ compact = false }: { compact?: boolean }) {
               </p>
             )}
           </div>
-          <span className="font-mono text-[9px] text-muted-foreground/40 uppercase tracking-widest border border-border/60 px-2 py-1 shrink-0 hidden sm:block">
+          <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest border border-border/60 px-2 py-1 shrink-0 hidden sm:block">
             free
           </span>
         </li>
@@ -102,7 +102,7 @@ export default function AIShelf() {
             chapters, and nothing pirated: these are books the authors and publishers put
             online themselves.
           </p>
-          <p className="font-mono text-xs text-muted-foreground/50 mb-10">
+          <p className="font-mono text-xs text-muted-foreground/70 mb-10">
             Drag, scroll or use the arrow keys to move along the shelf. Click a spine to
             pull the book out, then orbit and zoom it. Reviewed August 2026.
           </p>
@@ -131,7 +131,7 @@ export default function AIShelf() {
               </div>
             ))}
           </div>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mb-10">
+          <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mb-10">
             The interaction design of this shelf is inspired by{" "}
             <a
               href="https://play.mint.gg/complete-shelf"
@@ -163,7 +163,7 @@ export default function AIShelf() {
                 className="border border-border p-4 hover:bg-secondary/20 border-glow-hover transition-all"
               >
                 <p className="font-display text-sm font-bold text-foreground mb-1">{c.label} →</p>
-                <p className="font-mono text-[10px] text-muted-foreground/60 leading-relaxed">{c.note}</p>
+                <p className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed">{c.note}</p>
               </Link>
             ))}
           </div>

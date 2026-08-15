@@ -44,7 +44,7 @@ const Contact = () => {
               <ScrollReveal>
                 <div className="space-y-8">
                   <div id="send-message" className="scroll-mt-28">
-                    <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-3 font-mono">Send a Message</span>
+                    <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-3 font-mono">Send a Message</span>
                     <div className="border border-border/40 px-6 py-5">
                       <ContactForm />
                     </div>
@@ -57,7 +57,7 @@ const Contact = () => {
                     >
                       <Mail size={18} className="group-hover:text-foreground transition-all" />
                       <div>
-                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-1">Email</span>
+                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-1">Email</span>
                         vdepagadala@gmail.com
                       </div>
                     </a>
@@ -72,7 +72,7 @@ const Contact = () => {
                     >
                       <Linkedin size={18} className="group-hover:text-foreground transition-all" />
                       <div>
-                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-1">Follow & Connect</span>
+                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-1">Follow & Connect</span>
                         linkedin.com/in/venkata-pagadala
                       </div>
                     </a>
@@ -92,7 +92,7 @@ const Contact = () => {
                     <div className="flex items-center gap-4 font-mono text-sm text-muted-foreground border border-border/40 px-6 py-4">
                       <MapPin size={18} />
                       <div>
-                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-1">Location</span>
+                        <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-1">Location</span>
                         Atlanta, GA
                       </div>
                     </div>
@@ -100,7 +100,7 @@ const Contact = () => {
 
                   <div id="newsletter" className="scroll-mt-28">
                     <div className="border border-border/40 px-6 py-4">
-                      <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/50 mb-3 font-mono">Subscribe to Newsletter</span>
+                      <span className="block text-[10px] tracking-widest uppercase text-muted-foreground/70 mb-3 font-mono">Subscribe to Newsletter</span>
                       <NewsletterForm source="contact_page" />
                     </div>
                   </div>
@@ -110,10 +110,10 @@ const Contact = () => {
 
             {/* Footer */}
             <div className="mt-20 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="font-mono text-[10px] text-muted-foreground/40">
+              <span className="font-mono text-[10px] text-muted-foreground/70">
                 © 2026 Venkata Pagadala. All rights reserved.
               </span>
-              <span className="font-mono text-[10px] text-muted-foreground/40">
+              <span className="font-mono text-[10px] text-muted-foreground/70">
                 Built with precision.
               </span>
             </div>

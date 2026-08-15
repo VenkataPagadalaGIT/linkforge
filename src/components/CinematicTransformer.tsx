@@ -216,7 +216,7 @@ const Panel3D = ({
               />
             </div>
             <div>
-              <p className="font-mono text-[9px] tracking-[0.25em] text-muted-foreground/40 uppercase mb-1">
+              <p className="font-mono text-[9px] tracking-[0.25em] text-muted-foreground/70 uppercase mb-1">
                 {config.id}
               </p>
               <p className="text-xs font-medium text-foreground/80 group-hover/panel:text-foreground transition-colors">
@@ -272,7 +272,7 @@ const CinematicTransformer = () => {
       {/* Section header */}
       <div className="text-center mb-12">
         <motion.p
-          className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/30 uppercase mb-3"
+          className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase mb-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -288,7 +288,7 @@ const CinematicTransformer = () => {
           Autonomous Transformer
         </motion.h2>
         <motion.p
-          className="font-mono text-[10px] text-muted-foreground/40 max-w-lg mx-auto leading-relaxed"
+          className="font-mono text-[10px] text-muted-foreground/70 max-w-lg mx-auto leading-relaxed"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -411,7 +411,7 @@ const CinematicTransformer = () => {
           disabled={isTransforming}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="relative font-mono text-[10px] tracking-[0.3em] uppercase border border-border/30 px-10 py-3.5 text-muted-foreground/60 hover:text-foreground hover:border-foreground/30 transition-all duration-500 overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed group"
+          className="relative font-mono text-[10px] tracking-[0.3em] uppercase border border-border/30 px-10 py-3.5 text-muted-foreground/70 hover:text-foreground hover:border-foreground/30 transition-all duration-500 overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed group"
         >
           <span className="relative z-10">
             {isTransforming ? "◆ Morphing..." : mode === "car" ? "→ Initiate Transform" : "→ Revert Vehicle"}
@@ -430,7 +430,7 @@ const CinematicTransformer = () => {
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/25 uppercase"
+              className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase"
             >
               ◆ Reconfiguring subsystems...
             </motion.div>

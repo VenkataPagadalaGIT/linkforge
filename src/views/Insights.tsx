@@ -51,7 +51,7 @@ const Insights = () => {
                           <Link to={`/insights/${pillar.slug}`} className="block mb-6">
                             <div className="flex items-start justify-between gap-4">
                               <div>
-                                <p className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase mb-3">
+                                <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-3">
                                   Pillar Guide
                                 </p>
                                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground group-hover:text-glow transition-all mb-3">
@@ -67,14 +67,14 @@ const Insights = () => {
 
                           <div className="flex flex-wrap gap-2 mb-6">
                             {pillar.tags.map((tag) => (
-                              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/60">
+                              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">
                                 {tag}
                               </span>
                             ))}
                           </div>
 
                           <div className="border-t border-border/50 pt-6 space-y-3">
-                            <p className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase mb-3">
+                            <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-3">
                               {posts.length} Articles
                             </p>
                             {posts.map((post) => (
@@ -84,12 +84,12 @@ const Insights = () => {
                                 className="flex items-center justify-between gap-4 py-2 px-3 -mx-3 hover:bg-secondary/20 transition-all group/post"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
-                                  <span className="font-mono text-[10px] text-muted-foreground/30 flex-shrink-0">{post.date}</span>
+                                  <span className="font-mono text-[10px] text-muted-foreground/70 flex-shrink-0">{post.date}</span>
                                   <span className="font-mono text-xs text-muted-foreground group-hover/post:text-foreground transition-all truncate">
                                     {post.title}
                                   </span>
                                 </div>
-                                <ArrowRight size={10} className="text-muted-foreground/30 group-hover/post:text-foreground transition-all flex-shrink-0" />
+                                <ArrowRight size={10} className="text-muted-foreground/70 group-hover/post:text-foreground transition-all flex-shrink-0" />
                               </Link>
                             ))}
                           </div>

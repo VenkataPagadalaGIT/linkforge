@@ -47,7 +47,7 @@ const Credits = () => {
                   <h2 className="font-display text-lg sm:text-xl font-bold text-foreground leading-snug">
                     {item.title}
                   </h2>
-                  <span className="font-mono text-[10px] text-muted-foreground/40 shrink-0">
+                  <span className="font-mono text-[10px] text-muted-foreground/70 shrink-0">
                     {item.when}
                   </span>
                 </div>
@@ -64,7 +64,7 @@ const Credits = () => {
                   >
                     Visit the source <ExternalLink size={11} />
                   </a>
-                  <span className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest">
+                  <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest">
                     Used in
                   </span>
                   {item.usedIn.map((u) => (
@@ -100,14 +100,14 @@ const Credits = () => {
                   <span className="font-mono text-[11px] text-muted-foreground/70">
                     Photo by {c.author}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/50 border border-border/60 px-1.5 py-0.5">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 border border-border/60 px-1.5 py-0.5">
                     {c.license}
                   </span>
                   <a
                     href={c.source}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-[11px] underline decoration-dotted text-muted-foreground/60 hover:text-foreground transition-colors"
+                    className="font-mono text-[11px] underline decoration-dotted text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
                     original
                   </a>
@@ -115,14 +115,14 @@ const Credits = () => {
               );
             })}
           </div>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mb-10">
+          <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mb-10">
             Remaining portraits were collected from public appearances and are being
             progressively replaced with licensed Commons images.
           </p>
         </ScrollReveal>
 
         <ScrollReveal>
-          <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed mt-10">
+          <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed mt-10">
             Missing from this list? If this site learned something from your work and it
             is not credited here, that is an oversight, not a policy.{" "}
             <Link to="/contact" className="underline decoration-dotted hover:text-foreground transition-colors">

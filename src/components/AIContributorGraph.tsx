@@ -298,12 +298,12 @@ const AIContributorGraph = ({ onSelect, selectedId, filterSegment }: Props) => {
             top: Math.max(0, tooltipPos.y - 60),
           }}
         >
-          <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-widest mb-1">
+          <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">
             #{hoveredContributor.rank} · {hoveredContributor.expertType}
           </p>
           <p className="font-display text-sm font-bold text-foreground mb-1">{hoveredContributor.name}</p>
           <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">{hoveredContributor.affiliation}</p>
-          <p className="font-mono text-[9px] text-muted-foreground/60 mt-1">Click to view profile →</p>
+          <p className="font-mono text-[9px] text-muted-foreground/70 mt-1">Click to view profile →</p>
         </div>
       )}
     </div>

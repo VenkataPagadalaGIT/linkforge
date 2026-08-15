@@ -3,7 +3,7 @@ import AiSystemsMapView from "@/views/AiSystemsMapView";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { ONTOLOGY_COUNTS, LAYERS } from "@/data/aiOntology";
 
-const desc = `An interactive ontology of the AI industry: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers — frontier labs, cloud, accelerators, foundries, equipment, memory, materials and energy — wired by ${ONTOLOGY_COUNTS.edges} typed dependencies, with ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on and what feeds it.`;
+const desc = `The AI value chain as one graph: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers, ${ONTOLOGY_COUNTS.edges} typed dependencies, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on.`;
 
 export const metadata: Metadata = {
   title: "AI Systems Map: 455 Entities, 7 Layers",

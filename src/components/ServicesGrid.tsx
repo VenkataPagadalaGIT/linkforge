@@ -107,9 +107,9 @@ const ServicesGrid = ({ compact = false }: ServicesGridProps) => {
               <h3 className="font-display text-lg font-bold text-foreground group-hover:text-glow transition-all">
                 {service.title}
               </h3>
-              <ArrowRight size={14} className="text-muted-foreground/30 group-hover:text-foreground transition-all flex-shrink-0" />
+              <ArrowRight size={14} className="text-muted-foreground/70 group-hover:text-foreground transition-all flex-shrink-0" />
             </div>
-            <p className="font-mono text-[10px] text-muted-foreground/50 mb-4">{service.tagline}</p>
+            <p className="font-mono text-[10px] text-muted-foreground/70 mb-4">{service.tagline}</p>
             <div className="border-t border-border/50 pt-3">
               <ul className="space-y-2">
                 {service.items.slice(0, compact ? 3 : undefined).map((item) => (
@@ -121,7 +121,7 @@ const ServicesGrid = ({ compact = false }: ServicesGridProps) => {
                   </li>
                 ))}
                 {compact && service.items.length > 3 && (
-                  <li className="font-mono text-[10px] text-muted-foreground/40 pt-1">
+                  <li className="font-mono text-[10px] text-muted-foreground/70 pt-1">
                     +{service.items.length - 3} more
                   </li>
                 )}

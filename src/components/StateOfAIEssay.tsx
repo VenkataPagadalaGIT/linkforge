@@ -23,7 +23,7 @@ const StateOfAIEssay = () => {
             connect, what to read, and what I've learned from studying each of them. Think of
             it as a living document — a reference you return to as you go deeper.
           </p>
-          <p className="font-mono text-xs text-muted-foreground/40 italic mt-4">
+          <p className="font-mono text-xs text-muted-foreground/70 italic mt-4">
             — Venkata Pagadala, March 2026
           </p>
         </div>

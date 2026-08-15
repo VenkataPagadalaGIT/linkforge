@@ -154,7 +154,7 @@ const ServiceLanding = () => {
         {/* Hero */}
         <ScrollReveal>
           <div className="mb-20">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-4">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-4">
               {service.tagline}
             </p>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground text-glow mb-6">
@@ -169,7 +169,7 @@ const ServiceLanding = () => {
         {/* What You Get */}
         <ScrollReveal delay={100}>
           <div className="border border-border p-8 sm:p-10 mb-12 border-glow-hover">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-6">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-6">
               What You Get
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -185,7 +185,7 @@ const ServiceLanding = () => {
 
         {/* Services List */}
         <ScrollReveal delay={150}>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-6">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-6">
             Capabilities
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-16">
@@ -194,7 +194,7 @@ const ServiceLanding = () => {
                 key={item}
                 className="border border-border p-4 hover:bg-secondary/20 hover:border-foreground/20 transition-all"
               >
-                <span className="font-mono text-[10px] text-muted-foreground/30 mr-2">
+                <span className="font-mono text-[10px] text-muted-foreground/70 mr-2">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="font-mono text-xs text-foreground">{item}</span>
@@ -205,7 +205,7 @@ const ServiceLanding = () => {
 
         {/* Approach */}
         <ScrollReveal delay={200}>
-          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/40 uppercase mb-8">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-8">
             The Approach
           </p>
         </ScrollReveal>
@@ -213,7 +213,7 @@ const ServiceLanding = () => {
         {details.approach.map((step, i) => (
           <ScrollReveal key={step.title} delay={250 + i * 80}>
             <div className="border-l-2 border-border pl-6 mb-8 hover:border-foreground/50 transition-all">
-              <p className="font-mono text-[10px] text-muted-foreground/40 mb-2">Phase {String(i + 1).padStart(2, "0")}</p>
+              <p className="font-mono text-[10px] text-muted-foreground/70 mb-2">Phase {String(i + 1).padStart(2, "0")}</p>
               <h3 className="font-display text-xl font-bold text-foreground mb-2">{step.title}</h3>
               <p className="font-mono text-xs text-muted-foreground leading-relaxed">{step.body}</p>
             </div>

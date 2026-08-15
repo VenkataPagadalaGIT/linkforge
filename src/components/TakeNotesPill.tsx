@@ -59,7 +59,7 @@ const TakeNotesPill: React.FC = () => {
         onClick={() => setOpen(true)}
         className={`fixed bottom-6 right-6 z-[60] inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border px-4 py-3 backdrop-blur transition-all ${
           status === "authed"
-            ? "border-emerald-400/50 text-emerald-300/95 bg-emerald-400/[0.06] hover:bg-emerald-400/[0.12]"
+            ? "border-emerald-400/50 text-emerald-700/95 dark:text-emerald-300/95 bg-emerald-400/[0.06] hover:bg-emerald-400/[0.12]"
             : "border-foreground/40 text-foreground/95 bg-background/85 hover:border-foreground/70 hover:bg-foreground/[0.05]"
         }`}
         data-testid="take-notes-pill"
@@ -88,7 +88,7 @@ const TakeNotesPill: React.FC = () => {
           <div className="w-full max-w-md border border-foreground/30 bg-background p-6 sm:p-7 relative">
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 text-muted-foreground/50 hover:text-foreground transition-colors"
+              className="absolute top-3 right-3 text-muted-foreground/70 hover:text-foreground transition-colors"
               aria-label="Close"
               data-testid="take-notes-modal-close"
             >
@@ -116,8 +116,8 @@ const TakeNotesPill: React.FC = () => {
 const SignedInPanel = ({ email, onSignOut }: { email: string | null; onSignOut: () => void }) => (
   <div data-testid="take-notes-signed-in">
     <div className="flex items-center gap-2 mb-3">
-      <CheckCircle2 size={12} className="text-emerald-300/90" />
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+      <CheckCircle2 size={12} className="text-emerald-700/90 dark:text-emerald-300/90" />
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
         Notes unlocked
       </p>
     </div>
@@ -126,7 +126,7 @@ const SignedInPanel = ({ email, onSignOut }: { email: string | null; onSignOut: 
     </h3>
     <p className="font-mono text-xs text-muted-foreground/85 mb-5 leading-relaxed">
       {email ? <>as <span className="text-foreground/90">{email}</span>.</> : null} You can now write
-      notes on any session — saves automatically. Toggle <span className="text-emerald-300/90">Public</span> to
+      notes on any session — saves automatically. Toggle <span className="text-emerald-700/90 dark:text-emerald-300/90">Public</span> to
       publish on the speaker&apos;s profile.
     </p>
     <button
@@ -170,8 +170,8 @@ const LoginInlinePanel = ({ onSuccess }: { onSuccess: () => void }) => {
   return (
     <form onSubmit={submit} data-testid="take-notes-login">
       <div className="flex items-center gap-2 mb-3">
-        <Lock size={12} className="text-muted-foreground/50" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+        <Lock size={12} className="text-muted-foreground/70" />
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
           Take notes
         </p>
       </div>
@@ -182,7 +182,7 @@ const LoginInlinePanel = ({ onSuccess }: { onSuccess: () => void }) => {
       </p>
 
       <label className="block mb-3">
-        <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+        <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
           Email
         </span>
         <input
@@ -197,7 +197,7 @@ const LoginInlinePanel = ({ onSuccess }: { onSuccess: () => void }) => {
       </label>
 
       <label className="block mb-4">
-        <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1.5">
+        <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
           Password
         </span>
         <input
@@ -212,7 +212,7 @@ const LoginInlinePanel = ({ onSuccess }: { onSuccess: () => void }) => {
       </label>
 
       {err && (
-        <p className="font-mono text-[11px] text-rose-300/95 mb-3" data-testid="take-notes-error">
+        <p className="font-mono text-[11px] text-rose-700/95 dark:text-rose-300/95 mb-3" data-testid="take-notes-error">
           {err}
         </p>
       )}

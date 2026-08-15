@@ -22,7 +22,7 @@ const ResourceList = ({ items, icon: Icon, label, freeOnly }: { items: RoadmapRe
   if (!shown.length) return null;
   return (
     <div>
-      <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/40 mb-2">
+      <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mb-2">
         <Icon size={11} /> {label} ({shown.length})
       </p>
       <div className="space-y-1">
@@ -34,7 +34,7 @@ const ResourceList = ({ items, icon: Icon, label, freeOnly }: { items: RoadmapRe
             rel="noopener noreferrer"
             className="flex items-baseline gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            <span className="text-muted-foreground/30 shrink-0">{i + 1}.</span>
+            <span className="text-muted-foreground/70 shrink-0">{i + 1}.</span>
             <span className="truncate">{item.title}</span>
             {item.access === "paid" && (
               <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider border border-orange-600/40 text-orange-700 dark:text-orange-400/80 px-1 leading-[1.4]">
@@ -52,7 +52,7 @@ const ResourceList = ({ items, icon: Icon, label, freeOnly }: { items: RoadmapRe
             is invalid HTML and browsers drop the inner one. */}
         {shown.some((i) => i.authors?.length) && (
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/30">by</span>
+            <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70">by</span>
             {[...new Set(shown.flatMap((i) => i.authors ?? []))].map((id) => {
               const c = aiContributors.find((x) => x.id === id);
               if (!c) return null;
@@ -115,16 +115,16 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
               visible when open printed the first two lines twice. Server
               HTML is unaffected, where expanded is always false. */}
           {!expanded && (
-            <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed line-clamp-2">
+            <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed line-clamp-2">
               {topic.description}
             </p>
           )}
         </div>
         <div className="shrink-0 mt-1">
           {expanded ? (
-            <ChevronUp size={14} className="text-muted-foreground/30" />
+            <ChevronUp size={14} className="text-muted-foreground/70" />
           ) : (
-            <ChevronDown size={14} className="text-muted-foreground/30" />
+            <ChevronDown size={14} className="text-muted-foreground/70" />
           )}
         </div>
       </button>
@@ -138,7 +138,7 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
         hidden={!expanded}
         className="px-5 pb-5 border-t border-border pt-4"
       >
-          <p className="font-mono text-xs text-muted-foreground/60 leading-relaxed mb-5">
+          <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mb-5">
             {topic.description}
           </p>
 
@@ -151,9 +151,9 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
 
           {topic.tools && (
             <div className="mt-4 flex items-start gap-2">
-              <Wrench size={11} className="text-muted-foreground/30 mt-0.5 shrink-0" />
-              <p className="font-mono text-[11px] text-muted-foreground/40">
-                <span className="text-muted-foreground/20 uppercase tracking-wider text-[9px]">Tools: </span>
+              <Wrench size={11} className="text-muted-foreground/70 mt-0.5 shrink-0" />
+              <p className="font-mono text-[11px] text-muted-foreground/70">
+                <span className="text-muted-foreground/70 uppercase tracking-wider text-[9px]">Tools: </span>
                 {topic.tools}
               </p>
             </div>
@@ -222,20 +222,20 @@ const AILearningRoadmap = () => {
         ].map((s) => (
           <div key={s.label}>
             <p className="font-mono text-lg font-bold text-foreground">{s.value}</p>
-            <p className="font-mono text-[9px] text-muted-foreground/25 uppercase tracking-widest">{s.label}</p>
+            <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
         <input
           type="text"
           placeholder="Search topics, tools..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:border-foreground/30"
+          className="w-full bg-transparent border border-border pl-9 pr-4 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/30"
         />
       </div>
 
@@ -244,7 +244,7 @@ const AILearningRoadmap = () => {
         <button
           onClick={() => setActivePhase("")}
           className={`font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
-            !activePhase ? "border-foreground text-foreground" : "border-border text-muted-foreground/30 hover:text-muted-foreground"
+            !activePhase ? "border-foreground text-foreground" : "border-border text-muted-foreground/70 hover:text-muted-foreground"
           }`}
         >
           All Phases
@@ -256,7 +256,7 @@ const AILearningRoadmap = () => {
             className={`font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 border transition-all ${
               activePhase === phase.label.split(": ")[1]
                 ? "text-foreground"
-                : "border-border text-muted-foreground/30 hover:text-muted-foreground"
+                : "border-border text-muted-foreground/70 hover:text-muted-foreground"
             }`}
             style={
               activePhase === phase.label.split(": ")[1]
@@ -275,7 +275,7 @@ const AILearningRoadmap = () => {
           className={`font-mono text-[10px] uppercase tracking-wider border px-2.5 py-1.5 transition-all ${
             freeOnly
               ? "border-green-600/50 text-green-700 dark:text-green-400 bg-green-500/[0.06]"
-              : "border-border text-muted-foreground/60 hover:text-foreground"
+              : "border-border text-muted-foreground/70 hover:text-foreground"
           }`}
           title="Hide anything that costs money"
         >
@@ -293,7 +293,7 @@ const AILearningRoadmap = () => {
       </div>
 
       {filtered.length === 0 && (
-        <p className="font-mono text-xs text-muted-foreground/30 text-center py-10">
+        <p className="font-mono text-xs text-muted-foreground/70 text-center py-10">
           No topics found matching your search.
         </p>
       )}

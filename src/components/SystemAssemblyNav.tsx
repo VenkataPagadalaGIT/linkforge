@@ -174,13 +174,13 @@ const CreditCard = ({ card }: { card: NavCard }) => {
           {/* Row 1: Category + Network */}
           <div className="flex items-start justify-between">
             <span
-              className="font-mono tracking-[0.3em] uppercase text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-300"
+              className="font-mono tracking-[0.3em] uppercase text-muted-foreground/70 group-hover:text-muted-foreground transition-colors duration-300"
               style={{ fontSize: 7 }}
             >
               {card.category}
             </span>
             <span
-              className="font-mono font-bold tracking-[0.15em] text-muted-foreground/20 group-hover:text-muted-foreground/60 transition-colors duration-300"
+              className="font-mono font-bold tracking-[0.15em] text-muted-foreground/70 group-hover:text-muted-foreground/70 transition-colors duration-300"
               style={{ fontSize: 8 }}
             >
               {card.network}
@@ -204,7 +204,7 @@ const CreditCard = ({ card }: { card: NavCard }) => {
             </div>
 
             <span
-              className="font-mono text-muted-foreground/30 group-hover:text-muted-foreground/70 transition-colors duration-300"
+              className="font-mono text-muted-foreground/70 group-hover:text-muted-foreground/70 transition-colors duration-300"
               style={{ fontSize: 7, letterSpacing: "0.08em" }}
             >
               {card.schema}
@@ -223,7 +223,7 @@ const CreditCard = ({ card }: { card: NavCard }) => {
           <div className="flex items-end justify-between mt-auto">
             <div className="min-w-0">
               <p
-                className="font-mono text-foreground/10 group-hover:text-muted-foreground/50 truncate transition-colors duration-300 mb-px"
+                className="font-mono text-foreground/10 group-hover:text-muted-foreground/70 truncate transition-colors duration-300 mb-px"
                 style={{ fontSize: 6, letterSpacing: "0.04em" }}
               >
                 {card.keyword}
@@ -277,13 +277,13 @@ const SystemAssemblyNav = () => {
       {/* Header */}
       <ScrollReveal>
         <header className="text-center mb-8">
-          <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/25 uppercase mb-3">
+          <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase mb-3">
             [ System Assembly ]
           </p>
           <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2 tracking-tight">
             Knowledge Architecture
           </h2>
-          <p className="font-mono text-[10px] text-muted-foreground/35 max-w-lg mx-auto leading-relaxed">
+          <p className="font-mono text-[10px] text-muted-foreground/70 max-w-lg mx-auto leading-relaxed">
             Ten interconnected knowledge modules. Hover to inspect. Click to navigate.
           </p>
 
@@ -296,7 +296,7 @@ const SystemAssemblyNav = () => {
             ].map((stat) => (
               <li key={stat.label} className="text-center">
                 <p className="font-mono text-base font-semibold text-foreground/70">{stat.value}</p>
-                <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/20 uppercase mt-0.5">
+                <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase mt-0.5">
                   {stat.label}
                 </p>
               </li>
@@ -316,7 +316,7 @@ const SystemAssemblyNav = () => {
 
       {/* Footer */}
       <div className="mt-6 text-center">
-        <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/15 uppercase">
+        <p className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground/70 uppercase">
           10 modules · Interconnected Knowledge System
         </p>
       </div>

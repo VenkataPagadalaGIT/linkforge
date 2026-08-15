@@ -570,7 +570,7 @@ const NeuralSolutionsCanvas = () => {
                   {activeService.title}
                 </h3>
               </div>
-              <ExternalLink size={12} className="text-muted-foreground/40 group-hover:text-foreground transition-colors" />
+              <ExternalLink size={12} className="text-muted-foreground/70 group-hover:text-foreground transition-colors" />
             </div>
             <p className="font-mono text-[10px] text-muted-foreground/70 mb-3 leading-relaxed">
               {activeService.tagline}
@@ -652,16 +652,16 @@ const StructuredView = () => (
                   {service.title}
                 </h3>
               </div>
-              <p className="font-mono text-xs text-muted-foreground/50 mb-4 ml-7">{service.tagline}</p>
+              <p className="font-mono text-xs text-muted-foreground/70 mb-4 ml-7">{service.tagline}</p>
               <div className="flex flex-wrap gap-2 ml-7">
                 {service.items.map((item) => (
-                  <span key={item} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/60">
+                  <span key={item} className="font-mono text-[10px] border border-border px-3 py-1 text-muted-foreground/70">
                     {item}
                   </span>
                 ))}
               </div>
             </div>
-            <ArrowRight size={16} className="text-muted-foreground/30 group-hover:text-foreground transition-all mt-2 flex-shrink-0" />
+            <ArrowRight size={16} className="text-muted-foreground/70 group-hover:text-foreground transition-all mt-2 flex-shrink-0" />
           </div>
         </Link>
       </motion.div>
@@ -880,7 +880,7 @@ const SolutionsGraph = () => {
                 className={`flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] tracking-wider uppercase transition-all ${
                   viewMode === mode
                     ? "bg-foreground text-background"
-                    : "text-muted-foreground/50 hover:text-foreground hover:bg-secondary/20"
+                    : "text-muted-foreground/70 hover:text-foreground hover:bg-secondary/20"
                 }`}
                 title={label}
               >
@@ -898,7 +898,7 @@ const SolutionsGraph = () => {
           ].map((stat) => (
             <div key={stat.label} className="text-right">
               <p className="font-mono text-sm font-bold text-foreground">{stat.value}</p>
-              <p className="font-mono text-[9px] tracking-widest text-muted-foreground/50">{stat.label}</p>
+              <p className="font-mono text-[9px] tracking-widest text-muted-foreground/70">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -919,7 +919,7 @@ const SolutionsGraph = () => {
               </PosterUntilLive>
               {/* Overlay labels, top-right so we don't collide with the
                   in-canvas legend pinned at bottom-left */}
-              <div className="absolute top-4 right-4 font-mono text-[9px] text-muted-foreground/40 tracking-widest uppercase pointer-events-none">
+              <div className="absolute top-4 right-4 font-mono text-[9px] text-muted-foreground/70 tracking-widest uppercase pointer-events-none">
                 Neural Network Mode · {services.length} Layers × {totalServices} Nodes
               </div>
             </div>
@@ -931,7 +931,7 @@ const SolutionsGraph = () => {
             <div className="flex gap-6">
               {/* Categories panel */}
               <div className="hidden lg:block w-56 flex-shrink-0 border border-border p-4">
-                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/50 uppercase mb-4">
+                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-4">
                   Domains ▾
                 </p>
                 <div className="space-y-1">
@@ -942,8 +942,8 @@ const SolutionsGraph = () => {
                         className="w-full flex items-center gap-3 py-2.5 px-2 hover:bg-secondary/20 transition-all text-left"
                       >
                         <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0 bg-muted-foreground/20" />
-                        <span className="font-mono text-[11px] flex-1 text-muted-foreground/40">{s.title}</span>
-                        <span className="font-mono text-[9px] text-muted-foreground/20">{s.items.length}</span>
+                        <span className="font-mono text-[11px] flex-1 text-muted-foreground/70">{s.title}</span>
+                        <span className="font-mono text-[9px] text-muted-foreground/70">{s.items.length}</span>
                       </div>
                     );
                   })}

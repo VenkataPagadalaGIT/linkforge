@@ -363,13 +363,13 @@ const Cinematic3DScene = () => {
     <div className="relative">
       {/* Header */}
       <div className="text-center mb-8">
-        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/30 uppercase mb-3">
+        <p className="font-mono text-[9px] tracking-[0.5em] text-muted-foreground/70 uppercase mb-3">
           [ Neural Architecture ]
         </p>
         <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3 tracking-tight">
           Autonomous Core
         </h2>
-        <p className="font-mono text-[10px] text-muted-foreground/40 max-w-md mx-auto leading-relaxed">
+        <p className="font-mono text-[10px] text-muted-foreground/70 max-w-md mx-auto leading-relaxed">
           A self-organizing neural substrate. Click the floating panels to navigate. Move your cursor to interact.
         </p>
       </div>
@@ -409,22 +409,22 @@ const Cinematic3DScene = () => {
 
         {/* HUD elements */}
         <div className="absolute top-4 left-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/20 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             SYS.ONLINE
           </p>
         </div>
         <div className="absolute top-4 right-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/20 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             ◆ LIVE
           </p>
         </div>
         <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/15 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             DIMENSION: W-4
           </p>
         </div>
         <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/15 uppercase">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-muted-foreground/70 uppercase">
             PHASE: ACTIVE
           </p>
         </div>
