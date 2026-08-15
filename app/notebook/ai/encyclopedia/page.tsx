@@ -46,7 +46,7 @@ export default function Page() {
       crossLink={{ href: "/notebook/ai", label: "← AI Notebook hub" }}
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
-        {REF_COUNTS.concepts} concepts explained · {REF_COUNTS.categories} categories · free
+        {`${REF_COUNTS.concepts} concepts explained · ${REF_COUNTS.categories} categories · free`}
       </p>
       <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground text-glow mb-4">
         The AI Encyclopedia
