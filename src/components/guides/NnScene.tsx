@@ -20,6 +20,7 @@ import {
   nnStageById,
   type NnFlow,
 } from "@/data/nn";
+import type { NnTrainer } from "@/lib/nnTrain";
 
 /**
  * NnScene: the 784-16-16-10 network as a film set.
@@ -51,6 +52,9 @@ export interface NnSceneState {
   /** Journey step id for the cinematic camera. Null = free camera. */
   focusStepId?: string | null;
   glPower?: "high-performance" | "default";
+  /** Live-training mode: the scene reads real values from the trainer. */
+  trainMode?: boolean;
+  live?: React.MutableRefObject<NnTrainer | null>;
 }
 
 interface Ctx extends Omit<NnSceneState, "highlightIds"> {
@@ -139,6 +143,7 @@ const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: 
   "j-dropout": { pos: [-2.6, 3.8, -5.4], look: [-2.6, 1.2, -10.0] },
   "j-features": { pos: [2.1, 3.8, -5.4], look: [2.1, 1.2, -10.0] },
   "j-brain": { pos: [6.8, 3.8, -5.4], look: [6.9, 1.2, -10.0] },
+  "live-train": { pos: [9.8, 4.4, 7.0], look: [-3.2, 2.1, -0.6] },
 };
 
 const STAGE_POSE: Record<string, { pos: readonly [number, number, number]; look: readonly [number, number, number] }> = (() => {
@@ -354,6 +359,24 @@ function PixelWall() {
   useFrame((state, dt) => {
     const m = mesh.current;
     if (!m) return;
+    // Live training: the wall shows the digit currently in the network,
+    // straight from the trainer's input vector. Nothing is drawn by hand.
+    if (ctx.trainMode && ctx.live?.current) {
+      const xs = ctx.live.current.x;
+      for (let i = 0; i < 784; i++) {
+        const r = Math.floor(i / 28), col28 = i % 28;
+        const v = xs[i];
+        c.copy(colB).lerp(colA, v);
+        m.setColorAt(i, c);
+        tmp.position.set(WALL_X, WALL_CY + (13.5 - r) * CELL, (13.5 - col28) * CELL);
+        tmp.scale.setScalar(0.2 + 0.8 * Math.max(0.15, v));
+        tmp.updateMatrix();
+        m.setMatrixAt(i, tmp.matrix);
+      }
+      if (m.instanceColor) m.instanceColor.needsUpdate = true;
+      m.instanceMatrix.needsUpdate = true;
+      return;
+    }
     // "pixels" program: the digit re-assembles, cells scaling in as a sweep.
     const target = ctx.program === "pixels" ? 0 : 1;
     if (ctx.program === "pixels" && assembleT.current > 0.999) assembleT.current = 0;
@@ -432,12 +455,16 @@ interface BundleSpec {
   x0: number;
   x1: number;
   base: number;
+  /** Which weight matrix these lines ARE (for live-training brightness). */
+  kind: "w1" | "w2" | "w3";
 }
 
 function FiberBundle({ spec }: { spec: BundleSpec }) {
   const ctx = useScene();
   const wave = useWaveRef();
   const mat = useRef<THREE.ShaderMaterial>(null);
+  const geoRef = useRef<THREE.BufferGeometry | null>(null);
+  const lastBaked = useRef(-1);
 
   const geo = useMemo(() => {
     const n = spec.from.length * spec.to.length;
@@ -482,6 +509,27 @@ function FiberBundle({ spec }: { spec: BundleSpec }) {
   useFrame(() => {
     const m = mat.current;
     if (!m) return;
+    // Live training: every 25 steps, re-bake per-line brightness from the
+    // network's actual |weight| magnitudes, so you watch the lattice organize.
+    const tr = ctx.trainMode ? ctx.live?.current : null;
+    if (tr && geoRef.current && tr.step - lastBaked.current >= 25) {
+      lastBaked.current = tr.step;
+      const W = spec.kind === "w1" ? tr.w1 : spec.kind === "w2" ? tr.w2 : tr.w3;
+      const nFrom = spec.from.length, nTo = spec.to.length;
+      const attr = geoRef.current.getAttribute("aSeed") as THREE.BufferAttribute;
+      const arr = attr.array as Float32Array;
+      let maxAbs = 1e-9;
+      for (let i = 0; i < W.length; i++) { const a = Math.abs(W[i]); if (a > maxAbs) maxAbs = a; }
+      let k = 0;
+      for (let i = 0; i < nFrom; i++) {
+        for (let j = 0; j < nTo; j++) {
+          const s = 0.06 + 0.94 * (Math.abs(W[j * nFrom + i]) / maxAbs);
+          arr[k] = s; arr[k + 1] = s;
+          k += 2;
+        }
+      }
+      attr.needsUpdate = true;
+    }
     const w = wave.current;
     // map machine-space wave x into this bundle's 0..1
     const local = (w.x - spec.x0) / (spec.x1 - spec.x0);
@@ -500,6 +548,7 @@ function FiberBundle({ spec }: { spec: BundleSpec }) {
     m.uniforms.uBase.value = spec.base * boost;
   });
 
+  geoRef.current = geo;
   return (
     <lineSegments geometry={geo} frustumCulled={false}>
       <shaderMaterial
@@ -523,9 +572,9 @@ function Fibers() {
     const l2: [number, number, number][] = Array.from({ length: 16 }, (_, i) => hiddenPos(i, L2_X));
     const out: [number, number, number][] = Array.from({ length: 10 }, (_, i) => outPos(i));
     return [
-      { from: wallPts, fromWeight: wallW, to: l1, x0: WALL_X, x1: L1_X, base: 0.05 },
-      { from: l1, to: l2, x0: L1_X, x1: L2_X, base: 0.16 },
-      { from: l2, to: out, x0: L2_X, x1: OUT_X, base: 0.16 },
+      { from: wallPts, fromWeight: wallW, to: l1, x0: WALL_X, x1: L1_X, base: 0.05, kind: "w1" },
+      { from: l1, to: l2, x0: L1_X, x1: L2_X, base: 0.16, kind: "w2" },
+      { from: l2, to: out, x0: L2_X, x1: OUT_X, base: 0.16, kind: "w3" },
     ];
   }, []);
   return (
@@ -564,6 +613,14 @@ function NeuronSphere({
     const m = mat.current;
     const ms = mesh.current;
     if (!m || !ms) return;
+    if (ctx.trainMode && ctx.live?.current) {
+      const tr = ctx.live.current;
+      const act = layer === "l1" ? tr.a1[index] : layer === "l2" ? tr.a2[index] : tr.probs[index];
+      const lit2 = layer === "out" ? act * 2.4 : Math.min(1.3, act * 0.6);
+      m.emissiveIntensity = THREE.MathUtils.lerp(m.emissiveIntensity, 0.08 + lit2, 0.3);
+      ms.scale.setScalar(THREE.MathUtils.lerp(ms.scale.x, 1, 0.2));
+      return;
+    }
     const w = wave.current;
     const d = (w.x - x) * 0.9;
     const flash = Math.exp(-d * d) * w.strength;
@@ -768,11 +825,35 @@ function ReluStation() {
 function SoftmaxBoard() {
   const ctx = useScene();
   const bars = useRef<(THREE.Mesh | null)[]>([]);
+  const barMats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const trueMarker = useRef<THREE.Mesh>(null);
   // illustrative raw-score heights: same ordering as the demo distribution,
   // before softmax squashes them into probabilities (exact inversion is
   // impossible to display because zero-probability scores sit at minus infinity)
   const raw = useMemo(() => NN_DEMO_PROBS.map((d) => 0.15 + d.p * 0.55), []);
   useFrame(() => {
+    if (ctx.trainMode && ctx.live?.current) {
+      const tr = ctx.live.current;
+      let pred = 0, pm = 0;
+      for (let k = 0; k < 10; k++) if (tr.probs[k] > pm) { pm = tr.probs[k]; pred = k; }
+      for (let i = 0; i < 10; i++) {
+        const b = bars.current[i];
+        const mat = barMats.current[i];
+        if (b) b.scale.x = THREE.MathUtils.lerp(b.scale.x, Math.max(0.015, tr.probs[i]) * 1.9, 0.25);
+        if (mat) {
+          mat.emissive.set(i === pred ? "#79a68d" : "#5f8cb0");
+          mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, i === pred ? 0.7 : 0.18, 0.2);
+        }
+      }
+      if (trueMarker.current && tr.lastLabel >= 0) {
+        trueMarker.current.visible = true;
+        trueMarker.current.position.y = THREE.MathUtils.lerp(
+          trueMarker.current.position.y, 1.15 + tr.lastLabel * 0.3, 0.3,
+        );
+      }
+      return;
+    }
+    if (trueMarker.current) trueMarker.current.visible = false;
     const norm = ctx.program === "softmax" || ctx.program === "loss" ||
       ctx.program === "descent" || ctx.program === "backprop" ||
       ctx.program === "adam" || ctx.program === "training" ||
@@ -796,6 +877,7 @@ function SoftmaxBoard() {
             >
               <boxGeometry args={[1, 0.16, 0.16]} />
               <meshStandardMaterial
+                ref={(el) => { barMats.current[i] = el; }}
                 color={i === 5 ? "#79a68d" : "#57626e"}
                 emissive={i === 5 ? "#79a68d" : "#5f8cb0"}
                 emissiveIntensity={i === 5 ? 0.55 : 0.3}
@@ -811,6 +893,11 @@ function SoftmaxBoard() {
         <Text position={[0.3, 0.82, 0]} fontSize={0.09} color="#9aa0ab" anchorX="center">
           exp(z) / sum: totals 1.00
         </Text>
+        {/* true-label marker, only meaningful while live training */}
+        <mesh ref={trueMarker} position={[-0.56, 1.15, 0]} visible={false}>
+          <sphereGeometry args={[0.045, 12, 12]} />
+          <meshStandardMaterial color="#e8b36a" emissive="#e8b36a" emissiveIntensity={0.8} />
+        </mesh>
       </Station>
     </group>
   );
@@ -825,6 +912,12 @@ function LossPylon() {
   const fill = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (!fill.current) return;
+    if (ctx.trainMode && ctx.live?.current) {
+      const v = Math.min(1, Math.max(0.03, ctx.live.current.lossEma / 4.61));
+      fill.current.scale.y = THREE.MathUtils.lerp(fill.current.scale.y, v * 2.2, 0.1);
+      fill.current.position.y = 0.4 + fill.current.scale.y / 2;
+      return;
+    }
     const active = ctx.program === "loss" || ctx.selectedId === "loss";
     // breathe between "confident right" (0.36) and "confident wrong" (4.61), scaled
     const t = active ? (Math.sin(state.clock.elapsedTime * 0.8) + 1) / 2 : 0;
@@ -1012,6 +1105,20 @@ function TrainingMonitor() {
   useFrame((state) => {
     const m = dots.current;
     if (!m) return;
+    if (ctx.trainMode && ctx.live?.current) {
+      const hist = ctx.live.current.accHistory;
+      for (let i = 0; i < N; i++) {
+        const hi = hist.length <= N ? i : hist.length - N + i;
+        const pt = hist[hi];
+        const shown = pt !== undefined && hi < hist.length;
+        tmp.position.set(-0.85 + (i / (N - 1)) * 1.7, 0.62 + (shown ? pt.acc : 0) * 1.05, 0.05);
+        tmp.scale.setScalar(shown ? 1 : 0.001);
+        tmp.updateMatrix();
+        m.setMatrixAt(i, tmp.matrix);
+      }
+      m.instanceMatrix.needsUpdate = true;
+      return;
+    }
     const active = ctx.program === "training" || ctx.selectedId === "training";
     const reveal = active ? Math.floor(((state.clock.elapsedTime * 14) % (N + 30))) : N;
     for (let i = 0; i < N; i++) {

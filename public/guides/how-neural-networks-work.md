@@ -2,7 +2,7 @@
 
 A handwritten five becomes 784 numbers, ripples through a lattice you can orbit, and comes out as a belief. Then the error flows backward and you watch the machine learn. Every fiber drawn, every claim from the original papers.
 
-> The canonical 784-16-16-10 MNIST network as an explorable 3D machine: 16 stations across 4 acts, a 16-step guided journey from pixels to the brain question, all 12,960 weight connections really drawn, and a training row where gradient descent is really computed on an illustrative loss terrain.
+> The canonical 784-16-16-10 MNIST network as an explorable 3D machine: 16 stations across 4 acts, a 16-step guided journey from pixels to the brain question, all 12,960 weight connections really drawn, and a training row where gradient descent is really computed on an illustrative loss terrain, and a Train mode where the network genuinely learns 10,000 real MNIST digits in your browser.
 
 By Venkata Pagadala, AI Product Manager (Search · SEO · GEO), AT&T · Updated 2026-08-15 · 20 min read
 
@@ -17,7 +17,11 @@ Strip away the mythology and a neural network is a small machine: numbers flow l
 
 > **What you're looking at:** **Blue**, left: a handwritten five dissolving into 784 pixels, and the lattice they feed. **Violet**, center: the forward pass, the ReLU gates, softmax and the loss meter. **Amber**, back row: the training machinery, a loss terrain with racing descent balls, the Adam formulas, an accuracy monitor. **Green**, back row right: dropout, what the layers detect, and the honest brain question.
 
-> **What is computed and what is staged:** **Real:** the lattice is the true 784-16-16-10 wiring with all **12,960 weight fibers drawn one for one**; the descent balls follow paths produced by **actually running gradient descent and momentum** on the terrain function; every number, formula, and quote comes from the cited paper. **Staged for teaching:** the network is not live-trained in your browser, the five is drawn rather than sampled from MNIST, the terrain is a 2D stand-in for a 13,002-dimensional loss surface, and the accuracy curve is shaped to Nielsen's reported endpoint rather than logged from a run. An explainer that blurs this line does not deserve your trust, so here it is in writing.
+> **What is computed and what is staged:** **Real, always:** the lattice is the true 784-16-16-10 wiring with all **12,960 weight fibers drawn one for one**; the descent balls follow paths produced by **actually running gradient descent and momentum** on the terrain function; every number, formula, and quote comes from the cited paper. **Real, in Train mode:** press Train and this exact network **genuinely trains in your browser** on 10,000 real MNIST digits: the wall shows the digit being learned, the neurons carry its actual activations, the belief bars are the network's live output, fiber brightness tracks learned weight magnitudes, and the accuracy curve is a real log against 1,000 held-out digits (the seeded reference run reaches 92.8% in 20 epochs; Nielsen reports 96%+ with the full 60,000). **Staged in the guided journey:** the choreographed signal flows, the hand-drawn five, and the terrain, a 2D stand-in for a 13,002-dimensional loss surface. An explainer that blurs this line does not deserve your trust, so here it is in writing.
+
+### Train it yourself, for real
+
+Open the **Train** tab in the explorer above. The browser fetches 10,000 genuine MNIST digits (a deterministic first-10,000 slice, so nothing is cherry-picked) plus 1,000 held-out test digits, and runs the same loop this guide teaches: forward pass, cross-entropy, backpropagation, Adam with the paper's default settings. Early on the belief bars flail and the amber truth marker disagrees with the green guess; a minute later the network is right about nine times in ten on handwriting it has never seen. That transition, chaos becoming competence with nothing but gradient nudges, is the entire field in one minute.
 
 ## The journey, in plain text
 
@@ -231,6 +235,7 @@ In big convolutional networks, projected visualizations show a real hierarchy: *
 - [3Blue1Brown: But what is a neural network? (Deep learning chapter 1)](https://www.youtube.com/watch?v=aircAruvnKk) · The visual grammar this guide builds on; chapters 1-4 cover network, gradient descent, backprop
 - [Nielsen: Neural Networks and Deep Learning (free book)](http://neuralnetworksanddeeplearning.com/) · The 784-16-16-10 network, MNIST facts, and the over-96% figure come from chapter 1
 - [Karpathy: Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) · Backprop-first teaching: building micrograd from scratch
+- [Deng (2012): The MNIST database of handwritten digit images for machine learning research](https://doi.org/10.1109/MSP.2012.2211477) · IEEE Signal Processing Magazine; the dataset the Train mode really trains on
 - [Goodfellow, Bengio & Courville: Deep Learning, ch. 6 (free)](https://www.deeplearningbook.org/contents/mlp.html) · Softmax-with-log-likelihood argument, section 6.2.2.3
 - [McCulloch & Pitts (1943): A logical calculus of the ideas immanent in nervous activity](https://doi.org/10.1007/BF02478259) · The 1943 unit: a logic gate, no learning rule
 - [Rosenblatt (1958): The perceptron: a probabilistic model](https://doi.org/10.1037/h0042519) · Psychological Review 65(6); a theory paper, not the Mark I machine
