@@ -53,10 +53,10 @@ const Publications = () => {
             <ScrollReveal key={paper.title} delay={i * 80}>
               <article className="border border-border p-8 border-glow-hover">
                 <div className="flex items-center justify-between gap-4 mb-4">
-                  <p className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase">
+                  <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
                     Peer-Reviewed Paper
                   </p>
-                  <span className="font-mono text-[10px] text-muted-foreground/40 tracking-widest uppercase flex-shrink-0">
+                  <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase flex-shrink-0">
                     {paper.host}
                   </span>
                 </div>
@@ -67,18 +67,69 @@ const Publications = () => {
 
                 <p className="font-mono text-xs text-muted-foreground/70 italic mb-4">
                   {paper.venue}
+                  {paper.pages && paper.postedOnline && (
+                    <span className="not-italic">
+                      {" "}· {paper.pages} pages · Posted {paper.postedOnline}
+                    </span>
+                  )}
                 </p>
 
-                <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5">
-                  {paper.summary}
-                </p>
+                {paper.abstract ? (
+                  <>
+                    <p className="font-mono text-xs text-muted-foreground mb-1">
+                      <span className="text-foreground">Venkata Pagadala</span>
+                      {paper.affiliation && <span className="text-muted-foreground/70"> · {paper.affiliation}</span>}
+                    </p>
+                    {paper.dateWritten && (
+                      <p className="font-mono text-[11px] text-muted-foreground/70 mb-4">
+                        Date written: {paper.dateWritten}
+                      </p>
+                    )}
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
+                      Abstract
+                    </p>
+                    <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5">
+                      {paper.abstract}
+                    </p>
+                  </>
+                ) : (
+                  <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5">
+                    {paper.summary}
+                  </p>
+                )}
 
+                {paper.jel && (
+                  <p className="font-mono text-[11px] text-muted-foreground/70 mb-4">
+                    JEL classification: {paper.jel}
+                  </p>
+                )}
+                {paper.abstract && paper.ssrnShortUrl && (
+                  <div className="border border-border/70 bg-card/30 p-4 mb-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">
+                      Suggested citation
+                    </p>
+                    <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">
+                      Pagadala, Venkata, {paper.title} ({paper.dateWritten}). Available at SSRN:{" "}
+                      <a href={paper.ssrnShortUrl} target="_blank" rel="noopener noreferrer" className="text-foreground/85 hover:text-foreground underline decoration-border">
+                        {paper.ssrnShortUrl.replace("https://", "")}
+                      </a>
+                      {paper.doiUrl && (
+                        <>
+                          {" "}or{" "}
+                          <a href={paper.doiUrl} target="_blank" rel="noopener noreferrer" className="text-foreground/85 hover:text-foreground underline decoration-border">
+                            doi.org/10.2139/ssrn.6512878
+                          </a>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                )}
                 {paper.keywords && paper.keywords.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-6">
                     {paper.keywords.map((k) => (
                       <span
                         key={k}
-                        className="font-mono text-[10px] text-muted-foreground/60 border border-border px-2 py-1"
+                        className="font-mono text-[10px] text-muted-foreground/70 border border-border px-2 py-1"
                       >
                         {k}
                       </span>
@@ -87,7 +138,7 @@ const Publications = () => {
                 )}
 
                 <div className="flex items-center gap-5 flex-wrap border-t border-border pt-5">
-                  <span className="font-mono text-[11px] text-muted-foreground/50">
+                  <span className="font-mono text-[11px] text-muted-foreground/70">
                     Posted {paper.posted ?? paper.year}
                   </span>
                   {paper.url ? (
@@ -100,7 +151,7 @@ const Publications = () => {
                       Open on {paper.host} <ExternalLink size={12} />
                     </a>
                   ) : (
-                    <span className="font-mono text-[11px] text-muted-foreground/40">
+                    <span className="font-mono text-[11px] text-muted-foreground/70">
                       Published in {paper.venue}
                     </span>
                   )}

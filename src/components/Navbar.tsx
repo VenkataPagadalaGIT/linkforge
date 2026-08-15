@@ -1,7 +1,8 @@
 "use client";
 /**
- * Navbar: four mega menus (How It Works, 3D, Learn AI, Writing), About as a
- * quiet plain link, and Contact as the CTA. Labels are written for someone
+ * Navbar: the owner's IA. Four doors: How, What & Why AI (Learn, Learn in
+ * 3D, SEO & AI, News), Notebooks, Explore in 3D, About Me; the 2040 game as
+ * a flat link and Contact as the CTA. Labels are written for someone
  * who has never seen the site: a recruiter or a first-time learner should
  * know what is behind each door without clicking.
  *
@@ -31,12 +32,17 @@ interface MenuItem {
   /** Flags a new arrival in the menu. */
   badge?: string;
 }
+interface MenuSection {
+  /** Small-caps section title inside the panel, per the owner's IA. */
+  title: string;
+  items: MenuItem[];
+}
 interface MegaMenu {
   id: string;
   label: string;
   /** Small-caps heading above the item grid. */
   heading: string;
-  items: MenuItem[];
+  sections: MenuSection[];
   /** Closing line: positioning for Teardowns, scope for Research. */
   footnote: string;
   /** Index link so hub pages never become orphans, and the menu can overflow. */
@@ -47,72 +53,107 @@ interface MegaMenu {
 
 const MEGA: MegaMenu[] = [
   {
-    id: "teardowns",
-    label: "How It Works",
-    heading: "How things actually work",
-    items: [
-      { label: "How LLMs Work", note: "21 stages, explorable in 3D", to: "/guides/how-llms-work" },
-      { label: "Inside a Home HVAC System", note: "same method, physical hardware", to: "/guides/hvac-system-troubleshooting" },
-      { label: "Graph Types for AI Agents", note: "one dataset, six structures", to: "/guides/graph-types-for-ai-agents" },
-      { label: "Screaming Frog, Complete", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
+    id: "ai",
+    label: "How, What & Why AI",
+    heading: "Free AI education, from zero to frontier",
+    sections: [
+      {
+        title: "Learn",
+        items: [
+          { label: "AI Encyclopedia", note: "176 concepts, one page each", to: "/notebook/ai/encyclopedia", badge: "NEW" },
+          { label: "AI Roadmap", note: "learn AI in 18 weeks + depth tracks", to: "/notebook/ai/roadmap" },
+          { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
+          { label: "AI Bookshelf", note: "19 free books, on a 3D shelf", to: "/notebook/ai/shelf", badge: "3D" },
+        ],
+      },
+      {
+        title: "Learn AI in 3D",
+        items: [
+          { label: "How Neural Networks Work in 3D", note: "train one live in your browser", to: "/guides/how-neural-networks-work", badge: "LIVE" },
+          { label: "How LLMs Work in 3D", note: "watch a prompt travel 21 stages", to: "/guides/how-llms-work", badge: "3D" },
+          { label: "Graph Types for AI Agents", note: "one dataset, six structures", to: "/guides/graph-types-for-ai-agents", badge: "3D" },
+        ],
+      },
+      {
+        title: "SEO & AI",
+        items: [
+          { label: "Screaming Frog Guide 2026", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
+          { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
+        ],
+      },
+      {
+        title: "AI News & Updates",
+        items: [
+          { label: "AI Updates", note: "AI news with primary sources", to: "/ai-updates" },
+        ],
+      },
     ],
     footnote:
-      "I take complex systems apart so you can see how they work. A language model, a crawler, the AI economy, even the furnace in your basement. Same method.",
-    seeAll: { label: "See all teardowns", to: "/guides" },
-    active: ["/guides"],
+      "A complete free path into AI: the encyclopedia, the roadmap, the people, the books, and machines you can fly through and train. Every link opened and checked.",
+    seeAll: { label: "Everything in the AI Notebook", to: "/notebook/ai" },
+    active: ["/notebook/ai", "/ai-contributors", "/guides", "/ai-updates", "/insights"],
   },
   {
-    id: "threed",
-    label: "3D",
-    heading: "Explorable, in three dimensions",
-    items: [
-      { label: "3D Game: the 2040 City", note: "walk and drive a 2040 city", to: "/3d-game" },
-      { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badge: "new" },
-      { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf" },
-      { label: "The Top 100 Album", note: "a glass book of 100 faces", to: "/notebook/ai#contributor-album", badge: "new" },
+    id: "notebooks",
+    label: "Notebooks",
+    heading: "Working notes, kept in public",
+    sections: [
+      {
+        title: "Notebooks",
+        items: [
+          { label: "AI Notebook", note: "the hub: roadmap, encyclopedia, contributors", to: "/notebook/ai" },
+          { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
+          { label: "Conference Notebook", note: "3 conferences, 91 talks, 78 speakers", to: "/notebook/conference" },
+        ],
+      },
     ],
     footnote:
-      "Generated geometry running in your browser, no downloads, no model files. The LLM and HVAC teardowns, the roadmap shelf, and the AI map are fully 3D too: every scene is indexed under See everything in 3D.",
-    seeAll: { label: "See everything in 3D", to: "/3d" },
-    active: ["/3d-game", "/3d"],
+      "Notebooks are the working layer: what I am tracking, learning, and hearing, published as I go rather than polished after.",
+    seeAll: { label: "The full notebook", to: "/notebook" },
+    active: ["/notebook/conference", "/notebook/business"],
   },
   {
-    id: "research",
-    label: "Learn AI",
-    heading: "Free, complete, checked by hand",
-    items: [
-      { label: "AI Roadmap", note: "18-week core + depth tracks, 93% free", to: "/notebook/ai/roadmap" },
-      { label: "AI Encyclopedia", note: "175 concepts, defined", to: "/notebook/ai/encyclopedia" },
-      { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
-      { label: "Map of the AI Economy", note: "455 players, who controls what", to: "/notebook/ai/map" },
+    id: "explore3d",
+    label: "Explore in 3D",
+    heading: "Complex systems, taken apart in 3D",
+    sections: [
+      {
+        title: "Explore",
+        items: [
+          { label: "How HVAC Works in 3D", note: "a full home system, fault library included", to: "/guides/hvac-system-troubleshooting", badge: "3D" },
+          { label: "Map of the AI Economy", note: "455 companies, who depends on whom", to: "/notebook/ai/map", badge: "3D" },
+        ],
+      },
     ],
     footnote:
-      "A complete path into AI that costs nothing: a curriculum, an encyclopedia, the people, and the map. Every link opened and checked by hand.",
-    seeAll: { label: "See all of Learn AI", to: "/notebook/ai" },
-    active: ["/notebook/ai", "/ai-contributors"],
+      "Every scene is generated in code and runs in your browser: no downloads, no model files. The full 3D index lives at /3d.",
+    seeAll: { label: "Everything in 3D", to: "/3d" },
+    active: ["/3d"],
   },
   {
-    id: "writing",
-    label: "Writing",
-    heading: "Articles, news, and papers",
-    items: [
-      { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
-      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates" },
-      { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
-      { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
-      { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
+    id: "about",
+    label: "About Me",
+    heading: "The person and the papers",
+    sections: [
+      {
+        title: "About",
+        items: [
+          { label: "About Me", note: "AI systems, research, and search", to: "/about" },
+          { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
+        ],
+      },
     ],
     footnote:
-      "What I write and where it lands: essays, sourced news, peer-reviewed papers, and field notes from conferences.",
-    seeAll: { label: "See all writing", to: "/insights" },
-    active: ["/insights", "/ai-updates", "/publications", "/notebook/conference", "/notebook/business"],
+      "Peer-reviewed research on how large language models are disrupting search, plus the story behind this site.",
+    seeAll: { label: "About this site", to: "/about" },
+    active: ["/about", "/publications"],
   },
 ];
 
 /** Plain links after the menus. About sits last and quieter on purpose.
  *  The old flat "3D Game" link grew into the 3D mega menu above. */
 const FLAT = [
-  { label: "About", to: "/about", dim: true },
+  { label: "Game: City 2040", to: "/3d-game", dim: false },
 ];
 
 const Navbar = () => {
@@ -224,7 +265,7 @@ const Navbar = () => {
                   path === l.to || path.startsWith(`${l.to}/`)
                     ? "text-foreground"
                     : l.dim
-                      ? "text-muted-foreground/60"
+                      ? "text-muted-foreground/70"
                       : "text-muted-foreground"
                 }`}
               >
@@ -276,22 +317,33 @@ const Navbar = () => {
               data-testid={`mega-${m.id}`}
             >
               <div className="max-w-7xl mx-auto px-6 py-7">
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50 mb-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70 mb-4">
                   {m.heading}
                 </p>
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
-                  {m.items.map((it) => (
-                    <Link key={it.to} href={it.to} className="group block">
-                      <p className="font-display text-sm font-semibold text-foreground group-hover:text-glow transition-all">
-                        {it.label}
-                        {it.badge && (
-                          <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-300/80">
-                            {it.badge}
-                          </span>
-                        )}
-                      </p>
-                      <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{it.note}</p>
-                    </Link>
+                <div className={`grid gap-x-10 gap-y-6 ${m.sections.length >= 3 ? "grid-cols-2 lg:grid-cols-4" : m.sections.length === 2 ? "grid-cols-2" : "grid-cols-1 lg:grid-cols-3"}`}>
+                  {m.sections.map((sec) => (
+                    <div key={sec.title} className={m.sections.length === 1 ? "lg:col-span-3 grid lg:grid-cols-3 gap-x-8 gap-y-4" : ""}>
+                      {m.sections.length > 1 && (
+                        <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70 mb-2.5 lg:col-span-3">
+                          {sec.title}
+                        </p>
+                      )}
+                      <div className={m.sections.length === 1 ? "contents" : "space-y-4"}>
+                        {sec.items.map((it) => (
+                          <Link key={it.to} href={it.to} className="group block">
+                            <p className="font-display text-sm font-semibold text-foreground group-hover:text-glow transition-all">
+                              {it.label}
+                              {it.badge && (
+                                <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-700/80 dark:text-emerald-300/80">
+                                  {it.badge}
+                                </span>
+                              )}
+                            </p>
+                            <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{it.note}</p>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
                 <div className="mt-6 pt-4 border-t border-border/60 flex items-start justify-between gap-6 flex-wrap">
@@ -343,18 +395,27 @@ const Navbar = () => {
                 </a>
                 {mobileSection === m.id && (
                   <div className="mt-4 pl-3 border-l border-border flex flex-col gap-4">
-                    {m.items.map((it) => (
-                      <Link key={it.to} href={it.to} onClick={() => setMobileOpen(false)} className="block">
-                        <p className="font-display text-sm font-semibold text-foreground">
-                          {it.label}
-                          {it.badge && (
-                            <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-300/80">
-                              {it.badge}
-                            </span>
-                          )}
-                        </p>
-                        <p className="font-mono text-[11px] text-muted-foreground">{it.note}</p>
-                      </Link>
+                    {m.sections.map((sec) => (
+                      <div key={sec.title} className="flex flex-col gap-4">
+                        {m.sections.length > 1 && (
+                          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70 -mb-1">
+                            {sec.title}
+                          </p>
+                        )}
+                        {sec.items.map((it) => (
+                          <Link key={it.to} href={it.to} onClick={() => setMobileOpen(false)} className="block">
+                            <p className="font-display text-sm font-semibold text-foreground">
+                              {it.label}
+                              {it.badge && (
+                                <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-700/80 dark:text-emerald-300/80">
+                                  {it.badge}
+                                </span>
+                              )}
+                            </p>
+                            <p className="font-mono text-[11px] text-muted-foreground">{it.note}</p>
+                          </Link>
+                        ))}
+                      </div>
                     ))}
                     <Link
                       href={m.seeAll.to}

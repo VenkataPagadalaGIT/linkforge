@@ -93,6 +93,12 @@ def main():
         SYNONYMS = {
             "writing": {"insights", "essays", "articles"},
             "learn": {"roadmap", "encyclopedia", "contributors", "notebook"},
+            # /guides brands itself "Teardowns"; the nav calls the same list
+            # "explainers" because first-time visitors understand that word.
+            "explainers": {"teardowns", "guides"},
+            # The menu says "bookshelf"; the page brands itself "The Complete
+            # Shelf" of free AI books. Same object, two words for it.
+            "bookshelf": {"shelf", "books"},
         }
 
         # No anchor: does the destination actually present this thing?
