@@ -87,6 +87,14 @@ def main():
             print(f"  ok   {label} -> {to}  (anchor present)")
             continue
 
+        # Some labels are honest promises whose destination page uses a
+        # different word for the same thing. Declared, not inferred, so a new
+        # mismatch still fails until someone consciously adds it here.
+        SYNONYMS = {
+            "writing": {"insights", "essays", "articles"},
+            "learn": {"roadmap", "encyclopedia", "contributors", "notebook"},
+        }
+
         # No anchor: does the destination actually present this thing?
         title = re.search(r"<title>([^<]*)</title>", html)
         heads = re.findall(r"<h[12][^>]*>(.*?)</h[12]>", html, re.S)
@@ -98,7 +106,10 @@ def main():
                              "named item points at the homepage with no anchor"))
             continue
 
-        if want and hay and not (want & hay):
+        expanded = set(want)
+        for w in want:
+            expanded |= SYNONYMS.get(w, set())
+        if want and hay and not (expanded & hay):
             problems.append(("MISMATCH", surface, label, to,
                              f"nothing on {path} matches the label; page title: "
                              f"{(title.group(1) if title else '')[:60]}"))

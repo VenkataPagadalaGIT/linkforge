@@ -1,7 +1,9 @@
 "use client";
 /**
- * Navbar: three mega menus (Teardowns, 3D, Research), plain links after them,
- * About last, and Contact as the CTA.
+ * Navbar: four mega menus (How It Works, 3D, Learn AI, Writing), About as a
+ * quiet plain link, and Contact as the CTA. Labels are written for someone
+ * who has never seen the site: a recruiter or a first-time learner should
+ * know what is behind each door without clicking.
  *
  * Labels and slugs are independent: the section a visitor reads as
  * "Teardowns" is still served from /guides/*, so the site can read
@@ -46,7 +48,7 @@ interface MegaMenu {
 const MEGA: MegaMenu[] = [
   {
     id: "teardowns",
-    label: "Teardowns",
+    label: "How It Works",
     heading: "How things actually work",
     items: [
       { label: "How LLMs Work", note: "21 stages, explorable in 3D", to: "/guides/how-llms-work" },
@@ -76,29 +78,40 @@ const MEGA: MegaMenu[] = [
   },
   {
     id: "research",
-    label: "Research",
-    heading: "The reference layer",
+    label: "Learn AI",
+    heading: "Free, complete, checked by hand",
     items: [
       { label: "AI Roadmap", note: "18-week core + depth tracks, 93% free", to: "/notebook/ai/roadmap" },
       { label: "AI Encyclopedia", note: "175 concepts, defined", to: "/notebook/ai/encyclopedia" },
-      { label: "AI Contributors", note: "the 100 people building it", to: "/ai-contributors" },
+      { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
       { label: "Map of the AI Economy", note: "455 players, who controls what", to: "/notebook/ai/map" },
-      { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
-      { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
-      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates" },
-      { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
     ],
     footnote:
-      "The map, the definitions, and the people behind everything above. Where the data studies and benchmarks will live.",
-    seeAll: { label: "See the full notebook", to: "/notebook" },
-    active: ["/notebook", "/ai-contributors", "/ai-updates", "/publications"],
+      "A complete path into AI that costs nothing: a curriculum, an encyclopedia, the people, and the map. Every link opened and checked by hand.",
+    seeAll: { label: "See all of Learn AI", to: "/notebook/ai" },
+    active: ["/notebook/ai", "/ai-contributors"],
+  },
+  {
+    id: "writing",
+    label: "Writing",
+    heading: "Articles, news, and papers",
+    items: [
+      { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
+      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates" },
+      { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
+      { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
+      { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
+    ],
+    footnote:
+      "What I write and where it lands: essays, sourced news, peer-reviewed papers, and field notes from conferences.",
+    seeAll: { label: "See all writing", to: "/insights" },
+    active: ["/insights", "/ai-updates", "/publications", "/notebook/conference", "/notebook/business"],
   },
 ];
 
 /** Plain links after the menus. About sits last and quieter on purpose.
  *  The old flat "3D Game" link grew into the 3D mega menu above. */
 const FLAT = [
-  { label: "Insights", to: "/insights", dim: false },
   { label: "About", to: "/about", dim: true },
 ];
 
