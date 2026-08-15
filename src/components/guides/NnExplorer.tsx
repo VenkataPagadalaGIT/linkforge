@@ -169,6 +169,34 @@ export default function NnExplorer() {
     return () => clearInterval(t);
   }, [autoPlay]);
 
+  /* ---------------- navigation, shared by panel and overlay ---------------- */
+
+  const journeyBack = () => { setAutoPlay(false); setStepIdx((i) => Math.max(0, i - 1)); };
+  const journeyNext = () => { setAutoPlay(false); setStepIdx((i) => Math.min(NN_JOURNEY.length - 1, i + 1)); };
+  const stationIdx = selectedId ? NN_STAGES.findIndex((s) => s.id === selectedId) : -1;
+  const stationBack = () => { if (stationIdx > 0) setSelectedId(NN_STAGES[stationIdx - 1].id); };
+  const stationNext = () => {
+    if (stationIdx < 0) setSelectedId(NN_STAGES[0].id);
+    else if (stationIdx < NN_STAGES.length - 1) setSelectedId(NN_STAGES[stationIdx + 1].id);
+  };
+
+  // Arrow keys drive the walkthrough: presenters in fullscreen just press
+  // right. Journey steps in journey mode, stations in explore mode.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      if (mode === "train") return;
+      const el = document.activeElement;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
+      e.preventDefault();
+      if (mode === "journey") (e.key === "ArrowRight" ? journeyNext : journeyBack)();
+      else (e.key === "ArrowRight" ? stationNext : stationBack)();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, selectedId, stationIdx]);
+
   /* ---------------- live training machinery ---------------- */
 
   const loadData = useCallback(async () => {
@@ -406,6 +434,74 @@ export default function NnExplorer() {
               ? "real MNIST digits · real activations · nothing staged"
               : "drag to orbit · scroll to zoom · click a station"}
           </p>
+
+          {/* Full-view control bar: when the text panel is hidden, the
+              walkthrough stays drivable right on the canvas. */}
+          {!panelOpen && mode !== "train" && (
+            <div
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 border border-border bg-background/85 backdrop-blur px-3 py-2 max-w-[92%]"
+              data-testid="nn-overlay-nav"
+            >
+              <button
+                type="button"
+                disabled={mode === "journey" ? stepIdx === 0 : stationIdx <= 0}
+                onClick={mode === "journey" ? journeyBack : stationBack}
+                aria-label="Previous"
+                className="font-mono text-[12px] px-3 py-1.5 border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                data-testid="nn-overlay-back"
+              >
+                ←
+              </button>
+              <div className="min-w-0 text-center">
+                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
+                  {mode === "journey"
+                    ? `Step ${stepIdx + 1} of ${NN_JOURNEY.length}`
+                    : stationIdx >= 0
+                      ? `Station ${stationIdx + 1} of ${NN_STAGES.length}`
+                      : "Explore"}
+                </p>
+                <p className="font-mono text-[11px] text-foreground truncate" data-testid="nn-overlay-title">
+                  {mode === "journey"
+                    ? NN_JOURNEY[stepIdx].title
+                    : stationIdx >= 0
+                      ? NN_STAGES[stationIdx].name
+                      : "press → to begin the station walk"}
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={mode === "journey" ? stepIdx === NN_JOURNEY.length - 1 : stationIdx >= NN_STAGES.length - 1}
+                onClick={mode === "journey" ? journeyNext : stationNext}
+                aria-label="Next"
+                className="font-mono text-[12px] px-3 py-1.5 border border-foreground/50 text-foreground hover:bg-secondary/40 disabled:opacity-30 transition-colors"
+                data-testid="nn-overlay-next"
+              >
+                →
+              </button>
+            </div>
+          )}
+          {!panelOpen && mode === "train" && dataState === "ready" && (
+            <div
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 border border-border bg-background/85 backdrop-blur px-3 py-2"
+              data-testid="nn-overlay-train"
+            >
+              <button
+                type="button"
+                onClick={() => setTraining((v) => !v)}
+                className={`font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 border transition-colors ${
+                  training
+                    ? "border-amber-400/60 text-amber-700 dark:text-amber-300 bg-amber-400/10"
+                    : "border-emerald-400/60 text-emerald-700 dark:text-emerald-300 bg-emerald-400/10"
+                }`}
+              >
+                {training ? "⏸" : "▶ train"}
+              </button>
+              <p className="font-mono text-[11px] text-foreground">
+                {stats?.acc != null ? `${(stats.acc * 100).toFixed(1)}% held-out` : "untrained"}
+                <span className="text-muted-foreground/70"> · epoch {stats?.epoch ?? 0}</span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* side panel */}
@@ -445,7 +541,7 @@ export default function NnExplorer() {
                 <button
                   type="button"
                   disabled={stepIdx === 0}
-                  onClick={() => { setAutoPlay(false); setStepIdx((i) => Math.max(0, i - 1)); }}
+                  onClick={journeyBack}
                   className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                 >
                   ← Back
@@ -453,7 +549,7 @@ export default function NnExplorer() {
                 <button
                   type="button"
                   disabled={stepIdx === NN_JOURNEY.length - 1}
-                  onClick={() => { setAutoPlay(false); setStepIdx((i) => Math.min(NN_JOURNEY.length - 1, i + 1)); }}
+                  onClick={journeyNext}
                   className="font-mono text-[11px] uppercase tracking-wider px-4 py-2 border border-foreground/50 text-foreground hover:bg-secondary/40 disabled:opacity-30 transition-colors"
                   data-testid="nn-next"
                 >
