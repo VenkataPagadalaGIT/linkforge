@@ -55,6 +55,9 @@ export interface AIUpdate {
   contributors?: string[];
   /** Scannable stat cards rendered above the fold. */
   highlights?: UpdateHighlight[];
+  /** The analyst read: what the owner thinks it means, clearly labelled as
+   *  opinion and kept separate from the reported facts above it. */
+  myView?: { points: string[]; caveat?: string };
   /** Primary documents: court records first, never buried under the text. */
   documents?: UpdateDocument[];
   /** A 30-second version and the long version. Readers pick their depth. */
@@ -113,6 +116,16 @@ export const aiUpdates: AIUpdate[] = [
       },
       connector: "reportedly acquires",
     },
+    myView: {
+      points: [
+        "Stripe is buying the meter, not the router | Stripe's entire franchise is sitting in the middle of a transaction and metering it. OpenRouter already counts every token for 10 million developers across 500+ models, and its volume roughly doubled in three months. That is the same toll-booth position, installed on the rail that is growing fastest.",
+        "It is the only neutral vantage point in AI, and there is exactly one | No model lab can see cross-provider demand: OpenAI sees OpenAI. A router sees who switches from whom, at what price, the moment quality slips. That dataset compounds with volume and cannot be rebuilt later, because neutrality is earned early or never. The 5x markup in three months is the price of that scarcity, not of the revenue.",
+        "It completes the agent-payments thesis | Stripe spent the past year shipping rails so AI agents can buy things. The gap was that the thing agents buy most is inference itself. Owning the gateway means Stripe can authorize, meter, and settle the machine economy's most common transaction, then bundle it into one developer bill: the same wedge that won it payments.",
+        "The PayPal bid is the tell | Stripe also has a roughly $53 billion offer outstanding for PayPal. Two hedges on incompatible futures: one where payments consolidate into scale, one where the fastest-growing transactions are machines paying for compute. This one costs about 13 percent of that bid, which makes it cheap optionality on becoming the default rail of the second future.",
+      ],
+      caveat:
+        "Gateway margins are thin and structurally squeezable. Model providers can route around an aggregator, and every hyperscaler wants this layer. Stripe would be paying a strategic-position multiple for a business whose moat is neutrality and switching cost rather than technology. And nothing here is confirmed.",
+    },
     highlights: [
       { stat: "$7B+", label: "reported purchase price (Bloomberg)" },
       { stat: "5x", label: "of OpenRouter's May 2026 valuation" },
@@ -144,6 +157,14 @@ export const aiUpdates: AIUpdate[] = [
         label: "OpenRouter more than doubles valuation to $1.3B in a year",
         source: "TechCrunch, 26 May 2026",
         url: "https://techcrunch.com/2026/05/26/openrouter-more-than-doubles-valuation-to-1-3b-in-a-year/",
+      },
+    ],
+    videos: [
+      {
+        kind: "short",
+        label: "The deal in 30 seconds, narrated",
+        url: "/videos/stripe-openrouter-acquisition-7-billion-30s.mp4",
+        duration: "0:29",
       },
     ],
     body: `<h3 id="what-openrouter-actually-does">What OpenRouter Actually Does</h3>

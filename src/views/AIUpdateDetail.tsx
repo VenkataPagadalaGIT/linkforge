@@ -7,7 +7,7 @@ import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
 import ContributorCards from "@/components/ContributorCards";
 import { aiUpdates, CATEGORY_META } from "@/data/aiUpdates";
-import { ArrowLeft, ArrowRight, Calendar, ExternalLink, FileText, Play, List, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, ExternalLink, Eye, FileText, Play, List, Users } from "lucide-react";
 
 const AIUpdateDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -24,6 +24,7 @@ const AIUpdateDetail = () => {
     ...(update.highlights?.length ? [{ label: "Key Numbers", id: "numbers" }] : []),
     ...(update.contributors?.length ? [{ label: "People", id: "people" }] : []),
     { label: "Key Takeaways", id: "takeaways" },
+    ...(update.myView?.points?.length ? [{ label: "My View", id: "my-view" }] : []),
     ...(update.documents?.length ? [{ label: "Primary Documents", id: "documents" }] : []),
     ...(update.videos?.length ? [{ label: "Watch", id: "watch" }] : []),
     ...update.tocSections.map((s) => ({
@@ -160,6 +161,46 @@ const AIUpdateDetail = () => {
             </section>
           </ScrollReveal>
 
+          {/* My View: clearly the author's read, never mixed into the reported
+              facts above. Opinion is labelled so a reader always knows which
+              is which. */}
+          {update.myView && update.myView.points.length > 0 && (
+            <ScrollReveal>
+              <section id="my-view" className="scroll-mt-28 mb-10">
+                <div className="border-l-2 border-emerald-400/60 pl-5 sm:pl-6">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Eye size={14} className="text-emerald-700 dark:text-emerald-300" />
+                    <h2 className="font-display text-base font-bold text-foreground">My View</h2>
+                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-4">
+                    Analysis by Venkata Pagadala · opinion, not reporting
+                  </p>
+                  <ul className="space-y-4">
+                    {update.myView.points.map((pt, i) => {
+                      const [lead, ...rest] = pt.split("|");
+                      return (
+                        <li key={i}>
+                          <p className="font-display text-sm font-bold text-foreground mb-1">
+                            {String(i + 1).padStart(2, "0")} · {lead.trim()}
+                          </p>
+                          <p className="font-mono text-xs text-muted-foreground leading-relaxed">
+                            {rest.join("|").trim()}
+                          </p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {update.myView.caveat && (
+                    <p className="font-mono text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed mt-5 border border-amber-400/30 bg-amber-400/[0.04] p-3">
+                      <span className="uppercase tracking-[0.2em] text-[10px]">The other side: </span>
+                      {update.myView.caveat}
+                    </p>
+                  )}
+                </div>
+              </section>
+            </ScrollReveal>
+          )}
+
           {/* Primary documents: the court record, never buried under prose */}
           {update.documents && update.documents.length > 0 && (
             <ScrollReveal>
@@ -211,6 +252,15 @@ const AIUpdateDetail = () => {
                           className="w-full block"
                         >
                           <source src={v.url} type="video/mp4" />
+                          {/* Captions come from the same script the voiceover
+                              was synthesized from, so they cannot disagree. */}
+                          <track
+                            kind="captions"
+                            srcLang="en"
+                            label="English"
+                            default
+                            src={v.url.replace(".mp4", ".vtt")}
+                          />
                         </video>
                         <div className="flex items-center justify-between p-3 border-t border-border">
                           <span className="font-mono text-xs text-foreground">{v.label}</span>
