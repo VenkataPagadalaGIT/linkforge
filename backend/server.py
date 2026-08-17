@@ -821,4 +821,10 @@ async def root_health():
 
 
 # Register router
+# Agentic CMS: page types, SEO cascade, review queue, agent draft surface.
+# Mounted here so it shares auth, db and CORS with the rest of the API.
+from agentic_cms import build_router as build_cms_router  # noqa: E402
+
+api.include_router(build_cms_router(db, get_current_admin))
+
 app.include_router(api)
