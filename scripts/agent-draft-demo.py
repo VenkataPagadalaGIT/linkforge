@@ -58,13 +58,20 @@ step(1, "Owner signs in and issues a scoped agent token")
 _, auth = call("POST", "/auth/login", ADMIN, expect=200)
 admin_token = auth["access_token"]
 
-# Revoke the tokens earlier runs issued. Every run needs a fresh one, and a
+# Clear what earlier runs left behind. Every run needs a fresh token, and a
 # stack of identically named live credentials is how a real leaked token
-# hides in plain sight on the Agents screen.
+# hides in plain sight on the Agents screen. The drafts pile up the same
+# way: six identical rows in the owner's list is the demo's mess, not work.
 _, existing = call("GET", "/cms/agent-tokens", token=admin_token, expect=200)
 for _t in existing:
     if _t.get("name") == "Omniscite research agent" and _t.get("active"):
         call("POST", f"/cms/agent-tokens/{_t['id']}/revoke", {}, token=admin_token, expect=200)
+
+_, prior = call("GET", "/cms/pages", token=admin_token, expect=200)
+for _p in prior:
+    if _p.get("slug") == "openai-inference-pricing-tiers" and _p.get("status") != "archived":
+        call("PUT", f"/cms/pages/{_p['id']}", {"status": "draft"}, token=admin_token, expect=200)
+        call("POST", f"/cms/pages/{_p['id']}/archive", {}, token=admin_token, expect=200)
 
 _, tok = call("POST", "/cms/agent-tokens",
               {"name": "Omniscite research agent", "allowedTypes": ["ai-update", "insight"]},

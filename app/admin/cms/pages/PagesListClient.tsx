@@ -128,7 +128,7 @@ export default function PagesListClient() {
         </select>
         <label className="sr-only" htmlFor="filter-status">Filter by status</label>
         <select id="filter-status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={`${inputBase} w-full sm:w-44`}>
-          <option value="">All except archived</option>
+          <option value="">Not archived</option>
           <option value="draft">Draft</option>
           <option value="in_review">In review</option>
           <option value="published">Published</option>
