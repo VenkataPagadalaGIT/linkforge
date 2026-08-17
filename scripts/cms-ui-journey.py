@@ -74,8 +74,18 @@ with sync_playwright() as pw:
 
         # ---- Pages: create a draft ----
         title = f"UI journey draft {scheme}"
+        newbtn = p.get_by_role("button", name="New page")
+        check("the create form is folded away until asked for",
+              newbtn.get_attribute("aria-expanded") == "false" and p.locator("#new-page-form").count() == 0)
+        newbtn.click(); p.wait_for_timeout(500)
+        check("opening the form focuses the title field",
+              p.evaluate("document.activeElement.id") == "new-title",
+              p.evaluate("document.activeElement.id"))
+        check("create is disabled with an empty title",
+              p.get_by_role("button", name="Create draft").is_disabled())
         p.fill("#new-title", title)
         p.get_by_role("button", name="Create draft").click(); p.wait_for_timeout(1400)
+        check("the form folds away again after creating", p.locator("#new-page-form").count() == 0)
         check("the draft confirmation survives the reload",
               "Draft created" in p.locator('[role="status"]').inner_text(),
               p.locator('[role="status"]').inner_text())

@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { adminApi, useRequireAdmin } from "@/lib/admin-client";
-import CmsShell, { btnPrimary, inputBase, inputClass, focusRing, Field } from "@/components/admin/CmsShell";
+import CmsShell, { btnPrimary, inputBase, inputClass, focusRing } from "@/components/admin/CmsShell";
 
 /**
  * Pages: every content type in one list, filterable, with the resolved SEO
@@ -33,6 +33,7 @@ export default function PagesListClient() {
   const [q, setQ] = React.useState("");
   const [msg, setMsg] = React.useState("");
   const [creating, setCreating] = React.useState(false);
+  const [showNew, setShowNew] = React.useState(false);
   const [newType, setNewType] = React.useState("ai-update");
   const [newTitle, setNewTitle] = React.useState("");
 
@@ -78,6 +79,7 @@ export default function PagesListClient() {
         status: "draft",
       });
       setNewTitle("");
+      setShowNew(false);
       await load("Draft created.");
     } catch {
       setMsg("Could not create that page.");
@@ -94,47 +96,90 @@ export default function PagesListClient() {
       intro="Every content type in one place. Filter by type or status, and see the SEO title each page will actually ship with."
       status={msg}
     >
-      <form onSubmit={create} className="border border-border p-4 mb-6 grid sm:grid-cols-[200px_1fr_auto] gap-3 items-end">
-        <Field label="New page type" id="new-type">
-          <select value={newType} onChange={(e) => setNewType(e.target.value)} className={inputClass}>
-            {types.map((t) => (
-              <option key={t.id} value={t.id}>{t.label}</option>
-            ))}
+      {/* One toolbar: search and filters on the left, the create action on
+          the right. Creating a page is occasional and the list is the job,
+          so the form stays folded away until it is asked for rather than
+          sitting above the content as the largest thing on the screen. */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <div className="flex flex-wrap items-center gap-2" role="search">
+          <label className="sr-only" htmlFor="filter-q">Search pages</label>
+          <input
+            id="filter-q"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search title or slug"
+            className={`${inputBase} w-full sm:w-64`}
+          />
+          <label className="sr-only" htmlFor="filter-type">Filter by type</label>
+          <select id="filter-type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={`${inputBase} w-full sm:w-44`}>
+            <option value="">All types</option>
+            {types.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
           </select>
-        </Field>
-        <Field label="Title" id="new-title" hint="The slug is derived from this and frozen once published.">
-          <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className={inputClass} placeholder="Working title" />
-        </Field>
-        <div className="mb-4">
-          <button type="submit" disabled={creating} className={btnPrimary}>
-            {creating ? "Creating…" : "Create draft"}
-          </button>
+          <label className="sr-only" htmlFor="filter-status">Filter by status</label>
+          <select id="filter-status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={`${inputBase} w-full sm:w-40`}>
+            <option value="">Not archived</option>
+            <option value="draft">Draft</option>
+            <option value="in_review">In review</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
         </div>
-      </form>
 
-      <div className="flex flex-wrap gap-3 mb-4" role="search">
-        <label className="sr-only" htmlFor="filter-q">Search pages</label>
-        <input
-          id="filter-q"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search title or slug"
-          className={`${inputBase} w-full sm:w-72`}
-        />
-        <label className="sr-only" htmlFor="filter-type">Filter by type</label>
-        <select id="filter-type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className={`${inputBase} w-full sm:w-52`}>
-          <option value="">All types</option>
-          {types.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-        </select>
-        <label className="sr-only" htmlFor="filter-status">Filter by status</label>
-        <select id="filter-status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={`${inputBase} w-full sm:w-44`}>
-          <option value="">Not archived</option>
-          <option value="draft">Draft</option>
-          <option value="in_review">In review</option>
-          <option value="published">Published</option>
-          <option value="archived">Archived</option>
-        </select>
+        <button
+          type="button"
+          onClick={() => setShowNew((v) => !v)}
+          aria-expanded={showNew}
+          aria-controls="new-page-form"
+          className={btnPrimary}
+        >
+          {showNew ? "Cancel" : "New page"}
+        </button>
       </div>
+
+      {showNew && (
+        <form
+          id="new-page-form"
+          onSubmit={create}
+          className="border border-border p-4 mb-4 flex flex-wrap items-start gap-3"
+        >
+          {/* Labels sit above their controls on both fields. Mixing a
+              side label with a stacked one put two systems in one row. */}
+          <div className="w-full sm:w-52">
+            <label htmlFor="new-type" className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+              Page type
+            </label>
+            <select id="new-type" value={newType} onChange={(e) => setNewType(e.target.value)} className={inputClass}>
+              {types.map((t) => (
+                <option key={t.id} value={t.id}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="w-full sm:w-96">
+            <label htmlFor="new-title" className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+              Working title
+            </label>
+            <input
+              id="new-title"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              aria-describedby="new-title-hint"
+              className={inputClass}
+              placeholder="What is this page about"
+              autoFocus
+            />
+            <p id="new-title-hint" className="font-mono text-[10px] text-muted-foreground/70 mt-1">
+              The slug comes from this and freezes once the page is published.
+            </p>
+          </div>
+
+          <div className="pt-[1.35rem]">
+            <button type="submit" disabled={creating || !newTitle.trim()} className={btnPrimary}>
+              {creating ? "Creating…" : "Create draft"}
+            </button>
+          </div>
+        </form>
+      )}
 
       {rows.length === 0 ? (
         <p className="font-mono text-xs text-muted-foreground border border-border p-6">
