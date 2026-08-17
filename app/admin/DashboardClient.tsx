@@ -41,6 +41,7 @@ export default function DashboardClient() {
   const [expanded, setExpanded] = React.useState<string | null>(null);
   const [err, setErr] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [awaiting, setAwaiting] = React.useState<number | null>(null);
 
   const loadAll = React.useCallback(async () => {
     setLoading(true);
@@ -58,6 +59,15 @@ export default function DashboardClient() {
       setErr(formatApiError(e, "Failed to load admin data."));
     } finally {
       setLoading(false);
+    }
+
+    // Separate from the block above on purpose: a draft count is useful but
+    // never important enough to blank the dashboard if the CMS is unreachable.
+    try {
+      const { data } = await adminApi.get<unknown[]>("/cms/review");
+      setAwaiting(data.length);
+    } catch {
+      setAwaiting(null);
     }
   }, []);
 
@@ -112,11 +122,11 @@ export default function DashboardClient() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/admin/cms/posts"
-              className="border border-foreground/30 hover:border-foreground/60 px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-foreground transition-all"
-              data-testid="admin-cms-link"
+              href="/admin/cms/pages"
+              className="border border-foreground/60 bg-foreground/10 hover:bg-foreground/20 px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-foreground transition-all"
+              data-testid="admin-agentic-cms-link"
             >
-              CMS · Posts
+              Agentic CMS
             </Link>
             <button
               onClick={loadAll}
@@ -145,6 +155,58 @@ export default function DashboardClient() {
             {err}
           </div>
         )}
+
+        {/* Agentic CMS: the way into every content type, not just posts. */}
+        <section aria-labelledby="agentic-h" className="border border-border/40 p-5 mb-10">
+          <div className="flex flex-wrap items-baseline justify-between gap-3 mb-1">
+            <h2 id="agentic-h" className="font-display text-lg font-bold text-foreground">
+              Agentic CMS
+            </h2>
+            {awaiting !== null && (
+              <p
+                className={`font-mono text-[11px] ${
+                  awaiting > 0 ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground"
+                }`}
+                data-testid="admin-awaiting-review"
+              >
+                {awaiting === 0
+                  ? "Nothing awaiting review"
+                  : `${awaiting} draft${awaiting === 1 ? "" : "s"} awaiting your review`}
+              </p>
+            )}
+          </div>
+          <p className="font-mono text-[11px] text-muted-foreground mb-4 max-w-2xl leading-relaxed">
+            Ten page types, SEO that cascades from globals to page type to page, and publish gates
+            that run again on the server at approval. Agents can draft and submit here. Only you can
+            publish.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { href: "/admin/cms/review", label: "Review queue", note: "Approve or send back agent drafts" },
+              { href: "/admin/cms/pages", label: "Pages", note: "Every content type in one list" },
+              { href: "/admin/cms/globals", label: "Global SEO", note: "One edit changes every page" },
+              { href: "/admin/cms/agents", label: "Agents", note: "Issue and revoke agent tokens" },
+            ].map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                className="block border border-border/40 hover:border-foreground/50 p-4 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+              >
+                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground mb-1">
+                  {c.label}
+                </p>
+                <p className="font-mono text-[10px] text-muted-foreground/80 leading-relaxed">{c.note}</p>
+              </Link>
+            ))}
+          </div>
+          <p className="font-mono text-[10px] text-muted-foreground/70 mt-4">
+            The older post editor is still here:{" "}
+            <Link href="/admin/cms/posts" className="text-foreground underline decoration-border" data-testid="admin-cms-link">
+              CMS · Posts
+            </Link>
+            .
+          </p>
+        </section>
 
         {/* Overview tiles */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-10" data-testid="admin-overview">
