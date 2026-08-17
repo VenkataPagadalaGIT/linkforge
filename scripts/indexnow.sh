@@ -28,6 +28,13 @@ DEFAULT_PATHS=(
   "/notebook/ai/shelf"
   "/3d"
   "/credits"
+  "/ai-updates"
+  "/ai-updates/stripe-openrouter-acquisition-7-billion"
+  "/notebook/ai/encyclopedia/inference-optimization"
+  "/notebook/ai/encyclopedia/llm"
+  "/notebook/ai/encyclopedia/ai-agents"
+  "/guides/how-neural-networks-work"
+  "/publications"
   "/llms.txt"
   "/llms-full.txt"
 )
