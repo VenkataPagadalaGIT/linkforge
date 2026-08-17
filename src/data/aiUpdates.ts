@@ -28,6 +28,15 @@ export interface UpdateVideo {
   duration?: string;
 }
 
+/** Company logos for an M&A or partnership story (official brand assets). */
+export interface UpdateDealLogo {
+  name: string;
+  onLight: string;
+  onDark: string;
+  source: string;
+  height?: number;
+}
+
 export interface AIUpdate {
   id: string;
   slug: string;
@@ -50,6 +59,8 @@ export interface AIUpdate {
   documents?: UpdateDocument[];
   /** A 30-second version and the long version. Readers pick their depth. */
   videos?: UpdateVideo[];
+  /** Two-company logo lockup, rendered above the summary. */
+  dealLogos?: { left: UpdateDealLogo; right: UpdateDealLogo; connector?: string };
   sourceUrl: string;
   tags: string[];
   relatedLinks: RelatedLink[];
@@ -64,6 +75,115 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 };
 
 export const aiUpdates: AIUpdate[] = [
+  {
+    id: "stripe-openrouter-acquisition",
+    slug: "stripe-openrouter-acquisition-7-billion",
+    title: "Stripe Agrees to Buy AI Model Router OpenRouter for More Than $7 Billion",
+    company: "Stripe",
+    category: "industry",
+    date: "2026-08-16",
+    summary:
+      "Bloomberg reported on August 16, 2026 that Stripe has agreed to acquire OpenRouter, the gateway developers use to route requests across hundreds of AI models, for more than $7 billion. That is roughly five times the $1.3 billion valuation OpenRouter set less than three months earlier. Neither company has confirmed the deal: both declined to comment, and nothing appears in Stripe's newsroom.",
+    takeaways: [
+      "Bloomberg reported the agreement on August 16, 2026 at more than $7 billion. The Wall Street Journal had reported talks around $10 billion on July 23, so the reported figure moved down as the deal firmed up.",
+      "OpenRouter raised a $113 million Series B led by Alphabet's CapitalG in May 2026 at about $1.3 billion, itself more than double the roughly $547 million it was worth a year before. A sale above $7 billion is about 5x that May mark.",
+      "Neither party has confirmed. Stripe's spokesperson said the firm does not comment on rumors or speculation; OpenRouter declined to comment. Treat the price as reported, not official, until one of them says so.",
+      "It lands while Stripe, with Advent, is pursuing a roughly $53 billion takeover bid for PayPal. Two very different bets on where payment infrastructure goes next.",
+    ],
+    tocSections: [
+      "What OpenRouter Actually Does",
+      "The Numbers Behind the Price",
+      "Why a Payments Company Wants a Model Router",
+      "What Is Not Confirmed",
+    ],
+    dealLogos: {
+      left: {
+        name: "Stripe",
+        onLight: "/logos/stripe-on-light.svg",
+        onDark: "/logos/stripe-on-dark.svg",
+        source: "Stripe official logo kit, stripe.com/newsroom/brand-assets",
+        height: 26,
+      },
+      right: {
+        name: "OpenRouter",
+        onLight: "/logos/openrouter-on-light.svg",
+        onDark: "/logos/openrouter-on-dark.svg",
+        source: "OpenRouter official brand assets, openrouter.ai/brand",
+        height: 22,
+      },
+      connector: "reportedly acquires",
+    },
+    highlights: [
+      { stat: "$7B+", label: "reported purchase price (Bloomberg)" },
+      { stat: "5x", label: "of OpenRouter's May 2026 valuation" },
+      { stat: "500+", label: "models routed, across 80+ providers" },
+      { stat: "10M+", label: "users, per OpenRouter's own site" },
+    ],
+    documents: [
+      {
+        label: "Bloomberg: Stripe finalizes deal to acquire OpenRouter for over $7 billion",
+        source: "Bloomberg, 16 Aug 2026",
+        url: "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+      },
+      {
+        label: "Stripe will reportedly acquire AI gateway startup OpenRouter for $7B+",
+        source: "TechCrunch, 16 Aug 2026",
+        url: "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b/",
+      },
+      {
+        label: "Stripe clinches over $7 billion deal to buy AI firm OpenRouter",
+        source: "Fortune, 16 Aug 2026",
+        url: "https://fortune.com/2026/08/16/stripe-7-billion-deal-ai-firm-openrouter-acquisition/",
+      },
+      {
+        label: "OpenRouter raises $113M Series B (the company's own announcement)",
+        source: "OpenRouter, May 2026",
+        url: "https://openrouter.ai/announcements/series-b",
+      },
+      {
+        label: "OpenRouter more than doubles valuation to $1.3B in a year",
+        source: "TechCrunch, 26 May 2026",
+        url: "https://techcrunch.com/2026/05/26/openrouter-more-than-doubles-valuation-to-1-3b-in-a-year/",
+      },
+    ],
+    body: `<h3 id="what-openrouter-actually-does">What OpenRouter Actually Does</h3>
+<p>OpenRouter is a gateway. Instead of wiring your application separately to OpenAI, Anthropic, Google, Meta and a long tail of open-weight providers, you send one request to OpenRouter and it routes to whichever model fits the job, the budget, or whatever is actually up right now. One API key, one bill, one place to switch models when a cheaper or better one appears. The company describes itself as "the unified interface for every model"; its founder, Alex Atallah, who earlier co-founded the NFT marketplace OpenSea, has called it a single access point that prevents lock-in.</p>
+<p>Founded in 2023 and based in New York, it sits at a peculiar spot in the stack: it owns no models and trains nothing, but it sees the traffic. Its own site currently advertises 500+ models across 80+ providers, 10 million users, and more than 200 trillion tokens routed per month.</p>
+<h3 id="the-numbers-behind-the-price">The Numbers Behind the Price</h3>
+<p>The price is startling mostly because of how recent the last one was. In May 2026 OpenRouter announced a $113 million Series B led by CapitalG, Alphabet's growth fund, with NVIDIA's NVentures, ServiceNow, MongoDB, Snowflake and Databricks ventures arms joining existing backers Andreessen Horowitz and Menlo Ventures. That round valued the company at about $1.3 billion, already more than double the roughly $547 million it commanded a year earlier. A sale above $7 billion is roughly five times that mark, agreed less than three months later.</p>
+<p>The growth underneath it is the argument. At the Series B the company reported 25 trillion tokens per week, about 100 trillion a month and a fivefold rise in six months. Its site now claims north of 200 trillion a month. Note the moving target on users, too: the May round and most coverage cite 8 million and 400+ models, while OpenRouter's own homepage today says 10 million and 500+. Both are the company's own figures, at different dates, and neither is independently audited.</p>
+<h3 id="why-a-payments-company-wants-a-model-router">Why a Payments Company Wants a Model Router</h3>
+<p>Stripe's thesis, visible in its shipping over the past year, is that AI agents will become economic actors that buy things, and that somebody has to meter and settle what they consume. A router is exactly that meter: it already counts tokens per customer, per model, per provider, and bills for them. Buying OpenRouter puts Stripe in the path of model traffic the way it sits in the path of card traffic, with usage data that no model vendor has in aggregate.</p>
+<p>The strategic context is louder than the price. Stripe, alongside private equity firm Advent, has an outstanding takeover bid for PayPal valuing it near $53 billion, reported in mid-July. Buying a model gateway for $7 billion while bidding $53 billion for a payments incumbent is a company hedging two futures at once: the one where payment rails consolidate, and the one where the interesting transactions are machines paying for inference.</p>
+<h3 id="what-is-not-confirmed">What Is Not Confirmed</h3>
+<ul>
+<li><strong>No official announcement.</strong> As of this writing there is nothing about OpenRouter in Stripe's newsroom, and no post on OpenRouter's announcements page. Everything here traces to reporting, not to the parties.</li>
+<li><strong>Both companies declined to comment.</strong> Stripe said it "does not comment on rumors or speculation"; OpenRouter declined. That is not a denial, and it is not a confirmation.</li>
+<li><strong>The number moved once already.</strong> The Journal reported roughly $10 billion in July; Bloomberg reported more than $7 billion in August. Final terms, structure, and any earnout are unreported.</li>
+<li><strong>Closing is not agreement.</strong> Deals of this size face regulatory review and can be restructured or abandoned. Nothing here says the transaction has closed.</li>
+</ul>
+<p>Coverage: <a href="https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion" target="_blank" rel="noopener noreferrer">Bloomberg</a> · <a href="https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b/" target="_blank" rel="noopener noreferrer">TechCrunch</a> · <a href="https://fortune.com/2026/08/16/stripe-7-billion-deal-ai-firm-openrouter-acquisition/" target="_blank" rel="noopener noreferrer">Fortune</a> · <a href="https://www.reuters.com/business/finance/stripe-advent-offer-buy-paypal-more-than-53-billion-2026-07-15/" target="_blank" rel="noopener noreferrer">Reuters on the PayPal bid</a></p>
+<p><em>This article summarizes contemporaneous news reports and the companies' own published figures. Neither company has confirmed the transaction. It is not investment advice.</em></p>`,
+    sourceUrl: "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+    tags: ["Stripe", "OpenRouter", "acquisition", "AI infrastructure", "model routing", "AI gateway", "payments"],
+    relatedLinks: [
+      {
+        label: "How LLMs Work",
+        to: "/guides/how-llms-work",
+        description: "What a router actually routes: the stages every prompt passes through, in explorable 3D.",
+      },
+      {
+        label: "Map of the AI Economy",
+        to: "/notebook/ai/map",
+        description: "Where gateways and inference providers sit among the 455 players in the value chain.",
+      },
+      {
+        label: "AI Encyclopedia: Inference",
+        to: "/notebook/ai/encyclopedia/inference-optimization",
+        description: "The economics OpenRouter arbitrages: latency, cost per token, and provider choice.",
+      },
+    ],
+  },
   {
     id: "nvidia-ssi-partnership",
     slug: "nvidia-safe-superintelligence-5b-partnership",

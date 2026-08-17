@@ -2,6 +2,7 @@
 import { useParams, Link, Navigate } from "@/lib/router-shim";
 import { formatDateLong } from "@/lib/date";
 import ScrollReveal from "@/components/ScrollReveal";
+import DealLogos from "@/components/updates/DealLogos";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
 import ContributorCards from "@/components/ContributorCards";
@@ -88,6 +89,15 @@ const AIUpdateDetail = () => {
             <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4 leading-tight">
               {update.title}
             </h1>
+
+            {/* Deal lockup: whose story this is, in their own marks */}
+            {update.dealLogos && (
+              <DealLogos
+                left={update.dealLogos.left}
+                right={update.dealLogos.right}
+                connector={update.dealLogos.connector}
+              />
+            )}
 
             {/* Summary */}
             <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 border-l-2 border-foreground/20 pl-4">
