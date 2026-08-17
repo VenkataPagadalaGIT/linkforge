@@ -36,7 +36,13 @@ export default function PagesListClient() {
   const [newType, setNewType] = React.useState("ai-update");
   const [newTitle, setNewTitle] = React.useState("");
 
-  const load = React.useCallback(async () => {
+  /**
+   * `note` carries a confirmation through the reload that follows an action.
+   * Without it, "Draft created." was overwritten by the row count a moment
+   * later, so the live region announced a number instead of the outcome and
+   * the only feedback the owner got vanished before it could be read.
+   */
+  const load = React.useCallback(async (note?: string) => {
     const params = new URLSearchParams();
     if (typeFilter) params.set("type", typeFilter);
     if (statusFilter) params.set("status", statusFilter);
@@ -44,7 +50,8 @@ export default function PagesListClient() {
     try {
       const { data } = await adminApi.get(`/cms/pages?${params}`);
       setRows(data);
-      setMsg(`${data.length} page${data.length === 1 ? "" : "s"}`);
+      const count = `${data.length} page${data.length === 1 ? "" : "s"}`;
+      setMsg(note ? `${note} ${count} shown.` : count);
     } catch {
       setMsg("Could not load pages.");
     }
@@ -71,8 +78,7 @@ export default function PagesListClient() {
         status: "draft",
       });
       setNewTitle("");
-      setMsg("Draft created.");
-      await load();
+      await load("Draft created.");
     } catch {
       setMsg("Could not create that page.");
     } finally {
@@ -122,10 +128,11 @@ export default function PagesListClient() {
         </select>
         <label className="sr-only" htmlFor="filter-status">Filter by status</label>
         <select id="filter-status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={`${inputBase} w-full sm:w-44`}>
-          <option value="">All statuses</option>
+          <option value="">All except archived</option>
           <option value="draft">Draft</option>
           <option value="in_review">In review</option>
           <option value="published">Published</option>
+          <option value="archived">Archived</option>
         </select>
       </div>
 

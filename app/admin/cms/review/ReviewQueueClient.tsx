@@ -40,6 +40,19 @@ interface QueueItem {
   gates: { passed: boolean; checks: GateCheck[]; failed: string[] };
 }
 
+/**
+ * Second line of defence on source URLs.
+ *
+ * The API rejects anything that is not http, https or site-relative, but
+ * this screen renders agent-supplied strings as hrefs on the one browser
+ * session that can publish. React escapes text and does not escape hrefs,
+ * so `javascript:` would run on click. Old rows written before the API
+ * rule existed are the reason this cannot be assumed away.
+ */
+function isSafeHref(url: string): boolean {
+  return /^(https?:\/\/|\/)/i.test(url.trim());
+}
+
 export default function ReviewQueueClient() {
   const { status: authStatus } = useRequireAdmin();
   const [items, setItems] = React.useState<QueueItem[]>([]);
@@ -47,11 +60,14 @@ export default function ReviewQueueClient() {
   const [busy, setBusy] = React.useState<string | null>(null);
   const [openId, setOpenId] = React.useState<string | null>(null);
 
-  const load = React.useCallback(async () => {
+  /** `note` survives the reload that follows a decision. Without it the
+   *  outcome was replaced by the queue count before it could be read. */
+  const load = React.useCallback(async (note?: string) => {
     try {
       const { data } = await adminApi.get("/cms/review");
       setItems(data);
-      setMsg(`${data.length} draft${data.length === 1 ? "" : "s"} awaiting review`);
+      const count = `${data.length} draft${data.length === 1 ? "" : "s"} awaiting review`;
+      setMsg(note ? `${note} ${count}.` : count);
     } catch {
       setMsg("Could not load the review queue.");
     }
@@ -64,17 +80,18 @@ export default function ReviewQueueClient() {
   const decide = async (id: string, action: "approve" | "reject" | "archive") => {
     setBusy(id);
     try {
+      let note: string;
       if (action === "approve") {
         await adminApi.post(`/cms/pages/${id}/approve`, {});
-        setMsg("Published. Gates passed and a human approved it.");
+        note = "Published. Gates passed and a human approved it.";
       } else if (action === "archive") {
         await adminApi.post(`/cms/pages/${id}/archive`, {});
-        setMsg("Archived. It leaves the queue but stays in the audit trail.");
+        note = "Archived. It leaves the queue but stays in the audit trail.";
       } else {
         await adminApi.post(`/cms/pages/${id}/reject`, { notes: "Sent back for revision" });
-        setMsg("Sent back to draft.");
+        note = "Sent back to draft.";
       }
-      await load();
+      await load(note);
     } catch (e: unknown) {
       const detail = (e as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail;
       const failed = (detail as { failed?: string[] })?.failed;
@@ -169,14 +186,20 @@ export default function ReviewQueueClient() {
                         <ul className="space-y-1.5">
                           {it.provenance.sources.map((s) => (
                             <li key={s.url}>
-                              <a
-                                href={s.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`font-mono text-[11px] text-foreground/85 hover:text-foreground underline decoration-border ${focusRing}`}
-                              >
-                                {s.url}
-                              </a>
+                              {isSafeHref(s.url) ? (
+                                <a
+                                  href={s.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`font-mono text-[11px] text-foreground/85 hover:text-foreground underline decoration-border ${focusRing}`}
+                                >
+                                  {s.url}
+                                </a>
+                              ) : (
+                                <span className="font-mono text-[11px] text-amber-700 dark:text-amber-300">
+                                  {s.url} (blocked: not an http or https URL)
+                                </span>
+                              )}
                               <span className="font-mono text-[10px] text-muted-foreground/70">
                                 {s.httpStatus ? ` · HTTP ${s.httpStatus}` : ""}{s.fetchedAt ? ` · ${s.fetchedAt.slice(0, 10)}` : ""}
                               </span>

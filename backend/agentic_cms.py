@@ -22,11 +22,11 @@ from __future__ import annotations
 import hashlib
 import re
 import secrets
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # ---------------------------------------------------------------- #
 #  Page type registry: the contract for humans and agents alike
@@ -216,6 +216,39 @@ DEFAULT_GLOBALS: Dict[str, Any] = {
 
 Status = Literal["draft", "in_review", "published", "archived"]
 
+# Statuses a caller may write directly through create or patch. Publishing
+# and archiving are state transitions with rules attached, so they are
+# reachable only through their own routes, where those rules run.
+WritableStatus = Literal["draft", "in_review"]
+
+SAFE_URL = re.compile(r"^(https?://|/)", re.IGNORECASE)
+
+# How many drafts one agent token may hold open at once, and how long a
+# token lives before it must be reissued.
+DEFAULT_AGENT_DRAFT_CAP = 25
+DEFAULT_AGENT_TOKEN_DAYS = 90
+
+
+def safe_url(v: Optional[str], field: str = "url") -> Optional[str]:
+    """Reject any URL scheme that executes when a link is clicked.
+
+    A source URL is written by an agent and rendered as an href on the
+    owner's review screen. React escapes text but happily renders
+    href="javascript:...", so without this an agent could put script in
+    front of the one human who is trusted to approve its work. Only http,
+    https, and site-relative paths are allowed.
+    """
+    if v is None:
+        return None
+    v = v.strip()
+    if not v:
+        return None
+    if not SAFE_URL.match(v):
+        raise ValueError(
+            f"{field} must start with http://, https:// or /  (got {v[:32]!r})"
+        )
+    return v
+
 
 class Block(BaseModel):
     kind: str
@@ -224,6 +257,11 @@ class Block(BaseModel):
     title: Optional[str] = None
     url: Optional[str] = None
     data: Optional[Dict[str, Any]] = None
+
+    @field_validator("url")
+    @classmethod
+    def _url(cls, v):
+        return safe_url(v, "block url")
 
 
 class Seo(BaseModel):
@@ -235,6 +273,11 @@ class Seo(BaseModel):
     ogImage: Optional[str] = None
     primaryKeyword: Optional[str] = None
     schemaOverride: Optional[str] = None
+
+    @field_validator("canonical", "ogImage")
+    @classmethod
+    def _url(cls, v):
+        return safe_url(v, "seo url")
 
 
 class InternalLink(BaseModel):
@@ -248,6 +291,14 @@ class SourceRef(BaseModel):
     quote: Optional[str] = None
     fetchedAt: Optional[str] = None
     httpStatus: Optional[int] = None
+
+    @field_validator("url")
+    @classmethod
+    def _url(cls, v):
+        checked = safe_url(v, "source url")
+        if not checked:
+            raise ValueError("source url is required")
+        return checked
 
 
 class Provenance(BaseModel):
@@ -263,12 +314,54 @@ class PageUpsert(BaseModel):
     type: str
     slug: str
     title: str
-    status: Status = "draft"
+    # WritableStatus, not Status. With Status here, POST /cms/pages
+    # {"status": "published"} put a page live without running a single
+    # gate, which made "approve is the only path to published" false.
+    status: WritableStatus = "draft"
     seo: Seo = Field(default_factory=Seo)
     blocks: List[Block] = Field(default_factory=list)
     fields: Dict[str, Any] = Field(default_factory=dict)
     internalLinks: List[InternalLink] = Field(default_factory=list)
     provenance: Provenance = Field(default_factory=Provenance)
+
+
+ROBOTS_VALUES = {"index,follow", "noindex,follow", "index,nofollow", "noindex,nofollow"}
+
+
+class GlobalsPatch(BaseModel):
+    """Validated globals.
+
+    This used to be Dict[str, Any] written straight to Mongo. Two things
+    made that worse than untidy: siteUrl builds every canonical on the
+    site, and robotsPolicy is inherited by every page that does not
+    override it, so one typo here could deindex everything.
+    """
+    siteName: Optional[str] = None
+    siteUrl: Optional[str] = None
+    titleTemplate: Optional[str] = None
+    defaultMetaDescription: Optional[str] = None
+    robotsPolicy: Optional[str] = None
+    defaultOgImage: Optional[str] = None
+    organization: Optional[Dict[str, Any]] = None
+
+    @field_validator("siteUrl")
+    @classmethod
+    def _site_url(cls, v):
+        if v and not v.startswith(("http://", "https://")):
+            raise ValueError("siteUrl must be absolute, starting with http:// or https://")
+        return v.rstrip("/") if v else v
+
+    @field_validator("defaultOgImage")
+    @classmethod
+    def _og(cls, v):
+        return safe_url(v, "defaultOgImage")
+
+    @field_validator("robotsPolicy")
+    @classmethod
+    def _robots(cls, v):
+        if v and v.replace(" ", "") not in ROBOTS_VALUES:
+            raise ValueError(f"robotsPolicy must be one of: {', '.join(sorted(ROBOTS_VALUES))}")
+        return v.replace(" ", "") if v else v
 
 
 class PagePatch(BaseModel):
@@ -281,7 +374,7 @@ class PagePatch(BaseModel):
     type: Optional[str] = None
     slug: Optional[str] = None
     title: Optional[str] = None
-    status: Optional[Status] = None
+    status: Optional[WritableStatus] = None
     seo: Optional[Seo] = None
     blocks: Optional[List[Block]] = None
     fields: Optional[Dict[str, Any]] = None
@@ -412,7 +505,31 @@ def build_router(db, get_current_admin) -> APIRouter:
         rec = await db.cms_agent_tokens.find_one({"tokenHash": digest, "active": True}, {"_id": 0})
         if not rec:
             raise HTTPException(status_code=401, detail="Unknown or revoked agent token")
+        # A token that never expires is a credential nobody remembers to
+        # rotate. Revoking is still the fast path; this is the backstop.
+        expires = rec.get("expiresAt")
+        if expires and expires < now_iso():
+            raise HTTPException(status_code=401, detail="Agent token expired; issue a new one")
         return rec
+
+    async def enforce_draft_cap(agent: Dict[str, Any]) -> None:
+        """Cap the open drafts one token can hold.
+
+        The review queue is a human's attention, so it is a finite resource.
+        Without a cap, a buggy loop or a stolen token fills it faster than
+        anyone can read, and the queue stops being usable at all.
+        """
+        cap = int(agent.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP)
+        open_now = await db.cms_pages.count_documents({
+            "provenance.agentId": agent.get("id"),
+            "status": {"$in": ["draft", "in_review"]},
+        })
+        if open_now >= cap:
+            raise HTTPException(
+                429,
+                f"agent has {open_now} open drafts, at its cap of {cap}; "
+                "a human must approve, reject or archive some before it files more",
+            )
 
     # ---------------- schema / registry ----------------
 
@@ -433,24 +550,36 @@ def build_router(db, get_current_admin) -> APIRouter:
         return await get_globals()
 
     @r.put("/globals")
-    async def write_globals(payload: Dict[str, Any], _: dict = Depends(get_current_admin)):
-        payload["updatedAt"] = now_iso()
-        await db.cms_globals.update_one({"_id": "globals"}, {"$set": payload}, upsert=True)
+    async def write_globals(payload: GlobalsPatch, _: dict = Depends(get_current_admin)):
+        incoming = payload.model_dump(exclude_unset=True, exclude_none=True)
+        if not incoming:
+            raise HTTPException(400, "nothing to update")
+        incoming["updatedAt"] = now_iso()
+        await db.cms_globals.update_one({"_id": "globals"}, {"$set": incoming}, upsert=True)
         return await get_globals()
 
     # ---------------- pages ----------------
 
     @r.get("/pages")
     async def list_pages(type: Optional[str] = None, status: Optional[str] = None,
-                         q: Optional[str] = None, _: dict = Depends(get_current_admin)):
+                         q: Optional[str] = None, includeArchived: bool = False,
+                         _: dict = Depends(get_current_admin)):
         query: Dict[str, Any] = {}
         if type:
             query["type"] = type
         if status:
             query["status"] = status
+        elif not includeArchived:
+            # Archived is a soft delete, so it belongs out of the working
+            # list unless it is asked for by name. Otherwise every discarded
+            # draft stays in the owner's field of view forever.
+            query["status"] = {"$ne": "archived"}
         if q:
-            query["$or"] = [{"title": {"$regex": q, "$options": "i"}},
-                            {"slug": {"$regex": q, "$options": "i"}}]
+            # re.escape, because the raw string went into $regex: a search
+            # for "a(" was a 500, and a crafted pattern is a CPU bomb.
+            safe = re.escape(q)
+            query["$or"] = [{"title": {"$regex": safe, "$options": "i"}},
+                            {"slug": {"$regex": safe, "$options": "i"}}]
         rows = await db.cms_pages.find(query, {"_id": 0}).sort("updatedAt", -1).to_list(500)
         return rows
 
@@ -487,11 +616,20 @@ def build_router(db, get_current_admin) -> APIRouter:
         if not incoming:
             raise HTTPException(400, "nothing to update")
 
+        if "type" in incoming and incoming["type"] not in PAGE_TYPES:
+            raise HTTPException(400, f"unknown page type {incoming['type']}")
+
         if "slug" in incoming:
             incoming["slug"] = slugify(incoming["slug"])
-            # slugs are frozen once published: changing one silently breaks links
-            if existing.get("status") == "published" and incoming["slug"] != existing["slug"]:
+
+        # A published page owns a URL, and the URL is route + slug. Freezing
+        # only the slug was half a rule: switching the type moved the page to
+        # a different route and broke every inbound link just as thoroughly.
+        if existing.get("status") == "published":
+            if incoming.get("slug", existing["slug"]) != existing["slug"]:
                 raise HTTPException(400, "slug is frozen after publish; add a redirect instead")
+            if incoming.get("type", existing["type"]) != existing["type"]:
+                raise HTTPException(400, "page type is frozen after publish; it decides the URL route")
 
         await db.cms_versions.insert_one({"pageId": page_id, "snapshot": existing,
                                           "at": now_iso(), "by": user.get("email")})
@@ -563,6 +701,8 @@ def build_router(db, get_current_admin) -> APIRouter:
 
     @r.post("/pages/{page_id}/reject")
     async def reject(page_id: str, payload: Dict[str, Any], user: dict = Depends(get_current_admin)):
+        if not await db.cms_pages.find_one({"id": page_id}, {"_id": 1}):
+            raise HTTPException(404, "not found")
         await db.cms_pages.update_one({"id": page_id}, {"$set": {
             "status": "draft",
             "reviewNotes": payload.get("notes", ""),
@@ -601,11 +741,24 @@ def build_router(db, get_current_admin) -> APIRouter:
     @r.post("/agent-tokens")
     async def create_token(payload: Dict[str, Any], user: dict = Depends(get_current_admin)):
         raw = "omni_" + secrets.token_urlsafe(24)
+
+        # Scope is a security control, so an unrecognised type is an error
+        # rather than something to quietly widen. An empty list would grant
+        # nothing useful, so that falls back to every type on purpose.
+        requested = payload.get("allowedTypes") or list(PAGE_TYPES.keys())
+        unknown = [t for t in requested if t not in PAGE_TYPES]
+        if unknown:
+            raise HTTPException(400, f"unknown page type(s): {', '.join(unknown)}")
+
+        days = int(payload.get("expiresInDays") or DEFAULT_AGENT_TOKEN_DAYS)
         rec = {
             "id": secrets.token_hex(6),
             "name": payload.get("name", "unnamed agent"),
             "tokenHash": hashlib.sha256(raw.encode()).hexdigest(),
-            "allowedTypes": payload.get("allowedTypes", list(PAGE_TYPES.keys())),
+            "allowedTypes": requested,
+            "openDraftCap": int(payload.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP),
+            "expiresAt": (datetime.now(timezone.utc) + timedelta(days=days))
+                .isoformat().replace("+00:00", "Z"),
             "active": True,
             "createdAt": now_iso(),
             "createdBy": user.get("email"),
@@ -646,6 +799,7 @@ def build_router(db, get_current_admin) -> APIRouter:
     async def agent_create_draft(payload: AgentDraft, agent: dict = Depends(require_agent)):
         if payload.type not in agent.get("allowedTypes", []):
             raise HTTPException(403, f"agent not allowed to draft type {payload.type}")
+        await enforce_draft_cap(agent)
         page = {
             "id": secrets.token_hex(8),
             "type": payload.type,

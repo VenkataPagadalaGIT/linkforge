@@ -57,6 +57,15 @@ ok = 0
 step(1, "Owner signs in and issues a scoped agent token")
 _, auth = call("POST", "/auth/login", ADMIN, expect=200)
 admin_token = auth["access_token"]
+
+# Revoke the tokens earlier runs issued. Every run needs a fresh one, and a
+# stack of identically named live credentials is how a real leaked token
+# hides in plain sight on the Agents screen.
+_, existing = call("GET", "/cms/agent-tokens", token=admin_token, expect=200)
+for _t in existing:
+    if _t.get("name") == "Omniscite research agent" and _t.get("active"):
+        call("POST", f"/cms/agent-tokens/{_t['id']}/revoke", {}, token=admin_token, expect=200)
+
 _, tok = call("POST", "/cms/agent-tokens",
               {"name": "Omniscite research agent", "allowedTypes": ["ai-update", "insight"]},
               token=admin_token, expect=200)

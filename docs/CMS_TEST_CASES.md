@@ -1,8 +1,7 @@
 # Agentic CMS: use cases and test cases
 
-Written alongside the Phase 1 build, 2026-08-17. Every case below is either
-executable today (`scripts/agent-draft-demo.py`) or a manual script you can
-follow in the local CMS.
+Written alongside the Phase 1 build, 2026-08-17. Every case below is
+executable: four suites, 100+ assertions, all green against a live backend.
 
 Local setup:
 
@@ -10,15 +9,16 @@ Local setup:
 # backend  http://localhost:8090   (launch config "backend")
 # CMS UI   http://localhost:3402   (launch config "cms-review")
 # sign in  admin@monomind.com / LocalReview2026!
-python3 scripts/agent-draft-demo.py   # the agent contract, 8 steps asserted
-python3 scripts/cms-gate-tests.py     # the owner-side gates, 18 checks asserted
+python3 scripts/agent-draft-demo.py   # the agent contract, 8 steps
+python3 scripts/cms-gate-tests.py     # the owner-side gates, 18 checks
+python3 scripts/cms-security-tests.py # 44 attacks, all refused
+python3 scripts/cms-ui-journey.py     # every screen driven, both themes
 ```
 
-Both suites are idempotent: the gate suite sweeps its own `gate-test-*`
-pages before it starts and archives everything it made on the way out, so
-running it twice gives the same result. That matters because the first
-version did not, and its litter made the next run report a bug that was
-not there.
+All four suites are idempotent. Each sweeps its own leftovers before it
+starts and retires everything it made on the way out: pages get archived,
+agent tokens get revoked. That matters because the first versions did not,
+and their litter made the next run report bugs that were not there, twice.
 
 ---
 
@@ -143,7 +143,82 @@ with zero sources, missing required blocks for a type, and a slug with
 spaces or capitals. Those fire in the gate function and appear in the
 review-queue list; they simply have no dedicated test yet.
 
-### 3.3 Accessibility cases (both themes)
+### 3.3 Security (run `scripts/cms-security-tests.py`)
+
+Threat model. Two principals: the **owner**, who holds an admin session and
+is trusted to publish, and an **agent**, which holds a scoped token and
+writes content the owner then reads in a browser. An agent is semi-trusted,
+which means its output is untrusted input. One property must hold whatever
+either of them sends: nothing reaches `published` without passing the gates.
+
+| Group | What is tested | Cases |
+|---|---|---|
+| A | No session, no access, on every route | 5 |
+| B | An agent token is not an admin session | 5 |
+| C | The publish gate cannot be walked around | 3 |
+| D | Agent URLs cannot carry script to the reviewer | 6 |
+| E | Agent scope is enforced per page type | 1 |
+| F | One agent cannot touch another agent's draft | 3 |
+| G | Revoked, forged and missing tokens are refused | 3 |
+| H | Token issuance validates its own scope input | 3 |
+| I | Search input cannot break or hang the query | 5 |
+| J | Globals cannot be set to something that breaks the site | 4 |
+| K | A published URL cannot be moved out from under its links | 3 |
+| L | An unknown page type cannot be smuggled in | 2 |
+| M | Missing objects 404 rather than silently succeeding | 4 |
+| N | The draft cap protects the review queue | 1 |
+
+**Five real vulnerabilities were found and fixed.**
+
+1. **Publish without gates (high).** `status` was directly writable, so
+   `POST /cms/pages {"status": "published"}` put a page live having run
+   zero gates, and `PUT` could promote any draft the same way. The claim
+   that approval was the only path to published was simply false. Status is
+   now restricted to `draft` and `in_review` on both routes; publishing and
+   archiving are reachable only through their own routes, where the rules
+   live.
+
+2. **Script delivered to the reviewer (high).** Source URLs are written by
+   an agent and rendered as `href` on the owner's review screen. React
+   escapes text but not hrefs, so `javascript:alert(...)` would have run on
+   click, in the one session that can publish. URLs are now restricted to
+   http, https and site-relative at the API, on sources, block URLs,
+   canonicals and OG images, with a second check in the UI for rows written
+   before the rule existed.
+
+3. **Published URLs could be moved (medium).** Only the slug was frozen
+   after publish. The URL is route plus slug, and the route comes from the
+   page type, so switching the type moved the page and broke every inbound
+   link just as thoroughly. Both are frozen now.
+
+4. **Search could crash or hang the API (medium).** The `q` parameter went
+   into a Mongo `$regex` unescaped. A search for `a(` was a 500, and a
+   crafted pattern is a CPU bomb. It is escaped now.
+
+5. **Globals could deindex the site (medium).** The globals route accepted
+   an arbitrary dict and wrote it straight to Mongo. `robotsPolicy` is
+   inherited by every page that does not override it, so one typo could
+   have taken the site out of the index. Globals are a validated model now,
+   with an enum for robots and an absolute-URL rule for `siteUrl`.
+
+Hardening added at the same time: agent tokens expire (90 days by default)
+instead of living forever, and each token has an open-draft cap (25 by
+default) so a runaway loop or a stolen token cannot flood the one thing
+that does not scale, which is the owner's attention.
+
+**Each of these was control-tested.** The guard was removed, the suite was
+re-run, and the corresponding cases failed: create-with-published returned
+200 and the page went live, the `javascript:` sources were accepted, and
+the regex probes returned 500. A test that has never been seen to fail is
+not evidence.
+
+**Not covered, and worth knowing.** The admin token lives in
+`localStorage`, so any XSS on an admin page can exfiltrate it; the URL
+rules above are what keep agent content from becoming that XSS. There is
+no rate limit on admin login. Nothing here has been tested against a real
+adversary, only against the attacks listed.
+
+### 3.4 Accessibility cases (both themes)
 
 | ID | Test | Expected |
 |---|---|---|
@@ -159,7 +234,7 @@ review-queue list; they simply have no dedicated test yet.
 | A10 | Contrast | `scripts/check-brand.py` passes: no pale accent without a dark pair, no text below the /70 floor |
 | A11 | Status colours | Never colour alone: every state also carries a word ("gates pass", "revoked") |
 
-### 3.4 Cascade cases
+### 3.5 Cascade cases
 
 | ID | Setup | Expected resolved value |
 |---|---|---|
@@ -169,7 +244,7 @@ review-queue list; they simply have no dedicated test yet.
 | C4 | Page canonical empty | built from site URL plus the type's route |
 | C5 | Global robots set to noindex | every non-overriding page inherits noindex |
 
-### 3.5 Accessibility results (measured, not asserted)
+### 3.6 Accessibility results (measured, not asserted)
 
 Run against both themes with a real admin session on 2026-08-17:
 
@@ -181,7 +256,7 @@ Run against both themes with a real admin session on 2026-08-17:
 - `scripts/check-brand.py` passes, so no accent colour lacks a dark pair
   and no text sits below the contrast floor.
 
-### 3.6 Known gaps (honest list, not yet built)
+### 3.7 Known gaps (honest list, not yet built)
 
 - Block editor UI: blocks are stored and rendered in review, but the page
   editor form for editing them field by field is not built yet.
