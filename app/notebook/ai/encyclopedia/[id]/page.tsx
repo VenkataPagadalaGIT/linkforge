@@ -13,8 +13,10 @@ import {
   REF_COUNTS,
   INTERACTIVE_FOR,
   DEEP_DIVES,
+  NEWS_FOR,
 } from "@/data/learnReference";
 import { learnTopicBySlug } from "@/data/learn";
+import { aiUpdates } from "@/data/aiUpdates";
 import { VIDEOS_FOR, GUIDES_FOR } from "@/data/encyclopediaResources";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
 import DeepDive from "@/components/learn/DeepDive";
@@ -102,6 +104,9 @@ export default function Page({ params }: { params: { id: string } }) {
   const cat = refCategoryMeta(c.category);
   const idx = refConcepts.findIndex((x) => x.id === c.id);
   const interactive = INTERACTIVE_FOR[c.id];
+  const news = (NEWS_FOR[c.id] ?? [])
+    .map((slug) => aiUpdates.find((u) => u.slug === slug))
+    .filter((u): u is NonNullable<typeof u> => Boolean(u));
   const dives = (DEEP_DIVES[c.id] ?? [])
     .map((slug) => learnTopicBySlug(slug))
     .filter((t): t is NonNullable<typeof t> => Boolean(t));
@@ -235,6 +240,29 @@ export default function Page({ params }: { params: { id: string } }) {
               Where you meet it in the real world
             </p>
             <p className="font-mono text-xs text-muted-foreground leading-relaxed">{c.realWorldApps}</p>
+          </div>
+        )}
+
+        {news.length > 0 && (
+          <div className="my-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+              In the news
+            </p>
+            <ul className="space-y-2">
+              {news.map((n) => (
+                <li key={n.slug}>
+                  <Link
+                    href={`/ai-updates/${n.slug}`}
+                    className="font-mono text-xs text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors"
+                  >
+                    {n.title}
+                  </Link>
+                  <p className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">
+                    {n.company} · {n.date}
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

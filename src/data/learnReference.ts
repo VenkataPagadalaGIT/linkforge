@@ -133,6 +133,20 @@ export const refHref = (id: string) => `${REF_BASE}/${id}`;
  *  on the concept's page. One place to read; nothing behind a hop.
  * ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ *
+ *  News injection: concept id -> AI Update slugs.
+ *  Same pattern as INTERACTIVE_FOR: one entry puts an "In the news"
+ *  block on the concept page, and the story gains an inbound link from
+ *  the concept it is actually about. Explicit rather than tag-derived,
+ *  because a wrong automatic match is worse than no link.
+ * ------------------------------------------------------------------ */
+
+export const NEWS_FOR: Record<string, string[]> = {
+  "inference-optimization": ["stripe-openrouter-acquisition-7-billion"],
+  "llm": ["stripe-openrouter-acquisition-7-billion"],
+  "ai-agents": ["stripe-openrouter-acquisition-7-billion"],
+};
+
 export const DEEP_DIVES: Record<string, string[]> = {
   "artificial-intelligence": ["what-is-ai", "history-of-ai"],
   "machine-learning": ["what-is-machine-learning"],
