@@ -184,6 +184,52 @@ Anti-junk rules, learned the hard way this month:
 
 ---
 
+## 4b. The discovery checklist (queued: Agent X must run this)
+
+Added 2026-08-17 after Search Console reported "URL is unknown to Google,
+no referring sitemaps detected" for a page that had been live for two days.
+The sitemap was correct; the lesson is that **publishing and being findable
+are different events, and nobody was checking the second one.**
+
+`scripts/check-discovery.py` is that check, and it belongs in the CMS as a
+blocking publish gate. For every URL it answers:
+
+| Check | Why it exists |
+|---|---|
+| Returns 200 | A published row means nothing if the route 404s. |
+| In `sitemap.xml` | The single biggest discovery signal, and the thing GSC complains about. |
+| Has a `lastmod` | Google reprioritizes on freshness; a missing or stale date wastes the publish. |
+| `robots.txt` allows it, and declares the sitemap | One bad Disallow silently deletes a page from search. |
+| Self-canonical | A canonical pointing elsewhere hands the page's value away. |
+| No `noindex` | The most common accidental un-publish. |
+| Listed in `llms.txt`, or covered by a documented hub pattern | The AI answer-engine surface. Enumerating 176 concept URLs would bloat the file, so a hub plus an explicit `/<concept-id>` pattern counts; nothing else does. |
+| At least one inbound link in **server-rendered** HTML | A link that only exists inside a JavaScript menu is invisible to crawlers that do not execute JS, which is exactly how this site's nav is built. |
+
+It caught two real gaps the moment it was written: the Stripe/OpenRouter
+story and the 176 encyclopedia concept pages were in the sitemap but absent
+from `llms.txt`. Both fixed the same day.
+
+**Rules this hard-codes for agents:**
+
+1. An agent's draft cannot be approved until the discovery gate would pass
+   for its slug (sitemap entry planned, hub link planned, llms coverage).
+2. Publishing must also **regenerate** `sitemap.xml`, `llms.txt`,
+   `llms-full.txt`, the OKF docs and the markdown twin, then re-run the gate
+   against the live URL. Regeneration is part of publish, not a chore
+   someone remembers.
+3. Every publish ends with an IndexNow submission of the new and changed
+   URLs, and the receipt is stored on the content version.
+4. The gate runs again 48 hours later as a scheduled sweep, because
+   discovery can regress silently when a hub page is redesigned.
+
+**Owner-only step the gate cannot do:** submitting or resubmitting
+`sitemap.xml` inside Google Search Console. Google will find it via
+robots.txt eventually, but explicit submission is what produces the
+"referring sitemap" attribution that report was missing. That belongs on
+the launch checklist as a human action.
+
+---
+
 ## 5. Sequencing (what to build, in order)
 
 **Phase 0 · Make the gates callable (small, high leverage).**

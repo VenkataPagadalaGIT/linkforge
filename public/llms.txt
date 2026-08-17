@@ -48,6 +48,7 @@ An 18-week core plus seven elective depth tracks: 35 topics with 473 curated res
 ### AI Concepts Encyclopedia (2026)
 176 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
+- Every concept also has its own page at https://venkatapagadala.com/notebook/ai/encyclopedia/<concept-id> (for example /neural-network, /backpropagation, /gradient-descent, /llm, /transformer, /rag), each with prerequisites, curated videos and guides, and interactive 3D where it exists. All 176 are listed in sitemap.xml.
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
 A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum from a first Python program through mathematics, classical ML, deep learning, NLP, deploying models and reinforcement learning to AI safety. Author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain only: no free trials, no sample chapters, nothing pirated. Books by a profiled author link to that contributor's page. All nineteen titles are also listed as plain links on the page for anyone without WebGL.
@@ -98,6 +99,9 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 News with primary sources attached: court documents, official filings, and original announcements linked from every article.
 - URL: https://venkatapagadala.com/ai-updates
 
+### Stripe Agrees to Buy AI Model Router OpenRouter for More Than $7 Billion (Aug 2026)
+Bloomberg reported on August 16, 2026 that Stripe agreed to acquire OpenRouter, the gateway developers use to route requests across 500+ AI models, for more than $7 billion, roughly 5x its May 2026 valuation. Neither company has confirmed: both declined to comment. Includes an analyst view on why a payments company buys a model router, and a narrated 30-second video.
+- URL: https://venkatapagadala.com/ai-updates/stripe-openrouter-acquisition-7-billion
 ### Court Gives Final Approval to Anthropic's $1.5 Billion Author Settlement (2026-07-20)
 Final approval of the largest known U.S. copyright settlement: about $3,000 per work across roughly 500,000 books. Includes the full federal docket, Judge Alsup's fair use order, the GovInfo case archive, and the official settlement administrator, all linked.
 - URL: https://venkatapagadala.com/ai-updates/anthropic-copyright-settlement-final-approval
