@@ -377,6 +377,75 @@ def main() -> int:
     check("validate returns a verdict", status == 200 and dry.get("dryRun") and "wouldBeAccepted" in dry)
     check("validate creates no page", len(before) == len(after), f"{len(before)} -> {len(after)}")
 
+    print("\n[U] Field-level grants: an agent writes only what it was granted")
+    _, ntok = api.admin("POST", "/cms/agent-tokens", {"name": "sec-test narrow", "allowedTypes": ["concept"]})
+    status, eff = api.admin("PUT", f"/cms/agent-tokens/{ntok['id']}/permissions",
+                            {"concept": {"fields": ["body", "sources"], "proposeArchive": False}})
+    check("owner can narrow one agent below the profile", status == 200, f"HTTP {status}")
+    check("the narrowed grant is reported back",
+          eff and eff["effectivePermissions"]["concept"]["fields"] == ["body", "sources"]
+          and eff["effectivePermissions"]["concept"]["proposeArchive"] is False)
+    status, _ = api.admin("PUT", f"/cms/agent-tokens/{ntok['id']}/permissions",
+                          {"concept": {"fields": ["body", "code"]}})
+    check("an unknown field group (code) cannot be granted", status == 400, f"HTTP {status}")
+    status, _ = api.admin("PUT", f"/cms/agent-tokens/{ntok['id']}/permissions",
+                          {"concept": {"delete": True}})
+    check("there is no delete operation to grant", status == 400, f"HTTP {status}")
+    status, _ = api.admin("PUT", f"/cms/agent-tokens/{ntok['id']}/permissions",
+                          {"guide": {"create": True}})
+    check("a token cannot be granted a type outside its scope", status == 400, f"HTTP {status}")
+
+    status, who = api.agent("GET", "/cms/agent/whoami", None, ntok["token"])
+    check("whoami shows the narrowed fields", who["scope"]["grants"]["concept"]["fields"] == ["body", "sources"])
+    status, body = api.agent("POST", "/cms/agent/drafts", {
+        "type": "concept", "title": "Narrow probe", "slug": SLUG_PREFIX + "narrow",
+        "blocks": [{"kind": "p", "text": "x"}],
+        "seo": {"metaDescription": "Writing a meta description I was not granted."}}, ntok["token"])
+    check("a draft touching an ungranted field is refused", status == 403, f"HTTP {status}")
+    check("the refusal names the field", "metaDescription" in str(body), str(body)[:90])
+    status, dry = api.agent("POST", "/cms/agent/drafts/validate", {
+        "type": "concept", "title": "Narrow probe", "slug": SLUG_PREFIX + "narrow",
+        "blocks": [{"kind": "p", "text": "x"}], "seo": {"metaDescription": "nope"}}, ntok["token"])
+    check("dry run reports the grant failure before the agent commits",
+          dry and not dry["wouldBeAccepted"]
+          and any(c["name"].startswith("every field") and not c["ok"] for c in dry["checks"]))
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "concept", "title": "Narrow probe ok", "slug": SLUG_PREFIX + "narrow-ok",
+        "blocks": [{"kind": "p", "text": "x"}], "sources": [{"url": "https://example.com/s"}]}, ntok["token"])
+    check("a draft inside the grant is accepted", status == 200, f"HTTP {status}")
+    # the site profile is the ceiling: a token cannot be granted robots even if asked
+    status, _ = api.admin("PUT", f"/cms/agent-tokens/{ntok['id']}/permissions",
+                          {"concept": {"fields": ["body", "robots"]}})
+    _, who = api.agent("GET", "/cms/agent/whoami", None, ntok["token"])
+    check("a token cannot be widened past the profile (robots stays out)",
+          "robots" not in who["scope"]["grants"]["concept"]["fields"],
+          str(who["scope"]["grants"]["concept"]["fields"]))
+
+    print("\n[V] The activity log answers 'who did that'")
+    _, rows = api.admin("GET", f"/cms/activity?actorId={ntok['id']}")
+    check("every call by the narrow agent is on the log", len(rows) >= 4, f"{len(rows)} rows")
+    kinds = {(r["action"], r["result"]) for r in rows}
+    check("the refused draft is logged as refused", ("draft.create", "refused") in kinds, str(sorted(kinds))[:120])
+    check("the accepted draft is logged as ok", ("draft.create", "ok") in kinds)
+    check("the handshake is logged", ("auth", "ok") in kinds)
+    ref = next((r for r in rows if r["action"] == "draft.create" and r["result"] == "refused"), None)
+    check("a refusal carries the reason", bool(ref and "metaDescription" in ref["detail"]))
+    check("a log row names the actor", bool(ref and ref["actor"]["name"] == "sec-test narrow"))
+    _, refused_only = api.admin("GET", "/cms/activity?result=refused&limit=50")
+    check("the log is filterable by result", all(r["result"] == "refused" for r in refused_only) and len(refused_only) > 0)
+    status, _ = api.call("GET", "/cms/activity")
+    check("the log is admin-only", status in (401, 403), f"HTTP {status}")
+    status, _ = api.call("GET", "/cms/activity", None, {"X-Agent-Token": ntok["token"]})
+    check("an agent cannot read the log", status in (401, 403), f"HTTP {status}")
+    _, summ = api.admin("GET", "/cms/activity/summary")
+    check("the summary counts active agents and refusals",
+          summ and "agentsSeenLastHour" in summ and summ["refused24h"] >= 1 and summ["agentsActive"] >= 1)
+    _, toks = api.admin("GET", "/cms/agent-tokens")
+    mine = next(t for t in toks if t["id"] == ntok["id"])
+    check("the token list carries per-agent stats", "stats" in mine and mine["stats"]["refused"] >= 1
+          and "lastSeenAt" in mine, str(mine.get("stats")))
+    check("the token list carries effective permissions", "effectivePermissions" in mine)
+
     sweep(api)
     print()
     if failures:

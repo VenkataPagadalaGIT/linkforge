@@ -28,7 +28,8 @@ from typing import Any, Dict, List, Literal, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
-from site_profile import DEFAULT_SITE_PROFILE, PROFILE_VERSION, agent_may
+from site_profile import (DEFAULT_SITE_PROFILE, FIELD_GROUPS, OPS, PROFILE_VERSION,
+                          agent_may, effective_permissions, fields_refused)
 
 # ---------------------------------------------------------------- #
 #  Page type registry: the contract for humans and agents alike
@@ -627,6 +628,34 @@ def build_router(db, get_current_admin) -> APIRouter:
         merged["profileVersion"] = PROFILE_VERSION
         return merged
 
+    async def log_event(actor: Dict[str, Any], action: str, result: str,
+                        target: Optional[Dict[str, Any]] = None, detail: str = "",
+                        request: Optional[Request] = None) -> None:
+        """One row per thing that happened, agent or admin, allowed or
+        refused. This is the answer to "who did that": every draft, every
+        revision, every approval, every 403, with the actor, the target and
+        the reason. Refusals are logged on purpose; an agent that keeps
+        hitting a lock is a signal, not noise."""
+        row = {
+            "id": secrets.token_hex(8),
+            "ts": now_iso(),
+            "actor": {"kind": actor.get("kind"), "id": actor.get("id"), "name": actor.get("name")},
+            "action": action,
+            "result": result,            # ok | refused | error
+            "target": target or {},
+            "detail": detail[:500],
+        }
+        if request is not None:
+            row["ip"] = request.client.host if request.client else None
+            row["requestId"] = request.headers.get("x-request-id")
+        await db.cms_activity.insert_one(row)
+
+    def actor_of_agent(agent: Dict[str, Any]) -> Dict[str, Any]:
+        return {"kind": "agent", "id": agent.get("id"), "name": agent.get("name")}
+
+    def actor_of_admin(user: Dict[str, Any]) -> Dict[str, Any]:
+        return {"kind": "admin", "id": user.get("email"), "name": user.get("email")}
+
     async def require_agent(request: Request) -> Dict[str, Any]:
         """Agent tokens are separate from admin sessions and can only draft."""
         token = request.headers.get("x-agent-token", "")
@@ -635,12 +664,16 @@ def build_router(db, get_current_admin) -> APIRouter:
         digest = hashlib.sha256(token.encode()).hexdigest()
         rec = await db.cms_agent_tokens.find_one({"tokenHash": digest, "active": True}, {"_id": 0})
         if not rec:
+            await log_event({"kind": "agent", "id": None, "name": "unknown"}, "auth", "refused",
+                            detail="unknown or revoked token", request=request)
             raise HTTPException(status_code=401, detail="Unknown or revoked agent token")
         # A token that never expires is a credential nobody remembers to
         # rotate. Revoking is still the fast path; this is the backstop.
         expires = rec.get("expiresAt")
         if expires and expires < now_iso():
+            await log_event(actor_of_agent(rec), "auth", "refused", detail="token expired", request=request)
             raise HTTPException(status_code=401, detail="Agent token expired; issue a new one")
+        await db.cms_agent_tokens.update_one({"id": rec["id"]}, {"$set": {"lastSeenAt": now_iso()}})
         return rec
 
     async def enforce_draft_cap(agent: Dict[str, Any]) -> None:
@@ -717,6 +750,7 @@ def build_router(db, get_current_admin) -> APIRouter:
             {"$set": {"operations.agentsPaused": paused, "operations.pausedBy": user.get("email"),
                       "operations.pausedAt": now_iso()}},
             upsert=True)
+        await log_event(actor_of_admin(user), "agents.pause" if paused else "agents.resume", "ok")
         return {"ok": True, "agentsPaused": paused}
 
     # ---------------- pages ----------------
@@ -853,7 +887,13 @@ def build_router(db, get_current_admin) -> APIRouter:
             result["passed"] = False
 
         if not result["passed"]:
+            await log_event(actor_of_admin(user), "page.approve", "refused",
+                            {"pageId": page_id, "type": page["type"], "slug": page["slug"]},
+                            detail="gates failed: " + ", ".join(result["failed"]))
             raise HTTPException(422, {"detail": "gates failed", "failed": result["failed"]})
+        await log_event(actor_of_admin(user), "page.approve", "ok",
+                        {"pageId": page_id, "type": page["type"], "slug": page["slug"],
+                         "agentId": (page.get("provenance") or {}).get("agentId")})
         await db.cms_pages.update_one({"id": page_id}, {"$set": {
             "status": "published",
             "publishedAt": now_iso(),
@@ -880,6 +920,8 @@ def build_router(db, get_current_admin) -> APIRouter:
             "reviewedBy": user.get("email"),
             "reviewedAt": now_iso(),
         }})
+        await log_event(actor_of_admin(user), "page.reject", "ok", {"pageId": page_id},
+                        detail=payload.get("notes", ""))
         return {"ok": True, "status": "draft"}
 
     @r.post("/pages/{page_id}/archive")
@@ -901,13 +943,120 @@ def build_router(db, get_current_admin) -> APIRouter:
             "archivedBy": user.get("email"),
             "archivedAt": now_iso(),
         }})
+        await log_event(actor_of_admin(user), "page.archive", "ok", {"pageId": page_id})
         return {"ok": True, "status": "archived"}
 
     # ---------------- agent tokens (admin issues them) ----------------
 
     @r.get("/agent-tokens")
     async def list_tokens(_: dict = Depends(get_current_admin)):
-        return await db.cms_agent_tokens.find({}, {"_id": 0, "tokenHash": 0}).to_list(100)
+        """Every token with the numbers an operator needs at a glance:
+        open drafts, in review, published, refusals, last seen."""
+        tokens = await db.cms_agent_tokens.find({}, {"_id": 0, "tokenHash": 0}).to_list(1000)
+        ids = [t["id"] for t in tokens]
+        by_status = {}
+        async for row in db.cms_pages.aggregate([
+            {"$match": {"provenance.agentId": {"$in": ids}}},
+            {"$group": {"_id": {"a": "$provenance.agentId", "s": "$status"}, "n": {"$sum": 1}}},
+        ]):
+            by_status.setdefault(row["_id"]["a"], {})[row["_id"]["s"]] = row["n"]
+        refused = {}
+        async for row in db.cms_activity.aggregate([
+            {"$match": {"actor.id": {"$in": ids}, "result": "refused"}},
+            {"$group": {"_id": "$actor.id", "n": {"$sum": 1}}},
+        ]):
+            refused[row["_id"]] = row["n"]
+        profile = await get_profile()
+        for t in tokens:
+            st = by_status.get(t["id"], {})
+            t["stats"] = {
+                "draft": st.get("draft", 0), "inReview": st.get("in_review", 0),
+                "published": st.get("published", 0), "archived": st.get("archived", 0),
+                "refused": refused.get(t["id"], 0),
+            }
+            t["effectivePermissions"] = effective_permissions(profile, t)
+        return tokens
+
+    @r.put("/agent-tokens/{token_id}/permissions")
+    async def set_token_permissions(token_id: str, payload: Dict[str, Any],
+                                    user: dict = Depends(get_current_admin)):
+        """Narrow one agent below the site profile. Shape:
+        {"<type>": {"create": bool, ..., "fields": [group, ...]}}.
+        Unknown types, ops or field groups are refused; a token can never be
+        granted something the profile does not grant."""
+        tok = await db.cms_agent_tokens.find_one({"id": token_id}, {"_id": 0})
+        if not tok:
+            raise HTTPException(404, "not found")
+        for t, spec in payload.items():
+            if t not in tok.get("allowedTypes", []):
+                raise HTTPException(400, f"{t} is not in this token's scope")
+            for k, v in spec.items():
+                if k == "fields":
+                    bad = [f for f in v if f not in FIELD_GROUPS]
+                    if bad:
+                        raise HTTPException(400, f"unknown field groups: {', '.join(bad)}")
+                elif k not in OPS:
+                    raise HTTPException(400, f"unknown operation {k!r}; allowed: {', '.join(OPS)}")
+        await db.cms_agent_tokens.update_one({"id": token_id}, {"$set": {
+            "permissions": payload, "permissionsUpdatedAt": now_iso(),
+            "permissionsUpdatedBy": user.get("email")}})
+        await log_event(actor_of_admin(user), "token.permissions", "ok",
+                        {"tokenId": token_id, "name": tok.get("name")}, detail=str(payload)[:300])
+        profile = await get_profile()
+        tok["permissions"] = payload
+        return {"ok": True, "effectivePermissions": effective_permissions(profile, tok)}
+
+    @r.get("/activity")
+    async def activity(actorId: Optional[str] = None, action: Optional[str] = None,
+                       result: Optional[str] = None, pageId: Optional[str] = None,
+                       q: Optional[str] = None, limit: int = 200,
+                       _: dict = Depends(get_current_admin)):
+        """The audit log, filterable. Newest first."""
+        query: Dict[str, Any] = {}
+        if actorId:
+            query["actor.id"] = actorId
+        if action:
+            query["action"] = action
+        if result:
+            query["result"] = result
+        if pageId:
+            query["target.pageId"] = pageId
+        if q:
+            safe = re.escape(q)
+            query["$or"] = [{"actor.name": {"$regex": safe, "$options": "i"}},
+                            {"target.slug": {"$regex": safe, "$options": "i"}},
+                            {"target.path": {"$regex": safe, "$options": "i"}},
+                            {"detail": {"$regex": safe, "$options": "i"}}]
+        rows = await db.cms_activity.find(query, {"_id": 0}).sort("ts", -1).to_list(min(limit, 1000))
+        return rows
+
+    @r.get("/activity/summary")
+    async def activity_summary(_: dict = Depends(get_current_admin)):
+        """What is happening right now: active agents (seen in the last
+        hour), actions in the last 24h, refusals in the last 24h, drafts
+        awaiting review."""
+        from datetime import timedelta as _td
+        now = datetime.now(timezone.utc)
+        hour_ago = (now - _td(hours=1)).isoformat().replace("+00:00", "Z")
+        day_ago = (now - _td(hours=24)).isoformat().replace("+00:00", "Z")
+        active = await db.cms_agent_tokens.count_documents({"active": True, "lastSeenAt": {"$gte": hour_ago}})
+        total_active = await db.cms_agent_tokens.count_documents({"active": True})
+        actions24 = await db.cms_activity.count_documents({"ts": {"$gte": day_ago}})
+        refused24 = await db.cms_activity.count_documents({"ts": {"$gte": day_ago}, "result": "refused"})
+        awaiting = await db.cms_pages.count_documents({"status": "in_review"})
+        top = []
+        async for row in db.cms_activity.aggregate([
+            # Unknown tokens log as actor.id null; they count as refusals,
+            # not as an agent, so they are excluded from "busiest".
+            {"$match": {"ts": {"$gte": day_ago}, "actor.kind": "agent", "actor.id": {"$ne": None}}},
+            {"$group": {"_id": {"id": "$actor.id", "name": "$actor.name"}, "n": {"$sum": 1},
+                        "refused": {"$sum": {"$cond": [{"$eq": ["$result", "refused"]}, 1, 0]}}}},
+            {"$sort": {"n": -1}}, {"$limit": 10},
+        ]):
+            top.append({"id": row["_id"]["id"], "name": row["_id"]["name"], "actions": row["n"], "refused": row["refused"]})
+        return {"agentsSeenLastHour": active, "agentsActive": total_active,
+                "actions24h": actions24, "refused24h": refused24, "awaitingReview": awaiting,
+                "busiestAgents24h": top}
 
     @r.post("/agent-tokens")
     async def create_token(payload: Dict[str, Any], user: dict = Depends(get_current_admin)):
@@ -943,12 +1092,16 @@ def build_router(db, get_current_admin) -> APIRouter:
         await db.cms_agent_tokens.insert_one(dict(rec))
         rec.pop("_id", None)
         rec.pop("tokenHash", None)
+        await log_event(actor_of_admin(user), "token.issue", "ok",
+                        {"tokenId": rec["id"], "name": rec["name"]}, detail=f"scope {requested}")
         # shown once, never stored in the clear
         return {**rec, "token": raw}
 
     @r.post("/agent-tokens/{token_id}/revoke")
-    async def revoke_token(token_id: str, _: dict = Depends(get_current_admin)):
-        await db.cms_agent_tokens.update_one({"id": token_id}, {"$set": {"active": False}})
+    async def revoke_token(token_id: str, user: dict = Depends(get_current_admin)):
+        await db.cms_agent_tokens.update_one({"id": token_id}, {"$set": {
+            "active": False, "revokedAt": now_iso(), "revokedBy": user.get("email")}})
+        await log_event(actor_of_admin(user), "token.revoke", "ok", {"tokenId": token_id})
         return {"ok": True}
 
     # ---------------- AGENT SURFACE: draft only, no publish ----------------
@@ -996,11 +1149,10 @@ def build_router(db, get_current_admin) -> APIRouter:
             "provenance.agentId": agent.get("id"), "status": {"$in": ["draft", "in_review"]}})
         allowed = [t for t in agent.get("allowedTypes", [])
                    if PAGE_TYPES.get(t, {}).get("agentDraftable", True)]
-        grants = {}
-        for t in allowed:
-            perms = profile["permissions"].get(t, {})
-            grants[t] = {op: bool(perms.get(op)) for op in ("create", "update", "refresh", "proposeArchive")}
-            grants[t]["seoFields"] = perms.get("seoFields", [])
+        eff = effective_permissions(profile, agent)
+        grants = {t: eff.get(t, {"create": False, "update": False, "refresh": False,
+                                 "proposeArchive": False, "fields": []}) for t in allowed}
+        await log_event(actor_of_agent(agent), "auth", "ok", detail="whoami")
         return {
             "authenticated": True,
             "agent": {"id": agent.get("id"), "name": agent.get("name"),
@@ -1008,6 +1160,7 @@ def build_router(db, get_current_admin) -> APIRouter:
             "site": {"siteId": profile["identity"]["siteId"], "siteUrl": profile["identity"]["siteUrl"],
                      "profileVersion": profile["profileVersion"]},
             "scope": {"types": allowed, "grants": grants},
+            "fieldGroups": FIELD_GROUPS,
             "lockedPaths": [l["path"] for l in profile.get("lockedPaths", [])],
             "quota": {"openDrafts": open_now,
                       "openDraftCap": int(agent.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP)},
@@ -1023,11 +1176,14 @@ def build_router(db, get_current_admin) -> APIRouter:
         what an agent runs during onboarding to prove the contract end to
         end before it is trusted with a real job."""
         profile = await get_profile()
-        ok, why = agent_may(profile, "create", payload.type)
+        ok, why = agent_may(profile, "create", payload.type, token=agent)
+        refused_fields = fields_refused(profile, agent, payload.type, payload.model_dump())
         checks = [
             {"name": "type in token scope", "ok": payload.type in agent.get("allowedTypes", [])},
             {"name": "type agent-draftable", "ok": PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True)},
             {"name": "profile permits create", "ok": ok, "detail": why},
+            {"name": "every field written is within the grant", "ok": not refused_fields,
+             "detail": ("outside grant: " + ", ".join(refused_fields)) if refused_fields else ""},
         ]
         try:
             validate_fields(payload.type, payload.fields)
@@ -1058,13 +1214,17 @@ def build_router(db, get_current_admin) -> APIRouter:
         profile = await get_profile()
         route = PAGE_TYPES[original["type"]]["route"].split("{")[0].rstrip("/")
         path = f"{route}/{original['slug']}"
-        ok, why = agent_may(profile, "update", original["type"], path)
+        tgt = {"pageId": original["id"], "type": original["type"], "slug": original["slug"], "path": path}
+        ok, why = agent_may(profile, "update", original["type"], path, token=agent)
         if not ok:
+            await log_event(actor_of_agent(agent), "revision.create", "refused", tgt, detail=why)
             raise HTTPException(403, why)
-        allowed_seo = set(profile["permissions"][original["type"]].get("seoFields", []))
-        stray = [k for k, v in payload.seo.model_dump().items() if v is not None and k not in allowed_seo]
+        stray = fields_refused(profile, agent, original["type"], payload.model_dump(), op="update")
         if stray:
-            raise HTTPException(403, f"agent may not set SEO fields {stray} on {original['type']}; allowed: {sorted(allowed_seo)}")
+            why = f"agent may not write {stray} on {original['type']}; grant covers " \
+                  f"{effective_permissions(profile, agent)[original['type']]['fields']}"
+            await log_event(actor_of_agent(agent), "revision.create", "refused", tgt, detail=why)
+            raise HTTPException(403, why)
         validate_fields(original["type"], payload.fields or {})
         await enforce_draft_cap(agent)
         rev = {
@@ -1087,6 +1247,8 @@ def build_router(db, get_current_admin) -> APIRouter:
         }
         await db.cms_pages.insert_one(dict(rev))
         rev.pop("_id", None)
+        await log_event(actor_of_agent(agent), "revision.create", "ok",
+                        {**tgt, "revisionId": rev["id"]}, detail=payload.changeSummary)
         g = await get_globals()
         return {**rev, "gates": run_gates(rev, resolve_seo(rev, g))}
 
@@ -1097,8 +1259,15 @@ def build_router(db, get_current_admin) -> APIRouter:
         if not PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True):
             raise HTTPException(403, f"{payload.type} pages are owner-created; agents cannot draft them")
         profile = await get_profile()
-        ok, why = agent_may(profile, "create", payload.type)
+        tgt = {"type": payload.type, "slug": slugify(payload.slug or payload.title)}
+        ok, why = agent_may(profile, "create", payload.type, token=agent)
         if not ok:
+            await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
+            raise HTTPException(403, why)
+        stray = fields_refused(profile, agent, payload.type, payload.model_dump())
+        if stray:
+            why = f"agent may not write {stray} on {payload.type}"
+            await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
             raise HTTPException(403, why)
         validate_fields(payload.type, payload.fields)
         await enforce_draft_cap(agent)
@@ -1125,6 +1294,8 @@ def build_router(db, get_current_admin) -> APIRouter:
         }
         await db.cms_pages.insert_one(dict(page))
         page.pop("_id", None)
+        await log_event(actor_of_agent(agent), "draft.create", "ok",
+                        {**tgt, "pageId": page["id"]}, detail=payload.title)
         g = await get_globals()
         return {**page, "gates": run_gates(page, resolve_seo(page, g))}
 
@@ -1160,6 +1331,9 @@ def build_router(db, get_current_admin) -> APIRouter:
             "status": "in_review", "submittedAt": now_iso(),
             "provenance.gateResults": result,
         }})
+        await log_event(actor_of_agent(agent), "draft.submit", "ok",
+                        {"pageId": page_id, "type": page["type"], "slug": page["slug"]},
+                        detail="gates " + ("pass" if result["passed"] else "fail: " + ", ".join(result["failed"])))
         return {"ok": True, "status": "in_review", "gates": result,
                 "note": "A human must approve. Agents cannot publish."}
 

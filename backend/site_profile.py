@@ -19,9 +19,36 @@ from typing import Any, Dict
 
 PROFILE_VERSION = "2026-08-19.1"
 
-# Operations an agent can be granted, per page type. "seoFields" lists the
-# SEO keys it may set; everything else in SEO is owner-only.
+# Operations an agent can be granted, per page type. There is no "delete":
+# the strongest thing an agent can do is proposeArchive, which a human
+# decides. Hard delete does not exist for anyone; archive is the only path.
 OPS = ["create", "update", "refresh", "proposeArchive"]
+
+# The on-page fields a grant can name. Every write an agent makes is
+# classified into one of these, and refused if the grant lacks it.
+# Code, templates, components, routes and navigation are deliberately not
+# fields: there is no grant that reaches them.
+FIELD_GROUPS = {
+    "body":            "Blocks: paragraphs, headings, lists, callouts, figures",
+    "title":           "The page title (H1)",
+    "seoTitle":        "<title> tag",
+    "metaDescription": "Meta description",
+    "primaryKeyword":  "Target keyword",
+    "canonical":       "Canonical URL (owner-only by default)",
+    "robots":          "Robots directive (owner-only by default)",
+    "ogImage":         "Social share image",
+    "schema":          "Structured-data override (owner-only by default)",
+    "templateFields":  "The type's declared extra fields (category, company, faqs...)",
+    "internalLinks":   "Links to other pages on this site",
+    "sources":         "Citations with URL and fetch receipt",
+}
+
+# What an agent may write on a brand-new draft vs. on a revision of a
+# published page differs by what the profile grants; these are the groups
+# that are safe to grant freely and the ones that should stay owner-only.
+DEFAULT_CONTENT_FIELDS = ["body", "title", "seoTitle", "metaDescription", "primaryKeyword",
+                          "templateFields", "internalLinks", "sources"]
+OWNER_ONLY_FIELDS = ["canonical", "robots", "schema"]
 
 DEFAULT_SITE_PROFILE: Dict[str, Any] = {
     "profileVersion": PROFILE_VERSION,
@@ -137,18 +164,33 @@ DEFAULT_SITE_PROFILE: Dict[str, Any] = {
         "ai learning roadmap": "/notebook/ai/roadmap",
     },
 
-    # What an agent may do, per type. Absent type = nothing.
+    # What an agent may do, per type. Absent type = nothing. "fields" is
+    # the list of FIELD_GROUPS an agent may write; anything it touches
+    # outside that list is refused, on create and on revision alike.
     "permissions": {
-        "ai-update":     {"create": True,  "update": True,  "refresh": False, "proposeArchive": False, "seoFields": ["seoTitle", "metaDescription", "primaryKeyword"]},
-        "concept":       {"create": True,  "update": True,  "refresh": True,  "proposeArchive": True,  "seoFields": ["seoTitle", "metaDescription", "primaryKeyword"]},
-        "insight":       {"create": True,  "update": False, "refresh": False, "proposeArchive": False, "seoFields": ["seoTitle", "metaDescription"]},
-        "notebook":      {"create": True,  "update": True,  "refresh": False, "proposeArchive": False, "seoFields": ["seoTitle", "metaDescription"]},
-        "roadmap-topic": {"create": False, "update": True,  "refresh": True,  "proposeArchive": False, "seoFields": []},
-        "guide":         {"create": False, "update": False, "refresh": False, "proposeArchive": False, "seoFields": [], "note": "Brief only. Guides are hand-built with 3D scenes; an agent may propose one, not write one."},
-        "contributor":   {"create": False, "update": True,  "refresh": False, "proposeArchive": False, "seoFields": [], "note": "May correct facts with a source; may never change or add a photo."},
-        "publication":   {"create": False, "update": False, "refresh": False, "proposeArchive": False, "seoFields": [], "note": "Owner's own papers. Owner-only."},
-        "lecture":       {"create": False, "update": False, "refresh": False, "proposeArchive": False, "seoFields": []},
-        "hub":           {"create": False, "update": False, "refresh": False, "proposeArchive": False, "seoFields": [], "note": "Navigation. Owner-only, and not agent-draftable at the type level either."},
+        "ai-update":     {"create": True,  "update": True,  "refresh": False, "proposeArchive": False,
+                          "fields": DEFAULT_CONTENT_FIELDS},
+        "concept":       {"create": True,  "update": True,  "refresh": True,  "proposeArchive": True,
+                          "fields": DEFAULT_CONTENT_FIELDS},
+        "insight":       {"create": True,  "update": False, "refresh": False, "proposeArchive": False,
+                          "fields": ["body", "title", "seoTitle", "metaDescription", "sources", "internalLinks"]},
+        "notebook":      {"create": True,  "update": True,  "refresh": False, "proposeArchive": False,
+                          "fields": ["body", "title", "seoTitle", "metaDescription", "templateFields", "sources", "internalLinks"]},
+        "roadmap-topic": {"create": False, "update": True,  "refresh": True,  "proposeArchive": False,
+                          "fields": ["body", "templateFields", "internalLinks", "sources"],
+                          "note": "May update outcomes and resources. May not rename a week or touch its SEO."},
+        "guide":         {"create": False, "update": False, "refresh": False, "proposeArchive": False,
+                          "fields": [],
+                          "note": "Brief only. Guides are hand-built with 3D scenes; an agent may propose one, not write one."},
+        "contributor":   {"create": False, "update": True,  "refresh": False, "proposeArchive": False,
+                          "fields": ["body", "sources"],
+                          "note": "May correct facts with a source. May never change the title, the photo, or any field."},
+        "publication":   {"create": False, "update": False, "refresh": False, "proposeArchive": False,
+                          "fields": [], "note": "Owner's own papers. Owner-only."},
+        "lecture":       {"create": False, "update": False, "refresh": False, "proposeArchive": False,
+                          "fields": []},
+        "hub":           {"create": False, "update": False, "refresh": False, "proposeArchive": False,
+                          "fields": [], "note": "Navigation. Owner-only, and not agent-draftable at the type level either."},
     },
 
     # Pages no agent touches, whatever the type permission says.
@@ -193,7 +235,53 @@ DEFAULT_SITE_PROFILE: Dict[str, Any] = {
 }
 
 
-def agent_may(profile: Dict[str, Any], op: str, type_id: str, path: str | None = None) -> tuple[bool, str]:
+def effective_permissions(profile: Dict[str, Any], token: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """What THIS token may do: the profile's grant per type, intersected
+    with the token's own grant if it has one. A token can only narrow the
+    profile, never widen it, so the owner's matrix is always the ceiling.
+    """
+    out: Dict[str, Dict[str, Any]] = {}
+    overrides = token.get("permissions") or {}
+    for t in token.get("allowedTypes", []):
+        base = profile.get("permissions", {}).get(t)
+        if not base:
+            continue
+        ov = overrides.get(t) or {}
+        eff = {op: bool(base.get(op)) and bool(ov.get(op, True)) for op in OPS}
+        base_fields = list(base.get("fields", []))
+        eff["fields"] = [f for f in base_fields if f in ov.get("fields", base_fields)]
+        if base.get("note"):
+            eff["note"] = base["note"]
+        out[t] = eff
+    return out
+
+
+def classify_write(payload: Dict[str, Any]) -> set:
+    """Map the keys an agent sent to FIELD_GROUPS, so a grant can be
+    checked against what was actually written rather than what was
+    claimed."""
+    groups = set()
+    if payload.get("blocks"):
+        groups.add("body")
+    if payload.get("title"):
+        groups.add("title")
+    seo = payload.get("seo") or {}
+    for k in ("seoTitle", "metaDescription", "primaryKeyword", "canonical", "robots", "ogImage"):
+        if seo.get(k) is not None:
+            groups.add(k)
+    if seo.get("schemaOverride") is not None:
+        groups.add("schema")
+    if payload.get("fields"):
+        groups.add("templateFields")
+    if payload.get("internalLinks"):
+        groups.add("internalLinks")
+    if payload.get("sources"):
+        groups.add("sources")
+    return groups
+
+
+def agent_may(profile: Dict[str, Any], op: str, type_id: str, path: str | None = None,
+              token: Dict[str, Any] | None = None) -> tuple[bool, str]:
     """Single decision point for 'can this agent do this to that'.
 
     Order matters and is deliberate: the pause switch first, then page
@@ -210,7 +298,27 @@ def agent_may(profile: Dict[str, Any], op: str, type_id: str, path: str | None =
     perms = profile.get("permissions", {}).get(type_id)
     if not perms:
         return False, f"no permissions defined for type {type_id}"
+    if token is not None:
+        perms = effective_permissions(profile, token).get(type_id)
+        if not perms:
+            return False, f"{type_id} is outside this agent's scope"
     if not perms.get(op):
         note = perms.get("note")
         return False, f"{op} is not permitted on {type_id}" + (f" ({note})" if note else "")
     return True, "ok"
+
+
+def fields_refused(profile: Dict[str, Any], token: Dict[str, Any], type_id: str,
+                   payload: Dict[str, Any], op: str = "create") -> list:
+    """Which field groups in this write are outside the agent's grant.
+
+    On create, the title is implied: a page cannot exist without one, so
+    a grant that allows create allows naming the new page. On a revision
+    the title is a real change to a live page, and needs the grant.
+    """
+    eff = effective_permissions(profile, token).get(type_id, {})
+    allowed = set(eff.get("fields", []))
+    written = classify_write(payload)
+    if op == "create":
+        written.discard("title")
+    return sorted(written - allowed)

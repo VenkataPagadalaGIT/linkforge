@@ -161,10 +161,15 @@
       "update": true,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [
+      "fields": [
+        "body",
+        "title",
         "seoTitle",
         "metaDescription",
-        "primaryKeyword"
+        "primaryKeyword",
+        "templateFields",
+        "internalLinks",
+        "sources"
       ]
     },
     "concept": {
@@ -172,10 +177,15 @@
       "update": true,
       "refresh": true,
       "proposeArchive": true,
-      "seoFields": [
+      "fields": [
+        "body",
+        "title",
         "seoTitle",
         "metaDescription",
-        "primaryKeyword"
+        "primaryKeyword",
+        "templateFields",
+        "internalLinks",
+        "sources"
       ]
     },
     "insight": {
@@ -183,9 +193,13 @@
       "update": false,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [
+      "fields": [
+        "body",
+        "title",
         "seoTitle",
-        "metaDescription"
+        "metaDescription",
+        "sources",
+        "internalLinks"
       ]
     },
     "notebook": {
@@ -193,9 +207,14 @@
       "update": true,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [
+      "fields": [
+        "body",
+        "title",
         "seoTitle",
-        "metaDescription"
+        "metaDescription",
+        "templateFields",
+        "sources",
+        "internalLinks"
       ]
     },
     "roadmap-topic": {
@@ -203,14 +222,20 @@
       "update": true,
       "refresh": true,
       "proposeArchive": false,
-      "seoFields": []
+      "fields": [
+        "body",
+        "templateFields",
+        "internalLinks",
+        "sources"
+      ],
+      "note": "May update outcomes and resources. May not rename a week or touch its SEO."
     },
     "guide": {
       "create": false,
       "update": false,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [],
+      "fields": [],
       "note": "Brief only. Guides are hand-built with 3D scenes; an agent may propose one, not write one."
     },
     "contributor": {
@@ -218,15 +243,18 @@
       "update": true,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [],
-      "note": "May correct facts with a source; may never change or add a photo."
+      "fields": [
+        "body",
+        "sources"
+      ],
+      "note": "May correct facts with a source. May never change the title, the photo, or any field."
     },
     "publication": {
       "create": false,
       "update": false,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [],
+      "fields": [],
       "note": "Owner's own papers. Owner-only."
     },
     "lecture": {
@@ -234,14 +262,14 @@
       "update": false,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": []
+      "fields": []
     },
     "hub": {
       "create": false,
       "update": false,
       "refresh": false,
       "proposeArchive": false,
-      "seoFields": [],
+      "fields": [],
       "note": "Navigation. Owner-only, and not agent-draftable at the type level either."
     }
   },

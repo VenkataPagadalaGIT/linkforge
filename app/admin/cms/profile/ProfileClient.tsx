@@ -12,8 +12,9 @@ import CmsShell, { btn, btnPrimary } from "@/components/admin/CmsShell";
 
 interface Perm {
   create?: boolean; update?: boolean; refresh?: boolean; proposeArchive?: boolean;
-  seoFields?: string[]; note?: string;
+  fields?: string[]; note?: string;
 }
+const FIELD_ORDER = ["body", "title", "seoTitle", "metaDescription", "primaryKeyword", "templateFields", "internalLinks", "sources", "canonical", "robots", "ogImage", "schema"];
 interface PageType { id: string; label: string; route: string; agentDraftable?: boolean }
 interface Profile {
   profileVersion: string;
@@ -26,7 +27,8 @@ interface Profile {
   operations: { agentsPaused?: boolean; openDraftCapPerAgent: number; tokenLifetimeDays: number };
 }
 
-const OPS: (keyof Perm)[] = ["create", "update", "refresh", "proposeArchive"];
+type Op = "create" | "update" | "refresh" | "proposeArchive";
+const OPS: Op[] = ["create", "update", "refresh", "proposeArchive"];
 const OP_LABEL: Record<string, string> = {
   create: "Create", update: "Update", refresh: "Refresh", proposeArchive: "Propose archive",
 };
@@ -102,16 +104,17 @@ export default function ProfileClient() {
 
       <section aria-labelledby="matrix-h" className="mb-10">
         <h2 id="matrix-h" className="font-display text-base font-bold text-foreground mb-1">Permission matrix</h2>
-        <p className="font-mono text-[11px] text-muted-foreground mb-3 max-w-3xl">
-          Per page type. A token must also be scoped to the type; scope and grant are both required.
-          Update means a proposed revision to a published page, which goes through the review queue; the original is untouched until you approve.
+        <p className="font-mono text-[11px] text-muted-foreground mb-3 max-w-4xl">
+          Per page type, by operation and by field. A token must also be scoped to the type, and an individual agent can be narrowed further on the Agents screen; this matrix is the ceiling.
+          Update means a proposed revision to a published page through the review queue. There is no delete: the strongest action is propose archive, which you decide.
+          Canonical, robots and schema are owner-only for every type. Code, templates, routes and navigation are not fields and cannot be granted to anyone.
         </p>
         <div className="overflow-x-auto border border-border">
-          <table className="w-full border-collapse min-w-[900px]">
-            <caption className="sr-only">What agents may do per page type</caption>
+          <table className="w-full border-collapse min-w-[1400px]">
+            <caption className="sr-only">What agents may do per page type, by operation and by field</caption>
             <thead>
               <tr className="bg-secondary/30">
-                {["Type", "Route", ...OPS.map((o) => OP_LABEL[o]), "SEO fields agents may set", "Note"].map((h) => (
+                {["Type", "Route", ...OPS.map((o) => OP_LABEL[o]), ...FIELD_ORDER, "Note"].map((h) => (
                   <th key={h} scope="col" className="text-left p-3 border-b border-border font-mono text-[10px] uppercase tracking-wider text-muted-foreground whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -132,9 +135,11 @@ export default function ProfileClient() {
                         <YesNo v={o === "create" ? draftable && !!perm.create : !!perm[o]} />
                       </td>
                     ))}
-                    <td className="p-3 border-b border-border/50 font-mono text-[11px] text-muted-foreground">
-                      {(perm.seoFields ?? []).join(", ") || <span className="text-muted-foreground/70">none</span>}
-                    </td>
+                    {FIELD_ORDER.map((f) => (
+                      <td key={f} className="p-2 border-b border-border/50 text-center">
+                        <YesNo v={draftable && (perm.fields ?? []).includes(f)} />
+                      </td>
+                    ))}
                     <td className="p-3 border-b border-border/50 font-mono text-[11px] text-muted-foreground max-w-xs">
                       {!draftable ? "Not agent-draftable at the type level." : perm.note ?? ""}
                     </td>

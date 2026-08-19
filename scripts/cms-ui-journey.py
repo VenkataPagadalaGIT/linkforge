@@ -135,17 +135,48 @@ with sync_playwright() as pw:
               p.locator('[role="status"]').inner_text())
         p.screenshot(path=f"{OUT}/j-globals-{scheme}.png", full_page=True)
 
-        # ---- Agents ----
-        p.goto(UI + "/admin/cms/agents", wait_until="networkidle"); p.wait_for_timeout(900)
+        # ---- Agents: the operations console ----
+        p.goto(UI + "/admin/cms/agents", wait_until="networkidle"); p.wait_for_timeout(1000)
+        check("agents: summary tiles", p.get_by_test_id("agents-summary").count() == 1)
+        check("agents: three real tabs", p.locator('[role="tablist"] [role="tab"]').count() == 3)
+        check("agents: issue form folded away", p.locator("#issue-form").count() == 0)
+        p.get_by_role("button", name="Issue token").click(); p.wait_for_timeout(400)
         p.fill("#agent-name", f"UI journey agent {scheme}")
-        p.get_by_role("button", name="Issue token").click(); p.wait_for_timeout(1400)
+        p.get_by_role("button", name="Issue", exact=True).click(); p.wait_for_timeout(1800)
         shown = p.locator("code").first.inner_text()
         check("the raw token is shown once", shown.startswith("omni_"), shown[:14] + "...")
         check("issuing is announced", "Token issued" in p.locator('[role="status"]').inner_text())
-        rev = p.get_by_role("button", name="Revoke").last
-        rev.click(); p.wait_for_timeout(1400)
-        check("revoking is announced", "revoked" in p.locator('[role="status"]').inner_text().lower(),
-              p.locator('[role="status"]').inner_text())
+        check("whoami shown after issue", p.get_by_test_id("agent-whoami").count() == 1)
+        p.get_by_role("button", name="Cancel").click(); p.wait_for_timeout(300)
+        row = p.locator('#panel-active tbody tr', has_text=f"UI journey agent {scheme}").first
+        row.get_by_role("button", name="Permissions").click(); p.wait_for_timeout(600)
+        detail = p.locator('#panel-active tr[id^="agent-"]').first
+        dtext = detail.inner_text().lower()
+        check("agents: permissions editor opens", "effective permissions" in dtext)
+        check("agents: editor states it cannot widen", "cannot grant beyond the site profile" in dtext)
+        md = detail.locator('label', has_text="metaDescription").locator("input")
+        if md.count():
+            md.first.uncheck(); p.wait_for_timeout(200)
+        detail.get_by_role("button", name="Save permissions").click(); p.wait_for_timeout(1400)
+        check("agents: narrowing is announced", "Permissions saved" in p.locator('[role="status"]').inner_text())
+        detail = p.locator('#panel-active tr[id^="agent-"]').first
+        check("agents: narrowed grant persists", "metaDescription" not in detail.locator("tbody").inner_text())
+        detail.get_by_role("button", name="Show this agent").click(); p.wait_for_timeout(1400)
+        check("agents: activity tab opens filtered to the agent",
+              p.locator('#tab-activity').get_attribute("aria-selected") == "true" and p.locator("#act-actor").input_value() != "")
+        check("agents: the log shows the handshake", "auth" in p.locator('#panel-activity').inner_text())
+        p.select_option("#act-actor", ""); p.select_option("#act-result", "refused"); p.wait_for_timeout(1400)
+        lb = p.locator('#panel-activity tbody').inner_text()
+        check("agents: refused filter shows only refused", "REFUSED" in lb.upper() and "\nOK\n" not in lb)
+        p.locator('#tab-active').click(); p.wait_for_timeout(400)
+        row = p.locator('#panel-active tbody tr', has_text=f"UI journey agent {scheme}").first
+        row.get_by_role("button", name="Revoke").click()
+        try:
+            row.wait_for(state="detached", timeout=6000); gone = True
+        except Exception:
+            gone = False
+        check("revoking is announced", "revoked" in p.locator('[role="status"]').inner_text().lower())
+        check("agents: revoked token leaves the active tab", gone)
         p.screenshot(path=f"{OUT}/j-agents-{scheme}.png", full_page=True)
 
         # ---- Site profile: matrix, locks, kill switch ----
