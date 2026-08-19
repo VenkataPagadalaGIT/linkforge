@@ -80,7 +80,7 @@ export default function PostsListClient() {
             <div className="text-[11px] font-mono text-muted-foreground/70 mb-1">CMS</div>
             <h1 className="text-3xl font-semibold tracking-tight">Posts</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Create, edit, and publish blog posts. Changes go live instantly — no redeploy.
+              Create, edit, and publish blog posts. Changes go live instantly with no redeploy.
             </p>
           </div>
           <div className="flex gap-2">

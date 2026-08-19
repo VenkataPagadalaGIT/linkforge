@@ -302,8 +302,8 @@ export default function DashboardClient() {
                           {c.email}
                         </a>
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground">{c.subject || "—"}</td>
-                      <td className="px-4 py-3 text-muted-foreground/70">{c.source || "—"}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{c.subject || "none"}</td>
+                      <td className="px-4 py-3 text-muted-foreground/70">{c.source || "none"}</td>
                     </tr>
                     {expanded === c.id && (
                       <tr className="bg-muted/10">
@@ -344,8 +344,8 @@ export default function DashboardClient() {
                       {new Date(s.created_at).toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-foreground">{s.email}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.source || "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.tag || "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{s.source || "none"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{s.tag || "none"}</td>
                   </tr>
                 ))}
               </tbody>

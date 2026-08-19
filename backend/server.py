@@ -14,13 +14,15 @@ from dotenv import load_dotenv
 load_dotenv()  # must be first so env vars are available to the rest of the imports
 
 import os
+import secrets
+import time
 import json
 import asyncio
 import logging
 import uuid
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 
 import bcrypt
 import jwt as pyjwt
@@ -42,11 +44,29 @@ db = client[DB_NAME]
 
 JWT_SECRET = os.environ.get("JWT_SECRET", "change-me")
 JWT_ALGO = "HS256"
-ACCESS_TTL_MIN = 60 * 24  # 1 day — admin convenience
+ACCESS_TTL_MIN = int(os.environ.get("ACCESS_TTL_MIN", str(60 * 12)))  # 12h default
 REFRESH_TTL_DAYS = 30
 
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@monomind.com").lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "MonoMind2026!")
+
+# Is this a real deployment or a laptop? Railway sets RAILWAY_ENVIRONMENT.
+IS_PRODUCTION = bool(os.environ.get("RAILWAY_ENVIRONMENT") or
+                     os.environ.get("ENVIRONMENT", "").lower() in ("production", "prod"))
+
+# Values that must never survive to production. If any of these is the live
+# value on a real deployment, the whole admin boundary is public knowledge,
+# because this repo is public. Boot refuses rather than serving wide open.
+_INSECURE_DEFAULTS = {
+    "JWT_SECRET": {"change-me", ""},
+    "ADMIN_PASSWORD": {"MonoMind2026!", "LocalReview2026!", ""},
+}
+
+# Login throttle: after this many failures from one IP or against one
+# account within the window, further attempts are refused for the cooldown.
+LOGIN_MAX_FAILS = int(os.environ.get("LOGIN_MAX_FAILS", "8"))
+LOGIN_WINDOW_SEC = int(os.environ.get("LOGIN_WINDOW_SEC", "900"))     # 15 min
+LOGIN_COOLDOWN_SEC = int(os.environ.get("LOGIN_COOLDOWN_SEC", "900"))  # 15 min
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
@@ -388,12 +408,60 @@ async def subscribe_newsletter(payload: NewsletterCreate, request: Request):
 
 # ================ Auth ================
 
+# Brute-force throttle. In-process is enough for a single-instance admin;
+# a multi-instance deploy would move this to the database or a shared cache,
+# noted in the security doc. The point is that unlimited password guessing
+# against a public-repo default is not acceptable.
+_login_fails: Dict[str, list] = {}
+
+def _throttle_key(request: Request, email: str) -> list:
+    ip = request.client.host if request.client else "?"
+    return [f"ip:{ip}", f"acct:{email}"]
+
+def _login_blocked(keys: list) -> Optional[int]:
+    """Return seconds remaining in cooldown if blocked, else None."""
+    nowt = time.time()
+    for k in keys:
+        fails = [t for t in _login_fails.get(k, []) if nowt - t < LOGIN_WINDOW_SEC]
+        _login_fails[k] = fails
+        if len(fails) >= LOGIN_MAX_FAILS:
+            return int(LOGIN_COOLDOWN_SEC - (nowt - fails[-1]))
+    return None
+
+def _login_record_fail(keys: list) -> None:
+    nowt = time.time()
+    for k in keys:
+        _login_fails.setdefault(k, []).append(nowt)
+
+def _login_clear(keys: list) -> None:
+    for k in keys:
+        _login_fails.pop(k, None)
+
+
 @api.post("/auth/login", response_model=TokenResponse)
-async def login(payload: LoginRequest, response: Response):
+async def login(payload: LoginRequest, request: Request, response: Response):
     email = payload.email.lower()
+    keys = _throttle_key(request, email)
+    blocked = _login_blocked(keys)
+    if blocked is not None:
+        raise HTTPException(status_code=429,
+                            detail=f"Too many failed attempts. Try again in {max(1, blocked)} seconds.")
     user = await db.admin_users.find_one({"email": email})
     if not user or not verify_password(payload.password, user.get("password_hash", "")):
+        _login_record_fail(keys)
+        # Make the brute force visible on the Agents activity log.
+        try:
+            await db.cms_activity.insert_one({
+                "id": secrets.token_hex(8), "ts": now_iso(),
+                "actor": {"kind": "anon", "id": None, "name": email or "unknown"},
+                "action": "admin.login", "result": "refused",
+                "target": {}, "detail": "invalid credentials",
+                "ip": request.client.host if request.client else None,
+            })
+        except Exception:
+            pass
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    _login_clear(keys)
     token = create_access_token(email)
     response.set_cookie(
         key="access_token",
@@ -776,8 +844,31 @@ async def seed_admin():
             logger.info("Admin password updated from env")
 
 
+def _assert_secrets_safe() -> None:
+    """Fail closed in production. A default JWT secret means anyone can
+    forge an admin token; a default admin password means anyone can log in.
+    Both defaults are in this public repo, so serving them in production is
+    the same as having no admin auth at all."""
+    if not IS_PRODUCTION:
+        return
+    leaked = []
+    if JWT_SECRET in _INSECURE_DEFAULTS["JWT_SECRET"]:
+        leaked.append("JWT_SECRET")
+    if ADMIN_PASSWORD in _INSECURE_DEFAULTS["ADMIN_PASSWORD"]:
+        leaked.append("ADMIN_PASSWORD")
+    if os.environ.get("CORS_ORIGINS", "*") == "*":
+        leaked.append("CORS_ORIGINS (wildcard)")
+    if leaked:
+        raise RuntimeError(
+            "Refusing to start in production with insecure defaults: "
+            + ", ".join(leaked)
+            + ". Set these to real secrets in the environment before deploying."
+        )
+
+
 @app.on_event("startup")
 async def on_startup():
+    _assert_secrets_safe()
     try:
         # indexes
         await db.contact_submissions.create_index([("created_at", -1)])

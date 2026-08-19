@@ -257,7 +257,7 @@ export default function PostEditorClient({ slug }: { slug: string }) {
           {tab === "content" && (
             <>
               <textarea
-                placeholder="Excerpt — 1–2 sentence summary"
+                placeholder="Excerpt: a 1 to 2 sentence summary"
                 value={form.excerpt}
                 onChange={(e) => update("excerpt", e.target.value)}
                 className="w-full bg-background border border-foreground/15 px-3 py-2 text-sm mb-4 min-h-[60px] resize-vertical focus:border-foreground/40 outline-none"
@@ -307,7 +307,7 @@ export default function PostEditorClient({ slug }: { slug: string }) {
                 <Field label="Meta Title" hint={`${(form.seo.metaTitle || form.title || "").length}/60, what shows in Google`}>
                   <input value={form.seo.metaTitle || ""} onChange={(e) => updateSeo("metaTitle", e.target.value)} placeholder={form.title || "Defaults to post title"} className="w-full bg-background border border-foreground/15 px-3 py-2 text-sm" data-testid="cms-seo-metaTitle" />
                 </Field>
-                <Field label="Meta Description" hint={`${(form.seo.metaDescription || form.excerpt || "").length}/160 — search snippet`}>
+                <Field label="Meta Description" hint={`${(form.seo.metaDescription || form.excerpt || "").length}/160, the search snippet`}>
                   <textarea value={form.seo.metaDescription || ""} onChange={(e) => updateSeo("metaDescription", e.target.value)} placeholder={form.excerpt || "Defaults to excerpt"} className="w-full bg-background border border-foreground/15 px-3 py-2 text-sm min-h-[70px]" data-testid="cms-seo-metaDescription" />
                 </Field>
                 <Field label="H1 (visible heading)" hint="Defaults to Title if blank">
