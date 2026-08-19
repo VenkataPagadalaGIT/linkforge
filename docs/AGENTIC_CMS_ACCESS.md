@@ -48,20 +48,41 @@ The profile answers "what is this site, how does it sound, what may I say, what 
 
 ## 4. Permission matrix
 
-What the profile grants per page type. The token scope must also include the type; scope and grant are both required. `create` means a new draft; `update` means a proposed revision to a published page; `refresh` means a staleness-triggered revision; `proposeArchive` means it may ask for a page to be retired; `seoFields` lists the only SEO keys it may set. Everything absent is refused.
+Per page type, by **operation** and by **field group**. Three things must all be true for an agent write to be accepted: the token is scoped to the type, the site profile grants the operation on the type, and every field group the write touches is in the grant. A single agent can be narrowed further on the Agents screen; the profile is the ceiling and a token can never be widened past it.
 
-| Type | Route | create | update | refresh | proposeArchive | SEO fields an agent may set | Note |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `ai-update` | `/ai-updates/{slug}` | yes | yes | no | no | seoTitle, metaDescription, primaryKeyword |  |
-| `guide` | `/guides/{slug}` | no | no | no | no | none | Brief only. Guides are hand-built with 3D scenes; an agent may propose one, not write one. |
-| `concept` | `/notebook/ai/encyclopedia/{slug}` | yes | yes | yes | yes | seoTitle, metaDescription, primaryKeyword |  |
-| `insight` | `/insights/{pillar}/{slug}` | yes | no | no | no | seoTitle, metaDescription |  |
-| `notebook` | `/notebook/{section}/{slug}` | yes | yes | no | no | seoTitle, metaDescription |  |
-| `roadmap-topic` | `/notebook/ai/roadmap#{slug}` | no | yes | yes | no | none |  |
-| `contributor` | `/ai-contributors/{slug}` | no | yes | no | no | none | May correct facts with a source; may never change or add a photo. |
-| `publication` | `/publications#{slug}` | no | no | no | no | none | Owner's own papers. Owner-only. |
-| `hub` | `/{slug}` | no | no | no | no | none | Navigation. Owner-only, and not agent-draftable at the type level either. |
-| `lecture` | `/learn/{slug}` | no | no | no | no | none |  |
+Operations: `create` a new draft; `update` a published page via a revision through the review queue (the original is untouched until a human approves, then superseded); `refresh` a staleness-triggered revision; `propose archive` ask for a page to be retired. **There is no delete.** Hard delete does not exist for anyone; archive is the only path, and an agent can only propose it.
+
+Field groups are the units of on-page permission. Every write is classified into them and refused if any group is outside the grant:
+
+| Group | What it covers |
+| --- | --- |
+| `body` | Blocks: paragraphs, headings, lists, callouts, figures |
+| `title` | The page title (H1) |
+| `seoTitle` | <title> tag |
+| `metaDescription` | Meta description |
+| `primaryKeyword` | Target keyword |
+| `canonical` | Canonical URL (owner-only by default) |
+| `robots` | Robots directive (owner-only by default) |
+| `ogImage` | Social share image |
+| `schema` | Structured-data override (owner-only by default) |
+| `templateFields` | The type's declared extra fields (category, company, faqs...) |
+| `internalLinks` | Links to other pages on this site |
+| `sources` | Citations with URL and fetch receipt |
+
+Not on that list, on purpose: code, templates, components, routes, navigation, the slug or type of a published page, and publish. They are not fields, so there is no grant that reaches them. Canonical, robots and schema exist as groups but are owner-only for every type by default.
+
+| Type | create | update | refresh | propose archive | body | title | seoTitle | metaDescription | primaryKeyword | templateFields | internalLinks | sources | canonical | robots | ogImage | schema |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `ai-update` | yes | yes | no | no | yes | yes | yes | yes | yes | yes | yes | yes | no | no | no | no |
+| `guide` | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no |
+| `concept` | yes | yes | yes | yes | yes | yes | yes | yes | yes | yes | yes | yes | no | no | no | no |
+| `insight` | yes | no | no | no | yes | yes | yes | yes | no | no | yes | yes | no | no | no | no |
+| `notebook` | yes | yes | no | no | yes | yes | yes | yes | no | yes | yes | yes | no | no | no | no |
+| `roadmap-topic` | no | yes | yes | no | yes | no | no | no | no | yes | yes | yes | no | no | no | no |
+| `contributor` | no | yes | no | no | yes | no | no | no | no | no | no | yes | no | no | no | no |
+| `publication` | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no |
+| `hub` | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no |
+| `lecture` | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no | no |
 
 **Locked paths.** These refuse every agent operation regardless of type grant. Locks are the owner's last word and are checked before permissions.
 
@@ -77,6 +98,24 @@ What the profile grants per page type. The token scope must also include the typ
 
 **Kill switch.** `POST /cms/profile/pause {"paused": true}` refuses every agent write site-wide, instantly, with no deploy. Tokens stay valid so lifting it is one call. `whoami` reports the state so a well-behaved agent stops before it is refused.
 
+### 4.1 Per-agent narrowing
+
+`PUT /cms/agent-tokens/{id}/permissions` with `{"<type>": {"create": bool, "update": bool, "refresh": bool, "proposeArchive": bool, "fields": [group, ...]}}`. Unknown field groups (including `code`), unknown operations (including `delete`) and types outside the token's scope are refused. The agent's `whoami` reports the effective grant, which is the profile intersected with its own narrowing.
+
+### 4.2 The activity log: who did that
+
+Every call, agent or admin, allowed or refused, writes one row: timestamp, actor (kind, id, name), action, result (`ok` / `refused` / `error`), target (page id, type, slug, path), detail (the reason, for refusals), request id and IP. Actions logged: `auth`, `draft.create`, `draft.submit`, `revision.create`, `page.approve`, `page.reject`, `page.archive`, `token.issue`, `token.revoke`, `token.permissions`, `agents.pause`, `agents.resume`.
+
+- `GET /cms/activity?actorId=&action=&result=&pageId=&q=&limit=` filterable, newest first
+- `GET /cms/activity/summary` agents seen in the last hour, actions and refusals in 24h, drafts awaiting review, busiest agents
+- Admin-only. An agent cannot read the log, including its own rows.
+
+Refusals are logged deliberately. An agent repeatedly hitting a locked path or an ungranted field is a signal about that agent, and the log is where it shows.
+
+### 4.3 The Agents screen
+
+`/admin/cms/agents` is the operations console. Summary tiles (active now, actions and refusals in 24h, awaiting review, busiest). Three tabs: **Active** (every live token with scope, drafts, in review, published, refused, last seen, expires; expand a row for its effective permission matrix, narrow it there, and jump to its activity), **Activity log** (filter by text, result, actor), **Revoked**. Issuing a token is behind a button and shows the new token's live `whoami`.
+
 ## 5. What an agent can never do
 
 - Publish. No route exists for it.
@@ -85,6 +124,9 @@ What the profile grants per page type. The token scope must also include the typ
 - Create a hub page. Hubs are navigation; they are not agent-draftable at the type level, cannot be in any token's scope, and are not advertised in the schema.
 - Change a published page in place. The only path is a **revision**: a linked draft that goes through the queue; the original is untouched until a human approves, and is then superseded, not duplicated.
 - Change the slug or type of a published page. Both are frozen; the URL has one owner.
+- Delete anything. There is no delete operation to grant; the strongest action is propose archive, which a human decides.
+- Write a field group outside its grant. Canonical, robots and schema are owner-only for every type by default; an individual agent can be narrowed further, never widened.
+- Hide. Every call it makes is on the activity log with its name on it, including the ones that were refused.
 - Send a block kind, a field, a select value, or a URL scheme the template does not declare. Refused with 422 before anything is stored.
 - Touch code, templates, components, the repository, the build, the deploy, or any credential other than its own token.
 
@@ -124,4 +166,4 @@ Honest list, in order:
 
 ## 9. Test evidence
 
-Four suites, all green on 2026-08-19: `agent-draft-demo.py` (8 steps), `cms-gate-tests.py` (18 checks), `cms-security-tests.py` (75 cases across groups A to T: auth, agent-vs-admin, publish bypass, URL schemes, scope, cross-agent isolation, revocation, token issuance, regex search, globals, frozen URLs, unknown types, 404s, draft cap, template boundary, hubs, profile grants, locks and revisions, kill switch, dry run), `cms-ui-journey.py` (both themes). Every security guard was control-tested: remove the guard, watch the case fail, restore it.
+Four suites, all green on 2026-08-19: `agent-draft-demo.py` (8 steps), `cms-gate-tests.py` (18 checks), `cms-security-tests.py` (98 cases across groups A to V: auth, agent-vs-admin, publish bypass, URL schemes, scope, cross-agent isolation, revocation, token issuance, regex search, globals, frozen URLs, unknown types, 404s, draft cap, template boundary, hubs, profile grants, locks and revisions, kill switch, dry run, field-level grants and per-agent narrowing, activity log), `cms-ui-journey.py` (both themes). Every security guard was control-tested: remove the guard, watch the case fail, restore it.
