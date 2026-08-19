@@ -4,20 +4,54 @@ import * as React from "react";
 import axios, { AxiosInstance } from "axios";
 import { useRouter } from "next/navigation";
 import { BACKEND_URL } from "@/lib/site";
+import { clerkEnabled } from "@/lib/clerk";
 
 const TOKEN_KEY = "mm_admin_token";
+
+/**
+ * With Clerk enabled, each request asks the Clerk session for a fresh,
+ * short-lived token instead of reading a long-lived one from localStorage.
+ * The provider (mounted in the admin layout) registers this getter; the
+ * indirection keeps this module importable outside the ClerkProvider tree.
+ */
+let clerkTokenGetter: (() => Promise<string | null>) | null = null;
+export function registerClerkTokenGetter(fn: (() => Promise<string | null>) | null) {
+  clerkTokenGetter = fn;
+}
+
+/** Registered by the bridge so sign-out ends the Clerk session, not just
+ *  the legacy cookie. No-op when Clerk is off. */
+let clerkSignOut: (() => Promise<void>) | null = null;
+export function registerClerkSignOut(fn: (() => Promise<void>) | null) {
+  clerkSignOut = fn;
+}
+export async function signOutEverywhere(): Promise<void> {
+  try {
+    await adminApi.post("/auth/logout");
+  } catch { /* legacy cookie may not exist under Clerk */ }
+  clearToken();
+  if (clerkSignOut) {
+    try { await clerkSignOut(); } catch { /* already signed out */ }
+  }
+}
 
 export const adminApi: AxiosInstance = axios.create({
   baseURL: `${BACKEND_URL}/api`,
   headers: { "Content-Type": "application/json" },
 });
 
-adminApi.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+adminApi.interceptors.request.use(async (config) => {
+  if (typeof window === "undefined") return config;
+  if (clerkEnabled && clerkTokenGetter) {
+    const t = await clerkTokenGetter();
+    if (t) {
+      config.headers.Authorization = `Bearer ${t}`;
+      return config;
     }
+  }
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -42,7 +76,7 @@ export function useRequireAdmin() {
     let cancelled = false;
     const run = async () => {
       const token = getToken();
-      if (!token) {
+      if (!token && !clerkEnabled) {
         setStatus("unauthed");
         router.replace("/admin/login");
         return;

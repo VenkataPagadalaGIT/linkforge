@@ -32,6 +32,9 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
+from clerk_auth import (allowed_admin_emails as clerk_allowed_admins,
+                        clerk_enabled, verify_clerk_token as clerk_verify)
+
 
 ROOT_DIR = Path(__file__).parent
 SEED_DATA_PATH = ROOT_DIR / "seed_data" / "content.json"
@@ -288,6 +291,31 @@ async def get_current_admin(request: Request) -> dict:
             token = auth[7:]
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+    # ---- Path 1: Clerk (when configured). Authentication is Clerk's;
+    # authorization stays ours: only allowlisted emails are admins, because
+    # Clerk will authenticate anyone who signs up to the application.
+    claims = clerk_verify(token)
+    if claims is not None:
+        email = (claims.get("email") or claims.get("primary_email") or "").lower()
+        if not email:
+            raise HTTPException(status_code=401,
+                                detail="Clerk token carries no email claim; add email to the session token template")
+        if email not in clerk_allowed_admins(ADMIN_EMAIL):
+            try:
+                await db.cms_activity.insert_one({
+                    "id": secrets.token_hex(8), "ts": now_iso(),
+                    "actor": {"kind": "anon", "id": claims.get("sub"), "name": email},
+                    "action": "admin.login", "result": "refused", "target": {},
+                    "detail": "clerk-authenticated but not an allowlisted admin",
+                    "ip": request.client.host if request.client else None,
+                })
+            except Exception:
+                pass
+            raise HTTPException(status_code=403, detail="Not an authorized admin")
+        return {"email": email, "role": "admin", "auth": "clerk", "sub": claims.get("sub")}
+
+    # ---- Path 2: legacy password-session JWT (HS256, our secret).
     try:
         payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
         if payload.get("type") != "access":
@@ -440,6 +468,10 @@ def _login_clear(keys: list) -> None:
 
 @api.post("/auth/login", response_model=TokenResponse)
 async def login(payload: LoginRequest, request: Request, response: Response):
+    if IS_PRODUCTION and clerk_enabled() and os.environ.get("ALLOW_PASSWORD_LOGIN", "").lower() != "true":
+        # With Clerk live, a password endpoint is pure attack surface.
+        # ALLOW_PASSWORD_LOGIN=true is the deliberate break-glass override.
+        raise HTTPException(status_code=403, detail="Password login is disabled; sign in with Clerk")
     email = payload.email.lower()
     keys = _throttle_key(request, email)
     blocked = _login_blocked(keys)

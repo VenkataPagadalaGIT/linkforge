@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LoginClient from "./LoginClient";
+import LoginSwitch from "./LoginSwitch";
 
 export const metadata: Metadata = {
   title: "Admin Login",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <LoginClient />;
+  return <LoginSwitch />;
 }

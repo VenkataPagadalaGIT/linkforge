@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { adminApi, clearToken, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import { adminApi, formatApiError, signOutEverywhere, useRequireAdmin } from "@/lib/admin-client";
 
 type Contact = {
   id: string;
@@ -76,12 +76,7 @@ export default function DashboardClient() {
   }, [status, loadAll]);
 
   const logout = async () => {
-    try {
-      await adminApi.post("/auth/logout");
-    } catch {
-      /* ignore */
-    }
-    clearToken();
+    await signOutEverywhere();
     router.replace("/admin/login");
   };
 
