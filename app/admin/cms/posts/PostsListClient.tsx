@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import CmsShell, { btnPrimary } from "@/components/admin/CmsShell";
 
 type Pillar = { slug: string; title: string };
 type Post = {
@@ -70,37 +71,19 @@ export default function PostsListClient() {
     return true;
   });
 
-  if (authStatus === "checking") return <div className="p-12 text-muted-foreground">Checking auth…</div>;
+  if (authStatus !== "authed") return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground" data-testid="cms-posts-page">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <div className="text-[11px] font-mono text-muted-foreground/70 mb-1">CMS</div>
-            <h1 className="text-3xl font-semibold tracking-tight">Posts</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Create, edit, and publish blog posts. Changes go live instantly with no redeploy.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href="/admin"
-              className="px-3 py-2 text-xs font-mono border border-foreground/15 hover:border-foreground/30 transition-colors"
-              data-testid="cms-back-to-dashboard"
-            >
-              ← Dashboard
-            </Link>
-            <Link
-              href="/admin/cms/posts/new"
-              className="px-4 py-2 text-xs font-mono bg-foreground text-background hover:bg-foreground/85 transition-colors"
-              data-testid="cms-new-post-btn"
-            >
-              + New Post
-            </Link>
-          </div>
-        </div>
-
+    <CmsShell
+      title="Legacy posts"
+      intro="The original blog-post editor. Create, edit and publish posts; changes go live with no redeploy. Newer content types live under Pages."
+      actions={
+        <Link href="/admin/cms/posts/new" className={btnPrimary} data-testid="cms-new-post-btn">
+          New post
+        </Link>
+      }
+    >
+      <div data-testid="cms-posts-page">
         <div className="flex flex-wrap gap-2 mb-6 items-center">
           <input
             type="search"
@@ -194,6 +177,6 @@ export default function PostsListClient() {
           </div>
         )}
       </div>
-    </div>
+    </CmsShell>
   );
 }

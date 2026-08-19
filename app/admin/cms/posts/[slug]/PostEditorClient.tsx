@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import CmsShell, { btn, btnPrimary } from "@/components/admin/CmsShell";
 
 const NoteContent = dynamic(() => import("@/components/NoteContent"), { ssr: false });
 
@@ -191,41 +192,27 @@ export default function PostEditorClient({ slug }: { slug: string }) {
   const previewUrl = form.pillarSlug && form.slug ? `/insights/${form.pillarSlug}/${form.slug}` : null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground" data-testid="cms-post-editor">
-      <div className="border-b border-foreground/10 sticky top-0 z-50 bg-background/95 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-3">
-          <Link href="/admin/cms/posts" className="font-mono text-xs text-muted-foreground hover:text-foreground" data-testid="cms-back-to-list">
-            ← Posts
-          </Link>
-          <span className="text-foreground/30">/</span>
-          <span className="font-mono text-xs text-muted-foreground truncate">{isNew ? "New post" : originalSlug}</span>
-          <div className="flex-1" />
-          {okMsg && <span className="text-xs font-mono text-emerald-400/90">{okMsg}</span>}
+    <CmsShell
+      title={isNew ? "New post" : (form.title || originalSlug || "Post")}
+      intro="Legacy blog-post editor."
+      status={okMsg || undefined}
+      actions={
+        <>
           {previewUrl && form.status === "published" && (
-            <Link href={previewUrl} target="_blank" className="px-3 py-1.5 text-xs font-mono border border-foreground/15 hover:border-foreground/30 transition-colors" data-testid="cms-view-live">
+            <Link href={previewUrl} target="_blank" className={btn} data-testid="cms-view-live">
               View ↗
             </Link>
           )}
-          <button
-            onClick={() => onSave("draft")}
-            disabled={saving}
-            className="px-3 py-1.5 text-xs font-mono border border-foreground/20 hover:border-foreground/40 transition-colors disabled:opacity-50"
-            data-testid="cms-save-draft-btn"
-          >
-            Save Draft
+          <button onClick={() => onSave("draft")} disabled={saving} className={btn} data-testid="cms-save-draft-btn">
+            Save draft
           </button>
-          <button
-            onClick={() => onSave("published")}
-            disabled={saving}
-            className="px-4 py-1.5 text-xs font-mono bg-emerald-500/90 text-black hover:bg-emerald-400 transition-colors disabled:opacity-50"
-            data-testid="cms-publish-btn"
-          >
+          <button onClick={() => onSave("published")} disabled={saving} className={btnPrimary} data-testid="cms-publish-btn">
             {saving ? "Saving…" : form.status === "published" ? "Update" : "Publish"}
           </button>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
+        </>
+      }
+    >
+      <div data-testid="cms-post-editor" className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
         <div className="min-w-0">
           {err && <div className="border border-rose-500/40 text-rose-300/90 px-4 py-3 text-sm mb-4" data-testid="cms-error">{err}</div>}
 
@@ -423,7 +410,7 @@ export default function PostEditorClient({ slug }: { slug: string }) {
           </div>
         </aside>
       </div>
-    </div>
+    </CmsShell>
   );
 }
 

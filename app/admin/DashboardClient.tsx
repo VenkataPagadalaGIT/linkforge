@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { adminApi, formatApiError, signOutEverywhere, useRequireAdmin } from "@/lib/admin-client";
+import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import AdminForbidden from "@/components/admin/AdminForbidden";
+import CmsShell, { btn } from "@/components/admin/CmsShell";
 
 type Contact = {
   id: string;
@@ -31,7 +32,6 @@ type Overview = {
 };
 
 export default function DashboardClient() {
-  const router = useRouter();
   const { status, email } = useRequireAdmin();
 
   const [tab, setTab] = React.useState<"contacts" | "subscribers">("contacts");
@@ -75,11 +75,6 @@ export default function DashboardClient() {
     if (status === "authed") loadAll();
   }, [status, loadAll]);
 
-  const logout = async () => {
-    await signOutEverywhere();
-    router.replace("/admin/login");
-  };
-
   const exportCSV = (rows: Record<string, unknown>[], filename: string) => {
     if (!rows.length) return;
     const keys = Object.keys(rows[0]);
@@ -94,6 +89,7 @@ export default function DashboardClient() {
     URL.revokeObjectURL(url);
   };
 
+  if (status === "forbidden") return <AdminForbidden />;
   if (status !== "authed") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/70">
@@ -103,43 +99,20 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] px-6 py-16">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-          <div>
-            <p className="text-[10px] tracking-[0.3em] text-muted-foreground/70 uppercase mb-2 font-mono">
-              Mono Mind · Admin
-            </p>
-            <h1 className="font-display text-4xl font-bold text-foreground text-glow">Dashboard</h1>
-            <p className="text-xs text-muted-foreground font-mono mt-2">
-              Signed in as <span className="text-foreground">{email}</span>
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin/cms/pages"
-              className="border border-foreground/60 bg-foreground/10 hover:bg-foreground/20 px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-foreground transition-all"
-              data-testid="admin-agentic-cms-link"
-            >
-              Agentic CMS
-            </Link>
-            <button
-              onClick={loadAll}
-              disabled={loading}
-              className="border border-border/40 hover:border-foreground/40 px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-all disabled:opacity-50"
-              data-testid="admin-refresh"
-            >
-              {loading ? "Loading…" : "Refresh"}
-            </button>
-            <button
-              onClick={logout}
-              className="border border-border/40 hover:border-destructive/50 hover:text-destructive-foreground px-4 py-2 font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground transition-all"
-              data-testid="admin-logout"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
+    <CmsShell
+      title="Dashboard"
+      intro={email ? `Signed in as ${email}` : undefined}
+      actions={
+        <button
+          onClick={loadAll}
+          disabled={loading}
+          className={btn}
+          data-testid="admin-refresh"
+        >
+          {loading ? "Loading…" : "Refresh"}
+        </button>
+      }
+    >
 
         {err && (
           <div
@@ -347,7 +320,6 @@ export default function DashboardClient() {
             </table>
           </div>
         )}
-      </div>
-    </div>
+    </CmsShell>
   );
 }

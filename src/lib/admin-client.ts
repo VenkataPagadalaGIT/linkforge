@@ -69,7 +69,7 @@ export function getToken(): string | null {
 
 export function useRequireAdmin() {
   const router = useRouter();
-  const [status, setStatus] = React.useState<"checking" | "authed" | "unauthed">("checking");
+  const [status, setStatus] = React.useState<"checking" | "authed" | "unauthed" | "forbidden">("checking");
   const [email, setEmail] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -86,9 +86,17 @@ export function useRequireAdmin() {
         if (cancelled) return;
         setEmail(data.email);
         setStatus("authed");
-      } catch {
-        clearToken();
+      } catch (e) {
         if (cancelled) return;
+        const code = axios.isAxiosError(e) ? e.response?.status : undefined;
+        if (code === 403) {
+          // Authenticated by Clerk but not on the admin allowlist. Do NOT
+          // redirect: Clerk would send the active session straight back to
+          // /admin and we would loop forever. Show a sign-out screen instead.
+          setStatus("forbidden");
+          return;
+        }
+        clearToken();
         setStatus("unauthed");
         router.replace("/admin/login");
       }

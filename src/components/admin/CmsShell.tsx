@@ -1,8 +1,9 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import { signOutEverywhere } from "@/lib/admin-client";
 
 /**
  * CmsShell: the frame every Agentic CMS screen sits in.
@@ -103,6 +104,11 @@ export default function CmsShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const signOut = async () => {
+    await signOutEverywhere();
+    router.replace("/admin/login");
+  };
   return (
     <div className="min-h-screen bg-background text-foreground">
       <a
@@ -147,7 +153,16 @@ export default function CmsShell({
               </ul>
             </nav>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={signOut}
+              className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] border border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors ${focusRing}`}
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
 
