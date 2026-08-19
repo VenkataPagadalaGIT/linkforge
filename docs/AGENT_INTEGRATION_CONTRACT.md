@@ -279,7 +279,162 @@ a timestamp, or the callback is an open endpoint that anything can post to.
 
 ---
 
-## 5. The generic contract
+## 5. Edge cases and blast radius
+
+The questions that decide whether this is safe to run unattended, each
+answered against what the code does today, not what it is meant to do.
+
+### 5.1 How does an agent know what page types exist?
+
+It asks. `GET /agent/schema` returns every type the token may draft, and
+each type now carries a `placement` block:
+
+```json
+"concept": {
+  "placement": {
+    "useWhen":  "One term, defined once, in plain words, with a difficulty level...",
+    "neverFor": "Multi-concept tutorials, news, anything with a date. If it needs more than one H2, it is a guide.",
+    "examples": ["/notebook/ai/encyclopedia/attention"],
+    "decidedBy": "category"
+  }
+}
+```
+
+`useWhen` and `neverFor` are the dropdown you asked for, expressed as a
+contract an agent can read and a human can audit. `decidedBy` names the
+field that routes the page within the type: `section` on a notebook entry
+(ai, business, conference), `category` on an update, `pillar` on an insight,
+`week` on a roadmap topic. The schema rules now say, in order: choose the
+type from placement and state why; set the decidedBy field; send only
+declared fields and listed block kinds.
+
+The brief stage (section 2) is where that choice gets checked. The first
+line of a brief is "type: X, because Y", and a human sees it before a word
+of body copy exists. An agent that wants to put a product page in the
+newsroom has to say so out loud, in advance, in a form that costs one click
+to refuse.
+
+### 5.2 What happens when a new page template is introduced?
+
+Today a type is a Python dict, so a new one is a code change and a deploy.
+That is the right place for it for now: a type defines a route and a
+renderer, and nothing else on the site should be able to add routes.
+
+What does **not** happen automatically is worth stating:
+
+- An existing token does **not** gain the new type. `allowedTypes` is a list
+  stored at issue time, and a token issued with no scope gets the list of
+  draftable types **as of that moment**, frozen. A new type has to be
+  granted on purpose, token by token. Fail closed.
+- An agent that read the schema yesterday has a stale contract. Every draft
+  is validated against the live registry on receipt, so stale knowledge
+  produces a 422, not a malformed page.
+- When a type is **removed** or renamed, its existing pages keep their
+  stored `type` string, and `run_gates` fails them on "known page type".
+  They cannot be approved until someone decides what they are now.
+
+What is missing and should be added before a second client: a
+`schemaVersion` on the schema response and on every draft, so a draft
+written against v3 of the contract is refused by a v4 server with a clear
+message rather than a confusing one.
+
+### 5.3 What is the crawl surface? What can the agent read?
+
+Nothing it should not. The agent surface is `/cms/agent/*` and only that.
+Every other route is behind an admin session. The agent token is a
+different credential from the admin token, stored as a different kind of
+record, checked by a different dependency; there is no path from one to the
+other.
+
+The agent has no access to:
+- the repository, the build, the deploy, or any git or Railway credential
+- the admin API: pages list, globals, review queue, other tokens
+- other agents' drafts, even by id
+- the public site's rendering code, page templates, or components
+
+Its view of the site **should** come from the read endpoints in section 1
+(inventory, links, entities, brand, templates), which are purpose-built
+projections. It should not crawl the public site to learn it. Crawling is
+slow, lossy, and tells the agent nothing about status, provenance, or what
+is in review. The projection is the contract; the public HTML is an
+artefact of it.
+
+### 5.4 Can an agent break a page template, a feature, or the site?
+
+The honest baseline first: **CMS content is not rendered on the public site
+yet.** The CMS publishes to its own collection and nothing in the Next.js
+app reads it. So today an agent cannot break anything a visitor sees,
+because nothing it writes reaches a URL. That changes the moment rendering
+is wired, which is why the boundary has to be in place before then.
+
+The boundary is that **an agent writes data, never code or templates**, and
+the data is validated against a fixed contract before it is stored:
+
+| Layer | What it refuses | Since |
+|---|---|---|
+| `Block.kind` | any kind not in `BLOCK_KINDS` (16 kinds) | this commit |
+| `fields` | any key the type does not declare; any select value outside its options; non-numeric numbers | this commit |
+| URLs | any scheme other than http, https, site-relative | previous commit |
+| `status` | anything but draft or in_review from a write | previous commit |
+| `type` | unknown types; change of type after publish | previous commit |
+| hub | agents cannot draft hubs at all, and no token can be scoped to them | this commit |
+
+So an agent can no longer invent a block kind the renderer has never seen,
+attach a field the template has no slot for, or create a navigation page
+that reshapes the site. Each of those used to be accepted and stored, which
+is exactly how "a content mistake" turns into "a site bug" later.
+
+What the renderer must do, when it exists, to keep the promise:
+
+- map each block kind to a component from a fixed table, and render
+  nothing for a kind it does not know (defence in depth: the API refuses
+  them, and the renderer ignores them anyway)
+- never pass agent text through `dangerouslySetInnerHTML`; blocks are
+  structured data, not HTML
+- render into a **preview route** gated behind admin auth, so the reviewer
+  sees the actual page at the actual template before approving, and a
+  rendering failure shows up in review rather than in production
+- fail one page at a time: a block that throws takes down its own slot
+  with an error boundary, not the page, and never the route
+
+And the blast radius of a bad approval is one page, by construction:
+agents cannot touch globals, cannot change a type, cannot create hubs,
+cannot alter another page, and a published page's slug and type are frozen.
+The worst case is one wrong page at one URL, which is exactly the case
+`cms_versions` and archive exist to reverse.
+
+### 5.5 How do we know the job was done, and done right?
+
+Three layers, two of which exist:
+
+1. **Gates, before the human.** The agent runs its own gates, sees
+   failures, fixes them, and only then submits. The human never sees a
+   draft the agent knew was failing. (Exists.)
+2. **Review with the evidence on one screen.** Content, sources with fetch
+   receipts, resolved SEO with provenance, every gate with a verdict. The
+   diff against the approved brief is the missing piece: did it write the
+   page it promised? (Mostly exists; brief diff does not.)
+3. **Callback to Omniscite.** Submitted, approved, rejected with notes, or
+   archived, signed, with the task id. This is what closes the loop so
+   Omniscite can retry, learn, and report. (Does not exist.)
+
+Without the third, "was the job done" is a question only a human at the
+review screen can answer. With it, Omniscite knows.
+
+### 5.6 What Omniscite needs to send, and what it must never hold
+
+Send: its task id and run id on every draft, a brief before a draft, an
+`Idempotency-Key` on creation, and the model name in provenance.
+
+Never hold: an admin session, a git credential, a deploy credential, or a
+token scoped wider than the job. One token per agent per site, named for
+what it does, with the narrowest type scope that does the work, revoked
+when the work ends. The Agents screen is where the owner can see every
+live credential and kill any of them in one click.
+
+---
+
+## 6. The generic contract
 
 What makes this repeatable across clients is that the site implements a
 small versioned interface, and Omniscite ships one client library. A new
@@ -312,7 +467,7 @@ fits a site, and it puts the only approval at the most expensive moment.
 
 ---
 
-## 6. What to build first
+## 7. What to build first
 
 To unblock one real Omniscite agent writing one real page on
 venkatapagadala.com, in order:
@@ -328,7 +483,11 @@ venkatapagadala.com, in order:
 5. **`Idempotency-Key` on draft creation** so retries stop multiplying
 6. **`GET /agent/brand`** so house style is a contract, not a failed gate
 7. **Site identity on every token and draft** before a second client exists
-8. **Signed webhook back to Omniscite** to close the loop
+8. **`schemaVersion` on the schema and on every draft**, so a stale agent
+   fails clearly instead of confusingly
+9. **An admin-only preview route that renders a draft at its real
+   template**, before any CMS content is wired to public URLs
+10. **Signed webhook back to Omniscite** to close the loop
 
 Items 2, 3, 5 and 6 are a day of work against the module that already
 exists. Item 1 is the long pole and cannot be skipped: every other item

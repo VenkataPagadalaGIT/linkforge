@@ -252,6 +252,42 @@ def main() -> int:
         codes.append(status)
     check("the cap stops the flood", codes[:2] == [200, 200] and codes[2] == 429, str(codes))
 
+    print("\n[O] An agent cannot send content the templates do not define")
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "Bad block kind", "slug": SLUG_PREFIX + "badkind",
+        "blocks": [{"kind": "script", "text": "alert(1)"}],
+    }, agent_token)
+    check("an unknown block kind is refused", status == 422, f"HTTP {status}")
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "Stray field", "slug": SLUG_PREFIX + "strayfield",
+        "fields": {"notInTemplate": "x"},
+    }, agent_token)
+    check("a field the template does not declare is refused", status == 422, f"HTTP {status}")
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "Bad select", "slug": SLUG_PREFIX + "badselect",
+        "fields": {"category": "not-an-option"},
+    }, agent_token)
+    check("a select value outside its options is refused", status == 422, f"HTTP {status}")
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "Good fields", "slug": SLUG_PREFIX + "goodfields",
+        "fields": {"category": "research", "company": "OpenAI"},
+    }, agent_token)
+    check("valid template fields are accepted", status == 200, f"HTTP {status}")
+
+    print("\n[P] Agents cannot create navigation")
+    status, _ = api.admin("POST", "/cms/agent-tokens",
+                          {"name": "sec-test hub", "allowedTypes": ["hub"]})
+    check("a token scoped to hub cannot be issued", status == 400, f"HTTP {status}")
+    _, wide = api.admin("POST", "/cms/agent-tokens", {"name": "sec-test wide"})
+    check("a default-scope token excludes hub", "hub" not in wide["allowedTypes"],
+          str(wide["allowedTypes"]))
+    _, sch = api.agent("GET", "/cms/agent/schema", None, wide["token"])
+    check("the schema does not advertise hub to agents", "hub" not in sch["types"])
+    check("the schema carries placement rules for every type it offers",
+          all("placement" in t for t in sch["types"].values()), f"{len(sch['types'])} types")
+    check("the schema tells the agent to choose by placement",
+          any("placement" in r for r in sch["rules"]))
+
     sweep(api)
     print()
     if failures:

@@ -40,6 +40,12 @@ BLOCK_KINDS = [
 
 PAGE_TYPES: Dict[str, Dict[str, Any]] = {
     "ai-update": {
+        "placement": {
+            "useWhen": "A dated, newsworthy event at a named company or lab: a release, a deal, a ruling, a paper with a date. It will age, and that is fine.",
+            "neverFor": "Evergreen explanation, opinion essays, definitions, tutorials. If the piece would still be accurate in a year with no date on it, it is not an update.",
+            "examples": ["/ai-updates/anthropic-copyright-settlement-final-approval", "/ai-updates/stripe-openrouter-acquisition"],
+            "decidedBy": "category",
+        },
         "label": "AI Update",
         "route": "/ai-updates/{slug}",
         "schemaType": "Article",
@@ -60,6 +66,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "guide": {
+        "placement": {
+            "useWhen": "A long evergreen explainer of how something works, with a structure a reader can follow end to end and ideally an interactive 3D scene.",
+            "neverFor": "News, short definitions, listicles, opinion. A guide under 1,500 words is probably a concept.",
+            "examples": ["/guides/how-llms-work", "/guides/how-neural-networks-work"],
+            "decidedBy": None,
+        },
         "label": "Guide / 3D Explainer",
         "route": "/guides/{slug}",
         "schemaType": "TechArticle",
@@ -77,6 +89,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "concept": {
+        "placement": {
+            "useWhen": "One term, defined once, in plain words, with a difficulty level and links to prerequisites. The encyclopedia is one page per concept.",
+            "neverFor": "Multi-concept tutorials, news, anything with a date. If it needs more than one H2 to explain, it is a guide.",
+            "examples": ["/notebook/ai/encyclopedia/attention", "/notebook/ai/encyclopedia/embeddings"],
+            "decidedBy": "category",
+        },
         "label": "Encyclopedia Concept",
         "route": "/notebook/ai/encyclopedia/{slug}",
         "schemaType": "DefinedTerm",
@@ -94,6 +112,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "insight": {
+        "placement": {
+            "useWhen": "Opinion and analysis in the author's voice, organised under a pillar. The reader should be able to disagree with it.",
+            "neverFor": "Neutral reporting, reference material, definitions.",
+            "examples": [],
+            "decidedBy": "pillar",
+        },
         "label": "Insight / Essay",
         "route": "/insights/{pillar}/{slug}",
         "schemaType": "BlogPosting",
@@ -104,6 +128,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         "extraFields": [{"name": "pillar", "type": "reference", "required": True}],
     },
     "notebook": {
+        "placement": {
+            "useWhen": "Working notes: a conference session, a business observation, an experiment log. Less polished than a guide, more personal than an update.",
+            "neverFor": "Anything meant to rank as a definitive reference; that is a guide or a concept.",
+            "examples": ["/notebook/conference/speakers/mike-king"],
+            "decidedBy": "section",
+        },
         "label": "Notebook Entry",
         "route": "/notebook/{section}/{slug}",
         "schemaType": "Article",
@@ -117,6 +147,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "roadmap-topic": {
+        "placement": {
+            "useWhen": "One week or elective in the AI learning roadmap: outcomes, resources, order. It is a syllabus entry, not an article.",
+            "neverFor": "Explaining the topic itself. The roadmap points at guides and concepts; it does not replace them.",
+            "examples": ["/notebook/ai/roadmap#week-03-attention"],
+            "decidedBy": "week",
+        },
         "label": "Roadmap Topic",
         "route": "/notebook/ai/roadmap#{slug}",
         "schemaType": "LearningResource",
@@ -131,6 +167,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "contributor": {
+        "placement": {
+            "useWhen": "A person in the top-100 AI contributors album: who, what they did, a credited photo.",
+            "neverFor": "Companies, products, or anyone not in the album. Never without a photo credit.",
+            "examples": ["/ai-contributors/geoffrey-hinton"],
+            "decidedBy": None,
+        },
         "label": "Contributor Profile",
         "route": "/ai-contributors/{slug}",
         "schemaType": "Person",
@@ -145,6 +187,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "publication": {
+        "placement": {
+            "useWhen": "A paper or article by the site owner with a venue, an abstract and ideally a DOI.",
+            "neverFor": "Third-party papers. Those are sources on a guide, not publications.",
+            "examples": ["/publications#agentic-seo"],
+            "decidedBy": None,
+        },
         "label": "Publication / Paper",
         "route": "/publications#{slug}",
         "schemaType": "ScholarlyArticle",
@@ -160,6 +208,15 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         ],
     },
     "hub": {
+        # Hubs are navigation. An agent that can create one can reshape the
+        # site's information architecture, which is an owner decision.
+        "agentDraftable": False,
+        "placement": {
+            "useWhen": "A landing page whose job is to list other pages by a query. It has little body copy of its own.",
+            "neverFor": "Anything an agent should create unasked. Hubs change navigation; they are owner-initiated.",
+            "examples": ["/guides", "/ai-updates"],
+            "decidedBy": None,
+        },
         "label": "Hub / Landing",
         "route": "/{slug}",
         "schemaType": "CollectionPage",
@@ -170,6 +227,12 @@ PAGE_TYPES: Dict[str, Dict[str, Any]] = {
         "extraFields": [{"name": "query", "type": "json", "help": "which pages this hub lists"}],
     },
     "lecture": {
+        "placement": {
+            "useWhen": "A structured course: ordered lessons with video, minutes, a transcript and captions.",
+            "neverFor": "A single explainer with no lesson structure; that is a guide.",
+            "examples": [],
+            "decidedBy": None,
+        },
         "label": "Lecture / Course",
         "route": "/learn/{slug}",
         "schemaType": "Course",
@@ -257,6 +320,16 @@ class Block(BaseModel):
     title: Optional[str] = None
     url: Optional[str] = None
     data: Optional[Dict[str, Any]] = None
+
+    @field_validator("kind")
+    @classmethod
+    def _kind(cls, v):
+        # The renderer maps kinds to components. A kind it has never heard
+        # of is either dropped silently or, worse, handed to a fallback that
+        # trusts it. Refusing here keeps the data and the renderer in step.
+        if v not in BLOCK_KINDS:
+            raise ValueError(f"unknown block kind {v!r}; allowed: {', '.join(BLOCK_KINDS)}")
+        return v
 
     @field_validator("url")
     @classmethod
@@ -404,6 +477,35 @@ def now_iso() -> str:
 
 def slugify(s: str) -> str:
     return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower())).strip("-")
+
+
+def validate_fields(type_id: str, fields: Dict[str, Any]) -> Dict[str, Any]:
+    """Check a page's `fields` against its type's extraFields.
+
+    Unknown keys are refused, and a select must hold one of its options.
+    This is the line between "the agent fills in the template" and "the
+    agent invents its own": a stray key renders as nothing and a bad select
+    value renders as a broken filter, and both look like a site bug rather
+    than a content mistake when they reach the page.
+
+    Required-ness is not checked here, because a draft is allowed to be
+    incomplete; the publish gate enforces it at approval.
+    """
+    spec = {f["name"]: f for f in PAGE_TYPES.get(type_id, {}).get("extraFields", [])}
+    unknown = [k for k in fields if k not in spec]
+    if unknown:
+        raise HTTPException(
+            422, f"fields not in the {type_id} template: {', '.join(sorted(unknown))}; "
+                 f"allowed: {', '.join(sorted(spec)) or 'none'}")
+    for k, v in fields.items():
+        f = spec[k]
+        if f.get("type") == "select" and f.get("options") and v not in (None, "") \
+                and v not in f["options"]:
+            raise HTTPException(
+                422, f"field {k!r} must be one of {f['options']}, got {v!r}")
+        if f.get("type") == "number" and v not in (None, "") and not isinstance(v, (int, float)):
+            raise HTTPException(422, f"field {k!r} must be a number, got {v!r}")
+    return fields
 
 
 def resolve_seo(page: Dict[str, Any], globals_doc: Dict[str, Any]) -> Dict[str, Any]:
@@ -595,6 +697,7 @@ def build_router(db, get_current_admin) -> APIRouter:
     async def create_page(payload: PageUpsert, user: dict = Depends(get_current_admin)):
         if payload.type not in PAGE_TYPES:
             raise HTTPException(400, f"unknown page type {payload.type}")
+        validate_fields(payload.type, payload.fields)
         page = payload.model_dump()
         page["id"] = secrets.token_hex(8)
         page["slug"] = slugify(page["slug"] or page["title"])
@@ -618,6 +721,8 @@ def build_router(db, get_current_admin) -> APIRouter:
 
         if "type" in incoming and incoming["type"] not in PAGE_TYPES:
             raise HTTPException(400, f"unknown page type {incoming['type']}")
+        if "fields" in incoming:
+            validate_fields(incoming.get("type", existing["type"]), incoming["fields"])
 
         if "slug" in incoming:
             incoming["slug"] = slugify(incoming["slug"])
@@ -745,10 +850,16 @@ def build_router(db, get_current_admin) -> APIRouter:
         # Scope is a security control, so an unrecognised type is an error
         # rather than something to quietly widen. An empty list would grant
         # nothing useful, so that falls back to every type on purpose.
-        requested = payload.get("allowedTypes") or list(PAGE_TYPES.keys())
+        draftable = [k for k, v in PAGE_TYPES.items() if v.get("agentDraftable", True)]
+        requested = payload.get("allowedTypes") or draftable
         unknown = [t for t in requested if t not in PAGE_TYPES]
         if unknown:
             raise HTTPException(400, f"unknown page type(s): {', '.join(unknown)}")
+        locked = [t for t in requested if t not in draftable]
+        if locked:
+            raise HTTPException(
+                400, f"not agent-draftable: {', '.join(locked)}. "
+                     "These types change site structure and are created by the owner.")
 
         days = int(payload.get("expiresInDays") or DEFAULT_AGENT_TOKEN_DAYS)
         rec = {
@@ -783,10 +894,14 @@ def build_router(db, get_current_admin) -> APIRouter:
         return {
             "agent": agent.get("name"),
             "allowedTypes": allowed,
-            "types": {k: v for k, v in PAGE_TYPES.items() if k in allowed},
+            "types": {k: v for k, v in PAGE_TYPES.items()
+                      if k in allowed and v.get("agentDraftable", True)},
             "blockKinds": BLOCK_KINDS,
             "rules": [
                 "You may create and update drafts only. There is no publish endpoint.",
+                "Choose the page type from each type's placement.useWhen and placement.neverFor before anything else, and state the reason. A wrong type puts content under the wrong URL.",
+                "Where a type has placement.decidedBy, that field must be set; it decides which section the page lands in.",
+                "Send only fields the type declares, and only block kinds the schema lists. Anything else is refused.",
                 "Every factual claim needs a source with a URL and a fetched timestamp.",
                 "No em dashes in copy.",
                 "SEO title must be 60 characters or fewer.",
@@ -799,6 +914,9 @@ def build_router(db, get_current_admin) -> APIRouter:
     async def agent_create_draft(payload: AgentDraft, agent: dict = Depends(require_agent)):
         if payload.type not in agent.get("allowedTypes", []):
             raise HTTPException(403, f"agent not allowed to draft type {payload.type}")
+        if not PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True):
+            raise HTTPException(403, f"{payload.type} pages are owner-created; agents cannot draft them")
+        validate_fields(payload.type, payload.fields)
         await enforce_draft_cap(agent)
         page = {
             "id": secrets.token_hex(8),
