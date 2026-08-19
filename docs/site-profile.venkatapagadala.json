@@ -1,0 +1,313 @@
+{
+  "profileVersion": "2026-08-19.1",
+  "identity": {
+    "siteId": "venkatapagadala-com",
+    "siteName": "Venkata Pagadala",
+    "siteUrl": "https://venkatapagadala.com",
+    "owner": "Venkata Pagadala",
+    "purpose": "A personal research site: AI systems explained with primary sources, interactive 3D explainers, an AI encyclopedia, an AI learning roadmap, dated AI industry updates, and the owner's publications.",
+    "audience": "Technical readers, AI practitioners, hiring managers, and search and answer engines.",
+    "successLooksLike": [
+      "A reader learns something true and can check the source.",
+      "A page ranks for one query it owns and is cited by answer engines for it.",
+      "Nothing on the site contradicts anything else on the site."
+    ],
+    "mustNeverBecome": [
+      "A content farm of near-duplicate explainers competing for the same query.",
+      "A newsroom that paraphrases press releases without a primary source.",
+      "A place where the owner is quoted saying things the owner did not say."
+    ]
+  },
+  "truthFile": {
+    "owner": {
+      "name": "Venkata Pagadala",
+      "role": "SEO and AI systems practitioner; builder of Omniscite",
+      "location": "United States",
+      "claimsAllowed": [
+        "Author of the guides, explainers and notebook entries on this site.",
+        "Publishes on SSRN under author id 6512878."
+      ],
+      "claimsForbidden": [
+        "Any employer, title, degree, award or affiliation not listed here.",
+        "Any statement attributed to the owner that is not on this site.",
+        "Any revenue, pricing, valuation or money figure about the owner or Omniscite."
+      ]
+    },
+    "claimsPolicy": {
+      "numbersNeedASource": true,
+      "moneyFiguresNeverGuessed": true,
+      "dateEveryEvent": true,
+      "reportedVsOfficial": "Reported deals and rumours are labelled reported; official only when the company has said so.",
+      "unverifiableGoesOnAList": "If it cannot be pinned to a primary source it goes in a clearly marked unverified list, never silently dropped, never silently asserted."
+    },
+    "preferredSources": [
+      "Primary: the company or lab's own announcement, paper, docs or filing.",
+      "Court and regulator documents.",
+      "Peer reviewed papers and their official preprints.",
+      "Bloomberg, Reuters, FT, WSJ for reported deals, always labelled reported."
+    ],
+    "bannedSources": [
+      "Content farms, AI generated aggregators, and any page with no author and no date.",
+      "Another site's summary of a primary source when the primary source is available."
+    ]
+  },
+  "voice": {
+    "person": "First person singular for opinion, third person for reporting.",
+    "tense": "Present for how things work, past for what happened.",
+    "readingLevel": "Clear to a strong general reader; technical terms defined once, on first use.",
+    "tone": "Direct, plain, specific. Confident where the evidence is, explicit where it is not.",
+    "bannedPunctuation": [
+      "em dash"
+    ],
+    "bannedWords": [
+      "delve",
+      "leverage",
+      "in today's world",
+      "game-changer",
+      "revolutionary",
+      "seamless",
+      "robust",
+      "cutting-edge"
+    ],
+    "bannedPatterns": [
+      "Forced rule of three.",
+      "Formulaic opener that restates the title.",
+      "Closing paragraph that summarises what was just said.",
+      "Hedging stacks: 'may potentially possibly'."
+    ],
+    "opinionLabel": "Opinion is set apart under a heading such as 'My view' and carries a caveat or bear case.",
+    "aiDisclosure": "Agent-drafted pages are reviewed and approved by the owner before publication; provenance is recorded on the page record.",
+    "exemplars": [
+      "/guides/how-llms-work",
+      "/guides/how-neural-networks-work",
+      "/ai-updates/anthropic-copyright-settlement-final-approval"
+    ],
+    "antiExemplars": [
+      {
+        "text": "In today's rapidly evolving AI landscape, it is crucial to delve into...",
+        "why": "Opener restates nothing; two banned phrases; says nothing specific."
+      },
+      {
+        "text": "This groundbreaking, revolutionary model is a game-changer.",
+        "why": "Three adjectives, zero evidence."
+      }
+    ]
+  },
+  "topicMap": {
+    "pillars": [
+      {
+        "id": "how-ai-works",
+        "label": "How AI works",
+        "homes": [
+          "guide",
+          "concept",
+          "lecture"
+        ],
+        "purpose": "Evergreen mechanism explanations with primary sources."
+      },
+      {
+        "id": "ai-industry",
+        "label": "AI industry",
+        "homes": [
+          "ai-update",
+          "insight"
+        ],
+        "purpose": "Dated events and the owner's analysis of them."
+      },
+      {
+        "id": "learning-path",
+        "label": "Learning path",
+        "homes": [
+          "roadmap-topic"
+        ],
+        "purpose": "An ordered syllabus that points at guides and concepts."
+      },
+      {
+        "id": "people",
+        "label": "People",
+        "homes": [
+          "contributor"
+        ],
+        "purpose": "The top-100 contributors album, credited photos only."
+      },
+      {
+        "id": "owner-work",
+        "label": "The owner's work",
+        "homes": [
+          "publication",
+          "notebook"
+        ],
+        "purpose": "Papers, conference notes, and working observations."
+      }
+    ],
+    "offLimits": [
+      "Medical, legal or financial advice.",
+      "Politics outside of AI policy and regulation.",
+      "Anything about the owner's employer or clients beyond what the truth file allows."
+    ],
+    "doNotMention": []
+  },
+  "keywordOwnership": {
+    "how llms work": "/guides/how-llms-work",
+    "how neural networks work": "/guides/how-neural-networks-work",
+    "hvac troubleshooting": "/guides/hvac-system-troubleshooting",
+    "knowledge graph vs vector database": "/guides/graph-types-for-ai-agents",
+    "ai encyclopedia": "/notebook/ai/encyclopedia",
+    "ai learning roadmap": "/notebook/ai/roadmap"
+  },
+  "permissions": {
+    "ai-update": {
+      "create": true,
+      "update": true,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [
+        "seoTitle",
+        "metaDescription",
+        "primaryKeyword"
+      ]
+    },
+    "concept": {
+      "create": true,
+      "update": true,
+      "refresh": true,
+      "proposeArchive": true,
+      "seoFields": [
+        "seoTitle",
+        "metaDescription",
+        "primaryKeyword"
+      ]
+    },
+    "insight": {
+      "create": true,
+      "update": false,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [
+        "seoTitle",
+        "metaDescription"
+      ]
+    },
+    "notebook": {
+      "create": true,
+      "update": true,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [
+        "seoTitle",
+        "metaDescription"
+      ]
+    },
+    "roadmap-topic": {
+      "create": false,
+      "update": true,
+      "refresh": true,
+      "proposeArchive": false,
+      "seoFields": []
+    },
+    "guide": {
+      "create": false,
+      "update": false,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [],
+      "note": "Brief only. Guides are hand-built with 3D scenes; an agent may propose one, not write one."
+    },
+    "contributor": {
+      "create": false,
+      "update": true,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [],
+      "note": "May correct facts with a source; may never change or add a photo."
+    },
+    "publication": {
+      "create": false,
+      "update": false,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [],
+      "note": "Owner's own papers. Owner-only."
+    },
+    "lecture": {
+      "create": false,
+      "update": false,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": []
+    },
+    "hub": {
+      "create": false,
+      "update": false,
+      "refresh": false,
+      "proposeArchive": false,
+      "seoFields": [],
+      "note": "Navigation. Owner-only, and not agent-draftable at the type level either."
+    }
+  },
+  "lockedPaths": [
+    {
+      "path": "/",
+      "why": "Home page. Content, titles, schema and the living portrait are owner-only."
+    },
+    {
+      "path": "/guides/how-llms-work",
+      "why": "Flagship 3D guide; hand-built and expert-reviewed."
+    },
+    {
+      "path": "/guides/how-neural-networks-work",
+      "why": "Flagship 3D guide with live in-browser training."
+    },
+    {
+      "path": "/guides/hvac-system-troubleshooting",
+      "why": "Hand-built 3D troubleshooter."
+    },
+    {
+      "path": "/about",
+      "why": "The owner's own words about the owner."
+    },
+    {
+      "path": "/publications",
+      "why": "The owner's papers."
+    },
+    {
+      "path": "/notebook/ai/map",
+      "why": "Ontology with 1,245 reviewed edges; edited by script, not by prose agents."
+    }
+  ],
+  "updateRules": {
+    "staleAfterDays": {
+      "ai-update": 365,
+      "concept": 270,
+      "roadmap-topic": 180,
+      "notebook": 540
+    },
+    "staleTriggers": [
+      "a cited source now 404s",
+      "ranking dropped out of top 20 for its owned keyword",
+      "a newer primary source supersedes a claim"
+    ],
+    "minorEditMaxChangedWords": 120,
+    "rewriteNeedsBrief": true,
+    "neverShrinkBelowPercent": 80,
+    "diffRequiredInReview": true,
+    "slugFrozenAfterPublish": true,
+    "typeFrozenAfterPublish": true
+  },
+  "editorial": {
+    "quotes": "At most one quote per page from any one source, under 25 words, in quotation marks, attributed.",
+    "images": "Only images the site has rights to. Every image carries alt text and, for people, a credit.",
+    "attribution": "Inline link to the primary source at the point of the claim, plus a sources block.",
+    "accessibility": "Heading order never skips a level; colour is never the only carrier of meaning; every interactive has a text fallback.",
+    "languageRegion": "US English."
+  },
+  "operations": {
+    "approver": "owner",
+    "cadence": "Agents may file at any time; the owner reviews in batches.",
+    "openDraftCapPerAgent": 25,
+    "tokenLifetimeDays": 90,
+    "killSwitch": "Revoke all tokens on the Agents screen, or set agentsPaused in the profile.",
+    "agentsPaused": false,
+    "escalation": "A draft the agent is unsure about is filed with a clarification request, not a guess."
+  }
+}

@@ -28,6 +28,8 @@ from typing import Any, Dict, List, Literal, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
+from site_profile import DEFAULT_SITE_PROFILE, PROFILE_VERSION, agent_may
+
 # ---------------------------------------------------------------- #
 #  Page type registry: the contract for humans and agents alike
 # ---------------------------------------------------------------- #
@@ -467,6 +469,19 @@ class AgentDraft(BaseModel):
     model: Optional[str] = None
 
 
+class AgentRevision(BaseModel):
+    """A proposed change to a published page. Only the parts being changed
+    need to be sent; the rest is carried from the original."""
+    pageId: str
+    changeSummary: str
+    title: Optional[str] = None
+    blocks: Optional[List[Block]] = None
+    fields: Optional[Dict[str, Any]] = None
+    seo: Seo = Field(default_factory=Seo)
+    sources: List[SourceRef] = Field(default_factory=list)
+    model: Optional[str] = None
+
+
 # ---------------------------------------------------------------- #
 #  Helpers
 # ---------------------------------------------------------------- #
@@ -598,6 +613,20 @@ def build_router(db, get_current_admin) -> APIRouter:
         doc = await db.cms_globals.find_one({"_id": "globals"}, {"_id": 0})
         return {**DEFAULT_GLOBALS, **(doc or {})}
 
+    async def get_profile() -> Dict[str, Any]:
+        """Owner overrides merged over the in-code default, one level deep,
+        so a PUT that sets operations.agentsPaused does not wipe the rest
+        of operations."""
+        doc = await db.cms_site_profile.find_one({"_id": "profile"}, {"_id": 0}) or {}
+        merged = dict(DEFAULT_SITE_PROFILE)
+        for k, v in doc.items():
+            if isinstance(v, dict) and isinstance(merged.get(k), dict):
+                merged[k] = {**merged[k], **v}
+            else:
+                merged[k] = v
+        merged["profileVersion"] = PROFILE_VERSION
+        return merged
+
     async def require_agent(request: Request) -> Dict[str, Any]:
         """Agent tokens are separate from admin sessions and can only draft."""
         token = request.headers.get("x-agent-token", "")
@@ -659,6 +688,36 @@ def build_router(db, get_current_admin) -> APIRouter:
         incoming["updatedAt"] = now_iso()
         await db.cms_globals.update_one({"_id": "globals"}, {"$set": incoming}, upsert=True)
         return await get_globals()
+
+    # ---------------- site profile (owner writes, agents read) ----------------
+
+    @r.get("/profile")
+    async def read_profile(_: dict = Depends(get_current_admin)):
+        return await get_profile()
+
+    @r.put("/profile")
+    async def write_profile(payload: Dict[str, Any], user: dict = Depends(get_current_admin)):
+        # Only known top-level sections, so a typo does not create a new one
+        # that nothing reads.
+        unknown = [k for k in payload if k not in DEFAULT_SITE_PROFILE]
+        if unknown:
+            raise HTTPException(400, f"unknown profile sections: {', '.join(unknown)}")
+        payload["updatedAt"] = now_iso()
+        payload["updatedBy"] = user.get("email")
+        await db.cms_site_profile.update_one({"_id": "profile"}, {"$set": payload}, upsert=True)
+        return await get_profile()
+
+    @r.post("/profile/pause")
+    async def pause_agents(payload: Dict[str, Any], user: dict = Depends(get_current_admin)):
+        """The kill switch. One call, no deploy, every agent write refused
+        until it is lifted. Tokens stay valid so lifting is one call too."""
+        paused = bool(payload.get("paused", True))
+        await db.cms_site_profile.update_one(
+            {"_id": "profile"},
+            {"$set": {"operations.agentsPaused": paused, "operations.pausedBy": user.get("email"),
+                      "operations.pausedAt": now_iso()}},
+            upsert=True)
+        return {"ok": True, "agentsPaused": paused}
 
     # ---------------- pages ----------------
 
@@ -781,7 +840,7 @@ def build_router(db, get_current_admin) -> APIRouter:
         # drafts; only one of them may own the URL once published.
         clash = await db.cms_pages.find_one(
             {"type": page["type"], "slug": page["slug"],
-             "status": "published", "id": {"$ne": page_id}},
+             "status": "published", "id": {"$nin": [page_id, page.get("revisionOf")]}},
             {"_id": 0, "id": 1},
         )
         if clash:
@@ -802,6 +861,13 @@ def build_router(db, get_current_admin) -> APIRouter:
             "provenance.gateResults": result,
             "provenance.humanOversight": "reviewed",
         }})
+        # A revision replaces its original: the old record is kept for the
+        # audit trail but leaves the live set, so the URL has one owner.
+        if page.get("revisionOf"):
+            await db.cms_pages.update_one({"id": page["revisionOf"]}, {"$set": {
+                "status": "archived", "supersededBy": page_id, "archivedAt": now_iso(),
+                "archivedBy": user.get("email"),
+            }})
         return {"ok": True, "status": "published", "gates": result}
 
     @r.post("/pages/{page_id}/reject")
@@ -910,12 +976,130 @@ def build_router(db, get_current_admin) -> APIRouter:
             ],
         }
 
+    @r.get("/agent/profile")
+    async def agent_profile(agent: dict = Depends(require_agent)):
+        """Everything the owner wants an agent to know: truth file, voice,
+        topic map, keyword ownership, permissions, locks, update rules."""
+        return await get_profile()
+
+    @r.get("/agent/whoami")
+    async def agent_whoami(agent: dict = Depends(require_agent)):
+        """The authentication-success layer.
+
+        An agent calls this first. It learns who the server thinks it is,
+        what it may do, how much room it has, and what to read next. If this
+        call succeeds the credential works; everything after is permission,
+        not authentication.
+        """
+        profile = await get_profile()
+        open_now = await db.cms_pages.count_documents({
+            "provenance.agentId": agent.get("id"), "status": {"$in": ["draft", "in_review"]}})
+        allowed = [t for t in agent.get("allowedTypes", [])
+                   if PAGE_TYPES.get(t, {}).get("agentDraftable", True)]
+        grants = {}
+        for t in allowed:
+            perms = profile["permissions"].get(t, {})
+            grants[t] = {op: bool(perms.get(op)) for op in ("create", "update", "refresh", "proposeArchive")}
+            grants[t]["seoFields"] = perms.get("seoFields", [])
+        return {
+            "authenticated": True,
+            "agent": {"id": agent.get("id"), "name": agent.get("name"),
+                      "issuedAt": agent.get("createdAt"), "expiresAt": agent.get("expiresAt")},
+            "site": {"siteId": profile["identity"]["siteId"], "siteUrl": profile["identity"]["siteUrl"],
+                     "profileVersion": profile["profileVersion"]},
+            "scope": {"types": allowed, "grants": grants},
+            "lockedPaths": [l["path"] for l in profile.get("lockedPaths", [])],
+            "quota": {"openDrafts": open_now,
+                      "openDraftCap": int(agent.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP)},
+            "agentsPaused": bool(profile.get("operations", {}).get("agentsPaused")),
+            "canPublish": False,
+            "readNext": ["/cms/agent/profile", "/cms/agent/schema"],
+            "thenTry": ["POST /cms/agent/drafts/validate  (dry run, stores nothing)"],
+        }
+
+    @r.post("/agent/drafts/validate")
+    async def agent_validate_draft(payload: AgentDraft, agent: dict = Depends(require_agent)):
+        """Dry run. Same checks as creating a draft, nothing stored. This is
+        what an agent runs during onboarding to prove the contract end to
+        end before it is trusted with a real job."""
+        profile = await get_profile()
+        ok, why = agent_may(profile, "create", payload.type)
+        checks = [
+            {"name": "type in token scope", "ok": payload.type in agent.get("allowedTypes", [])},
+            {"name": "type agent-draftable", "ok": PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True)},
+            {"name": "profile permits create", "ok": ok, "detail": why},
+        ]
+        try:
+            validate_fields(payload.type, payload.fields)
+            checks.append({"name": "fields match template", "ok": True})
+        except HTTPException as e:
+            checks.append({"name": "fields match template", "ok": False, "detail": str(e.detail)})
+        page = {"type": payload.type, "slug": slugify(payload.slug or payload.title),
+                "title": payload.title, "seo": payload.seo.model_dump(),
+                "blocks": [b.model_dump() for b in payload.blocks],
+                "provenance": {"author": "agent", "sources": [s.model_dump() for s in payload.sources]}}
+        g = await get_globals()
+        gates = run_gates(page, resolve_seo(page, g))
+        passed = all(c["ok"] for c in checks) and gates["passed"]
+        return {"dryRun": True, "stored": False, "wouldBeAccepted": passed,
+                "checks": checks, "gates": gates}
+
+    @r.post("/agent/revisions")
+    async def agent_propose_revision(payload: AgentRevision, agent: dict = Depends(require_agent)):
+        """Propose a change to an EXISTING page. Creates a draft linked to
+        the original; the original is untouched until a human approves the
+        revision. This is the only way an agent affects published content,
+        and it goes through the same queue as a new draft."""
+        original = await db.cms_pages.find_one({"id": payload.pageId, "status": "published"}, {"_id": 0})
+        if not original:
+            raise HTTPException(404, "no published page with that id")
+        if original["type"] not in agent.get("allowedTypes", []):
+            raise HTTPException(403, f"agent not allowed to touch type {original['type']}")
+        profile = await get_profile()
+        route = PAGE_TYPES[original["type"]]["route"].split("{")[0].rstrip("/")
+        path = f"{route}/{original['slug']}"
+        ok, why = agent_may(profile, "update", original["type"], path)
+        if not ok:
+            raise HTTPException(403, why)
+        allowed_seo = set(profile["permissions"][original["type"]].get("seoFields", []))
+        stray = [k for k, v in payload.seo.model_dump().items() if v is not None and k not in allowed_seo]
+        if stray:
+            raise HTTPException(403, f"agent may not set SEO fields {stray} on {original['type']}; allowed: {sorted(allowed_seo)}")
+        validate_fields(original["type"], payload.fields or {})
+        await enforce_draft_cap(agent)
+        rev = {
+            "id": secrets.token_hex(8),
+            "revisionOf": original["id"],
+            "type": original["type"], "slug": original["slug"],
+            "title": payload.title or original["title"],
+            "status": "draft",
+            "seo": {**original.get("seo", {}), **{k: v for k, v in payload.seo.model_dump().items() if v is not None}},
+            "blocks": [b.model_dump() for b in payload.blocks] if payload.blocks else original.get("blocks", []),
+            "fields": {**original.get("fields", {}), **(payload.fields or {})},
+            "internalLinks": original.get("internalLinks", []),
+            "provenance": {
+                "author": "agent", "agentId": agent.get("id"), "agentName": agent.get("name"),
+                "model": payload.model, "humanOversight": "none",
+                "sources": [s.model_dump() for s in payload.sources],
+                "changeSummary": payload.changeSummary,
+            },
+            "createdAt": now_iso(), "updatedAt": now_iso(),
+        }
+        await db.cms_pages.insert_one(dict(rev))
+        rev.pop("_id", None)
+        g = await get_globals()
+        return {**rev, "gates": run_gates(rev, resolve_seo(rev, g))}
+
     @r.post("/agent/drafts")
     async def agent_create_draft(payload: AgentDraft, agent: dict = Depends(require_agent)):
         if payload.type not in agent.get("allowedTypes", []):
             raise HTTPException(403, f"agent not allowed to draft type {payload.type}")
         if not PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True):
             raise HTTPException(403, f"{payload.type} pages are owner-created; agents cannot draft them")
+        profile = await get_profile()
+        ok, why = agent_may(profile, "create", payload.type)
+        if not ok:
+            raise HTTPException(403, why)
         validate_fields(payload.type, payload.fields)
         await enforce_draft_cap(agent)
         page = {

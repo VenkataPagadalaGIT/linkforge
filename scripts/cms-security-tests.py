@@ -76,7 +76,8 @@ def sweep(api: Api) -> None:
     """
     _, rows = api.admin("GET", "/cms/pages?includeArchived=true")
     for p in rows or []:
-        if p.get("slug", "").startswith(SLUG_PREFIX) and p.get("status") != "archived":
+        if (p.get("slug", "").startswith(SLUG_PREFIX) or p.get("title") == "Flagship stand-in") \
+                and p.get("status") != "archived":
             api.admin("PUT", f"/cms/pages/{p['id']}", {"status": "draft"})
             api.admin("POST", f"/cms/pages/{p['id']}/archive")
     _, tokens = api.admin("GET", "/cms/agent-tokens")
@@ -287,6 +288,94 @@ def main() -> int:
           all("placement" in t for t in sch["types"].values()), f"{len(sch['types'])} types")
     check("the schema tells the agent to choose by placement",
           any("placement" in r for r in sch["rules"]))
+
+    print("\n[Q] The owner's profile governs what an agent may do")
+    status, who = api.agent("GET", "/cms/agent/whoami", None, agent_token)
+    check("whoami succeeds with a valid token", status == 200, f"HTTP {status}")
+    check("whoami says it cannot publish", who and who.get("canPublish") is False)
+    check("whoami names the site and profile version",
+          bool(who and who["site"].get("siteId") and who["site"].get("profileVersion")))
+    check("whoami lists the locked paths", "/" in (who or {}).get("lockedPaths", []))
+    status, _ = api.agent("GET", "/cms/agent/whoami", None, "omni_forged")
+    check("whoami refuses a bad token", status == 401, f"HTTP {status}")
+
+    status, prof = api.agent("GET", "/cms/agent/profile", None, agent_token)
+    check("an agent can read the profile", status == 200 and "truthFile" in prof, f"HTTP {status}")
+    status, _ = api.agent("PUT", "/cms/profile", {"voice": {}}, agent_token)
+    check("an agent cannot write the profile", status in (401, 403), f"HTTP {status}")
+
+    # guide: create is not permitted by profile even if the token is scoped to it
+    _, gtok = api.admin("POST", "/cms/agent-tokens", {"name": "sec-test guide", "allowedTypes": ["guide"]})
+    status, body = api.agent("POST", "/cms/agent/drafts", {
+        "type": "guide", "title": "Agent guide", "slug": SLUG_PREFIX + "guide"}, gtok["token"])
+    check("profile blocks create on a type the token is scoped to", status == 403, f"HTTP {status}")
+    check("the refusal explains itself", "not permitted" in str(body), str(body)[:80])
+
+    print("\n[R] Locked pages stay locked, and revisions go through the queue")
+    # publish a concept the profile allows updates on, then revise it
+    _, c = api.admin("POST", "/cms/pages", {
+        "type": "concept", "slug": SLUG_PREFIX + "concept", "title": "Concept under test",
+        "blocks": [{"kind": "p", "text": "Definition."}],
+        "fields": {"category": "basics", "difficulty": "beginner"},
+        "seo": {"seoTitle": "Concept under test", "metaDescription": GOOD_DESC}})
+    api.admin("POST", f"/cms/pages/{c['id']}/approve")
+    _, ctok = api.admin("POST", "/cms/agent-tokens", {"name": "sec-test concept", "allowedTypes": ["concept"]})
+    status, rev = api.agent("POST", "/cms/agent/revisions", {
+        "pageId": c["id"], "changeSummary": "Tighten the definition",
+        "blocks": [{"kind": "p", "text": "A tighter definition."}],
+        "sources": [{"url": "https://example.com/src"}]}, ctok["token"])
+    check("an agent can propose a revision to a permitted page", status == 200, f"HTTP {status}")
+    check("the revision is a separate draft linked to the original",
+          rev and rev.get("revisionOf") == c["id"] and rev.get("status") == "draft")
+    _, orig = api.admin("GET", f"/cms/pages/{c['id']}")
+    check("the original is untouched until approval", orig["status"] == "published"
+          and orig["blocks"][0]["text"] == "Definition.")
+    status, _ = api.agent("POST", "/cms/agent/revisions", {
+        "pageId": c["id"], "changeSummary": "x", "seo": {"robots": "noindex,follow"}}, ctok["token"])
+    check("an agent cannot set SEO fields outside its grant (robots)", status == 403, f"HTTP {status}")
+
+    # approve the revision: it goes live, the original is superseded
+    api.agent("POST", f"/cms/agent/drafts/{rev['id']}/submit", {}, ctok["token"])
+    status, _ = api.admin("POST", f"/cms/pages/{rev['id']}/approve")
+    check("approving the revision publishes it", status == 200, f"HTTP {status}")
+    _, orig = api.admin("GET", f"/cms/pages/{c['id']}")
+    check("the original is superseded, not duplicated",
+          orig["status"] == "archived" and orig.get("supersededBy") == rev["id"], orig["status"])
+
+    # a locked path refuses even a permitted type
+    _, locked = api.admin("POST", "/cms/pages", {
+        "type": "guide", "slug": "how-llms-work", "title": "Flagship stand-in",
+        "blocks": [{"kind": "p", "text": "x"}, {"kind": "sources", "items": ["a"]}],
+        "seo": {"seoTitle": "Flagship stand-in", "metaDescription": GOOD_DESC}})
+    if locked and locked.get("id"):
+        api.admin("POST", f"/cms/pages/{locked['id']}/approve")
+        status, body = api.agent("POST", "/cms/agent/revisions", {
+            "pageId": locked["id"], "changeSummary": "touch the flagship"}, gtok["token"])
+        check("a locked path refuses revision regardless of type", status == 403, f"HTTP {status}")
+        check("the lock reason is stated", "locked" in str(body), str(body)[:80])
+        api.admin("PUT", f"/cms/pages/{locked['id']}", {"status": "draft"})
+        api.admin("POST", f"/cms/pages/{locked['id']}/archive")
+
+    print("\n[S] Kill switch")
+    api.admin("POST", "/cms/profile/pause", {"paused": True})
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "During pause", "slug": SLUG_PREFIX + "paused"}, agent_token)
+    check("no agent can draft while paused", status == 403, f"HTTP {status}")
+    status, who = api.agent("GET", "/cms/agent/whoami", None, agent_token)
+    check("whoami reports the pause", status == 200 and who.get("agentsPaused") is True)
+    api.admin("POST", "/cms/profile/pause", {"paused": False})
+    status, _ = api.agent("POST", "/cms/agent/drafts", {
+        "type": "ai-update", "title": "After pause", "slug": SLUG_PREFIX + "unpaused"}, agent_token)
+    check("lifting the pause restores drafting", status == 200, f"HTTP {status}")
+
+    print("\n[T] Dry run stores nothing")
+    _, before = api.admin("GET", "/cms/pages?includeArchived=true")
+    status, dry = api.agent("POST", "/cms/agent/drafts/validate", {
+        "type": "ai-update", "title": "Dry run", "slug": SLUG_PREFIX + "dry",
+        "blocks": [{"kind": "p", "text": "x"}]}, agent_token)
+    _, after = api.admin("GET", "/cms/pages?includeArchived=true")
+    check("validate returns a verdict", status == 200 and dry.get("dryRun") and "wouldBeAccepted" in dry)
+    check("validate creates no page", len(before) == len(after), f"{len(before)} -> {len(after)}")
 
     sweep(api)
     print()
