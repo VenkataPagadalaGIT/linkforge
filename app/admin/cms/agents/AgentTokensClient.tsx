@@ -24,6 +24,7 @@ export default function AgentTokensClient() {
   const [name, setName] = React.useState("Omniscite research agent");
   const [selected, setSelected] = React.useState<string[]>(["ai-update"]);
   const [issued, setIssued] = React.useState<string | null>(null);
+  const [whoami, setWhoami] = React.useState<Record<string, unknown> | null>(null);
   const [msg, setMsg] = React.useState("");
 
   const load = React.useCallback(async () => {
@@ -45,6 +46,15 @@ export default function AgentTokensClient() {
       const { data } = await adminApi.post("/cms/agent-tokens", { name, allowedTypes: selected });
       setIssued(data.token);
       setMsg("Token issued. Copy it now: it is stored only as a hash and cannot be shown again.");
+      // Show the owner exactly what this token sees, by making the same
+      // call the agent will make first. No guessing about what was granted.
+      try {
+        const base = adminApi.defaults.baseURL ?? "";
+        const r = await fetch(`${base}/cms/agent/whoami`, { headers: { "X-Agent-Token": data.token } });
+        setWhoami(r.ok ? await r.json() : null);
+      } catch {
+        setWhoami(null);
+      }
       await load();
     } catch {
       setMsg("Could not issue a token.");
@@ -113,6 +123,42 @@ export default function AgentTokensClient() {
               >
                 Copy token
               </button>
+            </div>
+          )}
+
+          {whoami && (
+            <div className="border border-border p-4 mt-4" data-testid="agent-whoami">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+                What this agent sees (live GET /cms/agent/whoami with the new token)
+              </p>
+              <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-1 font-mono text-[11px] mb-3">
+                <dt className="text-muted-foreground/70">Site</dt>
+                <dd className="text-foreground">{String((whoami.site as Record<string, unknown>)?.siteId)} · profile {String((whoami.site as Record<string, unknown>)?.profileVersion)}</dd>
+                <dt className="text-muted-foreground/70">Can publish</dt>
+                <dd className="text-foreground">{whoami.canPublish ? "yes" : "no"}</dd>
+                <dt className="text-muted-foreground/70">Open drafts</dt>
+                <dd className="text-foreground">{String((whoami.quota as Record<string, unknown>)?.openDrafts)} of {String((whoami.quota as Record<string, unknown>)?.openDraftCap)}</dd>
+                <dt className="text-muted-foreground/70">Expires</dt>
+                <dd className="text-foreground">{String((whoami.agent as Record<string, unknown>)?.expiresAt ?? "").slice(0, 10)}</dd>
+              </dl>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">Grants</p>
+              <ul className="space-y-1 mb-3">
+                {Object.entries((whoami.scope as { grants?: Record<string, Record<string, unknown>> })?.grants ?? {}).map(([t, g]) => {
+                  const ops = ["create", "update", "refresh", "proposeArchive"].filter((o) => g[o]);
+                  return (
+                    <li key={t} className="font-mono text-[11px]">
+                      <span className="text-foreground">{t}</span>{" "}
+                      <span className="text-muted-foreground">may {ops.length ? ops.join(", ") : "do nothing"}</span>
+                      {Array.isArray(g.seoFields) && g.seoFields.length > 0 && (
+                        <span className="text-muted-foreground/70"> · SEO: {(g.seoFields as string[]).join(", ")}</span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="font-mono text-[10px] text-muted-foreground/70">
+                Locked: {(whoami.lockedPaths as string[] | undefined)?.join(", ")}
+              </p>
             </div>
           )}
         </section>

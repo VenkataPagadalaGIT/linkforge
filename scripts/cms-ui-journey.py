@@ -148,8 +148,23 @@ with sync_playwright() as pw:
               p.locator('[role="status"]').inner_text())
         p.screenshot(path=f"{OUT}/j-agents-{scheme}.png", full_page=True)
 
+        # ---- Site profile: matrix, locks, kill switch ----
+        p.goto(UI + "/admin/cms/profile", wait_until="networkidle"); p.wait_for_timeout(1000)
+        check("profile: matrix lists every page type", p.locator("table tbody tr").count() == 10)
+        body = p.locator("#cms-main").inner_text()
+        check("profile: home page shown as locked", "Home page" in body)
+        check("profile: truth file visible", "money figure" in body.lower())
+        p.get_by_role("button", name="Pause all agents").click(); p.wait_for_timeout(1200)
+        banner = p.locator('[role="alert"]', has_text="paused site-wide")
+        try:
+            banner.wait_for(state="visible", timeout=5000); check("profile: pause banner appears", True)
+        except Exception:
+            check("profile: pause banner appears", False)
+        p.get_by_role("button", name="Resume agents").click(); p.wait_for_timeout(1200)
+        check("profile: resume announced", "resumed" in p.locator('[role="status"]').inner_text().lower())
+
         # ---- accessibility spot checks on every screen ----
-        for path in ["/admin/cms/review", "/admin/cms/pages", "/admin/cms/globals", "/admin/cms/agents"]:
+        for path in ["/admin/cms/review", "/admin/cms/pages", "/admin/cms/globals", "/admin/cms/agents", "/admin/cms/profile"]:
             p.goto(UI + path, wait_until="networkidle"); p.wait_for_timeout(700)
             check(f"{path}: exactly one h1", p.locator("h1").count() == 1)
             check(f"{path}: one aria-current",

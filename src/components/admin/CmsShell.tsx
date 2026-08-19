@@ -25,6 +25,7 @@ const NAV = [
   { href: "/admin/cms/review", label: "Review queue" },
   { href: "/admin/cms/globals", label: "Global SEO" },
   { href: "/admin/cms/agents", label: "Agents" },
+  { href: "/admin/cms/profile", label: "Site profile" },
   { href: "/admin/cms/posts", label: "Legacy posts" },
 ];
 

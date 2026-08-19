@@ -110,7 +110,7 @@ export default function ReviewQueueClient() {
       title="Review queue"
       intro="Drafts submitted by agents or saved by you. Nothing here is public. Approving runs the gates again on the server, so a failing draft cannot be published even from this screen."
       status={msg}
-      actions={<button type="button" onClick={load} className={btn}>Refresh</button>}
+      actions={<button type="button" onClick={() => void load()} className={btn}>Refresh</button>}
     >
       {items.length === 0 ? (
         <p className="font-mono text-xs text-muted-foreground border border-border p-6">
