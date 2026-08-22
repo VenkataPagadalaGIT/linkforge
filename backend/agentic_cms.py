@@ -1210,7 +1210,10 @@ def build_router(db, get_current_admin) -> APIRouter:
         if not original:
             raise HTTPException(404, "no published page with that id")
         if original["type"] not in agent.get("allowedTypes", []):
-            raise HTTPException(403, f"agent not allowed to touch type {original['type']}")
+            why = f"agent not allowed to touch type {original['type']}"
+            await log_event(actor_of_agent(agent), "revision.create", "refused",
+                            {"pageId": original["id"], "type": original["type"]}, detail=why)
+            raise HTTPException(403, why)
         profile = await get_profile()
         route = PAGE_TYPES[original["type"]]["route"].split("{")[0].rstrip("/")
         path = f"{route}/{original['slug']}"
@@ -1254,12 +1257,20 @@ def build_router(db, get_current_admin) -> APIRouter:
 
     @r.post("/agent/drafts")
     async def agent_create_draft(payload: AgentDraft, agent: dict = Depends(require_agent)):
-        if payload.type not in agent.get("allowedTypes", []):
-            raise HTTPException(403, f"agent not allowed to draft type {payload.type}")
-        if not PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True):
-            raise HTTPException(403, f"{payload.type} pages are owner-created; agents cannot draft them")
-        profile = await get_profile()
+        # Scope refusals are logged like every other refusal. An agent that
+        # keeps probing types it was never granted is the clearest signal
+        # that it is misconfigured or not the agent you think it is, and
+        # that signal is worthless if it leaves no trace.
         tgt = {"type": payload.type, "slug": slugify(payload.slug or payload.title)}
+        if payload.type not in agent.get("allowedTypes", []):
+            why = f"agent not allowed to draft type {payload.type}"
+            await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
+            raise HTTPException(403, why)
+        if not PAGE_TYPES.get(payload.type, {}).get("agentDraftable", True):
+            why = f"{payload.type} pages are owner-created; agents cannot draft them"
+            await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
+            raise HTTPException(403, why)
+        profile = await get_profile()
         ok, why = agent_may(profile, "create", payload.type, token=agent)
         if not ok:
             await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)

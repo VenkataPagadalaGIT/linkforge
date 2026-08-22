@@ -18,10 +18,60 @@ import urllib.error
 import urllib.request
 
 
+# ---------------------------------------------------------------- #
+#  Site registry: names and URLs in code, secrets in the environment.
+#  Adding a second client site is one entry plus one env var. Switching
+#  local to prod is choosing a key, never editing agent logic.
+# ---------------------------------------------------------------- #
+
+CMS_TARGETS = {
+    "vp-local": {
+        "siteId": "venkatapagadala-com",
+        "base": "http://localhost:8090/api",
+        "token_env": "CMS_TOKEN_VP_LOCAL",
+    },
+    "vp-prod": {
+        "siteId": "venkatapagadala-com",
+        "base": "https://api.venkatapagadala.com/api",   # set at cutover
+        "token_env": "CMS_TOKEN_VP_PROD",
+    },
+}
+
+
+class WrongSite(RuntimeError):
+    """The server is not the site this agent was told to write to."""
+
+
 class CmsAgent:
-    def __init__(self, base: str, token: str):
+    def __init__(self, base: str, token: str, expect_site: str | None = None):
         self.base = base.rstrip("/")
         self.token = token
+        self.expect_site = expect_site
+
+    @classmethod
+    def for_target(cls, key: str):
+        """Build a client from the registry. Raises if the secret is absent,
+        rather than silently running unauthenticated."""
+        import os
+        t = CMS_TARGETS[key]
+        token = os.environ.get(t["token_env"])
+        if not token:
+            raise RuntimeError(f"{t['token_env']} is not set; refusing to run against {key}")
+        return cls(t["base"], token, expect_site=t["siteId"])
+
+    def assert_right_site(self):
+        """Confirm the server is who we think it is BEFORE writing.
+
+        A mistyped base URL is the failure that files a client's draft into
+        somebody else's site. whoami is cheap; that mistake is not.
+        """
+        s, who = self.whoami()
+        if s != 200:
+            raise RuntimeError(f"auth failed against {self.base}: {s} {who}")
+        got = who["site"]["siteId"]
+        if self.expect_site and got != self.expect_site:
+            raise WrongSite(f"expected {self.expect_site}, server says {got}; check CMS_BASE")
+        return who
 
     def _call(self, method: str, path: str, body=None):
         req = urllib.request.Request(
@@ -59,13 +109,11 @@ class CmsAgent:
                           {"pageId": page_id, "changeSummary": change_summary, **fields})
 
 
-def run_once(base: str, token: str) -> int:
+def run_once(target: str = "vp-local") -> int:
     """The whole loop, the way a real agent should do it."""
-    a = CmsAgent(base, token)
+    a = CmsAgent.for_target(target)
+    who = a.assert_right_site()      # right server, right site, or stop
 
-    s, who = a.whoami()
-    if s != 200:
-        print(f"auth failed: {s} {who}"); return 1
     if who["agentsPaused"]:
         print("agents are paused site-wide; stopping"); return 0
     print(f"as {who['agent']['name']} on {who['site']['siteId']}; "
@@ -126,7 +174,4 @@ def run_once(base: str, token: str) -> int:
 
 if __name__ == "__main__":
     import os, sys
-    sys.exit(run_once(
-        os.environ.get("CMS_BASE", "http://localhost:8090/api"),
-        os.environ["CMS_AGENT_TOKEN"],
-    ))
+    sys.exit(run_once(os.environ.get("CMS_TARGET", "vp-local")))
