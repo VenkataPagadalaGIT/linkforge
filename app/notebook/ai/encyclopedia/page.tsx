@@ -17,7 +17,7 @@ import EncyclopediaFilter from "@/components/learn/EncyclopediaFilter";
 export const metadata: Metadata = {
   title: "AI Encyclopedia",
   description:
-    "176 AI concepts across 10 categories, each on its own page with key terms, prerequisites, difficulty and curated free sources. From gradient descent to agent harnesses.",
+    "187 AI concepts across 10 categories, each on its own page with key terms, prerequisites, difficulty and curated free sources. From gradient descent to agent harnesses.",
   alternates: { canonical: "/notebook/ai/encyclopedia" },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],

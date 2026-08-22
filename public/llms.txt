@@ -46,9 +46,9 @@ An 18-week core plus seven elective depth tracks: 35 topics with 473 curated res
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-176 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
+187 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
-- Every concept also has its own page at https://venkatapagadala.com/notebook/ai/encyclopedia/<concept-id> (for example /neural-network, /backpropagation, /gradient-descent, /llm, /transformer, /rag), each with prerequisites, curated videos and guides, and interactive 3D where it exists. All 176 are listed in sitemap.xml.
+- Every concept also has its own page at https://venkatapagadala.com/notebook/ai/encyclopedia/<concept-id> (for example /neural-network, /backpropagation, /gradient-descent, /llm, /transformer, /rag), each with prerequisites, curated videos and guides, and interactive 3D where it exists. All 187 are listed in sitemap.xml.
 
 ### The Complete Shelf — 19 Free AI Books in 3D (2026)
 A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum from a first Python program through mathematics, classical ML, deep learning, NLP, deploying models and reinforcement learning to AI safety. Author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain only: no free trials, no sample chapters, nothing pirated. Books by a profiled author link to that contributor's page. All nineteen titles are also listed as plain links on the page for anyone without WebGL.

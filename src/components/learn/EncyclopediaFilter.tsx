@@ -39,7 +39,7 @@ export default function EncyclopediaFilter() {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search 176 concepts…"
+        placeholder="Search 187 concepts…"
         aria-label="Search concepts"
         className="w-full sm:w-80 bg-transparent border border-border px-3 py-2 font-mono text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/50"
       />

@@ -97,7 +97,7 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
         ],
         related: [
           { label: "AI vs ML vs Deep Learning: how the words nest", href: "/notebook/ai/encyclopedia/deep-learning" },
-          { label: "The AI Concepts Encyclopedia: 176 terms in plain words", href: "/notebook/ai/encyclopedia" },
+          { label: "The AI Concepts Encyclopedia: 187 terms in plain words", href: "/notebook/ai/encyclopedia" },
         ],
       },
       {

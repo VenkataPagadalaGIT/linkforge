@@ -1628,7 +1628,7 @@ const nnBlocks: Block[] = [
     items: [
       { label: "How LLMs Work: the same treatment for the transformer that grew out of this machine", href: "/guides/how-llms-work" },
       { label: "The AI Learning Roadmap: where neural networks sit in an 18-week path", href: "/notebook/ai" },
-      { label: "The AI Concepts Encyclopedia: 176 concepts with definitions and sources", href: "/notebook/ai/encyclopedia" },
+      { label: "The AI Concepts Encyclopedia: 187 concepts with definitions and sources", href: "/notebook/ai/encyclopedia" },
     ],
   },
   {

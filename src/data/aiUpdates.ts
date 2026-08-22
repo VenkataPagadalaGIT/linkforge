@@ -578,7 +578,7 @@ export const aiUpdates: AIUpdate[] = [
     relatedLinks: [
       { label: "Jensen Huang", to: "/ai-contributors/huang", description: "NVIDIA CEO — driving open frontier model strategy" },
       { label: "Demis Hassabis", to: "/ai-contributors/hassabis", description: "Google DeepMind CEO — competing frontier model developer" },
-      { label: "AI Concepts Encyclopedia", to: "/notebook/ai/encyclopedia", description: "110 AI concepts explained — foundation models, transformers, and more" },
+      { label: "AI Concepts Encyclopedia", to: "/notebook/ai/encyclopedia", description: "187 AI concepts explained — foundation models, transformers, and more" },
     ],
   },
   {
