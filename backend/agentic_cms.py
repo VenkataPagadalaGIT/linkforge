@@ -20,8 +20,11 @@ cms_versions), matching the rest of this backend.
 from __future__ import annotations
 
 import hashlib
+import hmac
+import os
 import re
 import secrets
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Literal, Optional
 
@@ -293,6 +296,14 @@ SAFE_URL = re.compile(r"^(https?://|/)", re.IGNORECASE)
 # token lives before it must be reissued.
 DEFAULT_AGENT_DRAFT_CAP = 25
 DEFAULT_AGENT_TOKEN_DAYS = 90
+
+# Requests per minute one token may make. The draft cap protects the review
+# queue; this protects the server itself from a looping client.
+DEFAULT_AGENT_RATE_PER_MIN = int(os.environ.get("AGENT_RATE_PER_MIN", "240"))
+
+# When a signed request's timestamp is older than this, it is replayable
+# from a captured log line, so it is refused.
+SIGNING_MAX_SKEW_SEC = int(os.environ.get("AGENT_SIGNING_MAX_SKEW_SEC", "300"))
 
 
 def safe_url(v: Optional[str], field: str = "url") -> Optional[str]:
@@ -656,23 +667,100 @@ def build_router(db, get_current_admin) -> APIRouter:
     def actor_of_admin(user: Dict[str, Any]) -> Dict[str, Any]:
         return {"kind": "admin", "id": user.get("email"), "name": user.get("email")}
 
+    # Per-token request timestamps for the rate limit. In-process, same
+    # single-instance assumption as the login throttle, and documented with it.
+    _agent_rate: Dict[str, list] = {}
+
     async def require_agent(request: Request) -> Dict[str, Any]:
-        """Agent tokens are separate from admin sessions and can only draft."""
+        """Agent tokens are separate from admin sessions and can only draft.
+
+        Checks run in trust order: does the credential exist (including a
+        just-rotated one inside its grace window), was it minted for THIS
+        site, is it still alive, does the request carry the signature the
+        token demands, and is the caller inside its rate limit. Every
+        refusal is logged; an agent that keeps failing one of these is a
+        signal about that agent.
+        """
         token = request.headers.get("x-agent-token", "")
         if not token:
             raise HTTPException(status_code=401, detail="Missing X-Agent-Token")
         digest = hashlib.sha256(token.encode()).hexdigest()
         rec = await db.cms_agent_tokens.find_one({"tokenHash": digest, "active": True}, {"_id": 0})
         if not rec:
+            # Two-key rotation: the previous key keeps working inside its
+            # grace window so a fleet can roll credentials with no downtime,
+            # which removes the last excuse not to rotate.
+            rec = await db.cms_agent_tokens.find_one(
+                {"prevTokenHash": digest, "active": True}, {"_id": 0})
+            if rec and (rec.get("prevGraceUntil") or "") < now_iso():
+                rec = None
+        if not rec:
             await log_event({"kind": "agent", "id": None, "name": "unknown"}, "auth", "refused",
                             detail="unknown or revoked token", request=request)
             raise HTTPException(status_code=401, detail="Unknown or revoked agent token")
+
+        # Tenancy: a token minted for one site must be worthless on another.
+        # This is what makes a restored backup, a copied database, or a
+        # misconfigured second deployment fail closed instead of cross-writing.
+        profile = await get_profile()
+        site = profile["identity"]["siteId"]
+        if rec.get("siteId") and rec["siteId"] != site:
+            await log_event(actor_of_agent(rec), "auth", "refused",
+                            detail=f"token issued for {rec['siteId']}, this site is {site}",
+                            request=request)
+            raise HTTPException(status_code=401, detail="Token was issued for a different site")
+
         # A token that never expires is a credential nobody remembers to
-        # rotate. Revoking is still the fast path; this is the backstop.
+        # rotate. Rotation is the fast path; this is the backstop.
         expires = rec.get("expiresAt")
         if expires and expires < now_iso():
             await log_event(actor_of_agent(rec), "auth", "refused", detail="token expired", request=request)
             raise HTTPException(status_code=401, detail="Agent token expired; issue a new one")
+
+        # Request signing, when the token demands it. whoami stays unsigned
+        # so a client can bootstrap: it calls whoami, learns signingRequired,
+        # and signs everything after. The signature is HMAC-SHA256 with the
+        # raw token as the key over "<unix-ts>.<raw-body>", and a stale
+        # timestamp is refused because a captured request must not replay.
+        if rec.get("requireSigning") and not request.url.path.endswith("/agent/whoami"):
+            ts = request.headers.get("x-agent-timestamp", "")
+            sig = request.headers.get("x-agent-signature", "")
+            body = await request.body()
+            why = None
+            if not ts or not sig:
+                why = "signing required: missing X-Agent-Timestamp or X-Agent-Signature"
+            else:
+                try:
+                    skew = abs(time.time() - int(ts))
+                except ValueError:
+                    skew = None
+                if skew is None or skew > SIGNING_MAX_SKEW_SEC:
+                    why = f"signing required: timestamp outside {SIGNING_MAX_SKEW_SEC}s window"
+                else:
+                    expected = hmac.new(token.encode(), f"{ts}.".encode() + body,
+                                        hashlib.sha256).hexdigest()
+                    if not hmac.compare_digest(expected, sig):
+                        why = "signing required: signature mismatch"
+            if why:
+                await log_event(actor_of_agent(rec), "auth", "refused", detail=why, request=request)
+                raise HTTPException(status_code=401, detail=why)
+
+        # Rate limit: requests per minute per token. The draft cap protects
+        # the review queue; this protects the server from a looping client.
+        cap = int(rec.get("rateLimitPerMin") or DEFAULT_AGENT_RATE_PER_MIN)
+        nowt = time.time()
+        window = [t for t in _agent_rate.get(rec["id"], []) if nowt - t < 60]
+        if len(window) >= cap:
+            if len(window) == cap:  # log the first refusal per window, not the flood
+                await log_event(actor_of_agent(rec), "auth", "refused",
+                                detail=f"rate limit: {cap} requests/min", request=request)
+            window.append(nowt)
+            _agent_rate[rec["id"]] = window
+            raise HTTPException(status_code=429, detail=f"Rate limit: {cap} requests/min",
+                                headers={"Retry-After": "30"})
+        window.append(nowt)
+        _agent_rate[rec["id"]] = window
+
         await db.cms_agent_tokens.update_one({"id": rec["id"]}, {"$set": {"lastSeenAt": now_iso()}})
         return rec
 
@@ -952,7 +1040,8 @@ def build_router(db, get_current_admin) -> APIRouter:
     async def list_tokens(_: dict = Depends(get_current_admin)):
         """Every token with the numbers an operator needs at a glance:
         open drafts, in review, published, refusals, last seen."""
-        tokens = await db.cms_agent_tokens.find({}, {"_id": 0, "tokenHash": 0}).to_list(1000)
+        tokens = await db.cms_agent_tokens.find(
+            {}, {"_id": 0, "tokenHash": 0, "prevTokenHash": 0}).to_list(1000)
         ids = [t["id"] for t in tokens]
         by_status = {}
         async for row in db.cms_pages.aggregate([
@@ -1077,11 +1166,19 @@ def build_router(db, get_current_admin) -> APIRouter:
                      "These types change site structure and are created by the owner.")
 
         days = int(payload.get("expiresInDays") or DEFAULT_AGENT_TOKEN_DAYS)
+        rate = int(payload.get("rateLimitPerMin") or DEFAULT_AGENT_RATE_PER_MIN)
+        if not (1 <= rate <= 10000):
+            raise HTTPException(400, "rateLimitPerMin must be between 1 and 10000")
+        profile = await get_profile()
         rec = {
             "id": secrets.token_hex(6),
             "name": payload.get("name", "unnamed agent"),
             "tokenHash": hashlib.sha256(raw.encode()).hexdigest(),
+            # Minted for THIS site. require_agent refuses it anywhere else.
+            "siteId": profile["identity"]["siteId"],
             "allowedTypes": requested,
+            "rateLimitPerMin": rate,
+            "requireSigning": bool(payload.get("requireSigning", False)),
             "openDraftCap": int(payload.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP),
             "expiresAt": (datetime.now(timezone.utc) + timedelta(days=days))
                 .isoformat().replace("+00:00", "Z"),
@@ -1103,6 +1200,36 @@ def build_router(db, get_current_admin) -> APIRouter:
             "active": False, "revokedAt": now_iso(), "revokedBy": user.get("email")}})
         await log_event(actor_of_admin(user), "token.revoke", "ok", {"tokenId": token_id})
         return {"ok": True}
+
+    @r.post("/agent-tokens/{token_id}/rotate")
+    async def rotate_token(token_id: str, payload: Dict[str, Any],
+                           user: dict = Depends(get_current_admin)):
+        """Two-key rotation. A new token is issued now; the old one keeps
+        working until graceUntil so the fleet rolls with no downtime, then
+        dies on its own. Revoke-then-reissue with a gap is the reason
+        credentials never get rotated; this removes the gap."""
+        tok = await db.cms_agent_tokens.find_one({"id": token_id}, {"_id": 0})
+        if not tok:
+            raise HTTPException(404, "not found")
+        if not tok.get("active"):
+            raise HTTPException(409, "token is revoked; issue a new one instead")
+        grace_min = int(payload.get("graceMinutes", 48 * 60))
+        if not (0 <= grace_min <= 14 * 24 * 60):
+            raise HTTPException(400, "graceMinutes must be between 0 and 20160 (14 days)")
+        raw = "omni_" + secrets.token_urlsafe(24)
+        grace_until = (datetime.now(timezone.utc) + timedelta(minutes=grace_min)) \
+            .isoformat().replace("+00:00", "Z")
+        await db.cms_agent_tokens.update_one({"id": token_id}, {"$set": {
+            "prevTokenHash": tok["tokenHash"],
+            "prevGraceUntil": grace_until,
+            "tokenHash": hashlib.sha256(raw.encode()).hexdigest(),
+            "rotatedAt": now_iso(),
+            "rotatedBy": user.get("email"),
+        }})
+        await log_event(actor_of_admin(user), "token.rotate", "ok",
+                        {"tokenId": token_id, "name": tok.get("name")},
+                        detail=f"old key valid for {grace_min} more minutes")
+        return {"ok": True, "token": raw, "previousKeyValidUntil": grace_until}
 
     # ---------------- AGENT SURFACE: draft only, no publish ----------------
 
@@ -1164,6 +1291,8 @@ def build_router(db, get_current_admin) -> APIRouter:
             "lockedPaths": [l["path"] for l in profile.get("lockedPaths", [])],
             "quota": {"openDrafts": open_now,
                       "openDraftCap": int(agent.get("openDraftCap") or DEFAULT_AGENT_DRAFT_CAP)},
+            "signingRequired": bool(agent.get("requireSigning")),
+            "rateLimitPerMin": int(agent.get("rateLimitPerMin") or DEFAULT_AGENT_RATE_PER_MIN),
             "agentsPaused": bool(profile.get("operations", {}).get("agentsPaused")),
             "canPublish": False,
             "readNext": ["/cms/agent/profile", "/cms/agent/schema"],
@@ -1284,6 +1413,7 @@ def build_router(db, get_current_admin) -> APIRouter:
         await enforce_draft_cap(agent)
         page = {
             "id": secrets.token_hex(8),
+            "siteId": profile["identity"]["siteId"],
             "type": payload.type,
             "slug": slugify(payload.slug or payload.title),
             "title": payload.title,

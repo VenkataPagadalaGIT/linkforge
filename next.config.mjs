@@ -27,6 +27,22 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Baseline security headers, site-wide. HSTS is safe to send in dev
+        // too because browsers ignore it over plain http; it only takes
+        // effect once served over https, which is Railway behind Cloudflare.
+        // A full Content-Security-Policy is deliberately NOT here yet: the
+        // 3D scenes and inline Next runtime need a worked allowlist, and a
+        // hasty CSP that breaks the flagship guides is worse than none.
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+        ],
+      },
+      {
         source: "/guides/:slug([^/.]+).md",
         headers: [
           {

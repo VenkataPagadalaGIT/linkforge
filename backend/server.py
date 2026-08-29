@@ -898,6 +898,23 @@ def _assert_secrets_safe() -> None:
         )
 
 
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    """Baseline security headers on every API response.
+
+    The API is never framed and never sniffed; say so explicitly. HSTS only
+    in production, because localhost is not https and a cached HSTS entry
+    for localhost breaks every other local project."""
+    resp = await call_next(request)
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    if IS_PRODUCTION:
+        resp.headers.setdefault("Strict-Transport-Security",
+                                "max-age=31536000; includeSubDomains")
+    return resp
+
+
 @app.on_event("startup")
 async def on_startup():
     _assert_secrets_safe()
