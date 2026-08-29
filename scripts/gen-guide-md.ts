@@ -10,6 +10,7 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { guides, type Block } from "../src/data/guides";
 import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "../src/data/nn";
+import { QC_ACTS, QC_JOURNEY, QC_STAGES } from "../src/data/quantum";
 
 const slug = process.argv[2];
 const guide = guides.find((g) => g.slug === slug);
@@ -60,6 +61,28 @@ for (const block of guide.blocks as Block[]) {
       push(`> **${block.title}:** ${block.text}`);
       push();
       break;
+    case "quantum":
+      push(`*(Interactive 3D content: explore it at ${SITE}/guides/${guide.slug})*`);
+      push();
+      break;
+    case "quantumjourney":
+      QC_JOURNEY.forEach((st, i) => {
+        push(`${i + 1}. **${st.title}.** ${st.narration}`);
+      });
+      push();
+      break;
+    case "quantumstages": {
+      push(`| Station | Act | What happens | Real numbers | Primary source |`);
+      push(`|---|---|---|---|---|`);
+      for (const s of QC_STAGES) {
+        const nums = s.numbers.map((n) => `${n.label}: ${n.value}`).join(" · ");
+        push(
+          `| ${s.name} | ${QC_ACTS[s.act].label.replace(/^Act [IV]+: /, "")} | ${s.tagline}. ${s.story} | ${nums} | ${s.paper ?? ""} |`,
+        );
+      }
+      push();
+      break;
+    }
     case "nnjourney":
       NN_JOURNEY.forEach((st, i) => {
         push(`${i + 1}. **${st.title}.** ${st.narration}`);

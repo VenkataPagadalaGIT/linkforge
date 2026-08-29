@@ -17,8 +17,10 @@ import {
 import HvacExplorerLazy from "./HvacExplorerLazy";
 import LlmExplorerLazy from "./LlmExplorerLazy";
 import NnExplorerLazy from "./NnExplorerLazy";
+import QuantumExplorerLazy from "./QuantumExplorerLazy";
 import { JOURNEY, STAGES, ZONES } from "@/data/llm";
 import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "@/data/nn";
+import { QC_ACTS, QC_JOURNEY, QC_STAGES } from "@/data/quantum";
 
 // Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
 // matters — links run first so a URL containing ** or _ never gets caught by a
@@ -421,6 +423,55 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       );
     case "nn":
       return <NnExplorerLazy />;
+    case "quantum":
+      return <QuantumExplorerLazy />;
+    case "quantumjourney":
+      return (
+        <div className="my-6 border border-border/70 p-5">
+          <ol className="space-y-4">
+            {QC_JOURNEY.map((st, i) => (
+              <li key={st.id} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-3">
+                <span className="text-foreground/40 flex-shrink-0 w-5 text-right">{i + 1}.</span>
+                <span>
+                  <strong className="text-foreground font-semibold">{st.title}.</strong>{" "}
+                  {st.narration}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "quantumstages":
+      return (
+        <div className="my-6 overflow-x-auto border border-border">
+          <table className="w-full border-collapse min-w-[900px]">
+            <thead>
+              <tr className="bg-secondary/30">
+                {["Station", "Act", "What happens", "Real numbers", "Primary source"].map((h) => (
+                  <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {QC_STAGES.map((s) => (
+                <tr key={s.id} className="align-top">
+                  <td className="p-3 border-b border-border/40 font-mono text-xs text-foreground whitespace-nowrap">{s.name}</td>
+                  <td className="p-3 border-b border-border/40 font-mono text-[10px] uppercase tracking-wide whitespace-nowrap" style={{ color: QC_ACTS[s.act].color }}>
+                    {QC_ACTS[s.act].label.replace(/^Act [IV]+: /, "")}
+                  </td>
+                  <td className="p-3 border-b border-border/40 font-mono text-[11px] text-muted-foreground leading-relaxed min-w-[260px]">{s.tagline}. {s.tech}</td>
+                  <td className="p-3 border-b border-border/40 font-mono text-[10px] text-muted-foreground leading-relaxed min-w-[170px]">
+                    {s.numbers.map((n) => `${n.label}: ${n.value}`).join(" · ")}
+                  </td>
+                  <td className="p-3 border-b border-border/40 font-mono text-[10px] text-muted-foreground/80 leading-relaxed min-w-[150px]">{s.paper ?? ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     case "nnjourney":
       return (
         <div className="my-6 border border-border/70 p-5">

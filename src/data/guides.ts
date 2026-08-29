@@ -25,6 +25,7 @@ import {
 } from "./hvac";
 import { LLM_COUNTS } from "./llm";
 import { NN_COUNTS, NN_PARAMS, NN_WEIGHTS } from "./nn";
+import { QC_COUNTS } from "./quantum";
 import { sfGuide } from "./sfGuide";
 
 export interface DefinedTerm {
@@ -95,6 +96,9 @@ export type Block =
   /** Static, crawlable transcript of the guided digit-recognition journey. */
   | { kind: "nnjourney" }
   /** External sources / further-reading links. */
+  | { kind: "quantum" }
+  | { kind: "quantumjourney" }
+  | { kind: "quantumstages" }
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
   | { kind: "details"; summary: string; blocks: Block[] };
 
@@ -1667,6 +1671,257 @@ const nnBlocks: Block[] = [
   },
 ];
 
+
+/* ================================================================== *
+ *  How Quantum Computers Work
+ * ================================================================== */
+
+const qcTerms: DefinedTerm[] = [
+  {
+    slug: "qubit",
+    term: "Qubit",
+    aka: ["quantum bit"],
+    oneLiner: "The quantum unit of information: a two-level system whose state is a weighted blend of 0 and 1 until measured.",
+    inDepth:
+      "A qubit state is |psi> = a|0> + b|1> with complex amplitudes satisfying |a|^2 + |b|^2 = 1. Unlike a probability, an amplitude carries a phase, and phases are what interfere. Physically a qubit is the two lowest levels of a superconducting circuit, one trapped ion's internal states, one atom, or one photon's polarization. The information is analog and fragile in a way no classical bit is, which is why the rest of the machine exists.",
+    analogy: "A coin still spinning on the table, whose spin axis you can steer with perfect precision until the moment someone slaps it flat.",
+    example: "IBM, Google and Rigetti build transmon qubits; IonQ and Quantinuum trap ytterbium ions; QuEra holds rubidium atoms in laser tweezers.",
+    agentRole: "Every quantum roadmap number you read, 105 qubits, 1,000 qubits, counts these. The count that will matter more is logical qubits.",
+  },
+  {
+    slug: "superposition",
+    term: "Superposition",
+    oneLiner: "A definite quantum state that assigns amplitude to several classical outcomes at once; not indecision, and not parallel computation.",
+    inDepth:
+      "Superposition is the linearity of quantum mechanics: valid states can be added. A register of n qubits carries 2^n amplitudes, which grows beyond any classical memory around n = 50. The catch that pop science omits: measurement samples exactly one outcome. Amplitudes are leverage for interference, not free parallelism, and algorithms that beat classical computers do it by choreography, not by brute enumeration.",
+    analogy: "One wave on a pond holding the imprint of every stone thrown in, readable only by how the ripples reinforce and cancel.",
+    example: "Four qubits after four Hadamard gates hold equal amplitude on all 16 four-bit strings; measuring yields one string, uniformly at random.",
+    agentRole: "The single most common error in quantum coverage is 'tries all answers simultaneously'. A source that says this is not a reliable source.",
+  },
+  {
+    slug: "entanglement",
+    term: "Entanglement",
+    oneLiner: "Correlation between qubits so strong that the pair has one state which cannot be split into individual states.",
+    inDepth:
+      "An entangled pair like (|00> + |11>)/sqrt(2) yields perfectly correlated measurement outcomes, at any separation, with no signal passing between them; Bell-inequality experiments have closed the loopholes and earned the 2022 physics Nobel. In a processor, entanglement is manufactured by two-qubit gates and consumed as the resource that lets n qubits explore a state space no n separate qubits could.",
+    analogy: "Two halves of a torn ticket sealed in envelopes: open one anywhere and you know the other, except quantum correlations are provably stronger than any torn-ticket story can explain.",
+    example: "A Hadamard on qubit A followed by CNOT from A to B turns |00> into the Bell state used to calibrate every two-qubit gate.",
+    agentRole: "Entangling-gate error is the metric that decides everything downstream, because two-qubit gates are ten times worse than one-qubit gates on every platform.",
+  },
+  {
+    slug: "transmon",
+    term: "Transmon",
+    oneLiner: "The dominant superconducting qubit: a Josephson junction shunted by a capacitor, whose uneven energy ladder makes the bottom two levels addressable.",
+    inDepth:
+      "An ordinary LC circuit has evenly spaced levels, so a drive that excites 0 to 1 also excites 1 to 2. The Josephson junction's nonlinear inductance bends the ladder, typically by -200 to -300 MHz, so the bottom transition can be driven selectively at 4 to 8 GHz. The transmon design (Koch et al., 2007) trades charge sensitivity for that clean addressability, which is why Google, IBM and Rigetti all build variants of it.",
+    analogy: "A guitar with deliberately uneven frets, so the two notes you care about can be played without ever sounding the third.",
+    example: "Google's Willow chip is 105 transmons; its junctions are Al/AlOx/Al tunnel junctions with an ultrathin oxide barrier.",
+    agentRole: "When a headline says 'N-qubit chip' from IBM or Google, it means N transmons plus their resonators, couplers, and wiring.",
+  },
+  {
+    slug: "dilution-refrigerator",
+    term: "Dilution Refrigerator",
+    oneLiner: "The machine that holds superconducting qubits at ten to twenty millikelvin, using helium-3 dissolving into helium-4 as its final cooling stage.",
+    inDepth:
+      "A pulse-tube cryocooler reaches about 4 K; below that, circulating helium-3 crossing into a dilute helium-4 phase absorbs heat, stepping down through the still (~0.9 K) and cold plate (~0.1 K) to the mixing chamber (~0.01 K). The golden chandelier photos show the plate stack with its vacuum cans removed. Every plate also serves as a thermal anchor for the wiring, bleeding room-temperature noise out of the lines before it reaches the chip.",
+    analogy: "A six-story descent where each floor is quieter by a factor the one above cannot imagine, and the basement is over a hundred times colder than outer space.",
+    example: "Bluefors and Oxford Instruments fridges cool most of the world's superconducting processors; base temperature near 10 mK against the cosmic background's 2.7 K.",
+    agentRole: "The fridge, not the chip, sets much of the engineering agenda: wiring density, heat budget per line, and why million-qubit machines need new cryogenic architecture.",
+  },
+  {
+    slug: "quantum-gate",
+    term: "Quantum Gate",
+    oneLiner: "A reversible operation on one or two qubits; physically, a shaped microwave or laser pulse lasting nanoseconds to microseconds.",
+    inDepth:
+      "Mathematically a gate is a unitary matrix; a one-qubit gate is a rotation of the Bloch sphere. Physically, a resonant pulse's duration and amplitude set the rotation angle, with envelope shaping (DRAG) suppressing leakage. Any computation can be built from one-qubit rotations plus one entangling gate such as CNOT or CZ, which is what 'universal gate set' means. Superconducting gates run in 10 to 200 ns; trapped-ion gates in tens of microseconds but with higher fidelity.",
+    analogy: "Pushing a swing at exactly its own rhythm: the length of the push, not its violence, decides the final angle.",
+    example: "A Hadamard takes |0> to the equator of the Bloch sphere; two of them in a row take it back, which is interference in miniature.",
+    agentRole: "Gate error times circuit depth is the honest capacity of any chip; that product, not qubit count, predicts what a device can run.",
+  },
+  {
+    slug: "measurement",
+    term: "Measurement",
+    oneLiner: "The act that turns amplitudes into one classical outcome, destroying the superposition it sampled.",
+    inDepth:
+      "The Born rule gives outcome probabilities as squared amplitudes; after the result, the state is the outcome (collapse). Superconducting processors measure dispersively: each qubit shifts its readout resonator's frequency by a state-dependent amount, so a probe tone returns phase-shifted, is amplified by a TWPA (20-30 dB) then a HEMT (~40 dB), and lands as a point in one of two clouds on the IQ plane. Around 99% assignment fidelity in under a hundred nanoseconds has been demonstrated.",
+    analogy: "Asking the spinning coin one blunt yes-or-no question. You get an answer, and the spin is gone.",
+    example: "Mid-circuit measurement of ancilla qubits, without disturbing data qubits, is the operation that makes error correction possible at all.",
+    agentRole: "Readout error is a first-class error budget line, and 'measurement collapses the state' is why quantum RAM-style intuitions fail.",
+  },
+  {
+    slug: "decoherence",
+    term: "Decoherence",
+    oneLiner: "The environment learning about a qubit and thereby destroying its quantum character; quantified by the times T1 and T2.",
+    inDepth:
+      "T1 is energy relaxation, the excited state decaying; T2 is dephasing, the phase relationship scrambling, bounded by T2 <= 2*T1. Any interaction that could in principle reveal the qubit's state acts as an unwanted measurement: stray photons, magnetic flux noise, quasiparticles, even cosmic-ray strikes that briefly poison a whole chip. Modern transmons sit near 100 microseconds; against 30-nanosecond gates that is a budget of a few thousand operations.",
+    analogy: "Writing in wet sand as the tide comes in: T1 washes letters away, T2 blurs them where they stand.",
+    example: "Doubling T1 has repeatedly required new materials and geometry, from 3D cavities to tantalum films; it does not come from cleverness in software.",
+    agentRole: "Coherence time divided by gate time is the depth budget, the number that explains why error correction is not optional.",
+  },
+  {
+    slug: "logical-qubit",
+    term: "Logical Qubit & Surface Code",
+    oneLiner: "One error-protected qubit knitted from many physical ones, with stabilizer measurements catching errors without reading the data.",
+    inDepth:
+      "No-cloning forbids backups, so redundancy is entangled instead: a distance-d surface code patch uses on the order of 2d^2 physical qubits, and ancillas repeatedly measure parity checks whose violations locate errors. A classical decoder must keep pace with the roughly 1-microsecond syndrome cycle. Google's Willow result (2024) crossed the threshold in practice: each step from distance 3 to 5 to 7 cut logical error by about half, meaning bigger patches finally mean better qubits.",
+    analogy: "A choir holding one note where you may only ever ask pairs of singers whether they agree, never anyone for the note itself.",
+    example: "Estimates for breaking RSA-2048 run to roughly 20 million physical qubits, which is the distance between today's chips and cryptographic relevance.",
+    agentRole: "Logical qubit counts and logical error rates are the roadmap numbers that matter now; physical qubit counts alone stopped being informative in 2024.",
+  },
+  {
+    slug: "nisq",
+    term: "NISQ Era",
+    oneLiner: "Preskill's name for the current period: Noisy Intermediate-Scale Quantum devices, powerful enough to be interesting, too noisy for guarantees.",
+    inDepth:
+      "Coined in 2018, NISQ describes machines of tens to thousands of physical qubits without full error correction. They have demonstrated sampling tasks beyond classical simulation and increasingly credible error-mitigated physics experiments, but no commercially valuable problem is yet solved faster than classical computing. The field is now transitioning: below-threshold error correction in 2024 marks the start of the early fault-tolerant era, with useful logical machines projected toward the end of the decade.",
+    analogy: "Aviation in 1908: the machines demonstrably fly, crash often, carry no freight, and are obviously the future anyway.",
+    example: "Variational algorithms (VQE, QAOA) were designed for NISQ constraints; their practical advantage remains unproven after a decade of effort.",
+    agentRole: "NISQ is the calibration word: any claim of present-day quantum business value should be weighed against what NISQ honestly means.",
+  },
+];
+
+const qcComparison: ComparisonRow[] = [
+  {
+    type: "Superconducting",
+    isA: "Transmon circuit on a chip",
+    answers: "Microwave pulses, tunable couplers",
+    structure: "Gates in 10-200 ns",
+    example: "~99.7-99.9% two-qubit",
+    bestFor: "Speed, fab scalability, below-threshold QEC shown",
+    limit: "Millikelvin fridge, wiring per qubit, short coherence",
+  },
+  {
+    type: "Trapped ion",
+    isA: "One charged atom in an RF trap",
+    answers: "Laser pulses via shared motion",
+    structure: "Gates in 10-100+ µs",
+    example: ">99.9% two-qubit (best published)",
+    bestFor: "Fidelity, identical qubits, all-to-all in a chain",
+    limit: "Slow gates, hard to scale past one chain",
+  },
+  {
+    type: "Neutral atom",
+    isA: "One atom in an optical tweezer",
+    answers: "Rydberg blockade between neighbors",
+    structure: "Gates in ~1 µs or less",
+    example: "~99.5% two-qubit (2023-24 results)",
+    bestFor: "Thousands of traps, rearrangeable geometry",
+    limit: "Atom loss, readout speed, younger toolchain",
+  },
+  {
+    type: "Photonic",
+    isA: "A photon's mode or polarization",
+    answers: "Interferometers, measurement-based fusion",
+    structure: "Gates at light speed, probabilistic",
+    example: "Depends on scheme; loss-dominated",
+    bestFor: "Room temperature (mostly), networking, chips from fabs",
+    limit: "Photon loss, nondeterministic gates, detectors need cryo",
+  },
+];
+
+const qcFaqs: FaqItem[] = [
+  {
+    q: "Does a quantum computer try every answer at once?",
+    a: "No, and this is the most important correction in the field. A register of n qubits holds 2^n amplitudes, but measurement returns exactly one outcome, sampled by those amplitudes. Algorithms win by arranging interference so wrong outcomes cancel and right ones reinforce before anyone measures. Grover's search, for example, gives a square-root speedup, not the instant lookup the parallel-worlds picture would predict, and that gap is the proof the picture is wrong.",
+  },
+  {
+    q: "Why does it have to be colder than outer space?",
+    a: "A superconducting qubit's two levels are separated by roughly a 5 GHz microwave photon's worth of energy, which is tiny. For thermal noise not to excite the qubit at random, the chip must be far colder than that energy scale, which lands at 10 to 20 millikelvin, about 150 times colder than the 2.7 kelvin cosmic microwave background. The cold also keeps the aluminum circuits superconducting, so they carry signals without resistance or its noise.",
+  },
+  {
+    q: "Is the golden chandelier the computer?",
+    a: "The chandelier is the inside of the refrigerator: gold-plated copper plates at successively colder temperatures, laced with cabling and amplifiers. The computer itself is a chip about the size of a thumbnail, mounted in magnetic shielding below the coldest plate. Trapped-ion and neutral-atom machines look completely different: a steel vacuum chamber surrounded by laser optics, running near room temperature.",
+  },
+  {
+    q: "Will quantum computers break my encryption?",
+    a: "Eventually, for some encryption. Shor's algorithm provably breaks RSA and elliptic-curve cryptography, but running it on RSA-2048 is estimated to need on the order of 20 million noisy physical qubits, against 105 qubits on 2024's flagship error-corrected chip. That is why the migration to post-quantum cryptography standards is happening now, calmly, years ahead: data stolen today could be decrypted later. Symmetric encryption like AES-256 is not meaningfully threatened.",
+  },
+  {
+    q: "What are quantum computers actually good for?",
+    a: "The honest list is short. Simulating quantum systems, meaning chemistry, materials, and physics, is the original motivation and the strongest case. Factoring and related number theory breaks certain cryptography. Unstructured search gets a quadratic speedup only. Claimed advantages in optimization and machine learning remain unproven hypotheses. A quantum computer is a wind tunnel for nature's own quantum behavior, not a faster general-purpose computer.",
+  },
+  {
+    q: "What is a logical qubit and why does everyone suddenly count them?",
+    a: "A logical qubit is one error-corrected qubit encoded across many physical qubits, with stabilizer measurements catching errors as they happen. It became the headline number after 2024, when Google's Willow demonstrated below-threshold error correction, meaning bigger codes now yield better qubits. Physical counts stopped being comparable across platforms years ago; logical qubit count times logical error rate is the honest scoreboard.",
+  },
+  {
+    q: "Can I program a real quantum computer today?",
+    a: "Yes, free. IBM exposes real superconducting processors through Qiskit with a no-cost tier, and other platforms are reachable through cloud services. You write circuits in Python, they compile to pulses, run on genuine hardware in a dilution refrigerator, and return shot counts. Expect noisy results and small circuits; expect also that nothing teaches the reality of decoherence faster than watching your textbook circuit come back 12% wrong.",
+  },
+  {
+    q: "Do entangled qubits communicate faster than light?",
+    a: "No. Measuring one half of an entangled pair fixes the other's outcome instantly, but neither party controls which outcome occurs, so no information travels. Proving that no-signalling holds is straightforward quantum mechanics, and it is why entanglement powers computation and cryptographic key distribution but cannot power a telegraph.",
+  },
+];
+
+const qcBlocks: Block[] = [
+  {
+    kind: "p",
+    text:
+      "Strip away the mystique and a quantum computer is a machine with one strange talent: it steers **amplitudes**, complex-valued weights over every possible answer, so that wrong answers cancel and right ones reinforce. It does not try everything at once, and most of its mass is a refrigerator. The model below is that machine, drawn honestly: the fridge plates at their real temperatures, drive pulses that visibly attenuate on the way down, a readout echo amplified on the way back up, and an interference station where the actual trick happens. **Play the journey**, or click any station.",
+  },
+  { kind: "h2", text: "Walk through the machine", id: "interactive" },
+  { kind: "quantum" },
+  {
+    kind: "callout",
+    title: "What you're looking at",
+    text:
+      "**Blue**, front right: the physics, a bit becoming a Bloch sphere, sixteen amplitude bars collapsing to one winner, an entangled pair whose meters always agree. **Gold**, center left: the dilution refrigerator, six plates from 300 kelvin to fifteen thousandths of a degree, with the chip in shields at the bottom, plus the rival ion-trap and atom-array platforms. **Violet**, middle row: a program running, compiler to microwave pulse to interference to the readout clouds. **Green**, back: the hard part, coherence draining, the error-correction grid, and the honest scoreboard.",
+  },
+  {
+    kind: "callout",
+    title: "What is computed and what is staged",
+    text:
+      "**Real:** every temperature, time, count and error rate a label shows comes from src/data/quantum.ts, which traces to a knowledge base built from primary sources and then adversarially re-verified; the fridge geometry follows the real plate stack; the attenuation and amplification the wiring animation shows are the real signal chain. **Staged:** the animations are choreography, not simulation. The amplitude bars, the interference waves and the error-correction cycle illustrate the mechanisms; no Schrodinger equation is being integrated in your browser. An explainer that blurs this line does not deserve your trust, so here it is in writing.",
+  },
+  { kind: "h2", text: "The journey, in plain text", id: "journey" },
+  {
+    kind: "p",
+    text:
+      "The same 16 steps the interactive journey walks through, as text, for reading (and for the crawlers and answer engines that can't run WebGL).",
+  },
+  { kind: "quantumjourney" },
+  { kind: "h2", text: "Every station, with sources", id: "stations" },
+  { kind: "quantumstages" },
+  { kind: "h2", text: "The vocabulary that unlocks the papers", id: "terms" },
+  { kind: "stack" },
+  { kind: "h2", text: "Four ways to build a qubit", id: "platforms" },
+  {
+    kind: "p",
+    text:
+      "No platform has won. Superconducting circuits are fastest and furthest on error correction; trapped ions are slowest and most precise; neutral atoms scale to the largest arrays; photonics bets on telecom-style manufacturing. The honest comparison:",
+  },
+  { kind: "comparison" },
+  { kind: "h2", text: "Questions people actually ask", id: "faq" },
+  { kind: "faq" },
+  { kind: "h2", text: "Primary sources & further reading", id: "sources" },
+  {
+    kind: "sources",
+    items: [
+      { label: "Nielsen & Chuang, Quantum Computation and Quantum Information", href: "https://doi.org/10.1017/CBO9780511976667", note: "The standard textbook; chapters 1-2 cover everything in Act I." },
+      { label: "Krantz et al. (2019), A Quantum Engineer's Guide to Superconducting Qubits", href: "https://arxiv.org/abs/1904.06560", note: "The canonical hardware review behind Act II: control, readout, cryogenics." },
+      { label: "Koch et al. (2007), the transmon paper", href: "https://arxiv.org/abs/cond-mat/0703002", note: "Charge-insensitive qubit design; why the energy ladder is uneven." },
+      { label: "Preskill (2018), Quantum Computing in the NISQ era and beyond", href: "https://arxiv.org/abs/1801.00862", note: "The paper that named the current era and framed its honest limits." },
+      { label: "Google Quantum AI (2024), quantum error correction below the surface code threshold", href: "https://www.nature.com/articles/s41586-024-08449-y", note: "Willow: logical error halving with code distance, the field's 2024 milestone." },
+      { label: "Shor (1994/97), Polynomial-time factoring on a quantum computer", href: "https://arxiv.org/abs/quant-ph/9508027", note: "The algorithm that made cryptographers care." },
+      { label: "Grover (1996), A fast quantum mechanical algorithm for database search", href: "https://arxiv.org/abs/quant-ph/9605043", note: "Quadratic search speedup, provably optimal." },
+      { label: "Feynman (1982), Simulating physics with computers", href: "https://doi.org/10.1007/BF02650179", note: "The founding argument: nature is quantum, so simulate it quantumly." },
+      { label: "Gidney & Ekera (2019), How to factor 2048-bit RSA integers in 8 hours using 20 million noisy qubits", href: "https://arxiv.org/abs/1905.09749", note: "The standard resource estimate separating today from cryptographic relevance." },
+      { label: "Macklin et al. (2015), A near-quantum-limited Josephson traveling-wave parametric amplifier", href: "https://doi.org/10.1126/science.aaa8525", note: "The TWPA: how a readout whisper gets amplified without drowning it." },
+      { label: "Molmer & Sorensen (1999), Multiparticle entanglement of hot trapped ions", href: "https://arxiv.org/abs/quant-ph/9810040", note: "The workhorse two-qubit gate of every trapped-ion machine." },
+      { label: "IBM Quantum Learning", href: "https://learning.quantum.ibm.com/", note: "Free courses and the path to running circuits on real hardware today." },
+    ],
+  },
+  {
+    kind: "related",
+    items: [
+      { label: "How LLMs Work: the 3D interactive guide", href: "/guides/how-llms-work" },
+      { label: "How Neural Networks Work: fly through 13,002 parameters", href: "/guides/how-neural-networks-work" },
+      { label: "The AI Concepts Encyclopedia: 187 concepts with definitions and sources", href: "/notebook/ai/encyclopedia" },
+    ],
+  },
+];
+
 export const guides: Guide[] = [
   sfGuide,
   {
@@ -1798,6 +2053,35 @@ export const guides: Guide[] = [
     blocks: nnBlocks,
     termRoleLabel: "Why it matters",
     comparisonHeaders: ["Era", "What it was", "What it established", "Mechanism", "Anchor", "What it unlocked", "Limit"],
+  },
+  {
+    slug: "how-quantum-computers-work",
+    title: "How Quantum Computers Work",
+    metaTitle: "How Quantum Computers Work: 3D Interactive Guide",
+    metaDescription:
+      "Fly through a dilution refrigerator to the chip: qubits, superposition without the parallel-universe myth, gates as microwave pulses, interference, readout, and error correction. Primary-sourced.",
+    headline: "How Quantum Computers Work: Fly Down the Golden Chandelier",
+    kicker: "Interactive Explainer",
+    subhead:
+      "A bit becomes a sphere, sixteen amplitudes collapse to one answer, and a microwave pulse rides six frozen floors down to a chip colder than deep space. Then the honest part: how errors are tamed, and what these machines are really for. Every claim from primary sources, adversarially re-verified.",
+    deck: `The machine as an explorable 3D film set: ${QC_COUNTS.stages} stations across ${QC_COUNTS.acts} acts, a ${QC_COUNTS.journeySteps}-step guided journey from one qubit to the honest scoreboard, the dilution refrigerator drawn plate by plate at its real temperatures, the signal chain attenuating down and amplifying up exactly as the engineering references describe, and an interference station that shows where quantum answers actually come from. No parallel-universe myths survive contact with this page.`,
+    author: {
+      name: "Venkata Pagadala",
+      title: "AI Product Manager (Search · SEO · GEO)",
+      org: "AT&T",
+      url: "/about",
+      bio: "10+ years building entity systems and knowledge graphs at enterprise scale; published the How LLMs Work and How Neural Networks Work 3D explainers on this site.",
+    },
+    datePublished: "2026-08-29",
+    dateModified: "2026-08-29",
+    readingTime: "22 min read",
+    tags: ["Quantum Computing", "Qubits", "Superposition", "Quantum Error Correction", "Dilution Refrigerator", "3D Interactive", "Physics Explainer"],
+    terms: qcTerms,
+    comparison: qcComparison,
+    faqs: qcFaqs,
+    blocks: qcBlocks,
+    termRoleLabel: "Why it matters",
+    comparisonHeaders: ["Platform", "The qubit is", "Gates via", "Gate speed", "Two-qubit fidelity", "Strength", "Limit"],
   },
 ];
 

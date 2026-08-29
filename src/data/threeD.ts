@@ -37,6 +37,15 @@ export const threeDExperiences: ThreeDExperience[] = [
     badge: "new",
   },
   {
+    title: "How Quantum Computers Work",
+    to: "/guides/how-quantum-computers-work",
+    note: "down the golden chandelier, plate by plate",
+    blurb:
+      "A dilution refrigerator drawn at its real temperatures, drive pulses attenuating down and readout echoes amplifying up, a Bloch sphere, an entangled pair, an interference station where wrong answers cancel, and the error-correction grid. Primary-sourced, adversarially re-verified.",
+    tags: ["16 stations", "guided journey", "primary-sourced"],
+    badge: "new",
+  },
+  {
     title: "How Neural Networks Work",
     to: "/guides/how-neural-networks-work",
     note: "13,002 parameters, every fiber drawn",

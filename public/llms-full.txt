@@ -184,6 +184,11 @@ Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration
 - Web: https://venkatapagadala.com/guides/screaming-frog
 - Markdown: https://venkatapagadala.com/guides/screaming-frog.md
 
+### How Quantum Computers Work (3D interactive guide)
+16 stations across 4 acts: qubits and superposition without the parallel-computation myth, the dilution refrigerator at its real temperatures, gates as microwave pulses, interference, dispersive readout, decoherence, and below-threshold error correction. Every claim traces to a primary-source knowledge base, adversarially re-verified August 2026.
+- Web: https://venkatapagadala.com/guides/how-quantum-computers-work
+- Markdown: https://venkatapagadala.com/guides/how-quantum-computers-work.md
+
 ### How Neural Networks Work: 3D Interactive Guide (2026)
 The 784-16-16-10 MNIST network as an explorable 3D machine: forward pass, ReLU, softmax, cross-entropy, gradient descent, backpropagation, Adam, initialization, dropout, and the brain question, all primary-sourced.
 - Web: https://venkatapagadala.com/guides/how-neural-networks-work

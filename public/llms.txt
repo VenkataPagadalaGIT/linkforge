@@ -69,6 +69,11 @@ The definitive guide to ontology vs taxonomy vs knowledge graph vs information g
 - URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
 - Markdown edition: https://venkatapagadala.com/guides/graph-types-for-ai-agents.md
 
+### How Quantum Computers Work (3D interactive guide)
+- URL: https://venkatapagadala.com/guides/how-quantum-computers-work
+- Markdown edition: https://venkatapagadala.com/guides/how-quantum-computers-work.md
+- 16 stations across 4 acts: qubits and superposition without the parallel-computation myth, the dilution refrigerator at its real temperatures, gates as microwave pulses, interference, dispersive readout, decoherence, and below-threshold error correction. Every claim traces to a primary-source knowledge base, adversarially re-verified August 2026.
+
 ### How Neural Networks Work: 3D Interactive Guide (2026)
 The canonical 784-16-16-10 MNIST network as an explorable 3D machine: a handwritten digit dissolves into 784 pixels, all 12,960 weight connections are really drawn, gradient descent runs on a real loss terrain, and the guide ends with the honest brain question. 16 stations, a 16-step guided journey, every claim traced to the original papers.
 - URL: https://venkatapagadala.com/guides/how-neural-networks-work

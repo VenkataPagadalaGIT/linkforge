@@ -150,6 +150,7 @@
   "keywordOwnership": {
     "how llms work": "/guides/how-llms-work",
     "how neural networks work": "/guides/how-neural-networks-work",
+    "how quantum computers work": "/guides/how-quantum-computers-work",
     "hvac troubleshooting": "/guides/hvac-system-troubleshooting",
     "knowledge graph vs vector database": "/guides/graph-types-for-ai-agents",
     "ai encyclopedia": "/notebook/ai/encyclopedia",
