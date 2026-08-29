@@ -1855,12 +1855,40 @@ const qcFaqs: FaqItem[] = [
 ];
 
 const qcBlocks: Block[] = [
+  // Reader on-ramp, before the machine: what it is, how it differs, what it is
+  // for, and whether it is real. This is the plain-language arc every top-ranked
+  // quantum page front-loads. Written for a reader with zero physics, known
+  // (the classical bit) before new (the qubit). The 3D machine follows.
+  { kind: "h2", text: "What is a quantum computer?", id: "what" },
   {
     kind: "p",
     text:
-      "Strip away the mystique and a quantum computer is a machine with one strange talent: it steers **amplitudes**, complex-valued weights over every possible answer, so that wrong answers cancel and right ones reinforce. It does not try everything at once, and most of its mass is a refrigerator. The model below is that machine, drawn honestly: the fridge plates at their real temperatures, drive pulses that visibly attenuate on the way down, a readout echo amplified on the way back up, and an interference station where the actual trick happens. **Play the journey**, or click any station.",
+      "A quantum computer is a machine that uses the rules of quantum physics to solve a handful of problems that are effectively impossible for an ordinary computer, no matter how large that computer gets. It is not a faster laptop, and it does not try every answer at once. It works by treating a calculation like a wave: it sets the problem up so that the wrong answers cancel each other out and the right one is reinforced, then reads off what is left standing.",
+  },
+  { kind: "h2", text: "How is it different from a normal computer?", id: "vs-classical" },
+  {
+    kind: "p",
+    text:
+      "Your laptop stores everything as **bits**, and a bit is a switch: either 0 or 1, on or off. A quantum computer uses **qubits**, and a qubit is not stuck at a single value. Until you measure it, it holds a blend of 0 and 1 at once, tilted toward one or the other. Line up a few qubits and together they hold a weight for every possible combination at the same time. Here is the catch that is easy to miss, and it is the whole game: the instant you look, that blend collapses to one plain string of 0s and 1s. So the trick is never to read a random combination. It is to arrange the blend beforehand so the answer you want is the one most likely to survive the look.",
+  },
+  { kind: "h2", text: "What is it actually good for?", id: "why" },
+  {
+    kind: "p",
+    text:
+      "Quantum computers are specialists, not all-rounders. They only pull ahead on three shapes of problem. **Simulating nature:** molecules and materials are themselves quantum, so a quantum computer can model them directly. This is the near-term prize, better batteries, catalysts and medicines by simulating chemistry that classical machines can only approximate. **Searching and optimizing:** finding the best option out of an astronomical number of them, from delivery routes to financial portfolios, where classical methods bog down. **Breaking today's encryption:** a large enough machine could factor the huge numbers that protect internet traffic and bank transfers, which is why the world is already moving to quantum-resistant cryptography. For everything else, from email to spreadsheets to video, an ordinary computer is faster and cheaper, and always will be.",
+  },
+  { kind: "h2", text: "Is it real yet, or is this hype?", id: "reality-check" },
+  {
+    kind: "p",
+    text:
+      "Real. You can rent time on a quantum computer today. But be honest about where the field is: current machines are small and noisy, and no quantum computer has yet solved a genuinely useful problem faster than a classical one. They complement ordinary computers; they do not replace them. The hard part is not adding more qubits, it is keeping them still and coherent long enough to finish a calculation, which is why most of the machine you are about to explore is a refrigerator. This guide walks the whole thing, and it refuses the one myth you will hear everywhere: a quantum computer does not try every answer in parallel. What it actually does is stranger, and more interesting.",
   },
   { kind: "h2", text: "Walk through the machine", id: "interactive" },
+  {
+    kind: "p",
+    text:
+      "Now the machine itself. Below is a superconducting quantum computer you can fly through, drawn honestly: the refrigerator plates at their real temperatures, control pulses that visibly weaken on the way down, a readout echo amplified on the way back up, and the interference step where the answer actually appears. **Play the journey** for the guided tour, or click any station to jump straight to it.",
+  },
   { kind: "quantum" },
   {
     kind: "callout",
@@ -1878,7 +1906,7 @@ const qcBlocks: Block[] = [
   {
     kind: "p",
     text:
-      "The same 16 steps the interactive journey walks through, as text, for reading (and for the crawlers and answer engines that can't run WebGL).",
+      `The same ${QC_COUNTS.journeySteps} steps the interactive journey walks through, as text, for reading (and for the crawlers and answer engines that can't run WebGL).`,
   },
   { kind: "quantumjourney" },
   { kind: "h2", text: "Every station, with sources", id: "stations" },

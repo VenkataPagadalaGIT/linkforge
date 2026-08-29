@@ -360,7 +360,7 @@ export default function QuantumExplorer() {
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70">
                   Step {stepIdx + 1} of {QC_JOURNEY.length}
                   {" · "}
-                  {QC_ACTS[qcStageById(step.stageId)!.act].label}
+                  {step.actLabel ?? QC_ACTS[qcStageById(step.stageId)!.act].label}
                 </p>
               </div>
               <div className="flex gap-1 mb-4">

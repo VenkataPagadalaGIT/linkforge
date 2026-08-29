@@ -70,6 +70,7 @@ const DEFAULT_POS_V = new THREE.Vector3(...DEFAULT_POSE.pos);
 const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: readonly [number, number, number] }> = {
   "q-bit":           { pos: [1.1, 2.6, 6.6],  look: [1.2, 1.6, 3.2] },
   "q-superposition": { pos: [6.6, 2.9, 3.6],  look: [6.9, 1.7, 0.3] },
+  "q-collapse":      { pos: [6.6, 2.9, 3.6],  look: [6.9, 1.7, 0.3] },
   "q-bloch":         { pos: [3.8, 2.9, 6.6],  look: [3.9, 1.9, 3.2] },
   "q-entangle":      { pos: [6.9, 2.7, 6.6],  look: [6.9, 1.6, 3.4] },
   "q-chandelier":    { pos: [1.4, 3.9, 6.9],  look: [-3.2, 2.9, 0] },
@@ -80,6 +81,7 @@ const CAM_POSES: Record<string, { pos: readonly [number, number, number]; look: 
   "q-compile":       { pos: [0.2, 3.0, -1.6], look: [0.2, 1.8, -4.6] },
   "q-pulse":         { pos: [2.9, 2.9, -1.6], look: [2.9, 1.7, -4.6] },
   "q-interference":  { pos: [5.7, 3.1, -1.4], look: [5.7, 1.6, -4.6] },
+  "q-combine":       { pos: [5.7, 3.1, -1.4], look: [5.7, 1.6, -4.6] },
   "q-readout":       { pos: [8.3, 2.9, -1.6], look: [8.3, 1.7, -4.6] },
   "q-decoherence":   { pos: [-0.5, 3.2, -5.0],look: [-0.5, 1.6, -8.2] },
   "q-qec":           { pos: [3.4, 4.1, -4.9], look: [3.4, 0.9, -8.2] },

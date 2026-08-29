@@ -393,9 +393,22 @@ export interface QcJourneyStep {
   title: string;
   narration: string;
   program: string;
+  /** Overrides the act label shown in the journey panel. The opening wide
+   *  shot is a Prologue: it previews the machine before Act I starts, so it
+   *  should not read as "Act II" ahead of Act I. */
+  actLabel?: string;
 }
 
 export const QC_JOURNEY: QcJourneyStep[] = [
+  {
+    id: "q-chandelier",
+    stageId: "chandelier",
+    actLabel: "Prologue",
+    title: "Meet the whole machine",
+    narration:
+      "Before we go inside, here is the whole thing. This golden chandelier is really a refrigerator hanging upside down: six floors, each colder than the last, and at the very bottom, inside those shields, a chip the size of your thumbnail. Almost all of this metal exists for one job, keeping that chip cold and still. We will start with the smallest thing on it, a single qubit, and build up from there.",
+    program: "chandelier",
+  },
   {
     id: "q-bit",
     stageId: "bit",
@@ -409,7 +422,15 @@ export const QC_JOURNEY: QcJourneyStep[] = [
     stageId: "superposition",
     title: "What superposition really buys",
     narration:
-      "Four qubits, sixteen amplitude bars. The register holds a weight for every possible four-bit string simultaneously, and n qubits hold 2 to the n weights. But look at the measurement flash: one bar wins, the rest vanish. This is not a parallel computer. The weights are raw material for interference, nothing more.",
+      "Four qubits, sixteen amplitude bars. The register now holds a weight for every possible four-bit string at the same time, and n qubits hold 2 to the n of these weights. That sounds like enormous parallel storage, and in a sense it is. But hold one thought before the next beat: these weights are not answers you can read out. They are raw material.",
+    program: "superposition",
+  },
+  {
+    id: "q-collapse",
+    stageId: "superposition",
+    title: "You only get one bit out",
+    narration:
+      "Here is the catch that kills the myth. The instant you measure the register, the whole blend collapses: one bar wins, every other vanishes, and all you get back is a single ordinary string of 0s and 1s. You never see the weights themselves. So a quantum computer is not a machine that checks every answer at once and hands you the right one. You get one look, and one plain answer. The entire art is arranging those weights beforehand so the answer you want is the one most likely to survive the look.",
     program: "superposition",
   },
   {
@@ -429,12 +450,12 @@ export const QC_JOURNEY: QcJourneyStep[] = [
     program: "entangle",
   },
   {
-    id: "q-chandelier",
-    stageId: "chandelier",
-    title: "The machine appears",
+    id: "q-combine",
+    stageId: "interference",
+    title: "Interference is the engine",
     narration:
-      "Pull back. This is the machine: a golden chandelier that is really a refrigerator hanging upside down. Six floors, each colder than the last, and at the very bottom, inside those shields, a chip the size of your thumbnail. The tour goes down the way a control pulse does.",
-    program: "chandelier",
+      "So how do you make the right answer win that one look? Interference, the single idea the whole field rests on. Amplitude travels along many paths at once, and each path carries a phase, the way a wave carries crests and troughs. Set the program up well and, at the wrong answers, the waves meet out of step and cancel to nothing; at the right answer, they meet in step and pile up. Nothing is tried in parallel. The answer is steered. You will watch this happen for real later, down at the measurement chain.",
+    program: "interference",
   },
   {
     id: "q-cold",
