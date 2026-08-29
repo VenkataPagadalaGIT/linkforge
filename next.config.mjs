@@ -7,11 +7,15 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "**" },
-    ],
-  },
+  // The image optimizer is OFF on purpose. Nothing in the codebase imports
+  // next/image, yet the previous config allowed every https host
+  // (hostname "**"), which turned /_next/image on the self-hosted Railway
+  // deployment into an open proxy: anyone could make this server fetch,
+  // process and cache arbitrary URLs (bandwidth abuse, disk-cache growth,
+  // and the exact shape of GHSA-9g9p-9gw9-jx7f). Disabling the optimizer
+  // removes the endpoint. If next/image is ever adopted, re-enable with an
+  // explicit hostname allowlist, never a wildcard.
+  images: { unoptimized: true },
   // Limit build-time concurrency so SSG of 336 pages fits in a 1Gi K8s pod.
   // Without this, parallel SSG of three.js / framer-motion / R3F-heavy routes
   // peaks at ~2.4GB RSS and OOMs on Emergent's 1Gi deployment pod.
