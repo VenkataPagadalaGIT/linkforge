@@ -84,6 +84,7 @@ const MEGA: MegaMenu[] = [
       {
         title: "AI News & Updates",
         items: [
+          { label: "AI Agent Statistics", note: "the numbers, updated monthly", to: "/notebook/ai/agents", badge: "NEW" },
           { label: "AI Updates", note: "AI news with primary sources", to: "/ai-updates" },
         ],
       },

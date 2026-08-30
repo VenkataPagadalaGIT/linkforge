@@ -24,6 +24,7 @@ const STATIC_ROUTES = [
   "/research",
   "/notebook",
   "/notebook/ai",
+  "/notebook/ai/agents",
   "/notebook/ai/roadmap",
   "/notebook/ai/encyclopedia",
   "/notebook/ai/map",

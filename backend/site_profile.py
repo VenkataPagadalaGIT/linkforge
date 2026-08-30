@@ -156,6 +156,7 @@ DEFAULT_SITE_PROFILE: Dict[str, Any] = {
     # One keyword, one page. An agent proposing a page for a keyword that
     # already has an owner is proposing cannibalization.
     "keywordOwnership": {
+        "ai agent statistics": "/notebook/ai/agents",
         "how llms work": "/guides/how-llms-work",
         "how neural networks work": "/guides/how-neural-networks-work",
         "how quantum computers work": "/guides/how-quantum-computers-work",
