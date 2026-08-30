@@ -502,7 +502,7 @@ export const QC_JOURNEY: QcJourneyStep[] = [
     stageId: "pulse",
     title: "Twenty nanoseconds of microwave",
     narration:
-      "A gate, physically. The shaped pulse travels down, strikes the qubit at its own resonant frequency, and the Bloch arrow sweeps exactly the commanded angle. Tens of nanoseconds per rotation, error around one part in a thousand. This is the machine's heartbeat: pulse, rotate, pulse, rotate.",
+      "A gate, physically. The shaped pulse travels down, strikes the qubit at its own resonant frequency, and the Bloch arrow sweeps exactly the commanded angle. Tens of nanoseconds per rotation, with an error rate from about one part in a thousand on the best hardware to one in a hundred on the rest. This is the machine's heartbeat: pulse, rotate, pulse, rotate.",
     program: "pulse",
   },
   {

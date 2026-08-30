@@ -61,6 +61,25 @@ for (const block of guide.blocks as Block[]) {
       push(`> **${block.title}:** ${block.text}`);
       push();
       break;
+    case "list": {
+      block.items.forEach((it, i) => push(block.ordered ? `${i + 1}. ${it}` : `- ${it}`));
+      push();
+      break;
+    }
+    case "details": {
+      push(`### ${block.summary}`);
+      push();
+      for (const b of block.blocks) {
+        if (b.kind === "p") {
+          push(b.text);
+          push();
+        } else if (b.kind === "list") {
+          b.items.forEach((it, i) => push(b.ordered ? `${i + 1}. ${it}` : `- ${it}`));
+          push();
+        }
+      }
+      break;
+    }
     case "quantum":
       push(`*(Interactive 3D content: explore it at ${SITE}/guides/${guide.slug})*`);
       push();

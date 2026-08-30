@@ -1243,3 +1243,82 @@ Confirmed: a 101-qubit distance-7 surface code with 0.143% +/- 0.003% error per 
 - Whether Google Willow's 89 us T2,CPMG carries an uncertainty spread: the supplement sentence gives only the mean; the spec sheet lists no T2 at all.
 
 - IBM Heron r3 deployment details beyond the single newsroom sentence (which systems run r3, as of 2026-08): not verified.
+
+---
+
+## Deep architecture layer (verified 2026-08-29, adversarial 7-cluster pass)
+
+Added when the guide gained the "How software becomes a pulse, and back" and
+"The real-time race" sections. A NotebookLM dump proposed these facts; each was
+adversarially re-verified against primary sources. Several dump figures were
+WRONG and are recorded under "do not assert" below.
+
+### System architecture reference model
+
+The canonical model is FOUR layers, top to bottom: host processor (a classical
+computer), control processor plane, control and measurement plane, quantum data
+plane. The word "plane" applies to the lower three only; the host is a classical
+computer, not a "plane."
+- Source: National Academies, Quantum Computing: Progress and Prospects (2019), Ch.5 Sec.5.1, pp.114-118
+- URL: https://doi.org/10.17226/25196
+- Confidence: verified-by-fetch
+- Note: room-temperature multi-wire-per-qubit control is expected to scale only to ~1,000 physical qubits before a new strategy is needed (NAS 2019 Sec.5.2).
+
+### Cryogenic signal chain
+
+Drive lines add ~60 dB total attenuation, canonically ~20 dB each at the 4 K,
+cold-plate, and mixing-chamber stages (largest at the COLDEST stage, for
+thermalization). Readout: a near-quantum-limited parametric amplifier
+(TWPA broadband, or JPA narrowband; distinct devices) at the mixing chamber adds
+~20 dB; a HEMT at 4 K adds ~40 dB (noise temp ~2 K). Circulators/isolators give
+>60 dB reverse isolation toward the sample.
+- Source: Krinner et al., Engineering cryogenic setups for 100-qubit scale superconducting circuits, EPJ Quantum Technology 6:2 (2019), arXiv:1806.07862; TWPA gain Macklin et al., Science 350, 307 (2015), DOI:10.1126/science.aaa8525
+- Confidence: verified-by-fetch
+
+### Control electronics
+
+FPGA/RFSoC controllers with DACs at several GS/s (QICK RFSoC: 6.5 GS/s DACs,
+direct synthesis to ~6 GHz). Single-qubit XY gates use Gaussian envelopes with a
+DRAG correction to suppress leakage (transmon anharmonicity ~-200 to -300 MHz).
+Transmon transition frequency ~3-6 GHz (canonical ~5 GHz). Single-qubit gate
+~10-20 ns; error 1e-3 (best device) to ~1e-2 (typical floor).
+- Source: Stefanazzi et al. (QICK), Rev. Sci. Instrum. 93, 044709 (2022), arXiv:2110.00557; Krantz et al., Appl. Phys. Rev. 6, 021318 (2019), arXiv:1904.06560; Barends et al., Nature 508, 500 (2014)
+- Confidence: verified-by-fetch
+
+### Real-time quantum error correction loop
+
+Logical qubit spread over data + ancilla physical qubits; ancillas measured
+repeatedly to extract syndromes without reading the data (X-checks flag
+phase-flips, Z-checks flag bit-flips). Decoders: minimum-weight perfect matching
+(surface codes), BP+OSD and localized statistics decoding LSD (qLDPC; LSD
+introduced 2024). On Google Willow: syndrome CYCLE time ~1.1 us; the decoder must
+sustain that THROUGHPUT round after round or backlog grows unbounded; demonstrated
+real-time decoder LATENCY ~63 us at distance-5, against T1 ~68 us / T2,CPMG ~89 us.
+Pauli frame tracking defers Pauli corrections in software (decoupling Clifford
+speed from decode latency); feed-forward is the opposite, forcing real-time
+resolution before a non-Clifford (T) gate.
+- Source: Fowler et al., Phys. Rev. A 86, 032324 (2012), arXiv:1208.0928; Google Quantum AI, Nature (2024/25), arXiv:2408.13687; Hillmann et al. (LSD), arXiv:2406.18655 (2024); Panteleev & Kalachev (BP+OSD), Quantum 5, 585 (2021), arXiv:1904.02703; backlog: Terhal, RMP 87, 307 (2015)
+- Confidence: verified-by-fetch
+
+### Alternative platforms
+
+Trapped ions: RF Paul traps (~10-200 MHz); two-qubit gates via shared motional
+modes, Molmer-Sorensen gate; species 171Yb+ and 43Ca+. Neutral atoms: optical
+tweezers from high-NA optics; two-qubit gates via Rydberg blockade (blockade
+radius ~5-10 um at n~70); species 87Rb, 133Cs; UHV ~1e-10 to 1e-11 mbar
+(room-temp), ~1e-12 mbar cryogenic.
+- Source: Sorensen & Molmer, PRL 82, 1971 (1999); Saffman, Walker & Molmer, RMP 82, 2313 (2010), arXiv:0909.4777; Ballance et al., PRL 117, 060504 (2016)
+- Confidence: verified-by-fetch
+
+### Deep-layer: do not assert (dump errors caught)
+
+- NOT a "three-plane" model, and the host is NOT a "plane": NAS 2019 defines four layers, host included.
+- Do NOT claim IBM or Google "use planes": their public docs use host/control-system/QPU and full-stack language; concepts correspond, taxonomy adoption is unverified.
+- Attenuation is NOT "-20 dB at 50 K, -10 dB at 4 K, nothing colder": physically inverted; largest attenuator sits at the coldest stage. Only the ~60 dB total is right. Krantz 2019 gives NO per-stage dB; use Krinner 2019.
+- Decoder latency is NOT "<1 us": that is the ~1.1 us cycle time / throughput requirement; actual Willow decoder latency was ~63 us at d=5.
+- Transmon T2 is NOT a blanket "100-300 us": leading QEC processor (Willow) ran T1 68 / T2 89 us; quote T1/T2 with the device.
+- Qubit frequency is NOT "4-7 GHz": standard is ~3-6 GHz, ~5 GHz typical.
+- Single-qubit gate error 1e-3 is best-case, not universal (range 1e-3 to 1e-2).
+- Do NOT lump TWPA and JPA as interchangeable; do NOT describe feed-forward as "avoiding physical corrections" (that is Pauli frame tracking).
+- Drop the 10-500 MHz baseband band (unverifiable). Quantinuum uses 171Yb+, not 172Yb+.
+- Cold-plate temperature is the least standardized stage (~100-280 mK); do not state a firm 100 mK.

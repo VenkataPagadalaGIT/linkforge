@@ -1911,8 +1911,87 @@ const qcBlocks: Block[] = [
   { kind: "quantumjourney" },
   { kind: "h2", text: "Every station, with sources", id: "stations" },
   { kind: "quantumstages" },
+
+  { kind: "h2", text: "How software becomes a pulse, and back", id: "architecture" },
+  {
+    kind: "p",
+    text:
+      "A quantum computer is not just the chip in the cold. It is a stack of layers that turns your program into microwave pulses, sends them down to the qubits, and turns the faint signal that returns into an answer. Together they work as a **quantum-classical co-processor**: the quantum chip does the one thing it is good at, and ordinary classical computers do everything else around it. The US National Academies' 2019 reference model names four layers, top to bottom:",
+  },
+  {
+    kind: "list",
+    ordered: true,
+    items: [
+      "**Host processor.** An everyday classical computer running the software toolchain, Qiskit or Cirq and the like. It compiles your circuit, handles storage and networking, and hands the job down over a high-speed link.",
+      "**Control processor plane.** The real-time brain, usually FPGA boards. It sequences the exact gates and measurements the algorithm calls for, and in an error-corrected machine it runs the decoding loop that keeps the qubits alive.",
+      "**Control and measurement plane.** Room-temperature electronics that turn digital instructions into the analog microwave or laser pulses that drive the qubits, and that digitize the returning signal back into classical bits.",
+      "**Quantum data plane.** The heart of the machine: the qubits themselves, plus the wiring, shielding, and refrigeration that let them hold a state at all. This is the part inside the cold.",
+    ],
+  },
+  {
+    kind: "p",
+    text:
+      "A program makes one round trip through these layers every time it runs. It flows **down**, from host to control processor to signal electronics and into the cold, and the answer flows **back up**, the qubits' faint echo amplified stage by stage, digitized, and turned into the 0s and 1s you came here for. One honest caveat on scale: today's approach of running a handful of wires per qubit down from room temperature is expected to hold only to around a thousand physical qubits before something new is needed.",
+  },
+  {
+    kind: "details",
+    summary: "The full signal chain, stage by stage",
+    blocks: [
+      {
+        kind: "p",
+        text:
+          "Getting a clean pulse to a qubit, and a faint one back out, is an engineering feat in itself. Every number here traces to the superconducting-hardware literature.",
+      },
+      {
+        kind: "list",
+        items: [
+          "**Going down (drive lines).** About 60 decibels of attenuation is added on the way to the chip, and, against intuition, the largest attenuators sit at the coldest stages, canonically around 20 dB each at the 4 K, cold-plate, and mixing-chamber stages. That deliberate loss strips away the room-temperature noise riding on the line so only a clean pulse reaches the qubit.",
+          "**Coming back up (readout).** The outgoing signal is a whisper. A near-quantum-limited parametric amplifier at the mixing chamber, a TWPA or a JPA, boosts it by roughly 20 dB first, then a HEMT transistor amplifier at the 4 K stage adds about 40 dB more. Circulators and isolators let the signal out while blocking noise from coming back in, more than 60 dB of protection pointed at the fragile chip.",
+          "**Where the pulses come from.** Modern control uses FPGA boards whose digital-to-analog converters run at several billion samples per second, shaping each pulse (a Gaussian with a DRAG correction that prevents leakage) at the qubit's transition frequency of roughly 3 to 6 GHz. A single-qubit gate takes about 10 to 20 nanoseconds.",
+        ],
+      },
+    ],
+  },
+
+  { kind: "h2", text: "The real-time race: catching errors before they spread", id: "error-correction" },
+  {
+    kind: "p",
+    text:
+      "Qubits are fragile, so a useful quantum computer has to fix its own errors while it runs, faster than new ones appear. This is the hardest problem in the field, and it is a genuine race between physics and classical computing. The trick is never to look at the working qubits directly, because looking would destroy the very state you are protecting. Instead:",
+  },
+  {
+    kind: "list",
+    ordered: true,
+    items: [
+      "**Spread one logical qubit across many physical ones.** A grid of *data* qubits holds the information, with extra *ancilla* qubits woven between them.",
+      "**Measure parity, not data.** The ancillas are repeatedly entangled with their neighbors and measured, giving a running stream of **syndrome** bits: X-type checks flag phase-flip errors, Z-type checks flag bit-flip errors, and the data itself is never read.",
+      "**Decode, fast.** A classical **decoder** reads the syndrome stream and infers the most likely pattern of errors. For the surface code this is a graph-matching problem solved with minimum-weight perfect matching; newer qLDPC codes use belief propagation with ordered-statistics post-processing (BP+OSD) and its faster parallel relative, localized statistics decoding (LSD), introduced in 2024.",
+      "**Keep up, or lose.** On Google's 2024 Willow processor a single syndrome round takes about 1.1 microseconds, and the decoder must keep pace with that stream round after round or the backlog grows without bound. Resolving an actual correction took the real-time decoder about 63 microseconds at code distance 5, running against qubits whose coherence lasted around 90 microseconds. The margins really are that tight.",
+    ],
+  },
+  {
+    kind: "p",
+    text:
+      "One clever move buys breathing room: most corrections are never physically applied. The control software just tracks them in a **Pauli frame**, a running note that says this qubit is secretly flipped, and folds each correction into how it reads later results. The decoder's speed only becomes a hard wall right before a non-Clifford gate, such as a T gate, where the frame has to be resolved on the spot. That single moment is what the whole real-time race is really about.",
+  },
+  {
+    kind: "callout",
+    title: "Why 2024 was the turning point",
+    text:
+      "For twenty years the theory promised that if physical qubits were good enough, making the error-correcting grid **bigger** would make the logical qubit **better**, not worse. In 2024, Google's Willow processor showed exactly that, crossing what the field calls the error-correction threshold for the first time. It does not mean quantum computers are useful yet. It means the escape route is real, which is what the honest scoreboard at the end of the journey is measured against.",
+  },
+
   { kind: "h2", text: "The vocabulary that unlocks the papers", id: "terms" },
-  { kind: "stack" },
+  { kind: "termcard", termSlug: "qubit" },
+  { kind: "termcard", termSlug: "superposition" },
+  { kind: "termcard", termSlug: "entanglement" },
+  { kind: "termcard", termSlug: "quantum-gate" },
+  { kind: "termcard", termSlug: "measurement" },
+  { kind: "termcard", termSlug: "transmon" },
+  { kind: "termcard", termSlug: "dilution-refrigerator" },
+  { kind: "termcard", termSlug: "decoherence" },
+  { kind: "termcard", termSlug: "logical-qubit" },
+  { kind: "termcard", termSlug: "nisq" },
   { kind: "h2", text: "Four ways to build a qubit", id: "platforms" },
   {
     kind: "p",
@@ -1936,6 +2015,10 @@ const qcBlocks: Block[] = [
       { label: "Feynman (1982), Simulating physics with computers", href: "https://doi.org/10.1007/BF02650179", note: "The founding argument: nature is quantum, so simulate it quantumly." },
       { label: "Gidney & Ekera (2019), How to factor 2048-bit RSA integers in 8 hours using 20 million noisy qubits", href: "https://arxiv.org/abs/1905.09749", note: "The standard resource estimate separating today from cryptographic relevance." },
       { label: "Macklin et al. (2015), A near-quantum-limited Josephson traveling-wave parametric amplifier", href: "https://doi.org/10.1126/science.aaa8525", note: "The TWPA: how a readout whisper gets amplified without drowning it." },
+      { label: "National Academies (2019), Quantum Computing: Progress and Prospects", href: "https://doi.org/10.17226/25196", note: "Chapter 5 defines the four-layer reference model: quantum data plane, control and measurement plane, control processor plane, and host processor." },
+      { label: "Krinner et al. (2019), Engineering cryogenic setups for 100-qubit scale superconducting circuits", href: "https://arxiv.org/abs/1806.07862", note: "The signal chain behind the architecture section: the 20/20/20 dB attenuation split, HEMT and TWPA gains, isolation." },
+      { label: "Fowler et al. (2012), Surface codes: towards practical large-scale quantum computation", href: "https://arxiv.org/abs/1208.0928", note: "The surface code and minimum-weight perfect matching decoding; the foundation of the real-time error-correction loop." },
+      { label: "Hillmann et al. (2024), Localized statistics decoding", href: "https://arxiv.org/abs/2406.18655", note: "A fast, parallel decoder for qLDPC codes; the newest of the decoder families the error-correction section names." },
       { label: "Molmer & Sorensen (1999), Multiparticle entanglement of hot trapped ions", href: "https://arxiv.org/abs/quant-ph/9810040", note: "The workhorse two-qubit gate of every trapped-ion machine." },
       { label: "IBM Quantum Learning", href: "https://learning.quantum.ibm.com/", note: "Free courses and the path to running circuits on real hardware today." },
     ],
