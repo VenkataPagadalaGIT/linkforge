@@ -79,6 +79,85 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 
 export const aiUpdates: AIUpdate[] = [
   {
+    id: "nvidia-hugging-face-acquisition",
+    slug: "nvidia-acquires-hugging-face",
+    title: "NVIDIA to Acquire Hugging Face for $12.93 Billion",
+    company: "NVIDIA",
+    category: "industry",
+    date: "2026-09-03",
+    summary:
+      "NVIDIA said on September 3, 2026 that it has agreed to acquire Hugging Face for $12,930,300,000. The vendor that supplies the industry's training and inference hardware is buying the hub where 3 million open models are distributed. NVIDIA's post says the platform stays open, and says nothing about regulatory approval or a closing date.",
+    takeaways: [
+      "The official figure is $12,930,300,000, stated by Jensen Huang on NVIDIA's newsroom. CNBC reports about $11.9 billion goes to shareholders, with up to $1 billion held back as equity-based retention awards for Hugging Face employees who join.",
+      "What the price buys, per NVIDIA's own numbers: 3 million models, 1 million applications, 500,000 datasets, 18 million developers and researchers, and 200,000 companies on the platform.",
+      "This is NVIDIA's second largest deal, behind the roughly $20 billion it paid for most of Groq's AI chip assets in December 2025.",
+      "Huang's commitment runs one sentence: Hugging Face \"will remain an open platform for the entire AI ecosystem.\" The announcement defines no governance mechanism behind it.",
+      "Pre-announcement reporting drifted. Bloomberg had NVIDIA nearing $14 billion on September 2 and $13 billion on September 3. Publish the newsroom figure, not the round one.",
+    ],
+    tocSections: ["What Happened", "The Numbers", "What NVIDIA Did Not Say", "Why It Matters"],
+    contributors: ["huang", "delangue", "wolf"],
+    highlights: [
+      { stat: "$12.93B", label: "official price, per NVIDIA's newsroom" },
+      { stat: "3M", label: "models hosted on Hugging Face" },
+      { stat: "18M", label: "developers and researchers on the platform" },
+      { stat: "#2", label: "largest NVIDIA deal ever, after Groq's ~$20B" },
+    ],
+    body: `<h3 id="what-happened">What Happened</h3>
+<p>On September 3, 2026, NVIDIA announced it has agreed to acquire Hugging Face. Jensen Huang stated the price himself on the company newsroom: $12,930,300,000.</p>
+<p>The deal did not appear from nowhere. TechCrunch reported NVIDIA closing in on the acquisition on August 26, and CNBC reported an agreement on August 27, a week before the official post. CNBC also reports that Hugging Face approached Huang weeks ahead of the deal, which makes this a seller-initiated transaction rather than a hostile approach.</p>
+<p>Hugging Face is the default distribution point for open models. If you have pulled a model in the last three years, you almost certainly pulled it from Hugging Face. The company that makes the hardware those models run on now owns the shelf they sit on.</p>
+
+<h3 id="the-numbers">The Numbers</h3>
+<p>Every figure below comes from NVIDIA's own announcement unless marked otherwise. We do not round the price, because the exact number is the one in the primary source.</p>
+<ul>
+<li><strong>$12,930,300,000</strong> total consideration</li>
+<li><strong>About $11.9 billion</strong> to Hugging Face shareholders, plus <strong>up to $1 billion</strong> in equity-based retention awards for employees who join NVIDIA (CNBC)</li>
+<li><strong>3 million</strong> models on the platform</li>
+<li><strong>1 million</strong> applications</li>
+<li><strong>500,000</strong> datasets</li>
+<li><strong>18 million</strong> developers, researchers and creators</li>
+<li><strong>200,000</strong> companies using the platform</li>
+<li><strong>500</strong> NVIDIA models and <strong>250</strong> NVIDIA open datasets already published there</li>
+</ul>
+<p>For scale, NVIDIA paid roughly <strong>$20 billion</strong> for most of Groq's AI chip assets in December 2025. Hugging Face is the second largest deal in company history, and it cost about 65 percent of what the Groq assets did.</p>
+<p>One note on sourcing. Bloomberg reported on September 2 that NVIDIA was nearing a $14 billion deal, then reported $13 billion on September 3. Both were reasonable at the time. Neither is the number to publish now.</p>
+
+<h3 id="what-nvidia-did-not-say">What NVIDIA Did Not Say</h3>
+<p>The absences in this announcement are as informative as the figures.</p>
+<ul>
+<li><strong>No regulatory language.</strong> The post contains no mention of antitrust review, closing conditions, or an expected close date. For a deal this size between a dominant hardware supplier and the main distribution channel for the software that runs on that hardware, silence on review is conspicuous rather than neutral.</li>
+<li><strong>No Hugging Face statement.</strong> At the time of writing there is no post about the acquisition on the Hugging Face blog, and no statement there from Clement Delangue or Thomas Wolf. Everything currently known about intent comes from the buyer.</li>
+<li><strong>No definition of open.</strong> Huang says the platform "will remain an open platform for the entire AI ecosystem." The post attaches no governance structure, no foundation, no independent board, and no time commitment to that sentence.</li>
+</ul>
+<p>Precedent is worth holding in mind. When NVIDIA took Groq's assets in December 2025, CNBC characterized the structure as preserving a "fiction of competition," because Groq continued as a nominally independent company after its technology and most of its staff moved across. Watch for whether Hugging Face is kept independent in the same nominal way.</p>
+
+<h3 id="why-it-matters">Why It Matters</h3>
+<p>If your work touches how AI systems find and cite content, this is a distribution story rather than a chip story.</p>
+<p>Answer engines and agents run on a narrow set of models, and those models reach the people building with them through a small number of hubs. Hugging Face is the largest. Owning it concentrates two decisions inside one company: which hardware AI runs on, and which models are easy to find and pull. Consolidation upstream of the model layer eventually narrows the surface that <a href="/insights/answer-engine-optimization">answer engine optimization</a> works against.</p>
+<p>The practical read for this quarter:</p>
+<ul>
+<li><strong>Nothing breaks tomorrow.</strong> The deal is announced, not closed, and no close date was given. Model downloads, Spaces and inference endpoints keep working.</li>
+<li><strong>Watch the terms of service, not the press release.</strong> Any real change in what open means will show up first in Hub terms, licensing defaults or rate limits, not in a blog post.</li>
+<li><strong>Treat model distribution as a supplier dependency.</strong> Teams pulling open weights from a single hub in production have a concentration question to answer, and the counterparty just changed.</li>
+</ul>`,
+    sourceUrl: "https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/",
+    tags: [
+      "Acquisition",
+      "NVIDIA",
+      "Hugging Face",
+      "Open Source",
+      "Open Weights",
+      "AI Infrastructure",
+      "Model Distribution",
+    ],
+    relatedLinks: [
+      { label: "Jensen Huang", to: "/ai-contributors/huang", description: "NVIDIA CEO, announced the acquisition and stated the price" },
+      { label: "Clement Delangue", to: "/ai-contributors/delangue", description: "Hugging Face co-founder and CEO" },
+      { label: "Thomas Wolf", to: "/ai-contributors/wolf", description: "Hugging Face co-founder and chief science officer" },
+      { label: "Answer Engine Optimization", to: "/insights/answer-engine-optimization", description: "Why model distribution shapes what answer engines cite" },
+    ],
+  },
+  {
     id: "rise-of-ai-agents",
     slug: "rise-of-ai-agents-2026",
     title: "The Rise of AI Agents: A $2.5 Billion Week and the Numbers Behind It",
