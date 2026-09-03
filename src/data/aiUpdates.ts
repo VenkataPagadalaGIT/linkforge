@@ -102,6 +102,33 @@ export const aiUpdates: AIUpdate[] = [
       { stat: "18M", label: "developers and researchers on the platform" },
       { stat: "#2", label: "largest NVIDIA deal ever, after Groq's ~$20B" },
     ],
+    documents: [
+      {
+        label: "NVIDIA to Acquire Hugging Face (the announcement, with the exact price)",
+        source: "NVIDIA Newsroom, 3 Sep 2026",
+        url: "https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/",
+      },
+      {
+        label: "Hugging Face approached NVIDIA's Huang weeks ahead of the $12.9B deal",
+        source: "CNBC, 3 Sep 2026",
+        url: "https://www.cnbc.com/2026/09/03/nvidia-agrees-to-buy-hugging-face-for-almost-13-billion-ai-expansion.html",
+      },
+      {
+        label: "NVIDIA confirms it will buy Hugging Face for $12.9 billion",
+        source: "TechCrunch, 3 Sep 2026",
+        url: "https://techcrunch.com/2026/09/03/nvidia-confirms-it-will-buy-hugging-face-for-12-9-billion/",
+      },
+      {
+        label: "NVIDIA agrees to buy Hugging Face for $12.9 billion, report says (pre-announcement)",
+        source: "CNBC, 27 Aug 2026",
+        url: "https://www.cnbc.com/2026/08/27/nvidia-hugging-face-acquisition.html",
+      },
+      {
+        label: "NVIDIA closes in on Hugging Face acquisition (the first report)",
+        source: "TechCrunch, 26 Aug 2026",
+        url: "https://techcrunch.com/2026/08/26/nvidia-closes-in-on-hugging-face-acquisition/",
+      },
+    ],
     body: `<h3 id="what-happened">What Happened</h3>
 <p>On September 3, 2026, NVIDIA announced it has agreed to acquire Hugging Face. Jensen Huang stated the price himself on the company newsroom: $12,930,300,000.</p>
 <p>The deal did not appear from nowhere. TechCrunch reported NVIDIA closing in on the acquisition on August 26, and CNBC reported an agreement on August 27, a week before the official post. CNBC also reports that Hugging Face approached Huang weeks ahead of the deal, which makes this a seller-initiated transaction rather than a hostile approach.</p>
