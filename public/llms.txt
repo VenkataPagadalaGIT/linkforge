@@ -108,6 +108,10 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 News with primary sources attached: court documents, official filings, and original announcements linked from every article.
 - URL: https://venkatapagadala.com/ai-updates
 
+### The Rise of AI Agents: A $2.5 Billion Week and the Numbers Behind It (Sep 2026)
+The last week of August 2026, when the personal AI agent became a venture category: Instinct reported at a $2.5 billion valuation (WSJ), Town in talks at $1 billion, while McKinsey found 40% of large enterprises scaling agents and Salesforce reported Agentforce past $1.5 billion ARR. Covers the capability curve (SWE-bench saturation, METR's 131-day task-horizon doubling) and the case for caution (Gartner's 40% cancellation prediction, which valuations are talks rather than closes). Every number links to its source; the companion living reference is /notebook/ai/agents.
+- URL: https://venkatapagadala.com/ai-updates/rise-of-ai-agents-2026
+
 ### Stripe Agrees to Buy AI Model Router OpenRouter for More Than $7 Billion (Aug 2026)
 Bloomberg reported on August 16, 2026 that Stripe agreed to acquire OpenRouter, the gateway developers use to route requests across 500+ AI models, for more than $7 billion, roughly 5x its May 2026 valuation. Neither company has confirmed: both declined to comment. Includes an analyst view on why a payments company buys a model router, and a narrated 30-second video.
 - URL: https://venkatapagadala.com/ai-updates/stripe-openrouter-acquisition-7-billion

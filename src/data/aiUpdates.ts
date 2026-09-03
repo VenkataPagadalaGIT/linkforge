@@ -79,6 +79,116 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 
 export const aiUpdates: AIUpdate[] = [
   {
+    id: "rise-of-ai-agents",
+    slug: "rise-of-ai-agents-2026",
+    title: "The Rise of AI Agents: A $2.5 Billion Week and the Numbers Behind It",
+    company: "AI Industry",
+    category: "industry",
+    date: "2026-09-03",
+    summary:
+      "In the last week of August 2026, the personal AI agent became a venture category of its own: Instinct, an invite-only assistant built by a 23-year-old former Sierra researcher, was reported at a $2.5 billion valuation, and Town entered talks at $1 billion a day later. The same week, McKinsey's State of AI survey found 40% of large enterprises now scaling AI agents, and Salesforce reported Agentforce crossed $1.5 billion in ARR. The hype and the data finally arrived together, along with Gartner's standing prediction that over 40% of agentic AI projects will be canceled by the end of 2027.",
+    takeaways: [
+      "The Wall Street Journal reported on August 26 that Instinct closed a $250 million Series B co-led by Index Ventures and Benchmark at a $2.5 billion valuation, roughly five times its early-August mark per Forbes. A day later, Newcomer reported Town in talks at $1 billion, led by the same firm backing Instinct.",
+      "The enterprise data landed the same week: 40% of $1 billion-plus organizations are scaling AI agents in at least one function, up from 27% a year earlier (McKinsey, n=1,719), and 57.3% of organizations surveyed by LangChain have agents in production.",
+      "The vendors' own numbers point the same direction: Salesforce reported Agentforce ARR above $1.5 billion, up over 240% year over year, and Microsoft telemetry shows more than 80% of the Fortune 500 running active AI agents.",
+      "The counterweight is just as concrete: Gartner predicts over 40% of agentic AI projects will be canceled by the end of 2027, and several of the week's headline valuations are reported talks, not closed rounds.",
+    ],
+    tocSections: [
+      "The Week the Personal Agent Became a Category",
+      "The Enterprise Numbers Behind the Hype",
+      "How Capable Are They, Really",
+      "The Case for Caution",
+    ],
+    myView: {
+      points: [
+        "The consumer wave is a distribution story, not a capability story | Instinct and Town wrap the same frontier models everyone else uses. What changed is who they reach: people who will never open a developer tool, served over text messages and phone calls. A $2.5 billion price on an invite-only assistant is a bet on owning the personal-assistant relationship itself, the same wedge the browser and the smartphone home screen once were.",
+        "The bifurcation is the real statistic | Large enterprises scaling agents jumped from 27% to 40% in a year while smaller firms sat flat at 22%, and Deloitte found 85% of organizations testing agents but only 15% running them at orchestrated scale. The gap between demo and deployment is where the next two years of winners and losers get decided, and it is widening, not closing.",
+        "Benchmark saturation means the frontier moved | When seven models score 95% or better on SWE-bench Verified, the benchmark has stopped measuring the frontier. The number to watch is METR's task horizon: the length of task agents can complete is doubling roughly every 131 days. Hour-long tasks became day-long tasks; when day-long becomes week-long, org charts change, not just toolchains.",
+        "Gartner's cancellation call and the funding records are both right | This is the classic shape of an infrastructure boom: capital overbuilds, most projects die, and the rails that survive run everything. Over 40% of agentic projects canceled by 2027 and a record $510 billion H1 for venture capital are not contradictory data points. They are the same story told from both ends.",
+      ],
+      caveat:
+        "Several of the week's headline numbers are reported talks rather than closed rounds (Town at $1 billion, Cognition at $40 billion), and the platform metrics (Agentforce work units, Claude Code run rate, Microsoft's Fortune 500 telemetry) are the vendors' own figures, not audited ones. The living statistics page linked below tracks which is which.",
+    },
+    highlights: [
+      { stat: "$2.5B", label: "Instinct valuation, reported Aug 26 (WSJ)" },
+      { stat: "40%", label: "of large enterprises scaling agents (McKinsey)" },
+      { stat: "$1.5B+", label: "Agentforce ARR, up 240% Y/Y (Salesforce)" },
+      { stat: "97%", label: "top SWE-bench Verified score, vs 49% in Oct 2024" },
+    ],
+    documents: [
+      {
+        label: "WSJ: The latest viral AI assistant rocketing across Silicon Valley",
+        source: "The Wall Street Journal, 26 Aug 2026",
+        url: "https://www.wsj.com/tech/ai/the-latest-viral-ai-assistant-rocketing-across-silicon-valley-abb46276",
+      },
+      {
+        label: "McKinsey, The State of AI in 2026: On the road to ROI (n=1,719)",
+        source: "McKinsey & Company, 25 Aug 2026",
+        url: "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai",
+      },
+      {
+        label: "Salesforce Q2 FY27 earnings: Agentforce ARR exceeds $1.5 billion",
+        source: "Salesforce press release, 26 Aug 2026",
+        url: "https://www.salesforce.com/news/press-releases/2026/08/26/fy27-q2-earnings/",
+      },
+      {
+        label: "Gartner: over 40% of agentic AI projects will be canceled by end of 2027",
+        source: "Gartner press release, 25 Jun 2025",
+        url: "https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027",
+      },
+      {
+        label: "METR, Time Horizon 1.1: agent task horizons doubling every ~131 days",
+        source: "METR, 29 Jan 2026",
+        url: "https://metr.org/blog/2026-1-29-time-horizon-1-1/",
+      },
+      {
+        label: "LangChain, State of Agent Engineering (n=1,340)",
+        source: "LangChain",
+        url: "https://www.langchain.com/state-of-agent-engineering",
+      },
+    ],
+    body: `<h3 id="the-week-the-personal-agent-became-a-category">The Week the Personal Agent Became a Category</h3>
+<p>On August 26, the Wall Street Journal reported that Instinct, an invite-only AI assistant that handles errands and makes purchases over text messages and phone calls, closed a $250 million Series B co-led by Index Ventures and Benchmark at a $2.5 billion valuation, bringing its total funding to $350 million. Its founder, Noah Shinn, is a 23-year-old former researcher at Sierra, the agent company Bret Taylor co-founded. Forbes, publishing the same day, noted the valuation had jumped roughly fivefold from just over $500 million in early August, and described the round as still in talks even as other outlets reported it closed. That discrepancy is worth keeping.</p>
+<p>One day later, Newcomer reported that Town, an assistant startup founded by former Plaid CTO Jean-Denis Greze that gives users customizable agent characters, was in talks to raise at a $1 billion valuation in a round led by Index, the same firm backing Instinct. LinkedIn News framed the pair as the arrival of AI agents "for normal people": assistants positioned as personal help rather than developer tools, with user bases running from investors to plumbers.</p>
+<p>The week did not happen in isolation. On August 12, Bloomberg-sourced reporting said Cognition, maker of the Devin coding agent, was already in talks to raise at a valuation of at least $40 billion, less than three months after closing its previous round at $26 billion post-money. And the capital backdrop is the largest ever: Crunchbase counted a record $510 billion in global venture funding in the first half of 2026, with more than 70% of second-quarter capital going to AI companies.</p>
+<h3 id="the-enterprise-numbers-behind-the-hype">The Enterprise Numbers Behind the Hype</h3>
+<p>What makes this moment different from the agent hype of 2024 is that the enterprise data arrived in the same news cycle. McKinsey's State of AI survey, published August 25 with 1,719 respondents across 97 countries, found that 40% of large organizations (over $1 billion in revenue) are now scaling AI agents in at least one business function, up from 27% a year earlier. Smaller organizations sat flat at 22%, and McKinsey's AI high performers were more than three times as likely to be scaling agents across most functions. LangChain's State of Agent Engineering survey of 1,340 practitioners found 57.3% of organizations with agents in production, up from 51% the prior year. KPMG's quarterly pulse of US enterprise leaders adds the texture: 53% deploying agents, with the share orchestrating multiple agents across workflows doubling in a quarter, from 9% to 18%.</p>
+<p>The maturity gap is just as measurable. Deloitte's August 12 study of 501 US organizations found 85% testing or expanding agents, but only 15% at scaled, orchestrated multi-agent adoption. Most of the market is still in the pilot phase it claims to be past.</p>
+<p>The platform companies' own numbers point the same way, with the usual caveat that they are the companies' own numbers. Salesforce reported on August 26 that Agentforce passed $1.5 billion in annual recurring revenue, up over 240% year over year, alongside 7 billion "Agentic Work Units" delivered to date, 3.2 billion of them in the most recent quarter. Microsoft's security telemetry counts more than 80% of the Fortune 500 running active AI agents. Anthropic disclosed that Claude Code, its agentic coding tool, passed a $2.5 billion revenue run rate, more than double where it started the year.</p>
+<h3 id="how-capable-are-they-really">How Capable Are They, Really</h3>
+<p>The benchmark story of 2026 is saturation at the top. As of the Vals AI leaderboard update on August 26, the best model scores 97.00% on SWE-bench Verified, the standard test of whether an agent can resolve real GitHub issues. In October 2024 the state of the art was 49%. Seven of the 86 evaluated models now score 95% or better, which is why the field's attention is shifting to harder, messier tests of computer use and long-horizon work.</p>
+<p>The more durable measurement comes from METR, which tracks the length of task an agent can complete with a 50% success rate. On the post-2023 trend, that task horizon is doubling roughly every 131 days, and the longest measured horizon has reached about 17.4 hours of human-equivalent work. If the doubling holds, tasks that take a person a full week come into range within a couple of years. That single curve, not any one benchmark score, is the load-bearing fact under every agent valuation in this article.</p>
+<h3 id="the-case-for-caution">The Case for Caution</h3>
+<ul>
+<li><strong>Gartner's standing prediction.</strong> Over 40% of agentic AI projects will be canceled by the end of 2027, driven by escalating costs, unclear business value, and inadequate risk controls. The same firm coined "agent washing" for vendors rebranding chatbots and RPA as agents.</li>
+<li><strong>Talks are not closes.</strong> Town's $1 billion and Cognition's $40 billion are reported negotiations, not completed rounds. Even Instinct's $250 million was described by Forbes as still in talks on the day others reported it raised.</li>
+<li><strong>Company numbers are company numbers.</strong> Agentforce work units, Claude Code's run rate, and Microsoft's Fortune 500 telemetry are self-reported and unaudited. Directionally consistent, independently unverified.</li>
+<li><strong>The surveys measure different bars.</strong> "In production" (LangChain, 57.3%), "scaling in at least one function" (McKinsey, 40%), and "scaled multi-agent orchestration" (Deloitte, 15%) are three different thresholds. The spread between them is the honest picture of where adoption actually stands.</li>
+</ul>
+<p>Every number in this article, and dozens more, lives on this site's <a href="/notebook/ai/agents">AI Agent Statistics page</a>, a living reference updated monthly where each figure links to its source and is labeled by kind: survey, forecast, company claim, benchmark, or funding.</p>
+<p>Coverage: <a href="https://www.wsj.com/tech/ai/the-latest-viral-ai-assistant-rocketing-across-silicon-valley-abb46276" target="_blank" rel="noopener noreferrer">WSJ on Instinct</a> · <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai" target="_blank" rel="noopener noreferrer">McKinsey State of AI</a> · <a href="https://www.salesforce.com/news/press-releases/2026/08/26/fy27-q2-earnings/" target="_blank" rel="noopener noreferrer">Salesforce Q2 FY27</a> · <a href="https://metr.org/blog/2026-1-29-time-horizon-1-1/" target="_blank" rel="noopener noreferrer">METR Time Horizon 1.1</a> · <a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027" target="_blank" rel="noopener noreferrer">Gartner</a></p>
+<p><em>This article summarizes contemporaneous news reports, published surveys, and the companies' own figures. Reported valuations are not confirmed transactions. It is not investment advice.</em></p>`,
+    sourceUrl: "https://www.wsj.com/tech/ai/the-latest-viral-ai-assistant-rocketing-across-silicon-valley-abb46276",
+    tags: ["AI agents", "Instinct", "Town", "Cognition", "Agentforce", "SWE-bench", "METR", "agentic AI", "venture capital"],
+    relatedLinks: [
+      {
+        label: "AI Agent Statistics",
+        to: "/notebook/ai/agents",
+        description: "The living reference behind this article: 81 verified numbers on adoption, money, scale, and capability, updated monthly.",
+      },
+      {
+        label: "How LLMs Work",
+        to: "/guides/how-llms-work",
+        description: "The models underneath every agent: the stages a prompt passes through, in explorable 3D.",
+      },
+      {
+        label: "Map of the AI Economy",
+        to: "/notebook/ai/map",
+        description: "Where the agent companies sit among 455 players in the AI value chain.",
+      },
+    ],
+  },
+  {
     id: "stripe-openrouter-acquisition",
     slug: "stripe-openrouter-acquisition-7-billion",
     title: "Stripe Agrees to Buy AI Model Router OpenRouter for More Than $7 Billion",
