@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
-import PersonaComposer from "@/components/personas/PersonaComposer";
-import PersonaExplorer from "@/components/personas/PersonaExplorer";
-import ReachMatrix from "@/components/personas/ReachMatrix";
-import DailyUsePanel from "@/components/personas/DailyUsePanel";
+import PersonaStudio from "@/components/personas/PersonaStudio";
 import PlatformMark from "@/components/personas/PlatformMark";
 import {
   CITATIONS,
-  USAFACTS_CORPUS,
-  US_CONTEXT,
-  US_CONTEXT_BUCKETS,
-  DATA_LADDER,
   RESEARCH_PAPERS,
   EVIDENCE,
   REACH,
@@ -20,7 +13,6 @@ import {
   PERSONAS,
   PERSONAS_FIRST_PUBLISHED,
   PERSONAS_LAST_UPDATED,
-  PERSONA_CHANGELOG,
   PERSONA_COUNTS,
   PLATFORMS,
   STUDIES,
@@ -82,31 +74,31 @@ export default function Page() {
           hidden, because hiding them is how a persona becomes fiction.
         </p>
 
-        {/* Composer first: the 10,000-foot view, before any percentage. */}
-        <section aria-labelledby="c-h" className="mb-14">
-          <h2 id="c-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Build a persona from the sources it trusts
+        {/* One tool. Build anyone, get an answer that says how it knows. */}
+        <section aria-labelledby="st-h" className="mb-6">
+          <h2 id="st-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Build anyone, and see where they actually are
           </h2>
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Same product, same city, five different buyers asking five different questions. Drag the
-            demand sources a buyer would actually use into the profile, and it identifies which of
-            the five they are, or refuses to name one until the mix is strong enough. It never
-            invents a person: it reads the sources and names the pattern.
+            Click or drag traits into the profile. A woman, 33, Asian, earning $80,000. Every
+            platform row answers, and every row says how it knows: <span className="text-foreground">measured</span>{" "}
+            means a published figure exists and it is cited, <span className="text-foreground">estimated</span>{" "}
+            means it was combined from published figures and the arithmetic is printed when you tap
+            the row. Ask for something nothing measures, and it says so instead of inventing it.
           </p>
-          <PersonaComposer />
-        </section>
-
-        {/* The explorer goes above the fold: it teaches the method by being used. */}
-        <section aria-labelledby="x-h" className="mb-14">
-          <h2 id="x-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Build an audience, watch the data respond
-          </h2>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Start wide and add detail. Unlike every other persona tool, this one gets LESS confident
-            as you narrow, because that is what the evidence actually does. Add a second lens and it
-            will tell you no study measures the overlap.
+          <PersonaStudio />
+          <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-3 max-w-3xl">
+            The estimator works in odds, not percentages. Each trait multiplies the national odds
+            by the ratio its own published cell implies, and the result converts back to a
+            percentage, so it cannot run past 100 the way multiplied percentages do. It assumes the
+            traits shift the odds independently of each other, which is rarely exactly true, so the
+            confidence label drops as traits are added rather than rising. Sampling error is
+            combined in quadrature and shown per row; model error from the independence assumption
+            sits on top of that and is not quantified. The underlying cells are all on the{" "}
+            <Link href="/personas/data" className="text-foreground underline decoration-border hover:text-glow transition-all">
+              data page
+            </Link>.
           </p>
-          <PersonaExplorer />
         </section>
 
         {/* The grading key is the product. Lead with it. */}
@@ -232,102 +224,6 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Reach matrix: the whole published dataset, one grid */}
-        <section aria-labelledby="e-h" className="mb-14">
-          <h2 id="e-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Which group uses which platform
-          </h2>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            The full published dataset: eight platforms across gender, age, income and education.
-            Bar length is the value, the small figure beneath it is the gap from the national
-            average, and each column carries its own margin of error.
-          </p>
-          <ReachMatrix />
-        </section>
-
-        {/* Daily use: habit rather than reach */}
-        <section aria-labelledby="du-h" className="mb-14">
-          <h2 id="du-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Which platforms they open every day
-          </h2>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Reach says a platform can be used. Daily use says it is a habit, and it is the closer
-            answer to where an audience actually spends time. A different survey with a different
-            sample, so it is kept separate rather than blended. The reversals are the interesting
-            part: men out-use women on YouTube daily 58 to 39, while women lead Facebook 60 to 44.
-          </p>
-          <DailyUsePanel />
-        </section>
-
-        {/* Changelog */}
-        <section aria-labelledby="c-h" className="mb-14 border border-border/60 p-6">
-          <h2 id="c-h" className="font-display text-2xl font-bold text-foreground mb-4">
-            What changed, and what was thrown out
-          </h2>
-          {PERSONA_CHANGELOG.map((c) => (
-            <div key={c.date} className="mb-4">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                {c.date}
-              </p>
-              <ul className="space-y-1">
-                {c.entries.map((x, i) => (
-                  <li key={i} className="font-mono text-xs text-muted-foreground/80 leading-relaxed">
-                    {x}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-4">
-            Figures that fail verification are recorded internally and never published, so a later
-            refresh cannot quietly reintroduce a number that was already rejected once.
-          </p>
-        </section>
-
-        {/* The national baseline a persona sits inside. */}
-        <section aria-labelledby="us-h" className="mb-14">
-          <h2 id="us-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            The country a persona lives in
-          </h2>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            No persona is credible floating free of its baseline. A household earning $120,000 reads
-            differently once you know the median is $81,600. Retrieved from USAFacts, which
-            harmonises 70-plus federal agencies, with the agency of record named on every row.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {(["money", "household", "people", "work"] as const).map((b) => (
-              <div key={b} className="border border-border/60 p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
-                  {US_CONTEXT_BUCKETS[b]}
-                </p>
-                <div className="space-y-3">
-                  {US_CONTEXT.filter((f) => f.bucket === b).map((f) => (
-                    <div key={f.id}>
-                      <p className="font-mono text-sm text-foreground leading-snug">{f.value}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-0.5">
-                        {f.metric} · {f.asOf}
-                      </p>
-                      <a
-                        href={f.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-mono text-[10px] text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
-                      >
-                        {f.agency}, via USAFacts
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-4">
-            {USAFACTS_CORPUS.note} Collected by direct fetch on 2026-09-09; usafacts.org permits
-            ClaudeBot in its robots.txt and every figure above appears in the served HTML, so no paid
-            scraper was used or needed.
-          </p>
-        </section>
-
         {/* Why the tool behaves as it does, in peer-reviewed terms. */}
         <section aria-labelledby="rf-h" className="mb-14">
           <h2 id="rf-h" className="font-display text-2xl font-bold text-foreground mb-2">
@@ -363,62 +259,23 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Which source answers which layer, and what it costs. */}
-        <section aria-labelledby="dl-h" className="mb-14">
-          <h2 id="dl-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Which source answers which layer
+        {/* One link out to everything the tool reads from. */}
+        <section aria-labelledby="dp-h" className="mb-14">
+          <h2 id="dp-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            The data underneath
           </h2>
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Four of the six layers below are answered by free public research, most of it federal.
-            Paid tooling is justified for collecting what people say and type, never for
-            demographics, and nothing at any price answers the last row.
+            Every cell the studio reads from is printed in full on its own page, with sample sizes
+            and margins of error: platform reach by gender, age, income, education and race, daily
+            use as a separate survey, the US baseline from USAFacts, and which source answers which
+            layer at what cost.
           </p>
-          <div className="border border-border/60 overflow-x-auto">
-            <table className="w-full min-w-[720px]">
-              <thead>
-                <tr className="border-b border-border text-left">
-                  {["Layer", "The question", "Source", "Cost"].map((h) => (
-                    <th key={h} className="py-2.5 pr-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="[&_td:first-child]:pl-0">
-                {DATA_LADDER.map((d) => (
-                  <tr key={d.layer} className="border-b border-border/40 align-top">
-                    <td className="py-3 pr-4 font-mono text-xs text-foreground whitespace-nowrap">
-                      {d.layer}
-                    </td>
-                    <td className="py-3 pr-4 font-mono text-[11px] text-muted-foreground leading-relaxed">
-                      {d.question}
-                    </td>
-                    <td className="py-3 pr-4 font-mono text-[11px] leading-relaxed">
-                      {d.url ? (
-                        <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
-                          {d.source}
-                        </a>
-                      ) : (
-                        <span className="text-muted-foreground">{d.source}</span>
-                      )}
-                      <span className="block text-muted-foreground/90 mt-1">{d.note}</span>
-                    </td>
-                    <td className="py-3 pr-4">
-                      <span
-                        className="font-mono text-[9px] uppercase tracking-wider border px-1.5 py-0.5 whitespace-nowrap"
-                        style={{
-                          borderColor: d.cost === "free" ? "#10b981" : "#f59e0b",
-                          color: d.cost === "free" ? "#10b981" : "#f59e0b",
-                        }}
-                      >
-                        {d.cost}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Link
+            href="/personas/data"
+            className="inline-block border border-border px-4 py-2.5 font-mono text-xs text-foreground hover:border-foreground/50 hover:bg-foreground/5 transition-all"
+          >
+            Open the data page
+          </Link>
         </section>
 
         {/* Full citations. Every number on this page traces to one of these. */}
@@ -427,8 +284,8 @@ export default function Page() {
             Sources
           </h2>
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Every figure on this page comes from one of the following. Each entry states what the
-            study actually measured, its sample and field dates, and when it was last checked.
+            Every figure the studio produces traces to one of the following. Each entry states what
+            the study actually measured, its sample and field dates, and when it was last checked.
           </p>
           <ol className="space-y-4">
             {CITATIONS.map((c, i) => (
@@ -468,6 +325,14 @@ export default function Page() {
             Related
           </h2>
           <ul className="space-y-2 font-mono text-xs">
+            <li>
+              <Link
+                href="/personas/data"
+                className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
+              >
+                The data behind the personas: every published cell, with its margin of error
+              </Link>
+            </li>
             <li>
               <Link
                 href="/notebook/ai/agents"

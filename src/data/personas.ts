@@ -993,3 +993,154 @@ export const USAFACTS_CORPUS = {
   note:
     "USAFacts publishes 94 distinct questions, each expanded across states and counties into roughly 29,500 answer pages. Eleven were taken here, selected for what a persona actually needs. The remainder is a known, mapped source for later passes rather than an unexplored pile.",
 };
+
+/* ------------------------------------------------------------------ *
+ * RACE AND ETHNICITY, and THE ESTIMATOR
+ *
+ * The estimator is the heart of the tool and the place where honesty is
+ * either kept or quietly lost, so the method is stated in full.
+ *
+ * Published research gives MARGINALS: a figure for women, a figure for
+ * 30-to-49s, a figure for Asian adults. It does not give the cell where
+ * those meet. Refusing to combine them is safe but useless, because the
+ * question people actually have is always about a combination.
+ *
+ * So combinations are ESTIMATED by multiplicative lift, and the working
+ * is shown every time. Each trait's lift against the national base is
+ * multiplied through. The assumption is independence, which is rarely
+ * exactly true, so the result is labelled an estimate, the arithmetic is
+ * printed, and the sampling error is carried through. Chapman et al.
+ * (2008) is the reason the tool also widens its uncertainty and softens
+ * its language as traits accumulate rather than sounding more certain.
+ * ------------------------------------------------------------------ */
+
+export const RACE_SEGMENTS: Segment[] = [
+  { id: "race-white", dimension: "race" as Dimension, label: "White", n: 3304, moe: 2.3 },
+  { id: "race-black", dimension: "race" as Dimension, label: "Black", n: 512, moe: 6.0 },
+  { id: "race-hispanic", dimension: "race" as Dimension, label: "Hispanic", n: 757, moe: 5.0 },
+  { id: "race-asian", dimension: "race" as Dimension, label: "Asian", n: 211, moe: 8.9 },
+];
+
+/** Race rows for the reach matrix. Corroborated against the report text. */
+export const RACE_REACH: Record<string, Record<string, number>> = {
+  youtube: { "race-white": 82, "race-black": 85, "race-hispanic": 88, "race-asian": 92 },
+  facebook: { "race-white": 70, "race-black": 74, "race-hispanic": 74, "race-asian": 62 },
+  instagram: { "race-white": 45, "race-black": 54, "race-hispanic": 62, "race-asian": 58 },
+  tiktok: { "race-white": 28, "race-black": 53, "race-hispanic": 57, "race-asian": 31 },
+  snapchat: { "race-white": 24, "race-black": 29, "race-hispanic": 31, "race-asian": 19 },
+  reddit: { "race-white": 27, "race-black": 18, "race-hispanic": 22, "race-asian": 44 },
+  x: { "race-white": 18, "race-black": 26, "race-hispanic": 23, "race-asian": 32 },
+  whatsapp: { "race-white": 23, "race-black": 37, "race-hispanic": 56, "race-asian": 54 },
+};
+
+/** Every segment the estimator can reason about. */
+export const ALL_SEGMENTS: Segment[] = [...SEGMENTS, ...RACE_SEGMENTS];
+export const allSegmentById = (id: string) => ALL_SEGMENTS.find((s) => s.id === id);
+
+/** Reach lookup across the base matrix and the race matrix. */
+export const reachAny = (platformId: string, segmentId: string): number | undefined =>
+  REACH[platformId]?.[segmentId] ?? RACE_REACH[platformId]?.[segmentId];
+
+export type EstimateBasis = "measured" | "estimated" | "unknown";
+
+export interface ReachEstimate {
+  value: number;
+  basis: EstimateBasis;
+  /** Plain-language arithmetic, printed in the interface. */
+  derivation: string;
+  /** Sampling error only. Model error from the independence assumption is extra. */
+  samplingMoe: number;
+  /** Traits that contributed. */
+  used: string[];
+  /** Traits that had no published figure for this platform. */
+  ignored: string[];
+  caution?: string;
+}
+
+/** Probability to odds, and back. Odds cannot leave the 0-1 range on return. */
+const toOdds = (p: number) => p / (100 - p);
+const toPct = (o: number) => (100 * o) / (1 + o);
+
+/**
+ * Estimate the share of a trait combination that ever uses a platform.
+ *
+ * No traits: the published national figure, measured.
+ * One trait: the published cell for that trait, measured.
+ * Two or more: the traits are combined in ODDS space, estimated, working shown.
+ *
+ * Odds rather than percentages, deliberately. Multiplying published
+ * percentages compounds past 100: a woman aged 30 to 49 who is Asian came out
+ * at 99% on YouTube, which is not a real number, it is arithmetic running off
+ * the end of the scale. Odds ratios multiply without a ceiling and convert
+ * back inside 0 to 100 by construction, which is why logistic models work this
+ * way. It also stays conservative where the base rate is already high, which
+ * is exactly where the naive version was worst.
+ *
+ * The assumption that survives either way is independence: that being Asian
+ * shifts the odds by the same factor whether or not you are also 33 and a
+ * woman. That is rarely exactly true. It is stated in the interface rather
+ * than buried here.
+ */
+export function estimateReach(platformId: string, traitIds: string[]): ReachEstimate {
+  const base = PLATFORMS.find((p) => p.id === platformId)?.overall ?? 0;
+  const used: string[] = [];
+  const ignored: string[] = [];
+
+  for (const t of traitIds) {
+    if (reachAny(platformId, t) !== undefined) used.push(t);
+    else ignored.push(t);
+  }
+
+  if (used.length === 0) {
+    return {
+      value: base,
+      basis: "measured",
+      derivation: `Published national figure: ${base}% of all US adults ever use it.`,
+      samplingMoe: 1.9,
+      used,
+      ignored,
+    };
+  }
+
+  if (used.length === 1) {
+    const seg = allSegmentById(used[0]);
+    const v = reachAny(platformId, used[0])!;
+    return {
+      value: v,
+      basis: "measured",
+      derivation: `Published cell: ${v}% of ${seg?.label ?? used[0]} (n=${seg?.n.toLocaleString() ?? "?"}).`,
+      samplingMoe: seg?.moe ?? 1.9,
+      used,
+      ignored,
+    };
+  }
+
+  const baseOdds = toOdds(base);
+  const parts: string[] = [];
+  let odds = baseOdds;
+  let varSum = 0;
+  for (const t of used) {
+    const seg = allSegmentById(t);
+    const v = reachAny(platformId, t)!;
+    const or = baseOdds > 0 ? toOdds(v) / baseOdds : 1;
+    odds *= or;
+    varSum += (seg?.moe ?? 3) ** 2;
+    parts.push(`${seg?.label ?? t} ${or.toFixed(2)}x`);
+  }
+  const value = Math.max(1, Math.min(99, Math.round(toPct(odds))));
+
+  return {
+    value,
+    basis: "estimated",
+    derivation: `Start at the national ${base}%, which is odds of ${baseOdds.toFixed(2)} to 1. Each trait multiplies those odds: ${parts.join(
+      ", ",
+    )}. Combined odds ${odds.toFixed(2)} to 1, which converts back to ${value}%.`,
+    samplingMoe: Math.round(Math.sqrt(varSum) * 10) / 10,
+    used,
+    ignored,
+    caution:
+      used.length >= 4
+        ? "Four or more traits combined. Chapman et al. found descriptions this specific match almost nobody, so read this as a direction, not a population."
+        : "Assumes these traits shift the odds independently of one another, which is rarely exactly true. Treat as a direction, not a measurement.",
+  };
+}
