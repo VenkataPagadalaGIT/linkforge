@@ -181,18 +181,18 @@ def discover():
     print(f"\n  {len(rows)} urls in resource")
 
 
-def fetch_paid(limit=None):
+def fetch_paid(site="pew", limit=None):
     """
     Pew via Bright Data. Approved ceiling $12; the cap lives in brightdata.py
     and aborts rather than warns.
     """
     import brightdata as bd
-    bd.acquire_lock()
+    bd.acquire_lock(site)
     bd.init()
 
     rows = query(f"""SELECT r.id, r.url FROM resource r
                      JOIN source so ON so.id = r.source_id
-                     WHERE so.slug='pew' AND r.status='pending'
+                     WHERE so.slug={q(site)} AND r.status='pending'
                      ORDER BY r.id {'LIMIT ' + str(limit) if limit else ''};""")
     if not rows:
         print("nothing pending"); return
@@ -224,7 +224,7 @@ def fetch_paid(limit=None):
                 continue
             raw = body.encode("utf-8")
             h = hashlib.sha256(raw).hexdigest()
-            rel = os.path.join("pew", h[:2], h[2:4], h + ".gz")
+            rel = os.path.join(site, h[:2], h[2:4], h + ".gz")
             dest = os.path.join(CACHE, rel)
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             if not os.path.exists(dest):
@@ -354,5 +354,5 @@ if __name__ == "__main__":
     a = ap.parse_args()
     if a.cmd == "discover":     discover()
     elif a.cmd == "fetch":      fetch(a.site, a.limit)
-    elif a.cmd == "fetch-paid": fetch_paid(a.limit)
+    elif a.cmd == "fetch-paid": fetch_paid(a.site or "pew", a.limit)
     else:                       status()

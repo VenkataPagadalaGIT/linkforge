@@ -19,8 +19,12 @@ than the estimate. The estimate does not assume it.
 import atexit, json, os, re, sys, time, urllib.request, uuid
 
 COST_PER_REQUEST = 0.0015          # $1.5 / 1,000
-HARD_CAP = 12.00                   # approved ceiling
-LOCK = "/tmp/corpus.brightdata.lock"
+HARD_CAP = 60.00                   # approved ceiling (raised from $12 for the USAFacts bulk)
+LOCK_DIR = "/tmp"
+
+
+def _lock_path(tag):
+    return f"{LOCK_DIR}/corpus.brightdata.{tag}.lock"
 
 _session = None
 _url = None
@@ -35,20 +39,24 @@ def _endpoint():
     return _url
 
 
-def acquire_lock():
-    """A second paid worker on the same slice is the $100 bug. Refuse it."""
-    if os.path.exists(LOCK):
-        pid = open(LOCK).read().strip()
-        alive = pid.isdigit() and os.path.exists(f"/proc/{pid}")
+def acquire_lock(tag="all"):
+    """
+    One paid worker per slice. Two workers on the same slice is the $100 bug,
+    so the tag keys the lock to the exact site being pulled: pew and usafacts
+    can run at once, two pew workers cannot.
+    """
+    path = _lock_path(tag)
+    if os.path.exists(path):
+        pid = open(path).read().strip()
         try:
             os.kill(int(pid), 0); alive = True
         except Exception:
             alive = False
         if alive:
-            raise SystemExit(f"[LOCK] a paid crawl is already running (pid {pid}). Refusing to duplicate.")
-        os.remove(LOCK)
-    open(LOCK, "w").write(str(os.getpid()))
-    atexit.register(lambda: os.path.exists(LOCK) and os.remove(LOCK))
+            raise SystemExit(f"[LOCK] paid crawl '{tag}' already running (pid {pid}). Refusing to duplicate.")
+        os.remove(path)
+    open(path, "w").write(str(os.getpid()))
+    atexit.register(lambda: os.path.exists(path) and os.remove(path))
 
 
 def _rpc(method, params=None, timeout=420):
@@ -91,6 +99,22 @@ def _payload(raw):
     return ""
 
 
+LEDGER = "/tmp/corpus.brightdata.spend"
+
+
+def total_spent():
+    """Cap is global. Two workers must not each spend up to the ceiling."""
+    try:
+        return sum(float(l) for l in open(LEDGER) if l.strip())
+    except FileNotFoundError:
+        return 0.0
+
+
+def record(amount):
+    with open(LEDGER, "a") as f:
+        f.write(f"{amount}\n")
+
+
 def scrape(urls, spend):
     """
     Fetch up to 10 urls. Returns (list of (url, body_or_None), new_spend).
@@ -98,11 +122,13 @@ def scrape(urls, spend):
     The cap is checked BEFORE the call, so it can never be exceeded rather
     than merely detected afterwards.
     """
-    if spend + len(urls) * COST_PER_REQUEST > HARD_CAP:
-        raise SystemExit(f"[BUDGET] ${HARD_CAP} cap reached at ${spend:.2f}. Stopping.")
+    cost = len(urls) * COST_PER_REQUEST
+    if total_spent() + cost > HARD_CAP:
+        raise SystemExit(f"[BUDGET] ${HARD_CAP} global cap reached at ${total_spent():.2f}. Stopping.")
     txt = _payload(_rpc("tools/call", {"name": "scrape_batch",
                                        "arguments": {"urls": list(urls)}}))
-    spend += len(urls) * COST_PER_REQUEST
+    spend += cost
+    record(cost)
 
     out = []
     try:
