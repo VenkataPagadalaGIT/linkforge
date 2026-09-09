@@ -8,6 +8,9 @@ import DailyUsePanel from "@/components/personas/DailyUsePanel";
 import PlatformMark from "@/components/personas/PlatformMark";
 import {
   CITATIONS,
+  USAFACTS_CORPUS,
+  US_CONTEXT,
+  US_CONTEXT_BUCKETS,
   DATA_LADDER,
   RESEARCH_PAPERS,
   EVIDENCE,
@@ -278,6 +281,50 @@ export default function Page() {
           <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-4">
             Figures that fail verification are recorded internally and never published, so a later
             refresh cannot quietly reintroduce a number that was already rejected once.
+          </p>
+        </section>
+
+        {/* The national baseline a persona sits inside. */}
+        <section aria-labelledby="us-h" className="mb-14">
+          <h2 id="us-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            The country a persona lives in
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            No persona is credible floating free of its baseline. A household earning $120,000 reads
+            differently once you know the median is $81,600. Retrieved from USAFacts, which
+            harmonises 70-plus federal agencies, with the agency of record named on every row.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {(["money", "household", "people", "work"] as const).map((b) => (
+              <div key={b} className="border border-border/60 p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                  {US_CONTEXT_BUCKETS[b]}
+                </p>
+                <div className="space-y-3">
+                  {US_CONTEXT.filter((f) => f.bucket === b).map((f) => (
+                    <div key={f.id}>
+                      <p className="font-mono text-sm text-foreground leading-snug">{f.value}</p>
+                      <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-0.5">
+                        {f.metric} · {f.asOf}
+                      </p>
+                      <a
+                        href={f.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[10px] text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
+                      >
+                        {f.agency}, via USAFacts
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-4">
+            {USAFACTS_CORPUS.note} Collected by direct fetch on 2026-09-09; usafacts.org permits
+            ClaudeBot in its robots.txt and every figure above appears in the served HTML, so no paid
+            scraper was used or needed.
           </p>
         </section>
 

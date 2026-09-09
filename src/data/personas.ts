@@ -520,6 +520,15 @@ export const CITATIONS: Citation[] = [
     accessed: "2026-09-09",
   },
   {
+    id: "usafacts",
+    title: "Answers (94 questions, harmonised from 70+ federal agencies)",
+    publisher: "USAFacts",
+    url: "https://usafacts.org/",
+    detail:
+      "Nonpartisan nonprofit founded by Steve Ballmer in 2017, which collects and standardises data from more than 70 federal agencies and names the agency behind each figure. Used here for the national baseline: income, wages, debt, rent, homeownership, poverty, population and household composition. Every row carries the originating agency as well, because the agency is the source of record and USAFacts is the route. Retrieved by direct fetch, permitted by their robots.txt.",
+    accessed: "2026-09-09",
+  },
+  {
     id: "datareportal",
     title: "Digital 2026 Global Overview Report",
     publisher: "DataReportal, with GWI panel data",
@@ -832,3 +841,155 @@ export const DATA_LADDER: DataLayer[] = [
     note: "No tool at any price answers this. Behavioural data shows where a person went, never why. This is the layer where every persona on the internet quietly starts inventing, and where ours marks traits inferred.",
   },
 ];
+
+/* ------------------------------------------------------------------ *
+ * US CONTEXT, via USAFacts
+ *
+ * The baseline a persona sits inside: what a household earns, owns,
+ * owes and pays. Retrieved from USAFacts, the nonpartisan nonprofit
+ * founded by Steve Ballmer in 2017, which harmonises data from 70-plus
+ * federal agencies and names the agency behind each figure.
+ *
+ * Why an aggregator is used here when the do-not-assert list warns
+ * against them: the warning targets content farms that recycle numbers
+ * with no attribution. USAFacts is a different class of thing. It cites
+ * its agency, states its refresh cadence, and solves the real problem
+ * that federal data is scattered across dozens of portals on different
+ * update schedules. Both layers of attribution are therefore carried:
+ * the agency of record, and the route by which it was retrieved.
+ *
+ * Collected 2026-09-09 by direct fetch. No paid scraper was used and
+ * none was needed: usafacts.org/robots.txt explicitly permits ClaudeBot,
+ * and every figure below is present in the served HTML.
+ * ------------------------------------------------------------------ */
+
+export interface UsContextFact {
+  id: string;
+  metric: string;
+  value: string;
+  asOf: string;
+  /** The federal agency that produced the number. */
+  agency: string;
+  /** The page it was read from. */
+  url: string;
+  /** Which persona bucket this informs. */
+  bucket: "money" | "household" | "people" | "work";
+}
+
+export const US_CONTEXT: UsContextFact[] = [
+  {
+    id: "median-hh-income",
+    metric: "Median household income",
+    value: "$81,600",
+    asOf: "2024",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/what-is-the-income-of-a-us-household/country/united-states/",
+    bucket: "money",
+  },
+  {
+    id: "avg-wage",
+    metric: "Average weekly wage",
+    value: "$1,290 per week",
+    asOf: "July 2026",
+    agency: "Bureau of Labor Statistics",
+    url: "https://usafacts.org/answers/what-is-the-average-wage-in-the-us/country/united-states/",
+    bucket: "money",
+  },
+  {
+    id: "gender-pay-gap",
+    metric: "Gender pay gap",
+    value: "Women earned $0.82 for every dollar men made in a typical week",
+    asOf: "Q2 2026",
+    agency: "Bureau of Labor Statistics",
+    url: "https://usafacts.org/answers/what-is-the-gender-pay-gap-in-the-us/country/united-states/",
+    bucket: "money",
+  },
+  {
+    id: "avg-debt",
+    metric: "Average debt owed per American",
+    value: "$63,500",
+    asOf: "Q2 2026",
+    agency: "Federal Reserve",
+    url: "https://usafacts.org/answers/how-much-debt-does-the-average-american-owe/country/united-states/",
+    bucket: "money",
+  },
+  {
+    id: "homeownership",
+    metric: "Homeownership rate",
+    value: "65.2% of households own their home, about 2 in 3",
+    asOf: "2025",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/what-is-the-homeownership-rate/country/united-states/",
+    bucket: "household",
+  },
+  {
+    id: "median-rent",
+    metric: "Median rent, including utilities",
+    value: "about $1,487 per month",
+    asOf: "2024",
+    agency: "US Census Bureau and Department of Housing and Urban Development",
+    url: "https://usafacts.org/answers/how-much-do-households-spend-on-rent/country/united-states/",
+    bucket: "household",
+  },
+  {
+    id: "same-sex-households",
+    metric: "Households led by a same-sex married couple",
+    value: "835,900, which is 1.3% of all married-couple households",
+    asOf: "2024",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/how-many-same-sex-married-households-are-in-the-us/",
+    bucket: "household",
+  },
+  {
+    id: "language",
+    metric: "People aged 5+ speaking a language other than English at home",
+    value: "74.1 million, which is 23%",
+    asOf: "2024",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/how-many-people-speak-a-language-other-than-english-at-home/country/united-states/",
+    bucket: "people",
+  },
+  {
+    id: "population",
+    metric: "US population",
+    value: "about 341.8 million",
+    asOf: "2025",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/how-many-people-live-in-the-us/country/united-states/",
+    bucket: "people",
+  },
+  {
+    id: "poverty",
+    metric: "People living in poverty",
+    value: "35.9 million",
+    asOf: "2024",
+    agency: "US Census Bureau",
+    url: "https://usafacts.org/answers/what-is-the-us-poverty-rate/country/united-states/",
+    bucket: "people",
+  },
+  {
+    id: "unemployment",
+    metric: "Unemployment rate",
+    value: "4.1%",
+    asOf: "August 2026",
+    agency: "Bureau of Labor Statistics",
+    url: "https://usafacts.org/answers/what-is-the-unemployment-rate/country/united-states/",
+    bucket: "work",
+  },
+];
+
+export const US_CONTEXT_BUCKETS: Record<string, string> = {
+  money: "Money",
+  household: "Household",
+  people: "People",
+  work: "Work",
+};
+
+/** The wider corpus this was drawn from, for the next pass. */
+export const USAFACTS_CORPUS = {
+  questions: 94,
+  pages: 30610,
+  answerPages: 29525,
+  note:
+    "USAFacts publishes 94 distinct questions, each expanded across states and counties into roughly 29,500 answer pages. Eleven were taken here, selected for what a persona actually needs. The remainder is a known, mapped source for later passes rather than an unexplored pile.",
+};
