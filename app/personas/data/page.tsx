@@ -12,6 +12,11 @@ import {
   PERSONA_COUNTS,
   RACE_SEGMENTS,
   RACE_REACH,
+  SEGMENTS,
+  COMMUNITY_SEGMENTS,
+  PARTY_SEGMENTS,
+  CONTEXT_REACH,
+  TECH_ACCESS,
   PLATFORMS,
   STUDIES,
   USAFACTS_CORPUS,
@@ -20,6 +25,15 @@ import {
 } from "@/data/personas";
 
 export const dynamic = "force-static";
+
+/** Columns for the access table: one representative cut per dimension. */
+const ACCESS_COLS = [
+  ...SEGMENTS.filter((s) => s.dimension === "age"),
+  ...RACE_SEGMENTS,
+  ...SEGMENTS.filter((s) => s.dimension === "income"),
+  ...SEGMENTS.filter((s) => s.dimension === "education"),
+  ...COMMUNITY_SEGMENTS,
+];
 
 const TITLE = "The Data Behind the Personas";
 const DESCRIPTION =
@@ -164,6 +178,120 @@ export default function Page() {
                         </td>
                       );
                     })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+
+        {/* Community and party */}
+        <section aria-labelledby="ctx-h" className="mb-14">
+          <h2 id="ctx-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Where they live, and how they lean
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Two dimensions the same survey publishes that most persona work ignores. Community type
+            separates WhatsApp more sharply than income does: 44% urban against 17% rural. Party
+            barely moves YouTube or Snapchat, and almost entirely determines Bluesky and Truth
+            Social.
+          </p>
+          <div className="border border-border/60 overflow-x-auto">
+            <table className="w-full min-w-[640px]">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  <th className="py-2.5 pr-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
+                    Platform
+                  </th>
+                  {[...COMMUNITY_SEGMENTS, ...PARTY_SEGMENTS].map((sg) => (
+                    <th
+                      key={sg.id}
+                      className="py-2.5 pr-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80 whitespace-nowrap"
+                    >
+                      {sg.label}
+                      <span className="block normal-case tracking-normal text-muted-foreground/70">
+                        n={sg.n.toLocaleString()} ±{sg.moe}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="[&_td:first-child]:pl-0">
+                {PLATFORMS.map((p) => (
+                  <tr key={p.id} className="border-b border-border/40">
+                    <td className="py-2.5 pr-4 font-mono text-xs text-foreground whitespace-nowrap">
+                      <span
+                        className="inline-block w-2 h-2 mr-2 align-middle"
+                        style={{ background: p.color }}
+                        aria-hidden="true"
+                      />
+                      {p.name}
+                    </td>
+                    {[...COMMUNITY_SEGMENTS, ...PARTY_SEGMENTS].map((sg) => {
+                      const v = CONTEXT_REACH[p.id]?.[sg.id];
+                      return (
+                        <td key={sg.id} className="py-2.5 pr-4 font-mono text-xs text-muted-foreground tabular-nums">
+                          {v === undefined ? "—" : `${v}%`}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Access layer */}
+        <section aria-labelledby="ac-h" className="mb-14">
+          <h2 id="ac-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            How they get online at all
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            The layer that decides what you can build, not just where to show up. 16% of US adults
+            are smartphone-only: they own a smartphone and have no home broadband. That is 34% of
+            adults in households under $30,000, 28% of Hispanic adults and 27% of those with a high
+            school education or less. Blank cells mean that fact sheet does not publish that cut,
+            which is why the party columns are empty for internet and broadband.
+          </p>
+          <div className="border border-border/60 overflow-x-auto">
+            <table className="w-full min-w-[900px]">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  <th className="py-2.5 pr-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
+                    Measure
+                  </th>
+                  <th className="py-2.5 pr-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80 text-right">
+                    All
+                  </th>
+                  {ACCESS_COLS.map((sg) => (
+                    <th
+                      key={sg.id}
+                      className="py-2.5 pr-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80 text-right whitespace-nowrap"
+                    >
+                      {sg.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="[&_td:first-child]:pl-0">
+                {TECH_ACCESS.map((m) => (
+                  <tr key={m.id} className="border-b border-border/40">
+                    <td className="py-2.5 pr-3 font-mono text-[11px] text-foreground leading-snug">
+                      {m.label}
+                    </td>
+                    <td className="py-2.5 pr-3 font-mono text-xs text-foreground text-right tabular-nums">
+                      {m.overall}%
+                    </td>
+                    {ACCESS_COLS.map((sg) => (
+                      <td
+                        key={sg.id}
+                        className="py-2.5 pr-3 font-mono text-xs text-muted-foreground text-right tabular-nums"
+                      >
+                        {m.by[sg.id] === undefined ? "—" : `${m.by[sg.id]}%`}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>

@@ -25,6 +25,7 @@ import PersonaAvatar, { type AvatarAge, type AvatarGender } from "./PersonaAvata
 import {
   ALL_SEGMENTS,
   BUYER_PERSONAS,
+  TECH_ACCESS,
   TEEN_REACH,
   TEEN_STUDY,
   DEMAND_SOURCES,
@@ -42,6 +43,8 @@ const DIMS = [
   { key: "race", label: "Race", ids: ["race-white", "race-black", "race-hispanic", "race-asian"] },
   { key: "income", label: "Salary", ids: ["inc-lt30", "inc-30-70", "inc-70-100", "inc-100"] },
   { key: "education", label: "Education", ids: ["edu-hs", "edu-some", "edu-grad"] },
+  { key: "community", label: "Lives in", ids: ["urban", "suburban", "rural"] },
+  { key: "party", label: "Leans", ids: ["party-rep", "party-dem"] },
 ];
 
 /** Traits people ask for that nothing publishes, with an honest proxy where one exists. */
@@ -365,6 +368,71 @@ export default function PersonaStudio() {
             ))}
           </div>
           </>
+          )}
+
+          {/* How they get online. Published cells only, one column per trait:
+              these are near-ceiling proportions where combining would add
+              error without adding information. */}
+          {!isTeen && (
+            <div className="mb-4 pt-3 border-t border-border/50">
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+                How they get online · every cell published
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80">
+                        &nbsp;
+                      </th>
+                      <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right">
+                        All
+                      </th>
+                      {adultTraits.map((t) => (
+                        <th
+                          key={t}
+                          className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right whitespace-nowrap"
+                        >
+                          {labelOf(t)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {TECH_ACCESS.map((m) => (
+                      <tr key={m.id} className="border-t border-border/30">
+                        <td className="py-1 pr-2 font-mono text-[10px] text-muted-foreground leading-tight">
+                          {m.label}
+                        </td>
+                        <td className="py-1 pr-2 font-mono text-[10px] text-foreground text-right tabular-nums">
+                          {m.overall}%
+                        </td>
+                        {adultTraits.map((t) => (
+                          <td
+                            key={t}
+                            className="py-1 pr-2 font-mono text-[10px] text-right tabular-nums"
+                            style={{ color: m.by[t] === undefined ? undefined : "var(--foreground)" }}
+                          >
+                            {m.by[t] === undefined ? (
+                              <span className="text-muted-foreground/70">n/p</span>
+                            ) : (
+                              `${m.by[t]}%`
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+                One column per trait, not combined. These sit close to the ceiling, where
+                multiplying odds would add error without adding information, so each figure is
+                shown as published. &ldquo;n/p&rdquo; means that fact sheet does not publish that
+                cut. The smartphone-only row is the one that changes how you build: those people
+                have no home broadband.
+              </p>
+            </div>
           )}
 
           {/* Gaps */}

@@ -297,6 +297,19 @@ export const PERSONA_DO_NOT_ASSERT: string[] = [
 
 export const PERSONA_CHANGELOG: { date: string; entries: string[] }[] = [
   {
+    date: "2026-09-09 · Pew fact sheet corpus",
+    entries: [
+      "Pulled all three Pew Internet & Technology fact sheets through the machine-readable .md endpoints their robots.txt publishes for AI clients. 44 tables extracted structurally rather than read by eye.",
+      "Reconciliation first: all 136 reach cells already shipped were compared against the fresh pull. 136 of 136 matched exactly, zero drift. That is what licensed expanding from this source rather than re-deriving from the PDF.",
+      "Reach grid went from 136 cells to 242, now dense: 11 platforms by 22 segments with no gaps.",
+      "Added Threads (8%), Bluesky (4%) and Truth Social (3%), first published in the 2025 wave.",
+      "Added two dimensions Pew publishes that were not being used: community type (urban, suburban, rural) and party lean.",
+      "Added the access layer: internet use, home broadband, cellphone and smartphone ownership, and smartphone dependency. 16% of US adults are smartphone-only, rising to 34% under $30,000 and 28% among Hispanic adults.",
+      "Every sample size and margin of error re-verified against Pew's own methodology table, which is published as an image. All 17 previously shipped figures confirmed exact; five new segments added from it.",
+      "Access-layer figures are deliberately NOT combined across traits. They sit near the ceiling, where multiplying odds adds error without adding information, so each is shown as published.",
+    ],
+  },
+  {
     date: "2026-09-09",
     entries: [
       "First published. Three studies, 42 verified evidence rows, one persona.",
@@ -350,7 +363,14 @@ export interface Platform {
   overall: number;
 }
 
-export type Dimension = "gender" | "age" | "income" | "education";
+export type Dimension =
+  | "gender"
+  | "age"
+  | "income"
+  | "education"
+  | "race"
+  | "community"
+  | "party";
 
 export interface Segment {
   id: string;
@@ -367,6 +387,9 @@ export const DIMENSION_LABEL: Record<Dimension, string> = {
   age: "Age",
   income: "Household income",
   education: "Education",
+  race: "Race and ethnicity",
+  community: "Community type",
+  party: "Party",
 };
 
 export const PLATFORMS: Platform[] = [
@@ -378,6 +401,9 @@ export const PLATFORMS: Platform[] = [
   { id: "reddit", name: "Reddit", color: "#FF4500", overall: 26 },
   { id: "snapchat", name: "Snapchat", color: "#FFFC00", overall: 25 },
   { id: "x", name: "X", color: "#E7E9EA", overall: 21 },
+  { id: "threads", name: "Threads", color: "#A855F7", overall: 8 },
+  { id: "bluesky", name: "Bluesky", color: "#0085FF", overall: 4 },
+  { id: "truthsocial", name: "Truth Social", color: "#5448EE", overall: 3 },
 ];
 
 export const SEGMENTS: Segment[] = [
@@ -409,6 +435,9 @@ export const REACH: Record<string, Record<string, number>> = {
   reddit: { men: 29, women: 23, "18-29": 48, "30-49": 35, "50-64": 16, "65+": 6, "inc-lt30": 17, "inc-30-70": 22, "inc-70-100": 29, "inc-100": 37, "edu-hs": 15, "edu-some": 28, "edu-grad": 37 },
   snapchat: { men: 22, women: 28, "18-29": 58, "30-49": 31, "50-64": 13, "65+": 4, "inc-lt30": 26, "inc-30-70": 26, "inc-70-100": 31, "inc-100": 23, "edu-hs": 24, "edu-some": 29, "edu-grad": 24 },
   x: { men: 25, women: 16, "18-29": 33, "30-49": 25, "50-64": 16, "65+": 10, "inc-lt30": 16, "inc-30-70": 19, "inc-70-100": 26, "inc-100": 25, "edu-hs": 16, "edu-some": 23, "edu-grad": 24 },
+  threads: { men: 8, women: 9, "18-29": 15, "30-49": 10, "50-64": 6, "65+": 3, "inc-lt30": 8, "inc-30-70": 9, "inc-70-100": 10, "inc-100": 7, "edu-hs": 7, "edu-some": 9, "edu-grad": 9 },
+  bluesky: { men: 4, women: 3, "18-29": 6, "30-49": 5, "50-64": 3, "65+": 2, "inc-lt30": 2, "inc-30-70": 4, "inc-70-100": 3, "inc-100": 5, "edu-hs": 2, "edu-some": 4, "edu-grad": 6 },
+  truthsocial: { men: 4, women: 3, "18-29": 1, "30-49": 3, "50-64": 5, "65+": 4, "inc-lt30": 3, "inc-30-70": 3, "inc-70-100": 3, "inc-100": 4, "edu-hs": 3, "edu-some": 5, "edu-grad": 3 },
 };
 
 /**
@@ -507,7 +536,34 @@ export const CITATIONS: Citation[] = [
     publisher: "Pew Research Center",
     url: "https://www.pewresearch.org/internet/fact-sheet/social-media/",
     detail:
-      "The interactive tables for the same survey. Used for the income and education breakdowns, each cross-checked against the report before publication. Its JavaScript table extracted unreliably for overall figures, which is why the PDF above is treated as authoritative.",
+      "The full crosstabs for the same survey: 11 platforms by age, gender, race, income, education, community type and party, plus the 2012-2025 trend. Read through Pew's machine-readable .md endpoint, which its robots.txt publishes for AI clients. All 136 cells that overlapped the PDF extraction matched exactly, which is what licensed the rest of the grid being taken from here.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "pew-internet-broadband",
+    title: "Internet, Broadband Fact Sheet",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/internet/fact-sheet/internet-broadband/",
+    detail:
+      "Internet use and home broadband subscription, each by age, race, gender, income, education and community type, with trend lines back to 2000. Published November 20, 2025 from the same NPORS survey. The source for the access layer: 96% of US adults use the internet, 78% subscribe to home broadband.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "pew-mobile",
+    title: "Mobile Fact Sheet",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/internet/fact-sheet/mobile/",
+    detail:
+      "Cellphone and smartphone ownership by seven dimensions, and smartphone dependency, defined as owning a smartphone without a home broadband subscription. Published November 20, 2025. The source for the smartphone-only figure of 16% nationally, which rises to 34% among adults in households under $30,000.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "pew-npors-method",
+    title: "Social Media Use 2025: Methodology",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/internet/2025/11/20/social-media-use-2025-methodology/",
+    detail:
+      "Where every sample size and margin of error on this site comes from. Total sample 5,022 at ±1.9pp; subgroups range from White adults at n=3,304 (±2.3pp) to Asian adults at n=211 (±8.9pp). Pew publishes this table as an image, so it was read from the image rather than parsed.",
     accessed: "2026-09-09",
   },
   {
@@ -1015,10 +1071,10 @@ export const USAFACTS_CORPUS = {
  * ------------------------------------------------------------------ */
 
 export const RACE_SEGMENTS: Segment[] = [
-  { id: "race-white", dimension: "race" as Dimension, label: "White", n: 3304, moe: 2.3 },
-  { id: "race-black", dimension: "race" as Dimension, label: "Black", n: 512, moe: 6.0 },
-  { id: "race-hispanic", dimension: "race" as Dimension, label: "Hispanic", n: 757, moe: 5.0 },
-  { id: "race-asian", dimension: "race" as Dimension, label: "Asian", n: 211, moe: 8.9 },
+  { id: "race-white", dimension: "race", label: "White", n: 3304, moe: 2.3 },
+  { id: "race-black", dimension: "race", label: "Black", n: 512, moe: 6.0 },
+  { id: "race-hispanic", dimension: "race", label: "Hispanic", n: 757, moe: 5.0 },
+  { id: "race-asian", dimension: "race", label: "Asian", n: 211, moe: 8.9 },
 ];
 
 /** Race rows for the reach matrix. Corroborated against the report text. */
@@ -1027,19 +1083,99 @@ export const RACE_REACH: Record<string, Record<string, number>> = {
   facebook: { "race-white": 70, "race-black": 74, "race-hispanic": 74, "race-asian": 62 },
   instagram: { "race-white": 45, "race-black": 54, "race-hispanic": 62, "race-asian": 58 },
   tiktok: { "race-white": 28, "race-black": 53, "race-hispanic": 57, "race-asian": 31 },
-  snapchat: { "race-white": 24, "race-black": 29, "race-hispanic": 31, "race-asian": 19 },
-  reddit: { "race-white": 27, "race-black": 18, "race-hispanic": 22, "race-asian": 44 },
-  x: { "race-white": 18, "race-black": 26, "race-hispanic": 23, "race-asian": 32 },
   whatsapp: { "race-white": 23, "race-black": 37, "race-hispanic": 56, "race-asian": 54 },
+  reddit: { "race-white": 27, "race-black": 18, "race-hispanic": 22, "race-asian": 44 },
+  snapchat: { "race-white": 24, "race-black": 29, "race-hispanic": 31, "race-asian": 19 },
+  x: { "race-white": 18, "race-black": 26, "race-hispanic": 23, "race-asian": 32 },
+  threads: { "race-white": 6, "race-black": 18, "race-hispanic": 10, "race-asian": 12 },
+  bluesky: { "race-white": 4, "race-black": 2, "race-hispanic": 4, "race-asian": 3 },
+  truthsocial: { "race-white": 4, "race-black": 2, "race-hispanic": 2, "race-asian": 6 },
 };
 
 /** Every segment the estimator can reason about. */
-export const ALL_SEGMENTS: Segment[] = [...SEGMENTS, ...RACE_SEGMENTS];
+/**
+ * Community type and party, published in the same NPORS 2025 survey.
+ * They answer a different question than demographics do: where a person
+ * lives, and how they lean.
+ */
+export const COMMUNITY_SEGMENTS: Segment[] = [
+  { id: "urban", dimension: "community", label: "Urban", n: 1394, moe: 3.6 },
+  { id: "suburban", dimension: "community", label: "Suburban", n: 2334, moe: 2.8 },
+  { id: "rural", dimension: "community", label: "Rural", n: 1235, moe: 3.8 },
+];
+
+export const PARTY_SEGMENTS: Segment[] = [
+  { id: "party-rep", dimension: "party", label: "Rep / lean Rep", n: 2234, moe: 2.8 },
+  { id: "party-dem", dimension: "party", label: "Dem / lean Dem", n: 2446, moe: 2.8 },
+];
+
+/** Platform reach by community type and party. Published cells only. */
+export const CONTEXT_REACH: Record<string, Record<string, number>> = {
+  youtube: { urban: 85, suburban: 87, rural: 79, "party-rep": 84, "party-dem": 85 },
+  facebook: { urban: 71, suburban: 71, rural: 71, "party-rep": 72, "party-dem": 70 },
+  instagram: { urban: 55, suburban: 54, rural: 37, "party-rep": 49, "party-dem": 53 },
+  tiktok: { urban: 42, suburban: 37, rural: 32, "party-rep": 33, "party-dem": 40 },
+  whatsapp: { urban: 44, suburban: 34, rural: 17, "party-rep": 25, "party-dem": 38 },
+  reddit: { urban: 29, suburban: 30, rural: 18, "party-rep": 22, "party-dem": 32 },
+  snapchat: { urban: 25, suburban: 26, rural: 23, "party-rep": 26, "party-dem": 25 },
+  x: { urban: 23, suburban: 22, rural: 17, "party-rep": 24, "party-dem": 19 },
+  threads: { urban: 11, suburban: 9, rural: 4, "party-rep": 6, "party-dem": 10 },
+  bluesky: { urban: 4, suburban: 5, rural: 2, "party-rep": 1, "party-dem": 8 },
+  truthsocial: { urban: 2, suburban: 4, rural: 4, "party-rep": 6, "party-dem": 1 },
+};
+
+/**
+ * The access layer: whether a person is online at all, and on what.
+ *
+ * For anyone building something this matters more than platform choice.
+ * A group that is 28% smartphone-only has no home broadband, which decides
+ * page weight, video autoplay, and whether a desktop flow is reachable at
+ * all. Reach says where to show up. This says what will actually load.
+ *
+ * Internet use and home broadband come from the Internet/Broadband fact
+ * sheet; ownership and smartphone dependency from the Mobile fact sheet.
+ * Neither publishes a party breakdown, so those cells are absent rather
+ * than filled in.
+ */
+export interface TechMetric {
+  id: string;
+  label: string;
+  /** Published national figure for all US adults. */
+  overall: number;
+  /** Which fact sheet published it. */
+  sheet: "internet-broadband" | "mobile";
+  /** segmentId -> %. A missing key means that sheet does not publish the cut. */
+  by: Record<string, number>;
+}
+
+export const TECH_ACCESS: TechMetric[] = [
+  { id: "internet", label: "Uses the internet", overall: 96, sheet: "internet-broadband", by: { "18-29": 99, "30-49": 99, "50-64": 96, "65+": 90, "race-white": 96, "race-black": 94, "race-hispanic": 97, "race-asian": 99, "men": 96, "women": 97, "inc-lt30": 91, "inc-30-70": 96, "inc-70-100": 98, "inc-100": 99, "edu-hs": 93, "edu-some": 98, "edu-grad": 99, "urban": 96, "suburban": 98, "rural": 94 } },
+  { id: "broadband", label: "Has home broadband", overall: 78, sheet: "internet-broadband", by: { "18-29": 71, "30-49": 87, "50-64": 79, "65+": 70, "race-white": 81, "race-black": 71, "race-hispanic": 68, "race-asian": 86, "men": 79, "women": 78, "inc-lt30": 54, "inc-30-70": 75, "inc-70-100": 88, "inc-100": 94, "edu-hs": 62, "edu-some": 81, "edu-grad": 92, "urban": 75, "suburban": 84, "rural": 71 } },
+  { id: "smartphone", label: "Owns a smartphone", overall: 91, sheet: "mobile", by: { "18-29": 97, "30-49": 96, "50-64": 90, "65+": 78, "men": 90, "women": 91, "race-white": 91, "race-black": 85, "race-hispanic": 93, "race-asian": 96, "inc-lt30": 82, "inc-30-70": 89, "inc-70-100": 96, "inc-100": 97, "edu-hs": 84, "edu-some": 93, "edu-grad": 96, "urban": 91, "suburban": 93, "rural": 87, "party-rep": 91, "party-dem": 92 } },
+  { id: "cellphone", label: "Owns a cellphone of any kind", overall: 98, sheet: "mobile", by: { "18-29": 99, "30-49": 99, "50-64": 98, "65+": 95, "men": 97, "women": 98, "race-white": 98, "race-black": 98, "race-hispanic": 98, "race-asian": 98, "inc-lt30": 95, "inc-30-70": 98, "inc-70-100": 99, "inc-100": 99, "edu-hs": 97, "edu-some": 98, "edu-grad": 99, "urban": 97, "suburban": 99, "rural": 97, "party-rep": 98, "party-dem": 98 } },
+  { id: "featurephone", label: "Owns a cellphone but not a smartphone", overall: 7, sheet: "mobile", by: { "18-29": 2, "30-49": 3, "50-64": 7, "65+": 16, "men": 7, "women": 7, "race-white": 7, "race-black": 12, "race-hispanic": 5, "race-asian": 3, "inc-lt30": 13, "inc-30-70": 9, "inc-70-100": 3, "inc-100": 2, "edu-hs": 13, "edu-some": 5, "edu-grad": 2, "urban": 7, "suburban": 5, "rural": 9, "party-rep": 6, "party-dem": 6 } },
+  { id: "smartphone-dep", label: "Smartphone-only: owns a smartphone but has no home broadband", overall: 16, sheet: "mobile", by: { "18-29": 27, "30-49": 11, "50-64": 15, "65+": 17, "race-white": 13, "race-black": 19, "race-hispanic": 28, "race-asian": 11, "men": 15, "women": 17, "inc-lt30": 34, "inc-30-70": 19, "inc-70-100": 10, "inc-100": 4, "edu-hs": 27, "edu-some": 15, "edu-grad": 6, "urban": 19, "suburban": 12, "rural": 20 } },
+];
+
+export const techAccess = (metricId: string, segmentId?: string): number | undefined => {
+  const m = TECH_ACCESS.find((x) => x.id === metricId);
+  if (!m) return undefined;
+  return segmentId ? m.by[segmentId] : m.overall;
+};
+
+export const ALL_SEGMENTS: Segment[] = [
+  ...SEGMENTS,
+  ...RACE_SEGMENTS,
+  ...COMMUNITY_SEGMENTS,
+  ...PARTY_SEGMENTS,
+];
 export const allSegmentById = (id: string) => ALL_SEGMENTS.find((s) => s.id === id);
 
-/** Reach lookup across the base matrix and the race matrix. */
+/** Reach lookup across every published matrix. */
 export const reachAny = (platformId: string, segmentId: string): number | undefined =>
-  REACH[platformId]?.[segmentId] ?? RACE_REACH[platformId]?.[segmentId];
+  REACH[platformId]?.[segmentId] ??
+  RACE_REACH[platformId]?.[segmentId] ??
+  CONTEXT_REACH[platformId]?.[segmentId];
 
 export type EstimateBasis = "measured" | "estimated" | "unknown";
 
