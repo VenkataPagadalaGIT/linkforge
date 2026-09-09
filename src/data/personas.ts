@@ -538,3 +538,172 @@ export const CITATIONS: Citation[] = [
     accessed: "2026-09-09",
   },
 ];
+
+/* ------------------------------------------------------------------ *
+ * THE DEMAND-SOURCE FRAMEWORK
+ *
+ * The owner's own method, presented at brightonSEO San Diego 2026:
+ * twenty demand sources in five categories, five buyer personas that ask
+ * five different questions about the same product, and a six-dimension
+ * classification applied to every signal before it is used.
+ *
+ * One box is search demand. The other nineteen are where buyers talk.
+ * ------------------------------------------------------------------ */
+
+export type SourceCategory = "search" | "social" | "reviews" | "market" | "expert";
+
+export const SOURCE_CATEGORY: Record<
+  SourceCategory,
+  { label: string; tells: string; color: string }
+> = {
+  search: { label: "Search", tells: "what they type", color: "#3b82f6" },
+  social: { label: "Social", tells: "what they say", color: "#a855f7" },
+  reviews: { label: "Reviews", tells: "what they felt", color: "#f59e0b" },
+  market: { label: "Market", tells: "what they pay", color: "#10b981" },
+  expert: { label: "Expert", tells: "what comes next", color: "#ef4444" },
+};
+
+export interface DemandSource {
+  id: string;
+  name: string;
+  yields: string;
+  category: SourceCategory;
+  /** Platform id where a brand mark exists for it. */
+  platformId?: string;
+}
+
+export const DEMAND_SOURCES: DemandSource[] = [
+  { id: "search-demand", name: "Search Demand", yields: "Queries + Trends", category: "search" },
+  { id: "wikis", name: "Wikis", yields: "Entities + Terminology", category: "search" },
+
+  { id: "youtube", name: "YouTube", yields: "Videos + Comments", category: "social", platformId: "youtube" },
+  { id: "reddit", name: "Reddit", yields: "Communities + Subreddits", category: "social", platformId: "reddit" },
+  { id: "tiktok", name: "TikTok", yields: "Trends + Comments", category: "social", platformId: "tiktok" },
+  { id: "facebook-groups", name: "Facebook Groups", yields: "Questions + Discussions", category: "social", platformId: "facebook" },
+  { id: "instagram", name: "Instagram", yields: "Creators + Comments", category: "social", platformId: "instagram" },
+  { id: "x", name: "X", yields: "Real-time conversations", category: "social", platformId: "x" },
+
+  { id: "gbp-reviews", name: "GBP Reviews", yields: "Ratings + Response", category: "reviews" },
+  { id: "marketplaces", name: "Marketplaces", yields: "Pricing + Reviews", category: "reviews" },
+  { id: "app-reviews", name: "App Reviews", yields: "Experience + Pain points", category: "reviews" },
+
+  { id: "competitors", name: "Competitors", yields: "Products + Pricing", category: "market" },
+  { id: "public-data", name: "Public Data", yields: "Revenue + Market share", category: "market" },
+  { id: "earnings-calls", name: "Earnings Calls", yields: "Strategy + Risks", category: "market" },
+  { id: "job-postings", name: "Job Postings", yields: "Skills + Investment", category: "market" },
+  { id: "regulations", name: "Regulations", yields: "Policies + Constraints", category: "market" },
+
+  { id: "conferences", name: "Conferences", yields: "Expert insights", category: "expert" },
+  { id: "newsletters", name: "Newsletters", yields: "Trends + Opinions", category: "expert" },
+  { id: "podcasts", name: "Podcasts", yields: "Interviews + Predictions", category: "expert" },
+  { id: "research-papers", name: "Research Papers", yields: "Innovation + Evidence", category: "expert" },
+];
+
+export interface BuyerPersona {
+  id: string;
+  initials: string;
+  name: string;
+  mode: string;
+  asks: string;
+  /** Source ids this persona actually trusts. Drives the match score. */
+  trusts: string[];
+  wonBy: string;
+  /** The owner's own note from the deck. */
+  note?: string;
+}
+
+export const BUYER_PERSONAS: BuyerPersona[] = [
+  {
+    id: "value-seeker",
+    initials: "VS",
+    name: "Value Seeker",
+    mode: "Compare",
+    asks: "Which DFW dealer has the lowest markup on a Grand Highlander?",
+    trusts: ["search-demand", "gbp-reviews", "marketplaces"],
+    wonBy: "Transparent pricing pages, fresh reviews",
+  },
+  {
+    id: "deep-researcher",
+    initials: "DR",
+    name: "Deep Researcher",
+    mode: "Validate",
+    asks: "Hybrid Max or Hybrid: real MPG, reliability, trade-offs?",
+    trusts: ["youtube", "reddit", "competitors"],
+    wonBy: "Comparison guides, spec videos, owner data",
+  },
+  {
+    id: "community-buyer",
+    initials: "CB",
+    name: "Community Buyer",
+    mode: "Trust",
+    asks: "Anyone in DFW buy one recently? Was the price fair?",
+    trusts: ["facebook-groups", "reddit", "gbp-reviews"],
+    wonBy: "Owner threads, answers in the group, dealer replies",
+    note: "That was me",
+  },
+  {
+    id: "trend-explorer",
+    initials: "TE",
+    name: "Trend Explorer",
+    mode: "Discover",
+    asks: "Is the next model year worth waiting for?",
+    trusts: ["tiktok", "instagram", "youtube"],
+    wonBy: "Short video, first looks, walkarounds",
+  },
+  {
+    id: "industry-expert",
+    initials: "IE",
+    name: "Industry Expert",
+    mode: "Anticipate",
+    asks: "How does hybrid demand change dealer inventory?",
+    trusts: ["x", "podcasts", "earnings-calls"],
+    wonBy: "Analysis, earnings commentary, forecasts",
+  },
+];
+
+/** The six dimensions every signal is classified against before use. */
+export const CLASSIFICATION_DIMENSIONS = [
+  "Persona",
+  "Intent",
+  "Need",
+  "Sentiment",
+  "Journey stage",
+  "Platform",
+] as const;
+
+/** The worked example from the deck, kept verbatim. */
+export const WORKED_EXAMPLE = {
+  query: "Fair-priced Toyota Grand Highlander Hybrid Max dealers in DFW area | Texas",
+  rows: [
+    { k: "Source", v: "Facebook Groups (Social)" },
+    { k: "Persona", v: "Community Buyer" },
+    { k: "Intent", v: "Buy. Compare price" },
+    { k: "Need", v: "A fair price, a dealer I can trust" },
+    { k: "Sentiment", v: "Anxious, high stakes" },
+    { k: "Journey stage", v: "Decision" },
+    { k: "Platform", v: "Facebook Groups" },
+  ],
+  output: "Dealer pricing content, and an answer inside the thread.",
+};
+
+/* Teen layer. Separate survey, separate population, never merged with adults. */
+export const TEEN_STUDY = {
+  id: "pew-teens-2025",
+  name: "Teens, Social Media and AI Chatbots 2025",
+  publisher: "Pew Research Center",
+  url: "https://www.pewresearch.org/internet/2025/12/09/teens-social-media-and-ai-chatbots-2025/",
+  population: "US teens aged 13 to 17",
+  sampleSize: 1458,
+  fielded: "2025-09-25 to 2025-10-09",
+};
+
+/** Only figures that read consistently. Approximations are excluded. */
+export const TEEN_REACH = [
+  { label: "Snapchat", pct: 55, note: "of US teens ever use it" },
+  { label: "Facebook", pct: 31, note: "of US teens ever use it" },
+  { label: "WhatsApp", pct: 24, note: "of US teens ever use it" },
+  { label: "Snapchat, girls vs boys", pct: 61, note: "girls 61% against boys 49%" },
+  { label: "Reddit, boys vs girls", pct: 21, note: "boys 21% against girls 12%" },
+  { label: "TikTok, Black teens", pct: 79, note: "against 74% Hispanic and 54% White" },
+  { label: "Instagram, Black teens", pct: 82, note: "against 69% Hispanic and 55% White" },
+];

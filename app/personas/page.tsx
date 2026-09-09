@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
+import PersonaComposer from "@/components/personas/PersonaComposer";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import ReachMatrix from "@/components/personas/ReachMatrix";
 import DailyUsePanel from "@/components/personas/DailyUsePanel";
@@ -75,6 +76,20 @@ export default function Page() {
           and links to the research behind it, and the traits with no evidence are shown rather than
           hidden, because hiding them is how a persona becomes fiction.
         </p>
+
+        {/* Composer first: the 10,000-foot view, before any percentage. */}
+        <section aria-labelledby="c-h" className="mb-14">
+          <h2 id="c-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Build a persona from the sources it trusts
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Same product, same city, five different buyers asking five different questions. Drag the
+            demand sources a buyer would actually use into the profile, and it identifies which of
+            the five they are, or refuses to name one until the mix is strong enough. It never
+            invents a person: it reads the sources and names the pattern.
+          </p>
+          <PersonaComposer />
+        </section>
 
         {/* The explorer goes above the fold: it teaches the method by being used. */}
         <section aria-labelledby="x-h" className="mb-14">
