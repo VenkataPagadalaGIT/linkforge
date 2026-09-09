@@ -427,3 +427,114 @@ export const reachFor = (platformId: string, segmentId: string): number | undefi
   REACH[platformId]?.[segmentId];
 
 export const segmentById = (id: string) => SEGMENTS.find((s) => s.id === id);
+
+/* ------------------------------------------------------------------ *
+ * DAILY USE: a second, sharper layer.
+ *
+ * "Ever use" is reach. "Daily use" is habit, and it is the better answer
+ * to the question people actually mean when they ask which platform an
+ * audience spends time on. Different survey, different sample, different
+ * field dates, so it is kept as its own layer and never mixed with reach.
+ *
+ * Source: same report, appendix table. Survey of 5,123 US adults,
+ * Feb 24 to March 2, 2025. Only four platforms were asked about.
+ * ------------------------------------------------------------------ */
+
+export const DAILY_PLATFORMS = ["facebook", "youtube", "tiktok", "x"] as const;
+
+export interface DailyRow {
+  segmentId: string;
+  label: string;
+  dimension: Dimension | "race" | "community" | "party" | "all";
+  facebook: number;
+  youtube: number;
+  tiktok: number;
+  x: number;
+}
+
+export const DAILY_USE: DailyRow[] = [
+  { segmentId: "all", label: "All US adults", dimension: "all", facebook: 52, youtube: 48, tiktok: 24, x: 10 },
+
+  { segmentId: "men", label: "Men", dimension: "gender", facebook: 44, youtube: 58, tiktok: 19, x: 15 },
+  { segmentId: "women", label: "Women", dimension: "gender", facebook: 60, youtube: 39, tiktok: 28, x: 6 },
+
+  { segmentId: "18-29", label: "18 to 29", dimension: "age", facebook: 49, youtube: 66, tiktok: 47, x: 18 },
+  { segmentId: "30-49", label: "30 to 49", dimension: "age", facebook: 58, youtube: 54, tiktok: 28, x: 10 },
+  { segmentId: "50-64", label: "50 to 64", dimension: "age", facebook: 54, youtube: 45, tiktok: 17, x: 9 },
+  { segmentId: "65+", label: "65 and over", dimension: "age", facebook: 45, youtube: 27, tiktok: 5, x: 4 },
+
+  { segmentId: "race-white", label: "White", dimension: "race", facebook: 54, youtube: 41, tiktok: 19, x: 9 },
+  { segmentId: "race-black", label: "Black", dimension: "race", facebook: 44, youtube: 56, tiktok: 31, x: 13 },
+  { segmentId: "race-hispanic", label: "Hispanic", dimension: "race", facebook: 55, youtube: 61, tiktok: 38, x: 12 },
+  { segmentId: "race-asian", label: "Asian", dimension: "race", facebook: 48, youtube: 70, tiktok: 17, x: 10 },
+
+  { segmentId: "inc-lower", label: "Lower income", dimension: "income", facebook: 58, youtube: 53, tiktok: 31, x: 10 },
+  { segmentId: "inc-middle", label: "Middle income", dimension: "income", facebook: 52, youtube: 48, tiktok: 23, x: 11 },
+  { segmentId: "inc-upper", label: "Upper income", dimension: "income", facebook: 45, youtube: 43, tiktok: 14, x: 11 },
+
+  { segmentId: "edu-hs", label: "High school or less", dimension: "education", facebook: 56, youtube: 48, tiktok: 29, x: 9 },
+  { segmentId: "edu-some", label: "Some college", dimension: "education", facebook: 54, youtube: 50, tiktok: 26, x: 11 },
+  { segmentId: "edu-grad", label: "College graduate", dimension: "education", facebook: 47, youtube: 47, tiktok: 16, x: 11 },
+
+  { segmentId: "urban", label: "Urban", dimension: "community", facebook: 49, youtube: 55, tiktok: 28, x: 10 },
+  { segmentId: "suburban", label: "Suburban", dimension: "community", facebook: 51, youtube: 48, tiktok: 21, x: 11 },
+  { segmentId: "rural", label: "Rural", dimension: "community", facebook: 57, youtube: 42, tiktok: 25, x: 8 },
+];
+
+/** Every source behind this page, cited in full at the foot of it. */
+export interface Citation {
+  id: string;
+  title: string;
+  publisher: string;
+  url: string;
+  detail: string;
+  accessed: string;
+}
+
+export const CITATIONS: Citation[] = [
+  {
+    id: "pew-report",
+    title: "Americans' Social Media Use 2025 (full report, PDF)",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/wp-content/uploads/sites/20/2025/11/PI_2025.11.20_Social-Media-Use_REPORT.pdf",
+    detail:
+      "The primary source for every reach and daily-use figure on this page. Published November 20, 2025. Reach data: survey of 5,022 US adults, February 5 to June 18, 2025, margin of error ±1.9pp. Daily-use data: a separate survey of 5,123 US adults, February 24 to March 2, 2025. Read directly from the PDF after the interactive fact sheet produced figures that would not reconcile.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "pew-factsheet",
+    title: "Social Media Fact Sheet",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/internet/fact-sheet/social-media/",
+    detail:
+      "The interactive tables for the same survey. Used for the income and education breakdowns, each cross-checked against the report before publication. Its JavaScript table extracted unreliably for overall figures, which is why the PDF above is treated as authoritative.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "pew-npors",
+    title: "National Public Opinion Reference Survey (NPORS) methodology",
+    publisher: "Pew Research Center",
+    url: "https://www.pewresearch.org/wp-content/uploads/sites/20/2025/11/PI_2025.11.20_Social-Media-Use_REPORT.pdf",
+    detail:
+      "Address-based sampling with a web, mail and phone protocol. 2,349 completed online, 2,331 on paper and 342 by phone. The published unweighted sample size and margin of error for every segment on this page comes from its appendix, which is why each column carries its own ± figure.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "datareportal",
+    title: "Digital 2026 Global Overview Report",
+    publisher: "DataReportal, with GWI panel data",
+    url: "https://datareportal.com/reports/digital-2026-global-overview-report",
+    detail:
+      "Source of the time-per-day figures. Panel-based, self-reported, global and all-user, so it is graded derived rather than measured wherever it appears against a US persona.",
+    accessed: "2026-09-09",
+  },
+  {
+    id: "cox",
+    title: "Car Buyer Journey Study, 16th annual (summary PDF)",
+    publisher: "Cox Automotive",
+    url: "https://www.coxautoinc.com/wp-content/uploads/2026/01/2025-Cox-Automotive-Car-Buyer-Journey-Study-Summary.pdf",
+    detail:
+      "Source of every vehicle-purchase figure. Surveyed 2,300 US consumers who bought a new or used vehicle in the prior 12 months, fielded autumn 2025, published January 13, 2026. Measures the journey for buyers as a whole and is not cross-cut by platform use, parental status or model.",
+    accessed: "2026-09-09",
+  },
+];

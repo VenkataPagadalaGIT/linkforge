@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
+import ReachMatrix from "@/components/personas/ReachMatrix";
+import DailyUsePanel from "@/components/personas/DailyUsePanel";
+import PlatformMark from "@/components/personas/PlatformMark";
 import {
+  CITATIONS,
   EVIDENCE,
+  REACH,
   GRADE_META,
   METHOD_LABEL,
   PERSONAS,
@@ -11,6 +16,7 @@ import {
   PERSONAS_LAST_UPDATED,
   PERSONA_CHANGELOG,
   PERSONA_COUNTS,
+  PLATFORMS,
   STUDIES,
   studyById,
 } from "@/data/personas";
@@ -112,7 +118,14 @@ export default function Page() {
           <div className="grid sm:grid-cols-2 gap-4">
             {PERSONAS.map((p) => {
               const measured = p.traits.filter((t) => t.grade === "measured").length;
+              const derived = p.traits.filter((t) => t.grade === "derived").length;
               const inferred = p.traits.filter((t) => t.grade === "inferred").length;
+              const total = p.traits.length || 1;
+              const mix = [
+                { n: measured, c: GRADE_META.measured.dot },
+                { n: derived, c: GRADE_META.derived.dot },
+                { n: inferred, c: GRADE_META.inferred.dot },
+              ];
               return (
                 <Link
                   key={p.slug}
@@ -125,9 +138,36 @@ export default function Page() {
                   <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4">
                     {p.segment}
                   </p>
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
-                    {measured} measured · {inferred} inferred
+
+                  {/* Evidence mix, at a glance */}
+                  <div className="flex h-1.5 w-full overflow-hidden mb-2">
+                    {mix.map((m, i) =>
+                      m.n ? (
+                        <span
+                          key={i}
+                          style={{ width: `${(m.n / total) * 100}%`, background: m.c }}
+                          className="block h-full"
+                        />
+                      ) : null,
+                    )}
+                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-4">
+                    {measured} measured · {derived} derived · {inferred} inferred
                   </p>
+
+                  {/* Top platforms for this persona's primary age cell */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {PLATFORMS.filter((pl) =>
+                      ["youtube", "facebook", "instagram", "tiktok"].includes(pl.id),
+                    ).map((pl) => (
+                      <span key={pl.id} className="inline-flex items-center gap-1 border border-border/60 px-1.5 py-0.5">
+                        <PlatformMark id={pl.id} color={pl.color} size={13} />
+                        <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+                          {REACH[pl.id]?.["30-49"] ?? pl.overall}%
+                        </span>
+                      </span>
+                    ))}
+                  </div>
                 </Link>
               );
             })}
@@ -172,50 +212,31 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Evidence table */}
+        {/* Reach matrix: the whole published dataset, one grid */}
         <section aria-labelledby="e-h" className="mb-14">
           <h2 id="e-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            Which age group uses which platform
+            Which group uses which platform
           </h2>
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
-            Every row below is published by its named source. Gender splits are deliberately absent:
-            see the note at the foot of this page.
+            The full published dataset: eight platforms across gender, age, income and education.
+            Bar length is the value, the small figure beneath it is the gap from the national
+            average, and each column carries its own margin of error.
           </p>
-          <div className="border border-border/60 overflow-x-auto">
-            <table className="w-full min-w-[640px]">
-              <thead>
-                <tr className="border-b border-border text-left">
-                  {["Metric", "Segment", "Value", "Source"].map((h) => (
-                    <th
-                      key={h}
-                      className="py-2.5 pr-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="[&_td:first-child]:pl-0">
-                {EVIDENCE.map((e) => {
-                  const s = studyById(e.studyId);
-                  return (
-                    <tr key={e.id} className="border-b border-border/40 align-top">
-                      <td className="py-2.5 pr-4 font-mono text-xs text-muted-foreground">{e.metric}</td>
-                      <td className="py-2.5 pr-4 font-mono text-xs text-muted-foreground/80 whitespace-nowrap">
-                        {e.segment}
-                      </td>
-                      <td className="py-2.5 pr-4 font-mono text-sm text-foreground whitespace-nowrap">
-                        {e.value}
-                      </td>
-                      <td className="py-2.5 font-mono text-[10px] text-muted-foreground/80">
-                        {s?.publisher}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ReachMatrix />
+        </section>
+
+        {/* Daily use: habit rather than reach */}
+        <section aria-labelledby="du-h" className="mb-14">
+          <h2 id="du-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Which platforms they open every day
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Reach says a platform can be used. Daily use says it is a habit, and it is the closer
+            answer to where an audience actually spends time. A different survey with a different
+            sample, so it is kept separate rather than blended. The reversals are the interesting
+            part: men out-use women on YouTube daily 58 to 39, while women lead Facebook 60 to 44.
+          </p>
+          <DailyUsePanel />
         </section>
 
         {/* Changelog */}
@@ -240,6 +261,48 @@ export default function Page() {
           <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-4">
             Figures that fail verification are recorded internally and never published, so a later
             refresh cannot quietly reintroduce a number that was already rejected once.
+          </p>
+        </section>
+
+        {/* Full citations. Every number on this page traces to one of these. */}
+        <section aria-labelledby="src-h" className="mb-14">
+          <h2 id="src-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Sources
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Every figure on this page comes from one of the following. Each entry states what the
+            study actually measured, its sample and field dates, and when it was last checked.
+          </p>
+          <ol className="space-y-4">
+            {CITATIONS.map((c, i) => (
+              <li key={c.id} className="border border-border/60 p-5">
+                <div className="flex gap-3">
+                  <span className="font-mono text-[11px] text-muted-foreground/80 tabular-nums shrink-0 pt-0.5">
+                    [{i + 1}]
+                  </span>
+                  <div className="min-w-0">
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-display text-base font-bold text-foreground underline decoration-border hover:text-glow transition-all break-words"
+                    >
+                      {c.title}
+                    </a>
+                    <p className="font-mono text-[11px] text-muted-foreground mt-1 mb-2">
+                      {c.publisher} · accessed {c.accessed}
+                    </p>
+                    <p className="font-mono text-[11px] text-muted-foreground/90 leading-relaxed">
+                      {c.detail}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p className="font-mono text-[10px] text-muted-foreground/80 leading-relaxed mt-4">
+            No paid audience-intelligence tool was used. Everything here is public research, read at
+            the source rather than through an aggregator.
           </p>
         </section>
 
