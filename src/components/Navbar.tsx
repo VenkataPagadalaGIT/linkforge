@@ -63,6 +63,7 @@ const MEGA: MegaMenu[] = [
           { label: "AI Encyclopedia", note: "187 concepts, one page each", to: "/notebook/ai/encyclopedia", badge: "NEW" },
           { label: "AI Roadmap", note: "learn AI in 18 weeks + depth tracks", to: "/notebook/ai/roadmap" },
           { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
+          { label: "Audience Personas", note: "graded by evidence, sourced", to: "/personas", badge: "NEW" },
           { label: "AI Bookshelf", note: "19 free books, on a 3D shelf", to: "/notebook/ai/shelf", badge: "3D" },
         ],
       },

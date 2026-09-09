@@ -103,6 +103,11 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 - URL: https://venkatapagadala.com/3d-game
 - Markdown edition: https://venkatapagadala.com/3d-game.md
 
+## Audience Personas
+
+Evidence-graded personas: every trait is labelled measured (a study reports it for this population), derived (real data from a wider population) or inferred (no source, an assumption to test), and links to the study behind it. Built from public research only: Pew Research Center social media fact sheet (n=5,022, fielded Feb-Jun 2025), DataReportal Digital 2026 (GWI panel), Cox Automotive Car Buyer Journey Study (n=2,300 recent vehicle buyers). Figures that fail verification are recorded and never published; Pew gender splits are deliberately excluded because two reads did not reconcile against the published overall.
+- URL: https://venkatapagadala.com/personas
+
 ## AI Updates
 
 News with primary sources attached: court documents, official filings, and original announcements linked from every article.

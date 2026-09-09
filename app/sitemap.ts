@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { toDate } from "@/lib/date";
 import { aiUpdates } from "@/data/aiUpdates";
+import { PERSONAS, PERSONAS_LAST_UPDATED } from "@/data/personas";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
@@ -23,6 +24,7 @@ const STATIC_ROUTES = [
   "/solutions",
   "/research",
   "/notebook",
+  "/personas",
   "/notebook/ai",
   "/notebook/ai/agents",
   "/notebook/ai/roadmap",
@@ -162,6 +164,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.5,
+    });
+  }
+
+  for (const p of PERSONAS) {
+    urls.push({
+      url: `${SITE_URL}/personas/${p.slug}`,
+      lastModified: toDate(PERSONAS_LAST_UPDATED),
+      changeFrequency: "monthly",
+      priority: 0.7,
     });
   }
 
