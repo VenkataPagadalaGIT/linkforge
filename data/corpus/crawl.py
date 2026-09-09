@@ -63,8 +63,9 @@ class Throttle:
     finds a pace the server is happy with and stays there.
     """
 
-    def __init__(self, floor):
+    def __init__(self, floor, ceiling=20.0):
         self.floor = floor
+        self.ceiling = ceiling
         self.delay = floor
         self.ok_streak = 0
 
@@ -73,19 +74,22 @@ class Throttle:
 
     def good(self):
         self.ok_streak += 1
-        if self.ok_streak >= 25 and self.delay > self.floor:
-            self.delay = max(self.floor, self.delay * 0.8)
+        # Recover briskly. The first version needed 25 clean fetches to ease
+        # off by 20%, so one early burst of 403s pinned it at its ceiling for
+        # the rest of the run: two pages in five minutes.
+        if self.ok_streak >= 8 and self.delay > self.floor:
+            self.delay = max(self.floor, self.delay * 0.75)
             self.ok_streak = 0
 
     def pushback(self):
+        """One fixed cooldown, then a modest step up. Never compound."""
         self.ok_streak = 0
-        self.delay = min(30.0, self.delay * 2)
-        # Stand down entirely for a moment; the burst is what caused this.
-        time.sleep(self.delay * 2)
+        self.delay = min(self.ceiling, self.delay * 1.4)
+        time.sleep(20)
         return self.delay
 
 
-def get(url, timeout=30, retries=3, throttle=None):
+def get(url, timeout=30, retries=2, throttle=None):
     """
     Fetch with backoff on throttling.
 
@@ -175,6 +179,80 @@ def discover():
       ON CONFLICT (url) DO UPDATE SET sitemap_lastmod = EXCLUDED.sitemap_lastmod;""")
     sql("\n".join(stmts), timeout=300)
     print(f"\n  {len(rows)} urls in resource")
+
+
+def fetch_paid(limit=None):
+    """
+    Pew via Bright Data. Approved ceiling $12; the cap lives in brightdata.py
+    and aborts rather than warns.
+    """
+    import brightdata as bd
+    bd.acquire_lock()
+    bd.init()
+
+    rows = query(f"""SELECT r.id, r.url FROM resource r
+                     JOIN source so ON so.id = r.source_id
+                     WHERE so.slug='pew' AND r.status='pending'
+                     ORDER BY r.id {'LIMIT ' + str(limit) if limit else ''};""")
+    if not rows:
+        print("nothing pending"); return
+
+    spend, done, err, t0 = 0.0, 0, 0, time.time()
+    pending_sql = []
+    print(f"paid fetch: {len(rows)} urls, cap ${bd.HARD_CAP:.2f}, "
+          f"est ${len(rows)*bd.COST_PER_REQUEST:.2f}", flush=True)
+
+    for i in range(0, len(rows), 10):
+        batch = rows[i:i+10]
+        try:
+            results, spend = bd.scrape([u for _, u in batch], spend)
+        except SystemExit:
+            raise
+        except Exception as e:
+            # Not billed as success; leave the rows pending so a resume retries.
+            print(f"  batch failed: {type(e).__name__}: {str(e)[:120]}", flush=True)
+            time.sleep(10)
+            bd.init()
+            continue
+
+        for (rid, url), (_, body) in zip(batch, results):
+            if not body:
+                pending_sql.append(
+                    f"UPDATE resource SET status='error', fetched_at=now(), "
+                    f"error='brightdata returned no body' WHERE id={rid};")
+                err += 1
+                continue
+            raw = body.encode("utf-8")
+            h = hashlib.sha256(raw).hexdigest()
+            rel = os.path.join("pew", h[:2], h[2:4], h + ".gz")
+            dest = os.path.join(CACHE, rel)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            if not os.path.exists(dest):
+                with gzip.open(dest, "wb") as f:
+                    f.write(raw)
+            tm = re.search(r"^#\s+(.+)$", body[:4000], re.M) or \
+                 re.search(r"<title>(.*?)</title>", body[:4000], re.S | re.I)
+            title = re.sub(r"\s+", " ", tm.group(1))[:300] if tm else ""
+            pending_sql.append(
+                f"UPDATE resource SET status='ok', http_status=200, fetched_at=now(), "
+                f"content_hash={q(h)}, byte_size={len(raw)}, local_path={q(rel)}, "
+                f"title={q(title)}, error=NULL WHERE id={rid};")
+            done += 1
+
+        if len(pending_sql) >= 40:
+            sql("\n".join(pending_sql), timeout=180); pending_sql = []
+            n = i + len(batch)
+            rate = n / max(time.time() - t0, 1)
+            print(f"  {n}/{len(rows)}  ok={done} err={err}  "
+                  f"${spend:.2f} spent (${spend/max(done,1):.4f}/page)  "
+                  f"eta {(len(rows)-n)/max(rate,0.01)/60:.0f}m", flush=True)
+
+    if pending_sql:
+        sql("\n".join(pending_sql), timeout=180)
+    sql(f"INSERT INTO ingest_run (script,documents,observations,notes) VALUES "
+        f"('crawl.py fetch-paid',0,0,{q(f'{done} fetched, {err} errors, ${spend:.2f} spent at ${bd.COST_PER_REQUEST}/req')});")
+    print(f"done  ok={done} err={err}  ACTUAL SPEND ${spend:.2f} "
+          f"(estimated ${len(rows)*bd.COST_PER_REQUEST:.2f})")
 
 
 def fetch(site=None, limit=None):
@@ -270,10 +348,11 @@ def status():
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["discover", "fetch", "status"])
+    ap.add_argument("cmd", choices=["discover", "fetch", "fetch-paid", "status"])
     ap.add_argument("--site", choices=list(SITES))
     ap.add_argument("--limit", type=int)
     a = ap.parse_args()
-    if a.cmd == "discover": discover()
-    elif a.cmd == "fetch":  fetch(a.site, a.limit)
-    else:                   status()
+    if a.cmd == "discover":     discover()
+    elif a.cmd == "fetch":      fetch(a.site, a.limit)
+    elif a.cmd == "fetch-paid": fetch_paid(a.limit)
+    else:                       status()
