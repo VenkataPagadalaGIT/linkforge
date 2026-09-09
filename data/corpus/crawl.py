@@ -183,9 +183,22 @@ def discover():
 
 def fetch_paid(site="pew", limit=None):
     """
-    Pew via Bright Data. Approved ceiling $12; the cap lives in brightdata.py
-    and aborts rather than warns.
+    Bright Data path. Works for pewresearch.org ONLY.
+
+    usafacts.org returns an empty body through the unlocker, every time: it is
+    a client-rendered app the proxy does not execute. Forty pages were bought
+    and forty came back with content length zero before this was caught, which
+    is $0.06 for nothing and exactly the "empty responses still bill" failure
+    the cost rules warn about. Direct fetching gets those same pages with zero
+    errors, so usafacts stays on the free path and no amount of money makes it
+    faster. Do not point this at usafacts again.
+
+    The cap lives in brightdata.py, is global across workers, and aborts
+    rather than warns.
     """
+    if site == "usafacts":
+        raise SystemExit("[REFUSED] usafacts returns empty bodies through Bright Data. "
+                         "Use: crawl.py fetch --site usafacts (free, works).")
     import brightdata as bd
     bd.acquire_lock(site)
     bd.init()
