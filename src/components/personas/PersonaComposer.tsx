@@ -22,8 +22,12 @@
 
 import { useMemo, useState } from "react";
 import PlatformMark from "./PlatformMark";
+import PersonaAvatar, { type AvatarAge, type AvatarGender } from "./PersonaAvatar";
 import {
   BUYER_PERSONAS,
+  REACH,
+  SEGMENTS,
+  segmentById,
   CLASSIFICATION_DIMENSIONS,
   DEMAND_SOURCES,
   PLATFORMS,
@@ -36,9 +40,31 @@ const CATS: SourceCategory[] = ["search", "social", "reviews", "market", "expert
 
 export default function PersonaComposer() {
   const [dropped, setDropped] = useState<string[]>([]);
+  const [traits, setTraits] = useState<Partial<Record<string, string>>>({});
   const [dragOver, setDragOver] = useState(false);
 
-  const add = (id: string) => setDropped((p) => (p.includes(id) ? p : [...p, id]));
+  /** Demographic buckets. Only dimensions the source data actually publishes. */
+  const BUCKETS: { dim: string; label: string; ids: string[] }[] = [
+    { dim: "gender", label: "Gender", ids: ["men", "women"] },
+    { dim: "age", label: "Age", ids: ["teen", "18-29", "30-49", "50-64", "65+"] },
+    { dim: "income", label: "Salary", ids: ["inc-lt30", "inc-30-70", "inc-70-100", "inc-100"] },
+    { dim: "education", label: "Education", ids: ["edu-hs", "edu-some", "edu-grad"] },
+  ];
+  const labelFor = (id: string) =>
+    id === "teen" ? "13 to 17" : (segmentById(id)?.label ?? id);
+  const dimOf = (id: string) =>
+    id === "teen" ? "age" : (segmentById(id)?.dimension ?? "");
+
+  const setTrait = (id: string) => {
+    const d = dimOf(id);
+    setTraits((p) => ({ ...p, [d]: p[d] === id ? undefined : id }));
+  };
+
+  const isTrait = (id: string) => id === "teen" || !!segmentById(id);
+  const add = (id: string) => {
+    if (isTrait(id)) return setTrait(id);
+    setDropped((p) => (p.includes(id) ? p : [...p, id]));
+  };
   const remove = (id: string) => setDropped((p) => p.filter((x) => x !== id));
 
   /** Score each persona by how much of its trusted set is present. */
@@ -50,6 +76,7 @@ export default function PersonaComposer() {
     }).sort((a, b) => b.score - a.score);
   }, [dropped]);
 
+  const traitList = Object.values(traits).filter(Boolean) as string[];
   const top = scored[0];
   const confident = top && top.score >= 0.5;
   const tied = scored.filter((s) => top && s.score === top.score).length > 1;
@@ -61,6 +88,42 @@ export default function PersonaComposer() {
       <div className="grid lg:grid-cols-[1fr_320px]">
         {/* Palette */}
         <div className="p-5 border-b lg:border-b-0 lg:border-r border-border">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-1">
+            Who they are
+          </p>
+          <p className="font-mono text-[11px] text-muted-foreground/90 mb-3">
+            Drag a trait into the profile. Only the dimensions the published research actually cuts
+            by are offered here.
+          </p>
+          <div className="space-y-2.5 mb-6 pb-6 border-b border-border/60">
+            {BUCKETS.map((b) => (
+              <div key={b.dim} className="flex flex-wrap items-center gap-1.5">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 w-20 shrink-0">
+                  {b.label}
+                </span>
+                {b.ids.map((id) => {
+                  const on = traits[b.dim] === id;
+                  return (
+                    <button
+                      key={id}
+                      draggable
+                      onDragStart={(e) => e.dataTransfer.setData("text/plain", id)}
+                      onClick={() => setTrait(id)}
+                      aria-pressed={on}
+                      className={`font-mono text-[11px] px-2 py-1 border transition-all cursor-grab active:cursor-grabbing ${
+                        on
+                          ? "border-foreground text-foreground bg-foreground/10"
+                          : "border-border/60 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+                      }`}
+                    >
+                      {labelFor(id)}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-1">
             Twenty demand sources
           </p>
@@ -138,9 +201,9 @@ export default function PersonaComposer() {
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
               The profile
             </p>
-            {dropped.length > 0 && (
+            {(dropped.length > 0 || traitList.length > 0) && (
               <button
-                onClick={() => setDropped([])}
+                onClick={() => { setDropped([]); setTraits({}); }}
                 className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground border border-border px-2 py-0.5 transition-colors"
               >
                 Clear
@@ -150,23 +213,21 @@ export default function PersonaComposer() {
 
           {/* Avatar + identity */}
           <div className="flex items-center gap-3 mb-4">
-            <div
-              className="w-14 h-14 rounded-full border flex items-center justify-center shrink-0 transition-colors"
-              style={{
-                borderColor: confident ? "var(--foreground)" : undefined,
-              }}
-            >
-              <span className="font-display text-lg font-bold text-foreground">
-                {confident && !tied ? top.bp.initials : "?"}
-              </span>
+            <div className="shrink-0" style={{ lineHeight: 0 }}>
+              <PersonaAvatar
+                gender={traits.gender as AvatarGender}
+                age={traits.age as AvatarAge}
+                size={72}
+                accent="var(--foreground)"
+              />
             </div>
             <div className="min-w-0">
               <p className="font-display text-base font-bold text-foreground leading-tight">
-                {!dropped.length
-                  ? "Empty profile"
-                  : confident && !tied
-                    ? top.bp.name
-                    : "Not enough to call it"}
+                {confident && !tied
+                  ? top.bp.name
+                  : traitList.length
+                    ? traitList.map(labelFor).join(", ")
+                    : "Empty profile"}
               </p>
               <p className="font-mono text-[10px] text-muted-foreground mt-0.5">
                 {!dropped.length
@@ -177,6 +238,58 @@ export default function PersonaComposer() {
               </p>
             </div>
           </div>
+
+          {/* Demographic readout. One lens at a time, never combined. */}
+          {traitList.length > 0 && (
+            <div className="border border-border p-3 mb-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+                Reach for each trait, read separately
+              </p>
+              <div className="space-y-2.5">
+                {traitList.map((id) => {
+                  if (id === "teen") {
+                    return (
+                      <p key={id} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+                        <span className="text-foreground">13 to 17: </span>
+                        a separate study of 1,458 teens. Snapchat 55%, Facebook 31%, WhatsApp 24%.
+                        Not comparable with the adult figures.
+                      </p>
+                    );
+                  }
+                  const seg = segmentById(id);
+                  if (!seg) return null;
+                  const tops = ["youtube", "facebook", "instagram", "tiktok"]
+                    .map((pid) => ({ pid, v: REACH[pid]?.[id] }))
+                    .filter((r) => r.v !== undefined);
+                  return (
+                    <div key={id}>
+                      <p className="font-mono text-[10px] text-foreground mb-1">
+                        {seg.label}
+                        <span className="text-muted-foreground">
+                          {" "}
+                          · n={seg.n.toLocaleString()} · ±{seg.moe.toFixed(1)}pp
+                        </span>
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {tops.map(({ pid, v }) => (
+                          <span key={pid} className="inline-flex items-center gap-1 border border-border/60 px-1.5 py-0.5">
+                            <PlatformMark id={pid} color={colorOf(pid) ?? "#888"} size={11} />
+                            <span className="font-mono text-[10px] text-foreground tabular-nums">{v}%</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {traitList.filter((t) => t !== "teen").length > 1 && (
+                <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-2.5 pt-2.5 border-t border-border/50">
+                  The figure above is an illustration. The numbers are read one dimension at a time,
+                  because no study measures the overlap.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Dropped chips */}
           <div className="min-h-[64px] border border-dashed border-border/70 p-2.5 mb-4">
