@@ -21,6 +21,7 @@
 
 import { useMemo, useState } from "react";
 import PlatformMark from "./PlatformMark";
+import { NEWS_CHANNELS } from "@/data/newsChannels";
 import PersonaAvatar, { type AvatarAge, type AvatarGender } from "./PersonaAvatar";
 import {
   ALL_SEGMENTS,
@@ -431,6 +432,54 @@ export default function PersonaStudio() {
                 shown as published. &ldquo;n/p&rdquo; means that fact sheet does not publish that
                 cut. The smartphone-only row is the one that changes how you build: those people
                 have no home broadband.
+              </p>
+            </div>
+          )}
+
+          {/* Where they get news. Published cells, one column per trait, same
+              reason as the access table: combining near-ceiling proportions
+              adds error without adding information. */}
+          {!isTeen && (
+            <div className="mb-4 pt-3 border-t border-border/50">
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+                Where they get news
+              </p>
+              <div className="space-y-1">
+                {NEWS_CHANNELS.map((c) => {
+                  // The first selected trait with a published cell wins; the
+                  // national figure is the fallback and is labelled as such.
+                  const hit = adultTraits.find((t) => c.by[t] !== undefined);
+                  const v = hit ? c.by[hit] : c.overall;
+                  const delta = hit ? v - c.overall : 0;
+                  return (
+                    <div key={c.id} className="flex items-center gap-2 py-0.5">
+                      <span className="font-mono text-[11px] text-muted-foreground w-28 shrink-0 truncate">
+                        {c.label}
+                      </span>
+                      <span className="flex-1 h-1.5 bg-secondary/50">
+                        <span
+                          className="block h-full transition-all duration-500"
+                          style={{ width: `${v}%`, background: "var(--foreground)", opacity: 0.6 }}
+                        />
+                      </span>
+                      <span className="font-mono text-xs text-foreground w-9 text-right tabular-nums shrink-0">
+                        {v}%
+                      </span>
+                      <span
+                        className="font-mono text-[9px] w-10 text-right tabular-nums shrink-0"
+                        style={{ color: delta === 0 ? undefined : delta > 0 ? "#10b981" : "#f59e0b" }}
+                      >
+                        {delta === 0 ? "" : `${delta > 0 ? "+" : ""}${delta}`}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+                {adultTraits.length
+                  ? `Shown for ${labelOf(adultTraits.find((t) => NEWS_CHANNELS[0].by[t] !== undefined) ?? adultTraits[0])}, with the gap from the national figure beside it.`
+                  : "All US adults. Pick a trait and each row switches to that group's published cell."}{" "}
+                AI chatbots are in this survey for the first time: 9% of US adults, 19% of Asian adults.
               </p>
             </div>
           )}
