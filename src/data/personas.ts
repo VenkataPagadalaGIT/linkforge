@@ -707,3 +707,128 @@ export const TEEN_REACH = [
   { label: "TikTok, Black teens", pct: 79, note: "against 74% Hispanic and 54% White" },
   { label: "Instagram, Black teens", pct: 82, note: "against 69% Hispanic and 55% White" },
 ];
+
+/* ------------------------------------------------------------------ *
+ * RESEARCH FOUNDATIONS
+ *
+ * The peer-reviewed basis for why this section is built the way it is.
+ * The Chapman result is the load-bearing one: it is the empirical proof
+ * that a persona with many attributes describes almost nobody, which is
+ * exactly why the composer loses confidence as traits are added instead
+ * of gaining it.
+ * ------------------------------------------------------------------ */
+
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  authors: string;
+  venue: string;
+  year: number;
+  url: string;
+  finding: string;
+  /** How this page actually acts on it. */
+  applied: string;
+}
+
+export const RESEARCH_PAPERS: ResearchPaper[] = [
+  {
+    id: "chapman-2008",
+    title: "Quantitative Evaluation of Personas as Information",
+    authors: "Chapman, Love, Milham, ElRif & Alford",
+    venue: "Proceedings of the Human Factors and Ergonomics Society Annual Meeting",
+    year: 2008,
+    url: "https://quantuxbook.com/papers/REPRINT-HFES08-chapman-love-milham-elrif-alford.pdf",
+    finding:
+      "Across six real survey datasets (N=268 to N=10,307) and two simulated ones, the authors generated 10,000 random persona-like descriptions per dataset and measured how many real people each matched. Prevalence fell rapidly with every attribute added. In their words, the 99th percentile description \"fails to match anyone when 9 or more attributes are combined in 5 out of 6 survey datasets, including all consumer datasets\", and only one dataset saw descriptions with 7 or more attributes match more than 0.3% of respondents. Their conclusion: a persona with more than a few attributes cannot be assumed to describe many actual people.",
+    applied:
+      "This is why the composer gets LESS confident as you narrow, why two selected lenses are printed separately instead of merged, and why the do-not-assert list bans multiplying marginals. A tool that grew more confident with each attribute would be contradicting a measured result.",
+  },
+  {
+    id: "chapman-2006",
+    title: "The Personas' New Clothes: Methodological and Practical Arguments against a Popular Method",
+    authors: "Chapman & Milham",
+    venue: "Proceedings of the Human Factors and Ergonomics Society Annual Meeting, 50(5), 634-636",
+    year: 2006,
+    url: "https://journals.sagepub.com/doi/10.1177/154193120605000503",
+    finding:
+      "The original methodological critique: it is difficult to know how many real users a persona represents, personas cannot be verified or falsified and so have no demonstrable validity, and they tend to settle questions politically rather than with data.",
+    applied:
+      "Answered directly by grading every trait and linking it to a study. A trait marked measured is falsifiable: open the source and check it. A trait marked inferred is labelled as an assumption to test rather than presented as a finding.",
+  },
+  {
+    id: "salminen-2021",
+    title: "A Survey of 15 Years of Data-Driven Persona Development",
+    authors: "Salminen, Guan, Jung & Jansen",
+    venue: "International Journal of Human-Computer Interaction",
+    year: 2021,
+    url: "https://research.tudelft.nl/en/publications/a-survey-of-15-years-of-data-driven-persona-development/",
+    finding:
+      "A systematic review of 77 data-driven persona articles from 2005 to 2020, identifying three eras: quantification (2005-2008), diversification (2009-2014) and digitalisation (2015 onward). The constructive counterpart to the Chapman critique: personas can be built from data, provided the data and method are stated.",
+    applied:
+      "The reason this section exists at all. Personas are not abandoned here, they are made auditable: every figure carries its study, population, sample size, field dates and margin of error.",
+  },
+];
+
+/**
+ * Which source answers which layer, and what it costs.
+ *
+ * The mapping follows the owner's own five-category demand framework.
+ * Three of the six layers are fully answered by free public research, so
+ * paid tooling is only justified for collection, never for demographics.
+ */
+export interface DataLayer {
+  layer: string;
+  question: string;
+  source: string;
+  cost: "free" | "paid";
+  url?: string;
+  note: string;
+}
+
+export const DATA_LADDER: DataLayer[] = [
+  {
+    layer: "Who they are",
+    question: "Age, gender, income, education, race, community",
+    source: "Pew Research Center, US Census, American Community Survey",
+    cost: "free",
+    url: "https://www.pewresearch.org/internet/fact-sheet/social-media/",
+    note: "Probability samples with published margins of error. No commercial audience tool improves on this for US demographics, and most are inferring what Pew measures.",
+  },
+  {
+    layer: "How they spend time",
+    question: "Hours per day on an activity, by demographic",
+    source: "American Time Use Survey (BLS)",
+    cost: "free",
+    url: "https://www.bls.gov/tus/data.htm",
+    note: "Federal time-diary survey, roughly 6,100 respondents in 2025, microdata downloadable at no cost. A stronger answer to time spent than any commercial panel, because it is a diary rather than a recollection.",
+  },
+  {
+    layer: "What they pay",
+    question: "Spending by category and demographic",
+    source: "Consumer Expenditure Survey (BLS)",
+    cost: "free",
+    url: "https://www.bls.gov/cex/",
+    note: "Annual means, standard errors and shares across 17 demographic characteristics, plus public-use microdata back to 1980. This is the salary and spending layer, already published.",
+  },
+  {
+    layer: "What they type",
+    question: "Search demand, queries, SERP composition",
+    source: "DataForSEO",
+    cost: "paid",
+    note: "Justified: no free source gives query-level volume at scale. Keyword volume understates real demand, so pair it with Search Console rather than treating it as the whole picture.",
+  },
+  {
+    layer: "What they say",
+    question: "Posts, comments, community threads",
+    source: "mcpscraper, Bright Data",
+    cost: "paid",
+    note: "Justified for collection only. These retrieve text that is already public; they do not supply demographics, and nothing they return establishes why somebody decided anything.",
+  },
+  {
+    layer: "Why they decided",
+    question: "Motivation, trust, trade-offs",
+    source: "Purpose-built surveys and interviews",
+    cost: "free",
+    note: "No tool at any price answers this. Behavioural data shows where a person went, never why. This is the layer where every persona on the internet quietly starts inventing, and where ours marks traits inferred.",
+  },
+];

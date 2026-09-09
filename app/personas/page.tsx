@@ -8,6 +8,8 @@ import DailyUsePanel from "@/components/personas/DailyUsePanel";
 import PlatformMark from "@/components/personas/PlatformMark";
 import {
   CITATIONS,
+  DATA_LADDER,
+  RESEARCH_PAPERS,
   EVIDENCE,
   REACH,
   GRADE_META,
@@ -277,6 +279,99 @@ export default function Page() {
             Figures that fail verification are recorded internally and never published, so a later
             refresh cannot quietly reintroduce a number that was already rejected once.
           </p>
+        </section>
+
+        {/* Why the tool behaves as it does, in peer-reviewed terms. */}
+        <section aria-labelledby="rf-h" className="mb-14">
+          <h2 id="rf-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Why this is built the way it is
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            The behaviour that makes this section unusual, losing confidence as a persona narrows,
+            is not a stylistic choice. It is the finding of a measured result.
+          </p>
+          <div className="space-y-3">
+            {RESEARCH_PAPERS.map((r) => (
+              <div key={r.id} className="border border-border/60 p-5">
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-base font-bold text-foreground underline decoration-border hover:text-glow transition-all"
+                >
+                  {r.title}
+                </a>
+                <p className="font-mono text-[11px] text-muted-foreground mt-1 mb-2">
+                  {r.authors} · {r.venue} · {r.year}
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground/90 leading-relaxed mb-2">
+                  {r.finding}
+                </p>
+                <p className="font-mono text-[11px] text-foreground leading-relaxed">
+                  <span className="text-muted-foreground">Applied here: </span>
+                  {r.applied}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Which source answers which layer, and what it costs. */}
+        <section aria-labelledby="dl-h" className="mb-14">
+          <h2 id="dl-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Which source answers which layer
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Four of the six layers below are answered by free public research, most of it federal.
+            Paid tooling is justified for collecting what people say and type, never for
+            demographics, and nothing at any price answers the last row.
+          </p>
+          <div className="border border-border/60 overflow-x-auto">
+            <table className="w-full min-w-[720px]">
+              <thead>
+                <tr className="border-b border-border text-left">
+                  {["Layer", "The question", "Source", "Cost"].map((h) => (
+                    <th key={h} className="py-2.5 pr-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="[&_td:first-child]:pl-0">
+                {DATA_LADDER.map((d) => (
+                  <tr key={d.layer} className="border-b border-border/40 align-top">
+                    <td className="py-3 pr-4 font-mono text-xs text-foreground whitespace-nowrap">
+                      {d.layer}
+                    </td>
+                    <td className="py-3 pr-4 font-mono text-[11px] text-muted-foreground leading-relaxed">
+                      {d.question}
+                    </td>
+                    <td className="py-3 pr-4 font-mono text-[11px] leading-relaxed">
+                      {d.url ? (
+                        <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
+                          {d.source}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">{d.source}</span>
+                      )}
+                      <span className="block text-muted-foreground/90 mt-1">{d.note}</span>
+                    </td>
+                    <td className="py-3 pr-4">
+                      <span
+                        className="font-mono text-[9px] uppercase tracking-wider border px-1.5 py-0.5 whitespace-nowrap"
+                        style={{
+                          borderColor: d.cost === "free" ? "#10b981" : "#f59e0b",
+                          color: d.cost === "free" ? "#10b981" : "#f59e0b",
+                        }}
+                      >
+                        {d.cost}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         {/* Full citations. Every number on this page traces to one of these. */}
