@@ -100,9 +100,9 @@ export const STUDIES: Study[] = [
     population: "US adults 18+",
     sampleSize: 5022,
     fielded: "2025-02-05 to 2025-06-18",
-    published: "2025",
+    published: "2025-11-20",
     limitation:
-      "Reports whether someone ever uses a platform. It does not measure time spent, frequency, or what they do there.",
+      "Reports whether someone ever uses a platform, not time spent, frequency, or what they do there. It publishes each demographic dimension separately, so there is no published figure for any INTERSECTION of two dimensions.",
   },
   {
     id: "datareportal-2026",
@@ -155,19 +155,19 @@ export const EVIDENCE: EvidenceRow[] = [
   { id: "ig-50", studyId: "pew-social-2025", metric: "Ever use Instagram", segment: "Ages 50-64", value: "40%" },
   { id: "ig-65", studyId: "pew-social-2025", metric: "Ever use Instagram", segment: "Ages 65+", value: "19%" },
 
-  { id: "tt-all", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "All US adults", value: "32%" },
+  { id: "tt-all", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "All US adults", value: "37%" },
   { id: "tt-18", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "Ages 18-29", value: "63%" },
   { id: "tt-30", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "Ages 30-49", value: "44%" },
   { id: "tt-50", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "Ages 50-64", value: "30%" },
   { id: "tt-65", studyId: "pew-social-2025", metric: "Ever use TikTok", segment: "Ages 65+", value: "12%" },
 
-  { id: "sc-all", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "All US adults", value: "26%" },
+  { id: "sc-all", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "All US adults", value: "25%" },
   { id: "sc-18", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "Ages 18-29", value: "58%" },
   { id: "sc-30", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "Ages 30-49", value: "31%" },
   { id: "sc-50", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "Ages 50-64", value: "13%" },
   { id: "sc-65", studyId: "pew-social-2025", metric: "Ever use Snapchat", segment: "Ages 65+", value: "4%" },
 
-  { id: "rd-all", studyId: "pew-social-2025", metric: "Ever use Reddit", segment: "All US adults", value: "24%" },
+  { id: "rd-all", studyId: "pew-social-2025", metric: "Ever use Reddit", segment: "All US adults", value: "26%" },
   { id: "rd-18", studyId: "pew-social-2025", metric: "Ever use Reddit", segment: "Ages 18-29", value: "48%" },
   { id: "rd-30", studyId: "pew-social-2025", metric: "Ever use Reddit", segment: "Ages 30-49", value: "35%" },
   { id: "rd-50", studyId: "pew-social-2025", metric: "Ever use Reddit", segment: "Ages 50-64", value: "16%" },
@@ -288,8 +288,7 @@ export const PERSONAS: Persona[] = [
  * Checked before any refresh adds a row.
  */
 export const PERSONA_DO_NOT_ASSERT: string[] = [
-  "Pew gender splits by platform (Men/Women columns). Two independent reads of the fact sheet returned figures that do not reconcile against the published overall: TikTok showed men 30% / women 42% against an overall of 32%, which is arithmetically impossible for a US adult sample. The tabbed table did not extract reliably. Gender data is therefore excluded until it can be read from the source by hand or from Pew's downloadable dataset.",
-  "Pew WhatsApp overall usage. Returned 25% on one read and 21% on another. Excluded entirely until resolved.",
+  "Multiplying marginals into an intersection. Pew publishes a number for men, and a number for 30-49s, but none for men aged 30-49. The explorer shows each lens separately and refuses to combine them, because a combined figure would be invented arithmetic wearing a citation.",
   "Pew LinkedIn and Pinterest age breakdowns. The overall figures appeared (25% and 37%) but no age columns could be read, so no age rows exist for them.",
   "Any claim tying child age, parental status or household composition to platform behaviour. Pew does not publish this cut. If it appears in a future persona, it came from a paid inferred panel or from nowhere, and it must be graded accordingly.",
   "Any daily-minutes figure presented as US-specific or age-specific. The DataReportal/GWI numbers are global, all-user averages.",
@@ -303,6 +302,8 @@ export const PERSONA_CHANGELOG: { date: string; entries: string[] }[] = [
       "First published. Three studies, 42 verified evidence rows, one persona.",
       "Pew age breakdowns verified across two independent reads and reconciled against published overall figures.",
       "Pew gender breakdowns and WhatsApp overall excluded after failing that reconciliation; recorded in the do-not-assert list.",
+      "Re-verified the same day against the primary report PDF (Americans' Social Media Use 2025, published 2025-11-20) instead of the JavaScript fact-sheet table. The audit reversed the earlier conclusion: the OVERALL figures were the faulty read, not the gender splits. Corrected TikTok 32% to 37%, WhatsApp to 32%, Reddit 24% to 26%, Snapchat 26% to 25%. Gender data restored, corroborated verbatim by the report for Instagram (women 55%, men 44%).",
+      "Added the full reach matrix (8 platforms x 13 segments across gender, age, income and education) with the published sample size and margin of error for every segment, to power the interactive explorer.",
     ],
   },
 ];
@@ -318,3 +319,111 @@ export const PERSONA_COUNTS = {
 export const studyById = (id: string) => STUDIES.find((s) => s.id === id);
 export const evidenceById = (id: string) => EVIDENCE.find((e) => e.id === id);
 export const personaBySlug = (slug: string) => PERSONAS.find((p) => p.slug === slug);
+
+/* ------------------------------------------------------------------ *
+ * The reach matrix that powers the interactive explorer.
+ *
+ * Re-verified 2026-09-09 against the PRIMARY report PDF ("Americans'
+ * Social Media Use 2025", published 2025-11-20) rather than the
+ * JavaScript fact-sheet table, after the fact sheet produced figures
+ * that would not reconcile. The audit found the OVERALL numbers were
+ * the bad read, not the demographic splits: TikTok is 37% (not 32%)
+ * and WhatsApp is 32% (not 25% or 21%). Gender data was wrongly
+ * suspected and is now restored, corroborated verbatim by the report
+ * ("more than half of women report using Instagram (55%), compared
+ * with under half of men (44%)").
+ *
+ * CRITICAL, and the reason the explorer is built the way it is:
+ * Pew publishes MARGINALS, not the full crosstab. There is a published
+ * number for men, and a published number for 30-49s, but NONE for men
+ * aged 30-49. Multiplying marginals is statistically invalid. The
+ * explorer therefore shows each selected lens SEPARATELY and refuses
+ * to synthesise an intersection.
+ * ------------------------------------------------------------------ */
+
+export interface Platform {
+  id: string;
+  name: string;
+  /** Official brand colour, used for the mark and the bar only, never text. */
+  color: string;
+  /** % of ALL US adults who ever use it. Primary report, 2025. */
+  overall: number;
+}
+
+export type Dimension = "gender" | "age" | "income" | "education";
+
+export interface Segment {
+  id: string;
+  dimension: Dimension;
+  label: string;
+  /** Unweighted sample size, published by Pew. */
+  n: number;
+  /** Margin of error in percentage points, at 95% confidence. */
+  moe: number;
+}
+
+export const DIMENSION_LABEL: Record<Dimension, string> = {
+  gender: "Gender",
+  age: "Age",
+  income: "Household income",
+  education: "Education",
+};
+
+export const PLATFORMS: Platform[] = [
+  { id: "youtube", name: "YouTube", color: "#FF0000", overall: 84 },
+  { id: "facebook", name: "Facebook", color: "#1877F2", overall: 71 },
+  { id: "instagram", name: "Instagram", color: "#E4405F", overall: 50 },
+  { id: "tiktok", name: "TikTok", color: "#FE2C55", overall: 37 },
+  { id: "whatsapp", name: "WhatsApp", color: "#25D366", overall: 32 },
+  { id: "reddit", name: "Reddit", color: "#FF4500", overall: 26 },
+  { id: "snapchat", name: "Snapchat", color: "#FFFC00", overall: 25 },
+  { id: "x", name: "X", color: "#E7E9EA", overall: 21 },
+];
+
+export const SEGMENTS: Segment[] = [
+  { id: "men", dimension: "gender", label: "Men", n: 2194, moe: 3.0 },
+  { id: "women", dimension: "gender", label: "Women", n: 2758, moe: 2.5 },
+
+  { id: "18-29", dimension: "age", label: "18 to 29", n: 480, moe: 5.6 },
+  { id: "30-49", dimension: "age", label: "30 to 49", n: 1399, moe: 3.4 },
+  { id: "50-64", dimension: "age", label: "50 to 64", n: 1274, moe: 3.6 },
+  { id: "65+", dimension: "age", label: "65 and over", n: 1813, moe: 3.0 },
+
+  { id: "inc-lt30", dimension: "income", label: "Under $30K", n: 939, moe: 4.5 },
+  { id: "inc-30-70", dimension: "income", label: "$30K to $70K", n: 1533, moe: 3.6 },
+  { id: "inc-70-100", dimension: "income", label: "$70K to $100K", n: 692, moe: 5.1 },
+  { id: "inc-100", dimension: "income", label: "$100K and over", n: 1629, moe: 3.1 },
+
+  { id: "edu-hs", dimension: "education", label: "High school or less", n: 1175, moe: 3.8 },
+  { id: "edu-some", dimension: "education", label: "Some college", n: 1587, moe: 3.4 },
+  { id: "edu-grad", dimension: "education", label: "College graduate", n: 2215, moe: 2.7 },
+];
+
+/** platformId -> segmentId -> % who ever use. Published cells only. */
+export const REACH: Record<string, Record<string, number>> = {
+  youtube: { men: 86, women: 83, "18-29": 95, "30-49": 92, "50-64": 85, "65+": 64, "inc-lt30": 77, "inc-30-70": 84, "inc-70-100": 87, "inc-100": 89, "edu-hs": 78, "edu-some": 87, "edu-grad": 89 },
+  facebook: { men: 63, women: 78, "18-29": 68, "30-49": 80, "50-64": 74, "65+": 57, "inc-lt30": 71, "inc-30-70": 72, "inc-70-100": 72, "inc-100": 71, "edu-hs": 69, "edu-some": 73, "edu-grad": 71 },
+  instagram: { men: 44, women: 55, "18-29": 80, "30-49": 62, "50-64": 40, "65+": 19, "inc-lt30": 41, "inc-30-70": 46, "inc-70-100": 54, "inc-100": 60, "edu-hs": 41, "edu-some": 53, "edu-grad": 58 },
+  tiktok: { men: 30, women: 42, "18-29": 63, "30-49": 44, "50-64": 30, "65+": 12, "inc-lt30": 42, "inc-30-70": 40, "inc-70-100": 39, "inc-100": 30, "edu-hs": 40, "edu-some": 42, "edu-grad": 29 },
+  whatsapp: { men: 30, women: 34, "18-29": 37, "30-49": 40, "50-64": 30, "65+": 20, "inc-lt30": 28, "inc-30-70": 31, "inc-70-100": 28, "inc-100": 39, "edu-hs": 27, "edu-some": 29, "edu-grad": 41 },
+  reddit: { men: 29, women: 23, "18-29": 48, "30-49": 35, "50-64": 16, "65+": 6, "inc-lt30": 17, "inc-30-70": 22, "inc-70-100": 29, "inc-100": 37, "edu-hs": 15, "edu-some": 28, "edu-grad": 37 },
+  snapchat: { men: 22, women: 28, "18-29": 58, "30-49": 31, "50-64": 13, "65+": 4, "inc-lt30": 26, "inc-30-70": 26, "inc-70-100": 31, "inc-100": 23, "edu-hs": 24, "edu-some": 29, "edu-grad": 24 },
+  x: { men: 25, women: 16, "18-29": 33, "30-49": 25, "50-64": 16, "65+": 10, "inc-lt30": 16, "inc-30-70": 19, "inc-70-100": 26, "inc-100": 25, "edu-hs": 16, "edu-some": 23, "edu-grad": 24 },
+};
+
+/**
+ * Attributes a reader will reach for that Pew does NOT publish. The
+ * explorer offers them, then explains the absence, because the absence
+ * is the most useful thing it can teach.
+ */
+export const UNMEASURED_ATTRIBUTES = [
+  { id: "kids", label: "Has children", why: "Pew publishes age, gender, race, income, education, community type and party. Parental status is not among them." },
+  { id: "baby", label: "Has an infant", why: "No public dataset cuts platform use by the age of a person's child." },
+  { id: "location", label: "Specific city or state", why: "Pew publishes urban, suburban and rural, not geography at state or metro level." },
+  { id: "intent", label: "In-market for a car", why: "Cox Automotive measures the buying journey for all recent buyers. It is not cross-cut with platform use." },
+];
+
+export const reachFor = (platformId: string, segmentId: string): number | undefined =>
+  REACH[platformId]?.[segmentId];
+
+export const segmentById = (id: string) => SEGMENTS.find((s) => s.id === id);

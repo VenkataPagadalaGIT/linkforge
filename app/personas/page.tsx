@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
+import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import {
   EVIDENCE,
   GRADE_META,
@@ -68,6 +69,19 @@ export default function Page() {
           and links to the research behind it, and the traits with no evidence are shown rather than
           hidden, because hiding them is how a persona becomes fiction.
         </p>
+
+        {/* The explorer goes above the fold: it teaches the method by being used. */}
+        <section aria-labelledby="x-h" className="mb-14">
+          <h2 id="x-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Build an audience, watch the data respond
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Start wide and add detail. Unlike every other persona tool, this one gets LESS confident
+            as you narrow, because that is what the evidence actually does. Add a second lens and it
+            will tell you no study measures the overlap.
+          </p>
+          <PersonaExplorer />
+        </section>
 
         {/* The grading key is the product. Lead with it. */}
         <div className="grid sm:grid-cols-3 gap-3 mb-14">
