@@ -79,6 +79,145 @@ export const CATEGORY_META: Record<UpdateCategory, { label: string; color: strin
 
 export const aiUpdates: AIUpdate[] = [
   {
+    id: "anthropic-coxon-resignation",
+    slug: "anthropic-researcher-resigns-superintelligence-warning",
+    title: "An Anthropic Researcher Resigned. His Alignment Lead Publicly Agreed With Him.",
+    company: "Anthropic",
+    category: "policy",
+    date: "2026-09-09",
+    summary:
+      "Jacob Coxon resigned from Anthropic on September 8, 2026, writing that neither Anthropic nor OpenAI is acting responsibly and that both are \"racing straight to self-improving superintelligence and gambling with our lives.\" The part that makes this more than a resignation letter: Evan Hubinger, who leads alignment science at Anthropic, replied publicly that Coxon is correct and put his own estimate of AI killing all humans above 10% within the decade. It lands while Anthropic sits in the SEC's confidential IPO review.",
+    takeaways: [
+      "Coxon says he spent three years on pretraining research across OpenAI and Anthropic, and left the field entirely. He joined Anthropic earlier in 2026, drawn by its safety reputation, according to the Wall Street Journal interview he gave.",
+      "The escalation is the response, not the resignation. Anthropic's own alignment science lead, Evan Hubinger, replied: \"Jacob is correct here, we really do earnestly believe AI could kill all humans! I personally think it is >10% within the next decade.\"",
+      "Hubinger added the qualifier most coverage dropped: he believes the risk from present models is low, and his concern is superintelligence arising from recursive self-improvement. He pointed to Anthropic's own risk report, which rated current-model catastrophic risk low while stating it held that view with less confidence than before.",
+      "Anthropic has not issued a corporate statement. Newsweek asked and got no response by publication. What exists is one employee's resignation and another employee's personal probability estimate, neither of which is a company position.",
+      "Timing is the story's second half. Anthropic confidentially submitted its draft Form S-1 to the SEC on June 1, 2026. A listing has no confirmed date, price, or share count, which is exactly why some readers are calling the warning a pre-IPO stunt and others are calling it the opposite.",
+    ],
+    tocSections: [
+      "What Happened",
+      "What Was Actually Said",
+      "The IPO Context",
+      "Stunt or Signal",
+      "Why It Matters",
+    ],
+    contributors: ["dario-amodei", "olah"],
+    highlights: [
+      { stat: ">10%", label: "Hubinger's stated odds AI kills all humans within a decade" },
+      { stat: "3 yrs", label: "Coxon's pretraining research across OpenAI and Anthropic" },
+      { stat: "Jun 1", label: "date Anthropic confidentially filed its draft S-1" },
+      { stat: "0", label: "corporate statements from Anthropic on the resignation" },
+    ],
+    myView: {
+      points: [
+        "The resignation is ordinary. The endorsement is not | Safety researchers have quit AI labs with warnings before, and the genre has a well-worn shape. What has no precedent here is the company's own alignment science lead answering in public, under his real name, with a number. A departing employee is a data point about one person. The person still running alignment agreeing is a data point about the institution.",
+        "Read the qualifier, because it is the actual claim | Hubinger's follow-up separates present models (risk low, per Anthropic's own risk report) from superintelligence reached through recursive self-improvement. Coverage that runs \"Anthropic says AI could kill you\" collapses those into one sentence and gets the claim wrong. The stated worry is about a system that does not exist yet, on a path the company says is moving faster than it expected.",
+        "The IPO framing cuts both directions, and neither is evidence | The stunt theory has to explain why a company weeks from a listing would want its alignment lead publishing double-digit extinction odds into an S-1 review, which is the sort of thing securities lawyers exist to prevent. The sincerity theory has to explain the timing too. Absent documents, both are narratives, and this page does not pick one.",
+        "The absence of a corporate statement is the most quotable fact here | Anthropic has a communications team and a risk report and did not deploy either. Every hour that silence holds, Hubinger's personal estimate is the closest thing to an on-record Anthropic position circulating in public. That is a choice, and it is the thing worth watching next.",
+      ],
+      caveat:
+        "Everything here traces to public posts on X and press coverage of them. There is no company statement, no SEC document about the resignation, and no way to verify Coxon's characterization of internal beliefs at either lab. Hubinger's number is explicitly his personal estimate. The IPO details beyond the June 1 confidential filing are press reporting, not confirmed terms.",
+    },
+    documents: [
+      {
+        label: "Anthropic confidentially submits draft S-1 to the SEC (the company's own announcement)",
+        source: "Anthropic, 1 Jun 2026",
+        url: "https://www.anthropic.com/news/confidential-draft-s1-sec",
+      },
+      {
+        label: "Anthropic alignment lead warns AI could kill all humans as researcher quits",
+        source: "Forbes, 9 Sep 2026",
+        url: "https://www.forbes.com/sites/siladityaray/2026/09/09/anthropic-alignment-lead-warns-ai-could-kill-all-humans-as-researcher-quits/",
+      },
+      {
+        label: "An Anthropic researcher quit saying AI labs are gambling with our lives",
+        source: "The Next Web, 9 Sep 2026",
+        url: "https://thenextweb.com/news/anthropic-coxon-resignation-hubinger-alignment",
+      },
+      {
+        label: "Who is Jacob Coxon? Researcher quits, warns AI could kill everyone",
+        source: "Newsweek, 9 Sep 2026",
+        url: "https://www.newsweek.com/anthropic-researcher-quits-warns-ai-could-kill-everyone-12418798",
+      },
+      {
+        label: "Ex-Anthropic researcher quits, warns AI will kill us all within a decade (carries Hubinger's clarification)",
+        source: "Mediaite, 9 Sep 2026",
+        url: "https://www.mediaite.com/media/news/ex-anthropic-researcher-burns-it-all-down-as-he-quits-warns-ai-will-kill-us-all-within-a-decade/",
+      },
+      {
+        label: "Anthropic researcher quits, citing internal fears that AI could kill us all this decade",
+        source: "Common Dreams, 9 Sep 2026",
+        url: "https://www.commondreams.org/news/jacob-coxon-anthropic-whistleblower",
+      },
+    ],
+    body: `<h3 id="what-happened">What Happened</h3>
+<p>On September 8, 2026, Jacob Coxon announced on X that he had resigned from Anthropic. He is 27, a mathematics graduate, and by his own account spent the previous three years doing pretraining research at OpenAI and then Anthropic. He did not move to a competitor. He said he was leaving AI work entirely.</p>
+<p>His post, quoted consistently across every outlet that covered it: "I resigned from Anthropic today. I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."</p>
+<p>He had joined Anthropic earlier in 2026, after leaving OpenAI, drawn in part by Anthropic's reputation for safety research, according to the Wall Street Journal interview he gave. He told the Journal that Anthropic's safety work is sincere, and that competition makes the trade-offs hard to avoid. That is a more specific and more damaging claim than "the company is reckless," and it is the one worth holding onto.</p>
+
+<h3 id="what-was-actually-said">What Was Actually Said</h3>
+<p>A researcher leaving with a warning is a familiar genre. What happened next is not.</p>
+<p>Evan Hubinger, who leads alignment science at Anthropic and still works there, replied in public: "Jacob is correct here, we really do earnestly believe AI could kill all humans! I personally think it is &gt;10% within the next decade. I believe Anthropic is trying its best, but we do not yet have a plan to solve alignment for superintelligence and are not clearly on track to."</p>
+<p>Hubinger then posted a clarification that most of the aggregated coverage dropped, and it materially changes the claim: "To be clear, as we say in our latest Risk Report, I think the risk from present models is low. What I am worried about is superintelligence arising from recursive self-improvement, as we have said is happening faster than we thought."</p>
+<p>So the precise claim is not that Claude or GPT is dangerous today. It is that a system that does not exist yet, reached by AI improving itself, carries in one senior safety researcher's personal estimate a greater than one in ten chance of killing everyone within ten years, and that the company he works for does not have a plan for it. Anthropic's own August risk report rated the danger from current models as low while noting it held that assessment with less confidence than it previously had.</p>
+<p>Anthropic has issued no corporate statement. Newsweek said it requested comment and had received no response by publication.</p>
+
+<h3 id="the-ipo-context">The IPO Context</h3>
+<p>This lands during Anthropic's IPO process, which is why the "PR stunt" reading is circulating at all.</p>
+<p>The one document that is not press reporting: on June 1, 2026, Anthropic published, under Rule 135, that "Anthropic, PBC confidentially submitted a draft registration statement on Form S-1 to the U.S. Securities and Exchange Commission for a proposed initial public offering of our common stock." That announcement is explicit that "the number of shares to be offered and the price have not yet been set."</p>
+<p>Everything beyond that is reporting rather than confirmed terms. Press accounts describe a targeted October listing on Nasdaq, an offering that could raise upwards of $60 billion, and a $65 billion Series H at a $965 billion post-money valuation closed days before the filing. Treat those as reported figures, because no public prospectus sets them.</p>
+
+<h3 id="stunt-or-signal">Stunt or Signal</h3>
+<p>The LinkedIn thread that surfaced this story split exactly the way the public conversation has, and both readings deserve to be stated at their strongest.</p>
+<ul>
+<li><strong>The stunt reading.</strong> Existential warnings from AI labs conveniently imply the technology is powerful enough to be worth extraordinary money. A company weeks from a listing benefits from being seen as the serious, safety-conscious adult in a dangerous industry.</li>
+<li><strong>The problem with it.</strong> The endorsement came from a sitting employee, by name, with a number, during an SEC review period. Companies preparing to sell shares do not typically want their alignment lead publishing double-digit extinction estimates. If this were engineered messaging, it is engineered against the issuer's obvious interest.</li>
+<li><strong>The sincerity reading.</strong> Coxon left the field rather than switch labs, which forfeits the compensation that makes the stunt theory work. Hubinger stayed and criticized his employer's readiness in public.</li>
+<li><strong>The problem with that one.</strong> Sincere belief and useful timing are not mutually exclusive, and nobody outside Anthropic can currently distinguish them.</li>
+</ul>
+<p>There is no document that settles this. Anyone claiming otherwise is guessing.</p>
+
+<h3 id="why-it-matters">Why It Matters</h3>
+<p>Strip out the extinction framing and a concrete, checkable claim remains: a frontier lab's alignment leadership says publicly that it does not have a plan to align superintelligence and is not clearly on track to get one, while the same company tells the SEC it intends to sell shares to the public.</p>
+<p>That is a governance and disclosure question before it is a philosophical one. The things to watch, in order:</p>
+<ul>
+<li><strong>Whether Anthropic responds at all.</strong> Silence is currently letting one employee's personal probability estimate stand as the loudest Anthropic-affiliated statement in circulation.</li>
+<li><strong>Whether any of this appears in the S-1 risk factors.</strong> The public prospectus, whenever it arrives, is the first document where these claims would carry legal weight rather than rhetorical weight.</li>
+<li><strong>Whether more people leave.</strong> One resignation is a person. A pattern is a signal, and the pattern is the thing that would actually be new.</li>
+</ul>
+<p>For readers whose work depends on these systems, nothing operational changes this week. The models behave today as they did last week, and Anthropic's own risk report says current-model risk is low. What changed is the public record of what the people building them believe about where this ends.</p>
+
+<p><em>This article quotes public posts on X and contemporaneous press coverage of them. Anthropic has issued no statement on the resignation. Hubinger's estimate is explicitly his personal view, not a company position. IPO details beyond the June 1 confidential filing are press reporting, not confirmed terms. Nothing here is investment advice.</em></p>`,
+    sourceUrl: "https://thenextweb.com/news/anthropic-coxon-resignation-hubinger-alignment",
+    tags: [
+      "Anthropic",
+      "AI Safety",
+      "Alignment",
+      "Superintelligence",
+      "IPO",
+      "OpenAI",
+      "AI Governance",
+      "Existential Risk",
+    ],
+    relatedLinks: [
+      {
+        label: "AI Agent Statistics",
+        to: "/notebook/ai/agents",
+        description: "The living reference on how far agents have actually been deployed, updated monthly with sourced numbers.",
+      },
+      {
+        label: "How LLMs Work",
+        to: "/guides/how-llms-work",
+        description: "What these systems actually do, stage by stage, in explorable 3D. Useful context for judging capability claims.",
+      },
+      {
+        label: "The Rise of AI Agents",
+        to: "/ai-updates/rise-of-ai-agents-2026",
+        description: "The capability curve the safety debate is arguing about, including METR's task-horizon doubling.",
+      },
+    ],
+  },
+  {
     id: "nvidia-hugging-face-acquisition",
     slug: "nvidia-acquires-hugging-face",
     title: "NVIDIA to Acquire Hugging Face for $12.93 Billion",

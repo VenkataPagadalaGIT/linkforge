@@ -108,6 +108,10 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 News with primary sources attached: court documents, official filings, and original announcements linked from every article.
 - URL: https://venkatapagadala.com/ai-updates
 
+### An Anthropic Researcher Resigned. His Alignment Lead Publicly Agreed With Him. (Sep 2026)
+Jacob Coxon resigned from Anthropic on September 8, 2026, saying neither Anthropic nor OpenAI is acting responsibly and both are "racing straight to self-improving superintelligence and gambling with our lives." Anthropic's own alignment science lead, Evan Hubinger, replied publicly that Coxon is correct and put his personal estimate of AI killing all humans above 10% within the decade, then clarified that he considers present-model risk low and worries about superintelligence via recursive self-improvement. Anthropic issued no corporate statement. Covers the IPO context (confidential Form S-1 submitted June 1, 2026) and weighs the "PR stunt" reading against the sincerity reading without picking one.
+- URL: https://venkatapagadala.com/ai-updates/anthropic-researcher-resigns-superintelligence-warning
+
 ### NVIDIA to Acquire Hugging Face for $12.93 Billion (Sep 2026)
 NVIDIA announced on September 3, 2026 that it has agreed to acquire Hugging Face for $12,930,300,000 (the exact newsroom figure; about $11.9B to shareholders plus up to $1B in retention, per CNBC). What the price buys per NVIDIA's own numbers: 3M models, 1M applications, 500K datasets, 18M developers, 200K companies. Covers what NVIDIA did not say (no regulatory language, no Hugging Face statement, no definition of "open"), the Groq precedent, and why model distribution consolidating into the hardware vendor matters for answer engines.
 - URL: https://venkatapagadala.com/ai-updates/nvidia-acquires-hugging-face
