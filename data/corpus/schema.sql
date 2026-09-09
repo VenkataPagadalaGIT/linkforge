@@ -17,10 +17,13 @@
 -- statistics and full time series without a table per source.
 -- ============================================================================
 
-DROP TABLE IF EXISTS observation, do_not_assert, segment, metric, document, source, ingest_run CASCADE;
+-- NOT destructive. This file is safe to re-run: it only adds what is missing.
+-- It used to lead with a DROP CASCADE, which silently emptied a loaded corpus
+-- the first time it was re-run to add a table. To rebuild from nothing, run
+-- reset.sql explicitly.
 
 -- Who published it. The organisation of record.
-CREATE TABLE source (
+CREATE TABLE IF NOT EXISTS source (
   id            serial PRIMARY KEY,
   slug          text NOT NULL UNIQUE,
   name          text NOT NULL,
@@ -34,7 +37,7 @@ CREATE TABLE source (
 -- A specific publication: one fact sheet, one report, one dataset page.
 -- Sample size and field dates live here because they qualify every figure
 -- inside the document, not the source as a whole.
-CREATE TABLE document (
+CREATE TABLE IF NOT EXISTS document (
   id              serial PRIMARY KEY,
   source_id       int NOT NULL REFERENCES source(id) ON DELETE CASCADE,
   slug            text NOT NULL UNIQUE,
@@ -54,7 +57,7 @@ CREATE TABLE document (
 
 -- A population cut. n and moe are as published, and null when the publisher
 -- does not publish them rather than estimated.
-CREATE TABLE segment (
+CREATE TABLE IF NOT EXISTS segment (
   id            serial PRIMARY KEY,
   slug          text NOT NULL UNIQUE,
   dimension     text NOT NULL,
@@ -67,7 +70,7 @@ CREATE TABLE segment (
 
 -- What is being measured, stated precisely enough that two documents using
 -- the same metric are genuinely comparable.
-CREATE TABLE metric (
+CREATE TABLE IF NOT EXISTS metric (
   id          serial PRIMARY KEY,
   slug        text NOT NULL UNIQUE,
   label       text NOT NULL,
@@ -78,7 +81,7 @@ CREATE TABLE metric (
 -- The fact table. subject is the thing measured where there is one
 -- (a platform, a news channel); null means the metric stands alone.
 -- segment_id null means the national figure.
-CREATE TABLE observation (
+CREATE TABLE IF NOT EXISTS observation (
   id           bigserial PRIMARY KEY,
   document_id  int NOT NULL REFERENCES document(id) ON DELETE CASCADE,
   metric_id    int NOT NULL REFERENCES metric(id),
@@ -96,7 +99,7 @@ CREATE TABLE observation (
 
 -- Figures that failed verification. Kept so a later refresh cannot quietly
 -- reintroduce a number that was already rejected once.
-CREATE TABLE do_not_assert (
+CREATE TABLE IF NOT EXISTS do_not_assert (
   id         serial PRIMARY KEY,
   claim      text NOT NULL,
   reason     text NOT NULL,
@@ -104,7 +107,7 @@ CREATE TABLE do_not_assert (
 );
 
 -- One row per load, so a figure can always be traced to the run that wrote it.
-CREATE TABLE ingest_run (
+CREATE TABLE IF NOT EXISTS ingest_run (
   id           serial PRIMARY KEY,
   started_at   timestamptz NOT NULL DEFAULT now(),
   script       text NOT NULL,
@@ -113,13 +116,13 @@ CREATE TABLE ingest_run (
   notes        text
 );
 
-CREATE INDEX ON observation (metric_id, segment_id);
-CREATE INDEX ON observation (subject);
-CREATE INDEX ON observation (period);
-CREATE INDEX ON observation (document_id);
+CREATE INDEX IF NOT EXISTS obs_metric_seg_idx ON observation (metric_id, segment_id);
+CREATE INDEX IF NOT EXISTS obs_subject_idx ON observation (subject);
+CREATE INDEX IF NOT EXISTS obs_period_idx ON observation (period);
+CREATE INDEX IF NOT EXISTS obs_doc_idx ON observation (document_id);
 
 -- Current-period figures, which is what the tool actually reads.
-CREATE VIEW v_latest AS
+CREATE OR REPLACE VIEW v_latest AS
 SELECT DISTINCT ON (o.metric_id, o.subject, o.segment_id)
        m.slug AS metric, o.subject, s.slug AS segment, s.dimension,
        o.period, o.value, d.slug AS document, d.url, d.published_on
@@ -130,7 +133,7 @@ LEFT JOIN segment s ON s.id = o.segment_id
 ORDER BY o.metric_id, o.subject, o.segment_id, o.period DESC;
 
 -- The coverage answer: what is stored versus what the site publishes.
-CREATE VIEW v_coverage AS
+CREATE OR REPLACE VIEW v_coverage AS
 SELECT src.name AS source, d.slug AS document, d.published_on,
        count(*) AS observations,
        count(DISTINCT o.metric_id) AS metrics,
@@ -142,3 +145,50 @@ JOIN document d ON d.id = o.document_id
 JOIN source src ON src.id = d.source_id
 GROUP BY src.name, d.slug, d.published_on
 ORDER BY src.name, d.slug;
+
+-- ============================================================================
+-- CRAWL LAYER
+--
+-- Every URL either site publishes, whether or not a figure has been extracted
+-- from it yet. This is the difference between "we read some pages" and "we
+-- know what exists". An observation points at a document; a document points at
+-- the resource it was read from; the resource records the exact bytes and when
+-- they were fetched.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS resource (
+  id            bigserial PRIMARY KEY,
+  source_id     int REFERENCES source(id) ON DELETE SET NULL,
+  url           text NOT NULL UNIQUE,
+  -- The section of the site, taken from the first path segment. Lets a query
+  -- ask for "every answers page" without pattern-matching URLs.
+  path_kind     text,
+  sitemap_lastmod timestamptz,
+  -- pending -> ok | error | skipped
+  status        text NOT NULL DEFAULT 'pending',
+  http_status   int,
+  fetched_at    timestamptz,
+  content_hash  text,
+  byte_size     int,
+  -- Gzipped body on disk, relative to data/corpus/cache. Bodies are too large
+  -- for rows and would bloat every dump; the hash is what makes the pairing
+  -- verifiable.
+  local_path    text,
+  title         text,
+  error         text
+);
+
+CREATE INDEX IF NOT EXISTS resource_status_idx ON resource (status);
+CREATE INDEX IF NOT EXISTS resource_kind_idx ON resource (path_kind);
+CREATE INDEX IF NOT EXISTS resource_source_idx ON resource (source_id);
+
+-- Which document a resource produced, once figures have been extracted.
+ALTER TABLE document ADD COLUMN IF NOT EXISTS resource_id bigint REFERENCES resource(id);
+
+CREATE OR REPLACE VIEW v_crawl AS
+SELECT src.name AS source, r.path_kind, r.status,
+       count(*) AS urls,
+       pg_size_pretty(sum(r.byte_size)::bigint) AS bytes,
+       min(r.fetched_at) AS first_fetch, max(r.fetched_at) AS last_fetch
+FROM resource r LEFT JOIN source src ON src.id = r.source_id
+GROUP BY 1,2,3 ORDER BY 1,4 DESC;

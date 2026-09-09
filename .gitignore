@@ -49,3 +49,4 @@ build/
 
 # TypeScript incremental build artifacts — never commit or upload
 *.tsbuildinfo
+data/corpus/cache/
