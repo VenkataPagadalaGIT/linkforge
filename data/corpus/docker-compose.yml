@@ -1,0 +1,30 @@
+# Postgres for venkatapagadala.com research data ONLY.
+#
+# Siloed on purpose. This project gets its own container, its own volume, its
+# own port and its own credentials. Nothing from any client project is ever
+# stored here, and this is never stored inside a client's container.
+#
+#   cd data/corpus && docker compose up -d
+#
+services:
+  db:
+    image: postgres:18
+    container_name: vp-research-db
+    environment:
+      POSTGRES_USER: research
+      POSTGRES_PASSWORD: research_local_dev
+      POSTGRES_DB: research_corpus
+    ports:
+      - "5440:5432"
+    volumes:
+      - vp_research_pgdata:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U research -d research_corpus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  vp_research_pgdata:
+    name: vp_research_pgdata
