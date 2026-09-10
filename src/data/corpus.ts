@@ -7,7 +7,15 @@
  * was retrieved and how.
  */
 
-export interface CorpusSegment { slug: string; dimension: string; label: string; n: number | null; moe: number | null; }
+export interface CorpusSegment {
+  slug: string;
+  dimension: string;
+  label: string;
+  n: number | null;
+  moe: number | null;
+  /** The source's own category definition, where a bare label loses meaning. */
+  definition: string;
+}
 export interface CorpusDocument {
   slug: string;
   title: string;
@@ -32,35 +40,35 @@ export interface CorpusMetric {
 }
 
 export const CORPUS_SEGMENTS: CorpusSegment[] = [
-  { slug: "men", dimension: "gender", label: "Men", n: 2194, moe: 3.00 },
-  { slug: "women", dimension: "gender", label: "Women", n: 2758, moe: 2.50 },
-  { slug: "18-29", dimension: "age", label: "18 to 29", n: 480, moe: 5.60 },
-  { slug: "30-49", dimension: "age", label: "30 to 49", n: 1399, moe: 3.40 },
-  { slug: "50-64", dimension: "age", label: "50 to 64", n: 1274, moe: 3.60 },
-  { slug: "65+", dimension: "age", label: "65 and over", n: 1813, moe: 3.00 },
-  { slug: "18-49", dimension: "age", label: "18 to 49", n: null, moe: null },
-  { slug: "50plus", dimension: "age", label: "50 and over", n: null, moe: null },
-  { slug: "race-white", dimension: "race", label: "White", n: 3304, moe: 2.30 },
-  { slug: "race-black", dimension: "race", label: "Black", n: 512, moe: 6.00 },
-  { slug: "race-hispanic", dimension: "race", label: "Hispanic", n: 757, moe: 5.00 },
-  { slug: "race-asian", dimension: "race", label: "Asian", n: 211, moe: 8.90 },
-  { slug: "inc-lt30", dimension: "income", label: "Under $30K", n: 939, moe: 4.50 },
-  { slug: "inc-30-70", dimension: "income", label: "$30K to $70K", n: 1533, moe: 3.60 },
-  { slug: "inc-70-100", dimension: "income", label: "$70K to $100K", n: 692, moe: 5.10 },
-  { slug: "inc-100", dimension: "income", label: "$100K and over", n: 1629, moe: 3.10 },
-  { slug: "inc-30-50-legacy", dimension: "income", label: "$30K to $50K (pre-2023 bands)", n: null, moe: null },
-  { slug: "inc-50-75-legacy", dimension: "income", label: "$50K to $75K (pre-2023 bands)", n: null, moe: null },
-  { slug: "inc-75-legacy", dimension: "income", label: "$75K and over (pre-2023 bands)", n: null, moe: null },
-  { slug: "edu-hs", dimension: "education", label: "High school or less", n: 1175, moe: 3.80 },
-  { slug: "edu-some", dimension: "education", label: "Some college", n: 1587, moe: 3.40 },
-  { slug: "edu-grad", dimension: "education", label: "College graduate", n: 2215, moe: 2.70 },
-  { slug: "edu-lths-legacy", dimension: "education", label: "Less than high school (legacy band)", n: null, moe: null },
-  { slug: "edu-hsgrad-legacy", dimension: "education", label: "High school graduate (legacy band)", n: null, moe: null },
-  { slug: "urban", dimension: "community", label: "Urban", n: 1394, moe: 3.60 },
-  { slug: "suburban", dimension: "community", label: "Suburban", n: 2334, moe: 2.80 },
-  { slug: "rural", dimension: "community", label: "Rural", n: 1235, moe: 3.80 },
-  { slug: "party-rep", dimension: "party", label: "Rep / lean Rep", n: 2234, moe: 2.80 },
-  { slug: "party-dem", dimension: "party", label: "Dem / lean Dem", n: 2446, moe: 2.80 },
+  { slug: "men", dimension: "gender", label: "Men", n: 2194, moe: 3.00, definition: "" },
+  { slug: "women", dimension: "gender", label: "Women", n: 2758, moe: 2.50, definition: "" },
+  { slug: "18-29", dimension: "age", label: "18 to 29", n: 480, moe: 5.60, definition: "" },
+  { slug: "30-49", dimension: "age", label: "30 to 49", n: 1399, moe: 3.40, definition: "" },
+  { slug: "50-64", dimension: "age", label: "50 to 64", n: 1274, moe: 3.60, definition: "" },
+  { slug: "65+", dimension: "age", label: "65 and over", n: 1813, moe: 3.00, definition: "" },
+  { slug: "18-49", dimension: "age", label: "18 to 49", n: null, moe: null, definition: "" },
+  { slug: "50plus", dimension: "age", label: "50 and over", n: null, moe: null, definition: "" },
+  { slug: "race-white", dimension: "race", label: "White", n: 3304, moe: 2.30, definition: "Adults who report being only one race, White, and are not Hispanic. Pew's own category, quoted rather than renamed." },
+  { slug: "race-black", dimension: "race", label: "Black", n: 512, moe: 6.00, definition: "Adults who report being only one race, Black, and are not Hispanic. Pew's own category and capitalisation." },
+  { slug: "race-hispanic", dimension: "race", label: "Hispanic", n: 757, moe: 5.00, definition: "Hispanic adults of any race, so this group overlaps none of the others by construction and is not a residual." },
+  { slug: "race-asian", dimension: "race", label: "Asian", n: 211, moe: 8.90, definition: "Adults who report being only one race, Asian, and are not Hispanic. Pew states these estimates represent English speakers only, so non-English-speaking Asian adults are absent from this column." },
+  { slug: "inc-lt30", dimension: "income", label: "Under $30K", n: 939, moe: 4.50, definition: "" },
+  { slug: "inc-30-70", dimension: "income", label: "$30K to $70K", n: 1533, moe: 3.60, definition: "" },
+  { slug: "inc-70-100", dimension: "income", label: "$70K to $100K", n: 692, moe: 5.10, definition: "" },
+  { slug: "inc-100", dimension: "income", label: "$100K and over", n: 1629, moe: 3.10, definition: "" },
+  { slug: "inc-30-50-legacy", dimension: "income", label: "$30K to $50K (pre-2023 bands)", n: null, moe: null, definition: "" },
+  { slug: "inc-50-75-legacy", dimension: "income", label: "$50K to $75K (pre-2023 bands)", n: null, moe: null, definition: "" },
+  { slug: "inc-75-legacy", dimension: "income", label: "$75K and over (pre-2023 bands)", n: null, moe: null, definition: "" },
+  { slug: "edu-hs", dimension: "education", label: "High school or less", n: 1175, moe: 3.80, definition: "" },
+  { slug: "edu-some", dimension: "education", label: "Some college", n: 1587, moe: 3.40, definition: "" },
+  { slug: "edu-grad", dimension: "education", label: "College graduate", n: 2215, moe: 2.70, definition: "" },
+  { slug: "edu-lths-legacy", dimension: "education", label: "Less than high school (legacy band)", n: null, moe: null, definition: "" },
+  { slug: "edu-hsgrad-legacy", dimension: "education", label: "High school graduate (legacy band)", n: null, moe: null, definition: "" },
+  { slug: "urban", dimension: "community", label: "Urban", n: 1394, moe: 3.60, definition: "Self-described community type, not a census geography." },
+  { slug: "suburban", dimension: "community", label: "Suburban", n: 2334, moe: 2.80, definition: "Self-described community type, not a census geography." },
+  { slug: "rural", dimension: "community", label: "Rural", n: 1235, moe: 3.80, definition: "Self-described community type, not a census geography." },
+  { slug: "party-rep", dimension: "party", label: "Rep / lean Rep", n: 2234, moe: 2.80, definition: "Republicans and independents who lean Republican." },
+  { slug: "party-dem", dimension: "party", label: "Dem / lean Dem", n: 2446, moe: 2.80, definition: "Democrats and independents who lean Democratic." },
 ];
 
 export const CORPUS_DOCUMENTS: CorpusDocument[] = [

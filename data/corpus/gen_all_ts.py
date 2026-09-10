@@ -23,7 +23,7 @@ rows = query("""
                     WHERE o2.metric_id = o.metric_id AND o2.subject IS NOT DISTINCT FROM o.subject);
 """)
 
-segs = query("SELECT slug, dimension, label, n, moe, sort_order FROM segment ORDER BY sort_order, slug;")
+segs = query("SELECT slug, dimension, label, n, moe, sort_order, COALESCE(definition,'') FROM segment ORDER BY sort_order, slug;")
 docs = query("SELECT slug, title, url, published_on, sample_size, moe_overall, population, field_start, field_end FROM document ORDER BY slug;")
 
 def pad(r, n):
@@ -48,7 +48,15 @@ out = ["/**",
        " * was retrieved and how.",
        " */",
        "",
-       "export interface CorpusSegment { slug: string; dimension: string; label: string; n: number | null; moe: number | null; }",
+       "export interface CorpusSegment {",
+       "  slug: string;",
+       "  dimension: string;",
+       "  label: string;",
+       "  n: number | null;",
+       "  moe: number | null;",
+       "  /** The source's own category definition, where a bare label loses meaning. */",
+       "  definition: string;",
+       "}",
        "export interface CorpusDocument {",
        "  slug: string;",
        "  title: string;",
@@ -74,9 +82,9 @@ out = ["/**",
        "",
        "export const CORPUS_SEGMENTS: CorpusSegment[] = ["]
 for row in segs:
-    slug, dim, label, n, moe, _ = pad(row, 6)
+    slug, dim, label, n, moe, _, defn = pad(row, 7)
     out.append(f'  {{ slug: {js(slug)}, dimension: {js(dim)}, label: {js(label)}, '
-               f'n: {n or 'null'}, moe: {moe or 'null'} }},')
+               f'n: {n or "null"}, moe: {moe or "null"}, definition: {js(defn)} }},')
 out.append("];")
 out.append("")
 out.append("export const CORPUS_DOCUMENTS: CorpusDocument[] = [")

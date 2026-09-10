@@ -38,6 +38,7 @@ import {
   estimateReach,
   type SourceCategory,
 } from "@/data/personas";
+import { CORPUS_SEGMENTS } from "@/data/corpus";
 
 const DIMS = [
   { key: "gender", label: "Gender", ids: ["men", "women"] },
@@ -101,6 +102,8 @@ export default function PersonaStudio() {
 
   const traitList = Object.values(traits).filter(Boolean) as string[];
   const dimOf = (id: string) => DIMS.find((d) => d.ids.includes(id))?.key ?? "";
+  /** The source's own category wording, where a one-word label loses it. */
+  const defOf = (id: string) => CORPUS_SEGMENTS.find((s) => s.slug === id)?.definition || "";
   const labelOf = (id: string) =>
     id === "teen" ? "13 to 17" : (allSegmentById(id)?.label ?? id);
 
@@ -223,7 +226,11 @@ export default function PersonaStudio() {
                       onDragStart={(e) => e.dataTransfer.setData("text/plain", id)}
                       onClick={() => toggleTrait(id)}
                       aria-pressed={on}
-                      title={seg ? `n=${seg.n?.toLocaleString()}, margin of error ±${seg.moe}pp` : undefined}
+                      title={
+                        seg
+                          ? `${defOf(id) ? defOf(id) + "\n\n" : ""}n=${seg.n?.toLocaleString()}, margin of error ±${seg.moe}pp`
+                          : undefined
+                      }
                       className={`font-mono text-[10px] px-1.5 py-0.5 border transition-all cursor-grab active:cursor-grabbing ${
                         on
                           ? "border-foreground text-foreground bg-foreground/10"

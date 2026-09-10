@@ -4,6 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import CorpusExplorer from "@/components/personas/CorpusExplorer";
+import { CORPUS_SEGMENTS } from "@/data/corpus";
 import QuestionDirectory from "@/components/personas/QuestionDirectory";
 import ReachMatrix from "@/components/personas/ReachMatrix";
 import DailyUsePanel from "@/components/personas/DailyUsePanel";
@@ -149,6 +150,21 @@ export default function Page() {
             8.9 points, so a nine-point difference in that column may be nothing at all. Pew notes
             its Asian adult estimates represent English speakers only.
           </p>
+          {/* The labels are one word; the categories are not. Printed rather
+              than left to a footnote, because "Black" and "Hispanic" are built
+              differently from each other and that changes how they read. */}
+          <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-5">
+            {RACE_SEGMENTS.map((sg) => {
+              const d = CORPUS_SEGMENTS.find((c) => c.slug === sg.id)?.definition;
+              if (!d) return null;
+              return (
+                <div key={sg.id}>
+                  <dt className="font-mono text-[11px] text-foreground">{sg.label}</dt>
+                  <dd className="font-mono text-[10px] text-muted-foreground leading-relaxed">{d}</dd>
+                </div>
+              );
+            })}
+          </dl>
           <div className="border border-border/60 overflow-x-auto">
             <table className="w-full min-w-[600px]">
               <thead>
