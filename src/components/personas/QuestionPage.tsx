@@ -1,0 +1,200 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { SITE_URL } from "@/lib/site";
+import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
+import { CORPUS_SEGMENTS, corpusDoc, corpusMetric } from "@/data/corpus";
+
+const DIM_LABEL: Record<string, string> = {
+  gender: "Gender", age: "Age", race: "Race and ethnicity", income: "Household income",
+  education: "Education", community: "Community type", party: "Party",
+};
+
+export default function QuestionPage({ slug }: { slug: string }) {
+  const q = questionBySlug(slug);
+  if (!q) notFound();
+
+  const metric = corpusMetric(q.metric);
+  if (!metric) notFound();
+  const cells = metric.values[q.subject] ?? {};
+  const national = cells[""] ?? 0;
+  const doc = corpusDoc(metric.document);
+
+  // Every published cut, grouped by dimension, sorted by how far it sits from
+  // the national figure: the spread is the story, not the ordering of labels.
+  const byDim = ["age", "race", "income", "education", "gender", "community", "party"]
+    .map((d) => ({
+      dim: d,
+      rows: CORPUS_SEGMENTS.filter((s) => s.dimension === d && cells[s.slug] !== undefined).map(
+        (s) => ({ ...s, value: cells[s.slug], delta: cells[s.slug] - national }),
+      ),
+    }))
+    .filter((g) => g.rows.length > 0);
+
+  // "among asian" reads as a typo. Race and party labels are proper nouns and
+  // need the noun they modify; age and income bands read fine on their own.
+  const phrase = (r: { label: string; dimension: string }) =>
+    r.dimension === "race" || r.dimension === "party"
+      ? `${r.label} adults`
+      : r.dimension === "age"
+        ? `those aged ${r.label.replace(" and over", " and over")}`
+        : r.label.toLowerCase();
+
+  const all = byDim.flatMap((g) => g.rows);
+  const top = [...all].sort((a, b) => b.value - a.value)[0];
+  const bottom = [...all].sort((a, b) => a.value - b.value)[0];
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: q.title,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${national}% of US adults. ${top ? `Highest: ${top.label} at ${top.value}%.` : ""} ${
+            bottom ? `Lowest: ${bottom.label} at ${bottom.value}%.` : ""
+          } Source: ${doc?.title ?? "Pew Research Center"}${
+            doc?.sampleSize ? `, n=${doc.sampleSize.toLocaleString()}` : ""
+          }.`,
+        },
+      },
+    ],
+  };
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Personas", item: `${SITE_URL}/personas` },
+      { "@type": "ListItem", position: 2, name: q.short, item: `${SITE_URL}/personas/${q.slug}` },
+    ],
+  };
+
+  const max = Math.max(national, ...all.map((r) => r.value), 1);
+
+  return (
+    <div className="min-h-screen bg-background pt-32 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <div className="max-w-4xl mx-auto">
+        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
+          <Link href="/personas" className="hover:text-foreground transition-colors">
+            Personas
+          </Link>{" "}
+          · Measured
+        </p>
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-4">
+          {q.title}
+        </h1>
+
+        {/* The answer, first line, no scrolling for it. */}
+        <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+          <span className="text-foreground text-lg">{national}%</span> of US adults.{" "}
+          {top && bottom && top.slug !== bottom.slug ? (
+            <>
+              It runs from <span className="text-foreground">{bottom.value}%</span> among{" "}
+              {phrase(bottom)} to <span className="text-foreground">{top.value}%</span> among{" "}
+              {phrase(top)}, a spread of {top.value - bottom.value} points.
+            </>
+          ) : null}{" "}
+          {q.note}
+        </p>
+
+        {byDim.map((g) => (
+          <section key={g.dim} className="mb-10">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              By {DIM_LABEL[g.dim].toLowerCase()}
+            </h2>
+            <div className="space-y-1.5">
+              {g.rows.map((r) => (
+                <div key={r.slug} className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] text-muted-foreground w-36 shrink-0 truncate">
+                    {r.label}
+                  </span>
+                  <span className="flex-1 h-2 bg-secondary/50">
+                    <span
+                      className="block h-full"
+                      style={{ width: `${(r.value / max) * 100}%`, background: "var(--foreground)", opacity: 0.65 }}
+                    />
+                  </span>
+                  <span className="font-mono text-xs text-foreground w-10 text-right tabular-nums shrink-0">
+                    {r.value}%
+                  </span>
+                  <span
+                    className="font-mono text-[10px] w-12 text-right tabular-nums shrink-0"
+                    style={{ color: Math.abs(r.delta) < 3 ? undefined : r.delta > 0 ? "#10b981" : "#f59e0b" }}
+                  >
+                    {Math.abs(r.delta) < 3 ? "" : `${r.delta > 0 ? "+" : ""}${r.delta}`}
+                  </span>
+                  <span className="font-mono text-[10px] text-muted-foreground/80 w-20 text-right shrink-0">
+                    n={r.n?.toLocaleString()} ±{r.moe}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {/* Into the tool. */}
+        <div className="border border-border p-5 mb-10">
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-3">
+            This is one figure cut one way. The studio combines traits, shows the arithmetic behind
+            any combination it estimates, and says plainly when nothing measures what you asked.
+          </p>
+          <Link
+            href="/personas"
+            className="inline-block border border-border px-4 py-2.5 font-mono text-xs text-foreground hover:border-foreground/50 hover:bg-foreground/5 transition-all"
+          >
+            Build an audience in the studio
+          </Link>
+        </div>
+
+        {doc && (
+          <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mb-8">
+            Source:{" "}
+            <a
+              href={doc.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline decoration-border hover:text-glow transition-all"
+            >
+              {doc.title}
+            </a>
+            {doc.published ? `, published ${doc.published}` : ""}
+            {doc.sampleSize ? `. Survey of ${doc.sampleSize.toLocaleString()} US adults` : ""}
+            {doc.moe ? `, margin of error ±${doc.moe} points overall` : ""}. Subgroup margins are
+            shown on each row. {metric.definition}
+          </p>
+        )}
+
+        <section>
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            Related questions
+          </h2>
+          <ul className="space-y-2 font-mono text-xs">
+            {QUESTIONS.filter((x) => x.slug !== q.slug)
+              .slice(0, 8)
+              .map((x) => (
+                <li key={x.slug}>
+                  <Link
+                    href={`/personas/${x.slug}`}
+                    className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
+                  >
+                    {x.title}
+                  </Link>
+                </li>
+              ))}
+            <li>
+              <Link
+                href="/personas/data"
+                className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
+              >
+                Every measured figure, one surface
+              </Link>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
+import CorpusExplorer from "@/components/personas/CorpusExplorer";
 import ReachMatrix from "@/components/personas/ReachMatrix";
 import DailyUsePanel from "@/components/personas/DailyUsePanel";
 import {
@@ -101,6 +102,20 @@ export default function Page() {
           cell below is a published figure. Nothing here is modelled, combined or inferred: the
           combining happens in the tool, and it shows its working there.
         </p>
+
+        {/* Everything, one surface. */}
+        <section aria-labelledby="ce-h" className="mb-14">
+          <h2 id="ce-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Every measured figure, one surface
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+            Pick a question, pick a lens. Platforms, how people get online, where they get news
+            including AI chatbots, and the national baseline underneath all of it. Every cell is a
+            published figure with its source and sample size attached, and where a source does not
+            publish a cut it says so rather than filling the gap.
+          </p>
+          <CorpusExplorer />
+        </section>
 
         {/* Explorer: one lens at a time, the honest cut of the published data. */}
         <section aria-labelledby="x-h" className="mb-14">

@@ -192,3 +192,61 @@ SELECT src.name AS source, r.path_kind, r.status,
        min(r.fetched_at) AS first_fetch, max(r.fetched_at) AS last_fetch
 FROM resource r LEFT JOIN source src ON src.id = r.source_id
 GROUP BY 1,2,3 ORDER BY 1,4 DESC;
+
+-- ============================================================================
+-- VERSIONING AND EXTRACTION
+--
+-- A crawl that overwrites its own last result cannot tell you what changed,
+-- which is the whole point of re-crawling. Every fetch appends a version row;
+-- the resource row holds the current state, the version rows hold the history.
+-- A re-crawl compares hashes: same hash means nothing moved and there is
+-- nothing to re-extract.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS resource_version (
+  id           bigserial PRIMARY KEY,
+  resource_id  bigint NOT NULL REFERENCES resource(id) ON DELETE CASCADE,
+  fetched_at   timestamptz NOT NULL DEFAULT now(),
+  http_status  int,
+  content_hash text NOT NULL,
+  byte_size    int,
+  local_path   text,
+  -- true when this fetch differs from the one before it. The re-crawl report
+  -- is one query away: which pages actually changed since a given date.
+  changed      boolean NOT NULL DEFAULT true,
+  via          text NOT NULL DEFAULT 'direct'   -- direct | brightdata
+);
+
+CREATE INDEX IF NOT EXISTS rv_resource_idx ON resource_version (resource_id, fetched_at DESC);
+CREATE INDEX IF NOT EXISTS rv_changed_idx ON resource_version (changed, fetched_at DESC);
+
+-- Which resource produced which figures, and whether that page still needs
+-- mining. Without this, "have we extracted this page yet" is a guess.
+CREATE TABLE IF NOT EXISTS extraction (
+  id            bigserial PRIMARY KEY,
+  resource_id   bigint NOT NULL REFERENCES resource(id) ON DELETE CASCADE,
+  content_hash  text NOT NULL,
+  extracted_at  timestamptz NOT NULL DEFAULT now(),
+  extractor     text NOT NULL,
+  observations  int NOT NULL DEFAULT 0,
+  tables_found  int NOT NULL DEFAULT 0,
+  notes         text,
+  UNIQUE (resource_id, content_hash, extractor)
+);
+
+-- Pages fetched but never mined, newest first. This is the work queue.
+CREATE OR REPLACE VIEW v_unextracted AS
+SELECT r.id, r.url, r.path_kind, r.byte_size, r.title, s.slug AS source
+FROM resource r
+JOIN source s ON s.id = r.source_id
+LEFT JOIN extraction e ON e.resource_id = r.id AND e.content_hash = r.content_hash
+WHERE r.status = 'ok' AND e.id IS NULL
+ORDER BY r.byte_size DESC NULLS LAST;
+
+-- What actually changed on a re-crawl.
+CREATE OR REPLACE VIEW v_changed AS
+SELECT r.url, r.path_kind, v.fetched_at, v.content_hash, v.via
+FROM resource_version v
+JOIN resource r ON r.id = v.resource_id
+WHERE v.changed
+ORDER BY v.fetched_at DESC;

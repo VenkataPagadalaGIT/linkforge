@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import QuestionPage from "@/components/personas/QuestionPage";
+import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import {
   GRADE_META,
@@ -17,11 +19,32 @@ export const dynamic = "force-static";
 
 type Params = { slug: string };
 
+// Two kinds of page share this route: the evidence-graded personas, and one
+// generated page per question the corpus can answer. Keeping them on the same
+// segment avoids a second dynamic route at the same level, which Next.js will
+// not resolve, and keeps every /personas/<thing> URL shaped the same.
 export function generateStaticParams() {
-  return PERSONAS.map((p) => ({ slug: p.slug }));
+  return [
+    ...PERSONAS.map((p) => ({ slug: p.slug })),
+    ...QUESTIONS.map((q) => ({ slug: q.slug })),
+  ];
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const q = questionBySlug(params.slug);
+  if (q) {
+    return {
+      title: q.title,
+      description: q.description,
+      alternates: { canonical: `/personas/${q.slug}` },
+      openGraph: {
+        type: "article",
+        url: `${SITE_URL}/personas/${q.slug}`,
+        title: q.title,
+        description: q.description,
+      },
+    };
+  }
   const p = personaBySlug(params.slug);
   if (!p) return { title: "Not found", robots: { index: false, follow: false } };
   const title = `${p.name}: an evidence-graded persona`;
@@ -41,6 +64,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default function Page({ params }: { params: Params }) {
+  // Question pages render from the generated corpus; personas fall through.
+  if (questionBySlug(params.slug)) return <QuestionPage slug={params.slug} />;
+
   const persona = personaBySlug(params.slug);
   if (!persona) notFound();
 

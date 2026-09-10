@@ -125,6 +125,24 @@ def get(url, timeout=30, retries=2, throttle=None):
     raise last
 
 
+
+def _record(rid, code, h, size, rel, title, via):
+    """
+    One UPDATE for current state, one INSERT for history.
+
+    changed is computed against the previous version's hash, so a re-crawl
+    answers "what actually moved" instead of "we fetched everything again".
+    """
+    return (
+        f"UPDATE resource SET status='ok', http_status={code}, fetched_at=now(), "
+        f"content_hash={q(h)}, byte_size={size}, local_path={q(rel)}, "
+        f"title={q(title)}, error=NULL WHERE id={rid};\n"
+        f"INSERT INTO resource_version (resource_id, http_status, content_hash, byte_size, local_path, changed, via) "
+        f"SELECT {rid}, {code}, {q(h)}, {size}, {q(rel)}, "
+        f"COALESCE((SELECT v.content_hash FROM resource_version v WHERE v.resource_id={rid} "
+        f"ORDER BY v.fetched_at DESC LIMIT 1), '') IS DISTINCT FROM {q(h)}, {q(via)};"
+    )
+
 def path_kind(url):
     m = re.match(r"https?://[^/]+/([^/?#]+)", url)
     return (m.group(1) if m else "root")[:60]
@@ -246,10 +264,7 @@ def fetch_paid(site="pew", limit=None):
             tm = re.search(r"^#\s+(.+)$", body[:4000], re.M) or \
                  re.search(r"<title>(.*?)</title>", body[:4000], re.S | re.I)
             title = re.sub(r"\s+", " ", tm.group(1))[:300] if tm else ""
-            pending_sql.append(
-                f"UPDATE resource SET status='ok', http_status=200, fetched_at=now(), "
-                f"content_hash={q(h)}, byte_size={len(raw)}, local_path={q(rel)}, "
-                f"title={q(title)}, error=NULL WHERE id={rid};")
+            pending_sql.append(_record(rid, 200, h, len(raw), rel, title, "brightdata"))
             done += 1
 
         if len(pending_sql) >= 40:
@@ -318,10 +333,7 @@ def fetch(site=None, limit=None):
                  re.search(r"<title>(.*?)</title>", head, re.S | re.I)
             if tm:
                 title = re.sub(r"\s+", " ", tm.group(1))[:300]
-            pending_sql.append(
-                f"UPDATE resource SET status='ok', http_status={code}, fetched_at=now(), "
-                f"content_hash={q(h)}, byte_size={len(raw)}, local_path={q(rel)}, "
-                f"title={q(title)}, error=NULL WHERE id={rid};")
+            pending_sql.append(_record(rid, code, h, len(raw), rel, title, "direct"))
             done += 1
             th.good()
         except urllib.error.HTTPError as e:
@@ -354,18 +366,41 @@ def fetch(site=None, limit=None):
     print(f"done  ok={done} err={err}  {(time.time()-t0)/60:.1f}m")
 
 
+def recrawl(days=30, site=None, kind=None):
+    """
+    Queue pages for a fresh fetch. Nothing is deleted: the next fetch appends
+    a version and marks whether the content actually moved.
+    """
+    where = [f"r.fetched_at < now() - interval '{int(days)} days'", "r.status = 'ok'"]
+    if site: where.append(f"so.slug = {q(SITES[site]['source'])}")
+    if kind: where.append(f"r.path_kind = {q(kind)}")
+    out = sql(f"""UPDATE resource r SET status='pending'
+                  FROM source so WHERE so.id = r.source_id AND {' AND '.join(where)};""")
+    n = query("SELECT count(*) FROM resource WHERE status='pending';")[0][0]
+    print(f"queued for re-crawl; {n} pending in total")
+
+
 def status():
     for r in query("SELECT source, path_kind, status, urls, bytes FROM v_crawl LIMIT 40;"):
         print("  " + "  ".join(x.ljust(14) for x in r))
+    for label, sqlq in [
+        ("versions stored", "SELECT count(*) FROM resource_version"),
+        ("pages changed on last re-crawl", "SELECT count(*) FROM resource_version WHERE changed AND fetched_at > now() - interval '1 day'"),
+        ("fetched but not yet mined", "SELECT count(*) FROM v_unextracted"),
+    ]:
+        print(f"  {label:34} {query(sqlq)[0][0]}")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["discover", "fetch", "fetch-paid", "status"])
+    ap.add_argument("cmd", choices=["discover", "fetch", "fetch-paid", "recrawl", "status"])
+    ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("--kind")
     ap.add_argument("--site", choices=list(SITES))
     ap.add_argument("--limit", type=int)
     a = ap.parse_args()
     if a.cmd == "discover":     discover()
     elif a.cmd == "fetch":      fetch(a.site, a.limit)
     elif a.cmd == "fetch-paid": fetch_paid(a.site or "pew", a.limit)
+    elif a.cmd == "recrawl":    recrawl(a.days, a.site, a.kind)
     else:                       status()

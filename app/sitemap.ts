@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { toDate } from "@/lib/date";
 import { aiUpdates } from "@/data/aiUpdates";
 import { PERSONAS, PERSONAS_LAST_UPDATED } from "@/data/personas";
+import { QUESTIONS } from "@/data/corpusQuestions";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
@@ -165,6 +166,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.5,
+    });
+  }
+
+  // One indexable page per question the corpus can answer.
+  for (const q of QUESTIONS) {
+    urls.push({
+      url: `${SITE_URL}/personas/${q.slug}`,
+      lastModified: toDate(PERSONAS_LAST_UPDATED),
+      changeFrequency: "monthly",
+      priority: 0.7,
     });
   }
 
