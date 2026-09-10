@@ -155,151 +155,123 @@ export default function PersonaStudio() {
   const colorOf = (id: string) => PLATFORMS.find((p) => p.id === id)?.color ?? "#888";
   const reset = () => { setTraits({}); setGaps([]); setSources([]); setOpenRow(null); };
 
-  return (
-    <div className="border border-border bg-card/20">
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)]">
-        {/* BUILD */}
-        <div className="p-5 border-b lg:border-b-0 lg:border-r border-border">
-          <div className="flex items-baseline justify-between gap-2 mb-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              Build anyone
-            </p>
-            {(traitList.length > 0 || gaps.length > 0 || sources.length > 0) && (
-              <button onClick={reset} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground border border-border px-2 py-0.5 transition-colors">
-                Reset
-              </button>
-            )}
-          </div>
 
+  const dropZone = {
+    onDragOver: (e: React.DragEvent) => { e.preventDefault(); setDragOver(true); },
+    onDragLeave: () => setDragOver(false),
+    onDrop: (e: React.DragEvent) => {
+      e.preventDefault(); setDragOver(false);
+      const id = e.dataTransfer.getData("text/plain");
+      if (id) drop(id);
+    },
+  };
+
+  return (
+    <div
+      {...dropZone}
+      className={`border border-border bg-card/20 transition-colors ${dragOver ? "bg-foreground/5" : ""}`}
+    >
+      {/* HEADER: who you are describing, and how well we know it. */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b border-border">
+        <div className="shrink-0" style={{ lineHeight: 0 }}>
+          <PersonaAvatar
+            gender={traits.gender as AvatarGender}
+            age={traits.age as AvatarAge}
+            size={44}
+            accent="var(--foreground)"
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-base font-bold text-foreground leading-tight truncate">
+            {traitList.length ? traitList.map(labelOf).join(", ") : "All US adults"}
+          </p>
+          <p className="font-mono text-[10px] text-muted-foreground leading-tight mt-0.5">
+            {confidence.label} · {confidence.note}
+            {topPattern ? ` · reads as ${topPattern.bp.name}` : ""}
+          </p>
+        </div>
+        {(traitList.length > 0 || gaps.length > 0 || sources.length > 0) && (
+          <button
+            onClick={reset}
+            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground border border-border px-2 py-1 transition-colors shrink-0"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      {/* ROW 1: build · the hundred people · where they are */}
+      <div className="grid lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)_minmax(0,300px)] border-b border-border">
+        {/* Build rail */}
+        <div className="p-4 border-b lg:border-b-0 lg:border-r border-border">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            Build anyone
+          </p>
           {DIMS.map((d) => (
-            <div key={d.key} className="flex flex-wrap items-center gap-1.5 mb-2.5">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 w-20 shrink-0">
+            <div key={d.key} className="mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 mb-1">
                 {d.label}
-              </span>
-              {d.ids.map((id) => {
-                const on = traits[d.key] === id;
-                const seg = allSegmentById(id);
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {d.ids.map((id) => {
+                  const on = traits[d.key] === id;
+                  const seg = allSegmentById(id);
+                  return (
+                    <button
+                      key={id}
+                      draggable
+                      onDragStart={(e) => e.dataTransfer.setData("text/plain", id)}
+                      onClick={() => toggleTrait(id)}
+                      aria-pressed={on}
+                      title={seg ? `n=${seg.n?.toLocaleString()}, margin of error ±${seg.moe}pp` : undefined}
+                      className={`font-mono text-[10px] px-1.5 py-0.5 border transition-all cursor-grab active:cursor-grabbing ${
+                        on
+                          ? "border-foreground text-foreground bg-foreground/10"
+                          : "border-border/60 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+                      }`}
+                    >
+                      {labelOf(id)}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          <div className="mt-4 pt-3 border-t border-border/50">
+            <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 mb-1">
+              Also ask
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {NO_DATA.map((n) => {
+                const on = gaps.includes(n.id);
                 return (
                   <button
-                    key={id}
+                    key={n.id}
                     draggable
-                    onDragStart={(e) => e.dataTransfer.setData("text/plain", id)}
-                    onClick={() => toggleTrait(id)}
+                    onDragStart={(e) => e.dataTransfer.setData("text/plain", n.id)}
+                    onClick={() => setGaps((p) => (on ? p.filter((x) => x !== n.id) : [...p, n.id]))}
                     aria-pressed={on}
-                    title={seg ? `n=${seg.n.toLocaleString()}, margin of error ±${seg.moe}pp` : undefined}
-                    className={`font-mono text-[11px] px-2 py-1 border transition-all cursor-grab active:cursor-grabbing ${
-                      on ? "border-foreground text-foreground bg-foreground/10" : "border-border/60 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+                    className={`font-mono text-[10px] px-1.5 py-0.5 border border-dashed transition-all cursor-grab ${
+                      on ? "border-foreground/70 text-foreground bg-foreground/5" : "border-border/60 text-muted-foreground/90 hover:text-foreground"
                     }`}
                   >
-                    {labelOf(id)}
+                    {n.label}
                   </button>
                 );
               })}
             </div>
-          ))}
-
-          {/* Traits nothing measures */}
-          <div className="flex flex-wrap items-center gap-1.5 mt-4 pt-4 border-t border-border/50">
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 w-20 shrink-0">
-              Also ask
-            </span>
-            {NO_DATA.map((n) => {
-              const on = gaps.includes(n.id);
-              return (
-                <button
-                  key={n.id}
-                  draggable
-                  onDragStart={(e) => e.dataTransfer.setData("text/plain", n.id)}
-                  onClick={() => setGaps((p) => (on ? p.filter((x) => x !== n.id) : [...p, n.id]))}
-                  aria-pressed={on}
-                  className={`font-mono text-[11px] px-2 py-1 border border-dashed transition-all cursor-grab ${
-                    on ? "border-foreground/70 text-foreground bg-foreground/5" : "border-border/60 text-muted-foreground/90 hover:text-foreground"
-                  }`}
-                >
-                  {n.label}
-                </button>
-              );
-            })}
           </div>
-
-          {/* Where they look */}
-          <button
-            onClick={() => setShowSources((v) => !v)}
-            className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground mt-6 pt-4 border-t border-border/50 w-full text-left transition-colors"
-          >
-            Where they look {showSources ? "−" : "+"}
-            <span className="normal-case tracking-normal text-muted-foreground/80">
-              {" "}
-              · {sources.length ? `${sources.length} selected` : "20 demand sources"}
-            </span>
-          </button>
-          {showSources && (
-            <div className="space-y-3 mt-3">
-              {CATS.map((cat) => (
-                <div key={cat}>
-                  <div className="flex items-baseline gap-2 mb-1.5">
-                    <span className="inline-block w-2 h-2 shrink-0" style={{ background: SOURCE_CATEGORY[cat].color }} aria-hidden="true" />
-                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground">{SOURCE_CATEGORY[cat].label}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">{SOURCE_CATEGORY[cat].tells}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {DEMAND_SOURCES.filter((s) => s.category === cat).map((s) => {
-                      const on = sources.includes(s.id);
-                      return (
-                        <button
-                          key={s.id}
-                          draggable
-                          onDragStart={(e) => e.dataTransfer.setData("text/plain", s.id)}
-                          onClick={() => setSources((p) => (on ? p.filter((x) => x !== s.id) : [...p, s.id]))}
-                          aria-pressed={on}
-                          className={`inline-flex items-center gap-1.5 border px-2 py-1 transition-all cursor-grab ${
-                            on ? "border-foreground/50 bg-foreground/10 text-foreground" : "border-border/60 text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {s.platformId && <PlatformMark id={s.platformId} color={colorOf(s.platformId)} size={12} />}
-                          <span className="font-mono text-[11px]">{s.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* PROFILE */}
-        <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => { e.preventDefault(); setDragOver(false); const id = e.dataTransfer.getData("text/plain"); if (id) drop(id); }}
-          className={`p-5 transition-colors ${dragOver ? "bg-foreground/5" : ""}`}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="shrink-0" style={{ lineHeight: 0 }}>
-              <PersonaAvatar gender={traits.gender as AvatarGender} age={traits.age as AvatarAge} size={68} accent="var(--foreground)" />
-            </div>
-            <div className="min-w-0">
-              <p className="font-display text-base font-bold text-foreground leading-tight">
-                {traitList.length ? traitList.map(labelOf).join(", ") : "All US adults"}
-              </p>
-              <p className="font-mono text-[10px] text-muted-foreground mt-0.5">
-                {confidence.label}
-                {topPattern ? ` · ${topPattern.bp.name}` : ""}
-              </p>
-            </div>
-          </div>
-
-          <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mb-4 pb-4 border-b border-border/50">
-            {confidence.note}
-          </p>
-
-          {/* The hundred dots. This is the centre of the tool: the number and
-              its uncertainty in one picture, redrawn as traits change. */}
-          {!isTeen && focused && (
-            <div className="mb-5 pb-5 border-b border-border/50 flex flex-col sm:flex-row gap-5 items-start">
+        {/* The hundred people */}
+        <div className="p-4 border-b lg:border-b-0 lg:border-r border-border">
+          {isTeen ? (
+            <TeenPanel />
+          ) : focused ? (
+            <div className="flex flex-wrap gap-5 items-start">
               <AudienceCanvas
-                size={220}
+                size={216}
                 state={{
                   value: focused.est.value,
                   moe: focused.est.samplingMoe,
@@ -313,299 +285,297 @@ export default function PersonaStudio() {
                     : "Out of 100 US adults."
                 }
               />
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+              <div className="min-w-[130px] flex-1">
+                <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 mb-1.5">
                   Show me
                 </p>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 mb-3">
                   {ranked.map(({ p }) => (
                     <button
                       key={p.id}
                       onClick={() => setFocus(p.id)}
                       aria-pressed={focus === p.id}
-                      className={`inline-flex items-center gap-1.5 border px-1.5 py-1 transition-all ${
-                        focus === p.id
-                          ? "border-foreground bg-foreground/10"
-                          : "border-border/60 hover:border-foreground/40"
-                      }`}
                       title={p.name}
+                      className={`inline-flex items-center gap-1 border px-1 py-0.5 transition-all ${
+                        focus === p.id ? "border-foreground bg-foreground/10" : "border-border/60 hover:border-foreground/40"
+                      }`}
                     >
-                      <PlatformMark id={p.id} color={p.color} size={13} />
-                      <span className="font-mono text-[10px] text-muted-foreground">{p.name}</span>
+                      <PlatformMark id={p.id} color={p.color} size={12} />
+                      <span className="font-mono text-[9px] text-muted-foreground">{p.name}</span>
                     </button>
                   ))}
                 </div>
-                <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-3">
-                  The dashed ring is the margin of error, drawn to scale. Every other tool prints
-                  a single number and hides this. Add traits and watch the ring widen: that is the
-                  cost of being specific, and it is real.
+                <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed">
+                  The dashed ring is the margin of error, drawn to scale. Add traits and watch it
+                  widen: that is the cost of being specific, and every other tool hides it.
                 </p>
                 {focused.est.basis === "estimated" && (
                   <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-2">
-                    Softer dots because this cell is estimated, not published. {focused.est.derivation}
+                    {focused.est.derivation}
                   </p>
                 )}
               </div>
             </div>
-          )}
+          ) : null}
+        </div>
 
-          {/* Teens are a different survey. The adult estimator cannot answer for
-              them, so it does not pretend to: its panel is replaced, not adjusted. */}
-          {isTeen ? (
-            <div className="mb-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-                Where they are · a different study
-              </p>
-              <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mb-3">
-                The adult survey does not sample under-18s, so nothing above can answer this and it
-                does not try. These are {TEEN_STUDY.publisher}&apos;s own published figures for{" "}
-                {TEEN_STUDY.population} (n={TEEN_STUDY.sampleSize.toLocaleString()}, fielded{" "}
-                {TEEN_STUDY.fielded}). Only the platforms that study reports are listed, and any
-                other trait you selected has no published teen cell.
-              </p>
-              <div className="space-y-1">
-                {TEEN_REACH.map((t) => (
-                  <div key={t.label} className="py-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-muted-foreground w-40 shrink-0 truncate">
-                        {t.label}
-                      </span>
-                      <span className="flex-1 h-1.5 bg-secondary/50">
-                        <span className="block h-full bg-foreground/70" style={{ width: `${t.pct}%` }} />
-                      </span>
-                      <span className="font-mono text-xs text-foreground w-9 text-right tabular-nums shrink-0">
-                        {t.pct}%
-                      </span>
-                    </div>
-                    <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed pl-[10.5rem]">
-                      {t.note}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
-                <a
-                  href={TEEN_STUDY.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline decoration-border hover:text-foreground transition-colors"
-                >
-                  {TEEN_STUDY.name}
-                </a>
-              </p>
-            </div>
-          ) : (
-          <>
-          {/* Platform estimates */}
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-            Where they are · tap a row for the working
+        {/* Ranked reach */}
+        <div className="p-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            Where they are
           </p>
-          <div className="space-y-1 mb-4">
-            {ranked.map(({ p, est }) => (
-              <div key={p.id}>
+          {isTeen ? (
+            <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+              Teens are a separate study. See the panel to the left.
+            </p>
+          ) : (
+            <div className="space-y-0.5">
+              {ranked.map(({ p, est }) => (
                 <button
-                  onClick={() => setOpenRow(openRow === p.id ? null : p.id)}
-                  className="w-full flex items-center gap-2 py-1 hover:bg-foreground/5 transition-colors text-left"
+                  key={p.id}
+                  onClick={() => setFocus(p.id)}
+                  aria-pressed={focus === p.id}
+                  className={`w-full flex items-center gap-1.5 py-0.5 px-1 transition-colors text-left ${
+                    focus === p.id ? "bg-foreground/10" : "hover:bg-foreground/5"
+                  }`}
                 >
-                  <PlatformMark id={p.id} color={p.color} size={16} />
-                  <span className="font-mono text-[11px] text-muted-foreground w-16 shrink-0">{p.name}</span>
-                  <span className="flex-1 h-1.5 bg-secondary/50">
-                    <span className="block h-full transition-all duration-500" style={{ width: `${est.value}%`, background: p.color, opacity: est.basis === "estimated" ? 0.55 : 0.9 }} />
+                  <PlatformMark id={p.id} color={p.color} size={13} />
+                  <span className="font-mono text-[10px] text-muted-foreground w-14 shrink-0 truncate">
+                    {p.name}
                   </span>
-                  <span className="font-mono text-xs text-foreground w-9 text-right tabular-nums shrink-0">{est.value}%</span>
+                  <span className="flex-1 h-1.5 bg-secondary/50">
+                    <span
+                      className="block h-full transition-all duration-500"
+                      style={{ width: `${est.value}%`, background: p.color, opacity: est.basis === "estimated" ? 0.55 : 0.9 }}
+                    />
+                  </span>
+                  <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">
+                    {est.value}
+                  </span>
                   <span
-                    className="font-mono text-[8px] uppercase tracking-wider w-14 text-right shrink-0"
+                    className="font-mono text-[8px] w-7 text-right shrink-0"
                     style={{ color: est.basis === "measured" ? "#10b981" : "#f59e0b" }}
                   >
-                    {est.basis === "measured" ? "measured" : "est."}
+                    {est.basis === "measured" ? "meas" : "est"}
                   </span>
                 </button>
-                {openRow === p.id && (
-                  <div className="border-l-2 border-border ml-5 pl-3 py-2 mb-1">
-                    <p className="font-mono text-[10px] text-foreground leading-relaxed">{est.derivation}</p>
-                    <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-1">
-                      Sampling error ±{est.samplingMoe}pp.{est.caution ? ` ${est.caution}` : ""}
-                    </p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ROW 2: access · news */}
+      {!isTeen && (
+        <div className="grid lg:grid-cols-2 border-b border-border">
+          <div className="p-4 border-b lg:border-b-0 lg:border-r border-border overflow-x-auto">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+              How they get online · every cell published
+            </p>
+            <table className="w-full">
+              <thead>
+                <tr className="text-left">
+                  <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80">&nbsp;</th>
+                  <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right">All</th>
+                  {adultTraits.map((t) => (
+                    <th key={t} className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right whitespace-nowrap">
+                      {labelOf(t)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {TECH_ACCESS.map((m) => (
+                  <tr key={m.id} className="border-t border-border/30">
+                    <td className="py-1 pr-2 font-mono text-[10px] text-muted-foreground leading-tight">{m.label}</td>
+                    <td className="py-1 pr-2 font-mono text-[10px] text-foreground text-right tabular-nums">{m.overall}%</td>
+                    {adultTraits.map((t) => (
+                      <td key={t} className="py-1 pr-2 font-mono text-[10px] text-right tabular-nums text-foreground">
+                        {m.by[t] === undefined ? <span className="text-muted-foreground/70">n/p</span> : `${m.by[t]}%`}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+              One column per trait, not combined: these sit near the ceiling where multiplying odds
+              adds error without adding information. The smartphone-only row is the one that
+              changes what you build.
+            </p>
+          </div>
+
+          <div className="p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+              Where they get news
+            </p>
+            <div className="space-y-0.5">
+              {NEWS_CHANNELS.map((c) => {
+                const hit = adultTraits.find((t) => c.by[t] !== undefined);
+                const v = hit ? c.by[hit] : c.overall;
+                const delta = hit ? v - c.overall : 0;
+                return (
+                  <div key={c.id} className="flex items-center gap-2 py-0.5">
+                    <span className="font-mono text-[10px] text-muted-foreground w-24 shrink-0 truncate">{c.label}</span>
+                    <span className="flex-1 h-1.5 bg-secondary/50">
+                      <span className="block h-full transition-all duration-500" style={{ width: `${v}%`, background: "var(--foreground)", opacity: 0.6 }} />
+                    </span>
+                    <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">{v}</span>
+                    <span
+                      className="font-mono text-[9px] w-8 text-right tabular-nums shrink-0"
+                      style={{ color: delta === 0 ? undefined : delta > 0 ? "#10b981" : "#f59e0b" }}
+                    >
+                      {delta === 0 ? "" : `${delta > 0 ? "+" : ""}${delta}`}
+                    </span>
                   </div>
+                );
+              })}
+            </div>
+            <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+              AI chatbots are in this survey for the first time: 9% of US adults, 19% of Asian
+              adults, the widest spread of any channel here.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ROW 3: gaps · buying pattern · the country */}
+      <div className="grid lg:grid-cols-3">
+        <div className="p-4 border-b lg:border-b-0 lg:border-r border-border">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            {gaps.length ? "No data for these" : "Things nothing measures"}
+          </p>
+          {gaps.length === 0 ? (
+            <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+              Drag one of the dashed chips in for immigration status, children, a life event or a
+              city, and this says what is missing instead of inventing it.
+            </p>
+          ) : (
+            NO_DATA.filter((n) => gaps.includes(n.id)).map((n) => (
+              <div key={n.id} className="mb-2 last:mb-0">
+                <p className="font-mono text-[10px] text-foreground">{n.label}</p>
+                <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">{n.why}</p>
+                {n.proxy && (
+                  <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-1">
+                    {n.proxyUrl ? (
+                      <a href={n.proxyUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-border hover:text-foreground transition-colors">
+                        {n.proxy}
+                      </a>
+                    ) : n.proxy}
+                  </p>
                 )}
               </div>
-            ))}
-          </div>
-          </>
+            ))
           )}
+        </div>
 
-          {/* How they get online. Published cells only, one column per trait:
-              these are near-ceiling proportions where combining would add
-              error without adding information. */}
-          {!isTeen && (
-            <div className="mb-4 pt-3 border-t border-border/50">
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-                How they get online · every cell published
-              </p>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left">
-                      <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80">
-                        &nbsp;
-                      </th>
-                      <th className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right">
-                        All
-                      </th>
-                      {adultTraits.map((t) => (
-                        <th
-                          key={t}
-                          className="pb-1 pr-2 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/80 text-right whitespace-nowrap"
+        <div className="p-4 border-b lg:border-b-0 lg:border-r border-border">
+          <button
+            onClick={() => setShowSources((v) => !v)}
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground w-full text-left transition-colors mb-2"
+          >
+            Where they look {showSources ? "−" : "+"}
+            <span className="normal-case tracking-normal text-muted-foreground/80">
+              {" "}· {sources.length ? `${sources.length} selected` : "20 demand sources"}
+            </span>
+          </button>
+          {showSources ? (
+            <div className="space-y-2">
+              {CATS.map((cat) => (
+                <div key={cat}>
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <span className="inline-block w-1.5 h-1.5 shrink-0" style={{ background: SOURCE_CATEGORY[cat].color }} aria-hidden="true" />
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-foreground">{SOURCE_CATEGORY[cat].label}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {DEMAND_SOURCES.filter((s) => s.category === cat).map((s) => {
+                      const on = sources.includes(s.id);
+                      return (
+                        <button
+                          key={s.id}
+                          draggable
+                          onDragStart={(e) => e.dataTransfer.setData("text/plain", s.id)}
+                          onClick={() => setSources((p) => (on ? p.filter((x) => x !== s.id) : [...p, s.id]))}
+                          aria-pressed={on}
+                          className={`inline-flex items-center gap-1 border px-1 py-0.5 transition-all cursor-grab ${
+                            on ? "border-foreground/50 bg-foreground/10 text-foreground" : "border-border/60 text-muted-foreground hover:text-foreground"
+                          }`}
                         >
-                          {labelOf(t)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TECH_ACCESS.map((m) => (
-                      <tr key={m.id} className="border-t border-border/30">
-                        <td className="py-1 pr-2 font-mono text-[10px] text-muted-foreground leading-tight">
-                          {m.label}
-                        </td>
-                        <td className="py-1 pr-2 font-mono text-[10px] text-foreground text-right tabular-nums">
-                          {m.overall}%
-                        </td>
-                        {adultTraits.map((t) => (
-                          <td
-                            key={t}
-                            className="py-1 pr-2 font-mono text-[10px] text-right tabular-nums"
-                            style={{ color: m.by[t] === undefined ? undefined : "var(--foreground)" }}
-                          >
-                            {m.by[t] === undefined ? (
-                              <span className="text-muted-foreground/70">n/p</span>
-                            ) : (
-                              `${m.by[t]}%`
-                            )}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
-                One column per trait, not combined. These sit close to the ceiling, where
-                multiplying odds would add error without adding information, so each figure is
-                shown as published. &ldquo;n/p&rdquo; means that fact sheet does not publish that
-                cut. The smartphone-only row is the one that changes how you build: those people
-                have no home broadband.
-              </p>
-            </div>
-          )}
-
-          {/* Where they get news. Published cells, one column per trait, same
-              reason as the access table: combining near-ceiling proportions
-              adds error without adding information. */}
-          {!isTeen && (
-            <div className="mb-4 pt-3 border-t border-border/50">
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-                Where they get news
-              </p>
-              <div className="space-y-1">
-                {NEWS_CHANNELS.map((c) => {
-                  // The first selected trait with a published cell wins; the
-                  // national figure is the fallback and is labelled as such.
-                  const hit = adultTraits.find((t) => c.by[t] !== undefined);
-                  const v = hit ? c.by[hit] : c.overall;
-                  const delta = hit ? v - c.overall : 0;
-                  return (
-                    <div key={c.id} className="flex items-center gap-2 py-0.5">
-                      <span className="font-mono text-[11px] text-muted-foreground w-28 shrink-0 truncate">
-                        {c.label}
-                      </span>
-                      <span className="flex-1 h-1.5 bg-secondary/50">
-                        <span
-                          className="block h-full transition-all duration-500"
-                          style={{ width: `${v}%`, background: "var(--foreground)", opacity: 0.6 }}
-                        />
-                      </span>
-                      <span className="font-mono text-xs text-foreground w-9 text-right tabular-nums shrink-0">
-                        {v}%
-                      </span>
-                      <span
-                        className="font-mono text-[9px] w-10 text-right tabular-nums shrink-0"
-                        style={{ color: delta === 0 ? undefined : delta > 0 ? "#10b981" : "#f59e0b" }}
-                      >
-                        {delta === 0 ? "" : `${delta > 0 ? "+" : ""}${delta}`}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
-                {adultTraits.length
-                  ? `Shown for ${labelOf(adultTraits.find((t) => NEWS_CHANNELS[0].by[t] !== undefined) ?? adultTraits[0])}, with the gap from the national figure beside it.`
-                  : "All US adults. Pick a trait and each row switches to that group's published cell."}{" "}
-                AI chatbots are in this survey for the first time: 9% of US adults, 19% of Asian adults.
-              </p>
-            </div>
-          )}
-
-          {/* Gaps */}
-          {gaps.length > 0 && (
-            <div className="border border-border p-3 mb-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
-                No data for these
-              </p>
-              {NO_DATA.filter((n) => gaps.includes(n.id)).map((n) => (
-                <div key={n.id} className="mb-2 last:mb-0">
-                  <p className="font-mono text-[10px] text-foreground">{n.label}</p>
-                  <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">{n.why}</p>
-                  {n.proxy && (
-                    <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-1">
-                      {n.proxyUrl ? (
-                        <a
-                          href={n.proxyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-border hover:text-foreground transition-colors"
-                        >
-                          {n.proxy}
-                        </a>
-                      ) : (
-                        n.proxy
-                      )}
-                    </p>
-                  )}
+                          {s.platformId && <PlatformMark id={s.platformId} color={colorOf(s.platformId)} size={10} />}
+                          <span className="font-mono text-[9px]">{s.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Pattern */}
-          {topPattern && (
-            <div className="border border-border p-3 mb-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1.5">
-                Buying pattern · {topPattern.hits.length} of {topPattern.bp.trusts.length} sources matched
+          ) : topPattern ? (
+            <>
+              <p className="font-mono text-[10px] text-foreground leading-relaxed mb-1">
+                {topPattern.bp.asks}
               </p>
-              <p className="font-mono text-[11px] text-foreground leading-relaxed mb-1">{topPattern.bp.asks}</p>
               <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">
                 Won by: {topPattern.bp.wonBy}
               </p>
-            </div>
-          )}
-
-          {/* Baseline */}
-          <div className="border-t border-border/50 pt-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1.5">
-              The country they live in
+            </>
+          ) : (
+            <p className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+              Open this and drag in the sources a buyer would actually use. It names the buying
+              pattern, or refuses to until the mix is strong enough.
             </p>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-              {US_CONTEXT.filter((f) => ["median-hh-income", "homeownership", "median-rent", "avg-debt"].includes(f.id)).map((f) => (
-                <p key={f.id} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
-                  <span className="text-foreground">{f.value.split(",")[0]}</span> {f.metric.toLowerCase()}
-                </p>
-              ))}
-            </div>
+          )}
+        </div>
+
+        <div className="p-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+            The country they live in
+          </p>
+          <div className="space-y-1">
+            {US_CONTEXT.filter((f) =>
+              ["median-hh-income", "homeownership", "median-rent", "avg-debt", "poverty", "unemployment"].includes(f.id),
+            ).map((f) => (
+              <p key={f.id} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+                <span className="text-foreground">{f.value.split(",")[0]}</span> {f.metric.toLowerCase()}
+              </p>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
+
+  function TeenPanel() {
+    return (
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+          Where they are · a different study
+        </p>
+        <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mb-3">
+          The adult survey does not sample under-18s, so nothing above can answer this and it does
+          not try. These are {TEEN_STUDY.publisher}&apos;s published figures for {TEEN_STUDY.population}{" "}
+          (n={TEEN_STUDY.sampleSize.toLocaleString()}, fielded {TEEN_STUDY.fielded}).
+        </p>
+        <div className="space-y-1">
+          {TEEN_REACH.map((t) => (
+            <div key={t.label}>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] text-muted-foreground w-36 shrink-0 truncate">{t.label}</span>
+                <span className="flex-1 h-1.5 bg-secondary/50">
+                  <span className="block h-full bg-foreground/70" style={{ width: `${t.pct}%` }} />
+                </span>
+                <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">{t.pct}</span>
+              </div>
+              <p className="font-mono text-[9px] text-muted-foreground/90 leading-relaxed pl-[9.5rem]">{t.note}</p>
+            </div>
+          ))}
+        </div>
+        <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+          <a href={TEEN_STUDY.url} target="_blank" rel="noopener noreferrer" className="underline decoration-border hover:text-foreground transition-colors">
+            {TEEN_STUDY.name}
+          </a>
+        </p>
+      </div>
+    );
+  }
 }
