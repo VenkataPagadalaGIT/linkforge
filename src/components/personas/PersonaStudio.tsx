@@ -22,6 +22,7 @@
 import { useMemo, useState } from "react";
 import PlatformMark from "./PlatformMark";
 import { NEWS_CHANNELS } from "@/data/newsChannels";
+import AudienceCanvas from "./AudienceCanvas";
 import PersonaAvatar, { type AvatarAge, type AvatarGender } from "./PersonaAvatar";
 import {
   ALL_SEGMENTS,
@@ -95,6 +96,8 @@ export default function PersonaStudio() {
   const [openRow, setOpenRow] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [showSources, setShowSources] = useState(false);
+  /** Which platform the hundred dots are describing. */
+  const [focus, setFocus] = useState("instagram");
 
   const traitList = Object.values(traits).filter(Boolean) as string[];
   const dimOf = (id: string) => DIMS.find((d) => d.ids.includes(id))?.key ?? "";
@@ -121,6 +124,11 @@ export default function PersonaStudio() {
       (a, b) => b.est.value - a.est.value,
     );
   }, [adultTraits]);
+
+  const focused = useMemo(
+    () => ranked.find((r) => r.p.id === focus) ?? ranked[0],
+    [ranked, focus],
+  );
 
   const scored = useMemo(() => {
     if (!sources.length) return [];
@@ -285,6 +293,61 @@ export default function PersonaStudio() {
           <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mb-4 pb-4 border-b border-border/50">
             {confidence.note}
           </p>
+
+          {/* The hundred dots. This is the centre of the tool: the number and
+              its uncertainty in one picture, redrawn as traits change. */}
+          {!isTeen && focused && (
+            <div className="mb-5 pb-5 border-b border-border/50 flex flex-col sm:flex-row gap-5 items-start">
+              <AudienceCanvas
+                size={220}
+                state={{
+                  value: focused.est.value,
+                  moe: focused.est.samplingMoe,
+                  color: focused.p.color,
+                  basis: focused.est.basis === "measured" ? "measured" : "estimated",
+                }}
+                label={`use ${focused.p.name}`}
+                sublabel={
+                  traitList.length
+                    ? `Out of 100 people who are ${traitList.map(labelOf).join(", ")}.`
+                    : "Out of 100 US adults."
+                }
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">
+                  Show me
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {ranked.map(({ p }) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setFocus(p.id)}
+                      aria-pressed={focus === p.id}
+                      className={`inline-flex items-center gap-1.5 border px-1.5 py-1 transition-all ${
+                        focus === p.id
+                          ? "border-foreground bg-foreground/10"
+                          : "border-border/60 hover:border-foreground/40"
+                      }`}
+                      title={p.name}
+                    >
+                      <PlatformMark id={p.id} color={p.color} size={13} />
+                      <span className="font-mono text-[10px] text-muted-foreground">{p.name}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-3">
+                  The dashed ring is the margin of error, drawn to scale. Every other tool prints
+                  a single number and hides this. Add traits and watch the ring widen: that is the
+                  cost of being specific, and it is real.
+                </p>
+                {focused.est.basis === "estimated" && (
+                  <p className="font-mono text-[10px] text-muted-foreground leading-relaxed mt-2">
+                    Softer dots because this cell is estimated, not published. {focused.est.derivation}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Teens are a different survey. The adult estimator cannot answer for
               them, so it does not pretend to: its panel is replaced, not adjusted. */}
