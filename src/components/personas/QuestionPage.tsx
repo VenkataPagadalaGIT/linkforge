@@ -5,8 +5,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ClaimComparison from "./ClaimComparison";
 import TwoQuestions from "./TwoQuestions";
 import { COMPOSITION_SETS } from "@/data/platformComposition";
+import SourceChain from "./SourceChain";
+import { competitorFor } from "@/data/competitorPages";
 import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
-import { CORPUS_SEGMENTS, corpusDoc, corpusMetric } from "@/data/corpus";
+import { CORPUS_SEGMENTS, corpusDoc, corpusMetric, ageInMonths, freshness, FRESHNESS_META, CORPUS_GENERATED } from "@/data/corpus";
 
 const DIM_LABEL: Record<string, string> = {
   gender: "Gender", age: "Age", race: "Race and ethnicity", income: "Household income",
@@ -23,6 +25,9 @@ export default function QuestionPage({ slug }: { slug: string }) {
   const national = cells[""] ?? 0;
   const doc = corpusDoc(metric.document);
   const comp = COMPOSITION_SETS[q.subject];
+  const rival = competitorFor(q.subject);
+  const fresh = doc ? freshness(doc) : null;
+  const months = doc ? ageInMonths(doc) : null;
 
   // Every published cut, grouped by dimension, sorted by how far it sits from
   // the national figure: the spread is the story, not the ordering of labels.
@@ -85,6 +90,36 @@ export default function QuestionPage({ slug }: { slug: string }) {
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-4">
           {q.title}
         </h1>
+
+        {/* Freshness, before the number rather than in a footnote. A figure
+            without a date is not a figure. */}
+        {doc && fresh && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-5">
+            <span
+              className="font-mono text-[9px] uppercase tracking-[0.2em] border px-1.5 py-0.5"
+              style={{ borderColor: FRESHNESS_META[fresh].color, color: FRESHNESS_META[fresh].color }}
+            >
+              {FRESHNESS_META[fresh].label}
+            </span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {doc.fieldStart && doc.fieldEnd ? (
+                <>Collected {doc.fieldStart} to {doc.fieldEnd}</>
+              ) : doc.published ? (
+                <>Published {doc.published}</>
+              ) : null}
+              {months !== null ? ` · ${months} months old` : ""}
+            </span>
+            <span className="font-mono text-[10px] text-muted-foreground/90">
+              Verified against the source {CORPUS_GENERATED}
+            </span>
+            {rival?.latestYear ? (
+              <span className="font-mono text-[10px] text-muted-foreground/90">
+                · the leading page for this query dates its freshest figure to{" "}
+                {rival.latestPeriod || rival.latestYear}
+              </span>
+            ) : null}
+          </div>
+        )}
 
         {/* The answer, first line, no scrolling for it. */}
         <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-3xl">
@@ -228,6 +263,22 @@ export default function QuestionPage({ slug }: { slug: string }) {
               criticism of the page, it is the only place those numbers exist. It is a reason to
               know which question they answer.
             </p>
+          </section>
+        )}
+
+        {/* Where the competing numbers actually come from. */}
+        {rival && doc && (
+          <section className="mb-10">
+            <h2 className="font-display text-xl font-bold text-foreground mb-2">
+              Where the other numbers come from
+            </h2>
+            <SourceChain
+              page={rival}
+              ourSource={doc.title}
+              ourUrl={doc.url}
+              ourSample={doc.sampleSize ?? 0}
+              ourMoe={Number(doc.moe ?? 0)}
+            />
           </section>
         )}
 

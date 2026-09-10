@@ -322,3 +322,47 @@ SELECT domain, count(*) AS times_cited,
        min(url) AS example
 FROM serp_result WHERE cited_by_ai AND domain IS NOT NULL
 GROUP BY domain ORDER BY 2 DESC;
+
+-- ============================================================================
+-- COMPETITOR PAGES
+--
+-- The page-level picture: for each platform, who currently owns the query,
+-- how many claims that page makes, which sources it cites, and how fresh it
+-- says it is. Claim-level basis is recorded only where the page states it;
+-- guessing a basis per claim would be the same fabrication this whole corpus
+-- exists to avoid, so it is left unstated rather than inferred.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS competitor_page (
+  id            serial PRIMARY KEY,
+  domain        text NOT NULL,
+  url           text NOT NULL UNIQUE,
+  subject       text NOT NULL,
+  title         text,
+  claim_count   int NOT NULL DEFAULT 0,
+  -- The most recent period the page itself references. A page citing Q4 2025
+  -- in 2026 is telling you how stale its freshest number is.
+  latest_year   text,
+  latest_period text,
+  retrieved_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS competitor_source (
+  id            bigserial PRIMARY KEY,
+  page_id       int NOT NULL REFERENCES competitor_page(id) ON DELETE CASCADE,
+  domain        text NOT NULL,
+  url           text NOT NULL,
+  -- primary: the organisation that produced the number
+  -- secondary: another aggregator
+  kind          text NOT NULL DEFAULT 'primary',
+  UNIQUE (page_id, url)
+);
+
+CREATE INDEX IF NOT EXISTS cp_subject_idx ON competitor_page (subject);
+
+-- Which sources the whole competitive set leans on.
+CREATE OR REPLACE VIEW v_competitor_sources AS
+SELECT cs.domain, count(DISTINCT cp.subject) AS platforms,
+       count(*) AS times_cited, min(cs.url) AS example
+FROM competitor_source cs JOIN competitor_page cp ON cp.id = cs.page_id
+GROUP BY cs.domain ORDER BY 3 DESC;

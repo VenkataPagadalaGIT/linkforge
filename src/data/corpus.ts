@@ -8,7 +8,18 @@
  */
 
 export interface CorpusSegment { slug: string; dimension: string; label: string; n: number | null; moe: number | null; }
-export interface CorpusDocument { slug: string; title: string; url: string; published: string | null; sampleSize: number | null; moe: number | null; population: string | null; }
+export interface CorpusDocument {
+  slug: string;
+  title: string;
+  url: string;
+  published: string | null;
+  sampleSize: number | null;
+  moe: number | null;
+  population: string | null;
+  /** When the data was collected, which is older than when it was published. */
+  fieldStart: string | null;
+  fieldEnd: string | null;
+}
 export interface CorpusMetric {
   slug: string;
   label: string;
@@ -53,13 +64,13 @@ export const CORPUS_SEGMENTS: CorpusSegment[] = [
 ];
 
 export const CORPUS_DOCUMENTS: CorpusDocument[] = [
-  { slug: "pew-internet-broadband-2025", title: "Internet, Broadband Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/internet-broadband/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults" },
-  { slug: "pew-mobile-2025", title: "Mobile Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/mobile/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults" },
-  { slug: "pew-news-influencers-2025", title: "News Influencers Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/news-influencers-fact-sheet/", published: "2025-11-04", sampleSize: null, moe: null, population: "US adults" },
-  { slug: "pew-news-platform-2025", title: "News Platform Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/news-platform-fact-sheet/", published: "2025-09-25", sampleSize: null, moe: null, population: "US adults" },
-  { slug: "pew-social-media-2025", title: "Social Media Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/social-media/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults" },
-  { slug: "pew-social-news-2025", title: "Social Media and News Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/social-media-and-news-fact-sheet/", published: "2025-09-25", sampleSize: null, moe: null, population: "US adults" },
-  { slug: "usafacts-context-2026", title: "USAFacts national context", url: "https://usafacts.org", published: null, sampleSize: null, moe: null, population: "United States" },
+  { slug: "pew-internet-broadband-2025", title: "Internet, Broadband Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/internet-broadband/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults", fieldStart: "2025-02-05", fieldEnd: "2025-06-18" },
+  { slug: "pew-mobile-2025", title: "Mobile Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/mobile/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults", fieldStart: "2025-02-05", fieldEnd: "2025-06-18" },
+  { slug: "pew-news-influencers-2025", title: "News Influencers Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/news-influencers-fact-sheet/", published: "2025-11-04", sampleSize: null, moe: null, population: "US adults", fieldStart: null, fieldEnd: null },
+  { slug: "pew-news-platform-2025", title: "News Platform Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/news-platform-fact-sheet/", published: "2025-09-25", sampleSize: null, moe: null, population: "US adults", fieldStart: null, fieldEnd: null },
+  { slug: "pew-social-media-2025", title: "Social Media Fact Sheet", url: "https://www.pewresearch.org/internet/fact-sheet/social-media/", published: "2025-11-20", sampleSize: 5022, moe: 1.90, population: "US adults", fieldStart: "2025-02-05", fieldEnd: "2025-06-18" },
+  { slug: "pew-social-news-2025", title: "Social Media and News Fact Sheet", url: "https://www.pewresearch.org/journalism/fact-sheet/social-media-and-news-fact-sheet/", published: "2025-09-25", sampleSize: null, moe: null, population: "US adults", fieldStart: null, fieldEnd: null },
+  { slug: "usafacts-context-2026", title: "USAFacts national context", url: "https://usafacts.org", published: null, sampleSize: null, moe: null, population: "United States", fieldStart: null, fieldEnd: null },
 ];
 
 export const CORPUS_METRICS: CorpusMetric[] = [
@@ -99,6 +110,38 @@ export const CORPUS_METRICS: CorpusMetric[] = [
 export const corpusMetric = (slug: string) => CORPUS_METRICS.find((m) => m.slug === slug);
 export const corpusSegment = (slug: string) => CORPUS_SEGMENTS.find((s) => s.slug === slug);
 export const corpusDoc = (slug: string) => CORPUS_DOCUMENTS.find((d) => d.slug === slug);
+
+/**
+ * How old a figure is, in months, from when its data was COLLECTED
+ * rather than when it was published. A survey fielded in June and
+ * published in November is five months old on the day it appears, and
+ * a page that dates it to November is overstating its freshness.
+ */
+export function ageInMonths(doc: CorpusDocument, now = new Date()): number | null {
+  const basis = doc.fieldEnd ?? doc.published;
+  if (!basis) return null;
+  const d = new Date(basis);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.max(0, Math.round((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24 * 30.44)));
+}
+
+export type Freshness = "current" | "aging" | "stale";
+
+/** Annual surveys: a year old is normal, two years old is a warning. */
+export function freshness(doc: CorpusDocument, now = new Date()): Freshness {
+  const m = ageInMonths(doc, now);
+  if (m === null) return "aging";
+  return m <= 14 ? "current" : m <= 26 ? "aging" : "stale";
+}
+
+export const FRESHNESS_META: Record<Freshness, { label: string; color: string; note: string }> = {
+  current: { label: "Current", color: "#10b981", note: "The most recent wave of this survey." },
+  aging: { label: "Aging", color: "#f59e0b", note: "A newer wave may exist. Checked on the date shown." },
+  stale: { label: "Stale", color: "#ef4444", note: "Over two years since collection. Treat as historical." },
+};
+
+/** When this corpus was last regenerated from the database. */
+export const CORPUS_GENERATED = "2026-09-09";
 
 /** Every figure, flattened. Useful for search and for counting. */
 export const CORPUS_CELL_COUNT = CORPUS_METRICS.reduce(
