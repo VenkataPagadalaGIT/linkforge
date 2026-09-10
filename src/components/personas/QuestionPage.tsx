@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/site";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageNav from "./PageNav";
 import QuestionDirectory from "./QuestionDirectory";
+import Disclaimer from "./Disclaimer";
 import ClaimComparison from "./ClaimComparison";
 import TwoQuestions from "./TwoQuestions";
 import { COMPOSITION_SETS } from "@/data/platformComposition";
@@ -448,6 +449,8 @@ export default function QuestionPage({ slug }: { slug: string }) {
             shown on each row. {metric.definition}
           </p>
         )}
+
+        <Disclaimer className="mb-10" />
 
         {/* Every sibling question, not a truncated eight. These pages are
             each other's best internal links. */}

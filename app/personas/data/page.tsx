@@ -6,6 +6,7 @@ import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import CorpusExplorer from "@/components/personas/CorpusExplorer";
 import { CORPUS_SEGMENTS } from "@/data/corpus";
 import QuestionDirectory from "@/components/personas/QuestionDirectory";
+import Disclaimer from "@/components/personas/Disclaimer";
 import ReachMatrix from "@/components/personas/ReachMatrix";
 import DailyUsePanel from "@/components/personas/DailyUsePanel";
 import {
@@ -508,6 +509,8 @@ export default function Page() {
             the source rather than through an aggregator.
           </p>
         </section>
+
+        <Disclaimer className="mb-14" />
 
         <section aria-labelledby="qd-h" className="mb-14">
           <h2 id="qd-h" className="font-display text-2xl font-bold text-foreground mb-4">

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PersonaProfile from "@/components/personas/PersonaProfile";
+import PersonaAvatar from "@/components/personas/PersonaAvatar";
+import Disclaimer from "@/components/personas/Disclaimer";
+import QuestionDirectory from "@/components/personas/QuestionDirectory";
 import QuestionPage from "@/components/personas/QuestionPage";
 import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -110,9 +114,16 @@ export default function Page({ params }: { params: Params }) {
             { label: persona.name },
           ]}
         />
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-3 mt-6">
-          {persona.name}
-        </h1>
+        <div className="flex items-start gap-4 mb-4">
+          <div className="shrink-0 mt-1" style={{ lineHeight: 0 }}>
+            <PersonaAvatar gender="men" age="30-49" size={64} accent="var(--foreground)" />
+          </div>
+          <div className="min-w-0">
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-3 mt-6">
+            {persona.name}
+          </h1>
+          </div>
+        </div>
         <p className="font-mono text-sm text-muted-foreground mb-2">{persona.segment}</p>
         <p className="font-mono text-[11px] text-muted-foreground/70 mb-8">
           Last updated {PERSONAS_LAST_UPDATED}
@@ -230,6 +241,32 @@ export default function Page({ params }: { params: Params }) {
         >
           The method and the studies behind this
         </Link>
+        {/* The published cells for the same segments, so the prose above can
+            be checked rather than trusted. */}
+        <section aria-labelledby="mp-h" className="mb-14">
+          <h2 id="mp-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            The measured picture behind it
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5 max-w-3xl">
+            A persona is prose, and prose is where a plausible claim hides easiest. Every bar below
+            is a published cell for one of this persona&apos;s stated segments, so the narrative
+            above has something to be wrong against.
+          </p>
+          <PersonaProfile
+            segmentIds={["men", "30-49"]}
+            studioNote="This persona fixes two traits: a man, 30 to 49. The studio takes any combination, estimates what nobody published, and prints the arithmetic behind every estimate."
+          />
+        </section>
+
+        <Disclaimer className="mb-14" />
+
+        <section aria-labelledby="qd2-h" className="mb-14">
+          <h2 id="qd2-h" className="font-display text-2xl font-bold text-foreground mb-4">
+            Every question, answered on its own page
+          </h2>
+          <QuestionDirectory />
+        </section>
+
       </div>
     </div>
   );

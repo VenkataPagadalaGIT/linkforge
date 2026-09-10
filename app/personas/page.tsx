@@ -5,6 +5,7 @@ import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaStudio from "@/components/personas/PersonaStudio";
 import PlatformMark from "@/components/personas/PlatformMark";
 import QuestionDirectory from "@/components/personas/QuestionDirectory";
+import Disclaimer from "@/components/personas/Disclaimer";
 import {
   CITATIONS,
   RESEARCH_PAPERS,
@@ -93,6 +94,7 @@ export default function Page() {
             the row. Ask for something nothing measures, and it says so instead of inventing it.
           </p>
           <PersonaStudio />
+          <Disclaimer variant="short" className="mt-3" />
           <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-3 max-w-3xl">
             The estimator works in odds, not percentages. Each trait multiplies the national odds
             by the ratio its own published cell implies, and the result converts back to a
@@ -298,6 +300,8 @@ export default function Page() {
             Open the data page
           </Link>
         </section>
+
+        <Disclaimer className="mb-14" />
 
         {/* Full citations. Every number on this page traces to one of these. */}
         <section aria-labelledby="src-h" className="mb-14">
