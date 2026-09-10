@@ -105,7 +105,7 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 
 ## Audience Personas
 
-An interactive US audience tool backed only by published research. 2,347 observations across 32 metrics and 29 population segments, drawn from 7 source documents, most recently fielded 2025. Every figure is labelled measured (a published cell, cited) or estimated (combined from published cells in odds space, with the arithmetic printed), and traits that no source measures are shown as gaps rather than filled in. Sample sizes and margins of error appear on every row; the tool draws the margin of error as a hundred dots so the uncertainty is visible rather than stated. Confidence falls as a persona narrows, per Chapman et al. (2008), instead of rising.
+An interactive US audience tool backed only by published research. 8,508 observations across 65 metrics and 29 population segments, drawn from 8 source documents, most recently fielded 2025. Every figure is labelled measured (a published cell, cited) or estimated (combined from published cells in odds space, with the arithmetic printed), and traits that no source measures are shown as gaps rather than filled in. Sample sizes and margins of error appear on every row; the tool draws the margin of error as a hundred dots so the uncertainty is visible rather than stated. Confidence falls as a persona narrows, per Chapman et al. (2008), instead of rising.
 
 - URL: https://venkatapagadala.com/personas
 - Data and full crosstabs: https://venkatapagadala.com/personas/data
@@ -118,6 +118,7 @@ An interactive US audience tool backed only by published research. 2,347 observa
 - [News Platform Fact Sheet](https://www.pewresearch.org/journalism/fact-sheet/news-platform-fact-sheet/)
 - [Social Media Fact Sheet](https://www.pewresearch.org/internet/fact-sheet/social-media/): n=5,022, ±1.90pp, fielded 2025-02-05 to 2025-06-18
 - [Social Media and News Fact Sheet](https://www.pewresearch.org/journalism/fact-sheet/social-media-and-news-fact-sheet/)
+- [USAFacts answer pages](https://usafacts.org/answers/)
 - [USAFacts national context](https://usafacts.org)
 
 ### Questions answered, one page each

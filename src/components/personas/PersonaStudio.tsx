@@ -39,6 +39,7 @@ import {
   type SourceCategory,
 } from "@/data/personas";
 import { CORPUS_SEGMENTS } from "@/data/corpus";
+import { PLACES, PLACE_METRICS, placeBySlug } from "@/data/places";
 
 const DIMS = [
   { key: "gender", label: "Gender", ids: ["men", "women"] },
@@ -99,6 +100,8 @@ export default function PersonaStudio() {
   const [showSources, setShowSources] = useState(false);
   /** Which platform the hundred dots are describing. */
   const [focus, setFocus] = useState("instagram");
+  /** A state changes the country underneath the persona, never the reach. */
+  const [place, setPlace] = useState("");
 
   const traitList = Object.values(traits).filter(Boolean) as string[];
   const dimOf = (id: string) => DIMS.find((d) => d.ids.includes(id))?.key ?? "";
@@ -156,7 +159,8 @@ export default function PersonaStudio() {
           : { label: "Estimated, low confidence", note: "Four or more traits. Read as direction only." };
 
   const colorOf = (id: string) => PLATFORMS.find((p) => p.id === id)?.color ?? "#888";
-  const reset = () => { setTraits({}); setGaps([]); setSources([]); setOpenRow(null); };
+  const selectedPlace = place ? placeBySlug(place) : undefined;
+  const reset = () => { setTraits({}); setGaps([]); setSources([]); setOpenRow(null); setPlace(""); };
 
 
   const dropZone = {
@@ -535,18 +539,54 @@ export default function PersonaStudio() {
         </div>
 
         <div className="p-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-            The country they live in
-          </p>
-          <div className="space-y-1">
-            {US_CONTEXT.filter((f) =>
-              ["median-hh-income", "homeownership", "median-rent", "avg-debt", "poverty", "unemployment"].includes(f.id),
-            ).map((f) => (
-              <p key={f.id} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
-                <span className="text-foreground">{f.value.split(",")[0]}</span> {f.metric.toLowerCase()}
-              </p>
-            ))}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              {selectedPlace ? "The state they live in" : "The country they live in"}
+            </p>
+            <select
+              value={place}
+              onChange={(e) => setPlace(e.target.value)}
+              aria-label="Choose a state"
+              className="font-mono text-[10px] bg-transparent border border-border text-muted-foreground px-1 py-0.5 max-w-[130px]"
+            >
+              <option value="">United States</option>
+              {PLACES.map((p) => (
+                <option key={p.slug} value={p.slug}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
           </div>
+          {selectedPlace ? (
+            <>
+              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                {selectedPlace.facts.slice(0, 8).map((f) => {
+                  const m = PLACE_METRICS.find((x) => x.slug === f.metric);
+                  return (
+                    <p key={f.metric} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+                      <span className="text-foreground">{m?.label ?? f.metric}</span>
+                      <span className="block text-muted-foreground/90">{f.answer}</span>
+                    </p>
+                  );
+                })}
+              </div>
+              <p className="font-mono text-[10px] text-muted-foreground/90 leading-relaxed mt-2">
+                State context only. No platform figure above changes, because Pew publishes no
+                state-level cuts and inventing one is not on the table. Source: USAFacts answer
+                pages.
+              </p>
+            </>
+          ) : (
+            <div className="space-y-1">
+              {US_CONTEXT.filter((f) =>
+                ["median-hh-income", "homeownership", "median-rent", "avg-debt", "poverty", "unemployment"].includes(f.id),
+              ).map((f) => (
+                <p key={f.id} className="font-mono text-[10px] text-muted-foreground leading-relaxed">
+                  <span className="text-foreground">{f.value.split(",")[0]}</span> {f.metric.toLowerCase()}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
