@@ -192,7 +192,7 @@ export default function Page() {
                     <td className="py-2.5 pr-4 font-mono text-xs text-foreground whitespace-nowrap">
                       <span
                         className="inline-block w-2 h-2 mr-2 align-middle"
-                        style={{ background: p.color }}
+                        style={{ background: `var(--pf-${p.id}, ${p.color})` }}
                         aria-hidden="true"
                       />
                       {p.name}
@@ -250,7 +250,7 @@ export default function Page() {
                     <td className="py-2.5 pr-4 font-mono text-xs text-foreground whitespace-nowrap">
                       <span
                         className="inline-block w-2 h-2 mr-2 align-middle"
-                        style={{ background: p.color }}
+                        style={{ background: `var(--pf-${p.id}, ${p.color})` }}
                         aria-hidden="true"
                       />
                       {p.name}

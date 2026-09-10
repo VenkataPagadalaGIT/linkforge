@@ -81,7 +81,7 @@ export default function ReachMatrix() {
               <tr key={p.id} className="border-b border-border/40">
                 <td className="py-3 px-4 sticky left-0 bg-background">
                   <span className="flex items-center gap-2.5">
-                    <PlatformMark id={p.id} color={p.color} size={20} />
+                    <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} size={20} />
                     <span className="font-mono text-xs text-foreground">{p.name}</span>
                   </span>
                 </td>
@@ -113,7 +113,7 @@ export default function ReachMatrix() {
                         >
                           <span
                             className="block h-full transition-all duration-500"
-                            style={{ width: `${v}%`, background: p.color, opacity: 0.9 }}
+                            style={{ width: `${v}%`, background: `var(--pf-${p.id}, ${p.color})`, opacity: 0.9 }}
                           />
                         </span>
                         <span className="font-mono text-[9px] text-muted-foreground tabular-nums leading-none">

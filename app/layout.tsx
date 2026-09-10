@@ -1,3 +1,4 @@
+import PlatformColors from "@/components/personas/PlatformColors";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import "./globals.css";
@@ -131,6 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
+        <PlatformColors />
         <ThemeProvider>
           <Providers>
             <Navbar />

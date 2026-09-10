@@ -311,7 +311,7 @@ export default function PersonaStudio() {
                         focus === p.id ? "border-foreground bg-foreground/10" : "border-border/60 hover:border-foreground/40"
                       }`}
                     >
-                      <PlatformMark id={p.id} color={p.color} size={12} />
+                      <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} size={12} />
                       <span className="font-mono text-[9px] text-muted-foreground">{p.name}</span>
                     </button>
                   ))}
@@ -350,14 +350,14 @@ export default function PersonaStudio() {
                     focus === p.id ? "bg-foreground/10" : "hover:bg-foreground/5"
                   }`}
                 >
-                  <PlatformMark id={p.id} color={p.color} size={13} />
+                  <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} size={13} />
                   <span className="font-mono text-[10px] text-muted-foreground w-14 shrink-0 truncate">
                     {p.name}
                   </span>
                   <span className="flex-1 h-1.5 bg-secondary/50">
                     <span
                       className="block h-full transition-all duration-500"
-                      style={{ width: `${est.value}%`, background: p.color, opacity: est.basis === "estimated" ? 0.55 : 0.9 }}
+                      style={{ width: `${est.value}%`, background: `var(--pf-${p.id}, ${p.color})`, opacity: est.basis === "estimated" ? 0.55 : 0.9 }}
                     />
                   </span>
                   <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">

@@ -48,7 +48,7 @@ export default function PersonaProfile({
         <div className="space-y-1.5">
           {rows.map(({ p, cells }) => (
             <div key={p.id} className="flex items-center gap-2">
-              <PlatformMark id={p.id} color={p.color} size={14} />
+              <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} size={14} />
               <span className="font-mono text-[11px] text-muted-foreground w-20 shrink-0 truncate">
                 {p.name}
               </span>
@@ -57,7 +57,7 @@ export default function PersonaProfile({
                   v === undefined ? null : (
                     <span key={seg.id} className="flex items-center gap-2">
                       <span className="flex-1 h-1.5 bg-secondary/50">
-                        <span className="block h-full" style={{ width: `${v}%`, background: p.color, opacity: 0.8 }} />
+                        <span className="block h-full" style={{ width: `${v}%`, background: `var(--pf-${p.id}, ${p.color})`, opacity: 0.8 }} />
                       </span>
                       <span className="font-mono text-[10px] text-foreground w-8 text-right tabular-nums shrink-0">
                         {v}%

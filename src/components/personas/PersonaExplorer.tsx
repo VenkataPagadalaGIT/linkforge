@@ -177,7 +177,7 @@ export default function PersonaExplorer() {
           {ranked.map((p) => (
             <div key={p.id} className="flex items-center gap-3">
               <span className="shrink-0" style={{ lineHeight: 0 }}>
-                <PlatformMark id={p.id} color={p.color} />
+                <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} />
               </span>
               <span className="font-mono text-[11px] text-muted-foreground w-20 shrink-0">
                 {p.name}
@@ -185,7 +185,7 @@ export default function PersonaExplorer() {
               <div className="flex-1 h-5 bg-secondary/40 relative overflow-hidden">
                 <div
                   className="h-full transition-all duration-500 ease-out"
-                  style={{ width: `${p.pct}%`, background: p.color, opacity: 0.85 }}
+                  style={{ width: `${p.pct}%`, background: `var(--pf-${p.id}, ${p.color})`, opacity: 0.85 }}
                 />
               </div>
               <span className="font-mono text-sm text-foreground w-11 text-right shrink-0 tabular-nums">
@@ -232,7 +232,7 @@ export default function PersonaExplorer() {
                           key={p.id}
                           className="inline-flex items-center gap-1.5 border border-border/60 px-2 py-1"
                         >
-                          <PlatformMark id={p.id} color={p.color} size={14} />
+                          <PlatformMark id={p.id} color={`var(--pf-${p.id}, ${p.color})`} size={14} />
                           <span className="font-mono text-[10px] text-muted-foreground">
                             {p.name}
                           </span>

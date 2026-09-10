@@ -133,6 +133,23 @@ export default function Page({ params }: { params: Params }) {
           {persona.summary}
         </p>
 
+        {/* Data first. The written persona is the interesting part, but it
+            is still prose and nobody wants to read their way to a chart. */}
+        <section aria-labelledby="mp-h" className="mb-14">
+          <h2 id="mp-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            What the data says about this group
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5 max-w-3xl">
+            Every bar is a published cell for one of this persona&apos;s stated segments: a man,
+            30 to 49. The written persona follows underneath, and it has to survive these
+            numbers rather than sit above them unchallenged.
+          </p>
+          <PersonaProfile
+            segmentIds={["men", "30-49"]}
+            studioNote="This persona fixes two traits: a man, 30 to 49. The studio takes any combination, estimates what nobody published, and prints the arithmetic behind every estimate."
+          />
+        </section>
+
         {/* Traits, grouped so the unsupported ones are impossible to miss */}
         {(["measured", "derived", "inferred"] as const).map((grade) => {
           const traits = persona.traits.filter((t) => t.grade === grade);
@@ -241,23 +258,6 @@ export default function Page({ params }: { params: Params }) {
         >
           The method and the studies behind this
         </Link>
-        {/* The published cells for the same segments, so the prose above can
-            be checked rather than trusted. */}
-        <section aria-labelledby="mp-h" className="mb-14">
-          <h2 id="mp-h" className="font-display text-2xl font-bold text-foreground mb-2">
-            The measured picture behind it
-          </h2>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5 max-w-3xl">
-            A persona is prose, and prose is where a plausible claim hides easiest. Every bar below
-            is a published cell for one of this persona&apos;s stated segments, so the narrative
-            above has something to be wrong against.
-          </p>
-          <PersonaProfile
-            segmentIds={["men", "30-49"]}
-            studioNote="This persona fixes two traits: a man, 30 to 49. The studio takes any combination, estimates what nobody published, and prints the arithmetic behind every estimate."
-          />
-        </section>
-
         <Disclaimer className="mb-14" />
 
         <section aria-labelledby="qd2-h" className="mb-14">

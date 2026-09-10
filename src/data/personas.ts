@@ -392,6 +392,24 @@ export const DIMENSION_LABEL: Record<Dimension, string> = {
   party: "Party",
 };
 
+/**
+ * Brand colours, with a light-theme variant where the brand one fails.
+ *
+ * X (#E7E9EA) and Snapchat (#FFFC00) are near-white and near-yellow: 1.2:1 and
+ * 1.1:1 against a white ground, which is not a faint bar, it is no bar at all.
+ * The site renders in the viewer's theme, so on light they simply vanished and
+ * the chart silently lost two rows.
+ *
+ * Both keep their brand colour on dark and take a legible stand-in on light:
+ * X's own dark mark, and a darker Snapchat yellow. Everything else clears 2:1
+ * on both grounds and is used unchanged.
+ */
+export const PLATFORM_LIGHT: Record<string, string> = {
+  x: "#0F1419",
+  snapchat: "#B8A800",
+  whatsapp: "#128C4A",
+};
+
 export const PLATFORMS: Platform[] = [
   { id: "youtube", name: "YouTube", color: "#FF0000", overall: 84 },
   { id: "facebook", name: "Facebook", color: "#1877F2", overall: 71 },
