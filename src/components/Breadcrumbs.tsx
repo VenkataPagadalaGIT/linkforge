@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { jsonLdScript } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -42,7 +43,7 @@ export default function Breadcrumbs({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <nav aria-label="Breadcrumb" className={className}>
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">

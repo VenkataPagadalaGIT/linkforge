@@ -15,7 +15,12 @@ services:
       POSTGRES_PASSWORD: research_local_dev
       POSTGRES_DB: research_corpus
     ports:
-      - "5440:5432"
+      # Bound to loopback deliberately. "5440:5432" binds every interface, so
+      # a research database with a dev-grade password was reachable from any
+      # machine on the same network. Nothing in it is sensitive, but an open
+      # Postgres with a guessable password is a foothold regardless of what it
+      # holds.
+      - "127.0.0.1:5440:5432"
     volumes:
       - vp_research_pgdata:/var/lib/postgresql
     restart: unless-stopped

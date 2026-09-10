@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { jsonLdScript } from "@/lib/jsonld";
 import axios from "axios";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
@@ -191,7 +192,7 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:flex lg:gap-10">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { jsonLdScript } from "@/lib/jsonld";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -72,7 +73,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <div className="max-w-5xl mx-auto">
         <Breadcrumbs
           className="mb-4"

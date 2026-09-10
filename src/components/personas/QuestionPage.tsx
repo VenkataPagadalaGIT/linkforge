@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { jsonLdScript } from "@/lib/jsonld";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/site";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -144,8 +145,8 @@ export default function QuestionPage({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(datasetLd) }} />
       <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,190px)] lg:gap-10">
         <div className="min-w-0">
         <Breadcrumbs

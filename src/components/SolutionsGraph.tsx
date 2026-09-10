@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback, useMemo, useRef, useEffect, type MouseEvent as ReactMouseEvent } from "react";
+import { jsonLdScript } from "@/lib/jsonld";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "@/lib/router-shim";
 import { ArrowRight, Network, Brain, List, ExternalLink } from "lucide-react";
@@ -698,7 +699,7 @@ const JsonLdScript = () => {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 };
