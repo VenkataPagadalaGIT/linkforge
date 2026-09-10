@@ -55,6 +55,19 @@ for pid, name in PLATFORM.items():
         description=f"The share of US adults who use {name}, cut by age, race, income, education, community type and party. Published figures from Pew Research Center with sample sizes and margins of error on every row.",
         note=f"Every figure is a published cell, not a model. Where Pew does not publish a cut, this page leaves it out rather than filling it in."))
 
+# "How many people use X" is a distinct query from "who uses X", and it is
+# where fabrication is worst, so it gets its own page rather than a section.
+COUNTED = ["facebook","youtube","tiktok","instagram","snapchat","x","reddit","pinterest","threads"]
+for pid in COUNTED:
+    if ("ever_use", pid) not in national: continue
+    name = PLATFORM.get(pid, pid.title())
+    qs.append(dict(
+        slug=f"how-many-people-use-{pid}", short=f"How many use {name}",
+        metric="ever_use", subject=pid,
+        title=f"How Many People Use {name}? What the Numbers Actually Count",
+        description=f"{name}'s reported user counts, what each one measures, and the share of US adults who use it. Reported counts are advertising and investor figures; the US share is a probability sample with a published margin of error.",
+        note="The reported totals below count accounts an advert can reach, not people. The US figure is a survey of people. Both are here, labelled, because mixing them is how a wrong number gets a citation."))
+
 for cid, label in CHANNEL.items():
     if ("news_platform_use", cid) not in national: continue
     qs.append(dict(

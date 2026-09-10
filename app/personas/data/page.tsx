@@ -4,6 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import CorpusExplorer from "@/components/personas/CorpusExplorer";
+import QuestionDirectory from "@/components/personas/QuestionDirectory";
 import ReachMatrix from "@/components/personas/ReachMatrix";
 import DailyUsePanel from "@/components/personas/DailyUsePanel";
 import {
@@ -490,6 +491,13 @@ export default function Page() {
             No paid audience-intelligence tool was used. Everything here is public research, read at
             the source rather than through an aggregator.
           </p>
+        </section>
+
+        <section aria-labelledby="qd-h" className="mb-14">
+          <h2 id="qd-h" className="font-display text-2xl font-bold text-foreground mb-4">
+            One page per question
+          </h2>
+          <QuestionDirectory />
         </section>
 
         <section aria-labelledby="r-h">

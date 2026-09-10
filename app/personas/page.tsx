@@ -4,6 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaStudio from "@/components/personas/PersonaStudio";
 import PlatformMark from "@/components/personas/PlatformMark";
+import QuestionDirectory from "@/components/personas/QuestionDirectory";
 import {
   CITATIONS,
   RESEARCH_PAPERS,
@@ -262,6 +263,21 @@ export default function Page() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Every question the corpus answers, on its own page and linked from
+            here. These existed with nothing pointing at them, which made them
+            sitemap-only: crawlable, but unreachable for a reader. */}
+        <section aria-labelledby="qd-h" className="mb-14">
+          <h2 id="qd-h" className="font-display text-2xl font-bold text-foreground mb-2">
+            Every question, answered on its own page
+          </h2>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5 max-w-3xl">
+            The studio above answers any combination. These answer one question each, with every
+            published cut charted, its margin of error, and what the pages currently ranking for
+            it actually measured.
+          </p>
+          <QuestionDirectory />
         </section>
 
         {/* One link out to everything the tool reads from. */}

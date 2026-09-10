@@ -7,6 +7,7 @@ import TwoQuestions from "./TwoQuestions";
 import { COMPOSITION_SETS } from "@/data/platformComposition";
 import SourceChain from "./SourceChain";
 import { competitorFor } from "@/data/competitorPages";
+import { countsFor, MEASURES_META } from "@/data/platformCounts";
 import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
 import { CORPUS_SEGMENTS, corpusDoc, corpusMetric, ageInMonths, freshness, FRESHNESS_META, CORPUS_GENERATED } from "@/data/corpus";
 
@@ -26,6 +27,7 @@ export default function QuestionPage({ slug }: { slug: string }) {
   const doc = corpusDoc(metric.document);
   const comp = COMPOSITION_SETS[q.subject];
   const rival = competitorFor(q.subject);
+  const counts = q.slug.startsWith("how-many") ? countsFor(q.subject) : [];
   const fresh = doc ? freshness(doc) : null;
   const months = doc ? ageInMonths(doc) : null;
 
@@ -168,6 +170,55 @@ export default function QuestionPage({ slug }: { slug: string }) {
             </div>
           </section>
         ))}
+
+        {/* Reported totals, and what each one is counting. */}
+        {counts.length > 0 && (
+          <section className="mb-10">
+            <h2 className="font-display text-xl font-bold text-foreground mb-2">
+              The reported totals, and what they count
+            </h2>
+            <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-4 max-w-3xl">
+              These are the numbers every page quotes. None of them count people, and they are not
+              interchangeable with each other. What each one measures is stated on the row.
+            </p>
+            <div className="space-y-3">
+              {counts.map((c) => (
+                <div key={c.value + c.measures} className="border border-border/60 p-4">
+                  <p className="font-mono text-sm text-foreground leading-tight">
+                    <span className="text-xl font-bold">{c.value}</span>
+                    <span className="text-muted-foreground"> · {c.measures} users</span>
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground/90 ml-2 border border-border px-1.5 py-0.5">
+                      {c.scope === "us" ? "US" : "Global"}
+                    </span>
+                  </p>
+                  <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-1.5">
+                    {MEASURES_META[c.measures]}
+                  </p>
+                  {c.caveat && (
+                    <p className="font-mono text-[11px] text-foreground leading-relaxed mt-1.5">
+                      {c.caveat}
+                    </p>
+                  )}
+                  <a
+                    href={c.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="font-mono text-[10px] text-muted-foreground underline decoration-border hover:text-foreground transition-colors mt-1.5 inline-block"
+                  >
+                    {c.source}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-4 border-l-2 border-border pl-4">
+              There is no US user count on this page, deliberately. Turning the measured{" "}
+              {national}% into a headcount needs the US adult population, and the sources that
+              publish these totals do not publish that alongside them. Every page that gives you a
+              US number has multiplied by a population figure it did not cite, or copied one from a
+              page that did. The rate below is the part that was actually measured.
+            </p>
+          </section>
+        )}
 
         {/* Where an ad platform also reports composition, show the two
             questions side by side. This is the confusion the ranking pages
