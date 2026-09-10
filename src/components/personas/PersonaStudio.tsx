@@ -185,7 +185,7 @@ export default function PersonaStudio() {
             gender={traits.gender as AvatarGender}
             age={traits.age as AvatarAge}
             size={44}
-            accent="var(--foreground)"
+            accent="hsl(var(--foreground))"
           />
         </div>
         <div className="min-w-0 flex-1">
@@ -429,7 +429,7 @@ export default function PersonaStudio() {
                   <div key={c.id} className="flex items-center gap-2 py-0.5">
                     <span className="font-mono text-[10px] text-muted-foreground w-24 shrink-0 truncate">{c.label}</span>
                     <span className="flex-1 h-1.5 bg-secondary/50">
-                      <span className="block h-full transition-all duration-500" style={{ width: `${v}%`, background: "var(--foreground)", opacity: 0.6 }} />
+                      <span className="block h-full transition-all duration-500" style={{ width: `${v}%`, background: "hsl(var(--foreground))", opacity: 0.6 }} />
                     </span>
                     <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">{v}</span>
                     <span

@@ -109,7 +109,7 @@ export default function ReachMatrix() {
                         </span>
                         <span
                           className="block h-[3px] w-full max-w-[64px]"
-                          style={{ background: "var(--border, rgba(128,128,128,0.25))" }}
+                          style={{ background: "hsl(var(--border))" }}
                         >
                           <span
                             className="block h-full transition-all duration-500"

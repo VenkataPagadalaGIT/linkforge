@@ -116,7 +116,7 @@ export default function Page({ params }: { params: Params }) {
         />
         <div className="flex items-start gap-4 mb-4">
           <div className="shrink-0 mt-1" style={{ lineHeight: 0 }}>
-            <PersonaAvatar gender="men" age="30-49" size={64} accent="var(--foreground)" />
+            <PersonaAvatar gender="men" age="30-49" size={64} accent="hsl(var(--foreground))" />
           </div>
           <div className="min-w-0">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-3 mt-6">

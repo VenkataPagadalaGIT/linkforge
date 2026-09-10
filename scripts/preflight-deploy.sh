@@ -68,6 +68,14 @@ else
   bad "brand gate failed; see /tmp/preflight-brand.log"
 fi
 
+# CSS token gate: an HSL-triplet token used as a raw colour is an invalid
+# declaration, so nothing paints and nothing looks broken.
+if python3 scripts/check-css-tokens.py > /tmp/preflight-css.log 2>&1; then
+  ok "css tokens: no bare triplet used as a colour"
+else
+  bad "css token gate failed; see /tmp/preflight-css.log"
+fi
+
 # Persona surface gate: every page discoverable, rendered server-side, and
 # carrying the schema an answer engine needs. Needs a running server, so it
 # skips rather than fails when none is up.

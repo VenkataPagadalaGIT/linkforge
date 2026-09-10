@@ -126,7 +126,7 @@ export default function PersonaProfile({
                     {c.label}
                   </span>
                   <span className="flex-1 h-1.5 bg-secondary/50">
-                    <span className="block h-full" style={{ width: `${v}%`, background: "var(--foreground)", opacity: 0.6 }} />
+                    <span className="block h-full" style={{ width: `${v}%`, background: "hsl(var(--foreground))", opacity: 0.6 }} />
                   </span>
                   <span className="font-mono text-[10px] text-foreground w-7 text-right tabular-nums shrink-0">{v}</span>
                   <span

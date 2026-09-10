@@ -217,7 +217,7 @@ export default function QuestionPage({ slug }: { slug: string }) {
                   <span className="flex-1 h-2 bg-secondary/50">
                     <span
                       className="block h-full"
-                      style={{ width: `${(r.value / max) * 100}%`, background: "var(--foreground)", opacity: 0.65 }}
+                      style={{ width: `${(r.value / max) * 100}%`, background: "hsl(var(--foreground))", opacity: 0.65 }}
                     />
                   </span>
                   <span className="font-mono text-xs text-foreground w-10 text-right tabular-nums shrink-0">
