@@ -42,7 +42,27 @@ else
 fi
 
 # 5. Local production build must be green (app-level smoke precondition).
-say "running production build (this is the slow step)..."
+# Persona surface gate: every page discoverable, rendered server-side, and
+# carrying the schema an answer engine needs.
+#
+# Runs BEFORE the build, deliberately. It needs a live server, and the build
+# below replaces .next underneath a running `next dev`, which makes every route
+# 500 with "Cannot find module ./vendor-chunks/...". Ordered the other way this
+# failed all 33 pages and blocked a deploy over nothing, which is worse than no
+# gate: a gate that cries wolf gets switched off.
+PERSONA_BASE="${PERSONA_BASE:-http://127.0.0.1:3402}"
+if curl -sf -o /dev/null --max-time 5 "$PERSONA_BASE/personas"; then
+  if python3 scripts/audit-personas.py "$PERSONA_BASE" > /tmp/preflight-personas.log 2>&1; then
+    ok "persona surface: linked, rendered, schema complete"
+  else
+    bad "persona audit failed; see /tmp/preflight-personas.log"
+  fi
+else
+  say "  - persona audit skipped (no server at $PERSONA_BASE)"
+fi
+
+
+say "running production build (this is the slow step; it will stop any running next dev)..."
 if node node_modules/next/dist/bin/next build > /tmp/preflight-build.log 2>&1; then
   ok "next build green"
 else
@@ -74,20 +94,6 @@ if python3 scripts/check-css-tokens.py > /tmp/preflight-css.log 2>&1; then
   ok "css tokens: no bare triplet used as a colour"
 else
   bad "css token gate failed; see /tmp/preflight-css.log"
-fi
-
-# Persona surface gate: every page discoverable, rendered server-side, and
-# carrying the schema an answer engine needs. Needs a running server, so it
-# skips rather than fails when none is up.
-PERSONA_BASE="${PERSONA_BASE:-http://127.0.0.1:3402}"
-if curl -sf -o /dev/null --max-time 5 "$PERSONA_BASE/personas"; then
-  if python3 scripts/audit-personas.py "$PERSONA_BASE" > /tmp/preflight-personas.log 2>&1; then
-    ok "persona surface: linked, rendered, schema complete"
-  else
-    bad "persona audit failed; see /tmp/preflight-personas.log"
-  fi
-else
-  say "  - persona audit skipped (no server at $PERSONA_BASE)"
 fi
 
 if [ "$FAIL" -ne 0 ]; then
