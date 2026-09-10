@@ -57,6 +57,23 @@ export default function QuestionPage({ slug }: { slug: string }) {
   const top = [...all].sort((a, b) => b.value - a.value)[0];
   const bottom = [...all].sort((a, b) => a.value - b.value)[0];
 
+  /**
+   * FAQPage answers the query; Dataset is what an answer engine cites.
+   *
+   * These pages are a measured figure with a sample, a field period and a
+   * named creator, which is exactly what Dataset describes. Emitting it means
+   * the page can be picked up as a source rather than as prose that happens to
+   * contain a number, and it carries the things a citation needs: who
+   * measured it, when, how many people, and the margin of error.
+   */
+  const answerText = `${national}% of US adults. ${
+    top ? `Highest: ${top.label} at ${top.value}%.` : ""
+  } ${bottom ? `Lowest: ${bottom.label} at ${bottom.value}%.` : ""} Source: ${
+    doc?.title ?? "Pew Research Center"
+  }${doc?.sampleSize ? `, n=${doc.sampleSize.toLocaleString()}` : ""}${
+    doc?.moe ? `, margin of error ±${doc.moe} points` : ""
+  }. Fieldwork ${doc?.fieldStart ?? ""} to ${doc?.fieldEnd ?? doc?.published ?? ""}.`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -64,16 +81,62 @@ export default function QuestionPage({ slug }: { slug: string }) {
       {
         "@type": "Question",
         name: q.title,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${national}% of US adults. ${top ? `Highest: ${top.label} at ${top.value}%.` : ""} ${
-            bottom ? `Lowest: ${bottom.label} at ${bottom.value}%.` : ""
-          } Source: ${doc?.title ?? "Pew Research Center"}${
-            doc?.sampleSize ? `, n=${doc.sampleSize.toLocaleString()}` : ""
-          }.`,
-        },
+        acceptedAnswer: { "@type": "Answer", text: answerText },
       },
     ],
+  };
+
+  const datasetLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `${SITE_URL}/personas/${q.slug}#dataset`,
+    name: q.title,
+    description: q.description,
+    url: `${SITE_URL}/personas/${q.slug}`,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    isAccessibleForFree: true,
+    creator: {
+      "@type": "Person",
+      name: "Venkata Pagadala",
+      url: SITE_URL,
+    },
+    ...(doc?.published ? { datePublished: doc.published } : {}),
+    ...(doc?.fieldStart && doc?.fieldEnd
+      ? { temporalCoverage: `${doc.fieldStart}/${doc.fieldEnd}` }
+      : {}),
+    spatialCoverage: { "@type": "Place", name: "United States" },
+    measurementTechnique:
+      "Address-based probability sample, weighted to the US adult population",
+    variableMeasured: [
+      {
+        "@type": "PropertyValue",
+        name: metric.label,
+        description: metric.definition,
+        value: national,
+        unitText: "percent of US adults",
+      },
+      ...all.map((r) => ({
+        "@type": "PropertyValue",
+        name: `${metric.label}: ${r.label}`,
+        value: r.value,
+        unitText: "percent",
+        description: `n=${r.n ?? "unknown"}, margin of error ±${r.moe ?? "unknown"} percentage points`,
+      })),
+    ],
+    ...(doc
+      ? {
+          citation: {
+            "@type": "CreativeWork",
+            name: doc.title,
+            url: doc.url,
+          },
+          includedInDataCatalog: {
+            "@type": "DataCatalog",
+            name: "Audience Personas corpus",
+            url: `${SITE_URL}/personas/data`,
+          },
+        }
+      : {}),
   };
 
   const max = Math.max(national, ...all.map((r) => r.value), 1);
@@ -81,6 +144,7 @@ export default function QuestionPage({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetLd) }} />
       <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,190px)] lg:gap-10">
         <div className="min-w-0">
         <Breadcrumbs

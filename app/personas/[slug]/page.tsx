@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import QuestionPage from "@/components/personas/QuestionPage";
 import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -101,6 +102,14 @@ export default function Page({ params }: { params: Params }) {
           ← All personas
         </Link>
 
+        <Breadcrumbs
+          className="mb-4"
+          trail={[
+            { href: "/", label: "Home" },
+            { href: "/personas", label: "Personas" },
+            { label: persona.name },
+          ]}
+        />
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-3 mt-6">
           {persona.name}
         </h1>

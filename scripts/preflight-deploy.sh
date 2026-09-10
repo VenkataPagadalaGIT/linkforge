@@ -68,6 +68,20 @@ else
   bad "brand gate failed; see /tmp/preflight-brand.log"
 fi
 
+# Persona surface gate: every page discoverable, rendered server-side, and
+# carrying the schema an answer engine needs. Needs a running server, so it
+# skips rather than fails when none is up.
+PERSONA_BASE="${PERSONA_BASE:-http://127.0.0.1:3402}"
+if curl -sf -o /dev/null --max-time 5 "$PERSONA_BASE/personas"; then
+  if python3 scripts/audit-personas.py "$PERSONA_BASE" > /tmp/preflight-personas.log 2>&1; then
+    ok "persona surface: linked, rendered, schema complete"
+  else
+    bad "persona audit failed; see /tmp/preflight-personas.log"
+  fi
+else
+  say "  - persona audit skipped (no server at $PERSONA_BASE)"
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   say ""
   say "PREFLIGHT FAILED. Do NOT run railway up."
