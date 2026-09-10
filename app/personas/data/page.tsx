@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaExplorer from "@/components/personas/PersonaExplorer";
 import CorpusExplorer from "@/components/personas/CorpusExplorer";
@@ -65,26 +66,19 @@ export default function Page() {
     citation: STUDIES.map((s) => s.url),
     creator: { "@type": "Person", name: "Venkata Pagadala" },
   };
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Personas", item: `${SITE_URL}/personas` },
-      { "@type": "ListItem", position: 2, name: "The data", item: `${SITE_URL}/personas/data` },
-    ],
-  };
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <div className="max-w-5xl mx-auto">
-        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
-          <Link href="/personas" className="hover:text-foreground transition-colors">
-            Personas
-          </Link>{" "}
-          · The data
-        </p>
+        <Breadcrumbs
+          className="mb-4"
+          trail={[
+            { href: "/", label: "Home" },
+            { href: "/personas", label: "Personas" },
+            { label: "The data" },
+          ]}
+        />
         <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground text-glow mb-4">
           The Data Behind the Personas
         </h1>

@@ -250,3 +250,75 @@ FROM resource_version v
 JOIN resource r ON r.id = v.resource_id
 WHERE v.changed
 ORDER BY v.fetched_at DESC;
+
+-- ============================================================================
+-- COMPETITIVE LAYER
+--
+-- Who currently ranks for the questions this site answers, what they claim,
+-- and what they actually measured. The point is not to copy them. Every page
+-- ranking for these queries recycles the same platform ad-reach figures, which
+-- count ad impressions rather than people, and they disagree with each other
+-- by twenty points without ever saying why. That disagreement IS the story,
+-- and no one is telling it, so it is stored here as content.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS serp_query (
+  id           serial PRIMARY KEY,
+  keyword      text NOT NULL,
+  location     text NOT NULL DEFAULT 'United States',
+  device       text NOT NULL DEFAULT 'desktop',
+  our_slug     text,                    -- the page of ours aimed at it
+  checked_at   timestamptz NOT NULL DEFAULT now(),
+  has_ai_overview boolean NOT NULL DEFAULT false,
+  UNIQUE (keyword, location, device)
+);
+
+CREATE TABLE IF NOT EXISTS serp_result (
+  id           bigserial PRIMARY KEY,
+  query_id     int NOT NULL REFERENCES serp_query(id) ON DELETE CASCADE,
+  rank_absolute int NOT NULL,
+  result_type  text NOT NULL,           -- organic | ai_overview | people_also_ask
+  domain       text,
+  url          text,
+  title        text,
+  description  text,
+  -- true when the AI Overview cites this domain: the answer engine's own
+  -- shortlist, which is a different and more useful ranking than position.
+  cited_by_ai  boolean NOT NULL DEFAULT false,
+  UNIQUE (query_id, rank_absolute, result_type, url)
+);
+
+-- What a competitor asserts, and what it actually measured. A claim with no
+-- sample size is not a weaker version of a measured claim, it is a different
+-- kind of object, and the basis column is what keeps those apart.
+CREATE TABLE IF NOT EXISTS competitor_claim (
+  id           bigserial PRIMARY KEY,
+  query_id     int REFERENCES serp_query(id) ON DELETE SET NULL,
+  domain       text NOT NULL,
+  url          text NOT NULL,
+  subject      text,                    -- platform or topic the claim is about
+  claim        text NOT NULL,
+  value_text   text,
+  -- ad_audience: platform self-reported ad reach, counts accounts not people
+  -- survey: a probability sample with a published n
+  -- vendor_panel: opt-in panel, not representative
+  -- unstated: no basis given at all, which is the most common case
+  basis        text NOT NULL DEFAULT 'unstated',
+  population   text,                    -- global | us | unstated
+  sample_size  int,
+  moe          numeric(4,2),
+  cited_source text,
+  captured_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS cc_subject_idx ON competitor_claim (subject);
+CREATE INDEX IF NOT EXISTS cc_domain_idx ON competitor_claim (domain);
+CREATE INDEX IF NOT EXISTS sr_query_idx ON serp_result (query_id, rank_absolute);
+
+-- Who the answer engine trusts, across every query checked.
+CREATE OR REPLACE VIEW v_ai_citations AS
+SELECT domain, count(*) AS times_cited,
+       count(DISTINCT query_id) AS queries,
+       min(url) AS example
+FROM serp_result WHERE cited_by_ai AND domain IS NOT NULL
+GROUP BY domain ORDER BY 2 DESC;

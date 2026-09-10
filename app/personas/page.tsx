@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import PersonaStudio from "@/components/personas/PersonaStudio";
 import PlatformMark from "@/components/personas/PlatformMark";
@@ -56,6 +57,10 @@ export default function Page() {
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="max-w-5xl mx-auto">
+        <Breadcrumbs
+          className="mb-4"
+          trail={[{ href: "/", label: "Home" }, { label: "Personas" }]}
+        />
         <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
           Research · Evidence graded · Updated when the studies are
         </p>

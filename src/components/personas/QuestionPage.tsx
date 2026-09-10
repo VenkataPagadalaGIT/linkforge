@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/site";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ClaimComparison from "./ClaimComparison";
 import { QUESTIONS, questionBySlug } from "@/data/corpusQuestions";
 import { CORPUS_SEGMENTS, corpusDoc, corpusMetric } from "@/data/corpus";
 
@@ -61,28 +63,22 @@ export default function QuestionPage({ slug }: { slug: string }) {
       },
     ],
   };
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Personas", item: `${SITE_URL}/personas` },
-      { "@type": "ListItem", position: 2, name: q.short, item: `${SITE_URL}/personas/${q.slug}` },
-    ],
-  };
 
   const max = Math.max(national, ...all.map((r) => r.value), 1);
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <div className="max-w-4xl mx-auto">
-        <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
-          <Link href="/personas" className="hover:text-foreground transition-colors">
-            Personas
-          </Link>{" "}
-          · Measured
-        </p>
+        <Breadcrumbs
+          className="mb-4"
+          trail={[
+            { href: "/", label: "Home" },
+            { href: "/personas", label: "Personas" },
+            { href: "/personas/data", label: "The data" },
+            { label: q.short },
+          ]}
+        />
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-4">
           {q.title}
         </h1>
@@ -134,6 +130,24 @@ export default function QuestionPage({ slug }: { slug: string }) {
             </div>
           </section>
         ))}
+
+        {/* The differentiator: every page ranking for this question disagrees,
+            and none of them explain why. */}
+        {doc && (
+          <section className="mb-10">
+            <ClaimComparison
+              subject={q.subject || q.metric}
+              ours={{
+                value: national,
+                label: metric.label,
+                sampleSize: doc.sampleSize ?? 0,
+                moe: Number(doc.moe ?? 0),
+                source: doc.title,
+                url: doc.url,
+              }}
+            />
+          </section>
+        )}
 
         {/* Into the tool. */}
         <div className="border border-border p-5 mb-10">
