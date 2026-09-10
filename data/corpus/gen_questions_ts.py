@@ -38,6 +38,9 @@ ACCESS = {
    "Ownership is close to saturated. What separates groups is whether the phone is their only connection."),
 }
 
+# The year the fieldwork happened, taken from the data rather than the clock.
+DATA_YEAR = (query("SELECT max(period) FROM observation WHERE period ~ '^[0-9]{4}$';")[0][0] or "2025")
+
 rows = query("""SELECT m.slug, COALESCE(o.subject,''), o.value
                 FROM observation o JOIN metric m ON m.id=o.metric_id
                 WHERE o.segment_id IS NULL
@@ -51,8 +54,9 @@ for pid, name in PLATFORM.items():
     if ("ever_use", pid) not in national: continue
     qs.append(dict(
         slug=f"who-uses-{pid}", short=f"Who uses {name}", metric="ever_use", subject=pid,
-        title=f"Who Uses {name}? US Audience Demographics",
+        title=f"Who Uses {name}? US Demographics, {DATA_YEAR} Data",
         description=f"The share of US adults who use {name}, cut by age, race, income, education, community type and party. Published figures from Pew Research Center with sample sizes and margins of error on every row.",
+        dataYear=DATA_YEAR,
         note=f"Every figure is a published cell, not a model. Where Pew does not publish a cut, this page leaves it out rather than filling it in."))
 
 # "How many people use X" is a distinct query from "who uses X", and it is
@@ -66,6 +70,7 @@ for pid in COUNTED:
         metric="ever_use", subject=pid,
         title=f"How Many People Use {name}? What the Numbers Actually Count",
         description=f"{name}'s reported user counts, what each one measures, and the share of US adults who use it. Reported counts are advertising and investor figures; the US share is a probability sample with a published margin of error.",
+        dataYear=DATA_YEAR,
         note="The reported totals below count accounts an advert can reach, not people. The US figure is a survey of people. Both are here, labelled, because mixing them is how a wrong number gets a citation."))
 
 for cid, label in CHANNEL.items():
@@ -73,8 +78,9 @@ for cid, label in CHANNEL.items():
     qs.append(dict(
         slug=f"who-gets-news-from-{cid.replace('_','-')}", short=f"News from {label}",
         metric="news_platform_use", subject=cid,
-        title=f"Who Gets News From {TITLE.get(cid, label[0].upper()+label[1:])}?",
+        title=f"Who Gets News From {TITLE.get(cid, label[0].upper()+label[1:])}? {DATA_YEAR} Data",
         description=f"The share of US adults who get news from {label} at least sometimes, by age, race, income, education and party. Pew Research Center, published figures only.",
+        dataYear=DATA_YEAR,
         note=("AI chatbots entered this survey in 2025 and already show the widest racial spread of any news channel."
               if cid=="ai_chatbots" else
               "Getting news somewhere and preferring it are different questions; both are in the corpus.")))
@@ -82,7 +88,7 @@ for cid, label in CHANNEL.items():
 for mslug, (title, slug, note) in ACCESS.items():
     if (mslug, "") not in national: continue
     qs.append(dict(slug=slug, short=title.rstrip("?"), metric=mslug, subject="",
-                   title=title,
+                   title=title, dataYear=DATA_YEAR,
                    description=f"{title} Published figures from Pew Research Center, cut by age, race, income, education and community type, with sample sizes and margins of error.",
                    note=note))
 
@@ -102,6 +108,8 @@ out = ["/**",
        "  note: string;",
        "  metric: string;",
        "  subject: string;",
+       "  /** The year the underlying fieldwork happened, not the current year. */",
+       "  dataYear: string;",
        "}",
        "",
        "export const QUESTIONS: CorpusQuestion[] = ["]

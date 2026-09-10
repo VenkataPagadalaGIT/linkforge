@@ -105,9 +105,55 @@ A playable 2040 city in the browser: walk a humanoid, greet the crew, and take t
 
 ## Audience Personas
 
-Evidence-graded personas: every trait is labelled measured (a study reports it for this population), derived (real data from a wider population) or inferred (no source, an assumption to test), and links to the study behind it. Built from public research only: Pew Research Center social media fact sheet (n=5,022, fielded Feb-Jun 2025), DataReportal Digital 2026 (GWI panel), Cox Automotive Car Buyer Journey Study (n=2,300 recent vehicle buyers). Figures that fail verification are recorded and never published; Pew gender splits are deliberately excluded because two reads did not reconcile against the published overall.
-- URL: https://venkatapagadala.com/personas
+An interactive US audience tool backed only by published research. 2,347 observations across 32 metrics and 29 population segments, drawn from 7 source documents, most recently fielded 2025. Every figure is labelled measured (a published cell, cited) or estimated (combined from published cells in odds space, with the arithmetic printed), and traits that no source measures are shown as gaps rather than filled in. Sample sizes and margins of error appear on every row; the tool draws the margin of error as a hundred dots so the uncertainty is visible rather than stated. Confidence falls as a persona narrows, per Chapman et al. (2008), instead of rising.
 
+- URL: https://venkatapagadala.com/personas
+- Data and full crosstabs: https://venkatapagadala.com/personas/data
+
+### Source documents
+
+- [Internet, Broadband Fact Sheet](https://www.pewresearch.org/internet/fact-sheet/internet-broadband/): n=5,022, ±1.90pp, fielded 2025-02-05 to 2025-06-18
+- [Mobile Fact Sheet](https://www.pewresearch.org/internet/fact-sheet/mobile/): n=5,022, ±1.90pp, fielded 2025-02-05 to 2025-06-18
+- [News Influencers Fact Sheet](https://www.pewresearch.org/journalism/fact-sheet/news-influencers-fact-sheet/)
+- [News Platform Fact Sheet](https://www.pewresearch.org/journalism/fact-sheet/news-platform-fact-sheet/)
+- [Social Media Fact Sheet](https://www.pewresearch.org/internet/fact-sheet/social-media/): n=5,022, ±1.90pp, fielded 2025-02-05 to 2025-06-18
+- [Social Media and News Fact Sheet](https://www.pewresearch.org/journalism/fact-sheet/social-media-and-news-fact-sheet/)
+- [USAFacts national context](https://usafacts.org)
+
+### Questions answered, one page each
+
+- [Who Uses YouTube? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-youtube)
+- [Who Uses Facebook? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-facebook)
+- [Who Uses Instagram? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-instagram)
+- [Who Uses TikTok? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-tiktok)
+- [Who Uses WhatsApp? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-whatsapp)
+- [Who Uses Reddit? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-reddit)
+- [Who Uses Snapchat? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-snapchat)
+- [Who Uses X? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-x)
+- [Who Uses Threads? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-threads)
+- [Who Uses Bluesky? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-bluesky)
+- [Who Uses Truth Social? US Demographics, 2025 Data](https://venkatapagadala.com/personas/who-uses-truthsocial)
+- [How Many People Use Facebook? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-facebook)
+- [How Many People Use YouTube? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-youtube)
+- [How Many People Use TikTok? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-tiktok)
+- [How Many People Use Instagram? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-instagram)
+- [How Many People Use Snapchat? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-snapchat)
+- [How Many People Use X? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-x)
+- [How Many People Use Reddit? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-reddit)
+- [How Many People Use Threads? What the Numbers Actually Count](https://venkatapagadala.com/personas/how-many-people-use-threads)
+- [Who Gets News From AI Chatbots? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-ai-chatbots)
+- [Who Gets News From Social Media? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-social-media)
+- [Who Gets News From Search Engines? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-search)
+- [Who Gets News From News Sites and Apps? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-news-sites)
+- [Who Gets News From Television? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-television)
+- [Who Gets News From Podcasts? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-podcasts)
+- [Who Gets News From Email Newsletters? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-newsletters)
+- [Who Gets News From Radio? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-radio)
+- [Who Gets News From Print? 2025 Data](https://venkatapagadala.com/personas/who-gets-news-from-print)
+- [How Many Americans Have No Home Broadband?](https://venkatapagadala.com/personas/smartphone-only-no-broadband)
+- [Who Has Home Broadband in the US?](https://venkatapagadala.com/personas/who-has-home-broadband)
+- [Who Uses the Internet in the US?](https://venkatapagadala.com/personas/who-uses-the-internet)
+- [Who Owns a Smartphone in the US?](https://venkatapagadala.com/personas/who-owns-a-smartphone)
 ## AI Updates
 
 News with primary sources attached: court documents, official filings, and original announcements linked from every article.

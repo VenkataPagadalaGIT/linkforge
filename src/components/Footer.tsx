@@ -15,6 +15,7 @@ const Footer = () => {
     { label: "Publications", to: "/publications" },
     { label: "Solutions", to: "/solutions" },
     { label: "Insights", to: "/insights" },
+    { label: "Audience Personas", to: "/personas" },
     { label: "Credits & Inspiration", to: "/credits" },
     { label: "Contact", to: "/contact" },
   ];
@@ -26,6 +27,7 @@ const Footer = () => {
     { label: "The Complete Shelf", to: "/notebook/ai/shelf" },
     { label: "Business Notebook", to: "/notebook/business" },
     { label: "Conference Notebook", to: "/notebook/conference" },
+    { label: "Persona Data & Sources", to: "/personas/data" },
   ];
 
   const files = [

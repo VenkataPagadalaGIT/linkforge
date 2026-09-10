@@ -3,6 +3,7 @@ import PlatformMark from "./PlatformMark";
 import { QUESTIONS } from "@/data/corpusQuestions";
 import { PLATFORMS } from "@/data/personas";
 import { corpusMetric } from "@/data/corpus";
+import { QUESTIONS as ALL } from "@/data/corpusQuestions";
 
 /**
  * Every question this corpus answers, linked.
@@ -31,6 +32,9 @@ export default function QuestionDirectory({ exclude }: { exclude?: string }) {
           <div key={g.id}>
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
               {g.label}
+              <span className="ml-1.5 tracking-normal text-muted-foreground/80 normal-case">
+                {items[0]?.dataYear} data
+              </span>
             </p>
             <ul className="space-y-1">
               {items.map((q) => {

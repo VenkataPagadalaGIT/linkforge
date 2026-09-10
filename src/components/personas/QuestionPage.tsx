@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/site";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PageNav from "./PageNav";
+import QuestionDirectory from "./QuestionDirectory";
 import ClaimComparison from "./ClaimComparison";
 import TwoQuestions from "./TwoQuestions";
 import { COMPOSITION_SETS } from "@/data/platformComposition";
@@ -79,13 +81,13 @@ export default function QuestionPage({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,190px)] lg:gap-10">
+        <div className="min-w-0">
         <Breadcrumbs
           className="mb-4"
           trail={[
             { href: "/", label: "Home" },
             { href: "/personas", label: "Personas" },
-            { href: "/personas/data", label: "The data" },
             { label: q.short },
           ]}
         />
@@ -383,33 +385,30 @@ export default function QuestionPage({ slug }: { slug: string }) {
           </p>
         )}
 
-        <section>
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            Related questions
+        {/* Every sibling question, not a truncated eight. These pages are
+            each other's best internal links. */}
+        <section aria-labelledby="rel-h">
+          <h2 id="rel-h" className="font-display text-xl font-bold text-foreground mb-2">
+            Every other question, answered
           </h2>
-          <ul className="space-y-2 font-mono text-xs">
-            {QUESTIONS.filter((x) => x.slug !== q.slug)
-              .slice(0, 8)
-              .map((x) => (
-                <li key={x.slug}>
-                  <Link
-                    href={`/personas/${x.slug}`}
-                    className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
-                  >
-                    {x.title}
-                  </Link>
-                </li>
-              ))}
-            <li>
-              <Link
-                href="/personas/data"
-                className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
-              >
-                Every measured figure, one surface
-              </Link>
-            </li>
-          </ul>
+          <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-5">
+            Same corpus, same discipline, one question each.{" "}
+            <Link href="/personas" className="text-foreground underline decoration-border hover:text-glow transition-all">
+              The studio
+            </Link>{" "}
+            answers any combination of them, and{" "}
+            <Link href="/personas/data" className="text-foreground underline decoration-border hover:text-glow transition-all">
+              the data page
+            </Link>{" "}
+            prints every cell.
+          </p>
+          <QuestionDirectory exclude={q.slug} />
         </section>
+        </div>
+
+        <aside className="hidden lg:block">
+          <PageNav />
+        </aside>
       </div>
     </div>
   );
