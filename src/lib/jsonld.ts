@@ -12,7 +12,17 @@
  * inside a JavaScript string literal) makes it a property of the code instead.
  */
 export function jsonLdScript(data: unknown): string {
-  return JSON.stringify(data)
+  return escapeJsonLd(JSON.stringify(data));
+}
+
+/**
+ * The same escaping for callers that already hold serialised JSON. Passing
+ * such a string to jsonLdScript would stringify it a second time and emit a
+ * quoted string where the object should be, so this is the entry point for
+ * anything downstream of a JSON.stringify it does not own.
+ */
+export function escapeJsonLd(json: string): string {
+  return json
     .replace(/</g, "\\u003c")
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");

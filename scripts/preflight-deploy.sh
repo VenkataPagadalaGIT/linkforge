@@ -80,6 +80,15 @@ else
   bad "published counts disagree with the data; see /tmp/preflight-counts.log"
 fi
 
+# Markdown twin gate: /research-and-talks.md is generated from the same two
+# data modules the page renders from. A stale twin tells an AI client something
+# the page no longer says, and nothing on the page would look wrong.
+if npx tsx scripts/gen-research-md.ts --check > /tmp/preflight-md.log 2>&1; then
+  ok "markdown twin matches the data"
+else
+  bad "markdown twin is stale; run: npx tsx scripts/gen-research-md.ts"
+fi
+
 # Brand and accessibility gate: accent colors carry theme pairs, readable
 # text never drops below the /70 floor. See docs/BRAND_GUIDELINES.md.
 if python3 scripts/check-brand.py > /tmp/preflight-brand.log 2>&1; then

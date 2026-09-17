@@ -12,6 +12,7 @@
  * swallowed (Next's <head> handles it).
  */
 import * as React from "react";
+import { escapeJsonLd } from "@/lib/jsonld";
 
 export const HelmetProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
@@ -30,8 +31,11 @@ export const Helmet = ({ children }: { children?: React.ReactNode }) => {
           <script
             key={scripts.length}
             type="application/ld+json"
-            // @ts-ignore - children is a string
-            dangerouslySetInnerHTML={{ __html: String(props.children ?? "") }}
+            // These children are already JSON.stringify output, which does
+            // not escape "</script>", U+2028 or U+2029. Escape the serialised
+            // string; stringifying it again would emit a quoted string where
+            // the object belongs.
+            dangerouslySetInnerHTML={{ __html: escapeJsonLd(String(props.children ?? "")) }}
           />
         );
       }

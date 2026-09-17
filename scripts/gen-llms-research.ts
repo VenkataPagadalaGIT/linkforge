@@ -13,7 +13,7 @@
  *   npx tsx scripts/gen-llms-research.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { linkedPapers, authorRole, GOOGLE_SCHOLAR_URL } from "../src/data/research";
+import { linkedPapers, accessNote, authorRole, citationLine, GOOGLE_SCHOLAR_URL } from "../src/data/research";
 import { BRIGHTONSEO_2026, TALKS, RECOGNITION, formatTalkDate } from "../src/data/talks";
 
 const SITE = "https://venkatapagadala.com";
@@ -24,16 +24,22 @@ function section(): string {
   L.push("");
   L.push("Peer-reviewed and preprint research on AI and search, conference talks, podcasts, interviews and recognition. Each item states its peer-review status and authorship position.");
   L.push(`- URL: ${SITE}/research-and-talks`);
+  L.push(`- Markdown edition: ${SITE}/research-and-talks.md`);
   L.push(`- Full paper records: ${SITE}/publications`);
+  L.push(`- Full paper records, markdown: ${SITE}/publications.md`);
   L.push(`- Google Scholar: ${GOOGLE_SCHOLAR_URL}`);
   L.push("");
   L.push("### Papers");
   L.push("");
   for (const p of linkedPapers) {
     const status = p.review === "peer-reviewed" ? "Peer reviewed" : "Preprint, not peer reviewed";
-    const where = [p.venue, p.volume ? `vol. ${p.volume}` : "", p.issue ? `no. ${p.issue}` : "", p.pageRange ? `pp. ${p.pageRange}` : ""]
-      .filter(Boolean).join(", ");
-    L.push(`- ${p.title} (${p.year}). ${status}. ${where}. ${authorRole(p)}. ${p.doiUrl ?? p.url}`);
+    const access = accessNote(p);
+    L.push(
+      `- ${p.title} (${p.year}). ${status}. ${citationLine(p)}. ${authorRole(p)}.` +
+        (p.authors ? ` Authors in printed order: ${p.authors.join(", ")}.` : "") +
+        (access ? ` ${access}.` : "") +
+        ` ${p.doiUrl ?? p.url}`,
+    );
   }
   L.push("");
   L.push("### Talks and workshops");

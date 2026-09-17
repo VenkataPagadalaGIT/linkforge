@@ -183,14 +183,16 @@ Final approval of the largest known U.S. copyright settlement: about $3,000 per 
 
 Peer-reviewed and preprint research on AI and search, conference talks, podcasts, interviews and recognition. Each item states its peer-review status and authorship position.
 - URL: https://venkatapagadala.com/research-and-talks
+- Markdown edition: https://venkatapagadala.com/research-and-talks.md
 - Full paper records: https://venkatapagadala.com/publications
+- Full paper records, markdown: https://venkatapagadala.com/publications.md
 - Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
 
 ### Papers
 
-- The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape (2026). Preprint, not peer reviewed. SSRN. Sole author. https://dx.doi.org/10.2139/ssrn.6512878
-- Google, SEO and Helpful Content: How Artificial Intelligence Can Be Helpful for E-Commerce Websites (2024). Peer reviewed. Journal of Digital & Social Media Marketing, vol. 12, no. 3, pp. 206-226. Co-author, 2 of 2. https://doi.org/10.69554/RJUW9313
-- A Survey of Reward Hacking in Agentic Large Language Model Systems (2026). Peer reviewed. Discover Artificial Intelligence, vol. 6. Co-author, 4 of 5. https://doi.org/10.1007/s44163-026-01980-z
+- The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape (2026). Preprint, not peer reviewed. SSRN. Sole author. Authors in printed order: Venkata Pagadala. Free to read. https://dx.doi.org/10.2139/ssrn.6512878
+- Google, SEO and Helpful Content: How Artificial Intelligence Can Be Helpful for E-Commerce Websites (2024). Peer reviewed. Journal of Digital & Social Media Marketing, vol. 12, no. 3, pp. 206-226. Co-author, 2 of 2. Authors in printed order: Russ Macumber, Venkata Durga Eswar Pagadala. Subscriber access at the publisher. https://doi.org/10.69554/RJUW9313
+- A survey of reward hacking in agentic large language model systems (2026). Peer reviewed. Discover Artificial Intelligence, vol. 6, article 825. Co-author, 4 of 5. Authors in printed order: Arun Morampudi, Ujval Irrinki, Rahul Grandhi, Venkata Pagadala, Madhavi Maddula. Open access, CC BY-NC-ND 4.0. https://doi.org/10.1007/s44163-026-01980-z
 
 ### Talks and workshops
 

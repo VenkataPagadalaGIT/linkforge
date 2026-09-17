@@ -4,8 +4,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import FeaturedTalk from "@/components/talks/FeaturedTalk";
 import TalkVideo from "@/components/talks/TalkVideo";
 import { jsonLdScript } from "@/lib/jsonld";
+import { buildResearchTalksGraph } from "@/lib/researchTalksLd";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
-import { linkedPapers, authorRole, GOOGLE_SCHOLAR_URL } from "@/data/research";
+import { linkedPapers, authorRole, accessNote, citationLine, GOOGLE_SCHOLAR_URL } from "@/data/research";
+import PaperCover from "@/components/research/PaperCover";
 import {
   BRIGHTONSEO_2026,
   KIND_LABEL,
@@ -25,7 +27,12 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: "/research-and-talks" },
+  alternates: {
+    canonical: "/research-and-talks",
+    // A plain-text edition of this page for clients that would rather read
+    // markdown than strip a nav and a few hundred utility classes out of HTML.
+    types: { "text/markdown": "/research-and-talks.md" },
+  },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     type: "website",
@@ -41,68 +48,11 @@ const peerReviewed = linkedPapers.filter((p) => p.review === "peer-reviewed");
 const preprints = linkedPapers.filter((p) => p.review === "preprint");
 
 export default function Page() {
-  const person = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL };
-
-  const eventLd = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "@id": `${SITE_URL}/research-and-talks#${BRIGHTONSEO_2026.slug}`,
-    name: BRIGHTONSEO_2026.title,
-    description: BRIGHTONSEO_2026.summary,
-    startDate: BRIGHTONSEO_2026.startDate,
-    eventStatus: "https://schema.org/EventScheduled",
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    location: {
-      "@type": "Place",
-      name: BRIGHTONSEO_2026.event,
-      address: { "@type": "PostalAddress", addressLocality: "San Diego", addressRegion: "CA", addressCountry: "US" },
-    },
-    performer: person,
-    organizer: { "@type": "Organization", name: "brightonSEO", url: "https://brightonseo.com" },
-    url: BRIGHTONSEO_2026.links[0].url,
-    image: `${SITE_URL}${BRIGHTONSEO_2026.video.poster}`,
-  };
-
-  const papersLd = linkedPapers.map((p) => ({
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    "@id": `${SITE_URL}/research-and-talks#${p.slug}`,
-    headline: p.title,
-    author: (p.authors ?? ["Venkata Pagadala"]).map((name) => ({ "@type": "Person", name })),
-    datePublished: p.year,
-    isPartOf: { "@type": "Periodical", name: p.venue },
-    ...(p.publisher ? { publisher: { "@type": "Organization", name: p.publisher } } : {}),
-    url: p.url,
-    ...(p.doiUrl ? { sameAs: p.doiUrl } : {}),
-    abstract: p.summary,
-  }));
-
-  const pageLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "@id": `${SITE_URL}/research-and-talks#page`,
-    name: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}/research-and-talks`,
-    about: person,
-    mainEntity: {
-      "@type": "ItemList",
-      itemListElement: [
-        { name: BRIGHTONSEO_2026.title, url: `${SITE_URL}/research-and-talks#${BRIGHTONSEO_2026.slug}` },
-        ...linkedPapers.map((p) => ({ name: p.title, url: `${SITE_URL}/research-and-talks#${p.slug}` })),
-        ...TALKS.map((t) => ({ name: t.title, url: `${SITE_URL}/research-and-talks#${t.slug}` })),
-        ...RECOGNITION.map((r) => ({ name: r.claim, url: `${SITE_URL}/research-and-talks#${r.slug}` })),
-      ].map((it, i) => ({ "@type": "ListItem", position: i + 1, ...it })),
-    },
-  };
+  const graph = buildResearchTalksGraph(TITLE, DESCRIPTION);
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(pageLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(eventLd) }} />
-      {papersLd.map((p) => (
-        <script key={p["@id"]} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(p) }} />
-      ))}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(graph) }} />
 
       <div className="max-w-6xl mx-auto">
         <Breadcrumbs className="mb-4" trail={[{ href: "/", label: "Home" }, { label: "Research & Talks" }]} />
@@ -134,59 +84,115 @@ export default function Page() {
               Google Scholar profile ↗
             </a>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {linkedPapers.map((p) => (
-              <article
-                key={p.slug}
-                id={p.slug}
-                className="border border-border bg-card/20 p-5 flex flex-col scroll-mt-28"
-              >
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] mb-3">
-                  <span
-                    className={
-                      p.review === "peer-reviewed"
-                        ? "text-emerald-700 dark:text-emerald-300"
-                        : "text-muted-foreground"
-                    }
-                  >
-                    {p.review === "peer-reviewed" ? "Peer reviewed" : "Preprint"}
-                  </span>
-                  <span className="text-muted-foreground"> · {p.year}</span>
-                </p>
-                <h3 className="font-display text-base font-bold text-foreground leading-snug text-balance">
-                  {p.title}
-                </h3>
-                <p className="font-mono text-[11px] text-foreground/85 mt-2">
-                  {p.venue}
-                  {p.volume ? `, vol. ${p.volume}` : ""}
-                  {p.issue ? `, no. ${p.issue}` : ""}
-                  {p.pageRange ? `, pp. ${p.pageRange}` : ""}
-                </p>
-                {authorRole(p) && (
-                  <p className="font-mono text-[10px] text-muted-foreground mt-1">{authorRole(p)}</p>
-                )}
-                <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-3 flex-1">
-                  {p.summary}
-                </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4 pt-3 border-t border-border/60">
-                  <a
-                    href={p.doiUrl ?? p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground transition-colors"
-                  >
-                    {p.doiUrl ? "DOI" : p.host} ↗
-                  </a>
-                  <Link
-                    href="/publications"
-                    className="font-mono text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Full record
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+          {/* The page itself, not a card about the page. A row of titles is a
+              bibliography, and a bibliography is a set of claims; the first
+              page shows the journal header, the byline with Venkata's position
+              in it, and the abstract, which is the evidence. */}
+          <ol className="border-t border-border">
+            {linkedPapers.map((p) => {
+              const access = accessNote(p);
+              return (
+                <li
+                  key={p.slug}
+                  id={p.slug}
+                  className="grid sm:grid-cols-[minmax(0,190px)_minmax(0,1fr)] gap-x-7 gap-y-4 py-7 border-b border-border scroll-mt-28"
+                >
+                  <PaperCover paper={p} />
+
+                  <div className="min-w-0 flex flex-col">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] mb-2">
+                      <span
+                        className={
+                          p.review === "peer-reviewed"
+                            ? "text-emerald-700 dark:text-emerald-300"
+                            : "text-muted-foreground"
+                        }
+                      >
+                        {p.review === "peer-reviewed" ? "Peer reviewed" : "Preprint"}
+                      </span>
+                      <span className="text-muted-foreground"> · {p.year}</span>
+                      {access && <span className="text-muted-foreground"> · {access}</span>}
+                    </p>
+                    <h3 className="font-display text-lg font-bold text-foreground leading-snug text-balance">
+                      <a
+                        href={p.doiUrl ?? p.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline decoration-border underline-offset-4"
+                      >
+                        {p.title}
+                      </a>
+                    </h3>
+                    <p className="font-mono text-[11px] text-foreground/85 mt-2">
+                      {citationLine(p)}
+                      {p.pages ? ` · ${p.pages} pages` : ""}
+                      {p.postedOnline ? ` · Posted ${p.postedOnline}` : ""}
+                    </p>
+                    {p.authors && (
+                      // The full byline in printed order, with his name marked.
+                      // "Co-author, 4th of 5" next to five visible names is a
+                      // record; the name alone would read as sole authorship.
+                      <p className="font-mono text-[10px] text-muted-foreground mt-1.5 leading-relaxed">
+                        {p.authors.map((a, i) => (
+                          <span key={a}>
+                            {i > 0 && ", "}
+                            <span className={i + 1 === p.authorPosition ? "text-foreground font-semibold" : ""}>
+                              {a}
+                            </span>
+                          </span>
+                        ))}
+                        {authorRole(p) && ` · ${authorRole(p)}`}
+                      </p>
+                    )}
+                    <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-3">
+                      {p.summary}
+                    </p>
+                    {p.keywords && p.keywords.length > 0 && (
+                      // The authors' own keywords, as printed on the paper.
+                      // They fill the column beside a tall page image with
+                      // something a reader and a retrieval system both use.
+                      <ul className="flex flex-wrap gap-1.5 mt-4">
+                        {p.keywords.map((k) => (
+                          <li
+                            key={k}
+                            className="font-mono text-[10px] text-muted-foreground/80 border border-border px-2 py-0.5"
+                          >
+                            {k}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-5">
+                      <a
+                        href={p.doiUrl ?? p.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground transition-colors"
+                      >
+                        {p.doiUrl ? "DOI" : p.host} ↗
+                      </a>
+                      {p.doiUrl && (
+                        <a
+                          href={p.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-[11px] text-muted-foreground underline decoration-border hover:text-foreground transition-colors"
+                        >
+                          {p.publisher ?? p.host} ↗
+                        </a>
+                      )}
+                      <Link
+                        href="/publications"
+                        className="font-mono text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Full record
+                      </Link>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </section>
 
         {/* Workshops, then the tool the talk's method became */}
@@ -414,6 +420,22 @@ export default function Page() {
               </Link>
             </li>
           </ul>
+          <p className="font-mono text-[11px] text-muted-foreground mt-4">
+            Reading this as a machine?{" "}
+            <a
+              href="/research-and-talks.md"
+              className="text-foreground underline decoration-border hover:decoration-foreground transition-colors"
+            >
+              This page in markdown
+            </a>{" "}
+            ·{" "}
+            <a
+              href="/llms.txt"
+              className="text-foreground underline decoration-border hover:decoration-foreground transition-colors"
+            >
+              llms.txt
+            </a>
+          </p>
         </section>
       </div>
     </div>

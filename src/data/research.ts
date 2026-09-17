@@ -35,6 +35,18 @@ export interface ResearchPaper {
   issue?: string;
   pageRange?: string;
   publisher?: string;
+  /**
+   * Attribution printed under the first-page screenshot. Set this and the
+   * paper gets a cover, provided scripts/gen-paper-covers.py has rendered one
+   * for its slug into src/data/paperCovers.ts. The image is a faithful scaled
+   * copy of page 1 of the real PDF, never cropped or composed, because the
+   * whole point of it is that it is evidence rather than decoration.
+   */
+  coverCredit?: string;
+  /** Licence URL, when the publisher states one. Drives schema.org `license`. */
+  license?: string;
+  /** True only when the publisher's own page says the full text is free. */
+  openAccess?: boolean;
   /** One line a non-academic reader understands. */
   summary: string;
   /** Posting or publication date as shown by the repository. */
@@ -65,6 +77,8 @@ export const researchPapers: ResearchPaper[] = [
     year: "2026",
     url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878",
     host: "SSRN",
+    coverCredit: "First page of the preprint. © Venkata Pagadala, 2026.",
+    openAccess: true,
     summary:
       "A mixed-methods study of what large language models are doing to search behavior, and what that means for how content gets found.",
     posted: "3 Apr 2026",
@@ -109,13 +123,19 @@ export const researchPapers: ResearchPaper[] = [
     url: "https://www.ingentaconnect.com/content/hsp/jdsmm/2024/00000012/00000003/art00002",
     doiUrl: "https://doi.org/10.69554/RJUW9313",
     host: "Journal",
+    coverCredit: "First page as published. © Henry Stewart Publications, 2024.",
+    // Ingenta's own record states the full text is for subscribers, so the
+    // page must not imply otherwise.
+    openAccess: false,
     summary:
       "How AI supports the helpful-content standard on e-commerce sites, from product data quality to editorial signals.",
     posted: "Winter 2024",
     keywords: ["SEO", "helpful content", "artificial intelligence", "e-commerce"],
   },
   {
-    title: "A Survey of Reward Hacking in Agentic Large Language Model Systems",
+    // Sentence case is how Springer prints it; a retitled paper is a
+    // different string to anyone checking the citation.
+    title: "A survey of reward hacking in agentic large language model systems",
     shortTitle: "Reward Hacking in Agentic LLMs",
     slug: "reward-hacking-agentic-llms",
     review: "peer-reviewed",
@@ -123,6 +143,8 @@ export const researchPapers: ResearchPaper[] = [
     authorPosition: 4,
     venue: "Discover Artificial Intelligence",
     volume: "6",
+    /** Springer numbers articles rather than paginating the volume. */
+    pageRange: "article 825",
     publisher: "Springer Nature",
     year: "2026",
     // Verified on link.springer.com 2026-09-17: citation metadata lists five
@@ -130,6 +152,10 @@ export const researchPapers: ResearchPaper[] = [
     url: "https://link.springer.com/article/10.1007/s44163-026-01980-z",
     doiUrl: "https://doi.org/10.1007/s44163-026-01980-z",
     host: "Journal",
+    coverCredit:
+      "First page as published. © The Author(s) 2026, CC BY-NC-ND 4.0.",
+    license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    openAccess: true,
     postedOnline: "17 Aug 2026",
     summary:
       "A four-level taxonomy of how tool-using AI agents game their rewards, from verbosity and sycophancy up to modifying tests and disrupting monitors, compared across RLHF, RLAIF, RLVR and DPO, with a layered defense model for production systems.",
@@ -165,6 +191,32 @@ export function authorRole(p: ResearchPaper): string {
   if (!n || !p.authorPosition) return "";
   if (n === 1) return "Sole author";
   return `Co-author, ${p.authorPosition} of ${n}`;
+}
+
+/**
+ * "Discover Artificial Intelligence, vol. 6, article 825" — the venue exactly
+ * as it would appear in a reference list. `pageRange` carries either a span
+ * ("206-226", printed as pp.) or a publisher's article number, which Springer
+ * uses instead of paginating a volume, so the label follows the value rather
+ * than putting "pp." in front of the word "article".
+ */
+export function citationLine(p: ResearchPaper): string {
+  const parts = [p.venue];
+  if (p.volume) parts.push(`vol. ${p.volume}`);
+  if (p.issue) parts.push(`no. ${p.issue}`);
+  if (p.pageRange) parts.push(/^\d/.test(p.pageRange) ? `pp. ${p.pageRange}` : p.pageRange);
+  return parts.join(", ");
+}
+
+/**
+ * What a reader will actually hit at the publisher. Only three states, and
+ * `undefined` when no publisher page has been checked, because "probably
+ * free" is the kind of guess this page exists to avoid.
+ */
+export function accessNote(p: ResearchPaper): string | undefined {
+  if (p.openAccess === undefined) return undefined;
+  if (!p.openAccess) return "Subscriber access at the publisher";
+  return p.license ? "Open access, CC BY-NC-ND 4.0" : "Free to read";
 }
 
 /** Only the papers a reader can actually open. Use this for links. */

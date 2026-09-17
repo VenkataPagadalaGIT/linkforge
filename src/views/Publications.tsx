@@ -5,6 +5,7 @@ import NeuralNetBackground from "@/components/NeuralNetBackground";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { Link } from "@/lib/router-shim";
 import { researchPapers, authorRole } from "@/data/research";
+import PaperCover from "@/components/research/PaperCover";
 
 /**
  * Published research, and nothing else.
@@ -53,6 +54,12 @@ const Publications = () => {
           {researchPapers.map((paper, i) => (
             <ScrollReveal key={paper.title} delay={i * 80}>
               <article className="border border-border p-8 border-glow-hover">
+                {/* From sm up it floats, so the record reads as one column of
+                    text with the page beside it the way a repository lays one
+                    out. On a phone it does not: a 100px float left the title
+                    wrapping two words to a line, so there it is a small block
+                    above the heading and the text keeps the full width. */}
+                <PaperCover paper={paper} className="w-[104px] mb-5 sm:float-right sm:ml-7 sm:mb-4 sm:w-[168px]" />
                 <div className="flex items-center justify-between gap-4 mb-4">
                   {/* Every card used to say "Peer-Reviewed Paper", the SSRN
                       preprint included. The label now comes from the record,
@@ -84,7 +91,11 @@ const Publications = () => {
                   {paper.venue}
                   {paper.volume && <span className="not-italic">, vol. {paper.volume}</span>}
                   {paper.issue && <span className="not-italic">, no. {paper.issue}</span>}
-                  {paper.pageRange && <span className="not-italic">, pp. {paper.pageRange}</span>}
+                  {paper.pageRange && (
+                    <span className="not-italic">
+                      , {/^\d/.test(paper.pageRange) ? `pp. ${paper.pageRange}` : paper.pageRange}
+                    </span>
+                  )}
                   {!paper.pages && paper.postedOnline && (
                     <span className="not-italic"> · Published online {paper.postedOnline}</span>
                   )}
