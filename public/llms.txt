@@ -179,19 +179,37 @@ Bloomberg reported on August 16, 2026 that Stripe agreed to acquire OpenRouter, 
 Final approval of the largest known U.S. copyright settlement: about $3,000 per work across roughly 500,000 books. Includes the full federal docket, Judge Alsup's fair use order, the GovInfo case archive, and the official settlement administrator, all linked.
 - URL: https://venkatapagadala.com/ai-updates/anthropic-copyright-settlement-final-approval
 
-## Published Research
+## Research & Talks
 
-Peer-reviewed papers on how AI and large language models are reshaping search.
-- URL: https://venkatapagadala.com/publications
+Peer-reviewed and preprint research on AI and search, conference talks, podcasts, interviews and recognition. Each item states its peer-review status and authorship position.
+- URL: https://venkatapagadala.com/research-and-talks
+- Full paper records: https://venkatapagadala.com/publications
+- Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
 
-### The Disruption of Search Engine Optimization by Large Language Models (2026)
-A mixed-methods analysis of the evolving search landscape. Published on SSRN.
-- Paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878
+### Papers
 
-### Google, SEO and Helpful Content: How AI Can Be Helpful for E-Commerce Websites (2024)
-Journal of Digital & Social Media Marketing.
-- Paper: https://www.researchgate.net/publication/386439374_Google_SEO_and_helpful_content_How_artificial_intelligence_can_be_helpful_for_e-commerce_websites
+- The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape (2026). Preprint, not peer reviewed. SSRN. Sole author. https://dx.doi.org/10.2139/ssrn.6512878
+- Google, SEO and Helpful Content: How Artificial Intelligence Can Be Helpful for E-Commerce Websites (2024). Peer reviewed. Journal of Digital & Social Media Marketing, vol. 12, no. 3, pp. 206-226. Co-author, 2 of 2. https://doi.org/10.69554/RJUW9313
+- A Survey of Reward Hacking in Agentic Large Language Model Systems (2026). Peer reviewed. Discover Artificial Intelligence, vol. 6. Co-author, 4 of 5. https://doi.org/10.1007/s44163-026-01980-z
 
+### Talks and workshops
+
+- Industrial Level Classification with Intent ("User First, Algorithm Second"), brightonSEO San Diego 2026, Sep 15, 2026, Track 1. Search volume is a direction, not a strategy. The talk walks through why a query with zero measured volume can still carry real demand, then the method: twenty places demand shows up outside the search box, classifying it by persona rather than by keyword, mapping a whole industry, and turning customer pain points into products. Session: https://brightonseo.com/events/san-diego-2026/sessions/search-intent Slides: https://speakerdeck.com/venkatapagadala1/industrial-context-graphs
+- Product Strategy Workshop, AT&T, Atlanta, 2026. A product strategy workshop with the team at AT&T in Atlanta.
+
+### Podcasts and interviews
+
+- "Enterprise AI SEO: Automation Pipelines, MCPs, and Future Proofing", AI SEO Show, Oct 21, 2025, 33 min. https://www.youtube.com/watch?v=qwyIY0vWO8g
+- "SEO Bytes", Botpresso, May 25, 2026. https://www.linkedin.com/posts/botpresso_another-week-another-insightful-seo-bytes-activity-7464525687811489792-orQQ/
+- "Trends and Takeaways from BrightonSEO - San Diego 2024 SEO Conference", Opinionated SEO podcast, Nov 26, 2024, 18 min. https://open.spotify.com/episode/1TcEeYSTgJquItuTpt0Zj7
+- "Episode 39: SEO Success Stories - Talking SEO with Venkata Pagadala of Apartments.com", Impressive Digital, Jan 24, 2024. https://www.impressivedigital.com/seo_success_stories/episode-39-seo-success-stories-talking-seo-with-venkata-pagadala-of-apartments-com/
+- "360Degree Presents An Inspirational Talk With Vikas Mishra & Venkata Eswar Pagadala From USA", 360Degree, Jun 22, 2020. https://www.youtube.com/watch?v=nfTo6_Sp3r8
+
+### Recognition
+
+- Acknowledged as a contributor in Impressive's US Search Awards entry on ReserveBar's zero-loss SEO migration (US Search Awards, 2026). https://ussearchawards.com/impressive-reserved-bar/
+- Cited in Clutch's guide to content gap analysis (Clutch, 2026). https://clutch.co/resources/secret-sauce-content-gap-analysis
+- Listed in Plerdy's 41 Best San Diego SEO Experts (Plerdy, 2022). https://www.plerdy.com/seo-experts-san-diego/
 ## Contact
 
 - Email: vdepagadala@gmail.com
@@ -200,4 +218,4 @@ Journal of Digital & Social Media Marketing.
 ## Links
 
 - Website: https://venkatapagadala.com
-- LinkedIn: https://linkedin.com/in/venkatapagadala
+- LinkedIn: https://linkedin.com/in/venkata-pagadala

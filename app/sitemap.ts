@@ -21,6 +21,7 @@ const STATIC_ROUTES = [
   "/about",
   "/projects",
   "/publications",
+  "/research-and-talks",
   "/insights",
   "/solutions",
   "/research",

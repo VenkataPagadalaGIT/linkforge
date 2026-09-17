@@ -27,7 +27,9 @@ const profileJsonLd = {
     description: SITE_DESCRIPTION,
     sameAs: [
       "https://github.com/VenkataPagadalaGIT",
-      "https://linkedin.com/in/venkatapagadala",
+      "https://linkedin.com/in/venkata-pagadala",
+    "https://scholar.google.com/citations?user=g6hMDGIAAAAJ",
+    "https://speakerdeck.com/venkatapagadala1",
     ],
   },
 };

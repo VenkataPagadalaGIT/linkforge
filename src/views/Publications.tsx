@@ -4,7 +4,7 @@ import SEO from "@/components/SEO";
 import NeuralNetBackground from "@/components/NeuralNetBackground";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { Link } from "@/lib/router-shim";
-import { researchPapers } from "@/data/research";
+import { researchPapers, authorRole } from "@/data/research";
 
 /**
  * Published research, and nothing else.
@@ -39,7 +39,8 @@ const Publications = () => {
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-4 max-w-2xl">
             Academic work on how artificial intelligence is reshaping search and content
-            discovery. Every paper below opens in full at its publisher.
+            discovery. Every paper below links to its publisher&apos;s record, and says plainly
+            whether it is peer reviewed.
           </p>
           <div className="border border-foreground/30 inline-block px-4 py-2 mb-12 border-glow">
             <span className="font-mono text-[10px] text-foreground tracking-widest uppercase">
@@ -53,11 +54,25 @@ const Publications = () => {
             <ScrollReveal key={paper.title} delay={i * 80}>
               <article className="border border-border p-8 border-glow-hover">
                 <div className="flex items-center justify-between gap-4 mb-4">
-                  <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
-                    Peer-Reviewed Paper
+                  {/* Every card used to say "Peer-Reviewed Paper", the SSRN
+                      preprint included. The label now comes from the record,
+                      and a paper whose review status is not established says
+                      only what it is. */}
+                  <p
+                    className={`font-mono text-[10px] tracking-widest uppercase ${
+                      paper.review === "peer-reviewed"
+                        ? "text-emerald-700 dark:text-emerald-300"
+                        : "text-muted-foreground/70"
+                    }`}
+                  >
+                    {paper.review === "peer-reviewed"
+                      ? "Peer-Reviewed Paper"
+                      : paper.review === "preprint"
+                        ? "Preprint · Not Peer Reviewed"
+                        : "Journal Paper"}
                   </p>
                   <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase flex-shrink-0">
-                    {paper.host}
+                    {paper.publisher ?? paper.host}
                   </span>
                 </div>
 
@@ -67,12 +82,30 @@ const Publications = () => {
 
                 <p className="font-mono text-xs text-muted-foreground/70 italic mb-4">
                   {paper.venue}
+                  {paper.volume && <span className="not-italic">, vol. {paper.volume}</span>}
+                  {paper.issue && <span className="not-italic">, no. {paper.issue}</span>}
+                  {paper.pageRange && <span className="not-italic">, pp. {paper.pageRange}</span>}
+                  {!paper.pages && paper.postedOnline && (
+                    <span className="not-italic"> · Published online {paper.postedOnline}</span>
+                  )}
                   {paper.pages && paper.postedOnline && (
                     <span className="not-italic">
                       {" "}· {paper.pages} pages · Posted {paper.postedOnline}
                     </span>
                   )}
                 </p>
+
+                {!paper.abstract && paper.authors && paper.authors.length > 1 && (
+                  <p className="font-mono text-xs text-muted-foreground mb-4">
+                    {paper.authors.map((a, idx) => (
+                      <span key={a}>
+                        {idx > 0 && ", "}
+                        <span className={idx + 1 === paper.authorPosition ? "text-foreground" : ""}>{a}</span>
+                      </span>
+                    ))}
+                    <span className="text-muted-foreground/70"> · {authorRole(paper)}</span>
+                  </p>
+                )}
 
                 {paper.abstract ? (
                   <>
@@ -139,8 +172,18 @@ const Publications = () => {
 
                 <div className="flex items-center gap-5 flex-wrap border-t border-border pt-5">
                   <span className="font-mono text-[11px] text-muted-foreground/70">
-                    Posted {paper.posted ?? paper.year}
+                    Posted {paper.postedOnline ?? paper.posted ?? paper.year}
                   </span>
+                  {paper.doiUrl && (
+                    <a
+                      href={paper.doiUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 font-mono text-xs text-foreground hover:text-glow transition-all"
+                    >
+                      DOI {paper.doiUrl.replace(/^https?:\/\/(dx\.)?doi\.org\//, "")} <ExternalLink size={12} />
+                    </a>
+                  )}
                   {paper.url ? (
                     <a
                       href={paper.url}
@@ -148,7 +191,7 @@ const Publications = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 font-mono text-xs text-foreground hover:text-glow transition-all"
                     >
-                      Open on {paper.host} <ExternalLink size={12} />
+                      Open on {paper.publisher ?? paper.host} <ExternalLink size={12} />
                     </a>
                   ) : (
                     <span className="font-mono text-[11px] text-muted-foreground/70">

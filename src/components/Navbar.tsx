@@ -1,8 +1,13 @@
 "use client";
 /**
- * Navbar: the owner's IA. Four doors: How, What & Why AI (Learn, Learn in
- * 3D, SEO & AI, News), Notebooks, Explore in 3D, About Me; the 2040 game as
- * a flat link and Contact as the CTA. Labels are written for someone
+ * Navbar: the owner's IA. Five doors: How, What & Why AI (Learn, SEO & AI,
+ * News), Notebooks, Explore in 3D, Personas, Research & Talks; About Me as a
+ * plain link and Contact as the CTA.
+ *
+ * Explore in 3D is generated from src/data/threeD.ts and is the ONE home of
+ * everything 3D, the 2040 game included. It used to be hand-coded with two of
+ * ten items while the data file claimed the menu read from it. Each URL still
+ * appears in exactly one menu. Labels are written for someone
  * who has never seen the site: a recruiter or a first-time learner should
  * know what is behind each door without clicking.
  *
@@ -23,6 +28,9 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
 import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./theme/ThemeToggle";
+import { threeDExperiences, THREE_D_GROUPS } from "@/data/threeD";
+import { linkedPapers } from "@/data/research";
+import { TALKS, RECOGNITION } from "@/data/talks";
 
 interface MenuItem {
   label: string;
@@ -51,6 +59,66 @@ interface MegaMenu {
   active: string[];
 }
 
+/** Explore in 3D, built from the data so the menu cannot drift from the hub. */
+const THREE_D_MENU: MegaMenu = {
+  id: "explore3d",
+  label: "Explore in 3D",
+  heading: "Complex systems, taken apart in 3D",
+  sections: THREE_D_GROUPS.map((g) => ({
+    title: g,
+    items: threeDExperiences
+      .filter((x) => x.group === g)
+      .map((x) => ({ label: x.title, note: x.note, to: x.to, badge: x.badge === "new" ? "NEW" : undefined })),
+  })).filter((sec) => sec.items.length > 0),
+  footnote:
+    "Every scene is generated in code and runs in your browser: no downloads, no model files.",
+  seeAll: { label: "Everything in 3D", to: "/3d" },
+  active: ["/3d", "/3d-game", ...threeDExperiences.map((x) => x.to.split("#")[0]).filter((t) => t && t !== "/")],
+};
+
+/** Research & Talks: papers, talks, media and recognition, from their data. */
+const RESEARCH_MENU: MegaMenu = {
+  id: "research",
+  label: "Research & Talks",
+  heading: "Papers, talks, interviews and recognition",
+  sections: [
+    {
+      title: "Research papers",
+      items: [
+        ...linkedPapers.map((p) => ({
+          label: p.shortTitle,
+          note: `${p.review === "peer-reviewed" ? "Peer reviewed" : "Preprint"}, ${p.venue}, ${p.year}`,
+          to: `/research-and-talks#${p.slug}`,
+        })),
+        { label: "Google Scholar", note: "every paper and its citations", to: "/research-and-talks#papers" },
+      ],
+    },
+    {
+      title: "Talks & workshops",
+      items: [
+        { label: "brightonSEO San Diego 2026", note: "industrial level classification with intent", to: "/research-and-talks#brightonseo-san-diego-2026", badge: "NEW" },
+        ...TALKS.filter((t) => t.kind === "workshop").map((t) => ({ label: t.title, note: t.outlet, to: `/research-and-talks#${t.slug}` })),
+      ],
+    },
+    {
+      title: "Podcasts & interviews",
+      items: TALKS.filter((t) => t.kind === "podcast" || t.kind === "interview" || t.kind === "talk").map((t) => ({
+        label: t.outlet,
+        note: t.date.slice(0, 4),
+        to: `/research-and-talks#${t.slug}`,
+      })),
+    },
+    {
+      title: "Recognition",
+      items: RECOGNITION.map((r) => ({ label: r.source, note: r.date.slice(0, 4), to: `/research-and-talks#${r.slug}` })),
+    },
+  ],
+  footnote:
+    "Every paper, talk and mention links to its source, and each one is worded to match what that source actually says.",
+  seeAll: { label: "Research, talks and media", to: "/research-and-talks" },
+  active: ["/research-and-talks", "/publications"],
+};
+
 const MEGA: MegaMenu[] = [
   {
     id: "ai",
@@ -63,16 +131,6 @@ const MEGA: MegaMenu[] = [
           { label: "AI Encyclopedia", note: "187 concepts, one page each", to: "/notebook/ai/encyclopedia", badge: "NEW" },
           { label: "AI Roadmap", note: "learn AI in 18 weeks + depth tracks", to: "/notebook/ai/roadmap" },
           { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
-          { label: "Audience Personas", note: "graded by evidence, sourced", to: "/personas", badge: "NEW" },
-          { label: "AI Bookshelf", note: "19 free books, on a 3D shelf", to: "/notebook/ai/shelf", badge: "3D" },
-        ],
-      },
-      {
-        title: "Learn AI in 3D",
-        items: [
-          { label: "How Neural Networks Work in 3D", note: "train one live in your browser", to: "/guides/how-neural-networks-work", badge: "LIVE" },
-          { label: "How LLMs Work in 3D", note: "watch a prompt travel 21 stages", to: "/guides/how-llms-work", badge: "3D" },
-          { label: "Graph Types for AI Agents", note: "one dataset, six structures", to: "/guides/graph-types-for-ai-agents", badge: "3D" },
         ],
       },
       {
@@ -91,7 +149,7 @@ const MEGA: MegaMenu[] = [
       },
     ],
     footnote:
-      "A complete free path into AI: the encyclopedia, the roadmap, the people, the books, and machines you can fly through and train. Every link opened and checked.",
+      "A complete free path into AI: the encyclopedia, the roadmap, the people and the news. The 3D machines you can fly through and train now live under Explore in 3D. Every link opened and checked.",
     seeAll: { label: "Everything in the AI Notebook", to: "/notebook/ai" },
     active: ["/notebook/ai", "/ai-contributors", "/guides", "/ai-updates", "/insights"],
   },
@@ -114,49 +172,63 @@ const MEGA: MegaMenu[] = [
     seeAll: { label: "The full notebook", to: "/notebook" },
     active: ["/notebook/conference", "/notebook/business"],
   },
+  THREE_D_MENU,
   {
-    id: "explore3d",
-    label: "Explore in 3D",
-    heading: "Complex systems, taken apart in 3D",
+    id: "personas",
+    label: "Personas",
+    heading: "Who your audience is, and where they actually are",
     sections: [
       {
-        title: "Explore",
+        title: "The tool",
         items: [
-          { label: "How HVAC Works in 3D", note: "a full home system, fault library included", to: "/guides/hvac-system-troubleshooting", badge: "3D" },
-          { label: "Map of the AI Economy", note: "455 companies, who depends on whom", to: "/notebook/ai/map", badge: "3D" },
+          { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas", badge: "NEW" },
+          { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
+          { label: "A Worked Persona", note: "the 3-row SUV dad, graded by evidence", to: "/personas/us-dad-30-49-three-row-suv" },
+        ],
+      },
+      {
+        title: "Popular questions",
+        items: [
+          { label: "Who Uses TikTok?", note: "by age, race, income and party", to: "/personas/who-uses-tiktok" },
+          { label: "Who Uses Snapchat?", note: "and the two numbers people mix up", to: "/personas/who-uses-snapchat" },
+          { label: "How Many People Use YouTube?", note: "and what the totals really count", to: "/personas/how-many-people-use-youtube" },
+          { label: "Who Gets News From AI Chatbots?", note: "the widest spread in the corpus", to: "/personas/who-gets-news-from-ai-chatbots" },
+          { label: "Smartphone-Only Americans", note: "no home broadband, by group", to: "/personas/smartphone-only-no-broadband" },
         ],
       },
     ],
     footnote:
-      "Every scene is generated in code and runs in your browser: no downloads, no model files. The full 3D index lives at /3d.",
-    seeAll: { label: "Everything in 3D", to: "/3d" },
-    active: ["/3d"],
+      "Built only on published research: every figure is measured or visibly estimated, and nothing a source does not measure is filled in.",
+    seeAll: { label: "Every question, answered", to: "/personas" },
+    active: ["/personas"],
   },
-  {
-    id: "about",
-    label: "About Me",
-    heading: "The person and the papers",
-    sections: [
-      {
-        title: "About",
-        items: [
-          { label: "About Me", note: "AI systems, research, and search", to: "/about" },
-          { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
-        ],
-      },
-    ],
-    footnote:
-      "Peer-reviewed research on how large language models are disrupting search, plus the story behind this site.",
-    seeAll: { label: "About this site", to: "/about" },
-    active: ["/about", "/publications"],
-  },
+  RESEARCH_MENU,
 ];
 
-/** Plain links after the menus. About sits last and quieter on purpose.
- *  The old flat "3D Game" link grew into the 3D mega menu above. */
-const FLAT = [
-  { label: "Game: City 2040", to: "/3d-game", dim: false },
+/** Plain links after the menus. The 2040 game moved into Explore in 3D, where
+ *  everything 3D now lives; About Me became a link once it held one item. */
+const FLAT: { label: string; to: string; dim: boolean }[] = [
+  { label: "About Me", to: "/about", dim: false },
 ];
+
+/**
+ * The single active door. Prefixes overlap (/notebook/ai/map is both under
+ * /notebook/ai and a 3D experience; /guides/how-llms-work is under /guides),
+ * so the longest matching prefix wins and exactly one label lights up.
+ */
+function activeDoor(path: string): string | null {
+  let best: { id: string; len: number } | null = null;
+  const consider = (id: string, prefixes: string[]) => {
+    for (const p of prefixes) {
+      if (path === p || path.startsWith(`${p}/`)) {
+        if (!best || p.length > best.len) best = { id, len: p.length };
+      }
+    }
+  };
+  MEGA.forEach((m) => consider(m.id, m.active));
+  FLAT.forEach((f) => consider(f.to, [f.to]));
+  return best ? (best as { id: string; len: number }).id : null;
+}
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -201,7 +273,7 @@ const Navbar = () => {
   if (location.pathname?.startsWith("/admin")) return null;
 
   const path = location.pathname ?? "";
-  const isActive = (prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
+  const door = activeDoor(path);
 
   // Hover with intent: a short delay in prevents flicker when the pointer
   // crosses a label on its way somewhere else; a delay out lets the pointer
@@ -229,8 +301,10 @@ const Navbar = () => {
             VP_
           </Link>
 
-          {/* Desktop */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop, from xl. Seven doors need about 1,150px; at the old md
+              breakpoint (768px) the labels collided with the logo by 1024px
+              and wrapped off-screen by 800px. Below xl the drawer takes over. */}
+          <div className="hidden xl:flex items-center gap-8">
             {MEGA.map((m) => (
               <div key={m.id} onMouseEnter={() => hoverOpen(m.id)} className="relative">
                 {/* A real link, JS-enhanced into a menu toggle. On locked-down
@@ -247,7 +321,7 @@ const Navbar = () => {
                     setOpenMenu(openMenu === m.id ? null : m.id);
                   }}
                   className={`font-mono text-xs tracking-wider uppercase transition-all hover:text-foreground flex items-center gap-1 ${
-                    isActive(m.active) || openMenu === m.id ? "text-foreground" : "text-muted-foreground"
+                    door === m.id || openMenu === m.id ? "text-foreground" : "text-muted-foreground"
                   }`}
                 >
                   {m.label}
@@ -264,7 +338,7 @@ const Navbar = () => {
                 key={l.to}
                 href={l.to}
                 className={`font-mono text-xs tracking-wider uppercase transition-all hover:text-foreground ${
-                  path === l.to || path.startsWith(`${l.to}/`)
+                  door === l.to
                     ? "text-foreground"
                     : l.dim
                       ? "text-muted-foreground/70"
@@ -284,7 +358,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile toggle */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="xl:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
               type="button"
@@ -312,7 +386,7 @@ const Navbar = () => {
           openMenu === m.id ? (
             <div
               key={m.id}
-              className="hidden md:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
+              className="hidden xl:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
               onMouseEnter={() => {
                 if (closeTimer.current) window.clearTimeout(closeTimer.current);
               }}
@@ -368,7 +442,7 @@ const Navbar = () => {
       {/* Mobile menu: each mega menu becomes an accordion section */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto md:hidden"
+          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto xl:hidden"
           role="dialog"
           aria-modal="true"
           data-testid="mobile-menu-panel"
