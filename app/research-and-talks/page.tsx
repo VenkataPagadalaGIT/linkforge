@@ -11,7 +11,9 @@ import {
   KIND_LABEL,
   RECOGNITION,
   TALKS,
+  byDateDesc,
   formatTalkDate,
+  linkVerb,
 } from "@/data/talks";
 
 export const dynamic = "force-static";
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
   },
 };
 
-const media = TALKS.filter((t) => t.kind !== "workshop");
+const media = TALKS.filter((t) => t.kind !== "workshop").sort(byDateDesc);
 const workshops = TALKS.filter((t) => t.kind === "workshop");
 const peerReviewed = linkedPapers.filter((p) => p.review === "peer-reviewed");
 const preprints = linkedPapers.filter((p) => p.review === "preprint");
@@ -233,51 +235,90 @@ export default function Page() {
           ))}
         </section>
 
-        {/* Podcasts, interviews, talks */}
+        {/* Podcasts, interviews, talks: the thumbnail leads, because a row of
+            text links reads as a bibliography and nobody clicks those. */}
         <section aria-labelledby="media-h" className="mb-16">
           <h2 id="media-h" className="font-display text-2xl font-bold text-foreground mb-5">
             Podcasts & interviews
           </h2>
           <ol className="border-t border-border">
-            {media.map((t) => (
-              <li
-                key={t.slug}
-                id={t.slug}
-                className="grid md:grid-cols-[140px_minmax(0,1fr)_auto] gap-x-6 gap-y-2 py-5 border-b border-border scroll-mt-28"
-              >
-                <div>
-                  <p className="font-mono text-[11px] text-foreground tabular-nums">
-                    <time dateTime={t.date}>{formatTalkDate(t.date)}</time>
-                  </p>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
-                    {KIND_LABEL[t.kind]}
-                    {t.minutes ? ` · ${t.minutes} min` : ""}
-                  </p>
-                </div>
-                <div className="min-w-0">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">
-                    {t.outlet}
-                  </p>
-                  <h3 className="font-display text-base font-semibold text-foreground leading-snug text-balance">
-                    {t.title}
-                  </h3>
-                  <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-1.5">{t.summary}</p>
-                </div>
-                <div className="flex md:flex-col md:items-end gap-x-4 gap-y-1.5">
-                  {t.links.map((l) => (
+            {media.map((t) => {
+              const primary = t.links[0];
+              const verb = primary ? linkVerb(primary.url) : "Open";
+              return (
+                <li
+                  key={t.slug}
+                  id={t.slug}
+                  className="grid sm:grid-cols-[minmax(0,260px)_minmax(0,1fr)] gap-x-6 gap-y-4 py-6 border-b border-border scroll-mt-28"
+                >
+                  {t.thumb && primary && (
+                    // Duplicate of the title link for sighted pointer users;
+                    // hidden from the tab order so keyboards meet it once.
                     <a
-                      key={l.url}
-                      href={l.url}
+                      href={primary.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground whitespace-nowrap transition-colors"
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className="group relative block aspect-video overflow-hidden border border-border bg-card"
                     >
-                      {l.label} ↗
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={t.thumb}
+                        alt=""
+                        width={640}
+                        height={360}
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      />
+                      <span className="absolute right-2 bottom-2 flex items-center gap-1.5 bg-background/90 border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-foreground">
+                        {verb === "Watch" && (
+                          <svg width="9" height="9" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M2 1l9 5-9 5z" fill="currentColor" />
+                          </svg>
+                        )}
+                        {verb}
+                        {t.minutes ? ` · ${t.minutes} min` : ""}
+                      </span>
                     </a>
-                  ))}
-                </div>
-              </li>
-            ))}
+                  )}
+                  <div className="min-w-0 flex flex-col">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1.5">
+                      {t.outlet} · <time dateTime={t.date}>{formatTalkDate(t.date)}</time> · {KIND_LABEL[t.kind]}
+                    </p>
+                    <h3 className="font-display text-lg font-semibold text-foreground leading-snug text-balance">
+                      {primary ? (
+                        <a
+                          href={primary.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline decoration-border underline-offset-4"
+                        >
+                          {t.title}
+                        </a>
+                      ) : (
+                        t.title
+                      )}
+                    </h3>
+                    <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-2">{t.summary}</p>
+                    <div className="flex flex-wrap gap-x-5 gap-y-1.5 mt-3">
+                      {t.links.map((l) => (
+                        <a
+                          key={l.url}
+                          href={l.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground whitespace-nowrap transition-colors"
+                        >
+                          {l.label} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </section>
 
@@ -289,26 +330,59 @@ export default function Page() {
           <p className="font-mono text-[11px] text-muted-foreground mb-5 max-w-2xl leading-relaxed">
             Each line says what its source says, and no more.
           </p>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {RECOGNITION.map((r) => (
-              <article key={r.slug} id={r.slug} className="border border-border p-5 flex flex-col scroll-mt-28">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                  {r.source} · {r.date.slice(0, 4)}
-                </p>
-                <p className="font-display text-sm font-semibold text-foreground leading-snug flex-1">{r.claim}</p>
-                {r.quote && (
-                  <blockquote className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-3 border-l-2 border-border pl-3">
-                    &ldquo;{r.quote}&rdquo;
-                  </blockquote>
+              <article key={r.slug} id={r.slug} className="border border-border flex flex-col scroll-mt-28">
+                {r.thumb && (
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="group relative block aspect-video overflow-hidden border-b border-border bg-card"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={r.thumb}
+                      alt=""
+                      width={640}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                  </a>
                 )}
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground mt-4 self-start transition-colors"
-                >
-                  Read at {r.source} ↗
-                </a>
+                <div className="p-4 flex flex-col flex-1">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2">
+                    {r.source}
+                    {r.publishedOn ? ` on ${r.publishedOn}` : ""} · {formatTalkDate(r.date)}
+                  </p>
+                  <h3 className="font-display text-sm font-semibold text-foreground leading-snug text-balance">
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline decoration-border underline-offset-4"
+                    >
+                      {r.claim}
+                    </a>
+                  </h3>
+                  {r.quote && (
+                    <blockquote className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-3 border-l-2 border-border pl-3">
+                      &ldquo;{r.quote}&rdquo;
+                    </blockquote>
+                  )}
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[11px] text-foreground underline decoration-border hover:decoration-foreground mt-auto pt-4 self-start transition-colors"
+                  >
+                    {linkVerb(r.url)} at {r.publishedOn ?? r.source} ↗
+                  </a>
+                </div>
               </article>
             ))}
           </div>

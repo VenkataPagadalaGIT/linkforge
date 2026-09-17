@@ -56,6 +56,12 @@ export interface TalkEntry {
   video?: TalkVideo;
   /** For podcasts and interviews: minutes, when the source states it. */
   minutes?: number;
+  /**
+   * 640x360 preview in /public/talks/thumbs, copied from the source's own
+   * og:image or video thumbnail. Self-hosted because LinkedIn media URLs are
+   * signed and third-party hotlinks fail on corporate proxies.
+   */
+  thumb?: string;
 }
 
 export interface Chapter {
@@ -133,6 +139,7 @@ export const TALKS: TalkEntry[] = [
   },
   {
     slug: "ai-seo-show-enterprise-ai-seo",
+    thumb: "/talks/thumbs/ai-seo-show-enterprise-ai-seo.jpg",
     kind: "interview",
     title: "Enterprise AI SEO: Automation Pipelines, MCPs, and Future Proofing",
     outlet: "AI SEO Show",
@@ -151,6 +158,7 @@ export const TALKS: TalkEntry[] = [
   },
   {
     slug: "botpresso-seo-bytes",
+    thumb: "/talks/thumbs/botpresso-seo-bytes.jpg",
     kind: "interview",
     title: "SEO Bytes",
     outlet: "Botpresso",
@@ -166,6 +174,7 @@ export const TALKS: TalkEntry[] = [
   },
   {
     slug: "opinionated-seo-brightonseo-2024",
+    thumb: "/talks/thumbs/opinionated-seo-brightonseo-2024.jpg",
     kind: "podcast",
     title: "Trends and Takeaways from BrightonSEO - San Diego 2024 SEO Conference",
     outlet: "Opinionated SEO podcast",
@@ -177,6 +186,7 @@ export const TALKS: TalkEntry[] = [
   },
   {
     slug: "seo-success-stories-episode-39",
+    thumb: "/talks/thumbs/seo-success-stories-episode-39.jpg",
     kind: "interview",
     title: "Episode 39: SEO Success Stories - Talking SEO with Venkata Pagadala of Apartments.com",
     outlet: "Impressive Digital",
@@ -191,6 +201,7 @@ export const TALKS: TalkEntry[] = [
   },
   {
     slug: "360degree-inspirational-talk",
+    thumb: "/talks/thumbs/360degree-inspirational-talk.jpg",
     kind: "talk",
     title: "360Degree Presents An Inspirational Talk With Vikas Mishra & Venkata Eswar Pagadala From USA",
     outlet: "360Degree",
@@ -212,17 +223,24 @@ export interface RecognitionEntry {
   url: string;
   /** A short quote from the source, under fifteen words, when one exists. */
   quote?: string;
+  /** Where the source is published, when that differs from who wrote it. */
+  publishedOn?: string;
+  thumb?: string;
 }
 
 export const RECOGNITION: RecognitionEntry[] = [
   {
-    slug: "us-search-awards-reservebar",
-    claim:
-      "Acknowledged as a contributor in Impressive's US Search Awards entry on ReserveBar's zero-loss SEO migration",
-    source: "US Search Awards",
-    date: "2026-04-16",
-    url: "https://ussearchawards.com/impressive-reserved-bar/",
-    quote: "a clever mind we tapped into occasionally",
+    // Verified 2026-09-17 in a browser: published 24 Jul 2026, entry 33 on
+    // the main list (not an honorable mention). The URL slug says 37 people;
+    // the live title says 69, so the title is quoted as it reads now.
+    slug: "linkedin-geo-aeo-experts-2026",
+    claim: "Named in Metehan Yeşilyurt's Best GEO and AEO Experts to Follow in 2026",
+    source: "Metehan Yeşilyurt",
+    publishedOn: "LinkedIn",
+    date: "2026-07-24",
+    url: "https://www.linkedin.com/pulse/best-geo-aeo-experts-follow-2026-37-people-whose-work-ye%C5%9Filyurt--oqhnc/",
+    quote: "Strategy decks are cheap. He ships pipelines.",
+    thumb: "/talks/thumbs/linkedin-geo-aeo-experts-2026.jpg",
   },
   {
     slug: "clutch-content-gap-analysis",
@@ -231,6 +249,17 @@ export const RECOGNITION: RecognitionEntry[] = [
     date: "2026-05-25",
     url: "https://clutch.co/resources/secret-sauce-content-gap-analysis",
     quote: "notable for his work with programmatic SEO and AI",
+    thumb: "/talks/thumbs/clutch-content-gap-analysis.jpg",
+  },
+  {
+    slug: "us-search-awards-reservebar",
+    claim:
+      "Acknowledged as a contributor in Impressive's US Search Awards entry on ReserveBar's zero-loss SEO migration",
+    source: "US Search Awards",
+    date: "2026-04-16",
+    url: "https://ussearchawards.com/impressive-reserved-bar/",
+    quote: "a clever mind we tapped into occasionally",
+    thumb: "/talks/thumbs/us-search-awards-reservebar.jpg",
   },
   {
     slug: "plerdy-san-diego-seo-experts",
@@ -238,6 +267,7 @@ export const RECOGNITION: RecognitionEntry[] = [
     source: "Plerdy",
     date: "2022-08-10",
     url: "https://www.plerdy.com/seo-experts-san-diego/",
+    thumb: "/talks/thumbs/plerdy-san-diego-seo-experts.jpg",
   },
 ];
 
@@ -252,6 +282,17 @@ export function formatClock(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.round(seconds % 60);
   return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+/** Newest first. A year-only date sorts as the start of that year. */
+export const byDateDesc = <T extends { date: string }>(a: T, b: T) => b.date.localeCompare(a.date);
+
+/** The verb a link earns from where it points, so a thumbnail says what happens on click. */
+export function linkVerb(url: string): "Watch" | "Listen" | "Read" | "Open" {
+  if (/youtube\.com|youtu\.be/.test(url)) return "Watch";
+  if (/spotify\.com|podcasts\.apple\.com/.test(url)) return "Listen";
+  if (/linkedin\.com|clutch\.co|plerdy\.com|ussearchawards\.com/.test(url)) return "Read";
+  return "Open";
 }
 
 export const KIND_LABEL: Record<TalkKind, string> = {
