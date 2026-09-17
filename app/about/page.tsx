@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import About from "@/views/About";
 import { SITE_URL, OG_IMAGE, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "About",
@@ -39,7 +40,7 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(profileJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(profileJsonLd) }}
       />
       <About />
     </>

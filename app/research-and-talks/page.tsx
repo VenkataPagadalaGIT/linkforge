@@ -47,6 +47,16 @@ const workshops = TALKS.filter((t) => t.kind === "workshop");
 const peerReviewed = linkedPapers.filter((p) => p.review === "peer-reviewed");
 const preprints = linkedPapers.filter((p) => p.review === "preprint");
 
+/** Sections of this page, with counts read off the data rather than typed. */
+const CONTENTS: Array<{ href: string; label: string; count?: number }> = [
+  { href: `#${BRIGHTONSEO_2026.slug}`, label: "brightonSEO San Diego 2026" },
+  { href: "#papers", label: "Research papers", count: linkedPapers.length },
+  { href: "#talks", label: "Talks & workshops", count: workshops.length },
+  { href: "#media", label: "Podcasts & interviews", count: media.length },
+  { href: "#recognition", label: "Recognition", count: RECOGNITION.length },
+  { href: "#related", label: "Related" },
+];
+
 export default function Page() {
   const graph = buildResearchTalksGraph(TITLE, DESCRIPTION);
 
@@ -63,6 +73,34 @@ export default function Page() {
           {peerReviewed.length} peer-reviewed papers · {preprints.length} preprint · {BRIGHTONSEO_2026.event} ·{" "}
           {media.length} podcasts, interviews and talks · every item linked to its source
         </p>
+
+        {/* Contents. Real anchors to real section ids, rendered server-side, so
+            it works with scripts blocked and gives a retrieval system the page's
+            shape without it having to infer one from heading levels. Counts come
+            from the data, so a list that says five cannot show four. */}
+        <nav aria-labelledby="toc-h" className="border border-border bg-card/20 p-5 mb-12">
+          <h2 id="toc-h" className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
+            On this page
+          </h2>
+          <ol className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-1">
+            {CONTENTS.map((c, i) => (
+              <li key={c.href} className="flex items-baseline gap-3">
+                <span className="font-mono text-[10px] text-muted-foreground/70 tabular-nums w-4 shrink-0">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <a
+                  href={c.href}
+                  className="font-mono text-xs text-foreground underline decoration-border hover:decoration-foreground underline-offset-4 transition-colors py-1"
+                >
+                  {c.label}
+                </a>
+                {c.count !== undefined && (
+                  <span className="font-mono text-[10px] text-muted-foreground tabular-nums">{c.count}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
 
         {/* Featured first: the recording and the session, before any list. */}
         <section id={BRIGHTONSEO_2026.slug} aria-label="brightonSEO San Diego 2026" className="mb-16 scroll-mt-28">
@@ -196,7 +234,7 @@ export default function Page() {
         </section>
 
         {/* Workshops, then the tool the talk's method became */}
-        <section aria-labelledby="work-h" className="mb-16">
+        <section id="talks" aria-labelledby="work-h" className="mb-16 scroll-mt-28">
           <h2 id="work-h" className="font-display text-2xl font-bold text-foreground mb-5">
             Talks & workshops
           </h2>
@@ -243,7 +281,7 @@ export default function Page() {
 
         {/* Podcasts, interviews, talks: the thumbnail leads, because a row of
             text links reads as a bibliography and nobody clicks those. */}
-        <section aria-labelledby="media-h" className="mb-16">
+        <section id="media" aria-labelledby="media-h" className="mb-16 scroll-mt-28">
           <h2 id="media-h" className="font-display text-2xl font-bold text-foreground mb-5">
             Podcasts & interviews
           </h2>
@@ -329,7 +367,7 @@ export default function Page() {
         </section>
 
         {/* Recognition, worded exactly as the sources support */}
-        <section aria-labelledby="rec-h" className="mb-16">
+        <section id="recognition" aria-labelledby="rec-h" className="mb-16 scroll-mt-28">
           <h2 id="rec-h" className="font-display text-2xl font-bold text-foreground mb-2">
             Recognition
           </h2>
@@ -394,7 +432,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section aria-labelledby="rel-h">
+        <section id="related" aria-labelledby="rel-h" className="scroll-mt-28">
           <h2 id="rel-h" className="font-display text-xl font-bold text-foreground mb-4">
             Related
           </h2>

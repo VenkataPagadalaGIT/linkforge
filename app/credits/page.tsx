@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Credits from "@/views/Credits";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { inspirations } from "@/data/inspirations";
+import { jsonLdScript } from "@/lib/jsonld";
 
 export const dynamic = "force-static";
 
@@ -44,7 +45,7 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <Credits />
     </>

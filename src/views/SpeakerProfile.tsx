@@ -23,6 +23,7 @@ import { type Speaker, getSpeakerTalks, type SpeakerTalk, photoSourceFor } from 
 import { adminApi, getToken } from "@/lib/admin-client";
 import axios from "axios";
 import { BACKEND_URL } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 interface NoteRecord {
   conference_slug: string;
@@ -136,7 +137,7 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:flex lg:gap-10">

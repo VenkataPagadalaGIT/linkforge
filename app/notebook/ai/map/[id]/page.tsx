@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import AiNodeView from "@/views/AiNodeView";
 import { getNode, LAYER_BY_ID, NODE_TYPE_META } from "@/data/aiOntology";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 interface Props {
   params: { id: string };
@@ -63,8 +64,8 @@ export default function Page({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(termLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(termLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbLd) }} />
       <AiNodeView id={n.id} />
     </>
   );

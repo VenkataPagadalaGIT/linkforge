@@ -17,6 +17,8 @@ export interface ResearchPaper {
   year: string;
   /** Where the paper actually lives. Never "#". */
   url: string;
+  /** A second publisher address for the same article, when one exists. */
+  altUrl?: string;
   /** Repository name, shown as the provenance chip. */
   host: "SSRN" | "ResearchGate" | "Journal";
   /**
@@ -117,15 +119,23 @@ export const researchPapers: ResearchPaper[] = [
     pageRange: "206-226",
     publisher: "Henry Stewart Publications",
     year: "2024",
-    // The publisher's record on Ingenta Connect, verified 2026-09-17. It
-    // replaces a ResearchGate mirror: a DOI is the citation of record, a
-    // mirror is someone's upload of it.
-    url: "https://www.ingentaconnect.com/content/hsp/jdsmm/2024/00000012/00000003/art00002",
+    // Henry Stewart's own platform, which is where the DOI resolves, verified
+    // 2026-09-17: HTTP 200, both authors named, and the page states "The full
+    // article is available to subscribers to the journal", which is where the
+    // access line below comes from.
+    //
+    // This replaces the Ingenta Connect record. Ingenta is a legitimate
+    // Henry Stewart surface and opens for a person, but it answers every
+    // scripted request with a Cloudflare challenge, so a crawler following
+    // the link reaches an interstitial instead of the paper. Ingenta is kept
+    // below as a second address for the same article rather than the primary.
+    url: "https://hstalks.com/article/8917/google-seo-and-helpful-content-how-artificial-inte/",
+    altUrl: "https://www.ingentaconnect.com/content/hsp/jdsmm/2024/00000012/00000003/art00002",
     doiUrl: "https://doi.org/10.69554/RJUW9313",
     host: "Journal",
     coverCredit: "First page as published. © Henry Stewart Publications, 2024.",
-    // Ingenta's own record states the full text is for subscribers, so the
-    // page must not imply otherwise.
+    // The publisher's page says "The full article is available to subscribers
+    // to the journal", so the site must not imply otherwise.
     openAccess: false,
     summary:
       "How AI supports the helpful-content standard on e-commerce sites, from product data quality to editorial signals.",
@@ -165,6 +175,7 @@ export const researchPapers: ResearchPaper[] = [
     title:
       "AI-Assisted SEO: Leveraging Machine Learning for Search Engine Optimization",
     shortTitle: "AI-Assisted SEO",
+    slug: "ai-assisted-seo-machine-learning",
     venue:
       "International Journal of Scientific Research in Computer Science, Engineering and Information Technology",
     year: "2023",

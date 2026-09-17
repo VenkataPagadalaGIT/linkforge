@@ -1,3 +1,4 @@
+import { jsonLdScript } from "@/lib/jsonld";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -82,7 +83,7 @@ export default function Page() {
     <div className="min-h-screen bg-background pt-32 pb-20 px-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <div className="max-w-5xl mx-auto">
         <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import PillarPage from "@/views/PillarPage";
 import { getPillar, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 type Params = { slug: string };
 
@@ -54,7 +55,7 @@ export default async function Page({ params }: { params: Params }) {
   return (
     <>
       {jsonLd.map((j, i) => (
-        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(j) }} />
       ))}
       <Suspense fallback={null}>
         <PillarPage initialPillar={pillar as never} />

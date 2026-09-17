@@ -4,6 +4,7 @@ import GuideView from "@/views/GuideView";
 import { guides, getGuideBySlug } from "@/data/guides";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 type Params = { slug: string };
 
@@ -122,7 +123,7 @@ export default function Page({ params }: { params: Params }) {
   return (
     <>
       {jsonLd.map((j, i) => (
-        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }} />
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(j) }} />
       ))}
       <GuideView guide={guide} />
     </>

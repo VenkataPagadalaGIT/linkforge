@@ -14,6 +14,15 @@ generated_at: 2026-09-17
 Canonical: https://venkatapagadala.com/research-and-talks
 Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
 
+## Contents
+
+- [Featured talk](#featured-talk): Industrial Level Classification with Intent
+- [Research papers](#research-papers): 3
+- [Talks & workshops](#talks--workshops): 1
+- [Podcasts & interviews](#podcasts--interviews): 5
+- [Recognition](#recognition): 4
+- [Related](#related)
+
 ## Featured talk
 
 ### Industrial Level Classification with Intent
@@ -71,7 +80,7 @@ Large Language Models have reshaped the search landscape in ways that are only b
 - Citation: Journal of Digital & Social Media Marketing, vol. 12, no. 3, pp. 206-226 (2024)
 - Authors: Russ Macumber, Venkata Durga Eswar Pagadala (Co-author, 2 of 2)
 - DOI: https://doi.org/10.69554/RJUW9313
-- Publisher record: https://www.ingentaconnect.com/content/hsp/jdsmm/2024/00000012/00000003/art00002
+- Publisher record: https://hstalks.com/article/8917/google-seo-and-helpful-content-how-artificial-inte/
 - Access: Subscriber access at the publisher
 - Keywords: SEO, helpful content, artificial intelligence, e-commerce
 

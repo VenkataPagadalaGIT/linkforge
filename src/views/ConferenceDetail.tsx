@@ -38,6 +38,7 @@ import { type Conference, type Session, type SessionType, getSessionId, getSessi
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 const statusStyles: Record<string, string> = {
   attended: "border-foreground/20 text-foreground/70",
@@ -268,7 +269,7 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:flex lg:gap-10">

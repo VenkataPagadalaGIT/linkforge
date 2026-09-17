@@ -79,7 +79,8 @@ export function paperNode(p: ResearchPaper, pageUrl: string): Node {
 
   if (p.url) {
     node.url = p.url;
-    if (p.doiUrl) node.sameAs = p.url;
+    const also = [p.doiUrl ? p.url : undefined, p.altUrl].filter(Boolean);
+    if (also.length) node.sameAs = also.length === 1 ? also[0] : also;
   }
   if (p.doiUrl) {
     const doi = p.doiUrl.replace(/^https?:\/\/(dx\.)?doi\.org\//, "");

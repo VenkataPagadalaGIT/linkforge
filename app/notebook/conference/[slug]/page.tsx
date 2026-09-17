@@ -7,6 +7,7 @@ import {
   listConferenceSessions,
 } from "@/data/conferences";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 interface Props {
   params: { slug: string };
@@ -126,11 +127,11 @@ export default function Page({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(eventLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbLd) }}
       />
       <ConferenceDetail conference={c} />
     </>

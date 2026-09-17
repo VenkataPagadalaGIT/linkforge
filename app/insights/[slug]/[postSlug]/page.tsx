@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import BlogPostPage from "@/views/BlogPostPage";
 import { getPost, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 type Params = { slug: string; postSlug: string };
 
@@ -91,7 +92,7 @@ export default async function Page({ params }: { params: Params }) {
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(j) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(j) }}
         />
       ))}
       <BlogPostPage initialPost={post as never} />

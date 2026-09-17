@@ -70,6 +70,16 @@ push(`Canonical: ${PAGE}`);
 push(`Google Scholar: ${GOOGLE_SCHOLAR_URL}`);
 push();
 
+push("## Contents");
+push();
+push(`- [Featured talk](#featured-talk): ${BRIGHTONSEO_2026.title}`);
+push(`- [Research papers](#research-papers): ${linkedPapers.length}`);
+if (workshops.length) push(`- [Talks & workshops](#talks--workshops): ${workshops.length}`);
+push(`- [Podcasts & interviews](#podcasts--interviews): ${media.length}`);
+push(`- [Recognition](#recognition): ${RECOGNITION.length}`);
+push("- [Related](#related)");
+push();
+
 // ---------------------------------------------------------------- the talk
 push("## Featured talk");
 push();
@@ -222,6 +232,13 @@ recPush(
 recPush();
 recPush(`Collection page: ${PAGE}`);
 recPush(`Google Scholar: ${GOOGLE_SCHOLAR_URL}`);
+recPush();
+recPush("## Contents");
+recPush();
+for (const p of researchPapers) {
+  const st = p.review === "peer-reviewed" ? "peer reviewed" : p.review === "preprint" ? "preprint" : "published";
+  recPush(`- ${p.title} (${p.year}, ${st})`);
+}
 recPush();
 
 for (const p of researchPapers) {

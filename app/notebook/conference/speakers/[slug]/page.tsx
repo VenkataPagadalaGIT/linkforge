@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import SpeakerProfile from "@/views/SpeakerProfile";
 import { getSpeakerBySlug } from "@/data/speakers";
 import { SITE_URL } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 interface Props {
   params: { slug: string };
@@ -82,8 +83,8 @@ export default function Page({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(personLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbLd) }} />
       <SpeakerProfile speaker={sp} />
     </>
   );

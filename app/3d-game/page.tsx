@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ThreeDGame from "@/views/ThreeDGame";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 export const dynamic = "force-static";
 
@@ -83,7 +84,7 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <ThreeDGame />
     </>

@@ -14,6 +14,13 @@ Full records for every paper the site claims. Each one states its peer-review st
 Collection page: https://venkatapagadala.com/research-and-talks
 Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
 
+## Contents
+
+- The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape (2026, preprint)
+- Google, SEO and Helpful Content: How Artificial Intelligence Can Be Helpful for E-Commerce Websites (2024, peer reviewed)
+- A survey of reward hacking in agentic large language model systems (2026, peer reviewed)
+- AI-Assisted SEO: Leveraging Machine Learning for Search Engine Optimization (2023, published)
+
 ## The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape
 
 - Status: Preprint, not peer reviewed
@@ -37,7 +44,7 @@ Large Language Models have reshaped the search landscape in ways that are only b
 - Citation: Journal of Digital & Social Media Marketing, vol. 12, no. 3, pp. 206-226 (2024)
 - Authors: Russ Macumber, Venkata Durga Eswar Pagadala (Co-author, 2 of 2)
 - DOI: https://doi.org/10.69554/RJUW9313
-- Publisher record: https://www.ingentaconnect.com/content/hsp/jdsmm/2024/00000012/00000003/art00002
+- Publisher record: https://hstalks.com/article/8917/google-seo-and-helpful-content-how-artificial-inte/
 - Access: Subscriber access at the publisher
 - Keywords: SEO, helpful content, artificial intelligence, e-commerce
 

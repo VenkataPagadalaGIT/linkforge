@@ -20,6 +20,7 @@ import { aiUpdates } from "@/data/aiUpdates";
 import { VIDEOS_FOR, GUIDES_FOR } from "@/data/encyclopediaResources";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
 import DeepDive from "@/components/learn/DeepDive";
+import { jsonLdScript } from "@/lib/jsonld";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -167,7 +168,7 @@ export default function Page({ params }: { params: { id: string } }) {
       homeLabel="Encyclopedia home"
       crossLink={{ href: "/notebook/ai", label: "← AI Notebook hub" }}
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <article>
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
           <span style={{ color: cat?.color }}>{c.category}</span>

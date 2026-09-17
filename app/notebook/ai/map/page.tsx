@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AiSystemsMapView from "@/views/AiSystemsMapView";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { ONTOLOGY_COUNTS, LAYERS } from "@/data/aiOntology";
+import { jsonLdScript } from "@/lib/jsonld";
 
 const desc = `The AI value chain as one graph: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers, ${ONTOLOGY_COUNTS.edges} typed dependencies, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on.`;
 
@@ -34,7 +35,7 @@ const jsonLd = {
 export default function Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <AiSystemsMapView />
     </>
   );

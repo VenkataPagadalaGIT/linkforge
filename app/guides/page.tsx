@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GuidesIndex from "@/views/GuidesIndex";
 import { guides } from "@/data/guides";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
+import { jsonLdScript } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   // The root layout appends " · Venkata Pagadala", so naming the brand here
@@ -42,7 +43,7 @@ export default function Page() {
   };
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <GuidesIndex />
     </>
   );

@@ -50,10 +50,43 @@ const Publications = () => {
           </div>
         </ScrollReveal>
 
+        {/* Contents. Four records, each one long, so the page needs a way in
+            that is not scrolling. Real anchors, rendered server-side, and each
+            row says the review status up front because that is the thing a
+            reader is here to check. */}
+        <nav aria-labelledby="toc-h" className="border border-border bg-card/20 p-5 mb-10">
+          <h2 id="toc-h" className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
+            On this page
+          </h2>
+          <ol className="space-y-1.5">
+            {researchPapers.map((paper, i) => (
+              <li key={paper.title} className="flex items-baseline gap-3">
+                <span className="font-mono text-[10px] text-muted-foreground/70 tabular-nums w-4 shrink-0">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <a
+                  href={`#${paper.slug}`}
+                  className="font-mono text-xs text-foreground underline decoration-border hover:decoration-foreground underline-offset-4 transition-colors"
+                >
+                  {paper.shortTitle}
+                </a>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {paper.year} ·{" "}
+                  {paper.review === "peer-reviewed"
+                    ? "peer reviewed"
+                    : paper.review === "preprint"
+                      ? "preprint"
+                      : "published"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
         <div className="space-y-6">
           {researchPapers.map((paper, i) => (
             <ScrollReveal key={paper.title} delay={i * 80}>
-              <article className="border border-border p-8 border-glow-hover">
+              <article id={paper.slug} className="border border-border p-8 border-glow-hover scroll-mt-28">
                 {/* From sm up it floats, so the record reads as one column of
                     text with the page beside it the way a repository lays one
                     out. On a phone it does not: a 100px float left the title
