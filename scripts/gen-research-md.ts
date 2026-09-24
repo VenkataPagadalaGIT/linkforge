@@ -279,12 +279,17 @@ const TWINS: Array<[string, string]> = [
 // data rather than rewriting them. A twin nobody regenerates is the same
 // failure as no twin, except it looks maintained.
 const check = process.argv.includes("--check");
+// generated_at is the day the file was written, so it changes on every run and
+// says nothing about whether the content did. The gate compares everything
+// but that line; otherwise it went red on calendar drift alone, and a gate
+// that fails for no reason gets switched off.
+const content = (s: string) => s.replace(/^generated_at: .*$/m, "");
 let stale = 0;
 for (const [name, body] of TWINS) {
   const target = join(process.cwd(), "public", name);
   if (check) {
     const current = existsSync(target) ? readFileSync(target, "utf8") : "";
-    if (current !== body) {
+    if (content(current) !== content(body)) {
       console.error(`public/${name} is stale.`);
       stale++;
     } else {

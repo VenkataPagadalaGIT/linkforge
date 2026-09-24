@@ -53,7 +53,16 @@ for p in paths:
         continue
     body = text_of(h)
     ld = jsonld(h)
-    types = [d.get("@type") for d in ld]
+    # A script tag may hold one object, a JSON-LD array, or a @graph. All three
+    # are valid and all three exist on this site (3d-game and the fan-out tool
+    # emit arrays; research-and-talks emits a @graph). The gate used to call
+    # .get on whatever came back and crashed on the first array it met, which
+    # is a gate that measures nothing. Flatten to nodes first.
+    nodes = []
+    for d in ld:
+        items = d if isinstance(d, list) else d.get("@graph", [d]) if isinstance(d, dict) else []
+        nodes.extend(i for i in items if isinstance(i, dict))
+    types = [d.get("@type") for d in nodes]
     links = set(re.findall(r'href="(/personas[^"#?]*)"', h))
     for l in links:
         if l.rstrip("/") != p.rstrip("/"):

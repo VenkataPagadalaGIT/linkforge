@@ -17,6 +17,7 @@ const Footer = () => {
     { label: "Solutions", to: "/solutions" },
     { label: "Insights", to: "/insights" },
     { label: "Audience Personas", to: "/personas" },
+    { label: "Persona Fanout Journey", to: "/personas/fanout-journey" },
     { label: "Credits & Inspiration", to: "/credits" },
     { label: "Contact", to: "/contact" },
   ];

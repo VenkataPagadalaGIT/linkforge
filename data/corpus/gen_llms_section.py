@@ -48,6 +48,15 @@ L.append("")
 L.append(f"- URL: {SITE}/personas")
 L.append(f"- Data and full crosstabs: {SITE}/personas/data")
 L.append("")
+# The fan-out tool is data-free by design (a planning model, not the corpus),
+# so it is a fixed block here rather than a query. It lives inside this
+# section because hand edits to llms.txt between the two headings are
+# replaced wholesale on every run.
+L.append('### Persona Fanout Journey')
+L.append('')
+L.append("A universal planning tool covering the entire buyer's journey. One starting query is fanned out by persona scenario and by every stage, Discover, Explore, Compare, Decide and Own, into specific questions; each question states which explicit inputs produced it (budget cap, primary need, hard constraint, timing, location, experience as context only), the content format that tends to answer it, and how to validate it. Works for any purchase: buying a car, buying a phone and choosing a phone plan ship as presets and the product label can be set to anything. Everything it generates is an illustrative hypothesis, not measured demand, and it says so; it is linked to Audience Personas and deliberately kept apart from it.")
+L.append('- URL: https://venkatapagadala.com/personas/fanout-journey')
+L.append('')
 L.append("### Source documents")
 L.append("")
 for r in srcs:

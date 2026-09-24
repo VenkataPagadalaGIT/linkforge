@@ -28,6 +28,7 @@ const STATIC_ROUTES = [
   "/notebook",
   "/personas",
   "/personas/data",
+  "/personas/fanout-journey",
   "/notebook/ai",
   "/notebook/ai/agents",
   "/notebook/ai/roadmap",
