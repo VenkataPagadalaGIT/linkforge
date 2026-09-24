@@ -103,6 +103,15 @@ export default function Page() {
           </a>
         </p>
 
+        <p className="font-mono text-xs text-muted-foreground leading-relaxed max-w-3xl mb-8">
+          Nobody reads 463 rows. To use the library, open the{" "}
+          <Link href="/personas/builder" className="text-foreground underline decoration-border hover:decoration-foreground transition-colors">
+            Persona Builder
+          </Link>
+          : it asks you these questions along a path for your situation and composes a persona you can open in the journey.
+          This page is the reference every answer links back to.
+        </p>
+
         {/* The terms the library is used on, verbatim from the workbook. */}
         <section aria-labelledby="rules-h" className="border border-border/60 p-5 mb-10">
           <h2 id="rules-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
@@ -178,6 +187,11 @@ export default function Page() {
             Related
           </h2>
           <ul className="grid sm:grid-cols-2 gap-2 font-mono text-xs">
+            <li>
+              <Link href="/personas/builder" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
+                Persona Builder: answer these questions and get a persona, not a list
+              </Link>
+            </li>
             <li>
               <Link href="/personas/fanout-journey" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
                 Persona Fanout Journey: one query, every buyer, the whole journey

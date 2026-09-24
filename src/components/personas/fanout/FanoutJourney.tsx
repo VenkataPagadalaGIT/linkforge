@@ -17,6 +17,7 @@ import FanoutMatrix from "./FanoutMatrix";
 import ContextLab, { type LensId } from "./ContextLab";
 import ScenarioEditor from "./ScenarioEditor";
 import QuestionDetail from "./QuestionDetail";
+import { HANDOFF_KEY, readHandoff } from "@/data/builder";
 
 type View = "map" | "matrix" | "lab";
 
@@ -134,10 +135,29 @@ export default function FanoutJourney() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORE);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed?.schema === 1 && valid(parsed.state)) setState(parsed.state);
+      // A persona arriving from /personas/builder wins over whatever was
+      // stored: it becomes the first scenario of the blank preset, with the
+      // three generic scenarios kept as comparators, and starts at Discover.
+      const h = readHandoff();
+      if (h) {
+        const base = fromPreset("custom");
+        setState({
+          ...base,
+          product: h.product,
+          seed: h.seed,
+          budgetPeriod: h.budgetPeriod,
+          scenarios: [h.scenario, ...base.scenarios.slice(0, 3)],
+          selected: h.scenario.id,
+          stage: "discover",
+        });
+        localStorage.removeItem(HANDOFF_KEY);
+        setToast("Loaded your persona from the builder. Its inputs are editable here.");
+      } else {
+        const raw = localStorage.getItem(STORE);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.schema === 1 && valid(parsed.state)) setState(parsed.state);
+        }
       }
     } catch {
       /* private mode or blocked storage: the defaults are already right */
@@ -156,7 +176,7 @@ export default function FanoutJourney() {
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(null), 2200);
+    const t = setTimeout(() => setToast(null), toast.length > 40 ? 5000 : 2200);
     return () => clearTimeout(t);
   }, [toast]);
 

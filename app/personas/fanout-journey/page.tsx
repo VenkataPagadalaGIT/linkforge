@@ -272,6 +272,11 @@ export default function Page() {
           </h2>
           <ul className="grid sm:grid-cols-2 gap-2 font-mono text-xs">
             <li>
+              <Link href="/personas/builder" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
+                Persona Builder: compose a persona from the framework and open it here
+              </Link>
+            </li>
+            <li>
               <Link href="/personas" className="text-muted-foreground underline decoration-border hover:text-foreground transition-colors">
                 Audience Personas: build any audience and see where it is, graded by evidence
               </Link>

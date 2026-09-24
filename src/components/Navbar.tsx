@@ -182,7 +182,8 @@ const MEGA: MegaMenu[] = [
         title: "The tool",
         items: [
           { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
-          { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey", badge: "NEW" },
+          { label: "Persona Builder", note: "answer the framework's questions, grade the evidence, open the journey", to: "/personas/builder", badge: "NEW" },
+          { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
           { label: "Global Persona Framework", note: "every persona dimension, with its rule, evidence and source", to: "/personas/framework" },
           { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
           { label: "A Worked Persona", note: "the 3-row SUV dad, graded by evidence", to: "/personas/us-dad-30-49-three-row-suv" },
