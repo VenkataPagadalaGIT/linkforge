@@ -351,6 +351,7 @@ export default function FanoutJourney() {
             onSelect={(id) => patch({ selected: id })}
             onStage={(id) => patch({ stage: id })}
             onOpen={openQuestion}
+            onContext={(id) => patch({ view: "lab", lens: id })}
           />
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-t border-border">
             <p className="font-mono text-[11px] text-foreground">

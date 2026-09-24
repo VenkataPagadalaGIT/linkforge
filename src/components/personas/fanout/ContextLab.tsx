@@ -2,7 +2,7 @@
 
 import { scenarioValues, type Preset, type Scenario } from "@/data/fanout";
 
-export type LensId = "none" | "budget" | "need" | "constraint" | "timing" | "experience" | "combined";
+export type LensId = "none" | "budget" | "need" | "constraint" | "timing" | "location" | "experience" | "combined";
 
 export const LENSES: { id: LensId; label: string }[] = [
   { id: "none", label: "No context" },
@@ -10,6 +10,7 @@ export const LENSES: { id: LensId; label: string }[] = [
   { id: "need", label: "Need" },
   { id: "constraint", label: "Constraint" },
   { id: "timing", label: "Timing" },
+  { id: "location", label: "Location" },
   { id: "experience", label: "Experience" },
   { id: "combined", label: "All inputs" },
 ];
@@ -62,6 +63,17 @@ export default function ContextLab({
       after = `Which ${v.product} should I consider if I am buying ${v.timing}?`;
       why = "Timing changes which stage the buyer is really in. Someone researching only does not want a checkout page.";
       chips = [`Timing: ${v.timing}`];
+      break;
+    case "location":
+      if (scenario.location.trim()) {
+        after = `Which ${v.product} should I consider that I can see or try in ${v.location}?`;
+        why = "A place only matters where an answer is local: where to see, try or buy. It narrows to what is actually available nearby, and nothing else.";
+        chips = [`Location: ${v.location}`];
+      } else {
+        why =
+          "No location has been given, so the question does not change. Location only matters where an answer is local, and the tool will not invent a place. Add one in the editor and this lens shows the local form.";
+        chips = ["Location: not given", "No place inferred"];
+      }
       break;
     case "experience":
       why =

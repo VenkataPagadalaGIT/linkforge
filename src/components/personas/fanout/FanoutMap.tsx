@@ -5,6 +5,7 @@ import {
   DIMENSIONS,
   STAGES,
   formatBudget,
+  type DimensionId,
   type FanoutQuestion,
   type Preset,
   type Scenario,
@@ -34,6 +35,7 @@ export default function FanoutMap({
   onSelect,
   onStage,
   onOpen,
+  onContext,
 }: {
   scenarios: Scenario[];
   selected: string;
@@ -45,6 +47,8 @@ export default function FanoutMap({
   onSelect: (id: string) => void;
   onStage: (id: StageId) => void;
   onOpen: (q: FanoutQuestion) => void;
+  /** A column-02 prompt was clicked: show what adding that input changes. */
+  onContext: (id: DimensionId) => void;
 }) {
   const root = useRef<HTMLDivElement | null>(null);
   const [paths, setPaths] = useState<string[]>([]);
@@ -114,14 +118,27 @@ export default function FanoutMap({
             <p className={head}>02 Clarify context</p>
             <div data-node="context" className="border border-border border-dashed p-3">
               <p className="font-display text-sm font-bold text-foreground mb-2">What do we need to know?</p>
+              {/* Each prompt opens the Context lab on that input. The first
+                  version rendered these as plain text, and they were the one
+                  thing on the map that looked like a button and was not. */}
               <ul className="space-y-1">
                 {DIMENSIONS.map((d) => (
-                  <li key={d.id} className="font-mono text-[11px] text-foreground/85 border border-border/60 px-2 py-1">
-                    {d.prompt}
+                  <li key={d.id}>
+                    <button
+                      type="button"
+                      onClick={() => onContext(d.id)}
+                      aria-label={`${d.prompt} See what adding this input changes`}
+                      className="w-full text-left font-mono text-[11px] text-foreground/85 border border-border/60 px-2 py-1 hover:border-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-colors"
+                    >
+                      {d.prompt}
+                      <span className="float-right text-muted-foreground" aria-hidden="true">→</span>
+                    </button>
                   </li>
                 ))}
               </ul>
-              <p className="font-mono text-[10px] text-muted-foreground mt-2">Explicit answers, not inferred traits.</p>
+              <p className="font-mono text-[10px] text-muted-foreground mt-2">
+                Explicit answers, not inferred traits. Click one to see what it changes.
+              </p>
             </div>
           </div>
 
