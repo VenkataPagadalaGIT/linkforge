@@ -393,7 +393,9 @@ export default function FanoutJourney() {
         </>
       )}
 
-      {detail && <QuestionDetail question={detail} expanded={expanded} onClose={() => setDetail(null)} />}
+      {detail && (
+        <QuestionDetail question={detail} expanded={expanded} extras={scenario.extras} onClose={() => setDetail(null)} />
+      )}
 
       <p className="font-mono text-[10px] text-muted-foreground px-4 py-3 border-t border-border leading-relaxed">
         <span className="text-foreground">What this is:</span> a planning model built from explicit, editable inputs.{" "}

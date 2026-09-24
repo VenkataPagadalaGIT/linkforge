@@ -30,6 +30,7 @@ const Footer = () => {
     { label: "Business Notebook", to: "/notebook/business" },
     { label: "Conference Notebook", to: "/notebook/conference" },
     { label: "Persona Data & Sources", to: "/personas/data" },
+    { label: "Global Persona Framework", to: "/personas/framework" },
   ];
 
   const files = [

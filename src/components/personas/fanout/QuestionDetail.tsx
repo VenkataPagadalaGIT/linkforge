@@ -1,6 +1,8 @@
 "use client";
 
-import type { FanoutQuestion } from "@/data/fanout";
+import Link from "next/link";
+import { DIMENSIONS, FRAMEWORK_STAGE_DIMENSION, STAGES, type FanoutQuestion } from "@/data/fanout";
+import { frameworkById } from "@/data/personaFramework";
 
 /**
  * Why this question exists.
@@ -14,14 +16,20 @@ import type { FanoutQuestion } from "@/data/fanout";
 export default function QuestionDetail({
   question,
   expanded,
+  extras,
   onClose,
 }: {
   question: FanoutQuestion;
   /** The seed plus every explicit input, for pasting into an assistant. */
   expanded: string;
+  /** Extra stated context on the scenario, keyed by framework id. */
+  extras?: Record<string, string>;
   onClose: () => void;
 }) {
   const inputs = Object.entries(question.inputsUsed);
+  const stage = STAGES.find((s) => s.id === question.stageId);
+  const stageDim = frameworkById(FRAMEWORK_STAGE_DIMENSION);
+  const extraRows = Object.entries(extras ?? {}).filter(([, v]) => v && v !== "Not stated");
 
   return (
     <aside
@@ -75,6 +83,59 @@ export default function QuestionDetail({
             <p className="font-mono text-xs text-muted-foreground">Only the product label.</p>
           )}
         </section>
+
+        <section className="sm:col-span-2">
+          <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+            In the framework
+          </h4>
+          <ul className="font-mono text-[11px] text-muted-foreground leading-relaxed space-y-1">
+            {stage && stageDim && (
+              <li>
+                <Link href={`/personas/framework#${stageDim.id}`} className="text-foreground underline decoration-border hover:decoration-foreground transition-colors">
+                  {stageDim.id} {stageDim.name}
+                </Link>
+                : this stage stands for {stage.frameworkStages.join(", ")}.
+              </li>
+            )}
+            {inputs.map(([label]) => {
+              const dim = DIMENSIONS.find((d) => d.label === label);
+              const f = dim && frameworkById(dim.frameworkIds[0]);
+              if (!f) return null;
+              return (
+                <li key={label}>
+                  <span className="text-foreground/85">{label}</span> is{" "}
+                  <Link href={`/personas/framework#${f.id}`} className="text-foreground underline decoration-border hover:decoration-foreground transition-colors">
+                    {f.id} {f.name}
+                  </Link>
+                  . {f.rule}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        {extraRows.length > 0 && (
+          <section className="sm:col-span-2">
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+              Additional stated context
+            </h4>
+            <dl className="font-mono text-xs">
+              {extraRows.map(([id, v]) => (
+                <div key={id} className="flex gap-3 py-0.5 border-t border-border/30 first:border-t-0">
+                  <dt className="text-muted-foreground w-48 shrink-0">
+                    <Link href={`/personas/framework#${id}`} className="underline decoration-border hover:text-foreground transition-colors">
+                      {frameworkById(id)?.name ?? id}
+                    </Link>
+                  </dt>
+                  <dd className="text-foreground/85">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="font-mono text-[10px] text-muted-foreground mt-1.5">
+              Carried in the expanded brief. Never used to generate a question.
+            </p>
+          </section>
+        )}
 
         <section>
           <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5">

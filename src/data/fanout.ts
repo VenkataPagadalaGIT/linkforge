@@ -21,6 +21,17 @@
  * Adding a domain is a data edit here, never a code path.
  */
 
+import { frameworkById } from "./personaFramework";
+
+/**
+ * The Global Persona Framework (/personas/framework) is the vocabulary this
+ * tool draws on. These two dimensions describe the tool itself: P366 is the
+ * journey the five stages are a simplification of, and P462 is the fan-out
+ * construction rule the questions follow.
+ */
+export const FRAMEWORK_STAGE_DIMENSION = "P366";
+export const FRAMEWORK_FANOUT_DIMENSION = "P462";
+
 export type StageId = "discover" | "explore" | "compare" | "decide" | "own";
 
 export interface Stage {
@@ -37,6 +48,8 @@ export interface Stage {
   validation: string;
   /** Why questions at this stage look the way they do. */
   rationale: string;
+  /** The P366 journey-stage values this stage stands for. */
+  frameworkStages: string[];
 }
 
 /**
@@ -55,6 +68,7 @@ export const STAGES: Stage[] = [
     formats: ["Needs checklist", "Budget explainer", "Requirements guide"],
     validation: "Validate with customer interviews and first-party research questions.",
     rationale: "Clarify the requirements before making a shortlist.",
+    frameworkStages: ["Need recognized", "Discover"],
   },
   {
     id: "explore",
@@ -65,6 +79,7 @@ export const STAGES: Stage[] = [
     formats: ["Category guide", "Shortlist tool", "Where-to-try guide"],
     validation: "Validate against your own query logs, site search and customer interviews.",
     rationale: "Identify options to investigate, rather than recommend a winner.",
+    frameworkStages: ["Explore"],
   },
   {
     id: "compare",
@@ -75,6 +90,7 @@ export const STAGES: Stage[] = [
     formats: ["Comparison page", "Total-cost worksheet", "Evidence checklist"],
     validation: "Validate with comparison questions from customer research and sales conversations.",
     rationale: "Compare specific criteria across shortlisted options.",
+    frameworkStages: ["Compare"],
   },
   {
     id: "decide",
@@ -85,6 +101,7 @@ export const STAGES: Stage[] = [
     formats: ["Pre-purchase checklist", "Complete-cost breakdown", "Availability and terms page"],
     validation: "Validate with the questions sales and support hear in the final week before purchase.",
     rationale: "Surface what has to be verified before committing.",
+    frameworkStages: ["Decide", "Purchase or book"],
   },
   {
     id: "own",
@@ -95,6 +112,7 @@ export const STAGES: Stage[] = [
     formats: ["Setup guide", "Ownership tracker", "Renew-or-replace guide"],
     validation: "Validate with support tickets, onboarding drop-off and renewal conversations.",
     rationale: "Anticipate setup, use, support and replacement questions after purchase.",
+    frameworkStages: ["Onboard", "Use", "Renew", "Exit"],
   },
 ];
 
@@ -109,6 +127,8 @@ export interface Dimension {
   placeholder: string;
   /** What this input is, and what it is not allowed to imply. */
   note: string;
+  /** The framework dimensions this input is, most specific first. */
+  frameworkIds: string[];
 }
 
 /**
@@ -124,6 +144,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "Budget?",
     placeholder: "A number, or leave blank",
     note: "A cap the buyer states. It does not establish income or what they can afford.",
+    frameworkIds: ["P108", "P105"],
   },
   {
     id: "need",
@@ -131,6 +152,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "Primary need?",
     placeholder: "What it has to do for them",
     note: "The one thing the purchase must do. The evaluation criterion everything else serves.",
+    frameworkIds: ["P373", "P377"],
   },
   {
     id: "constraint",
@@ -138,6 +160,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "Any hard constraint?",
     placeholder: "A must-have, as a thing: a used vehicle, good coverage at home",
     note: "A must-have or a must-not, written as a thing rather than a sentence. Narrows the option set before comparison starts.",
+    frameworkIds: ["P381", "P379"],
   },
   {
     id: "timing",
@@ -145,6 +168,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "When?",
     placeholder: "Within a month, in about a year...",
     note: "How soon, as a time. Changes which stage the buyer is really in.",
+    frameworkIds: ["P370", "P115"],
   },
   {
     id: "location",
@@ -152,6 +176,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "Where?",
     placeholder: "City or region, optional",
     note: "Only used where an answer is local: where to see, try or buy.",
+    frameworkIds: ["P019", "P023"],
   },
   {
     id: "experience",
@@ -159,6 +184,7 @@ export const DIMENSIONS: Dimension[] = [
     prompt: "Experience with this? (context only)",
     placeholder: "First-time buyer, replacing one...",
     note: "Context, not a preference. It changes what needs explaining, never what they want.",
+    frameworkIds: ["P374", "P367"],
   },
 ];
 
@@ -176,7 +202,21 @@ export interface Scenario {
   timing: string;
   location: string;
   experience: string;
+  /**
+   * Optional context from the framework, keyed by dimension id (P374 ...),
+   * value as the workbook lists it. It appears in the expanded prompt and
+   * the detail panel and never in a template, so adding it cannot make two
+   * scenarios read alike and cannot break the fan-out invariant.
+   */
+  extras?: Record<string, string>;
 }
+
+/**
+ * Framework dimensions a scenario can carry as extra stated context. A
+ * curated eight, not the library: P451 says a large taxonomy is not a
+ * requirement to collect every field.
+ */
+export const EXTRA_CONTEXT_IDS = ["P374", "P375", "P378", "P379", "P109", "P113", "P191", "P193"] as const;
 
 export interface Preset {
   id: string;
@@ -558,6 +598,9 @@ export function expandedPrompt(
     `Timing: ${v.timing}`,
     scenario.location.trim() ? `Location: ${v.location}` : null,
     `Experience (context only): ${v.experience}`,
+    ...Object.entries(scenario.extras ?? {})
+      .filter(([, val]) => val && val !== "Not stated")
+      .map(([id, val]) => `${frameworkById(id)?.name ?? id} (${id}): ${val}`),
     "",
     "These are explicit inputs. Do not infer preferences from anything not listed.",
   ]

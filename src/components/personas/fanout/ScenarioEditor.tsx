@@ -1,6 +1,8 @@
 "use client";
 
-import { DIMENSIONS, type Preset, type Scenario } from "@/data/fanout";
+import Link from "next/link";
+import { DIMENSIONS, EXTRA_CONTEXT_IDS, type Preset, type Scenario } from "@/data/fanout";
+import { frameworkById } from "@/data/personaFramework";
 
 /**
  * The scenario's inputs, laid out as inputs.
@@ -111,6 +113,51 @@ export default function ScenarioEditor({
             <span className="block font-mono text-[10px] text-muted-foreground/80 mt-1 leading-snug">{d.note}</span>
           </label>
         ))}
+      </div>
+
+      {/* Optional context from the framework. It travels with the scenario
+          into the expanded brief and the detail panel; it never enters a
+          template, so it cannot make two scenarios read alike. */}
+      <div className="mt-6 pt-4 border-t border-border/50">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Add context from the{" "}
+          <Link href="/personas/framework" className="text-foreground underline decoration-border hover:decoration-foreground transition-colors normal-case tracking-normal">
+            Global Persona Framework
+          </Link>{" "}
+          · optional
+        </p>
+        <p className="font-mono text-[10px] text-muted-foreground/80 mt-1 mb-3 leading-snug">
+          Stated by the buyer, never inferred. Carried in the expanded brief; not used to generate questions.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3">
+          {EXTRA_CONTEXT_IDS.map((id) => {
+            const f = frameworkById(id);
+            if (!f) return null;
+            const val = scenario.extras?.[id] ?? "";
+            return (
+              <label key={id} className="block">
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                  {f.name} <span className="text-muted-foreground/70 tracking-normal">{f.id}</span>
+                </span>
+                <select
+                  className={`${field} mt-1`}
+                  value={val}
+                  onChange={(e) =>
+                    onChange({ ...scenario, extras: { ...(scenario.extras ?? {}), [id]: e.target.value } })
+                  }
+                >
+                  <option value="">Not stated</option>
+                  {f.values.map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                <span className="block font-mono text-[10px] text-muted-foreground/80 mt-1 leading-snug">{f.ask}</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

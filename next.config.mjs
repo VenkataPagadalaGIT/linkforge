@@ -65,6 +65,20 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // The Global Persona Framework's markdown twin, generated from the
+        // workbook by data/persona-framework/gen_framework.py. Same reason
+        // as the guides: text for clients that want text, canonical on the
+        // HTML page so the twin is never indexed as a duplicate.
+        source: "/personas/:page(framework).md",
+        headers: [
+          {
+            key: "Link",
+            value: '<https://venkatapagadala.com/personas/framework>; rel="canonical"',
+          },
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+        ],
+      },
       // Fingerprinted build assets never change under the same URL, so the
       // revalidation round trip bought nothing. PRODUCTION ONLY: dev chunk
       // URLs are stable across edits, so marking them immutable made every

@@ -98,6 +98,15 @@ else
   bad "fan-out gate failed; see /tmp/preflight-fanout.log"
 fi
 
+# Framework gate: the page, its markdown twin and the workbook must agree.
+# Both derived files are generated from the workbook; a stale one tells a
+# reader or an AI client something the source no longer says.
+if python3 data/persona-framework/gen_framework.py --check > /tmp/preflight-framework.log 2>&1; then
+  ok "framework: data module and markdown twin match the workbook"
+else
+  bad "framework gate failed; run: python3 data/persona-framework/gen_framework.py"
+fi
+
 # Brand and accessibility gate: accent colors carry theme pairs, readable
 # text never drops below the /70 floor. See docs/BRAND_GUIDELINES.md.
 if python3 scripts/check-brand.py > /tmp/preflight-brand.log 2>&1; then
