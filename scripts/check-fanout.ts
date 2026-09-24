@@ -14,7 +14,7 @@
  *
  *   npx tsx scripts/check-fanout.ts
  */
-import { PRESETS, STAGES, fanout, fanoutInvariantSlots } from "../src/data/fanout";
+import { PRESETS, STAGES, TEMPLATES, fanout, fanoutInvariantSlots } from "../src/data/fanout";
 
 const invariant = fanoutInvariantSlots();
 
@@ -32,8 +32,24 @@ for (const p of PRESETS) {
   }
 }
 
-const total = PRESETS.length * STAGES.length * 3;
-if (invariant.length || malformed.length) {
+const total = PRESETS.length * STAGES.reduce((n, st) => n + TEMPLATES[st.id].length, 0);
+
+// Each template reads exactly one of need/constraint as its primary input.
+// Both is how a question turns into a mouthful; neither is how it stops
+// varying by persona.
+const shape: string[] = [];
+for (const st of STAGES) {
+  for (const slot of TEMPLATES[st.id]) {
+    const n = /\{need\}/.test(slot.template) ? 1 : 0;
+    const c = /\{constraint\}/.test(slot.template) ? 1 : 0;
+    if (n + c !== 1) shape.push(`${st.id}/${slot.qtype}: reads need=${n} constraint=${c}`);
+  }
+}
+if (shape.length) {
+  console.error(`FAIL: ${shape.length} template(s) do not read exactly one of need/constraint:`);
+  for (const x of shape) console.error(`  ${x}`);
+}
+if (invariant.length || malformed.length || shape.length) {
   if (invariant.length) {
     console.error(`FAIL: ${invariant.length} of ${total} (preset/stage/slot) questions do not change with the persona:`);
     for (const b of invariant) console.error(`  ${b}`);
@@ -44,4 +60,4 @@ if (invariant.length || malformed.length) {
   }
   process.exit(1);
 }
-console.log(`FANOUT GATE: PASS (${total}/${total} questions vary by persona; none malformed; experience never leaks)`);
+console.log(`FANOUT GATE: PASS (${total}/${total} questions vary by persona; each template reads one primary input; none malformed; experience never leaks)`);

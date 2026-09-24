@@ -40,7 +40,7 @@ export default function QuestionDetail({
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="min-w-0">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
-            {question.scenarioName} · {question.stageName} · {question.type}
+            {question.scenarioName} · {question.stageName} · {question.qtype} · {question.format}
           </p>
           <h3 id="fanout-detail-h" className="font-display text-lg font-bold text-foreground leading-snug text-balance">
             {question.question}

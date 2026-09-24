@@ -32,6 +32,25 @@ text-emerald-700 dark:text-emerald-300 (success, free, live)
 
 Never `text-amber-300` alone on a text element. The checker flags it.
 
+## Journey stage accents
+
+The Persona Fanout Journey colours each stage of the buyer's journey. The
+five are tokens in `app/globals.css`, written as pairs like every other
+accent: the `-700` shade on light, the `-300` shade on dark. They are read
+from inline styles (SVG wires, card bars), which cannot compose `hsl()`, so
+they are stored as hex, the one place on the site that is.
+
+| Stage | Token | Light | Dark |
+|---|---|---|---|
+| Discover | `--stage-discover` | sky-700 | sky-300 |
+| Explore | `--stage-explore` | violet-700 | violet-300 |
+| Compare | `--stage-compare` | amber-700 | amber-300 |
+| Decide | `--stage-decide` | rose-700 | rose-300 |
+| Own | `--stage-own` | emerald-700 | emerald-300 |
+
+Colour marks the stage; it never carries text on its own. Labels stay in
+`text-foreground` / `text-muted-foreground`.
+
 ## Contrast standards (WCAG 2.1 AA)
 
 - Normal text: **4.5:1** minimum against its effective background.

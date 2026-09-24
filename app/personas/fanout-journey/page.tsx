@@ -11,6 +11,7 @@ import {
   FANOUT_TITLE,
   PRESETS,
   STAGES,
+  TEMPLATES,
   fanoutAll,
   presetById,
 } from "@/data/fanout";
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
 const FAQ: { q: string; a: string }[] = [
   {
     q: "What does the Persona Fanout Journey do?",
-    a: "It takes one broad starting query, asks what would need to be known before it could be answered, and fans it out into persona scenarios and buying stages. Each scenario at each stage produces three specific questions, and every question shows which explicit inputs produced it, what content format tends to answer it, and how to validate it.",
+    a: "It takes one broad starting query, asks what would need to be known before it could be answered, and fans it out into persona scenarios and buying stages. Each scenario at each stage produces four questions of different types, following the framework's P376 question types, and every question shows which explicit inputs produced it, what content format tends to answer it, and how to validate it. In the matrix you mark each question have or gap and export the gaps.",
   },
   {
     q: "Does it work for anything other than cars?",
@@ -67,7 +68,8 @@ export default function Page() {
     stage: st,
     questions: fanoutAll([family], example).filter((q) => q.stageId === st.id),
   }));
-  const total = PRESETS[0].scenarios.length * STAGES.length * 3;
+  const perScenario = STAGES.reduce((n, st) => n + TEMPLATES[st.id].length, 0);
+  const total = PRESETS[0].scenarios.length * perScenario;
 
   const jsonLd = [
     {
@@ -86,7 +88,7 @@ export default function Page() {
       dateModified: FANOUT_LAST_UPDATED,
       featureList: [
         "Fan-out map: seed, context, scenario, stage, questions",
-        "Journey matrix: scenarios across, stages down",
+        "Journey matrix: scenarios across, stages down, with have/gap marks and a gap-list export",
         "Context lab: the same question before and after one explicit input",
         "Editable scenario inputs with no inferred traits",
         "CSV and JSON export",
@@ -147,7 +149,7 @@ export default function Page() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-border">
-                  {["Stage", "Goal", "Kind of answer", "Formats that tend to answer it", "How to validate"].map((h) => (
+                  {["Stage", "Goal", "Question types (P376)", "Formats that tend to answer them", "How to validate"].map((h) => (
                     <th key={h} scope="col" className="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground px-3 py-2 align-bottom">
                       {h}
                     </th>
@@ -162,8 +164,8 @@ export default function Page() {
                       <span className="font-display text-sm font-bold text-foreground">{st.name}</span>
                     </th>
                     <td className="px-3 py-2.5 font-mono text-[11px] text-foreground/85">{st.goal}</td>
-                    <td className="px-3 py-2.5 font-mono text-[11px] text-foreground/85">{st.type}</td>
-                    <td className="px-3 py-2.5 font-mono text-[11px] text-muted-foreground">{st.formats.join(" · ")}</td>
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-foreground/85">{TEMPLATES[st.id].map((x) => x.qtype).join(" · ")}</td>
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-muted-foreground">{TEMPLATES[st.id].map((x) => x.format).join(" · ")}</td>
                     <td className="px-3 py-2.5 font-mono text-[11px] text-muted-foreground leading-relaxed">{st.validation}</td>
                   </tr>
                 ))}

@@ -13,7 +13,7 @@ import {
   type StageId,
 } from "@/data/fanout";
 import FanoutMap from "./FanoutMap";
-import FanoutMatrix from "./FanoutMatrix";
+import FanoutMatrix, { type Coverage } from "./FanoutMatrix";
 import ContextLab, { type LensId } from "./ContextLab";
 import ScenarioEditor from "./ScenarioEditor";
 import QuestionDetail from "./QuestionDetail";
@@ -32,6 +32,8 @@ interface State {
   view: View;
   lens: LensId;
   compare: string[];
+  /** Have/gap marks by question id. Never touches the questions. */
+  coverage: Record<string, Coverage>;
 }
 
 const STORE = "fanout-journey-v1";
@@ -49,6 +51,7 @@ function fromPreset(id: string): State {
     view: "map",
     lens: "combined",
     compare: p.scenarios.map((s) => s.id),
+    coverage: {},
   };
 }
 
@@ -113,7 +116,7 @@ const STORY: { title: string; caption: string; apply: (s: State) => Partial<Stat
   },
   {
     title: "See the whole journey at once.",
-    caption: "The matrix is the planning view: scenarios across, stages down. An empty column is a buyer you are not talking to.",
+    caption: "The matrix is the planning view: scenarios across, stages down. Mark each question have or gap and export the gaps. An empty column is a buyer you are not talking to.",
     apply: () => ({ view: "matrix" }),
   },
 ];
@@ -156,7 +159,7 @@ export default function FanoutJourney() {
         const raw = localStorage.getItem(STORE);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed?.schema === 1 && valid(parsed.state)) setState(parsed.state);
+          if (parsed?.schema === 1 && valid(parsed.state)) setState({ ...parsed.state, coverage: parsed.state.coverage ?? {} });
         }
       }
     } catch {
@@ -222,7 +225,7 @@ export default function FanoutJourney() {
           product: state.product,
           stages: STAGES.map(({ id, name, goal, type, validation }) => ({ id, name, goal, type, validation })),
           scenarios: state.scenarios,
-          questions: all,
+          questions: all.map((q) => ({ ...q, coverage: state.coverage[q.id] ?? null })),
         },
         null,
         2,
@@ -230,6 +233,26 @@ export default function FanoutJourney() {
       "application/json",
       "persona-fanout-journey.json",
     );
+  };
+
+  const exportGaps = () => {
+    const gaps = all.filter((q) => state.coverage[q.id] === "gap");
+    const have = all.filter((q) => state.coverage[q.id] === "have");
+    const L = [
+      `# Content gaps: ${state.product || "product"}`,
+      "",
+      `Starting query: ${state.seed}. ${gaps.length} gaps, ${have.length} covered, ${all.length - gaps.length - have.length} unmarked, across ${state.scenarios.length} scenarios and ${STAGES.length} stages.`,
+      "Illustrative hypotheses from stated inputs, not measured demand. Validate before writing.",
+      "",
+    ];
+    for (const st of STAGES) {
+      const rows = gaps.filter((q) => q.stageId === st.id);
+      if (!rows.length) continue;
+      L.push(`## ${st.name}: ${st.goal}`, "");
+      for (const q of rows) L.push(`- [${q.scenarioName}] ${q.question}`, `  Format: ${q.format} · Type: ${q.qtype} · Validate: ${q.validation}`);
+      L.push("");
+    }
+    download(L.join("\n"), "text/markdown", "content-gaps.md");
   };
 
   const stepStory = (i: number) => {
@@ -248,21 +271,28 @@ export default function FanoutJourney() {
 
   return (
     <div className="border border-border bg-card/20">
-      {/* Row 1: the seed and the domain */}
+      {/* Row 1: what you sell. The tool is theirs the moment they type it; the
+          seed follows the product until someone edits the seed by hand. */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b border-border">
-        {/* basis-full under sm: in a wrapping row the input shrank to nothing
-            beside the domain select, and "01 START" ran into "DOMAIN". */}
-        <label className="flex items-center gap-2 min-w-0 basis-full sm:basis-auto sm:flex-1">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground shrink-0">01 Start</span>
+        {/* On a phone the label sits above the input: beside it, "WHAT DO YOU
+            SELL?" took 150 of 340 available pixels and left a 164px field. */}
+        <label className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2 min-w-0 basis-full sm:basis-auto sm:flex-1">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground shrink-0">What do you sell?</span>
           <input
-            value={state.seed}
-            onChange={(e) => patch({ seed: e.target.value })}
-            placeholder="I want to buy a..."
-            className="min-w-0 flex-1 font-mono text-xs bg-transparent border border-border text-foreground px-2 py-1.5 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/60"
+            value={state.product}
+            onChange={(e) => {
+              const product = e.target.value;
+              const defaultSeed = presetById(state.presetId).seed;
+              const seedFollows = !state.seed.trim() || state.seed === defaultSeed || /^I want to buy a /.test(state.seed);
+              patch({ product, ...(seedFollows ? { seed: product.trim() ? `I want to buy a ${product.trim()}` : defaultSeed } : {}) });
+            }}
+            placeholder="car, phone, phone plan, anything"
+            aria-label="What do you sell?"
+            className="min-w-0 w-full sm:w-auto sm:flex-1 font-display text-base bg-transparent border border-border text-foreground px-3 py-2 placeholder:text-muted-foreground/70 focus:outline-none focus:border-foreground/60"
           />
         </label>
         <label className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Domain</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Or start from</span>
           <select
             value={state.presetId}
             onChange={(e) => {
@@ -303,7 +333,7 @@ export default function FanoutJourney() {
       {/* Row 2: counts and views */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b border-border">
         <p className="font-mono text-[10px] text-muted-foreground tabular-nums">
-          1 starting query · {state.scenarios.length} editable scenarios · {STAGES.length} stages · {all.length} questions
+          {state.scenarios.length} scenarios · {STAGES.length} stages · {all.length} questions · {Object.values(state.coverage).filter((c) => c === "gap").length} gaps marked
         </p>
         <div className="flex gap-1.5 ml-auto" role="group" aria-label="View">
           {(
@@ -324,6 +354,9 @@ export default function FanoutJourney() {
           </button>
           <button type="button" onClick={exportJson} className={chip(false)}>
             JSON ↓
+          </button>
+          <button type="button" onClick={exportGaps} className={chip(false)} title="The questions marked gap in the matrix">
+            Gap list ↓
           </button>
           <button
             type="button"
@@ -392,10 +425,19 @@ export default function FanoutJourney() {
           compare={state.compare}
           preset={ctx}
           seed={state.seed}
+          coverage={state.coverage}
           onToggle={(id) =>
             patch({ compare: state.compare.includes(id) ? state.compare.filter((c) => c !== id) : [...state.compare, id] })
           }
           onOpen={openQuestion}
+          onCoverage={(id, next) =>
+            setState((s) => {
+              const coverage = { ...s.coverage };
+              if (next) coverage[id] = next;
+              else delete coverage[id];
+              return { ...s, coverage };
+            })
+          }
         />
       )}
 

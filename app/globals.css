@@ -51,6 +51,16 @@
     --glow: 0 0% 0%;
 
     --scrollbar-track: 0 0% 96%;
+
+    /* Journey stage accents: one hue per stage of the buyer's journey, as the
+       brand book requires accents to be written, a -700 shade on light and a
+       -300 shade on dark. Hex rather than an HSL triplet because they are read
+       from inline styles (wires, bars) that cannot compose hsl(). */
+    --stage-discover: #0369a1; /* sky-700 */
+    --stage-explore: #6d28d9;  /* violet-700 */
+    --stage-compare: #b45309;  /* amber-700 */
+    --stage-decide: #be123c;   /* rose-700 */
+    --stage-own: #047857;      /* emerald-700 */
     --scrollbar-thumb: 0 0% 65%;
   }
 
@@ -96,6 +106,11 @@
     --glow: 0 0% 100%;
 
     --scrollbar-track: 0 0% 2%;
+    --stage-discover: #7dd3fc; /* sky-300 */
+    --stage-explore: #c4b5fd;  /* violet-300 */
+    --stage-compare: #fcd34d;  /* amber-300 */
+    --stage-decide: #fda4af;   /* rose-300 */
+    --stage-own: #6ee7b7;      /* emerald-300 */
     --scrollbar-thumb: 0 0% 20%;
   }
 }

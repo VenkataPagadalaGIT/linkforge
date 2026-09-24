@@ -42,8 +42,6 @@ export interface Stage {
   goal: string;
   /** The kind of answer the stage wants: definition, shortlist, comparison... */
   type: string;
-  /** Content formats that tend to answer this stage; one per template slot. */
-  formats: [string, string, string];
   /** How to check the generated questions against reality. */
   validation: string;
   /** Why questions at this stage look the way they do. */
@@ -65,7 +63,6 @@ export const STAGES: Stage[] = [
     name: "Discover",
     goal: "Understand the need",
     type: "Definition",
-    formats: ["Needs checklist", "Budget explainer", "Requirements guide"],
     validation: "Validate with customer interviews and first-party research questions.",
     rationale: "Clarify the requirements before making a shortlist.",
     frameworkStages: ["Need recognized", "Discover"],
@@ -76,7 +73,6 @@ export const STAGES: Stage[] = [
     name: "Explore",
     goal: "Build a shortlist",
     type: "Shortlist",
-    formats: ["Category guide", "Shortlist tool", "Where-to-try guide"],
     validation: "Validate against your own query logs, site search and customer interviews.",
     rationale: "Identify options to investigate, rather than recommend a winner.",
     frameworkStages: ["Explore"],
@@ -87,7 +83,6 @@ export const STAGES: Stage[] = [
     name: "Compare",
     goal: "Evaluate trade-offs",
     type: "Comparison",
-    formats: ["Comparison page", "Total-cost worksheet", "Evidence checklist"],
     validation: "Validate with comparison questions from customer research and sales conversations.",
     rationale: "Compare specific criteria across shortlisted options.",
     frameworkStages: ["Compare"],
@@ -98,7 +93,6 @@ export const STAGES: Stage[] = [
     name: "Decide",
     goal: "Resolve buying friction",
     type: "Transaction",
-    formats: ["Pre-purchase checklist", "Complete-cost breakdown", "Availability and terms page"],
     validation: "Validate with the questions sales and support hear in the final week before purchase.",
     rationale: "Surface what has to be verified before committing.",
     frameworkStages: ["Decide", "Purchase or book"],
@@ -109,7 +103,6 @@ export const STAGES: Stage[] = [
     name: "Own",
     goal: "Use, maintain, renew or replace",
     type: "Ownership",
-    formats: ["Setup guide", "Ownership tracker", "Renew-or-replace guide"],
     validation: "Validate with support tickets, onboarding drop-off and renewal conversations.",
     rationale: "Anticipate setup, use, support and replacement questions after purchase.",
     frameworkStages: ["Onboard", "Use", "Renew", "Exit"],
@@ -439,50 +432,84 @@ export const PRESETS: Preset[] = [
 export const presetById = (id: string): Preset => PRESETS.find((p) => p.id === id) ?? PRESETS[0];
 
 /**
- * Question templates, keyed by stage only. They are written against the
+ * The framework's P376 "Question type needed": the second axis of the
+ * fan-out. A stage says where the buyer is; the question type says what kind
+ * of answer they need there. Stage × type gives questions that differ in
+ * job, not just in wording.
+ */
+export type QuestionType =
+  | "Definition"
+  | "How-to"
+  | "Requirements"
+  | "Shortlist"
+  | "Comparison"
+  | "Price"
+  | "Availability"
+  | "Process"
+  | "Troubleshooting";
+
+export const FRAMEWORK_QUESTION_TYPE_DIMENSION = "P376";
+
+export interface Slot {
+  qtype: QuestionType;
+  /** The content format that tends to answer this question. */
+  format: string;
+  template: string;
+}
+
+/**
+ * Question templates, keyed by stage. They are written against the
  * dimensions, never against a domain, which is what makes a phone plan and a
- * car the same engine. Each stage has three, one per content format above.
+ * car the same engine.
  *
- * Every template carries the need or the constraint. Those two inputs are
- * what a scenario IS, so with them in every question, choosing a different
- * persona changes every question. The first version left a third of the
- * slots persona-invariant ("Where in my area can I see the car options?"),
- * and on the blank preset fourteen of fifteen questions were identical no
- * matter which persona was selected. A fan-out that does not fan out is the
- * one thing this tool must never do, so `assertFanoutVaries` below is run by
- * the QA script and fails the build of the page if any preset regresses.
+ * Every template reads exactly one of {need} or {constraint} as its primary
+ * input, and may colour it with {budget}, {timing} or {location}. Need and
+ * constraint are the two inputs that define a scenario and are distinct in
+ * every preset, so one of them makes a slot vary by persona; both of them in
+ * one sentence is how the previous version produced "confirm three rows or a
+ * very large second row and rear-facing child-seat space and room for a
+ * stroller". Four slots per stage, each a different question type.
+ * `assertFanoutVaries` runs in preflight; a template that reads neither input
+ * fails the build.
  *
  * Placeholders: {product} {budget} {need} {constraint} {timing} {location}.
- * Never {experience}: it is context, the tool says it changes nothing, and a
+ * Never {experience}: it is context, the page says it changes nothing, and a
  * template that used it would make that sentence false.
  */
-export const TEMPLATES: Record<StageId, [string, string, string]> = {
+export const TEMPLATES: Record<StageId, Slot[]> = {
   discover: [
-    "What should I understand before choosing a {product} for {need}?",
-    "What should a {budget} budget for a {product} cover, beyond the headline price, if it must deliver {need}?",
-    "Which {product} requirements are essential for {need} given {constraint}, and which are only nice to have?",
+    { qtype: "Definition", format: "Needs checklist", template: "What does a {product} have to do well to deliver {need}?" },
+    { qtype: "Requirements", format: "Requirements guide", template: "Given {constraint}, which {product} requirements are essential and which are only nice to have?" },
+    { qtype: "Price", format: "Budget explainer", template: "Beyond the headline price, what does {budget} for a {product} need to cover to get {need}?" },
+    { qtype: "How-to", format: "Getting-started guide", template: "How should I start researching a {product} when {constraint} is non-negotiable?" },
   ],
   explore: [
-    "Which {product} options should I research for {need}?",
-    "Which {product} options fit within {budget} and still deliver {need}?",
-    "Where in {location} can I see or try {product} options that meet {need}?",
+    { qtype: "Shortlist", format: "Shortlist tool", template: "Which {product} options are worth shortlisting for {need}?" },
+    { qtype: "Availability", format: "Where-to-try guide", template: "Where in {location} can I see or try {product} options that fit {constraint}?" },
+    { qtype: "Price", format: "Price-band guide", template: "Which {product} options fit within {budget} without giving up {need}?" },
+    { qtype: "How-to", format: "Category guide", template: "How do I tell {product} options apart when {constraint} is what matters most?" },
   ],
   compare: [
-    "How do my shortlisted {product} options compare on {need}?",
-    "How do costs over time compare across the shortlist against {budget}, without giving up {need}?",
-    "What evidence should I request to confirm {constraint} and {need} for each {product} option?",
+    { qtype: "Comparison", format: "Comparison page", template: "How do my shortlisted {product} options compare on {need}?" },
+    { qtype: "Price", format: "Total-cost worksheet", template: "How do costs over time compare across the shortlist against {budget}, given {constraint}?" },
+    { qtype: "Requirements", format: "Evidence checklist", template: "What evidence should I request to confirm {constraint} for each {product} option?" },
+    { qtype: "Definition", format: "Trade-off guide", template: "Which trade-offs between {product} options actually affect {need}, and which are noise?" },
   ],
   decide: [
-    "What should I verify before committing to a {product}, given {constraint} and {need}?",
-    "What is the complete cost of the {product} I have chosen, relative to {budget}, and does it still deliver {need}?",
-    "What must I confirm to complete the purchase {timing}, starting with {constraint}?",
+    { qtype: "Process", format: "Pre-purchase checklist", template: "What must I confirm before committing to a {product}, given {constraint}?" },
+    { qtype: "Price", format: "Complete-cost breakdown", template: "What is the complete cost of the {product} I have chosen, relative to {budget}, once everything needed for {need} is included?" },
+    { qtype: "Availability", format: "Availability and terms page", template: "What do I need to confirm to complete the purchase {timing}, starting with {constraint}?" },
+    { qtype: "Troubleshooting", format: "Risk checklist", template: "What could go wrong after buying this {product} for {need}, and what protects me?" },
   ],
   own: [
-    "How should I set up my {product} so it serves {need} from day one?",
-    "What should I keep track of to know whether the {product} still meets {need}?",
-    "What should trigger replacing this {product}: {need} no longer met, or costs beyond {budget}?",
+    { qtype: "How-to", format: "Setup guide", template: "How should I set up my {product} so it serves {need} from day one?" },
+    { qtype: "Troubleshooting", format: "Troubleshooting guide", template: "What usually goes wrong with a {product} used for {need}, and how do I fix it?" },
+    { qtype: "Process", format: "Ownership tracker", template: "What should I track to know the {product} still holds up given {constraint}?" },
+    { qtype: "Price", format: "Renew-or-replace guide", template: "What should trigger replacing this {product}: {need} no longer met, or costs beyond {budget}?" },
   ],
 };
+
+export const SLOTS_PER_STAGE = 4;
 
 /** "$25,000" or "$40 a month"; a plain phrase when nothing is set yet. */
 export function formatBudget(n: number, period: Preset["budgetPeriod"]): string {
@@ -516,7 +543,10 @@ export interface FanoutQuestion {
   stageId: StageId;
   stageName: string;
   question: string;
+  /** The stage's kind of answer: Definition, Shortlist, Comparison... */
   type: string;
+  /** The framework's P376 question type for this slot. */
+  qtype: QuestionType;
   format: string;
   rationale: string;
   /** Label to value, for the inputs the template actually consumed. */
@@ -536,7 +566,8 @@ export function fanout(
   seed: string = preset.seed,
 ): FanoutQuestion[] {
   const v = scenarioValues(scenario, preset);
-  return TEMPLATES[stage.id].map((tpl, i) => {
+  return TEMPLATES[stage.id].map((slot, i) => {
+    const tpl = slot.template;
     const used = [...new Set([...tpl.matchAll(PLACEHOLDER)].map((m) => m[1] as PlaceholderKey))];
     const inputsUsed = Object.fromEntries(
       used
@@ -553,7 +584,8 @@ export function fanout(
       stageName: stage.name,
       question: tpl.replace(PLACEHOLDER, (_, k: PlaceholderKey) => v[k] ?? ""),
       type: stage.type,
-      format: stage.formats[i],
+      qtype: slot.qtype,
+      format: slot.format,
       rationale:
         stage.rationale +
         " This example uses the selected scenario" +
@@ -618,7 +650,7 @@ export function fanoutInvariantSlots(): string[] {
   for (const p of PRESETS) {
     for (const st of STAGES) {
       const per = p.scenarios.map((s) => fanout(s, st, p).map((q) => q.question));
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < TEMPLATES[st.id].length; i++) {
         if (new Set(per.map((qs) => qs[i])).size < p.scenarios.length) bad.push(`${p.id}/${st.id}/${i + 1}`);
       }
     }
@@ -633,4 +665,4 @@ export function assertFanoutVaries(): void {
 
 export const FANOUT_TITLE = "Persona Fanout Journey";
 export const FANOUT_PATH = "/personas/fanout-journey";
-export const FANOUT_LAST_UPDATED = "2026-09-23";
+export const FANOUT_LAST_UPDATED = "2026-09-24";
