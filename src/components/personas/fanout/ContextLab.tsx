@@ -25,17 +25,17 @@ export const LENSES: { id: LensId; label: string }[] = [
  * as context and it changes the question not at all, because knowing how
  * practised someone is tells you nothing about what they want.
  */
-export default function ContextLab({
-  scenario,
-  preset,
-  lens,
-  onLens,
-}: {
-  scenario: Scenario;
-  preset: Pick<Preset, "product" | "budgetPeriod">;
-  lens: LensId;
-  onLens: (l: LensId) => void;
-}) {
+/**
+ * What one explicit input does to the broad question. Pure, so the fan-out
+ * map can show it inline under the prompt that was clicked; the first build
+ * swapped the whole tool to this view instead, which on a phone read as
+ * "it went somewhere else".
+ */
+export function lensOutcome(
+  scenario: Scenario,
+  preset: Pick<Preset, "product" | "budgetPeriod">,
+  lens: LensId,
+): { before: string; after: string; why: string; chips: string[] } {
   const v = scenarioValues(scenario, preset);
   const before = `Which ${v.product} should I consider?`;
 
@@ -88,6 +88,22 @@ export default function ContextLab({
     default:
       why = "No context yet. The query is broad, and any answer to it is guessing which buyer asked.";
   }
+
+  return { before, after, why, chips };
+}
+
+export default function ContextLab({
+  scenario,
+  preset,
+  lens,
+  onLens,
+}: {
+  scenario: Scenario;
+  preset: Pick<Preset, "product" | "budgetPeriod">;
+  lens: LensId;
+  onLens: (l: LensId) => void;
+}) {
+  const { before, after, why, chips } = lensOutcome(scenario, preset, lens);
 
   return (
     <div className="p-4 lg:p-5">

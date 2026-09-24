@@ -34,6 +34,24 @@ for (const p of PRESETS) {
 
 const total = PRESETS.length * STAGES.reduce((n, st) => n + TEMPLATES[st.id].length, 0);
 
+// Scenario data lints, from reading the questions as a person would:
+//   - a need is an outcome, so it must not restate the product noun ("a phone
+//     that lasts", inside "what does a phone have to do to deliver a phone")
+//   - a constraint is a noun phrase, so it must not open with a gerund
+//     ("keeping my number" reads as nonsense after "options that fit")
+const data: string[] = [];
+for (const p of PRESETS) {
+  const noun = p.product.trim().toLowerCase();
+  for (const s of p.scenarios) {
+    if (noun && new RegExp(`\\b${noun.split(/\\s+/).pop()}\\b`, "i").test(s.need)) data.push(`${p.id}/${s.id}: need restates the product: "${s.need}"`);
+    if (/^\\w+ing\\b/.test(s.constraint.trim())) data.push(`${p.id}/${s.id}: constraint opens with a gerund: "${s.constraint}"`);
+  }
+}
+if (data.length) {
+  console.error(`FAIL: ${data.length} scenario data lint(s):`);
+  for (const x of data) console.error(`  ${x}`);
+}
+
 // Each template reads exactly one of need/constraint as its primary input.
 // Both is how a question turns into a mouthful; neither is how it stops
 // varying by persona.
@@ -49,7 +67,7 @@ if (shape.length) {
   console.error(`FAIL: ${shape.length} template(s) do not read exactly one of need/constraint:`);
   for (const x of shape) console.error(`  ${x}`);
 }
-if (invariant.length || malformed.length || shape.length) {
+if (invariant.length || malformed.length || shape.length || data.length) {
   if (invariant.length) {
     console.error(`FAIL: ${invariant.length} of ${total} (preset/stage/slot) questions do not change with the persona:`);
     for (const b of invariant) console.error(`  ${b}`);
@@ -60,4 +78,4 @@ if (invariant.length || malformed.length || shape.length) {
   }
   process.exit(1);
 }
-console.log(`FANOUT GATE: PASS (${total}/${total} questions vary by persona; each template reads one primary input; none malformed; experience never leaks)`);
+console.log(`FANOUT GATE: PASS (${total}/${total} questions vary by persona; each template reads one primary input; needs are outcomes; constraints are noun phrases; none malformed; experience never leaks)`);

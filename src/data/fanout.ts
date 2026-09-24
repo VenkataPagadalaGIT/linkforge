@@ -270,7 +270,7 @@ export const PRESETS: Preset[] = [
         id: "electric",
         name: "Electric-curious buyer",
         budget: 50000,
-        need: "an electric vehicle with charging that fits my routine",
+        need: "low running costs and charging that fits my routine",
         constraint: "charging without a home charger",
         timing: "in about a year",
         location: "",
@@ -289,8 +289,8 @@ export const PRESETS: Preset[] = [
         id: "budget",
         name: "Budget-first buyer",
         budget: 400,
-        need: "a reliable phone that lasts three years",
-        constraint: "keeping my number and my current carrier",
+        need: "three years of reliable use",
+        constraint: "my existing carrier and number",
         timing: "within a month",
         location: "",
         experience: "replacing one I already own",
@@ -299,7 +299,7 @@ export const PRESETS: Preset[] = [
         id: "camera",
         name: "Camera-first buyer",
         budget: 1200,
-        need: "the best photos and video I can get from a phone",
+        need: "the best photos and video I can get",
         constraint: "enough storage for a large photo library",
         timing: "within 3 months",
         location: "",
@@ -309,8 +309,8 @@ export const PRESETS: Preset[] = [
         id: "parent",
         name: "Parent buying for a child",
         budget: 300,
-        need: "a phone with strong parental controls",
-        constraint: "joining our existing family plan",
+        need: "parental controls that actually hold",
+        constraint: "a line on our existing family plan",
         timing: "within a month",
         location: "",
         experience: "buying for someone else",
@@ -319,7 +319,7 @@ export const PRESETS: Preset[] = [
         id: "worklife",
         name: "Work-and-personal buyer",
         budget: 900,
-        need: "one phone for work email and personal use",
+        need: "work email and personal use on one device",
         constraint: "support for two lines or an eSIM",
         timing: "within 3 months",
         location: "",
@@ -368,7 +368,7 @@ export const PRESETS: Preset[] = [
         id: "traveller",
         name: "Frequent traveller",
         budget: 80,
-        need: "a plan that works abroad without surprise charges",
+        need: "roaming abroad without surprise charges",
         constraint: "monthly international travel",
         timing: "before my next trip",
         location: "",
@@ -485,7 +485,7 @@ export const TEMPLATES: Record<StageId, Slot[]> = {
   ],
   explore: [
     { qtype: "Shortlist", format: "Shortlist tool", template: "Which {product} options are worth shortlisting for {need}?" },
-    { qtype: "Availability", format: "Where-to-try guide", template: "Where in {location} can I see or try {product} options that fit {constraint}?" },
+    { qtype: "Availability", format: "Where-to-try guide", template: "Where in {location} can I see or try {product} options, given {constraint}?" },
     { qtype: "Price", format: "Price-band guide", template: "Which {product} options fit within {budget} without giving up {need}?" },
     { qtype: "How-to", format: "Category guide", template: "How do I tell {product} options apart when {constraint} is what matters most?" },
   ],
@@ -502,8 +502,8 @@ export const TEMPLATES: Record<StageId, Slot[]> = {
     { qtype: "Troubleshooting", format: "Risk checklist", template: "What could go wrong after buying this {product} for {need}, and what protects me?" },
   ],
   own: [
-    { qtype: "How-to", format: "Setup guide", template: "How should I set up my {product} so it serves {need} from day one?" },
-    { qtype: "Troubleshooting", format: "Troubleshooting guide", template: "What usually goes wrong with a {product} used for {need}, and how do I fix it?" },
+    { qtype: "How-to", format: "Setup guide", template: "How should I set up my {product} so I get {need} from day one?" },
+    { qtype: "Troubleshooting", format: "Troubleshooting guide", template: "What usually gets in the way of {need} once I own the {product}, and how do I fix it?" },
     { qtype: "Process", format: "Ownership tracker", template: "What should I track to know the {product} still holds up given {constraint}?" },
     { qtype: "Price", format: "Renew-or-replace guide", template: "What should trigger replacing this {product}: {need} no longer met, or costs beyond {budget}?" },
   ],
@@ -513,7 +513,7 @@ export const SLOTS_PER_STAGE = 4;
 
 /** "$25,000" or "$40 a month"; a plain phrase when nothing is set yet. */
 export function formatBudget(n: number, period: Preset["budgetPeriod"]): string {
-  if (!(Number(n) > 0)) return "a budget I still need to set";
+  if (!(Number(n) > 0)) return "my budget";
   const amount = "$" + Number(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
   return period === "monthly" ? `${amount} a month` : amount;
 }

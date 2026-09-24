@@ -390,9 +390,14 @@ export default function FanoutJourney() {
 
       {state.view === "map" && (
         <>
-          <p className="font-mono text-[11px] text-muted-foreground px-4 pt-4 lg:px-5">
-            <span className="text-foreground">Follow the lit path.</span> Pick a scenario, then a stage. Open a question to see why it exists.
-            <span className="text-muted-foreground/80 float-right tabular-nums">{questions.length} shown / {all.length} total</span>
+          {/* No floats here: the map below is a grid, a new formatting context,
+              and a float that wraps under this line on a phone would shrink the
+              whole map to sit beside it. That was the 174px-wide mobile map. */}
+          <p className="font-mono text-[11px] text-muted-foreground px-4 pt-4 lg:px-5 flex flex-wrap justify-between gap-x-4 gap-y-1">
+            <span>
+              <span className="text-foreground">Follow the lit path.</span> Pick a scenario, then a stage. Open a question to see why it exists.
+            </span>
+            <span className="text-muted-foreground/80 tabular-nums shrink-0">{questions.length} shown / {all.length} total</span>
           </p>
           <FanoutMap
             scenarios={state.scenarios}
