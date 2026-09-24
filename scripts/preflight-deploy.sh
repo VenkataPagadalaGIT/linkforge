@@ -89,6 +89,15 @@ else
   bad "markdown twin is stale; run: npx tsx scripts/gen-research-md.ts"
 fi
 
+# Persona fan-out gate: selecting a different scenario must change every
+# question, for every preset and stage. Shipped once with a third of the
+# questions persona-invariant and nothing visibly wrong.
+if npx tsx scripts/check-fanout.ts > /tmp/preflight-fanout.log 2>&1; then
+  ok "fan-out: every question varies by persona"
+else
+  bad "fan-out gate failed; see /tmp/preflight-fanout.log"
+fi
+
 # Brand and accessibility gate: accent colors carry theme pairs, readable
 # text never drops below the /70 floor. See docs/BRAND_GUIDELINES.md.
 if python3 scripts/check-brand.py > /tmp/preflight-brand.log 2>&1; then

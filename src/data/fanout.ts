@@ -349,13 +349,15 @@ export const PRESETS: Preset[] = [
     product: "",
     seed: "",
     budgetPeriod: "one-time",
+    // Generic because the product is unknown, distinct so that choosing a
+    // scenario changes every question before a single field is edited.
     scenarios: [
       {
         id: "a",
         name: "Budget-led buyer",
         budget: 0,
-        need: "",
-        constraint: "",
+        need: "the lowest total cost over time",
+        constraint: "no long contract or lock-in",
         timing: "within 3 months",
         location: "",
         experience: "first-time buyer",
@@ -364,9 +366,9 @@ export const PRESETS: Preset[] = [
         id: "b",
         name: "Need-led buyer",
         budget: 0,
-        need: "",
-        constraint: "",
-        timing: "within 3 months",
+        need: "one job done exceptionally well",
+        constraint: "proven reliability in real reviews",
+        timing: "within a month",
         location: "",
         experience: "replacing one I already own",
       },
@@ -374,9 +376,9 @@ export const PRESETS: Preset[] = [
         id: "c",
         name: "Constraint-led buyer",
         budget: 0,
-        need: "",
-        constraint: "",
-        timing: "within a month",
+        need: "a straightforward fit with what I already use",
+        constraint: "compatibility with what I already own",
+        timing: "in about a year",
         location: "",
         experience: "experienced with this category",
       },
@@ -384,9 +386,9 @@ export const PRESETS: Preset[] = [
         id: "d",
         name: "Buying for someone else",
         budget: 0,
-        need: "",
-        constraint: "",
-        timing: "in about a year",
+        need: "something another person can use without help",
+        constraint: "simple setup and support I can hand over",
+        timing: "within a month",
         location: "",
         experience: "buying for someone else",
       },
@@ -399,9 +401,16 @@ export const presetById = (id: string): Preset => PRESETS.find((p) => p.id === i
 /**
  * Question templates, keyed by stage only. They are written against the
  * dimensions, never against a domain, which is what makes a phone plan and a
- * car the same engine. Each stage has three, one per content format above,
- * and between them a stage's three templates consume different inputs, so the
- * detail panel can show which explicit answer produced which question.
+ * car the same engine. Each stage has three, one per content format above.
+ *
+ * Every template carries the need or the constraint. Those two inputs are
+ * what a scenario IS, so with them in every question, choosing a different
+ * persona changes every question. The first version left a third of the
+ * slots persona-invariant ("Where in my area can I see the car options?"),
+ * and on the blank preset fourteen of fifteen questions were identical no
+ * matter which persona was selected. A fan-out that does not fan out is the
+ * one thing this tool must never do, so `assertFanoutVaries` below is run by
+ * the QA script and fails the build of the page if any preset regresses.
  *
  * Placeholders: {product} {budget} {need} {constraint} {timing} {location}.
  * Never {experience}: it is context, the tool says it changes nothing, and a
@@ -410,28 +419,28 @@ export const presetById = (id: string): Preset => PRESETS.find((p) => p.id === i
 export const TEMPLATES: Record<StageId, [string, string, string]> = {
   discover: [
     "What should I understand before choosing a {product} for {need}?",
-    "What should a {budget} budget for a {product} cover, beyond the headline price?",
-    "Which {product} requirements are essential given {constraint}, and which are only nice to have?",
+    "What should a {budget} budget for a {product} cover, beyond the headline price, if it must deliver {need}?",
+    "Which {product} requirements are essential for {need} given {constraint}, and which are only nice to have?",
   ],
   explore: [
     "Which {product} options should I research for {need}?",
-    "Which {product} options fit within {budget}, and what do I give up at that level?",
-    "Where in {location} can I see or try the {product} options I am considering?",
+    "Which {product} options fit within {budget} and still deliver {need}?",
+    "Where in {location} can I see or try {product} options that meet {need}?",
   ],
   compare: [
     "How do my shortlisted {product} options compare on {need}?",
-    "How do costs over time compare across the shortlist, against {budget}?",
-    "What evidence should I request to confirm {constraint} for each {product} option?",
+    "How do costs over time compare across the shortlist against {budget}, without giving up {need}?",
+    "What evidence should I request to confirm {constraint} and {need} for each {product} option?",
   ],
   decide: [
-    "What should I verify before committing to a {product}, given {constraint}?",
-    "What is the complete cost of the {product} I have chosen, relative to {budget}?",
-    "What do I need to confirm to complete the purchase {timing}?",
+    "What should I verify before committing to a {product}, given {constraint} and {need}?",
+    "What is the complete cost of the {product} I have chosen, relative to {budget}, and does it still deliver {need}?",
+    "What must I confirm to complete the purchase {timing}, starting with {constraint}?",
   ],
   own: [
     "How should I set up my {product} so it serves {need} from day one?",
     "What should I keep track of to know whether the {product} still meets {need}?",
-    "When should I renew, upgrade or replace this {product}, and what would trigger that?",
+    "What should trigger replacing this {product}: {need} no longer met, or costs beyond {budget}?",
   ],
 };
 
@@ -554,6 +563,29 @@ export function expandedPrompt(
   ]
     .filter((l): l is string => l !== null)
     .join("\n");
+}
+
+/**
+ * The property the tool exists for: choosing a different scenario changes
+ * every question. Returns the (preset, stage, slot) triples where two
+ * scenarios produce the same text, so a regression names itself.
+ */
+export function fanoutInvariantSlots(): string[] {
+  const bad: string[] = [];
+  for (const p of PRESETS) {
+    for (const st of STAGES) {
+      const per = p.scenarios.map((s) => fanout(s, st, p).map((q) => q.question));
+      for (let i = 0; i < 3; i++) {
+        if (new Set(per.map((qs) => qs[i])).size < p.scenarios.length) bad.push(`${p.id}/${st.id}/${i + 1}`);
+      }
+    }
+  }
+  return bad;
+}
+
+export function assertFanoutVaries(): void {
+  const bad = fanoutInvariantSlots();
+  if (bad.length) throw new Error(`Persona selection does not change these questions: ${bad.join(", ")}`);
 }
 
 export const FANOUT_TITLE = "Persona Fanout Journey";
