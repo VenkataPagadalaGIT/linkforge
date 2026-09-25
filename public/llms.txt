@@ -66,6 +66,14 @@ The site's knowledge packaged as an Open Knowledge Format (OKF v0.2) bundle: mar
 Every interactive 3D experience on the site in one place: the playable 2040 city, the explorable LLM machine, the 3D HVAC system, the Complete Shelf of free books, the AI Roadmap shelf, the Top 100 glass album, the AI Economy map, and the homepage's living portrait. All generated geometry running in the browser; no downloads, no model files.
 - URL: https://venkatapagadala.com/3d
 
+### Conference Notebook
+Full agendas and field notes from SEO and AI-search conferences: 3 conferences, 69 talks, 78 speakers. Every conference, every talk and every speaker has its own page; registration, breaks and meals are not listed.
+- Hub: https://venkatapagadala.com/notebook/conference
+- SEO Week 2026: https://venkatapagadala.com/notebook/conference/seo-week-2026 (each talk at https://venkatapagadala.com/notebook/conference/seo-week-2026/sessions/<session>)
+- Botify Connect US 2024: https://venkatapagadala.com/notebook/conference/botify-connect-us-2024 (each talk at https://venkatapagadala.com/notebook/conference/botify-connect-us-2024/sessions/<session>)
+- Tech SEO Connect 2024: https://venkatapagadala.com/notebook/conference/tech-seo-connect-2024 (each talk at https://venkatapagadala.com/notebook/conference/tech-seo-connect-2024/sessions/<session>)
+- Speakers: https://venkatapagadala.com/notebook/conference/speakers/<speaker>
+
 ## Reference Guides
 
 ### What is Jev? TypeSafe AI's Decision Model, Explained in 3D (2026)

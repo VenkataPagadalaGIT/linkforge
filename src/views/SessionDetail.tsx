@@ -1,6 +1,5 @@
 "use client";
 import * as React from "react";
-import { jsonLdScript } from "@/lib/jsonld";
 import axios from "axios";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
@@ -158,29 +157,6 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
     [s.speaker, s.description, s.takeaways],
   );
 
-  const jsonLd = React.useMemo(
-    () => ({
-      "@context": "https://schema.org",
-      "@type": "Event",
-      name: s.title,
-      startDate: dayDate,
-      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      eventStatus: "https://schema.org/EventScheduled",
-      description: s.description || s.title,
-      url: `https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${urlSlug}`,
-      location: { "@type": "Place", name: c.venues?.[0]?.name || c.city, address: c.city },
-      superEvent: {
-        "@type": "Event",
-        name: `${c.name} ${c.edition || c.year}`,
-        url: c.url,
-      },
-      performer: s.speaker
-        ? { "@type": "Person", name: s.speaker, affiliation: s.affiliation, url: s.speakerUrl }
-        : undefined,
-    }),
-    [c, s, urlSlug, dayDate],
-  );
-
   return (
     <div className="min-h-screen bg-background pt-24 pb-20" data-testid="session-detail">
       <TakeNotesPill />
@@ -188,11 +164,6 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
         title={`${s.title} · ${c.name} ${c.edition || c.year}`}
         description={s.description || s.title}
         canonical={`https://venkatapagadala.com/notebook/conference/${c.slug}/sessions/${urlSlug}`}
-      />
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:flex lg:gap-10">

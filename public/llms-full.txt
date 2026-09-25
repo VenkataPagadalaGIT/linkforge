@@ -182,6 +182,14 @@ The state of AI agents in verified numbers, across six tables: enterprise adopti
 A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum: Think Python and the mathematics you need (Mathematics for Machine Learning, Hefferon's Linear Algebra, Calculus Made Easy, Think Stats), classical ML (An Introduction to Statistical Learning, Pattern Recognition and Machine Learning, Approaching Almost Any Machine Learning Problem), the data stack (Python Data Science Handbook, Python for Data Analysis, Fundamentals of Data Visualization), deep learning (Dive into Deep Learning, the Goodfellow-Bengio-Courville Deep Learning book, Nielsen's Neural Networks and Deep Learning), then Speech and Language Processing, Machine Learning Engineering, Sutton and Barto's Reinforcement Learning, the RLHF Book, and AI Safety Ethics and Society. Sources are author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain: no trials, no sample chapters, nothing pirated. Authors profiled in the Top 100 link to their contributor pages, and the page lists all nineteen titles as plain links for readers without WebGL.
 - URL: https://venkatapagadala.com/notebook/ai/shelf
 
+### Conference Notebook
+Full agendas and field notes from SEO and AI-search conferences: 3 conferences, 69 talks, 78 speakers. Every conference, every talk and every speaker has its own page; registration, breaks and meals are not listed.
+- Hub: https://venkatapagadala.com/notebook/conference
+- SEO Week 2026: https://venkatapagadala.com/notebook/conference/seo-week-2026 (each talk at https://venkatapagadala.com/notebook/conference/seo-week-2026/sessions/<session>)
+- Botify Connect US 2024: https://venkatapagadala.com/notebook/conference/botify-connect-us-2024 (each talk at https://venkatapagadala.com/notebook/conference/botify-connect-us-2024/sessions/<session>)
+- Tech SEO Connect 2024: https://venkatapagadala.com/notebook/conference/tech-seo-connect-2024 (each talk at https://venkatapagadala.com/notebook/conference/tech-seo-connect-2024/sessions/<session>)
+- Speakers: https://venkatapagadala.com/notebook/conference/speakers/<speaker>
+
 ## Reference Guides
 
 ### Graph Types for AI Agents (2026)

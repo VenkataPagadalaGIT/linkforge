@@ -38,7 +38,6 @@ import { type Conference, type Session, type SessionType, getSessionId, getSessi
 import { getSpeakerByName } from "@/data/speakers";
 import { adminApi, getToken } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
-import { jsonLdScript } from "@/lib/jsonld";
 
 const statusStyles: Record<string, string> = {
   attended: "border-foreground/20 text-foreground/70",
@@ -217,47 +216,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
     return base;
   }, []);
 
-  // JSON-LD
-  const jsonLd = React.useMemo(() => {
-    const subEvents = c.days.flatMap((d) =>
-      d.sessions
-        .filter((s) => s.type === "keynote" || s.type === "talk" || s.type === "panel")
-        .map((s) => ({
-          "@type": "Event",
-          name: s.title,
-          startDate: d.date,
-          location: c.venues[0]?.name || c.city,
-          description: s.description || s.title,
-          performer: s.speaker
-            ? {
-                "@type": "Person",
-                name: s.speaker,
-                affiliation: s.affiliation,
-                url: s.speakerUrl,
-              }
-            : undefined,
-        })),
-    );
-    return {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      name: `${c.name} ${c.edition || c.year}`,
-      startDate: c.startDate,
-      endDate: c.endDate,
-      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      eventStatus: "https://schema.org/EventScheduled",
-      description: c.summary,
-      url: c.url,
-      organizer: c.organizer ? { "@type": "Organization", name: c.organizer } : undefined,
-      location: {
-        "@type": "Place",
-        name: c.venues[0]?.name || c.city,
-        address: c.venues[0]?.address || c.city,
-      },
-      subEvent: subEvents,
-    };
-  }, [c]);
-
   return (
     <div className="min-h-screen bg-background pt-24 pb-20" data-testid="conference-detail">
       <TakeNotesPill />
@@ -265,11 +223,6 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
         title={`${c.name} ${c.edition || c.year} · Conference Notebook | Venkata Pagadala`}
         description={c.summary}
         canonical={`https://venkatapagadala.com/notebook/conference/${c.slug}`}
-      />
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:flex lg:gap-10">

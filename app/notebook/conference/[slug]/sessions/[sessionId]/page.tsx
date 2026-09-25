@@ -11,6 +11,7 @@ import {
 import { getSpeakerByName } from "@/data/speakers";
 import { SITE_URL } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { conferencePlace, isoDateTime } from "@/lib/conferenceLd";
 
 interface Params {
   slug: string;
@@ -55,34 +56,6 @@ function resolveContext(slug: string, sessionParam: string): SessionDetailContex
       ? { sessionId: next.urlSlug, title: next.session.title, start: next.session.start }
       : undefined,
   };
-}
-
-function isoDate(label: string): string | undefined {
-  // "Monday, April 27, 2026" → "2026-04-27"
-  const m = label.match(/(\w+), (\w+) (\d{1,2}), (\d{4})/);
-  if (!m) return undefined;
-  const months: Record<string, string> = {
-    January: "01", February: "02", March: "03", April: "04", May: "05", June: "06",
-    July: "07", August: "08", September: "09", October: "10", November: "11", December: "12",
-  };
-  const mm = months[m[2]];
-  if (!mm) return undefined;
-  const dd = m[3].padStart(2, "0");
-  return `${m[4]}-${mm}-${dd}`;
-}
-
-function startTimeIso(dayDate: string, start: string): string | undefined {
-  const d = isoDate(dayDate);
-  if (!d) return undefined;
-  // "9:00 AM" → "09:00:00"
-  const m = start.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-  if (!m) return d;
-  let h = parseInt(m[1], 10);
-  const mi = m[2];
-  const ampm = m[3].toUpperCase();
-  if (ampm === "PM" && h !== 12) h += 12;
-  if (ampm === "AM" && h === 12) h = 0;
-  return `${d}T${String(h).padStart(2, "0")}:${mi}:00`;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -137,8 +110,8 @@ export default function Page({ params }: Props) {
   const conf = ctx.conference;
   const urlSlug = findSessionByUrlSlug(conf, params.sessionId)?.urlSlug || params.sessionId;
   const url = `${SITE_URL}/notebook/conference/${conf.slug}/sessions/${urlSlug}`;
-  const startIso = startTimeIso(ctx.dayDate, ctx.session.start);
-  const endIso = startTimeIso(ctx.dayDate, ctx.session.end);
+  const startIso = isoDateTime(ctx.dayDate, ctx.session.start);
+  const endIso = isoDateTime(ctx.dayDate, ctx.session.end);
   const profile = ctx.session.speaker ? getSpeakerByName(ctx.session.speaker) : undefined;
 
   const eventLd: Record<string, unknown> = {
@@ -153,14 +126,9 @@ export default function Page({ params }: Props) {
       "@type": "Event",
       name: `${conf.name} ${conf.edition || conf.year}`,
       url: `${SITE_URL}/notebook/conference/${conf.slug}`,
+      ...(conf.url ? { sameAs: conf.url } : {}),
     },
-    location: conf.venue
-      ? {
-          "@type": "Place",
-          name: conf.venue.name,
-          address: { "@type": "PostalAddress", addressLocality: conf.venue.city, addressCountry: conf.venue.country },
-        }
-      : { "@type": "Place", name: `${conf.city}, ${conf.country}` },
+    location: conferencePlace(conf),
   };
   if (startIso) eventLd.startDate = startIso;
   if (endIso) eventLd.endDate = endIso;
@@ -170,6 +138,7 @@ export default function Page({ params }: Props) {
       name: ctx.session.speaker,
       ...(ctx.session.affiliation ? { affiliation: { "@type": "Organization", name: ctx.session.affiliation } } : {}),
       ...(profile ? { url: `${SITE_URL}/notebook/conference/speakers/${profile.slug}` } : {}),
+      ...(ctx.session.speakerUrl ? { sameAs: ctx.session.speakerUrl } : {}),
     };
   }
 

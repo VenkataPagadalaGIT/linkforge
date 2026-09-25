@@ -95,6 +95,12 @@ else
   bad "the guide-topics block in llms.txt is stale; run: npx tsx scripts/gen-llms-topics.ts"
 fi
 
+if python3 scripts/check-event-schema.py --base "$PERSONA_BASE" > /tmp/preflight-event-schema.log 2>&1; then
+  ok "one valid Event per conference and session page (see /tmp/preflight-event-schema.log)"
+else
+  bad "a conference or session page has a missing, duplicate or invalid Event; see /tmp/preflight-event-schema.log"
+fi
+
 if python3 scripts/check-sitemap-html.py --base "$PERSONA_BASE" > /tmp/preflight-sitemap-html.log 2>&1; then
   ok "HTML site map reaches every sitemap.xml URL (see /tmp/preflight-sitemap-html.log)"
 else

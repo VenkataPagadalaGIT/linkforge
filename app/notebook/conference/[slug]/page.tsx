@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ConferenceDetail from "@/views/ConferenceDetail";
-import {
+import { isLogisticsSession,
   conferences,
   getConferenceBySlug,
   listConferenceSessions,
 } from "@/data/conferences";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { conferencePlace, isoDateTime } from "@/lib/conferenceLd";
 
 interface Props {
   params: { slug: string };
@@ -67,28 +68,18 @@ export default function Page({ params }: Props) {
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     url,
-    location: c.venues?.[0]
-      ? {
-          "@type": "Place",
-          name: c.venues[0].name,
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: c.venues[0].city,
-            addressCountry: c.venues[0].country,
-          },
-          ...(c.venues[0].url ? { url: c.venues[0].url } : {}),
-        }
-      : { "@type": "Place", name: `${c.city}, ${c.country}` },
-    organizer: c.url
-      ? { "@type": "Organization", name: c.name, url: c.url }
-      : { "@type": "Organization", name: c.name },
+    location: conferencePlace(c),
+    ...(c.url ? { sameAs: c.url } : {}),
+    organizer: { "@type": "Organization", name: c.organizer || c.name },
     subEvent: sessions
-      .filter((f) => !["break", "meal", "registration"].includes(f.session.type))
+      .filter((f) => !isLogisticsSession(f.session))
       .slice(0, 50)
       .map((f) => ({
         "@type": "Event",
         name: f.session.title,
         url: `${url}/sessions/${f.urlSlug}`,
+        ...(isoDateTime(f.dayDate, f.session.start) ? { startDate: isoDateTime(f.dayDate, f.session.start) } : {}),
+        location: conferencePlace(c),
         ...(f.session.speaker
           ? {
               performer: {
