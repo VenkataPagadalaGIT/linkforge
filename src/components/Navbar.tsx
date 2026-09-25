@@ -136,6 +136,7 @@ const MEGA: MegaMenu[] = [
       {
         title: "SEO & AI",
         items: [
+          { label: "What is Jev? 3D explainer", note: "TypeSafe's decision model, one ticket walked through the bench", to: "/guides/what-is-jev", badge: "NEW" },
           { label: "Screaming Frog Guide 2026", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
           { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
         ],

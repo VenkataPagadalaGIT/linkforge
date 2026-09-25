@@ -27,6 +27,7 @@ import { LLM_COUNTS } from "./llm";
 import { NN_COUNTS, NN_PARAMS, NN_WEIGHTS } from "./nn";
 import { QC_COUNTS } from "./quantum";
 import { sfGuide } from "./sfGuide";
+import { jevGuide } from "./jevGuide";
 
 export interface DefinedTerm {
   slug: string;
@@ -99,6 +100,10 @@ export type Block =
   | { kind: "quantum" }
   | { kind: "quantumjourney" }
   | { kind: "quantumstages" }
+  /** Interactive 3D Jev decision bench (lazy-loaded), and its crawlable twins. */
+  | { kind: "jev" }
+  | { kind: "jevjourney" }
+  | { kind: "jevstations" }
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
   | { kind: "details"; summary: string; blocks: Block[] };
 
@@ -141,6 +146,8 @@ export interface Guide {
   termRoleLabel?: string;
   /** Column headers for the comparison table (defaults to the graph-guide set). */
   comparisonHeaders?: string[];
+  /** Representative image for social cards and the Article JSON-LD; the site OG image otherwise. */
+  image?: { src: string; width: number; height: number; alt: string };
   /** HowTo entries emitted as schema.org HowTo JSON-LD on the guide page. */
   howTos?: { name: string; description: string; steps: { name: string; text: string }[] }[];
 }
@@ -2034,6 +2041,7 @@ const qcBlocks: Block[] = [
 ];
 
 export const guides: Guide[] = [
+  jevGuide,
   sfGuide,
   {
     slug: "graph-types-for-ai-agents",

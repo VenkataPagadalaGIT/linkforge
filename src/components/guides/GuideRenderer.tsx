@@ -18,6 +18,8 @@ import HvacExplorerLazy from "./HvacExplorerLazy";
 import LlmExplorerLazy from "./LlmExplorerLazy";
 import NnExplorerLazy from "./NnExplorerLazy";
 import QuantumExplorerLazy from "./QuantumExplorerLazy";
+import JevExplorerLazy from "./JevExplorerLazy";
+import { JOURNEY as JEV_JOURNEY, STATIONS as JEV_STATIONS, KINDS as JEV_KINDS } from "@/data/jev";
 import { JOURNEY, STAGES, ZONES } from "@/data/llm";
 import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "@/data/nn";
 import { QC_ACTS, QC_JOURNEY, QC_STAGES } from "@/data/quantum";
@@ -423,6 +425,75 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       );
     case "nn":
       return <NnExplorerLazy />;
+    case "jev":
+      return <JevExplorerLazy />;
+    case "jevjourney":
+      return (
+        <div className="my-6 border border-border/70 p-5">
+          <ol className="space-y-4">
+            {JEV_JOURNEY.map((st, i) => (
+              <li key={st.id} className="font-mono text-xs text-muted-foreground leading-relaxed flex gap-3">
+                <span className="text-foreground/40 flex-shrink-0 w-5 text-right">{i + 1}.</span>
+                <span>
+                  <strong className="text-foreground font-semibold">{st.title}.</strong> {st.narration}
+                  {st.act === 2 && (
+                    <span className="ml-2 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border border-amber-400/40 text-amber-700/90 dark:text-amber-300/90">
+                      inside an agent
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "jevstations":
+      return (
+        <div className="my-6 overflow-x-auto border border-border">
+          <table className="w-full border-collapse min-w-[900px]">
+            <thead>
+              <tr className="bg-secondary/30">
+                {["Station", "Kind", "What happens", "Numbers", "Source"].map((h) => (
+                  <th key={h} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {JEV_STATIONS.map((s) => (
+                <tr key={s.id} className="align-top hover:bg-secondary/10 transition-colors">
+                  <td className="font-mono text-xs text-foreground font-semibold p-3 border-b border-border/50 whitespace-nowrap">
+                    {s.name}
+                    {s.act === 2 && <span className="block font-mono text-[9px] text-muted-foreground/70 font-normal">inside an agent</span>}
+                  </td>
+                  <td className="p-3 border-b border-border/50 whitespace-nowrap">
+                    <span
+                      className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 border"
+                      style={{ color: JEV_KINDS[s.kind].color, borderColor: `${JEV_KINDS[s.kind].color}66` }}
+                    >
+                      {s.kind}
+                    </span>
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">{s.tagline}. {s.story}</td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {s.numbers.map((n) => `${n.label}: ${n.value}`).join(" · ")}
+                  </td>
+                  <td className="font-mono text-[11px] text-muted-foreground p-3 border-b border-border/50">
+                    {s.source ? (
+                      <a href={s.source.href} target="_blank" rel="noopener noreferrer" className="text-foreground/85 hover:text-foreground underline decoration-border hover:decoration-foreground/60 transition-colors">
+                        {s.source.label} ↗
+                      </a>
+                    ) : (
+                      "Illustration in this guide"
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     case "quantum":
       return <QuantumExplorerLazy />;
     case "quantumjourney":

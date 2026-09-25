@@ -11,6 +11,8 @@
  * this array and groups by `group`, which is the only way the claim stays true.
  */
 
+import { JEV_COUNTS } from "./jev";
+
 /** Menu sections, in display order. */
 export const THREE_D_GROUPS = ["Learn in 3D", "Systems & maps", "Books in 3D", "Play"] as const;
 export type ThreeDGroup = (typeof THREE_D_GROUPS)[number];
@@ -47,6 +49,16 @@ export const threeDExperiences: ThreeDExperience[] = [
     blurb:
       "The homepage portrait assembles from sixty-five thousand mosaic tiles, wears a pulsing neural net, tilts with your pointer, and shatters and heals when you click it.",
     tags: ["65,536 tiles", "chain firing", "on the homepage"],
+    badge: "new",
+  },
+  {
+    title: "What is Jev?",
+    to: "/guides/what-is-jev",
+    group: "Learn in 3D",
+    note: "a decision model, not a chatbot: one ticket through the bench",
+    blurb:
+      "TypeSafe AI's System One model as a working bench: your code supplies the evidence and the questions, Jev stamps typed Choice, Score and Noul answers with probabilities, and your rules decide what happens next. Then the same primitives inside a coding agent, and the independent evidence on where it fails.",
+    tags: [`${JEV_COUNTS.stations} stations`, "guided journey", "primary-sourced"],
     badge: "new",
   },
   {

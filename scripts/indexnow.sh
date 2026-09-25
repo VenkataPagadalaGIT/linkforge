@@ -34,6 +34,8 @@ DEFAULT_PATHS=(
   "/notebook/ai/encyclopedia/llm"
   "/notebook/ai/encyclopedia/ai-agents"
   "/guides/how-neural-networks-work"
+  "/guides"
+  "/guides/what-is-jev"
   "/publications"
   "/llms.txt"
   "/llms-full.txt"

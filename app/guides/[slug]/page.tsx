@@ -21,6 +21,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const guide = getGuideBySlug(params.slug);
   if (!guide) return { title: "Guide not found" };
+  const img = guide.image
+    ? { url: `${SITE_URL}${guide.image.src}`, width: guide.image.width, height: guide.image.height, alt: guide.image.alt }
+    : { url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME };
   return {
     // absolute: the layout appends ' · Venkata Pagadala', which pushed
     // these keyword-dense titles past the SERP truncation point.
@@ -35,9 +38,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description: guide.metaDescription,
       publishedTime: guide.datePublished,
       modifiedTime: guide.dateModified,
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
+      images: [img],
     },
-    twitter: { card: "summary_large_image", title: guide.title, description: guide.metaDescription, images: [OG_IMAGE] },
+    twitter: { card: "summary_large_image", title: guide.title, description: guide.metaDescription, images: [img.url] },
   };
 }
 
@@ -59,7 +62,7 @@ export default function Page({ params }: { params: Params }) {
       section: "Guides",
       keywords: guide.tags,
       schemaType: "TechArticle",
-      image: OG_IMAGE,
+      image: guide.image ? `${SITE_URL}${guide.image.src}` : OG_IMAGE,
     }),
   };
   if (guide.author) {

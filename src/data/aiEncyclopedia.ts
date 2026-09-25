@@ -1069,6 +1069,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Tool use", "Planning", "ReAct", "Reasoning loop", "Autonomy", "Auto-GPT era"],
     prerequisites: ["Prompt Engineering", "GPT (Generative Pre-trained Transformer)"],
     learnMore: [
+      { title: "This site's teardown: What is Jev? A decision model in 3D", url: "/guides/what-is-jev" },
       { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
       { title: "LangGraph Documentation", url: "https://langchain-ai.github.io/langgraph/" },
     ],
@@ -1081,6 +1082,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Function calling", "API integration", "MCP", "Tool selection", "APIs"],
     prerequisites: ["AI Agents"],
     learnMore: [
+      { title: "This site's teardown: What is Jev? A decision model in 3D", url: "/guides/what-is-jev" },
       { title: "OpenAI: Function Calling", url: "https://platform.openai.com/docs/guides/function-calling" },
     ],
   },
@@ -1942,6 +1944,7 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Agent loop", "Permissions & sandboxing", "Subagents", "Skills & hooks", "Long-running agents"],
     prerequisites: ["AI Agents", "Tool Use & Function Calling"],
     learnMore: [
+      { title: "This site's teardown: What is Jev? A decision model in 3D", url: "/guides/what-is-jev" },
       { title: "Anthropic: Building Effective Agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
     ],
     realWorldApps: "Coding agents like Claude Code, computer-use products, production agent reliability work",

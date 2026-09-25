@@ -3,7 +3,7 @@ import { Link } from "@/lib/router-shim";
 import type { GuideAuthor } from "@/data/guides";
 
 /**
- * AuthorCard — proper E-E-A-T byline.
+ * AuthorCard · proper E-E-A-T byline.
  *
  * Renders as a structured author block with name, title, organization, and a
  * one-line credibility statement. The visible card matches the JSON-LD Person
@@ -66,7 +66,7 @@ const AuthorCard = ({ author, dateModified, readingTime }: Props) => {
             {author.name}
           </Link>
           <span className="text-muted-foreground">
-            {" — "}
+            {" · "}
             <span itemProp="jobTitle">{author.title}</span> at{" "}
             <span itemProp="affiliation">{author.org}</span>
           </span>
