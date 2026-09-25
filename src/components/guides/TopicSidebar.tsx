@@ -7,7 +7,8 @@ import { GUIDE_TOPICS } from "@/data/guideTopics";
  *
  * Rendered on /guides, every /guides/topics/<slug> hub, and nowhere else:
  * a guide's own page links its own tags inline instead of repeating the
- * whole menu. Sticky, desktop only; TopicMobileNav is the phone equivalent.
+ * whole menu. Sticky, from 768px up (a 1,000px laptop window gets the menu, not a
+ * dropdown); TopicMobileNav is the phone equivalent.
  * This is the piece that makes "no orphan URLs" true by construction: every
  * topic slug that exists is listed here, and every guide is listed on at
  * least one topic page, so the two together reach every guide from one
@@ -15,7 +16,7 @@ import { GUIDE_TOPICS } from "@/data/guideTopics";
  */
 export default function TopicSidebar({ activeSlug }: { activeSlug?: string }) {
   return (
-    <aside className="hidden lg:block lg:w-52 shrink-0" aria-label="Browse guides by topic">
+    <aside className="hidden md:block md:w-44 lg:w-52 shrink-0" aria-label="Browse guides by topic">
       <div className="sticky top-28">
         <p className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest mb-3">
           Browse by topic · {GUIDE_TOPICS.length}

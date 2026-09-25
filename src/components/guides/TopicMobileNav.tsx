@@ -12,7 +12,7 @@ import { GUIDE_TOPICS } from "@/data/guideTopics";
 export default function TopicMobileNav({ activeSlug }: { activeSlug?: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <nav aria-label="Browse guides by topic" className="lg:hidden border border-border bg-card/40 mb-10">
+    <nav aria-label="Browse guides by topic" className="md:hidden border border-border bg-card/40 mb-10">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}

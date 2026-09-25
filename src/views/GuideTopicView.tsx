@@ -31,7 +31,7 @@ export default function GuideTopicView({ topic }: { topic: GuideTopic }) {
 
         <TopicMobileNav activeSlug={topic.slug} />
 
-        <div className="lg:flex lg:gap-10">
+        <div className="md:flex md:gap-8 lg:gap-10">
           <TopicSidebar activeSlug={topic.slug} />
           <div className="flex-1 min-w-0 space-y-4">
             {topic.guides.map((g, i) => (

@@ -25,7 +25,7 @@ export default function GuidesIndex() {
 
         <TopicMobileNav />
 
-        <div className="lg:flex lg:gap-10">
+        <div className="md:flex md:gap-8 lg:gap-10">
           <TopicSidebar />
           <div className="flex-1 min-w-0 space-y-4">
             {guides.map((g, i) => (
