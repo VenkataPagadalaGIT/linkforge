@@ -254,6 +254,7 @@ Every reference guide is tagged, and every tag has its own page listing every gu
 
 ## Links
 
+- HTML site map, every page in one place with a view per section: https://venkatapagadala.com/sitemap
 - Website: https://venkatapagadala.com
 - LinkedIn: https://linkedin.com/in/venkata-pagadala
 

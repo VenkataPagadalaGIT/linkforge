@@ -54,7 +54,7 @@ export default function GuideTopicsIndex() {
           {groups.map(([letter, topics]) => (
             <section key={letter} id={`letter-${letter}`} className="scroll-mt-28">
               <h2 className="font-display text-2xl font-bold text-foreground mb-4 border-b border-border pb-2">{letter}</h2>
-              <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2">
                 {topics.map((t) => (
                   <li key={t.slug}>
                     <Link

@@ -20,6 +20,7 @@ const Footer = () => {
     { label: "Persona Builder", to: "/personas/builder" },
     { label: "Persona Fanout Journey", to: "/personas/fanout-journey" },
     { label: "Credits & Inspiration", to: "/credits" },
+    { label: "Site map", to: "/sitemap" },
     { label: "Contact", to: "/contact" },
   ];
 

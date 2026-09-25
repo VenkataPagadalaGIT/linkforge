@@ -299,5 +299,6 @@ Peer-reviewed and preprint research on AI and search, conference talks, podcasts
 
 ## Links
 
+- HTML site map, every page in one place with a view per section: https://venkatapagadala.com/sitemap
 - Website: https://venkatapagadala.com
 - LinkedIn: https://linkedin.com/in/venkata-pagadala

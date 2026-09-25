@@ -33,8 +33,10 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 
 # Pages a crawler is most likely to reach first; inbound links are looked
 # for here. Add hubs as the site grows.
+# /sitemap is the hub of hubs: linked from every page's footer, and it links
+# every page in sitemap.xml (scripts/check-sitemap-html.py proves that).
 HUBS = ["/", "/guides", "/3d", "/ai-updates", "/notebook/ai",
-        "/notebook/ai/encyclopedia", "/insights", "/publications"]
+        "/notebook/ai/encyclopedia", "/insights", "/publications", "/sitemap"]
 
 
 def get(url, head=False):

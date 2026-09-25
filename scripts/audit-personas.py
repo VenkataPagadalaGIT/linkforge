@@ -11,6 +11,7 @@ server or the live domain:
 """
 import json, re, sys, html, urllib.request, urllib.error
 from collections import defaultdict
+from urllib.parse import urlparse
 
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:3402").rstrip("/")
 
@@ -36,7 +37,9 @@ def jsonld(h):
 # --- the URL set, from the site's own sitemap ---
 _, sm = get("/sitemap.xml")
 sitemap = set(re.findall(r"<loc>([^<]+)</loc>", sm))
-persona_urls = sorted(u for u in sitemap if "/personas" in u)
+# by path prefix: "/personas" appearing anywhere else in a URL (the site map's
+# /sitemap/personas view, say) is not a persona page
+persona_urls = sorted(u for u in sitemap if urlparse(u).path.startswith("/personas"))
 paths = [re.sub(r"^https?://[^/]+", "", u) for u in persona_urls]
 
 _, llms = get("/llms.txt")

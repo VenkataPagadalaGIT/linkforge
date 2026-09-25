@@ -95,6 +95,12 @@ else
   bad "the guide-topics block in llms.txt is stale; run: npx tsx scripts/gen-llms-topics.ts"
 fi
 
+if python3 scripts/check-sitemap-html.py --base "$PERSONA_BASE" > /tmp/preflight-sitemap-html.log 2>&1; then
+  ok "HTML site map reaches every sitemap.xml URL (see /tmp/preflight-sitemap-html.log)"
+else
+  bad "the HTML site map misses a page, a view or an anchor; see /tmp/preflight-sitemap-html.log"
+fi
+
 if python3 scripts/check-guide-topics.py --base "$PERSONA_BASE" > /tmp/preflight-guide-topics.log 2>&1; then
   ok "guide topic taxonomy: no orphans (see /tmp/preflight-guide-topics.log)"
 else
