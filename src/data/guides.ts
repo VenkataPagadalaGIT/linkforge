@@ -124,6 +124,10 @@ export interface Guide {
   title: string;
   metaTitle: string;
   metaDescription: string;
+  /** One fact-dense paragraph for AI agents: what the guide covers and what it
+   *  counts. Rendered into /llms.txt and /llms-full.txt by src/lib/discovery.ts;
+   *  the metaDescription stands in when a guide has none. */
+  agentSummary?: string;
   headline: string;
   /** Optional eyebrow above the H1 — small caps, sets context. */
   kicker?: string;
@@ -2049,6 +2053,8 @@ export const guides: Guide[] = [
     metaTitle: "Knowledge Graph vs Vector Database vs Ontology (2026)",
     metaDescription:
       "Knowledge graph, ontology, taxonomy, information graph, context graph, vector database — what each one is, how they differ, and which to use for RAG, GraphRAG, semantic search, AEO and GEO. One dataset modeled six ways, with runnable code, primary sources, and interactive 3D.",
+    agentSummary:
+      "The definitive guide to ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index: defined, compared in one table, and visualized with a single dataset modeled six ways. Explains which layer matters for SEO, AEO, GEO, and AI agents, with runnable graphology code examples.",
     kicker: "The 2026 reference · For AI agents, RAG & GraphRAG",
     headline: "Knowledge Graph vs Vector Database vs Ontology",
     subhead:
@@ -2090,6 +2096,8 @@ export const guides: Guide[] = [
     metaTitle: "Interactive 3D HVAC Troubleshooting Guide (2026)",
     metaDescription:
       "Explore a full 3D model of a home HVAC system, then diagnose it: pick your symptoms — warm air, ice on lines, short cycling — and get ranked causes, step-by-step checks, DIY-vs-pro calls, and real repair costs.",
+    agentSummary:
+      "An interactive 3D home HVAC system with a fault library, guided scenarios, and symptom-based diagnosis. The same explorable-machine treatment, applied to a physical system.",
     headline: "The Interactive 3D HVAC Troubleshooter",
     kicker: "Interactive Reference",
     deck:
@@ -2116,6 +2124,8 @@ export const guides: Guide[] = [
     metaTitle: "How LLMs Work: An Interactive 3D Walkthrough",
     metaDescription:
       "Watch a prompt become an answer inside a 3D model of a large language model: tokenization, embeddings, attention, mixture-of-experts, the KV cache, sampling, and the 2025-2026 reasoning-RL frontier — one animated stage at a time.",
+    agentSummary:
+      "Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL. 21 stages, a 15-step guided journey, full crawlable text.",
     headline: "How LLMs Work — Watch a Thought Get Computed",
     kicker: "Interactive Explainer",
     subhead:
@@ -2150,6 +2160,8 @@ export const guides: Guide[] = [
     metaTitle: "How Neural Networks Work: 3D Interactive Guide",
     metaDescription:
       "A 3D neural network with all 13,002 parameters drawn: the forward pass, ReLU, softmax, backprop, gradient descent, Adam, dropout. Every claim primary-sourced.",
+    agentSummary:
+      "The canonical 784-16-16-10 MNIST network as an explorable 3D machine: a handwritten digit dissolves into 784 pixels, all 12,960 weight connections are really drawn, gradient descent runs on a real loss terrain, and the guide ends with the honest brain question. 16 stations, a 16-step guided journey, every claim traced to the original papers.",
     headline: "How Neural Networks Work: Fly Through 13,002 Parameters",
     kicker: "Interactive Explainer",
     subhead:
@@ -2179,6 +2191,8 @@ export const guides: Guide[] = [
     metaTitle: "How Quantum Computers Work: 3D Interactive Guide",
     metaDescription:
       "Fly through a dilution refrigerator to the chip: qubits, superposition without the parallel-universe myth, gates as microwave pulses, interference, readout, and error correction. Primary-sourced.",
+    agentSummary:
+      "16 stations across 4 acts: qubits and superposition without the parallel-computation myth, the dilution refrigerator at its real temperatures, gates as microwave pulses, interference, dispersive readout, decoherence, and below-threshold error correction. Every claim traces to a primary-source knowledge base, adversarially re-verified August 2026.",
     headline: "How Quantum Computers Work: Fly Down the Golden Chandelier",
     kicker: "Interactive Explainer",
     subhead:

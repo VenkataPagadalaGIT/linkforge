@@ -1024,6 +1024,8 @@ export const sfGuide: Guide = {
   metaTitle: "Screaming Frog SEO Spider: The Complete 2026 Guide",
   metaDescription:
     "Every screen of Screaming Frog v24, explained with 76 real screenshots: crawl config, JavaScript rendering, embeddings and semantic search, GSC and AI integrations, scheduling, and the MCP server.",
+  agentSummary:
+    "Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration, JavaScript rendering, content embeddings and semantic search, Google Search Console and AI integrations, scheduling, and the MCP server. Includes a recommended agency configuration profile.",
   kicker: "The 2026 field guide · v24 · 76 screenshots",
   headline: "Screaming Frog SEO Spider: The Complete 2026 Guide",
   subhead:

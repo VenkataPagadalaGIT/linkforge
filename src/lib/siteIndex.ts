@@ -1,12 +1,17 @@
 /**
  * siteIndex.ts: every page on the site, listed once.
  *
- * sitemap.xml (app/sitemap.ts) and the HTML site map (/sitemap and
- * /sitemap/<section>) both read this list, so they cannot disagree: a page
- * added here appears in both, and a page missing here is missing from both.
- * scripts/check-sitemap-html.py then proves, against the running server, that
- * every URL in sitemap.xml is linked from /sitemap, which is what "no orphan
- * pages" means for the whole site.
+ * Every discovery surface reads this list, so they cannot disagree: a page
+ * added here appears in all of them within the hour, and a page missing here
+ * is missing from all of them:
+ *   sitemap.xml (app/sitemap.ts), the HTML site map (/sitemap and
+ *   /sitemap/<section>), /llms.txt, /llms-full.txt and the OKF site index
+ *   (/okf/site-index.md), the last three rendered by src/lib/discovery.ts.
+ * Two deploy gates hold it: scripts/check-route-coverage.py fails when an app
+ * route is neither registered here nor listed in NOT_INDEXED_ROUTES, and
+ * scripts/check-discovery-surfaces.py proves against the running server that
+ * every URL in sitemap.xml is on every other surface. docs/SITE_DISCOVERY.md
+ * is the how-to.
  *
  * An entry is either a page of this site (it carries `xml`: the same
  * lastModified, changeFrequency and priority sitemap.ts used to compute
@@ -119,6 +124,19 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/solutions", "Solutions", "solutions", true],
   ["/llms.txt", "llms.txt: a guide to this site for AI agents", "machines"],
   ["/llms-full.txt", "llms-full.txt: the full-text edition", "machines"],
+];
+
+/**
+ * Routes that exist but are deliberately kept out of every site map and index.
+ * scripts/check-route-coverage.py fails the deploy for any app route that is
+ * neither registered above nor listed here, and requires each route listed
+ * here to serve noindex. A pattern ending in /* covers the subtree.
+ */
+export const NOT_INDEXED_ROUTES: { route: string; reason: string }[] = [
+  { route: "/admin", reason: "CMS administration, behind sign-in" },
+  { route: "/admin/*", reason: "CMS administration, behind sign-in" },
+  { route: "/brand", reason: "internal brand reference sheet" },
+  { route: "/library", reason: "internal component showcase" },
 ];
 
 // Titles as the solutions grid names them; the route itself only knows slugs.
@@ -337,6 +355,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   for (const [href, title] of [
     ["/sitemap.xml", "sitemap.xml"],
     ["/okf/index.md", "Open Knowledge Format bundle (okf/index.md)"],
+    ["/okf/site-index.md", "OKF site index: every page, by section"],
     ["/rss.xml", "RSS feed"],
     ["/robots.txt", "robots.txt"],
   ]) {

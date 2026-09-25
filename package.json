@@ -9,7 +9,6 @@
     "serve": "next start -p 3000 -H 0.0.0.0",
     "lint": "next lint",
     "gen:research-md": "tsx scripts/gen-research-md.ts",
-    "gen:llms-research": "tsx scripts/gen-llms-research.ts",
     "gen:paper-covers": "python3 scripts/gen-paper-covers.py"
   },
   "dependencies": {

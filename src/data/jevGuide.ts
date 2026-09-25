@@ -485,6 +485,8 @@ export const jevGuide: Guide = {
   metaTitle: "What Is Jev? TypeSafe AI's Decision Model, Explained in 3D",
   metaDescription:
     "Learn what Jev is, how TypeSafe AI's decision model works, its pricing and limits, and how it compares with ChatGPT, Claude, and Perplexity.",
+  agentSummary:
+    "Jev, released by TypeSafe AI on 2026-09-15, returns typed decisions (Choice, Score, Noul) with probabilities instead of text. One support ticket walks through a 3D decision bench and then through an agent harness: 14 stations, a 12-step guided journey, the three answer shapes as working instruments, pricing and context limits from the vendor's pages, and two independent preprints on where it fails. Sources checked 2026-09-24.",
   headline: "What is Jev? TypeSafe AI's Decision Model, Explained",
   kicker: "Interactive Explainer",
   subhead:

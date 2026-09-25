@@ -1,5 +1,10 @@
 # Bundle Update Log
 
+## 2026-09-25
+
+* **Update**: Added a Site index concept ([site-index.md](site-index.md)): every page on the site, by section, rendered from the same registry as sitemap.xml, the HTML site map and llms.txt, so the four cannot disagree. It is rebuilt on every deploy and refreshed hourly.
+* **Update**: The guides index is now generated from the guide data instead of edited by hand. It had fallen behind, listing 5 of 7 guides; it now lists all 7 and cannot drift again. Guides with an OKF concept link it; the others link their markdown edition.
+
 ## 2026-08-08
 
 * **Update**: Added the bundle's first Attested Computation (spec section 10): every headline count this site publishes is now derived by one sanctioned computation with a declared executor and a deterministic attester. The attester re-derives the values rather than trusting the receipt, reads the claims out of llms.txt, llms-full.txt, the dataset concepts and the navigation, and exits non-zero when a published number stops matching the data. Control-tested by planting a false count and confirming it fails.

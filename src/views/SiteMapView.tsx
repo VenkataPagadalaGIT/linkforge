@@ -130,6 +130,20 @@ export default function SiteMapView({
             : `Everything on this site in one place: ${pageCount.toLocaleString("en-US")} pages, plus ${itemCount} talks, videos, papers and mentions that live on them, in ${shown.length} sections. Pick a view, or read straight down.`}
         </p>
 
+        <p className="font-mono text-[11px] text-muted-foreground mb-6 flex flex-wrap gap-x-3 gap-y-1">
+          <span className="text-muted-foreground/70 uppercase tracking-widest text-[10px] self-center">Also as</span>
+          {[
+            ["/sitemap.xml", "sitemap.xml"],
+            ["/llms.txt", "llms.txt"],
+            ["/llms-full.txt", "llms-full.txt"],
+            ["/okf/site-index.md", "OKF site index"],
+          ].map(([href, label]) => (
+            <a key={href} href={href} className="text-foreground underline decoration-border hover:decoration-foreground underline-offset-4 transition-colors">
+              {label}
+            </a>
+          ))}
+        </p>
+
         <SiteMapFilters sections={sections} active={active} />
 
         {one && one.groups.length > 4 && (

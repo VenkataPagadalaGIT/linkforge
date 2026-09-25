@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Regenerate the Audience Personas block of public/llms.txt from the database.
+Regenerate the Audience Personas block of src/content/llms.md (the narrative behind /llms.txt) from the database.
 
 It was hand-written and went stale: it still told AI clients that gender splits
 were excluded because two reads did not reconcile, which stopped being true
@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from db import query
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
-LLMS = os.path.join(ROOT, "public", "llms.txt")
+LLMS = os.path.join(ROOT, "src", "content", "llms.md")  # narrative behind the live /llms.txt route
 SITE = "https://venkatapagadala.com"
 
 def pad(r, n): return list(r) + [""] * (n - len(r))

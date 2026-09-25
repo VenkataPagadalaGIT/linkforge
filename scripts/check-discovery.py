@@ -15,7 +15,7 @@ answer three days later:
   3. Does robots.txt allow it, and does robots declare the sitemap?
   4. Does the page self-canonicalise (not point somewhere else)?
   5. Is it free of a noindex directive?
-  6. Is it listed in llms.txt (the AI-answer-engine surface)?
+  6. Is it listed in llms.txt or llms-full.txt (the AI-answer-engine surfaces)?
   7. Does at least one OTHER page link to it in server-rendered HTML,
      so a crawler that never runs JavaScript can reach it?
 
@@ -34,7 +34,7 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 # Pages a crawler is most likely to reach first; inbound links are looked
 # for here. Add hubs as the site grows.
 # /sitemap is the hub of hubs: linked from every page's footer, and it links
-# every page in sitemap.xml (scripts/check-sitemap-html.py proves that).
+# every page in sitemap.xml (scripts/check-discovery-surfaces.py proves that).
 HUBS = ["/", "/guides", "/3d", "/ai-updates", "/notebook/ai",
         "/notebook/ai/encyclopedia", "/insights", "/publications", "/sitemap"]
 
@@ -70,6 +70,7 @@ def main():
     sitemap, sm_code = get(f"{SITE}/sitemap.xml")
     robots, _ = get(f"{SITE}/robots.txt")
     llms, _ = get(f"{SITE}/llms.txt")
+    llms_full, _ = get(f"{SITE}/llms-full.txt")
     with ThreadPoolExecutor(max_workers=8) as ex:
         hub_html = dict(zip(HUBS, ex.map(lambda h: get(SITE + h)[0], HUBS)))
 
@@ -116,11 +117,12 @@ def main():
         checks.append(("no noindex", not noindex, "page declares noindex"))
 
         # llms.txt (AI answer engines). A page counts as covered if it is
-        # listed itself, or if its hub is listed AND documents the per-page
-        # pattern: enumerating 176 concept URLs would bloat the file, but a
-        # crawler still has to be told the pages exist.
+        # listed itself, if llms-full.txt lists its exact URL (that file is
+        # rendered from the site registry, so every sitemap.xml page is
+        # there), or if its hub is listed AND documents the per-page pattern.
         parent = "/".join(path.rstrip("/").split("/")[:-1])
-        covered = path in llms or (parent and parent in llms and "<concept-id>" in llms)
+        covered = (path in llms or f"venkatapagadala.com{path}\n" in llms_full
+                   or (parent and parent in llms and "<concept-id>" in llms))
         checks.append(("in llms.txt", covered,
                        "neither the URL nor a documented hub pattern is listed"))
 

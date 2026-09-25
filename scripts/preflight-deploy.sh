@@ -89,11 +89,6 @@ else
   bad "a guide markdown twin is stale; run: npx tsx scripts/gen-guide-md.ts --all"
 fi
 
-if npx tsx scripts/gen-llms-topics.ts --check > /tmp/preflight-llms-topics.log 2>&1; then
-  ok "llms.txt / llms-full.txt guide-topics block matches the data"
-else
-  bad "the guide-topics block in llms.txt is stale; run: npx tsx scripts/gen-llms-topics.ts"
-fi
 
 if python3 scripts/check-event-schema.py --base "$PERSONA_BASE" > /tmp/preflight-event-schema.log 2>&1; then
   ok "one valid Event per conference and session page (see /tmp/preflight-event-schema.log)"
@@ -101,10 +96,16 @@ else
   bad "a conference or session page has a missing, duplicate or invalid Event; see /tmp/preflight-event-schema.log"
 fi
 
-if python3 scripts/check-sitemap-html.py --base "$PERSONA_BASE" > /tmp/preflight-sitemap-html.log 2>&1; then
-  ok "HTML site map reaches every sitemap.xml URL (see /tmp/preflight-sitemap-html.log)"
+if python3 scripts/check-route-coverage.py --base "$PERSONA_BASE" > /tmp/preflight-route-coverage.log 2>&1; then
+  ok "every app route is registered in src/lib/siteIndex.ts or deliberately not indexed"
 else
-  bad "the HTML site map misses a page, a view or an anchor; see /tmp/preflight-sitemap-html.log"
+  bad "an app route is missing from src/lib/siteIndex.ts; see /tmp/preflight-route-coverage.log"
+fi
+
+if python3 scripts/check-discovery-surfaces.py --base "$PERSONA_BASE" > /tmp/preflight-discovery-surfaces.log 2>&1; then
+  ok "sitemap.xml, /sitemap, llms.txt, llms-full.txt and the OKF site index agree (see /tmp/preflight-discovery-surfaces.log)"
+else
+  bad "a discovery surface misses or disagrees on a page; see /tmp/preflight-discovery-surfaces.log"
 fi
 
 if python3 scripts/check-guide-topics.py --base "$PERSONA_BASE" > /tmp/preflight-guide-topics.log 2>&1; then

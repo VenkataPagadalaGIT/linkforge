@@ -30,8 +30,8 @@ UA = {"User-Agent": "okf-attester/1.0"}
 # Where each claim is published, and the pattern that carries the number.
 # (surface, path-or-url, regex with one capturing group, receipt key)
 CLAIMS = [
-    ("public/llms.txt", r"(\d+) AI concepts across 10 categories", "concepts"),
-    ("public/llms-full.txt", r"(\d+) AI concepts across 10 categories", "concepts"),
+    ("src/content/llms.md", r"(\d+) AI concepts across 10 categories", "concepts"),
+    ("src/content/llms-full.md", r"(\d+) AI concepts across 10 categories", "concepts"),
     ("public/okf/datasets/ai-encyclopedia.md", r"description: (\d+) AI concepts", "concepts"),
     ("public/okf/datasets/index.md", r"(\d+) concepts across 10 categories", "concepts"),
     ("public/okf/datasets/ai-roadmap.md", r"(\d+) topics", "topics"),
@@ -42,10 +42,10 @@ CLAIMS = [
     ("app/notebook/ai/encyclopedia/page.tsx", r"(\d+) AI concepts across 10 categories", "concepts"),
     ("app/projects/page.tsx", r"(\d+)-entity map of the AI economy", "entities"),
     ("app/notebook/ai/map/page.tsx", r"(\d+) Entities, 7 Layers", "entities"),
-    ("public/llms.txt", r"(\d+) conferences, \d+ talks, \d+ speakers", "conferences"),
-    ("public/llms.txt", r"\d+ conferences, (\d+) talks, \d+ speakers", "conferenceTalks"),
-    ("public/llms.txt", r"\d+ conferences, \d+ talks, (\d+) speakers", "speakers"),
-    ("public/llms-full.txt", r"\d+ conferences, (\d+) talks, \d+ speakers", "conferenceTalks"),
+    ("src/content/llms.md", r"(\d+) conferences, \d+ talks, \d+ speakers", "conferences"),
+    ("src/content/llms.md", r"\d+ conferences, (\d+) talks, \d+ speakers", "conferenceTalks"),
+    ("src/content/llms.md", r"\d+ conferences, \d+ talks, (\d+) speakers", "speakers"),
+    ("src/content/llms-full.md", r"\d+ conferences, (\d+) talks, \d+ speakers", "conferenceTalks"),
     ("src/components/Navbar.tsx", r'note: "(\d+) conferences, \d+ talks, \d+ speakers"', "conferences"),
     ("src/components/Navbar.tsx", r'note: "\d+ conferences, (\d+) talks, \d+ speakers"', "conferenceTalks"),
     ("src/components/Navbar.tsx", r'note: "\d+ conferences, \d+ talks, (\d+) speakers"', "speakers"),
