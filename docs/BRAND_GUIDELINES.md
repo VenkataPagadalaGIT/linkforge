@@ -63,7 +63,7 @@ Colour marks the stage; it never carries text on its own. Labels stay in
   Use a colon, a comma, or a new sentence.
 - Numbers that describe the corpus are derived from data, never typed into
   copy. `scripts/okf_attest.py` fails the deploy when a stated count drifts.
-- Labels say what a first-time visitor needs: "3 conferences, 91 talks"
+- Labels say what a first-time visitor needs: "3 conferences, 69 talks"
   beats "Conference Notebook" alone.
 
 ## Badges

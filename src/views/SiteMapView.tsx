@@ -30,8 +30,6 @@ function Row({ e }: { e: SiteEntry }) {
 }
 
 function Group({ g, anchor }: { g: SectionGroup; anchor?: string }) {
-  const main = g.entries.filter((e) => !e.minor);
-  const minor = g.entries.filter((e) => e.minor);
   return (
     <div id={anchor} className="scroll-mt-28">
       {g.label && (
@@ -40,22 +38,10 @@ function Group({ g, anchor }: { g: SectionGroup; anchor?: string }) {
         </h3>
       )}
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
-        {main.map((e) => (
+        {g.entries.map((e) => (
           <Row key={e.href} e={e} />
         ))}
       </ul>
-      {minor.length > 0 && (
-        <details className="mt-2">
-          <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground">
-            Registration, breaks and meals · {minor.length}
-          </summary>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 mt-1">
-            {minor.map((e) => (
-              <Row key={e.href} e={e} />
-            ))}
-          </ul>
-        </details>
-      )}
     </div>
   );
 }

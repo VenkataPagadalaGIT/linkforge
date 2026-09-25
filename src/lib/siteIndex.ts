@@ -23,7 +23,7 @@ import { guides } from "@/data/guides";
 import { GUIDE_TOPICS } from "@/data/guideTopics";
 import { refConcepts, REF_BASE } from "@/data/learnReference";
 import { nodes as aiOntologyNodes, LAYER_BY_ID } from "@/data/aiOntology";
-import { conferences, listConferenceSessions } from "@/data/conferences";
+import { conferences, isLogisticsSession, listConferenceSessions } from "@/data/conferences";
 import { speakers } from "@/data/speakers";
 import { aiContributors } from "@/data/aiContributors";
 import { pillarPages, blogPosts } from "@/data/insights";
@@ -49,7 +49,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "topics", label: "Topics", blurb: "Every guide topic, each with a page listing the guides that carry it.", featured: true },
   { id: "videos", label: "Videos", blurb: "Talks, workshops and interviews you can watch now.", featured: true },
   { id: "awards", label: "Awards & recognition", blurb: "Lists, credits and mentions, each worded the way its source words it.", featured: true },
-  { id: "sessions", label: "Sessions", blurb: "The Conference Notebook: every session, by conference.", featured: true },
+  { id: "sessions", label: "Sessions", blurb: "The Conference Notebook: every keynote, talk and panel, by conference.", featured: true },
   { id: "talks", label: "Talks", blurb: "Talks, workshops, podcasts and interviews.", featured: true },
   { id: "research", label: "Research papers", blurb: "Published papers and the research hub." },
   { id: "pages", label: "Main pages", blurb: "Home, about, experience and the site's front doors." },
@@ -78,8 +78,6 @@ export interface SiteEntry {
   note?: string;
   /** A section's own front door, listed above its groups. */
   hub?: boolean;
-  /** Registration, breaks and meals: listed, but folded away. */
-  minor?: boolean;
   /** Not a row of its own (the site map's own pages; the filter bar links them). */
   hidden?: boolean;
   /** Present when this is a page of the site that belongs in sitemap.xml. */
@@ -133,7 +131,6 @@ const SOLUTIONS: [string, string][] = [
   ["performance", "Performance Analytics"],
 ];
 
-const MINOR_SESSION_TYPES = new Set(["registration", "break", "meal", "social"]);
 const humanize = (slug: string) => slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 const initial = (s: string) => {
   const c = s.trim().charAt(0).toUpperCase();
@@ -310,13 +307,14 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
       xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     });
     for (const { session, urlSlug } of listConferenceSessions(c)) {
+      // registration, breaks and meals are noindex pages: listed nowhere
+      if (isLogisticsSession(session)) continue;
       out.push({
         href: `/notebook/conference/${c.slug}/sessions/${urlSlug}`,
         title: session.title,
         section: "sessions",
         group: conf,
         note: session.speaker,
-        minor: MINOR_SESSION_TYPES.has(session.type),
         xml: { lastModified: now, changeFrequency: "yearly", priority: 0.4 },
       });
     }

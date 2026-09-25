@@ -3,6 +3,15 @@
 
 export type SessionType = "keynote" | "talk" | "break" | "meal" | "social" | "registration" | "panel";
 
+/**
+ * Schedule logistics: registration, breaks, meals and socials. Each keeps its
+ * page (URLs are permanent), but with no talk and no notes there is nothing to
+ * index, so those pages are noindex, stay out of sitemap.xml and the HTML site
+ * map, and are never counted as talks.
+ */
+export const LOGISTICS_SESSION_TYPES: ReadonlySet<SessionType> = new Set<SessionType>(["registration", "break", "meal", "social"]);
+export const isLogisticsSession = (s: { type: SessionType }) => LOGISTICS_SESSION_TYPES.has(s.type);
+
 export interface Session {
   start: string; // "9:00 AM"
   end: string; // "9:45 AM"

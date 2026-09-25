@@ -5,6 +5,7 @@ import {
   getConferenceBySlug,
   findSessionByUrlSlug,
   listConferenceSessions,
+  isLogisticsSession,
   type Session,
 } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
@@ -110,6 +111,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description: desc,
     keywords,
+    // registration, breaks and meals: the page stays, the index skips it
+    ...(isLogisticsSession(ctx.session) ? { robots: { index: false, follow: true } } : {}),
     alternates: { canonical: url },
     openGraph: {
       url,

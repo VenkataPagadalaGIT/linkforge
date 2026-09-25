@@ -164,7 +164,7 @@ const MEGA: MegaMenu[] = [
         items: [
           { label: "AI Notebook", note: "the hub: roadmap, encyclopedia, contributors", to: "/notebook/ai" },
           { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
-          { label: "Conference Notebook", note: "3 conferences, 91 talks, 78 speakers", to: "/notebook/conference" },
+          { label: "Conference Notebook", note: "3 conferences, 69 talks, 78 speakers", to: "/notebook/conference" },
         ],
       },
     ],

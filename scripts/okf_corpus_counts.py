@@ -28,6 +28,8 @@ SOURCES = {
     "ontology": os.path.join(DATA, "aiOntologyData.ts"),
     "contributors": os.path.join(DATA, "aiContributors.ts"),
     "shelf": os.path.join(DATA, "libraryShelf.ts"),
+    "conferences": os.path.join(DATA, "conferences.ts"),
+    "speakers": os.path.join(DATA, "speakers.ts"),
 }
 
 
@@ -45,6 +47,8 @@ import { roadmapTopics } from './src/data/aiRoadmap';
 import { aiContributors } from './src/data/aiContributors';
 import { shelfBooks } from './src/data/libraryShelf';
 import { nodes, edges } from './src/data/aiOntology';
+import { conferences, listConferenceSessions, isLogisticsSession } from './src/data/conferences';
+import { speakers } from './src/data/speakers';
 
 let resources = 0, free = 0, freemium = 0, paid = 0;
 for (const t of roadmapTopics as any[]) {
@@ -67,6 +71,10 @@ console.log(JSON.stringify({
   shelfBooks: shelfBooks.length,
   entities: nodes.length,
   edges: edges.length,
+  conferences: conferences.length,
+  // keynotes, talks and panels; registration, breaks and meals are not talks
+  conferenceTalks: (conferences as any[]).reduce((n, c) => n + listConferenceSessions(c).filter((s: any) => !isLogisticsSession(s.session)).length, 0),
+  speakers: speakers.length,
 }));
 """
     out = subprocess.run(

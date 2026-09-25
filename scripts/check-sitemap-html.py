@@ -84,6 +84,30 @@ for h in anchors:
         bad.append(h)
 check(f"every in-page anchor the map links to exists ({len(anchors)})", not bad, ", ".join(bad[:8]))
 
+# Pages marked noindex must never be advertised: every sitemap.xml URL is
+# fetched and its robots meta read. The logistics sessions (registration,
+# breaks, meals) are the known noindex set; they must still answer 200.
+import concurrent.futures, json, subprocess
+def robots_of(path):
+    code, html = get(path)
+    m = re.search(r'<meta name="robots" content="([^"]*)"', html)
+    return path, code, (m.group(1) if m else "")
+html_paths = [p for p in xml_paths if not re.search(r"\.(txt|xml|md)$", p)]
+with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
+    results = list(ex.map(robots_of, html_paths))
+noindexed = [p for p, code, r in results if "noindex" in r]
+broken = [p for p, code, r in results if code != 200]
+check(f"no sitemap.xml page is noindex ({len(html_paths)} fetched)", not noindexed, ", ".join(noindexed[:6]))
+check("every sitemap.xml page answers 200", not broken, ", ".join(broken[:6]))
+proc = subprocess.run(["npx", "tsx", "-e", 'import { conferences, listConferenceSessions, isLogisticsSession } from "./src/data/conferences"; console.log(JSON.stringify(conferences.flatMap(c => listConferenceSessions(c).filter(s => isLogisticsSession(s.session)).map(s => `/notebook/conference/${c.slug}/sessions/${s.urlSlug}`))));'], capture_output=True, text=True)
+logistics = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 else []
+check("logistics sessions found in the data", len(logistics) > 0, str(len(logistics)))
+with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
+    lres = list(ex.map(robots_of, logistics))
+check("logistics session pages still answer 200 (URLs are permanent)", all(code == 200 for _, code, _ in lres))
+check("logistics session pages are noindex", all("noindex" in r for _, _, r in lres), ", ".join(p for p, _, r in lres if "noindex" not in r)[:200])
+check("logistics session pages are in neither site map", not any(p in xml_paths or p in linked_paths for p in logistics))
+
 st_h, home = get("/")
 check("the footer links /sitemap", 'href="/sitemap"' in home)
 

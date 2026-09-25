@@ -42,6 +42,9 @@ CLAIMS = [
     ("app/notebook/ai/encyclopedia/page.tsx", r"(\d+) AI concepts across 10 categories", "concepts"),
     ("app/projects/page.tsx", r"(\d+)-entity map of the AI economy", "entities"),
     ("app/notebook/ai/map/page.tsx", r"(\d+) Entities, 7 Layers", "entities"),
+    ("src/components/Navbar.tsx", r'note: "(\d+) conferences, \d+ talks, \d+ speakers"', "conferences"),
+    ("src/components/Navbar.tsx", r'note: "\d+ conferences, (\d+) talks, \d+ speakers"', "conferenceTalks"),
+    ("src/components/Navbar.tsx", r'note: "\d+ conferences, \d+ talks, (\d+) speakers"', "speakers"),
 ]
 
 LIVE_CLAIMS = [
