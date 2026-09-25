@@ -12,9 +12,20 @@ import { BRIGHTONSEO_2026 as T, formatClock, formatTalkDate } from "@/data/talks
  * the video is hosted they are a plain outline of what the talk covers, which
  * is true and useful, rather than eighteen controls that do nothing.
  */
-export default function FeaturedTalk() {
+export default function FeaturedTalk({
+  hideLinkTo,
+  videoHref,
+  chapterAnchor,
+}: {
+  hideLinkTo?: string;
+  videoHref?: string;
+  /** Anchor prefix for chapters on a page that carries the transcript, e.g. "#t-" (a string: props from a server page must serialize). */
+  chapterAnchor?: string;
+} = {}) {
   const [seek, setSeek] = useState<{ at: number; nonce: number } | undefined>();
   const playable = Boolean(T.video.src || T.video.youtubeId);
+  // On a page that is itself one of these links, the button would point at itself.
+  const links = hideLinkTo ? T.links.filter((l) => l.url !== hideLinkTo) : T.links;
 
   return (
     <div className="border border-border bg-card/20">
@@ -23,8 +34,22 @@ export default function FeaturedTalk() {
           <TalkVideo video={T.video} title={`${T.title}, ${T.event}`} seekTo={seek} />
           {!playable && (
             <p className="font-mono text-[10px] text-muted-foreground mt-2 leading-relaxed">
-              Recording from the stage, edited to fifteen minutes. The slides are on Speaker Deck
-              while the video is being published.
+              Recording from the stage, edited to fifteen minutes.{" "}
+              {T.video.linkedinPost ? (
+                <>
+                  Watch the full talk{" "}
+                  <a
+                    href={videoHref ?? T.video.linkedinPost}
+                    {...(videoHref ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                    className="text-foreground underline decoration-border hover:decoration-foreground underline-offset-4"
+                  >
+                    {videoHref ? "below" : "on LinkedIn ↗"}
+                  </a>
+                  .
+                </>
+              ) : (
+                "The slides are on Speaker Deck while the video is being published."
+              )}
             </p>
           )}
         </div>
@@ -44,7 +69,7 @@ export default function FeaturedTalk() {
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-4">{T.summary}</p>
 
           <div className="flex flex-wrap gap-2 mt-5">
-            {T.links.map((l) =>
+            {links.map((l) =>
               l.internal ? (
                 <Link
                   key={l.url}
@@ -89,6 +114,13 @@ export default function FeaturedTalk() {
                     {c.title}
                   </span>
                 </button>
+              ) : chapterAnchor ? (
+                <a href={`${chapterAnchor}${c.at}`} className="flex items-baseline gap-3 py-1 group">
+                  <span className="font-mono text-[11px] text-muted-foreground tabular-nums w-10 shrink-0 group-hover:text-foreground">
+                    {formatClock(c.at)}
+                  </span>
+                  <span className="font-mono text-xs text-foreground group-hover:underline decoration-border">{c.title}</span>
+                </a>
               ) : (
                 <span className="flex items-baseline gap-3 py-1">
                   <span className="font-mono text-[11px] text-muted-foreground tabular-nums w-10 shrink-0">

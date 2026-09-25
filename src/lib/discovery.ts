@@ -22,6 +22,7 @@ import { GUIDE_TOPICS } from "@/data/guideTopics";
 import { aiUpdates } from "@/data/aiUpdates";
 import { linkedPapers, accessNote, authorRole, citationLine, GOOGLE_SCHOLAR_URL } from "@/data/research";
 import { BRIGHTONSEO_2026, TALKS, RECOGNITION, formatTalkDate } from "@/data/talks";
+import { SUPPORT_TOTALS } from "@/data/brightonSupport";
 
 /** Machine files always name the canonical host, whatever host renders them. */
 export const CANONICAL = "https://venkatapagadala.com";
@@ -111,6 +112,9 @@ function researchSection(): string {
   }
   L.push("", "### Talks and workshops", "");
   L.push(`- ${BRIGHTONSEO_2026.title} ("${BRIGHTONSEO_2026.tagline}"), ${BRIGHTONSEO_2026.event}, ${formatTalkDate(BRIGHTONSEO_2026.startDate.slice(0, 10))}, ${BRIGHTONSEO_2026.track}. ${BRIGHTONSEO_2026.summary} Session: ${BRIGHTONSEO_2026.links[0].url} Slides: ${BRIGHTONSEO_2026.links[1].url}`);
+  if (SUPPORT_TOTALS.posts > 0) {
+    L.push(`- Recap and thank-you page for the ${BRIGHTONSEO_2026.event} talk: the recording, the slides, my posts, and ${SUPPORT_TOTALS.posts} LinkedIn posts about it by ${SUPPORT_TOTALS.authors} people and pages, every one linked. ${CANONICAL}/research-and-talks/brightonseo-san-diego-2026 (markdown with the full transcript: ${CANONICAL}/research-and-talks/brightonseo-san-diego-2026.md)`);
+  }
   for (const t of TALKS.filter((x) => x.kind === "workshop")) L.push(`- ${t.title}, ${t.outlet}, ${formatTalkDate(t.date)}. ${t.summary}`);
   L.push("", "### Podcasts and interviews", "");
   for (const t of TALKS.filter((x) => x.kind !== "workshop")) {

@@ -4,7 +4,7 @@ title: Research, Talks & Interviews
 person: Venkata Pagadala
 canonical: https://venkatapagadala.com/research-and-talks
 generated_from: src/data/research.ts, src/data/talks.ts
-generated_at: 2026-09-17
+generated_at: 2026-09-25
 ---
 
 # Research, Talks & Interviews
@@ -36,6 +36,7 @@ Search volume is a direction, not a strategy. The talk walks through why a query
 - [Session on brightonSEO](https://brightonseo.com/events/san-diego-2026/sessions/search-intent)
 - [Slides on Speaker Deck](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs)
 - [The method, built: Audience Personas](https://venkatapagadala.com/personas)
+- [Thank you: the people who showed up](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026)
 
 Chapters in the fifteen-minute edit:
 

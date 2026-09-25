@@ -135,7 +135,8 @@ function recognitionNode(r: (typeof RECOGNITION)[number]): Node {
   };
 }
 
-function eventNode(): Node {
+/** The brightonSEO talk as an Event. Exported so the recap page emits the identical node under the same @id. */
+export function eventNode(): Node {
   const T = BRIGHTONSEO_2026;
   return {
     "@type": "Event",

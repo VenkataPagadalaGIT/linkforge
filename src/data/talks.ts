@@ -40,6 +40,10 @@ export interface TalkVideo {
   duration: number;
   /** ISO date the recording was made public, for VideoObject. */
   uploadDate?: string;
+  /** The full recording as posted publicly on LinkedIn. */
+  linkedinPost?: string;
+  /** LinkedIn's embed of that post: an inline player for pages that have room for it. */
+  linkedinEmbed?: string;
 }
 
 export interface TalkEntry {
@@ -81,15 +85,21 @@ export const BRIGHTONSEO_2026 = {
   startDate: "2026-09-15T09:15:00-07:00",
   track: "Track 1",
   city: "San Diego, CA",
+  /** Speaker Deck's player for the deck, from its oEmbed (deck id 42500ef2...). */
+  slidesPlayer: "https://speakerdeck.com/player/42500ef2be054df78bf4832f5d091a32",
   summary:
     "Search volume is a direction, not a strategy. The talk walks through why a query with zero measured volume can still carry real demand, then the method: twenty places demand shows up outside the search box, classifying it by persona rather than by keyword, mapping a whole industry, and turning customer pain points into products.",
   links: [
     { label: "Session on brightonSEO", url: "https://brightonseo.com/events/san-diego-2026/sessions/search-intent" },
     { label: "Slides on Speaker Deck", url: "https://speakerdeck.com/venkatapagadala1/industrial-context-graphs" },
     { label: "The method, built: Audience Personas", url: "/personas", internal: true },
+    { label: "Thank you: the people who showed up", url: "/research-and-talks/brightonseo-san-diego-2026", internal: true },
   ] as TalkLink[],
   video: {
     poster: "/talks/brightonseo-san-diego-2026.jpg",
+    // The recording, as Venkata posted it on LinkedIn on 17 Sep 2026 (public post).
+    linkedinPost: "https://www.linkedin.com/feed/update/urn:li:activity:7506371063925223424/",
+    linkedinEmbed: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7506370624076959745",
     aspect: "16:9",
     duration: 900,
     // Hosting pending: 224 MB is too large for the repository or the Railway

@@ -114,6 +114,12 @@ else
   bad "guide topic taxonomy has an orphan or a broken hub; see /tmp/preflight-guide-topics.log"
 fi
 
+if npx tsx scripts/gen-brighton-md.ts --check > /tmp/preflight-brighton-md.log 2>&1; then
+  ok "brightonSEO recap markdown twin matches the data"
+else
+  bad "the brightonSEO recap markdown twin is stale; run: npx tsx scripts/gen-brighton-md.ts"
+fi
+
 if npx tsx scripts/gen-research-md.ts --check > /tmp/preflight-md.log 2>&1; then
   ok "markdown twin matches the data"
 else

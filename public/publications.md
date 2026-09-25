@@ -4,7 +4,7 @@ title: Published Research
 person: Venkata Pagadala
 canonical: https://venkatapagadala.com/publications
 generated_from: src/data/research.ts
-generated_at: 2026-09-17
+generated_at: 2026-09-25
 ---
 
 # Published Research

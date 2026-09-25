@@ -57,6 +57,15 @@ const nextConfig = {
         // assistants and crawlers that prefer plain text get the real content
         // instead of a WebGL canvas they cannot read, and the header points
         // every one of them back at the HTML page as the canonical.
+        source: "/research-and-talks/:page(brightonseo-san-diego-2026).md",
+        headers: [
+          {
+            key: "Link",
+            value: '<https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026>; rel="canonical"',
+          },
+        ],
+      },
+      {
         source: "/:page(3d-game).md",
         headers: [
           {

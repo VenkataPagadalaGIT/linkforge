@@ -101,6 +101,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/3d-game", "3D game: the 2040 city", "pages"],
   ["/guides", "All guides (Teardowns)", "guides", true],
   ["/research-and-talks", "Research and talks", "talks", true],
+  ["/research-and-talks/brightonseo-san-diego-2026", "brightonSEO San Diego 2026: recap and thank you", "talks"],
   ["/publications", "Publications", "research", true],
   ["/research", "Research", "research", true],
   ["/personas", "Audience personas", "personas", true],
