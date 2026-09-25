@@ -83,6 +83,24 @@ fi
 # Markdown twin gate: /research-and-talks.md is generated from the same two
 # data modules the page renders from. A stale twin tells an AI client something
 # the page no longer says, and nothing on the page would look wrong.
+if npx tsx scripts/gen-guide-md.ts --all --check > /tmp/preflight-guide-md.log 2>&1; then
+  ok "guide markdown twins match their data (public/guides/*.md)"
+else
+  bad "a guide markdown twin is stale; run: npx tsx scripts/gen-guide-md.ts --all"
+fi
+
+if npx tsx scripts/gen-llms-topics.ts --check > /tmp/preflight-llms-topics.log 2>&1; then
+  ok "llms.txt / llms-full.txt guide-topics block matches the data"
+else
+  bad "the guide-topics block in llms.txt is stale; run: npx tsx scripts/gen-llms-topics.ts"
+fi
+
+if python3 scripts/check-guide-topics.py --base "$PERSONA_BASE" > /tmp/preflight-guide-topics.log 2>&1; then
+  ok "guide topic taxonomy: no orphans (see /tmp/preflight-guide-topics.log)"
+else
+  bad "guide topic taxonomy has an orphan or a broken hub; see /tmp/preflight-guide-topics.log"
+fi
+
 if npx tsx scripts/gen-research-md.ts --check > /tmp/preflight-md.log 2>&1; then
   ok "markdown twin matches the data"
 else

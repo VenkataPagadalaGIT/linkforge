@@ -8,6 +8,7 @@ import MobileToc from "@/components/guides/MobileToc";
 import PageSidebar from "@/components/PageSidebar";
 import ScrollReveal from "@/components/ScrollReveal";
 import { ArrowLeft } from "lucide-react";
+import { topicsForGuide } from "@/data/guideTopics";
 
 export default function GuideView({ guide }: { guide: Guide }) {
   useEffect(() => {
@@ -60,10 +61,14 @@ export default function GuideView({ guide }: { guide: Guide }) {
             />
           )}
           <div className="flex flex-wrap gap-2 mb-10">
-            {guide.tags.map((tag) => (
-              <span key={tag} className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70">
-                {tag}
-              </span>
+            {topicsForGuide(guide).map((t) => (
+              <Link
+                key={t.slug}
+                to={`/guides/topics/${t.slug}`}
+                className="font-mono text-[10px] border border-border px-2 py-1 text-muted-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
+              >
+                {t.label}
+              </Link>
             ))}
           </div>
         </ScrollReveal>

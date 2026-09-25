@@ -6,6 +6,7 @@ import { QUESTIONS } from "@/data/corpusQuestions";
 import { SITE_URL } from "@/lib/site";
 import { getSitemapData } from "@/lib/content-fetch";
 import { guides } from "@/data/guides";
+import { GUIDE_TOPICS } from "@/data/guideTopics";
 import { refConcepts, REF_BASE } from "@/data/learnReference";
 import { nodes as aiOntologyNodes } from "@/data/aiOntology";
 import { conferences, listConferenceSessions } from "@/data/conferences";
@@ -106,6 +107,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: g.dateModified ? toDate(g.dateModified) : now,
       changeFrequency: "monthly",
       priority: 0.9,
+    });
+  }
+  urls.push({ url: `${SITE_URL}/guides/topics`, lastModified: now, changeFrequency: "weekly", priority: 0.6 });
+  for (const t of GUIDE_TOPICS) {
+    urls.push({
+      // a topic's freshness follows its most recently touched guide, so a hub
+      // page re-crawls when the thing it lists actually changed
+      url: `${SITE_URL}/guides/topics/${t.slug}`,
+      lastModified: t.guides.reduce((max, g) => {
+        const d = g.dateModified ? toDate(g.dateModified) : now;
+        return d > max ? d : max;
+      }, new Date(0)),
+      changeFrequency: "monthly",
+      priority: 0.5,
     });
   }
   for (const c of refConcepts) {
