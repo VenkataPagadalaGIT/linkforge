@@ -79,7 +79,8 @@ Both run in `scripts/preflight-deploy.sh` after its build, against the server at
   noindex, or it appears on any surface;
 - any page the build prerendered is not in sitemap.xml, not a listed machine
   file, not deliberately hidden, and not noindex. This catches one guide, topic or
-  session that renders but was never registered, by URL.
+  session that renders but was never registered, by URL;
+- a file in `public/` sits at a route's path (see below).
 
 `scripts/check-discovery-surfaces.py` fails when:
 
@@ -97,7 +98,8 @@ Both run in `scripts/preflight-deploy.sh` after its build, against the server at
 Both were control-tested on 2026-09-25 by planting each failure: an orphan
 route, a stale hidden-route entry, an unregistered prerendered page, a missing
 section in llms-full.txt, a missing section in the OKF site index, a guide
-dropped from llms.txt and an orphan OKF file. Every one failed the gate.
+dropped from llms.txt, an orphan OKF file and a static `public/llms.txt`. Every
+one failed the gate.
 
 For a single URL, `scripts/check-discovery.py <path>` answers what Search
 Console will: 200, in sitemap.xml, allowed by robots.txt, self-canonical, not
@@ -131,8 +133,10 @@ okf/site-index.md ────> every page, all surfaces
 | `scripts/okf_attest.py` | Checks the counts written in the prose against the data |
 
 Do not recreate `public/llms.txt`, `public/llms-full.txt` or
-`public/okf/guides/index.md`: a static file at those paths would shadow the
-generated one.
+`public/okf/guides/index.md`. A static file at a route's path is served instead
+of the route and the build does not warn (tested 2026-09-25: a planted
+`public/llms.txt` replaced the generated file). `check-route-coverage.py` fails
+the deploy if one appears.
 
 ## Why it works this way
 

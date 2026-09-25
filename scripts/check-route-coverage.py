@@ -15,6 +15,7 @@ deploy. Run it against a freshly built server (preflight builds first).
      file, linked from /okf/index.md) or listed in NOT_INDEXED_ROUTES in
      src/lib/siteIndex.ts with a reason. A listed route must serve noindex and
      appear on no surface, and every listed pattern must still match a route.
+     No file in public/ may sit at a route's path: it would win silently.
   2. Pages. Every page the build prerendered (.next/prerender-manifest.json)
      is in sitemap.xml, is a machine file on the surfaces, falls under
      NOT_INDEXED_ROUTES, or serves noindex by design (the conference logistics
@@ -134,6 +135,11 @@ for route, file in routes:
         unregistered.append(f"{route} ({file})")
 check("every app route is registered in src/lib/siteIndex.ts or in NOT_INDEXED_ROUTES", not unregistered,
       "; ".join(unregistered) + " -> add it to getSiteIndex(), or to NOT_INDEXED_ROUTES with a reason" if unregistered else "")
+
+# A file in public/ at a route's path wins over the route, and the build does
+# not warn: a stray public/llms.txt would silently replace the generated one.
+shadowed = [f"{r} (public{r})" for r, _ in routes if "[" not in r and r != "/" and (ROOT / "public" / r.lstrip("/")).is_file()]
+check("no file in public/ shadows an app route", not shadowed, ", ".join(shadowed))
 
 stale = [p for p, _ in NOT_INDEXED if not any((p.endswith("/*") and r.startswith(p[:-1])) or r == p for r, _ in routes)]
 check("every NOT_INDEXED_ROUTES entry still matches a route", not stale, ", ".join(stale))
