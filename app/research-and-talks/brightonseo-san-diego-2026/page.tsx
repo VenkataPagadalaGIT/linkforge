@@ -23,8 +23,8 @@ export const dynamic = "force-static";
 const PATH = "/research-and-talks/brightonseo-san-diego-2026";
 const TITLE = "brightonSEO San Diego 2026: Recap and Thank You";
 const HEADLINE = "brightonSEO 2026";
-/** The day this recap went live. */
-const PUBLISHED = "2026-09-25";
+/** When this recap went live (deployment 7a5625d4 reached SUCCESS at 18:40 Eastern). */
+const PUBLISHED = "2026-09-25T18:40:00-04:00";
 const DESCRIPTION = N.posts
   ? `My brightonSEO San Diego 2026 talk and a thank-you to the ${N.people} people behind it: ${N.reactions.toLocaleString("en-US")} reactions across ${N.talkPosts} LinkedIn posts, the video, photos and slides.`
   : "My brightonSEO San Diego 2026 talk on industrial level classification with intent: the video, the slides and a thank-you.";

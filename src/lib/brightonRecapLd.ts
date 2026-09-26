@@ -74,6 +74,7 @@ export function buildBrightonRecapGraph({
     "@type": pageNames.has(t.name) ? "Organization" : "Person",
     "@id": personId(t.url),
     name: t.name,
+    url: t.url,
     sameAs: t.url,
   }));
   const byName = new Map(THANK_YOU.map((t) => [t.name, personId(t.url)]));
@@ -148,6 +149,9 @@ export function buildBrightonRecapGraph({
       "@type": "SocialMediaPosting",
       "@id": id(`post-${p.id}`),
       url: p.url,
+      headline: `LinkedIn post by ${p.author} about ${T.title}`,
+      // The post as LinkedIn's public embed shows it, captured for this page.
+      ...(p.image ? { image: abs(p.image.src) } : {}),
       datePublished: pdt(p.posted),
       author: ref(byName.get(p.author) ?? personId(p.url)),
       ...(p.quote ? { abstract: p.quote } : {}),
@@ -159,6 +163,7 @@ export function buildBrightonRecapGraph({
       "@type": "SocialMediaPosting",
       url: m.url,
       headline: m.label,
+      ...(m.image ? { image: abs(m.image.src) } : {}),
       datePublished: pdt(m.posted),
       author: ref(PERSON),
       about: ref(event["@id"] as string),
@@ -190,7 +195,9 @@ export function buildBrightonRecapGraph({
     image: [images16x9, ...images.slice(0, 2).map((n) => n.contentUrl as string)],
     about: ref(event["@id"] as string),
     video: ref(id("video")),
-    associatedMedia: [ref(id("photos")), ...(slides ? [ref(id("slides"))] : [])],
+    // The gallery and the deck are parts of the recap (hasPart takes any
+    // CreativeWork); associatedMedia would demand a MediaObject.
+    hasPart: [ref(id("photos")), ...(slides ? [ref(id("slides"))] : [])],
     mentions: people.map((n) => ref(n["@id"] as string)),
   };
 
@@ -207,10 +214,12 @@ export function buildBrightonRecapGraph({
     author: ref(PERSON),
     about: ref(event["@id"] as string),
     primaryImageOfPage: ref(images[0]?.["@id"] as string),
-    mainEntity: ref(id("article")),
+    // The recap, and the list of posts it collects. An ItemList is not a
+    // CreativeWork, so it is a main entity here rather than a part.
+    mainEntity: [ref(id("article")), ref(id("posts"))],
     // Plain-text edition of this page, transcript included.
     encoding: { "@type": "MediaObject", encodingFormat: "text/markdown", contentUrl: `${PAGE}.md` },
-    hasPart: [ref(id("video")), ref(id("photos")), ...(slides ? [ref(id("slides"))] : []), ref(id("posts"))],
+    hasPart: [ref(id("video")), ref(id("photos")), ...(slides ? [ref(id("slides"))] : [])],
   };
 
   return {

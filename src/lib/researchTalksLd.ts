@@ -161,7 +161,26 @@ export function eventNode(): Node {
     organizer: { "@type": "Organization", name: "brightonSEO", url: "https://brightonseo.com" },
     url: T.links[0].url,
     image: abs(T.video.poster),
-    superEvent: { "@type": "Event", name: T.event, url: "https://brightonseo.com/events/san-diego-2026" },
+    // The conference the talk was part of. Google validates a nested Event as
+    // an item of its own, so it carries the required dates and place too:
+    // 15 and 16 September 2026 in San Diego, per the deck's title slide.
+    superEvent: {
+      "@type": "Event",
+      name: T.event,
+      url: "https://brightonseo.com/events/san-diego-2026",
+      description: `${T.event}, the two-day brightonSEO search marketing conference in San Diego.`,
+      startDate: "2026-09-15",
+      endDate: "2026-09-16",
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      location: {
+        "@type": "Place",
+        name: T.event,
+        address: { "@type": "PostalAddress", addressLocality: "San Diego", addressRegion: "CA", addressCountry: "US" },
+      },
+      organizer: { "@type": "Organization", name: "brightonSEO", url: "https://brightonseo.com" },
+      performer: ref(PERSON),
+    },
     // The chapter list as a real outline. It is the most specific description
     // of the talk that exists while the recording is unpublished, and it is
     // the part an answer engine can actually quote.
@@ -169,11 +188,12 @@ export function eventNode(): Node {
       "@type": "CreativeWork",
       name: T.title,
       abstract: T.summary,
+      // Positions only: startOffset belongs to Clip, not CreativeWork, and the
+      // timed chapters live on the recording's VideoObject where they apply.
       hasPart: T.chapters.map((c, i) => ({
         "@type": "CreativeWork",
         position: i + 1,
         name: c.title,
-        startOffset: c.at,
       })),
     },
   };
