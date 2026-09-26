@@ -7,7 +7,9 @@ type Params = { slug: string };
 // Solutions are hardcoded in the frontend (src/components/ServicesGrid.tsx).
 // Pre-render these 6 known slugs at build time.
 export const revalidate = 3600;
-export const dynamicParams = true;
+// Only the six real solutions exist. Any other slug is a 404, not a 200 that
+// invents a title-cased page and canonicalises it to itself.
+export const dynamicParams = false;
 
 const SOLUTION_SLUGS = [
   "ai-product",

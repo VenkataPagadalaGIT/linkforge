@@ -1,8 +1,8 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "") ||
   // Hard fallback: an unset env var must never blank canonicals or crash
-  // metadataBase (new URL("") throws at build time).
+  // metadataBase (new URL("") throws at build time). It must never fall back
+  // to the backend host either: that put canonicals on the API's domain.
   "https://venkatapagadala.com";
 
 export const SITE_NAME = "Venkata Pagadala";

@@ -787,7 +787,9 @@ async def content_sitemap():
     contribs = [d async for d in db.contributors.find({}, {"_id": 0, "id": 1}).limit(2000)]
     updates = [d async for d in db.ai_updates.find({}, {"_id": 0, "slug": 1, "date": 1}).limit(2000)]
     pillars = [d async for d in db.pillars.find({}, {"_id": 0, "slug": 1}).limit(500)]
-    posts = [d async for d in db.posts.find({}, {"_id": 0, "slug": 1, "pillarSlug": 1, "date": 1}).limit(5000)]
+    # Same visibility rule as the public post list: drafts and scheduled posts never reach the sitemap.
+    visible = {"$or": [{"status": "published"}, {"status": {"$exists": False}}]}
+    posts = [d async for d in db.posts.find(visible, {"_id": 0, "slug": 1, "pillarSlug": 1, "date": 1}).limit(5000)]
     return {"contributors": contribs, "updates": updates, "pillars": pillars, "posts": posts}
 
 

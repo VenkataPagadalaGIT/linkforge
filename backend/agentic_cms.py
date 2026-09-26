@@ -535,6 +535,24 @@ def validate_fields(type_id: str, fields: Dict[str, Any]) -> Dict[str, Any]:
     return fields
 
 
+ROBOTS_DIRECTIVE = re.compile(r"^\s*(index|noindex)\s*,\s*(follow|nofollow)\s*$", re.I)
+
+
+def fill_route(pattern: str, page: Dict[str, Any]) -> str:
+    """A type's route with every {placeholder} filled from the page.
+
+    {slug} comes from the page, anything else ({pillar}, {section}) from its
+    template fields. A placeholder with no value is left in place on purpose:
+    the canonical gate refuses it, so a half-built URL can never publish.
+    """
+    fields = page.get("fields") or {}
+    def sub(m: "re.Match[str]") -> str:
+        key = m.group(1)
+        val = page.get("slug", "") if key == "slug" else fields.get(key)
+        return slugify(str(val)) if val not in (None, "") else m.group(0)
+    return re.sub(r"\{(\w+)\}", sub, pattern)
+
+
 def resolve_seo(page: Dict[str, Any], globals_doc: Dict[str, Any]) -> Dict[str, Any]:
     """The cascade: page value, else page type, else globals."""
     t = PAGE_TYPES.get(page.get("type"), {})
@@ -542,7 +560,7 @@ def resolve_seo(page: Dict[str, Any], globals_doc: Dict[str, Any]) -> Dict[str, 
     title = seo.get("seoTitle") or t.get("titlePattern", "{title}").replace("{title}", page.get("title", ""))
     tmpl = globals_doc.get("titleTemplate") or "{page} · {site}"
     full_title = title if "·" in title else tmpl.replace("{page}", title).replace("{site}", globals_doc.get("siteName", ""))
-    route = t.get("route", "/{slug}").replace("{slug}", page.get("slug", ""))
+    route = fill_route(t.get("route", "/{slug}"), page)
     return {
         "seoTitle": full_title,
         "seoTitleLength": len(full_title),
@@ -587,6 +605,16 @@ def run_gates(page: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[str, Any]:
 
     add("canonical is absolute", resolved.get("canonical", "").startswith("http"),
         resolved.get("canonical", ""))
+    add("canonical fully resolved", not re.search(r"[{}]", resolved.get("canonical", "")),
+        resolved.get("canonical", ""))
+    add("robots directive valid", bool(ROBOTS_DIRECTIVE.match(resolved.get("robots") or "")),
+        resolved.get("robots") or "")
+
+    fields = page.get("fields") or {}
+    missing_fields = [f["name"] for f in (t or {}).get("extraFields", [])
+                      if f.get("required") and fields.get(f["name"]) in (None, "", [])]
+    add("required template fields present", not missing_fields,
+        f"missing: {', '.join(missing_fields)}" if missing_fields else "")
 
     body_text = " ".join((b.get("text") or "") for b in page.get("blocks", []))
     add("no em dashes in copy", "—" not in (body_text + page.get("title", "")),
@@ -1400,9 +1428,13 @@ def build_router(db, get_current_admin) -> APIRouter:
             await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
             raise HTTPException(403, why)
         profile = await get_profile()
-        ok, why = agent_may(profile, "create", payload.type, token=agent)
+        # The path the new page would publish at, so owner locks apply to new
+        # drafts too, not only to revisions of existing pages.
+        path = fill_route(PAGE_TYPES.get(payload.type, {}).get("route", "/{slug}"),
+                          {"slug": tgt["slug"], "fields": payload.fields})
+        ok, why = agent_may(profile, "create", payload.type, path, token=agent)
         if not ok:
-            await log_event(actor_of_agent(agent), "draft.create", "refused", tgt, detail=why)
+            await log_event(actor_of_agent(agent), "draft.create", "refused", {**tgt, "path": path}, detail=why)
             raise HTTPException(403, why)
         stray = fields_refused(profile, agent, payload.type, payload.model_dump())
         if stray:
@@ -1440,11 +1472,20 @@ def build_router(db, get_current_admin) -> APIRouter:
         g = await get_globals()
         return {**page, "gates": run_gates(page, resolve_seo(page, g))}
 
+    async def refuse_if_paused(agent: dict, action: str, tgt: dict) -> None:
+        """The pause switch is the owner's stop button: it covers every agent write."""
+        profile = await get_profile()
+        if profile.get("operations", {}).get("agentsPaused"):
+            why = "agents are paused site-wide"
+            await log_event(actor_of_agent(agent), action, "refused", tgt, detail=why)
+            raise HTTPException(423, why)
+
     @r.post("/agent/drafts/{page_id}/sources")
     async def agent_add_source(page_id: str, src: SourceRef, agent: dict = Depends(require_agent)):
         page = await db.cms_pages.find_one({"id": page_id}, {"_id": 0})
         if not page or page.get("provenance", {}).get("agentId") != agent.get("id"):
             raise HTTPException(404, "not your draft")
+        await refuse_if_paused(agent, "draft.source", {"pageId": page_id})
         if page.get("status") != "draft":
             raise HTTPException(409, "draft is no longer editable")
         await db.cms_pages.update_one({"id": page_id},
@@ -1457,6 +1498,7 @@ def build_router(db, get_current_admin) -> APIRouter:
         page = await db.cms_pages.find_one({"id": page_id}, {"_id": 0})
         if not page or page.get("provenance", {}).get("agentId") != agent.get("id"):
             raise HTTPException(404, "not your draft")
+        await refuse_if_paused(agent, "draft.gates", {"pageId": page_id})
         g = await get_globals()
         return run_gates(page, resolve_seo(page, g))
 
@@ -1466,6 +1508,14 @@ def build_router(db, get_current_admin) -> APIRouter:
         page = await db.cms_pages.find_one({"id": page_id}, {"_id": 0})
         if not page or page.get("provenance", {}).get("agentId") != agent.get("id"):
             raise HTTPException(404, "not your draft")
+        tgt = {"pageId": page_id, "type": page["type"], "slug": page["slug"]}
+        await refuse_if_paused(agent, "draft.submit", tgt)
+        # Only a draft can be submitted. Without this, submitting a page that
+        # is already live moved it back to in_review and took it off the site.
+        if page.get("status") != "draft":
+            why = f"only drafts can be submitted; this page is {page.get('status')}"
+            await log_event(actor_of_agent(agent), "draft.submit", "refused", tgt, detail=why)
+            raise HTTPException(409, why)
         g = await get_globals()
         result = run_gates(page, resolve_seo(page, g))
         await db.cms_pages.update_one({"id": page_id}, {"$set": {

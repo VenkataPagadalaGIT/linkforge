@@ -40,8 +40,29 @@ export const adminApi: AxiosInstance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+/**
+ * A laptop must not write to production by accident. `.env.local` has pointed
+ * the local admin at the production backend, so a test click on localhost
+ * changed the live site. Reads stay allowed; writes from a local page to a
+ * non-local backend need NEXT_PUBLIC_ALLOW_LOCAL_TO_PROD_WRITES=1, set on
+ * purpose for that session.
+ */
+export function blocksLocalWriteToRemote(method: string | undefined, hostname: string, backend: string): boolean {
+  const write = !["get", "head", "options"].includes((method || "get").toLowerCase());
+  const localPage = ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+  const localBackend = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?/.test(backend);
+  const allowed = process.env.NEXT_PUBLIC_ALLOW_LOCAL_TO_PROD_WRITES === "1";
+  return write && localPage && !localBackend && !allowed;
+}
+
 adminApi.interceptors.request.use(async (config) => {
   if (typeof window === "undefined") return config;
+  if (blocksLocalWriteToRemote(config.method, window.location.hostname, BACKEND_URL)) {
+    throw new Error(
+      `Blocked: this local admin would write to ${BACKEND_URL}. ` +
+        "Point NEXT_PUBLIC_BACKEND_URL at a local backend, or set NEXT_PUBLIC_ALLOW_LOCAL_TO_PROD_WRITES=1 deliberately.",
+    );
+  }
   if (clerkEnabled && clerkTokenGetter) {
     const t = await clerkTokenGetter();
     if (t) {
