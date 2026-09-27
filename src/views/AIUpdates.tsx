@@ -4,7 +4,7 @@ import { formatDateShort } from "@/lib/date";
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
-import { aiUpdates, CATEGORY_META, type UpdateCategory } from "@/data/aiUpdates";
+import { aiUpdates, CATEGORY_META, type AIUpdate, type UpdateCategory } from "@/data/aiUpdates";
 import { ArrowLeft, ArrowRight, Calendar, ExternalLink, Tag } from "lucide-react";
 import { useState, useMemo } from "react";
 
@@ -14,12 +14,13 @@ const tocSections = [
   { label: "Latest Updates", id: "updates" },
 ];
 
-const AIUpdatesIndex = () => {
+/** `updates` is the published list from the server page; the built-in copy is only a fallback. */
+const AIUpdatesIndex = ({ updates = aiUpdates }: { updates?: AIUpdate[] }) => {
   const [filter, setFilter] = useState<UpdateCategory | "all">("all");
 
   const filtered = useMemo(
-    () => filter === "all" ? aiUpdates : aiUpdates.filter((u) => u.category === filter),
-    [filter]
+    () => filter === "all" ? updates : updates.filter((u) => u.category === filter),
+    [filter, updates]
   );
 
   return (

@@ -1,5 +1,5 @@
 // The admin sign-in decisions (src/lib/admin-auth-outcome.ts), tested directly.
-// Run: node --test tests/frontend/   (Node 22.18+ runs the .ts import as-is)
+// Run: node --test "tests/frontend/*.test.mjs"   (Node 22.18+ runs the .ts import as-is)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { loginUrlFor, outcomeOf, safeRedirect } from "../../src/lib/admin-auth-outcome.ts";

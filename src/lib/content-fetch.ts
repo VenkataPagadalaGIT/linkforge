@@ -6,7 +6,7 @@
  * rich, crawlable information for each URL.
  */
 import { BACKEND_URL, SITE_URL } from "./site";
-import { aiUpdates as staticUpdates } from "@/data/aiUpdates";
+import { getNewsArticle } from "@/lib/news-source";
 
 async function fetchJSON<T = unknown>(path: string): Promise<T | null> {
   const url = `${BACKEND_URL}/api${path}`;
@@ -103,11 +103,11 @@ export const getContributor = async (id: string): Promise<Contributor | null> =>
 // gate. The fallback keeps the three readers agreeing, and it means an
 // article still serves when the backend is down, the same guarantee the
 // guides already make.
+// News comes from the published content file only (docs/NO_DEPLOY_PUBLISHING.md);
+// the backend's old copies of 7 articles are no longer read.
 export const getUpdate = async (slug: string): Promise<AIUpdate | null> => {
-  const fromApi = await fetchJSON<AIUpdate>(`/content/updates/${encodeURIComponent(slug)}`);
-  if (fromApi) return fromApi;
-  const local = staticUpdates.find((u) => u.slug === slug);
-  return local ? (local as unknown as AIUpdate) : null;
+  const found = await getNewsArticle(slug);
+  return found ? (found.update as unknown as AIUpdate) : null;
 };
 
 // Backend first, static module second, matching getUpdate. Insights content is

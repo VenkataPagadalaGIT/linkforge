@@ -104,7 +104,7 @@ Run:
 ```bash
 cd ~/Desktop/mono-mind-stage/backend
 MONGO_URL=mongodb://127.0.0.1:27091 .venv/bin/python -m pytest -q tests/test_clerk_auth.py tests/test_admin_auth.py tests/test_content_feed.py
-cd .. && node --test tests/frontend/admin-auth-outcome.test.mjs
+cd .. && node --test "tests/frontend/*.test.mjs"
 ```
 - **Result on 2026-09-27:** 73 backend and 7 frontend tests pass. Without a local MongoDB, the 40 verifier cases still run and the rest skip.
 - **Preflight:** the verifier cases and the 7 decision tests also run in `scripts/preflight-deploy.sh`.

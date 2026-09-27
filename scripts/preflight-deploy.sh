@@ -160,12 +160,14 @@ else
   bad "css token gate failed; see /tmp/preflight-css.log"
 fi
 
-# Admin sign-in gate: the loop/retry/refusal decisions and the redirect
-# guard (no database needed), plus the attacks on the Clerk verifier. See
-# docs/CLERK_SETUP.md for the full catalog, including the database suites.
-if node --test tests/frontend/admin-auth-outcome.test.mjs > /tmp/preflight-admin-auth.log 2>&1 \
+# Admin sign-in and no-deploy publishing gate: the sign-in decisions, the
+# news file checks, the signed refresh message (tests/frontend), and the
+# attacks on the Clerk verifier. See docs/CLERK_SETUP.md and
+# docs/NO_DEPLOY_PUBLISHING.md for the full catalogs.
+if node --test "tests/frontend/*.test.mjs" > /tmp/preflight-admin-auth.log 2>&1 \
+   && node scripts/cms/publish-news.mjs check >> /tmp/preflight-admin-auth.log 2>&1 \
    && (cd backend && .venv/bin/python -m pytest -q -p no:cacheprovider tests/test_clerk_auth.py) >> /tmp/preflight-admin-auth.log 2>&1; then
-  ok "admin sign-in: decision tests and Clerk verifier attacks pass"
+  ok "sign-in and publishing: frontend tests, news file check and Clerk verifier attacks pass"
 else
   bad "admin sign-in tests failed; see /tmp/preflight-admin-auth.log"
 fi

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import AIUpdateDetail from "@/views/AIUpdateDetail";
 import { getUpdate, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
+import { getNewsArticle } from "@/lib/news-source";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 
@@ -38,8 +39,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default async function Page({ params }: { params: Params }) {
-  const upd = await getUpdate(params.slug);
-  if (!upd) notFound();
+  const found = await getNewsArticle(params.slug);
+  if (!found) notFound();
+  const upd = found.update;
   const url = `${SITE_URL}/ai-updates/${params.slug}`;
   const jsonLd = upd
     ? [
@@ -67,7 +69,7 @@ export default async function Page({ params }: { params: Params }) {
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(j) }} />
       ))}
       <Suspense fallback={null}>
-        <AIUpdateDetail />
+        <AIUpdateDetail update={found.update} prev={found.prev} next={found.next} />
       </Suspense>
     </>
   );

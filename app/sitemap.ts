@@ -2,9 +2,11 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { getSiteIndex } from "@/lib/siteIndex";
 
-// Re-generate the sitemap at most once per hour so new content appears
-// without a rebuild.
-export const revalidate = 3600;
+// Built on each request from cached data (the site index and the published
+// news), so an article published without a deploy is in sitemap.xml at once.
+// A refresh message does not reach a statically cached sitemap route in this
+// Next.js version (found by scripts/cms/test_no_deploy_news.py, E02).
+export const dynamic = "force-dynamic";
 
 // Every page of the site is enumerated once, in src/lib/siteIndex.ts, which
 // the HTML site map (/sitemap) reads too. This file only formats that list.

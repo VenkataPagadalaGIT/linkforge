@@ -11,7 +11,7 @@
     {"id": "persona", "name": "Persona", "route": "/personas/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later; SEO fields in step 2", "formerly": null},
     {"id": "insight-post", "name": "Insight post", "route": "/insights/[slug]/[postSlug]", "source": "Database (old backend)", "today": "Old admin editor, no deploy", "plan": "Step 1: live in about a minute", "formerly": "insight"},
     {"id": "site-map-section", "name": "Site map section", "route": "/sitemap/[section]", "source": "Built from all pages", "today": "Updates itself, no deploy", "plan": "Updates itself", "formerly": null},
-    {"id": "ai-update", "name": "AI update (news)", "route": "/ai-updates/[slug]", "source": "Database (7) and code (7)", "today": "A deploy, or no editor", "plan": "Step 1: live in about a minute", "formerly": "ai-update"},
+    {"id": "ai-update", "name": "AI update (news)", "route": "/ai-updates/[slug]", "source": "content/ai-updates.json (published without a deploy)", "today": "Publish, no deploy, once set up", "plan": "Live about a minute after publish (docs/NO_DEPLOY_PUBLISHING.md)", "formerly": "ai-update"},
     {"id": "guide", "name": "Guide", "route": "/guides/[slug]", "source": "Code", "today": "A deploy", "plan": "Text later (3D stays code); SEO fields in step 2", "formerly": "guide"},
     {"id": "insight-pillar", "name": "Insight pillar", "route": "/insights/[slug]", "source": "Database (old backend)", "today": "No editor today", "plan": "Step 1: live in about a minute", "formerly": null},
     {"id": "solution", "name": "Solution", "route": "/solutions/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later; SEO fields in step 2", "formerly": null},

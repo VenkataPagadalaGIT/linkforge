@@ -6,19 +6,21 @@ import DealLogos from "@/components/updates/DealLogos";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
 import ContributorCards from "@/components/ContributorCards";
-import { aiUpdates, CATEGORY_META } from "@/data/aiUpdates";
+import { aiUpdates, CATEGORY_META, type AIUpdate } from "@/data/aiUpdates";
 import { ArrowLeft, ArrowRight, Calendar, ExternalLink, Eye, FileText, Play, List, Users } from "lucide-react";
 
-const AIUpdateDetail = () => {
+/** The server page passes the published article and its neighbours; the
+ *  built-in copy is only a fallback when rendered without them. */
+const AIUpdateDetail = ({ update: given, prev, next }: { update?: AIUpdate; prev?: AIUpdate | null; next?: AIUpdate | null } = {}) => {
   const { slug } = useParams<{ slug: string }>();
-  const update = aiUpdates.find((u) => u.slug === slug);
+  const update = given ?? aiUpdates.find((u) => u.slug === slug);
 
   if (!update) return <Navigate to="/ai-updates" replace />;
 
   const catMeta = CATEGORY_META[update.category];
-  const currentIdx = aiUpdates.findIndex((u) => u.slug === slug);
-  const prevUpdate = currentIdx > 0 ? aiUpdates[currentIdx - 1] : null;
-  const nextUpdate = currentIdx < aiUpdates.length - 1 ? aiUpdates[currentIdx + 1] : null;
+  const currentIdx = aiUpdates.findIndex((u) => u.slug === update.slug);
+  const prevUpdate = given ? prev ?? null : currentIdx > 0 ? aiUpdates[currentIdx - 1] : null;
+  const nextUpdate = given ? next ?? null : currentIdx < aiUpdates.length - 1 ? aiUpdates[currentIdx + 1] : null;
 
   const tocSections = [
     ...(update.highlights?.length ? [{ label: "Key Numbers", id: "numbers" }] : []),

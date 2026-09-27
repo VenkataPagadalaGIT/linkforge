@@ -9,7 +9,7 @@ import PageSidebar, { TocItem } from "@/components/PageSidebar";
 import { aiContributors, SEGMENT_COLORS } from "@/data/aiContributors";
 import { contributorToRoadmap, contributorToEncyclopedia } from "@/data/crossLinks";
 import CrossLinks from "@/components/CrossLinks";
-import { aiUpdates } from "@/data/aiUpdates";
+import { aiUpdates, type AIUpdate } from "@/data/aiUpdates";
 import { roadmapTopics } from "@/data/aiRoadmap";
 import {
   ArrowLeft, ArrowRight, ExternalLink, GraduationCap, Award, MapPin,
@@ -58,7 +58,8 @@ const ResourceThumbnail = ({ url, fullWidth }: { url: string; fullWidth?: boolea
   );
 };
 
-const AIContributorProfilePage = () => {
+/** `news`: the published articles naming this contributor, from the server page. */
+const AIContributorProfilePage = ({ news: publishedNews }: { news?: AIUpdate[] } = {}) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const contributor = aiContributors.find((c) => c.id === id);
@@ -571,7 +572,7 @@ const AIContributorProfilePage = () => {
           {/* In the news: any update that names this contributor. The edge is
               declared once on the article and read from both ends. */}
           {(() => {
-            const news = aiUpdates.filter((u) => u.contributors?.includes(contributor.id));
+            const news = publishedNews ?? aiUpdates.filter((u) => u.contributors?.includes(contributor.id));
             if (!news.length) return null;
             return (
               <ScrollReveal delay={80}>

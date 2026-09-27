@@ -19,7 +19,8 @@ import { join } from "node:path";
 import { buildSections, getSiteIndex, type SiteEntry } from "@/lib/siteIndex";
 import { guides } from "@/data/guides";
 import { GUIDE_TOPICS } from "@/data/guideTopics";
-import { aiUpdates } from "@/data/aiUpdates";
+import type { AIUpdate } from "@/data/aiUpdates";
+import { getNews } from "@/lib/news-source";
 import { linkedPapers, accessNote, authorRole, citationLine, GOOGLE_SCHOLAR_URL } from "@/data/research";
 import { BRIGHTONSEO_2026, TALKS, RECOGNITION, formatTalkDate } from "@/data/talks";
 import { SUPPORT_TOTALS } from "@/data/brightonSupport";
@@ -74,7 +75,7 @@ function topicsSection(): string {
   return L.join("\n");
 }
 
-function updatesSection(entries: SiteEntry[]): string {
+function updatesSection(entries: SiteEntry[], news: AIUpdate[]): string {
   const L = [
     "## AI Updates",
     "",
@@ -83,7 +84,7 @@ function updatesSection(entries: SiteEntry[]): string {
     "",
   ];
   for (const e of entries.filter((x) => x.section === "updates" && !x.hub)) {
-    const u = aiUpdates.find((a) => `/ai-updates/${a.slug}` === e.href);
+    const u = news.find((a) => `/ai-updates/${a.slug}` === e.href);
     L.push(`### ${e.title}${e.note ? ` (${monthYear(e.note)})` : ""}`);
     if (u?.summary) L.push(u.summary);
     L.push(`- URL: ${abs(e.href)}`, "");
@@ -188,11 +189,12 @@ function narrative(file: "llms.md" | "llms-full.md"): string {
 
 export async function renderLlms(file: "llms.md" | "llms-full.md"): Promise<string> {
   const entries = await getSiteIndex();
+  const news = await getNews();
   return fill(narrative(file), {
     discovery: discoverySection,
     guides: guidesSection,
     topics: topicsSection,
-    updates: () => updatesSection(entries),
+    updates: () => updatesSection(entries, news),
     research: researchSection,
     "site-index": () => siteIndexSection(entries),
     "every-page": () => everyPageSection(entries),

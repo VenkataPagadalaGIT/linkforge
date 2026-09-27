@@ -21,7 +21,7 @@
 import type { MetadataRoute } from "next";
 import { toDate } from "@/lib/date";
 import { getSitemapData } from "@/lib/content-fetch";
-import { aiUpdates } from "@/data/aiUpdates";
+import { getNews } from "@/lib/news-source";
 import { PERSONAS, PERSONAS_LAST_UPDATED } from "@/data/personas";
 import { QUESTIONS } from "@/data/corpusQuestions";
 import { guides } from "@/data/guides";
@@ -274,22 +274,10 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // AI Updates: backend first, then the static module, deduped by slug, so an
-  // article that ships in the file alone is still listed the same day
-  const updateTitle = (slug: string) => aiUpdates.find((u) => u.slug === slug)?.title ?? humanize(slug);
+  // AI Updates: the published content file is the one source, so an article
+  // published without a deploy is listed as soon as the site refreshes
   const updates: SiteEntry[] = [];
-  const seenUpdates = new Set<string>();
-  if (data) {
-    for (const u of data.updates) {
-      seenUpdates.add(u.slug);
-      updates.push({
-        href: `/ai-updates/${u.slug}`, title: updateTitle(u.slug), section: "updates", note: u.date ? u.date.slice(0, 10) : undefined,
-        xml: { lastModified: u.date ? toDate(u.date) : now, changeFrequency: "monthly", priority: 0.7 },
-      });
-    }
-  }
-  for (const u of aiUpdates) {
-    if (seenUpdates.has(u.slug)) continue;
+  for (const u of await getNews()) {
     updates.push({
       href: `/ai-updates/${u.slug}`, title: u.title, section: "updates", note: u.date.slice(0, 10),
       xml: { lastModified: toDate(u.date), changeFrequency: "monthly", priority: 0.7 },

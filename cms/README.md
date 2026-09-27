@@ -19,6 +19,8 @@ There is one CMS, and it has three parts.
 
 ## How an edit reaches the site
 
+News (AI updates) publishes without a deploy: see [docs/NO_DEPLOY_PUBLISHING.md](../docs/NO_DEPLOY_PUBLISHING.md). The steps below are for everything else, until it moves to the same flow.
+
 1. You edit a page on the CMS page and save it. It waits in Edits as "Waiting for Claude".
 2. You tell Claude "apply my CMS edits". For each edit, Claude runs `check_edit.py`, changes the repo, and marks the edit "Applied".
 3. Today the change needs one deploy. You run `railway up`, and backend changes ship when you say "push". Once the no-deploy setup is built, a change goes live about a minute after you say "publish".
