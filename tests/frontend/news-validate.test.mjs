@@ -60,11 +60,11 @@ test("N03 unsafe HTML in the body blocks, at runtime too", () => {
 
 test("N04 an em dash blocks in a new or changed article, and only warns in an unchanged one", () => {
   const published = [good()];
-  const withDash = { ...good(), summary: "S".repeat(140) + " — more" };
+  const withDash = { ...good(), summary: "S".repeat(140) + " \u2014 more" };
   assert.equal(validateNews([withDash], published).ok, false, "changed article with a dash");
-  const fresh = { ...good(), slug: "new-one", id: "t2", title: "New — article" };
+  const fresh = { ...good(), slug: "new-one", id: "t2", title: "New \u2014 article" };
   assert.equal(validateNews([good(), fresh], published).ok, false, "new article with a dash");
-  const legacy = [{ ...good(), title: "Old — article" }];
+  const legacy = [{ ...good(), title: "Old \u2014 article" }];
   const r = validateNews(legacy, legacy);
   assert.equal(r.ok, true, "unchanged article keeps publishing");
   assert.ok(r.issues.some((i) => i.level === "warn" && /em dash/.test(i.message)));

@@ -18,7 +18,7 @@ export const NEWS_CATEGORIES = ["product-launch", "research", "industry", "open-
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
-const EM_DASH = "—";
+const EM_DASH = "\u2014";
 const UNSAFE_HTML: [RegExp, string][] = [
   [/<\s*(script|iframe|object|embed|form|style|link|meta|base)\b/i, "a <$1> tag"],
   [/<[^>]*\son[a-z]+\s*=/i, "an on...= event handler"],
