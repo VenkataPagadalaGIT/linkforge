@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import AdminGate from "@/components/admin/AdminGate";
 import CmsShell, { btn, btnPrimary } from "@/components/admin/CmsShell";
 
 const NoteContent = dynamic(() => import("@/components/NoteContent"), { ssr: false });
@@ -185,7 +186,8 @@ export default function PostEditorClient({ slug }: { slug: string }) {
     }
   };
 
-  if (authStatus === "checking" || loading) {
+  if (authStatus !== "authed") return <AdminGate status={authStatus} />;
+  if (loading) {
     return <div className="p-12 text-muted-foreground">Loading…</div>;
   }
 

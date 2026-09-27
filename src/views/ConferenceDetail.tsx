@@ -36,7 +36,7 @@ import TakeNotesPill from "@/components/TakeNotesPill";
 import NoteContent from "@/components/NoteContent";
 import { type Conference, type Session, type SessionType, getSessionId, getSessionUrlSlug } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
-import { adminApi, getToken } from "@/lib/admin-client";
+import { adminApi, ensureAuthReady, mightBeSignedIn } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
 
 const statusStyles: Record<string, string> = {
@@ -168,8 +168,9 @@ const ConferenceDetail = ({ conference }: { conference: Conference }) => {
     }
 
     // If logged in, also load all notes (private + public)
-    if (getToken()) {
+    if (mightBeSignedIn()) {
       try {
+        await ensureAuthReady();
         await adminApi.get("/auth/me");
         const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
         data.forEach((n) => (merged[n.session_id] = n));

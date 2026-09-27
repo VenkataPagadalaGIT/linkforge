@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
+import AdminGate from "@/components/admin/AdminGate";
 import CmsShell, { btnPrimary } from "@/components/admin/CmsShell";
 
 type Pillar = { slug: string; title: string };
@@ -71,12 +72,12 @@ export default function PostsListClient() {
     return true;
   });
 
-  if (authStatus !== "authed") return null;
+  if (authStatus !== "authed") return <AdminGate status={authStatus} />;
 
   return (
     <CmsShell
-      title="Legacy posts"
-      intro="The original blog-post editor. Create, edit and publish posts; changes go live with no redeploy. Newer content types live under Pages."
+      title="Posts"
+      intro="The post editor. Create, edit and publish insight posts; changes go live with no redeploy."
       actions={
         <Link href="/admin/cms/posts/new" className={btnPrimary} data-testid="cms-new-post-btn">
           New post

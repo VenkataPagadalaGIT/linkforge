@@ -32,8 +32,10 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
-from clerk_auth import (allowed_admin_emails as clerk_allowed_admins,
-                        clerk_enabled, verify_clerk_token as clerk_verify)
+from clerk_auth import (ClerkKeysUnavailable, allowed_admin_emails as clerk_allowed_admins,
+                        clerk_enabled, email_from_claims as clerk_email,
+                        is_production, verify_clerk_token as clerk_verify, warm_jwks)
+from starlette.concurrency import run_in_threadpool
 
 
 ROOT_DIR = Path(__file__).parent
@@ -53,9 +55,9 @@ REFRESH_TTL_DAYS = 30
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@monomind.com").lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "MonoMind2026!")
 
-# Is this a real deployment or a laptop? Railway sets RAILWAY_ENVIRONMENT.
-IS_PRODUCTION = bool(os.environ.get("RAILWAY_ENVIRONMENT") or
-                     os.environ.get("ENVIRONMENT", "").lower() in ("production", "prod"))
+# Is this a real deployment or a laptop? See clerk_auth.is_production: any of
+# Railway's environment variables, old or new, or ENVIRONMENT=production.
+IS_PRODUCTION = is_production()
 
 # Values that must never survive to production. If any of these is the live
 # value on a real deployment, the whole admin boundary is public knowledge,
@@ -283,6 +285,14 @@ def create_access_token(email: str) -> str:
     return pyjwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
 
 
+def password_login_allowed() -> bool:
+    """The legacy password login and its HS256 sessions are allowed only
+    when Clerk is off, or off-production, or on explicit break-glass."""
+    if not (IS_PRODUCTION and clerk_enabled()):
+        return True
+    return os.environ.get("ALLOW_PASSWORD_LOGIN", "").strip().lower() == "true"
+
+
 async def get_current_admin(request: Request) -> dict:
     token = request.cookies.get("access_token")
     if not token:
@@ -295,9 +305,13 @@ async def get_current_admin(request: Request) -> dict:
     # ---- Path 1: Clerk (when configured). Authentication is Clerk's;
     # authorization stays ours: only allowlisted emails are admins, because
     # Clerk will authenticate anyone who signs up to the application.
-    claims = clerk_verify(token)
+    # Off the event loop: verification may fetch Clerk's keys over the network.
+    try:
+        claims = await run_in_threadpool(clerk_verify, token)
+    except ClerkKeysUnavailable:
+        raise HTTPException(status_code=503, detail="Sign-in check temporarily unavailable; try again in a minute")
     if claims is not None:
-        email = (claims.get("email") or claims.get("primary_email") or "").lower()
+        email = clerk_email(claims)
         if not email:
             raise HTTPException(status_code=401,
                                 detail="Clerk token carries no email claim; add email to the session token template")
@@ -315,7 +329,11 @@ async def get_current_admin(request: Request) -> dict:
             raise HTTPException(status_code=403, detail="Not an authorized admin")
         return {"email": email, "role": "admin", "auth": "clerk", "sub": claims.get("sub")}
 
-    # ---- Path 2: legacy password-session JWT (HS256, our secret).
+    # ---- Path 2: legacy password-session JWT (HS256, our secret). Closed in
+    # production once Clerk is on, so a stolen JWT_SECRET or an old token is
+    # worth nothing; ALLOW_PASSWORD_LOGIN=true is the deliberate break-glass.
+    if not password_login_allowed():
+        raise HTTPException(status_code=401, detail="Password sessions are disabled; sign in with Clerk")
     try:
         payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
         if payload.get("type") != "access":
@@ -468,7 +486,7 @@ def _login_clear(keys: list) -> None:
 
 @api.post("/auth/login", response_model=TokenResponse)
 async def login(payload: LoginRequest, request: Request, response: Response):
-    if IS_PRODUCTION and clerk_enabled() and os.environ.get("ALLOW_PASSWORD_LOGIN", "").lower() != "true":
+    if not password_login_allowed():
         # With Clerk live, a password endpoint is pure attack surface.
         # ALLOW_PASSWORD_LOGIN=true is the deliberate break-glass override.
         raise HTTPException(status_code=403, detail="Password login is disabled; sign in with Clerk")
@@ -920,6 +938,9 @@ async def security_headers(request: Request, call_next):
 @app.on_event("startup")
 async def on_startup():
     _assert_secrets_safe()
+    # Load Clerk's keys in the background so the first sign-in is not slowed
+    # by the fetch. Never raises, and does not hold up boot.
+    asyncio.get_running_loop().run_in_executor(None, warm_jwks)
     try:
         # indexes
         await db.contact_submissions.create_index([("created_at", -1)])

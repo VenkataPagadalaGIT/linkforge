@@ -33,7 +33,7 @@ import TakeNotesPill from "@/components/TakeNotesPill";
 import NoteContent from "@/components/NoteContent";
 import { type Conference, type Session, type SessionType, getSessionId, getSessionUrlSlug } from "@/data/conferences";
 import { getSpeakerByName } from "@/data/speakers";
-import { adminApi, getToken } from "@/lib/admin-client";
+import { adminApi, ensureAuthReady, mightBeSignedIn } from "@/lib/admin-client";
 import { BACKEND_URL } from "@/lib/site";
 
 const sessionTypeColor: Record<SessionType, string> = {
@@ -124,8 +124,9 @@ const SessionDetail = ({ ctx }: { ctx: SessionDetailContext }) => {
       console.warn(`[SessionDetail] Public note fetch failed for ${c.slug}:`, err);
     }
 
-    if (getToken()) {
+    if (mightBeSignedIn()) {
       try {
+        await ensureAuthReady();
         await adminApi.get("/auth/me");
         const { data } = await adminApi.get<NoteRecord[]>(`/notebook/notes/${c.slug}`);
         const found = data.find((n) => n.session_id === sessionId);

@@ -3,30 +3,44 @@ import * as React from "react";
 import axios from "axios";
 import { Notebook, X, Lock, LogOut, CheckCircle2, Loader2 } from "lucide-react";
 import { BACKEND_URL } from "@/lib/site";
-import { adminApi, getToken, saveToken, clearToken } from "@/lib/admin-client";
+import {
+  adminApi, clearOwnerDevice, clearToken, ensureAuthReady, isOwnerDevice, markOwnerDevice,
+  mightBeSignedIn, saveToken, signOutEverywhere,
+} from "@/lib/admin-client";
+import { clerkEnabled } from "@/lib/clerk";
+import { loginUrlFor } from "@/lib/admin-auth-outcome";
+import OwnerClerkIsland from "@/components/admin/OwnerClerkIsland";
 
 /**
  * Floating pill bottom-right. Click → if logged in, shows a status panel;
- * if not, opens an inline login modal. After login, dispatches a window event
+ * if not, opens a sign-in panel. After login, dispatches a window event
  * `notebook-auth-changed` so editors can re-render unlocked.
+ *
+ * With Clerk on, sign-in is "Sign in with Google" on /admin/login, which
+ * brings you back here; Clerk then loads on these pages only in this
+ * browser (OwnerClerkIsland). With Clerk off, the password form as before.
  */
 const TakeNotesPill: React.FC = () => {
   const [status, setStatus] = React.useState<"checking" | "authed" | "anon">("checking");
   const [email, setEmail] = React.useState<string | null>(null);
   const [open, setOpen] = React.useState(false);
+  // Read after mount (localStorage), so server and client render the same.
+  const [ownerDevice, setOwnerDevice] = React.useState(false);
+  React.useEffect(() => setOwnerDevice(clerkEnabled && isOwnerDevice()), []);
 
   // Initial auth check
   const refresh = React.useCallback(async () => {
-    if (!getToken()) {
+    if (!mightBeSignedIn()) {
       setStatus("anon"); setEmail(null);
       return;
     }
     try {
+      await ensureAuthReady();
       const { data } = await adminApi.get<{ email: string }>("/auth/me");
       setStatus("authed");
       setEmail(data.email);
     } catch {
-      clearToken();
+      if (!clerkEnabled) clearToken();
       setStatus("anon"); setEmail(null);
     }
   }, []);
@@ -42,18 +56,25 @@ const TakeNotesPill: React.FC = () => {
     window.dispatchEvent(new CustomEvent("notebook-auth-changed"));
   };
 
-  const onSignOut = () => {
-    clearToken();
+  const onSignOut = async () => {
+    if (clerkEnabled) {
+      await signOutEverywhere(); // ends the Clerk session too
+      clearOwnerDevice();
+    } else {
+      clearToken();
+    }
     setStatus("anon");
     setEmail(null);
     setOpen(false);
     broadcast();
   };
 
-  if (status === "checking") return null;
+  const island = ownerDevice ? <OwnerClerkIsland /> : null;
+  if (status === "checking") return island;
 
   return (
     <>
+      {island}
       {/* Pill */}
       <button
         onClick={() => setOpen(true)}
@@ -98,7 +119,7 @@ const TakeNotesPill: React.FC = () => {
             {status === "authed" ? (
               <SignedInPanel email={email} onSignOut={onSignOut} />
             ) : (
-              <LoginInlinePanel
+              clerkEnabled ? <ClerkSignInPanel /> : <LoginInlinePanel
                 onSuccess={() => {
                   setOpen(false);
                   refresh();
@@ -126,7 +147,7 @@ const SignedInPanel = ({ email, onSignOut }: { email: string | null; onSignOut: 
     </h3>
     <p className="font-mono text-xs text-muted-foreground/85 mb-5 leading-relaxed">
       {email ? <>as <span className="text-foreground/90">{email}</span>.</> : null} You can now write
-      notes on any session — saves automatically. Toggle <span className="text-emerald-700/90 dark:text-emerald-300/90">Public</span> to
+      notes on any session; they save automatically. Toggle <span className="text-emerald-700/90 dark:text-emerald-300/90">Public</span> to
       publish on the speaker&apos;s profile.
     </p>
     <button
@@ -136,6 +157,27 @@ const SignedInPanel = ({ email, onSignOut }: { email: string | null; onSignOut: 
     >
       <LogOut size={11} /> Sign out
     </button>
+  </div>
+);
+
+const ClerkSignInPanel = () => (
+  <div data-testid="take-notes-clerk">
+    <div className="flex items-center gap-2 mb-3">
+      <Lock size={12} className="text-muted-foreground/70" />
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Take notes</p>
+    </div>
+    <h3 className="font-display text-2xl font-bold text-foreground mb-2">Sign in</h3>
+    <p className="font-mono text-xs text-muted-foreground/80 mb-5 leading-relaxed">
+      Sign in with your Google account. You come straight back to this page with notes unlocked.
+    </p>
+    <a
+      href={typeof window === "undefined" ? "/admin/login" : loginUrlFor(window.location.pathname + window.location.search)}
+      onClick={() => markOwnerDevice()}
+      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] border border-foreground/40 bg-foreground/[0.03] text-foreground px-4 py-2.5 hover:border-foreground/70 hover:bg-foreground/[0.07] transition-all"
+      data-testid="take-notes-clerk-signin"
+    >
+      <Notebook size={11} /> Sign in with Google
+    </a>
   </div>
 );
 
@@ -177,7 +219,7 @@ const LoginInlinePanel = ({ onSuccess }: { onSuccess: () => void }) => {
       </div>
       <h3 className="font-display text-2xl font-bold text-foreground mb-2">Sign in</h3>
       <p className="font-mono text-xs text-muted-foreground/80 mb-5 leading-relaxed">
-        One-time login — stays unlocked across reloads. Notes save to your private notebook (toggle
+        One-time login. It stays unlocked across reloads. Notes save to your private notebook (toggle
         Public when ready to publish).
       </p>
 

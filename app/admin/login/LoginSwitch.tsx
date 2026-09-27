@@ -2,6 +2,7 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import { clerkEnabled } from "@/lib/clerk";
+import { safeRedirect } from "@/lib/admin-auth-outcome";
 import LoginClient from "./LoginClient";
 
 /**
@@ -17,12 +18,16 @@ const ClerkSignIn = dynamic(
 );
 
 export default function LoginSwitch() {
+  // Back to the page that sent the visitor here (same-site paths only).
+  const [target, setTarget] = React.useState("/admin");
+  React.useEffect(() => setTarget(safeRedirect(window.location.search)), []);
   if (!clerkEnabled) return <LoginClient />;
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-6 py-24">
       <ClerkSignIn
         routing="hash"
         signUpUrl={undefined}
+        forceRedirectUrl={target}
         fallbackRedirectUrl="/admin"
         appearance={{ elements: { footerAction: { display: "none" } } }}
       />

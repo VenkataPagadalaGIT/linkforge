@@ -20,7 +20,7 @@ import HoloPhoto from "@/components/HoloPhoto";
 import TakeNotesPill from "@/components/TakeNotesPill";
 import NoteContent from "@/components/NoteContent";
 import { type Speaker, getSpeakerTalks, type SpeakerTalk, photoSourceFor } from "@/data/speakers";
-import { adminApi, getToken } from "@/lib/admin-client";
+import { adminApi, ensureAuthReady, mightBeSignedIn } from "@/lib/admin-client";
 import axios from "axios";
 import { BACKEND_URL } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
@@ -76,8 +76,9 @@ const SpeakerProfile = ({ speaker }: { speaker: Speaker }) => {
       );
 
       // Admin notes (overrides public ones — same data, just full set)
-      if (getToken()) {
+      if (mightBeSignedIn()) {
         try {
+          await ensureAuthReady();
           await adminApi.get("/auth/me");
           if (cancelled) return;
           await Promise.all(

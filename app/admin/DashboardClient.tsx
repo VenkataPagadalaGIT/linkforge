@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { adminApi, formatApiError, useRequireAdmin } from "@/lib/admin-client";
-import AdminForbidden from "@/components/admin/AdminForbidden";
+import AdminGate from "@/components/admin/AdminGate";
 import CmsShell, { btn } from "@/components/admin/CmsShell";
 
 type Contact = {
@@ -79,14 +79,7 @@ export default function DashboardClient() {
     URL.revokeObjectURL(url);
   };
 
-  if (status === "forbidden") return <AdminForbidden />;
-  if (status !== "authed") {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/70">
-        {status === "checking" ? "Checking session…" : "Redirecting…"}
-      </div>
-    );
-  }
+  if (status !== "authed") return <AdminGate status={status} />;
 
   return (
     <CmsShell

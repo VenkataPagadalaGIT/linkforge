@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { safeRedirect } from "@/lib/admin-auth-outcome";
 import { adminApi, saveToken, formatApiError } from "@/lib/admin-client";
 
 export default function LoginClient() {
@@ -18,7 +19,7 @@ export default function LoginClient() {
     try {
       const { data } = await adminApi.post("/auth/login", { email, password });
       saveToken(data.access_token);
-      router.replace("/admin");
+      router.replace(safeRedirect(window.location.search));
     } catch (err) {
       setError(formatApiError(err, "Invalid credentials."));
     } finally {

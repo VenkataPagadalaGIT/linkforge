@@ -160,6 +160,16 @@ else
   bad "css token gate failed; see /tmp/preflight-css.log"
 fi
 
+# Admin sign-in gate: the loop/retry/refusal decisions and the redirect
+# guard (no database needed), plus the attacks on the Clerk verifier. See
+# docs/CLERK_SETUP.md for the full catalog, including the database suites.
+if node --test tests/frontend/admin-auth-outcome.test.mjs > /tmp/preflight-admin-auth.log 2>&1 \
+   && (cd backend && .venv/bin/python -m pytest -q -p no:cacheprovider tests/test_clerk_auth.py) >> /tmp/preflight-admin-auth.log 2>&1; then
+  ok "admin sign-in: decision tests and Clerk verifier attacks pass"
+else
+  bad "admin sign-in tests failed; see /tmp/preflight-admin-auth.log"
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   say ""
   say "PREFLIGHT FAILED. Do NOT run railway up."
