@@ -7,7 +7,7 @@
 | Content | File | Status |
 | --- | --- | --- |
 | News (AI updates), all 14 articles | `content/ai-updates.json` | Live since 2026-09-27 |
-| Page SEO fields: the title, meta description, canonical and robots of any public page | `content/seo-overrides.json` | Built and tested 2026-09-27; switches on with the next deploy |
+| Page SEO fields: the title, meta description, canonical and robots of any public page | `content/seo-overrides.json` | Live since 2026-09-27 (deployment `a6efdf49`); the one-minute refresh needs the Railway secret (step 2 below) |
 
 Still to come: pillars and contributor profiles, and page text such as the brightonSEO names. An H1 or body change is part of a page's code and still needs a deploy.
 
@@ -218,7 +218,7 @@ And the whole-site regression (R01, R02): crawl a production build of the previo
 
 ### Page SEO fields and the refresh fixes (this release)
 
-**Step 1. Ship the code (you).** Do this before step 2.
+**Step 1. Ship the code (you). Done 2026-09-27:** deployment `a6efdf49`, verified live. All 1,084 live pages answered 200 with every SEO field identical to the snapshot taken just before the switch; the cache handler is in the container; `/api/revalidate` refuses with 503 until the secret is set.
 - Claude runs the preflight; it must print `PREFLIGHT PASSED`.
 - You run `railway up --detach --service mono-mind-frontend-v2`, then say "push". The backend redeploys on the push, with nothing changed.
 - **Nothing visible changes.** Every page renders exactly as before (R01). Pages now re-render at most hourly, only when visited.
