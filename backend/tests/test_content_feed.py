@@ -65,6 +65,19 @@ def test_old_cms_routes_are_gone(client, method, path):
     assert getattr(client, method)(path).status_code == 404
 
 
+def test_post_editor_requires_login(client):
+    # The one write door left must stay locked: without the stubbed admin
+    # login, or with a made-up token, the post editor refuses.
+    stub = server.app.dependency_overrides.pop(server.get_current_admin)
+    try:
+        assert client.get("/api/admin/cms/posts").status_code == 401
+        bad = {"Authorization": "Bearer not-a-real-token"}
+        assert client.get("/api/admin/cms/posts", headers=bad).status_code == 401
+        assert client.post("/api/admin/cms/posts", json={"slug": "x"}, headers=bad).status_code == 401
+    finally:
+        server.app.dependency_overrides[server.get_current_admin] = stub
+
+
 def test_post_editor_still_works(client):
     # The one content screen kept until posts move to the new flow. The feed
     # test above leaves bare posts behind that the editor's full schema would
