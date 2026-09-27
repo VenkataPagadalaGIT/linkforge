@@ -1,8 +1,9 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import ConferenceNotebook from "@/views/ConferenceNotebook";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Conference Notebook",
   description:
     "Field notes, talks, and takeaways from AI, SEO, and engineering conferences — a live notebook by Venkata Pagadala.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     description: "Field notes from AI, SEO, and engineering conferences.",
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/conference", metadata);
 
 export default function Page() {
   return <ConferenceNotebook />;

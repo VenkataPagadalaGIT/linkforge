@@ -22,6 +22,7 @@ import {
   STUDIES,
   studyById,
 } from "@/data/personas";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -29,7 +30,7 @@ const TITLE = "Audience Personas, Graded by Evidence";
 const DESCRIPTION =
   "Personas where every trait is labelled measured, derived or inferred, and links to the study behind it. Built from public research: Pew Research Center, DataReportal and Cox Automotive. Updated when the underlying studies are.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "/personas" },
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/personas", metadata);
 
 export default function Page() {
   const jsonLd = {

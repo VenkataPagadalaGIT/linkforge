@@ -4,6 +4,7 @@ import SpeakerProfile from "@/views/SpeakerProfile";
 import { getSpeakerBySlug } from "@/data/speakers";
 import { SITE_URL } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 interface Props {
   params: { slug: string };
@@ -21,7 +22,9 @@ export async function generateStaticParams() {
   return speakers.map((sp) => ({ slug: sp.slug }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/notebook/conference/speakers/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: Props): Promise<Metadata> {
   const sp = getSpeakerBySlug(params.slug);
   if (!sp) return { title: "Speaker not found", robots: { index: false } };
   const title = `${sp.name} · ${sp.role}, ${sp.company}`;

@@ -13,8 +13,9 @@ import {
 } from "@/data/learnReference";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
 import EncyclopediaFilter from "@/components/learn/EncyclopediaFilter";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "AI Encyclopedia",
   description:
     "187 AI concepts across 10 categories, each on its own page with key terms, prerequisites, difficulty and curated free sources. From gradient descent to agent harnesses.",
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     title: "AI Encyclopedia",
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/ai/encyclopedia", metadata);
 
 const groups = (): ShellGroup[] =>
   ENCYCLOPEDIA_CATEGORIES.map((cat) => ({

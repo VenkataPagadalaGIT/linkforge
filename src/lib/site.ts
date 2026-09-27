@@ -11,6 +11,20 @@ export const SITE_DESCRIPTION =
   "Mono Mind: AI systems, research, and real-world solutions by Venkata Pagadala. Insights, the AI Contributors encyclopedia, updates, and engineering notebooks optimized for humans, search engines, and AI retrieval.";
 
 export const OG_IMAGE = `${SITE_URL}/og-image.png`;
+
+/** The site-wide robots rule (app/layout.tsx). Its googleBot extras stay on a
+ *  page whose robots value is overridden (src/lib/seo-apply.ts). */
+export const SITE_ROBOTS = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large" as const,
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  },
+};
 // Was a stale Lovable preview screenshot on a pub-*.r2.dev bucket: wrong
 // shape for a card, wrong content, and not on a domain we control.
 

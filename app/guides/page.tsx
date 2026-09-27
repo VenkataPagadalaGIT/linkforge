@@ -3,8 +3,9 @@ import GuidesIndex from "@/views/GuidesIndex";
 import { guides } from "@/data/guides";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   // The root layout appends " · Venkata Pagadala", so naming the brand here
   // too produced "... | Venkata Pagadala · Venkata Pagadala" in the tab.
   title: "Teardowns: AI, Graphs and Search",
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
     images: [OG_IMAGE],
   },
 };
+export const generateMetadata = withSeoOverrides("/guides", metadata);
 
 export default function Page() {
   const jsonLd = {

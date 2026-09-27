@@ -21,6 +21,7 @@ import { VIDEOS_FOR, GUIDES_FOR } from "@/data/encyclopediaResources";
 import LearnShell, { type ShellGroup } from "@/components/learn/LearnShell";
 import DeepDive from "@/components/learn/DeepDive";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -35,7 +36,9 @@ const metaDescription = (s: string) => {
   return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
 };
 
-export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+export const generateMetadata = withSeoOverrides("/notebook/ai/encyclopedia/[id]", baseMetadata);
+
+function baseMetadata({ params }: { params: { id: string } }): Metadata {
   const c = refConceptById(params.id);
   if (!c) return {};
   const title = `${c.concept} · AI Encyclopedia`;

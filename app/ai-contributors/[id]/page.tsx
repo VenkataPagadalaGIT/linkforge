@@ -6,6 +6,7 @@ import { getContributor, personJsonLd, breadcrumbJsonLd, getSitemapData } from "
 import { getNews } from "@/lib/news-source";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { id: string };
 
@@ -22,7 +23,9 @@ export async function generateStaticParams() {
   return aiContributors.map((c) => ({ id: c.id }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/ai-contributors/[id]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const c = await getContributor(params.id);
   if (!c) {
     // Slug did not resolve. Emit noindex and NO canonical: previously this

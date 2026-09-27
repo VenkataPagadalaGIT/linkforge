@@ -3,10 +3,11 @@ import AIShelf from "@/views/AIShelf";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { shelfBooks } from "@/data/libraryShelf";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "The Complete Shelf: 19 Free AI Books",
   description:
     "Browse a 3D shelf of nineteen genuinely free AI and machine learning books, from your first line of Python through to AI safety. Pull one out and read it free.",
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
       "A walnut shelf of nineteen free AI books you can browse and pull out, each linking to the publisher's free copy.",
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/ai/shelf", metadata);
 
 export default function Page() {
   // Two graphs on purpose. The ItemList is the content: nineteen real books

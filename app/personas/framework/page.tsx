@@ -11,6 +11,7 @@ import {
   FRAMEWORK_TAGLINE,
   FRAMEWORK_VERSION,
 } from "@/data/personaFramework";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -19,7 +20,7 @@ const TITLE = "Global Persona Framework";
 const WORKBOOK = `${PATH}/Global_Persona_Classification_Framework.xlsx`;
 const DESCRIPTION = `${FRAMEWORK_COUNTS.dimensions} persona dimensions in ${FRAMEWORK_COUNTS.families} families: people, households, interests, resources, behaviours and buying contexts. Each carries its definition and global rule, the follow-up question that makes it an input, the evidence that would support a value, and how the value must be handled. A classification library, not a measured segmentation.`;
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: {
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/personas/framework", metadata);
 
 export default function Page() {
   const jsonLd = [

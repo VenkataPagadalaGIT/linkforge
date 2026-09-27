@@ -5,6 +5,7 @@ import { GUIDE_TOPICS, getTopicBySlug } from "@/data/guideTopics";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { topic: string };
 
@@ -18,7 +19,9 @@ export function generateStaticParams() {
   return GUIDE_TOPICS.map((t) => ({ topic: t.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/guides/topics/[topic]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const topic = getTopicBySlug(params.topic);
   if (!topic) return { title: "Topic not found" };
   const n = topic.guides.length;

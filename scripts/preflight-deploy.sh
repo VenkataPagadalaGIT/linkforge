@@ -161,13 +161,15 @@ else
 fi
 
 # Admin sign-in and no-deploy publishing gate: the sign-in decisions, the
-# news file checks, the signed refresh message (tests/frontend), and the
-# attacks on the Clerk verifier. See docs/CLERK_SETUP.md and
-# docs/NO_DEPLOY_PUBLISHING.md for the full catalogs.
+# news and page SEO file checks, every page reading its SEO overrides, the
+# signed refresh message (tests/frontend), and the attacks on the Clerk
+# verifier. See docs/CLERK_SETUP.md and docs/NO_DEPLOY_PUBLISHING.md for the
+# full catalogs.
 if node --test "tests/frontend/*.test.mjs" > /tmp/preflight-admin-auth.log 2>&1 \
-   && node scripts/cms/publish-news.mjs check >> /tmp/preflight-admin-auth.log 2>&1 \
+   && node scripts/cms/publish.mjs check news >> /tmp/preflight-admin-auth.log 2>&1 \
+   && node scripts/cms/publish.mjs check seo >> /tmp/preflight-admin-auth.log 2>&1 \
    && (cd backend && .venv/bin/python -m pytest -q -p no:cacheprovider tests/test_clerk_auth.py) >> /tmp/preflight-admin-auth.log 2>&1; then
-  ok "sign-in and publishing: frontend tests, news file check and Clerk verifier attacks pass"
+  ok "sign-in and publishing: frontend tests, news and page SEO file checks, Clerk verifier attacks pass"
 else
   bad "admin sign-in tests failed; see /tmp/preflight-admin-auth.log"
 fi

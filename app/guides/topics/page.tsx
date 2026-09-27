@@ -4,12 +4,13 @@ import { GUIDE_TOPICS } from "@/data/guideTopics";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
 const DESCRIPTION = `Every reference guide topic on this site, A to Z: ${GUIDE_TOPICS.length} topics, each with its own page listing every guide that carries it.`;
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: { absolute: "Guide Topics, A to Z | Teardowns" },
   description: DESCRIPTION,
   alternates: { canonical: "/guides/topics" },
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Guide Topics, A to Z", description: DESCRIPTION, images: [OG_IMAGE] },
 };
+export const generateMetadata = withSeoOverrides("/guides/topics", metadata);
 
 export default function Page() {
   const url = `${SITE_URL}/guides/topics`;

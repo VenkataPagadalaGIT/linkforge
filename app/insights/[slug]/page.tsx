@@ -5,13 +5,16 @@ import PillarPage from "@/views/PillarPage";
 import { getPillar, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string };
 
 // On-demand SSR — only 6 pillars but they pull DB content; keep consistent.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/insights/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const pillar = await getPillar(params.slug);
   if (!pillar) {
     // Slug did not resolve. Emit noindex and NO canonical: previously this

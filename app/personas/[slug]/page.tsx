@@ -20,6 +20,7 @@ import {
   personaBySlug,
   studyById,
 } from "@/data/personas";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -36,7 +37,9 @@ export function generateStaticParams() {
   ];
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/personas/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const q = questionBySlug(params.slug);
   if (q) {
     return {

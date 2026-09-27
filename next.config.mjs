@@ -1,6 +1,13 @@
+import { fileURLToPath } from "node:url";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // A signed content refresh serves the old page once and re-renders it in
+  // the background. Next.js 14.2's stock cache re-renders it blocking, which
+  // 404s every page on a dynamicParams = false route until the next deploy.
+  // See next-cache-handler.cjs and docs/NO_DEPLOY_PUBLISHING.md (R02).
+  cacheHandler: fileURLToPath(new URL("./next-cache-handler.cjs", import.meta.url)),
   eslint: {
     ignoreDuringBuilds: true,
   },

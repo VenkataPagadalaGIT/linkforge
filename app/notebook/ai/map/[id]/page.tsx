@@ -4,6 +4,7 @@ import AiNodeView from "@/views/AiNodeView";
 import { getNode, LAYER_BY_ID, NODE_TYPE_META } from "@/data/aiOntology";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 interface Props {
   params: { id: string };
@@ -12,7 +13,9 @@ interface Props {
 // Server-render on demand — bots get full HTML, readers get it cached after first hit.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/notebook/ai/map/[id]", baseMetadata);
+
+async function baseMetadata({ params }: Props): Promise<Metadata> {
   const n = getNode(params.id);
   if (!n) return { title: "Entity not found", robots: { index: false } };
   const desc = (n.story || n.tagline).slice(0, 155);

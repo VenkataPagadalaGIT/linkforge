@@ -12,6 +12,7 @@ import { getSpeakerByName } from "@/data/speakers";
 import { SITE_URL } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { conferencePlace, isoDateTime } from "@/lib/conferenceLd";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 interface Params {
   slug: string;
@@ -58,7 +59,9 @@ function resolveContext(slug: string, sessionParam: string): SessionDetailContex
   };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/notebook/conference/[slug]/sessions/[sessionId]", baseMetadata);
+
+async function baseMetadata({ params }: Props): Promise<Metadata> {
   const ctx = resolveContext(params.slug, params.sessionId);
   if (!ctx) return { title: "Session not found", robots: { index: false } };
   const conf = ctx.conference;

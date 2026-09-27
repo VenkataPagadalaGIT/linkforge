@@ -3,10 +3,11 @@ import Credits from "@/views/Credits";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { inspirations } from "@/data/inspirations";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Credits & Inspiration",
   description:
     "The designs, explainers, and makers this site learned from, credited openly, with what each one taught us and where it shows up.",
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     description: "The sources this site learned from, credited openly.",
   },
 };
+export const generateMetadata = withSeoOverrides("/credits", metadata);
 
 export default function Page() {
   const jsonLd = {

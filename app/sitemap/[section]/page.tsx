@@ -5,6 +5,7 @@ import { buildSections, getSiteIndex, SECTIONS, sectionById, type SectionId } fr
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { section: string };
 
@@ -16,7 +17,9 @@ export function generateStaticParams() {
   return SECTIONS.map((s) => ({ section: s.id }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/sitemap/[section]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const meta = sectionById(params.section);
   if (!meta) return { title: "Not found" };
   return {

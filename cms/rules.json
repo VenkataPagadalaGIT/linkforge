@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "The owner's SEO rules. The CMS page, scripts/cms/check_edit.py and every future check read this file; do not copy the numbers anywhere else. 'block' stops an edit; 'warn' flags it and lets the owner decide.",
+  "note": "The owner's SEO rules. The CMS page, the page SEO checks (src/lib/seo-validate.ts, run by scripts/cms/publish.mjs and by the site) and every future check read this file; do not copy the numbers anywhere else. 'block' stops an edit; 'warn' flags it and lets the owner decide.",
   "site": "https://venkatapagadala.com",
   "fields": {
     "title": {"label": "Title", "min": 1, "max": 60, "severity": "warn", "emptySeverity": "block"},
@@ -10,7 +10,7 @@
     "robots": {"label": "Robots", "allowed": ["index, follow", "noindex, follow", "index, nofollow", "noindex, nofollow"], "severity": "block"}
   },
   "forbidden": [
-    {"text": "—", "message": "Remove the em dash. Your rule: no em dashes."},
+    {"text": "\u2014", "message": "Remove the em dash. Your rule: no em dashes."},
     {"text": "<", "message": "Remove < and > characters."},
     {"text": ">", "message": "Remove < and > characters."}
   ],

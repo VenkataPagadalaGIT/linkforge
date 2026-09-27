@@ -127,7 +127,7 @@ footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);paddin
   </nav>
 
   <section class="panel" id="types" role="tabpanel" aria-labelledby="tab-types">
-    <p class="note">Each page type is one layout in the site's code. Pick a row to see its pages and edit them. "Today" is what a change needs right now; "Plan" is where the type lands in the no-deploy setup.</p>
+    <p class="note">Each page type is one layout in the site's code. Pick a row to see its pages and edit them. "Today" is what a content change needs right now; "Plan" is where the type lands in the no-deploy setup. On every type, the title, description, canonical and robots already publish without a deploy.</p>
     <div class="scroll"><table class="types"><thead><tr>
       <th>Page type</th><th>URL pattern</th><th class="num">Pages</th><th>Schema</th><th>Content lives in</th><th>Today a change needs</th><th>Plan</th><th class="num">Title too long</th><th class="num">Description off rule</th>
     </tr></thead><tbody id="typeRows"></tbody></table></div>
@@ -177,7 +177,7 @@ footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);paddin
     <ol class="steps">
       <li><div><h3>Edit a page here</h3><p>Pages and SEO, then Edit on any row. Change the title, description, H1, canonical or robots, check the Google preview, and save. The edit waits in the Edits tab.</p></div></li>
       <li><div><h3>Tell Claude "apply my CMS edits"</h3><p>Claude reads your saved edits, makes each change in the repo, and runs your checks (SEO rules, no em dashes, no scripts). If a check fails, it tells you instead of guessing.</p></div></li>
-      <li><div><h3>It goes live</h3><p>Today that takes one deploy, which you run. Once the no-deploy setup is built, it goes live about a minute after you say "publish".</p></div></li>
+      <li><div><h3>It goes live</h3><p>A title, description, canonical or robots change goes live about a minute after you say "publish", with no deploy (once the refresh secret is set in Railway). An H1 or body change is code and still takes one deploy, which you run.</p></div></li>
       <li><div><h3>Claude checks the live page</h3><p>It reads the page on venkatapagadala.com and marks each edit Live, or explains what stopped it.</p></div></li>
     </ol>
     <div class="grid2">

@@ -29,6 +29,7 @@ import {
   US_CONTEXT,
   US_CONTEXT_BUCKETS,
 } from "@/data/personas";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -45,7 +46,7 @@ const TITLE = "The Data Behind the Personas";
 const DESCRIPTION =
   "Every published figure the persona tool draws on, in full: platform reach by gender, age, income, education and race, daily-use habit, the US baseline from USAFacts, and what each source costs. Sample sizes and margins of error on every row.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "/personas/data" },
@@ -57,6 +58,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/personas/data", metadata);
 
 export default function Page() {
   const jsonLd = {

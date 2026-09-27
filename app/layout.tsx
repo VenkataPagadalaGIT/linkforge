@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
-import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, OG_IMAGE, SITE_ROBOTS } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -55,17 +55,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
+  robots: SITE_ROBOTS,
   // favicon.png was JPEG data served as image/png, and favicon.ico was a
   // single 256px image weighing 125KB for a 16px slot. Both are now real
   // files at real sizes.

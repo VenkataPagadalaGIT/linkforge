@@ -1,8 +1,9 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import AIContributors from "@/views/AIContributors";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "AI Contributors",
   description:
     "The AI Contributors encyclopedia — 100+ experts who shaped modern artificial intelligence, curated by Venkata Pagadala.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: "/ai-contributors", title: "AI Contributors Encyclopedia" },
 };
+export const generateMetadata = withSeoOverrides("/ai-contributors", metadata);
 
 export default function Page() {
   return <AIContributors />;

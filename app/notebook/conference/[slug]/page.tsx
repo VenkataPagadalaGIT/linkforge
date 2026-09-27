@@ -9,6 +9,7 @@ import { isLogisticsSession,
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { conferencePlace, isoDateTime } from "@/lib/conferenceLd";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 interface Props {
   params: { slug: string };
@@ -20,7 +21,9 @@ export async function generateStaticParams() {
   return conferences.map((c) => ({ slug: c.slug }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/notebook/conference/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: Props): Promise<Metadata> {
   const c = getConferenceBySlug(params.slug);
   if (!c) return { title: "Conference not found", robots: { index: false } };
   const title = `${c.name} ${c.edition || c.year} · Conference Notebook`;

@@ -4,8 +4,9 @@ import { researchPapers } from "@/data/research";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { paperNode } from "@/lib/paperLd";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Published Research on AI and Search",
   description:
     "Peer-reviewed papers and a preprint on how large language models are disrupting search, reward hacking in agentic AI, and helpful content for e-commerce. Each record states its review status and authorship position.",
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
       "Peer-reviewed research on AI, search, and retrieval. Every paper links to its published source.",
   },
 };
+export const generateMetadata = withSeoOverrides("/publications", metadata);
 
 export default function Page() {
   const jsonLd = [

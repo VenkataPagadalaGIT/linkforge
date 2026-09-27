@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import ThreeDGame from "@/views/ThreeDGame";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "3D Game: Drive and Walk a Year-2040 City",
   description:
     "A playable 2040 city in the browser. Walk a humanoid, greet the crew, and take the controls of any truck, robotaxi or semi. Generated geometry, no downloads.",
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
       "Walk a humanoid, greet the crew, and drive anything in a browser-native 2040 city.",
   },
 };
+export const generateMetadata = withSeoOverrides("/3d-game", metadata);
 
 export default function Page() {
   // WebApplication rather than VideoGame: the thing being described is a

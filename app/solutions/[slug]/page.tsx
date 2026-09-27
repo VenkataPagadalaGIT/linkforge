@@ -1,6 +1,7 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import ServiceLanding from "@/views/ServiceLanding";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string };
 
@@ -24,7 +25,9 @@ export async function generateStaticParams(): Promise<Params[]> {
   return SOLUTION_SLUGS.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/solutions/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const title = params.slug
     .split("-")
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))

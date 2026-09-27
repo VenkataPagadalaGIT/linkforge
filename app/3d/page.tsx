@@ -3,10 +3,11 @@ import ThreeDHub from "@/views/ThreeDHub";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { threeDExperiences } from "@/data/threeD";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Everything in 3D",
   description:
     "Eight interactive 3D experiences built as code, no downloads: a playable 2040 city, an explorable LLM, a library of free AI books, and a living portrait.",
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
       "Every three-dimensional experience on the site: generated geometry, no downloads.",
   },
 };
+export const generateMetadata = withSeoOverrides("/3d", metadata);
 
 export default function Page() {
   const jsonLd = {

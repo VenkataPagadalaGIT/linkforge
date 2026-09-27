@@ -2,8 +2,9 @@ import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import AiGraphView from "@/views/AiGraphView";
 import { ONTOLOGY_COUNTS } from "@/data/aiOntology";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "The AI Systems Map: Graph view",
   description: `The entire AI value chain as one node-edge dependency graph: ${ONTOLOGY_COUNTS.nodes} entities, ${ONTOLOGY_COUNTS.edges} links, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints.`,
   alternates: { canonical: "/notebook/ai/graph" },
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     siteName: "Venkata Pagadala · Mono Mind",
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/ai/graph", metadata);
 
 export default function Page() {
   return <AiGraphView />;

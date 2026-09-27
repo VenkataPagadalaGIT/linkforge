@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end: news changes go live with no rebuild (E01 to E06 in docs/NO_DEPLOY_PUBLISHING.md).
+"""End-to-end: news changes go live with no rebuild (E01 to E07 in docs/NO_DEPLOY_PUBLISHING.md).
 
 Needs a production build running with its news source pointed at the local
 stand-in for GitHub that this script serves:
@@ -17,6 +17,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -173,6 +174,20 @@ def main():
         assert refresh()[0] == 200
         eventually(lambda: gone(f"/ai-updates/{SLUG}"), "not found after removal")
         eventually(lambda: f"/ai-updates/{SLUG}" not in http("/sitemap.xml")[1] or "still in sitemap.xml", "sitemap.xml")
+
+    @case("E07 after a news refresh every contributor and site-map section page still answers 200")
+    def _():
+        # The trap: Next.js 14.2 turned a refreshed page on a dynamicParams =
+        # false route into a lasting 404 (next-cache-handler.cjs). Each page is
+        # asked twice: the first answer may be the old page, the second the
+        # re-rendered one; both must be 200.
+        assert refresh()[0] == 200
+        locs = re.findall(r"<loc>([^<]+)</loc>", http("/sitemap.xml")[1])
+        paths = [re.sub(r"^https?://[^/]+", "", u) for u in locs]
+        pages = [p for p in paths if p.startswith("/ai-contributors/") or p.startswith("/sitemap/")]
+        assert len(pages) > 50, f"only {len(pages)} contributor and section pages in sitemap.xml"
+        bad = [f"{p} {s}" for p in pages for s in (http(p)[0], http(p)[0]) if s != 200]
+        assert not bad, f"{len(bad)} answers were not 200, e.g. {bad[:3]}"
 
     srv.shutdown()
     failed = [r for r in results if not r[1]]

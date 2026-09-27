@@ -5,6 +5,7 @@ import { guides, getGuideBySlug } from "@/data/guides";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string };
 
@@ -18,7 +19,9 @@ export function generateStaticParams() {
   return guides.map((g) => ({ slug: g.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/guides/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const guide = getGuideBySlug(params.slug);
   if (!guide) return { title: "Guide not found" };
   const img = guide.image

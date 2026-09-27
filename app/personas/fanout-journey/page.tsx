@@ -15,13 +15,14 @@ import {
   fanoutAll,
   presetById,
 } from "@/data/fanout";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
 const DESCRIPTION =
   "One starting query, fanned out by persona scenario and by every stage of the buyer's journey, from first intent to ownership. Works for any purchase. Every question explains which explicit inputs produced it and how to validate it.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   // The layout appends " · Venkata Pagadala"; with the tagline in here the
   // tag ran to 84 characters and search engines cut it at about 65. The
   // tagline is the first line under the h1 instead, where it is not truncated.
@@ -36,6 +37,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/personas/fanout-journey", metadata);
 
 /** Authored once; rendered as HTML and emitted as FAQPage from the same list. */
 const FAQ: { q: string; a: string }[] = [

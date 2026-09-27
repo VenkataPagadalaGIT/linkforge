@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { forgetReads } from "@/lib/content-github";
 import { verifyContentSignature } from "@/lib/content-signature";
 import { NEWS_TAG } from "@/lib/news-source";
+import { SEO_TAG } from "@/lib/seo-overrides";
+import { PAGE_PATH } from "@/lib/seo-validate";
 
 /**
  * The only way in from outside: a signed "re-read published content" message
  * (docs/NO_DEPLOY_PUBLISHING.md). It carries no content. It can only make the
- * site re-read the repo's own file, for an allowlisted tag.
+ * site re-read the repo's own files, for allowlisted tags, and re-render the
+ * page paths it names.
  */
 export const dynamic = "force-dynamic";
 
@@ -22,7 +26,12 @@ const PATHS: Record<string, PathToRefresh[]> = {
     { path: "/llms.txt" },
     { path: "/llms-full.txt" },
   ],
+  // Page SEO fields: every page that reads them carries the tag, and
+  // sitemap.xml is built per request. The publisher also names the changed
+  // pages in "paths".
+  [SEO_TAG]: [],
 };
+const MAX_PATHS = 200;
 
 // A small in-process limit: a leaked secret can at most force re-reads.
 const RATE_PER_MINUTE = 30;
@@ -45,17 +54,24 @@ export async function POST(req: Request) {
   recent.push(now);
 
   let tags: unknown;
+  let paths: unknown;
   try {
-    tags = (JSON.parse(body) as { tags?: unknown }).tags;
+    ({ tags, paths } = JSON.parse(body) as { tags?: unknown; paths?: unknown });
   } catch {
     return NextResponse.json({ error: "body must be JSON" }, { status: 400 });
   }
   if (!Array.isArray(tags) || !tags.length || !tags.every((t) => typeof t === "string" && t in PATHS)) {
     return NextResponse.json({ error: `tags must be a non-empty list from: ${Object.keys(PATHS).join(", ")}` }, { status: 400 });
   }
+  if (paths !== undefined && (!Array.isArray(paths) || paths.length > MAX_PATHS || !paths.every((p) => typeof p === "string" && PAGE_PATH.test(p)))) {
+    return NextResponse.json({ error: `paths must be a list of up to ${MAX_PATHS} page paths such as /about` }, { status: 400 });
+  }
+  forgetReads();
   for (const tag of tags as string[]) {
     revalidateTag(tag);
     for (const { path, type } of PATHS[tag]) revalidatePath(path, type);
   }
-  return NextResponse.json({ revalidated: tags, at: new Date(now).toISOString() });
+  const pages = (paths as string[] | undefined) ?? [];
+  for (const path of pages) revalidatePath(path);
+  return NextResponse.json({ revalidated: tags, paths: pages.length, at: new Date(now).toISOString() });
 }

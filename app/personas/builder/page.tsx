@@ -6,6 +6,7 @@ import { jsonLdScript } from "@/lib/jsonld";
 import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import { BUILDER_PATHS, BUILDER_TITLE, EVIDENCE_STATUSES, NOT_INFERRED, VALIDATION_METHODS } from "@/data/builder";
 import { FRAMEWORK_COUNTS, FRAMEWORK_VERSION, frameworkById } from "@/data/personaFramework";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -13,7 +14,7 @@ const PATH = "/personas/builder";
 const DESCRIPTION =
   "Build a persona by answering the Global Persona Framework's own follow-up questions, grading each answer's evidence as you go. Get a composite brief with no invented biography, then open it straight in the Persona Fanout Journey with every input pre-filled.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: BUILDER_TITLE,
   description: DESCRIPTION,
   alternates: { canonical: PATH },
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/personas/builder", metadata);
 
 const FAQ: { q: string; a: string }[] = [
   {

@@ -1,8 +1,9 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import Home from "@/views/Home";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Venkata Pagadala · AI Systems Architect · Mono Mind",
   description:
     "AI systems architecture, engineering notebooks, and interactive 3D teardowns. Plus the AI Contributors encyclopedia and a map of the AI economy.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
       "AI systems research, engineering notebooks and the AI Contributors encyclopedia by Venkata Pagadala.",
   },
 };
+export const generateMetadata = withSeoOverrides("/", metadata);
 
 export default function Page() {
   return <Home />;

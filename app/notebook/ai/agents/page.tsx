@@ -12,6 +12,7 @@ import {
   KIND_LABEL,
   type AgentStat,
 } from "@/data/aiAgentsStats";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -19,7 +20,7 @@ const TITLE = "AI Agent Statistics (2026): Adoption, Funding, Benchmarks";
 const DESCRIPTION =
   "The state of AI agents in verified numbers, updated monthly: enterprise adoption, funding and valuations, product scale, capability benchmarks, and forecasts. Every figure links to its source and says what kind of number it is.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "/notebook/ai/agents" },
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/ai/agents", metadata);
 
 /** One source-linked stat row. The kind chip is the honesty layer. */
 function StatRow({ row }: { row: AgentStat }) {

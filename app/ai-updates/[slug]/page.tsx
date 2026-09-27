@@ -7,13 +7,16 @@ import { getUpdate, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/li
 import { getNewsArticle } from "@/lib/news-source";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string };
 
 // On-demand SSR — small set but keep consistent with other content routes.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/ai-updates/[slug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const upd = await getUpdate(params.slug);
   if (!upd) {
     // Slug did not resolve. Emit noindex and NO canonical: previously this

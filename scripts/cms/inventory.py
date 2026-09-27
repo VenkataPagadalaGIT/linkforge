@@ -14,7 +14,7 @@ import sys
 import urllib.request
 from html.parser import HTMLParser
 
-BASE = "https://venkatapagadala.com"
+BASE = os.environ.get("SITE_BASE", "https://venkatapagadala.com").rstrip("/")
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = sys.argv[1]
 UA = {"User-Agent": "vp-cms-inventory/1.0 (site owner audit)"}
@@ -146,7 +146,12 @@ if "<sitemapindex" in xml:
     for sm in locs:
         child += re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", get(sm)[3])
     locs = child
-locs = list(dict.fromkeys(locs))
+# The sitemap lists live URLs; crawl the same paths on SITE_BASE (a local build
+# in tests). Static routes missing from the sitemap (noindex pages) are added so
+# every page shows.
+locs = [re.sub(r"^https?://[^/]+", BASE, u) for u in locs]
+locs += [BASE + r for r in routes if "[" not in r]
+locs = list(dict.fromkeys(u.rstrip("/") for u in locs))
 
 
 def one(url):
@@ -169,6 +174,7 @@ def one(url):
         "canonical": re.sub(r"^https?://[^/]+", "", p.canonical) if p.canonical.startswith(BASE) else p.canonical,
         "robots": p.meta.get("robots", "") or headers.get("X-Robots-Tag", headers.get("x-robots-tag", "")),
         "ogImage": bool(p.meta.get("og:image")),
+        "social": {k: p.meta.get(k, "") for k in ("og:title", "og:description", "og:url", "twitter:title", "twitter:description", "googlebot")},
         "schema": ld_types(p.ld),
     }
 

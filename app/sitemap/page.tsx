@@ -4,11 +4,12 @@ import { buildSections, getSiteIndex, SECTIONS } from "@/lib/siteIndex";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 // Same freshness as sitemap.xml, which reads the same index.
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Site map",
   description:
     "Every page on venkatapagadala.com in one place: guides, topics, videos, talks, sessions, the AI Encyclopedia and Systems Map, personas and more, with a filtered view for each.",
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
   },
 };
+export const generateMetadata = withSeoOverrides("/sitemap", metadata);
 
 export default async function Page() {
   const entries = await getSiteIndex();

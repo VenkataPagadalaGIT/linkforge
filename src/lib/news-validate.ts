@@ -1,7 +1,7 @@
 /**
  * The checks for the news file (content/ai-updates.json), shared by the site
  * (which refuses a broken published copy and keeps the last good one) and the
- * publisher (scripts/cms/publish-news.mjs, which refuses to publish). Pure, no
+ * publisher (scripts/cms/publish.mjs, which refuses to publish). Pure, no
  * imports, so it runs unchanged in Next.js and under plain `node`.
  *
  * Two levels:

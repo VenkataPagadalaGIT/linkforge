@@ -15,15 +15,15 @@ There is one CMS, and it has three parts.
 - **Scripts** in `scripts/cms/`:
   - `inventory.py` reads the live site;
   - `build_view.py` builds the CMS page from that inventory and this folder;
-  - `check_edit.py` checks an edit against `rules.json`, and `test_check_edit.py` tests the checker.
+  - `publish.mjs` checks and publishes the no-deploy content: news (`content/ai-updates.json`) and page SEO fields (`content/seo-overrides.json`).
 
 ## How an edit reaches the site
 
-News (AI updates) publishes without a deploy: see [docs/NO_DEPLOY_PUBLISHING.md](../docs/NO_DEPLOY_PUBLISHING.md). The steps below are for everything else, until it moves to the same flow.
+News (AI updates) and every page's title, description, canonical and robots publish without a deploy: see [docs/NO_DEPLOY_PUBLISHING.md](../docs/NO_DEPLOY_PUBLISHING.md).
 
 1. You edit a page on the CMS page and save it. It waits in Edits as "Waiting for Claude".
-2. You tell Claude "apply my CMS edits". For each edit, Claude runs `check_edit.py`, changes the repo, and marks the edit "Applied".
-3. Today the change needs one deploy. You run `railway up`, and backend changes ship when you say "push". Once the no-deploy setup is built, a change goes live about a minute after you say "publish".
+2. You tell Claude "apply my CMS edits". For each edit, Claude writes the fields into `content/seo-overrides.json`, runs `node scripts/cms/publish.mjs check seo`, and marks the edit "Applied". An H1 or body change is code: Claude edits the page instead.
+3. You say "publish": `node scripts/cms/publish.mjs publish seo` checks that each page is live, writes the file to the `content` branch and refreshes those pages. No deploy. A code change (H1, body) still needs `railway up`, which you run.
 4. Claude checks the live page and marks the edit "Live", or "Not applied" with the reason.
 
 ## Rebuild the CMS page

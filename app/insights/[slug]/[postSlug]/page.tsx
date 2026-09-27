@@ -5,13 +5,16 @@ import BlogPostPage from "@/views/BlogPostPage";
 import { getPost, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string; postSlug: string };
 
 // On-demand SSR for blog posts — was the heaviest route's deepest leaf.
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export const generateMetadata = withSeoOverrides("/insights/[slug]/[postSlug]", baseMetadata);
+
+async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const post = await getPost(params.postSlug);
   if (!post) {
     // Slug did not resolve. Emit noindex and NO canonical: previously this

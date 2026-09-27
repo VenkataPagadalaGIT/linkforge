@@ -3,10 +3,11 @@ import AiSystemsMapView from "@/views/AiSystemsMapView";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { ONTOLOGY_COUNTS, LAYERS } from "@/data/aiOntology";
 import { jsonLdScript } from "@/lib/jsonld";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 const desc = `The AI value chain as one graph: ${ONTOLOGY_COUNTS.nodes} entities across 7 layers, ${ONTOLOGY_COUNTS.edges} typed dependencies, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints. Trace what any company depends on.`;
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "AI Systems Map: 455 Entities, 7 Layers",
   description: desc,
   alternates: { canonical: "/notebook/ai/map" },
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
     siteName: "Venkata Pagadala · Mono Mind",
   },
 };
+export const generateMetadata = withSeoOverrides("/notebook/ai/map", metadata);
 
 const jsonLd = {
   "@context": "https://schema.org",

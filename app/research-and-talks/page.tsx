@@ -17,6 +17,7 @@ import {
   formatTalkDate,
   linkVerb,
 } from "@/data/talks";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -24,7 +25,7 @@ const TITLE = "Research, Talks & Interviews";
 const DESCRIPTION =
   "Peer-reviewed papers on AI and search, the brightonSEO San Diego 2026 talk on industrial level classification with intent, podcasts, interviews and recognition. Every item links to its source.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: {
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
 };
+export const generateMetadata = withSeoOverrides("/research-and-talks", metadata);
 
 const media = TALKS.filter((t) => t.kind !== "workshop").sort(byDateDesc);
 const workshops = TALKS.filter((t) => t.kind === "workshop");

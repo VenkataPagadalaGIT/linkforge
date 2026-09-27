@@ -17,6 +17,7 @@ import {
   type MyTalkPost,
   type SupportPost,
 } from "@/data/brightonSupport";
+import { withSeoOverrides } from "@/lib/seo-overrides";
 
 export const dynamic = "force-static";
 
@@ -29,7 +30,7 @@ const DESCRIPTION = N.posts
   ? `My brightonSEO San Diego 2026 talk and a thank-you to the ${N.people} people behind it: ${N.reactions.toLocaleString("en-US")} reactions across ${N.talkPosts} LinkedIn posts, the video, photos and slides.`
   : "My brightonSEO San Diego 2026 talk on industrial level classification with intent: the video, the slides and a thank-you.";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: {
@@ -46,6 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [`${SITE_URL}${T.video.poster}`] },
 };
+export const generateMetadata = withSeoOverrides("/research-and-talks/brightonseo-san-diego-2026", metadata);
 
 const PHASES = [
   { id: "before", title: "Before the talk", blurb: "Shout-outs in the days before 15 September." },
