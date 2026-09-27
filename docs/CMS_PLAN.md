@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26.** This describes the first agentic CMS, which was removed (it held no data and no live page used it). The current CMS is described in [cms/README.md](../cms/README.md).
+
 # CMS + Agent Publishing: the plan
 
 Written 2026-08-17, after the owner named the real pain: **every content

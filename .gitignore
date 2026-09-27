@@ -50,3 +50,6 @@ build/
 # TypeScript incremental build artifacts — never commit or upload
 *.tsbuildinfo
 data/corpus/cache/
+
+# CMS page build output (scripts/cms), never committed or uploaded
+.cms/

@@ -6,7 +6,7 @@ import ThemeToggle from "@/components/theme/ThemeToggle";
 import { signOutEverywhere } from "@/lib/admin-client";
 
 /**
- * CmsShell: the frame every Agentic CMS screen sits in.
+ * CmsShell: the frame every admin screen sits in.
  *
  * Accessibility is built into the shell so no screen has to remember it:
  *   - a skip link that is the first focusable element on the page
@@ -20,14 +20,12 @@ import { signOutEverywhere } from "@/lib/admin-client";
  *   - focus-visible rings on every interactive element, never removed
  */
 
+// Pages, SEO fields and edits are managed in the one CMS described in
+// cms/README.md. The post editor is the only content screen left here, until
+// posts move to that flow.
 const NAV = [
   { href: "/admin", label: "Dashboard" },
-  { href: "/admin/cms/pages", label: "Pages" },
-  { href: "/admin/cms/review", label: "Review queue" },
-  { href: "/admin/cms/globals", label: "Global SEO" },
-  { href: "/admin/cms/agents", label: "Agents" },
-  { href: "/admin/cms/profile", label: "Site profile" },
-  { href: "/admin/cms/posts", label: "Legacy posts" },
+  { href: "/admin/cms/posts", label: "Posts" },
 ];
 
 export const focusRing =
@@ -122,9 +120,9 @@ export default function CmsShell({
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              Agentic CMS
+              Admin
             </span>
-            <nav aria-label="CMS sections">
+            <nav aria-label="Admin sections">
               <ul className="flex flex-wrap gap-1">
                 {NAV.map((n) => {
                   // "/admin" is a prefix of every CMS route, so a plain

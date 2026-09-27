@@ -962,11 +962,7 @@ async def root_health():
     return {"ok": True, "mongo": mongo_ok, "time": now_iso()}
 
 
-# Register router
-# Agentic CMS: page types, SEO cascade, review queue, agent draft surface.
-# Mounted here so it shares auth, db and CORS with the rest of the API.
-from agentic_cms import build_router as build_cms_router  # noqa: E402
-
-api.include_router(build_cms_router(db, get_current_admin))
-
+# Register router. The old agentic CMS routes (/api/cms/*) were removed on
+# 2026-09-26: they held no data and no live page used them. Pages, SEO fields
+# and edits are managed in the one CMS described in cms/README.md.
 app.include_router(api)

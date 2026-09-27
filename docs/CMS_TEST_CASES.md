@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26.** This describes the first agentic CMS, which was removed (it held no data and no live page used it). The current CMS is described in [cms/README.md](../cms/README.md).
+
 # Agentic CMS: use cases and test cases
 
 Written alongside the Phase 1 build, 2026-08-17. Every case below is

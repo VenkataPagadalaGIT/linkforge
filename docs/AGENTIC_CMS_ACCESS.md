@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26.** This describes the first agentic CMS, which was removed (it held no data and no live page used it). The current CMS is described in [cms/README.md](../cms/README.md).
+
 # 12 — Agentic CMS · Agent Onboarding, Access & Permissions
 
 > How an external agent (Omniscite first) is authenticated to venkatapagadala.com, what it is told, what it may touch, what it may never touch, and how we prove all of that before it does real work. **Written 2026-08-19. Everything below is implemented and tested locally on branch `staging`; nothing is deployed yet.**

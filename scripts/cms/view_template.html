@@ -1,0 +1,500 @@
+<title>venkatapagadala.com CMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8;--surface:#ffffff;--surface-2:#edf1f4;--ink:#16202b;--muted:#586577;--line:#dbe1e8;
+  --accent:#0b6b5d;--accent-ink:#ffffff;--accent-soft:#dff1ec;--serp:#1a0dab;--scrim:rgba(12,18,26,.42);
+  --good:#1d7447;--good-soft:#e1f2e8;--warn:#8f5b00;--warn-soft:#fbefd6;--bad:#ad3326;--bad-soft:#fbe4e0;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --bg:#0f141a;--surface:#151c24;--surface-2:#1c2530;--ink:#e5ebf1;--muted:#98a4b3;--line:#283341;
+  --accent:#4ec2a7;--accent-ink:#0b1a16;--accent-soft:#153a32;--serp:#8ab4f8;--scrim:rgba(0,0,0,.6);
+  --good:#63c893;--good-soft:#15301f;--warn:#e2b24e;--warn-soft:#382b12;--bad:#f08b7d;--bad-soft:#3b1c18;}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#0f141a;--surface:#151c24;--surface-2:#1c2530;--ink:#e5ebf1;--muted:#98a4b3;--line:#283341;
+  --accent:#4ec2a7;--accent-ink:#0b1a16;--accent-soft:#153a32;--serp:#8ab4f8;--scrim:rgba(0,0,0,.6);
+  --good:#63c893;--good-soft:#15301f;--warn:#e2b24e;--warn-soft:#382b12;--bad:#f08b7d;--bad-soft:#3b1c18;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 var(--sans)}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:28px 72px;display:grid;gap:22px}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,tr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(26px,4vw,38px)/1.1 var(--cond);margin:6px 0 8px;text-wrap:balance;letter-spacing:-.01em}
+h2{font:700 20px/1.25 var(--cond);margin:0;text-wrap:balance}
+h3{font:600 15px/1.3 var(--sans);margin:0}
+.lead{margin:0;color:var(--muted);max-width:70ch}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.stat{display:grid}
+.stat b{font:700 24px/1.1 var(--cond);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:2;padding-top:6px}
+.tab{appearance:none;border:0;background:none;color:var(--muted);font:600 13px/1 var(--sans);padding:11px 12px 12px;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:hover{color:var(--ink)}
+.panel{display:grid;gap:16px}
+.note{margin:0;color:var(--muted);max-width:75ch}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font:600 11px/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.types tbody tr{cursor:pointer}
+.types tbody tr:hover td{background:var(--surface-2)}
+.types td:nth-child(2){min-width:150px}.types td:nth-child(7){min-width:190px}
+.mono{font-family:var(--mono);font-size:12px}
+.url{font-family:var(--mono);font-size:12px;overflow-wrap:anywhere}
+.sub{display:block;font-size:12px;color:var(--muted)}
+.pill{display:inline-block;font:500 11px/1.2 var(--mono);padding:3px 7px;border-radius:999px;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.acc{background:var(--accent-soft);color:var(--accent)}
+.len{margin-left:6px}
+.t-page{min-width:200px}.t-title{min-width:220px}.t-desc{min-width:280px;color:var(--muted)}.t-h1{min-width:180px}
+.rowtools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.field{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+input,select,textarea{font:14px/1.45 var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0}
+.controls input{width:min(320px,100%)}
+textarea{resize:vertical;min-height:76px}
+.pager{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.btn{appearance:none;font:600 13px var(--sans);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:7px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.small{padding:3px 9px;font-size:12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+pre{margin:0;font:12px/1.55 var(--mono);white-space:pre;max-height:360px;overflow:auto;background:var(--surface-2);border-radius:6px;padding:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:baseline}
+.kv dt{color:var(--muted);font-size:13px}.kv dd{margin:0;font-variant-numeric:tabular-nums}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px}
+.steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:700 14px var(--cond)}
+.steps p{margin:2px 0 0;color:var(--muted)}
+ul.plain{margin:0;padding-left:18px;display:grid;gap:6px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--muted);align-items:center}
+.status{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.overlay{position:fixed;inset:0;background:var(--scrim);display:flex;justify-content:flex-end;z-index:20}
+.drawer{background:var(--surface);color:var(--ink);width:min(580px,100%);height:100%;overflow:auto;padding:20px 20px calc(28px + env(safe-area-inset-bottom,0px));padding-top:calc(20px + env(safe-area-inset-top,0px));display:grid;gap:16px;align-content:start;border-left:1px solid var(--line)}
+.dhead{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.f{display:grid;gap:6px}
+.f > label{font:600 13px var(--sans)}
+.f input,.f textarea,.f select{width:100%}
+.hint{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.was{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.serp{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--surface-2);display:grid;gap:3px}
+.serp .s-url{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.serp .s-title{font-size:18px;line-height:1.3;color:var(--serp);overflow-wrap:anywhere}
+.serp .s-desc{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.msg{font-size:13px;margin:0}
+.msg.err{color:var(--bad)}.msg.ok{color:var(--good)}.msg.muted{color:var(--muted)}
+.edit-list{display:grid;gap:12px}
+.edit{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:10px}
+.etop{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.chg{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:6px 14px;font-size:13px;margin:0}
+.chg dt{color:var(--muted)}.chg dd{margin:0;display:grid;gap:2px;overflow-wrap:anywhere}
+.from{color:var(--muted);text-decoration:line-through}
+.empty{color:var(--muted);margin:0}
+footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="snap">Taken from the live site</div>
+    <h1>venkatapagadala.com CMS</h1>
+    <p class="lead">Every page type, every page's SEO fields and the site-wide rules. Edit any page's title, description, H1, canonical or robots here; Claude applies your edits to the site. This page itself holds no password or key and cannot change the site.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-types" aria-controls="types" data-tab="types">Page types</button>
+    <button class="tab" role="tab" id="tab-pages" aria-controls="pages" data-tab="pages">Pages and SEO</button>
+    <button class="tab" role="tab" id="tab-edits" aria-controls="edits" data-tab="edits">Edits</button>
+    <button class="tab" role="tab" id="tab-site" aria-controls="site" data-tab="site">Site-wide</button>
+    <button class="tab" role="tab" id="tab-agent" aria-controls="agent" data-tab="agent">Agent</button>
+    <button class="tab" role="tab" id="tab-how" aria-controls="how" data-tab="how">How editing works</button>
+  </nav>
+
+  <section class="panel" id="types" role="tabpanel" aria-labelledby="tab-types">
+    <p class="note">Each page type is one layout in the site's code. Pick a row to see its pages and edit them. "Today" is what a change needs right now; "Plan" is where the type lands in the no-deploy setup.</p>
+    <div class="scroll"><table class="types"><thead><tr>
+      <th>Page type</th><th>URL pattern</th><th class="num">Pages</th><th>Schema</th><th>Content lives in</th><th>Today a change needs</th><th>Plan</th><th class="num">Title too long</th><th class="num">Description off rule</th>
+    </tr></thead><tbody id="typeRows"></tbody></table></div>
+  </section>
+
+  <section class="panel" id="pages" role="tabpanel" aria-labelledby="tab-pages" hidden>
+    <div class="controls">
+      <label class="field" for="q">Search URL, title or H1<input id="q" type="search" placeholder="e.g. brightonseo"></label>
+      <label class="field" for="ftype">Page type<select id="ftype"></select></label>
+      <label class="field" for="fissue">Show<select id="fissue"></select></label>
+    </div>
+    <div class="legend"><span>Your rules:</span><span class="pill" id="lg-title"></span><span class="pill" id="lg-desc"></span><span class="pill">one H1</span><span class="pill">canonical to itself</span><span class="pill">no em dashes</span></div>
+    <div class="pager" id="pagerTop"></div>
+    <div class="scroll"><table><thead><tr>
+      <th>Page</th><th>Title</th><th>Meta description</th><th>H1</th><th>Canonical</th><th>Robots</th><th>Schema</th><th>Social image</th>
+    </tr></thead><tbody id="pageRows"></tbody></table></div>
+    <div class="pager" id="pagerBottom"></div>
+  </section>
+
+  <section class="panel" id="edits" role="tabpanel" aria-labelledby="tab-edits" hidden>
+    <p class="note" id="editsNote">Edits you save here wait for Claude. Tell Claude "apply my CMS edits" and it makes each change, runs your checks, and marks it here.</p>
+    <div class="edit-list" id="editList"><p class="empty">Loading your edits…</p></div>
+  </section>
+
+  <section class="panel" id="site" role="tabpanel" aria-labelledby="tab-site" hidden>
+    <div class="grid2">
+      <div class="box"><h3>Title templates</h3><div id="suffixes"></div><p class="note" id="suffixNote"></p></div>
+      <div class="box"><h3>Defaults</h3><dl class="kv" id="defaults"></dl></div>
+    </div>
+    <div class="box"><h3>robots.txt</h3><p class="note">Live file. <code>/admin</code> and <code>/api/</code> are blocked for every crawler group. Only you can change site-wide rules.</p><pre id="robots"></pre></div>
+  </section>
+
+  <section class="panel" id="agent" role="tabpanel" aria-labelledby="tab-agent" hidden>
+    <div class="box">
+      <h3>Connected now</h3>
+      <div class="status"><span class="pill good">No agent can edit the live site</span><span class="pill">Old admin CMS: no pages, drafts, settings or agent keys saved</span></div>
+    </div>
+    <div class="box">
+      <h3>Venkata Claude (planned)</h3>
+      <p class="note">Your Claude, on your Mac. It edits the private repo, runs the checks, and publishes only when you say "publish". It never holds a site password or key. The table below is a proposal for you to change.</p>
+      <div class="legend"><span class="pill good">Live on your OK</span><span>Claude prepares it and publishes when you say so</span><span class="pill warn">Draft for review</span><span>you read the change first</span><span class="pill bad">Blocked</span><span>only you, never the agent</span></div>
+      <div class="scroll"><table><thead><tr><th>What</th><th>Create</th><th>Edit content</th><th>Edit SEO fields</th><th>Remove</th></tr></thead><tbody id="perms"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="panel" id="how" role="tabpanel" aria-labelledby="tab-how" hidden>
+    <ol class="steps">
+      <li><div><h3>Edit a page here</h3><p>Pages and SEO, then Edit on any row. Change the title, description, H1, canonical or robots, check the Google preview, and save. The edit waits in the Edits tab.</p></div></li>
+      <li><div><h3>Tell Claude "apply my CMS edits"</h3><p>Claude reads your saved edits, makes each change in the repo, and runs your checks (SEO rules, no em dashes, no scripts). If a check fails, it tells you instead of guessing.</p></div></li>
+      <li><div><h3>It goes live</h3><p>Today that takes one deploy, which you run. Once the no-deploy setup is built, it goes live about a minute after you say "publish".</p></div></li>
+      <li><div><h3>Claude checks the live page</h3><p>It reads the page on venkatapagadala.com and marks each edit Live, or explains what stopped it.</p></div></li>
+    </ol>
+    <div class="grid2">
+      <div class="box"><h3>Why it is safe</h3><ul class="plain">
+        <li>This page only stores your requests. It holds no password or key and cannot reach your site.</li>
+        <li>Only you can save edits here; anyone you share the page with can only read.</li>
+        <li>Every change lands in the repo, so undo is one click.</li>
+        <li>The live site has no edit door for anyone to break into.</li>
+      </ul></div>
+      <div class="box"><h3>What still needs code</h3><ul class="plain">
+        <li>New page designs and new features.</li>
+        <li>Pages whose title comes from a shared pattern: Claude changes that page's entry in the data, or tells you if the change would affect other pages.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="overlay" id="editor" hidden>
+  <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="edHead">
+    <div class="dhead">
+      <div><div class="eyebrow" id="edType">Page</div><h2 id="edHead">Edit page</h2><a class="url" id="edLink" href="#" target="_blank" rel="noopener"></a></div>
+      <button class="btn small" id="edClose" type="button">Close</button>
+    </div>
+    <div class="f"><label for="ed-title">Title</label><input id="ed-title" type="text" maxlength="200"><div class="hint" id="h-title"></div></div>
+    <div class="f"><label for="ed-desc">Meta description</label><textarea id="ed-desc" maxlength="400" rows="3"></textarea><div class="hint" id="h-desc"></div></div>
+    <div class="f"><label for="ed-h1">H1</label><input id="ed-h1" type="text" maxlength="200"><div class="hint" id="h-h1"></div></div>
+    <div class="f"><label for="ed-canon">Canonical</label><input id="ed-canon" type="text" maxlength="300" spellcheck="false"><div class="hint" id="h-canon"></div></div>
+    <div class="f"><label for="ed-robots">Robots</label><select id="ed-robots">
+      <option value="index, follow">index, follow (show in Google)</option>
+      <option value="noindex, follow">noindex, follow (hide from Google)</option>
+      <option value="index, nofollow">index, nofollow</option>
+      <option value="noindex, nofollow">noindex, nofollow</option>
+    </select><div class="hint" id="h-robots"></div></div>
+    <div class="f"><span class="eyebrow">Google preview (approximate)</span><div class="serp" aria-live="polite"><span class="s-url" id="s-url"></span><span class="s-title" id="s-title"></span><span class="s-desc" id="s-desc"></span></div></div>
+    <div class="f"><label for="ed-note">Note for Claude (optional)</label><textarea id="ed-note" maxlength="600" rows="2" placeholder="e.g. match the new talk title"></textarea></div>
+    <p class="msg err" id="edErr" role="alert"></p>
+    <div class="actions"><button class="btn primary" id="edSave" type="button">Save edit</button><button class="btn" id="edCancel" type="button">Cancel</button><span class="msg muted" id="edState"></span></div>
+  </div>
+</div>
+
+<script type="application/json" id="data">/*__DATA__*/</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var T = D.types, P = D.pages, BASE = D.base;
+  P.forEach(function(p, i){ p.i = i; });
+  var byUrl = {}; P.forEach(function(p){ byUrl[p[0]] = p; });
+  var fmt = function(n){ return n.toLocaleString("en-US"); };
+  var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); };
+  var pill = function(text, cls){ return '<span class="pill ' + (cls || "") + '">' + esc(text) + '</span>'; };
+  var path = function(s){ return esc(s).replace(/\//g, "/<wbr>"); };
+  var nowIso = function(){ return new Date().toISOString(); };
+  var when = function(iso){ try { return new Date(iso).toLocaleString("en-US", {month: "short", day: "numeric", hour: "numeric", minute: "2-digit"}); } catch (e) { return ""; } };
+
+  var RF = D.rules.fields, TMAX = RF.title.max, DMIN = RF.description.min, DMAX = RF.description.max;
+  var db = null, dbState = "connecting", EDITS = [];
+  document.getElementById("lg-title").textContent = "title up to " + TMAX + " characters";
+  document.getElementById("lg-desc").textContent = "description " + DMIN + " to " + DMAX;
+
+  document.getElementById("snap").textContent = "Taken from the live site " + D.taken;
+  var st = [["Pages", D.totals.pages], ["Page types", T.length], ["News items", D.totals.news], ["Titles over " + TMAX + " characters", D.totals.title60], ["Descriptions off your " + DMIN + " to " + DMAX + " rule", D.totals.descOff]];
+  document.getElementById("stats").innerHTML = st.map(function(s){ return '<div class="stat"><b>' + fmt(s[1]) + '</b><span>' + esc(s[0]) + '</span></div>'; }).join("");
+
+  // ---------- Page types ----------
+  var srcCls = function(s){ return s.indexOf("Database") === 0 ? "acc" : ""; };
+  var todayCls = function(s){ return /no deploy/i.test(s) ? "good" : (/No editor/.test(s) ? "bad" : "warn"); };
+  document.getElementById("typeRows").innerHTML = T.map(function(t, i){
+    return '<tr tabindex="0" data-type="' + i + '"><td><h3>' + esc(t.name) + '</h3>' + (t.sub ? '<span class="sub">' + esc(t.sub) + '</span>' : '') + '</td>' +
+      '<td class="url">' + path(t.pattern) + '</td><td class="num">' + fmt(t.count) + '</td><td class="mono">' + esc(t.schema) + '</td>' +
+      '<td>' + pill(t.source, srcCls(t.source)) + '</td><td>' + pill(t.today, todayCls(t.today)) + '</td><td>' + esc(t.plan) + '</td>' +
+      '<td class="num">' + fmt(t.title60) + '</td><td class="num">' + fmt(t.descOff) + '</td></tr>';
+  }).join("");
+  Array.prototype.forEach.call(document.querySelectorAll("#typeRows tr"), function(tr){
+    var go = function(){ ftype.value = tr.getAttribute("data-type"); fissue.value = "all"; q.value = ""; page = 0; render(); show("pages"); };
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+
+  // ---------- Pages ----------
+  var ISSUES = [
+    ["all", "All pages", function(){ return true; }],
+    ["any", "Pages breaking any rule", function(p){ return flags(p).length > 0; }],
+    ["edited", "Pages with an open edit", function(p){ return !!openEdits()[p[0]]; }],
+    ["t60", "Title over " + TMAX + " characters", function(p){ return p[2].length > TMAX; }],
+    ["dmiss", "Description missing", function(p){ return !p[3]; }],
+    ["dshort", "Description under " + DMIN, function(p){ return p[3] && p[3].length < DMIN; }],
+    ["dlong", "Description over " + DMAX, function(p){ return p[3].length > DMAX; }],
+    ["h1", "No H1 or more than one", function(p){ return p[5] !== 1; }],
+    ["canon", "Canonical missing or elsewhere", function(p){ return p[6] !== "self"; }],
+    ["og", "No social image", function(p){ return !p[9]; }],
+    ["noindex", "Set to noindex", function(p){ return /noindex/i.test(p[7]); }]
+  ];
+  function flags(p){
+    var f = [];
+    if (p[2].length > TMAX) f.push("t60");
+    if (!p[3] || p[3].length < DMIN || p[3].length > DMAX) f.push("desc");
+    if (p[5] !== 1) f.push("h1");
+    if (p[6] !== "self") f.push("canon");
+    if (!p[9]) f.push("og");
+    if (/noindex/i.test(p[7])) f.push("noindex");
+    return f;
+  }
+  function openEdits(){
+    var m = {};
+    EDITS.forEach(function(e){ if (e.d.status === "pending" || e.d.status === "applied") m[e.d.url] = (m[e.d.url] || 0) + 1; });
+    return m;
+  }
+  var q = document.getElementById("q"), ftype = document.getElementById("ftype"), fissue = document.getElementById("fissue");
+  ftype.innerHTML = '<option value="all">All types</option>' + T.map(function(t, i){ return '<option value="' + i + '">' + esc(t.name) + ' (' + fmt(t.count) + ')</option>'; }).join("");
+  fissue.innerHTML = ISSUES.map(function(x){ return '<option value="' + x[0] + '">' + esc(x[1]) + '</option>'; }).join("");
+  var PER = 50, page = 0;
+  function filtered(){
+    var term = q.value.trim().toLowerCase(), ty = ftype.value, test = ISSUES.filter(function(x){ return x[0] === fissue.value; })[0][2];
+    return P.filter(function(p){
+      if (ty !== "all" && String(p[1]) !== ty) return false;
+      if (!test(p)) return false;
+      if (term && (p[0] + " " + p[2] + " " + p[4]).toLowerCase().indexOf(term) < 0) return false;
+      return true;
+    });
+  }
+  function lenPill(n, lo, hi){ var ok = n >= lo && n <= hi; return '<span class="pill len ' + (ok ? "good" : "warn") + '">' + n + '</span>'; }
+  function render(){
+    var rows = filtered(), pages = Math.max(1, Math.ceil(rows.length / PER)), open = openEdits();
+    if (page >= pages) page = pages - 1;
+    var slice = rows.slice(page * PER, page * PER + PER);
+    document.getElementById("pageRows").innerHTML = slice.length ? slice.map(function(p){
+      var t = T[p[1]];
+      var canon = p[6] === "self" ? pill("Self", "good") : (p[6] ? pill("Elsewhere", "warn") + '<span class="sub url">' + path(p[6]) + '</span>' : pill("Missing", "bad"));
+      var h1 = p[5] === 1 ? esc(p[4]) : (p[5] === 0 ? pill("Missing", "bad") : esc(p[4]) + ' ' + pill(p[5] + " H1s", "warn"));
+      return '<tr><td class="t-page"><a class="url" href="' + esc(BASE + p[0]) + '" target="_blank" rel="noopener">' + path(p[0]) + '</a><span class="sub">' + esc(t.name) + '</span>' +
+        '<div class="rowtools"><button class="btn small" type="button" data-edit="' + p.i + '">Edit</button>' + (open[p[0]] ? pill("Edit open", "warn") : "") + '</div></td>' +
+        '<td class="t-title">' + esc(p[2]) + lenPill(p[2].length, 1, TMAX) + '</td>' +
+        '<td class="t-desc">' + (p[3] ? esc(p[3]) + lenPill(p[3].length, DMIN, DMAX) : pill("Missing", "bad")) + '</td>' +
+        '<td class="t-h1">' + h1 + '</td><td>' + canon + '</td><td class="mono">' + esc(p[7] || "not set") + '</td>' +
+        '<td class="mono">' + esc(p[8] || "none") + '</td><td>' + (p[9] ? pill("Yes", "good") : pill("No", "warn")) + '</td></tr>';
+    }).join("") : '<tr><td colspan="8">No pages match these filters.</td></tr>';
+    var from = rows.length ? page * PER + 1 : 0, to = Math.min(rows.length, page * PER + PER);
+    var html = '<span>Showing ' + fmt(from) + ' to ' + fmt(to) + ' of ' + fmt(rows.length) + '</span>' +
+      '<button class="btn" type="button" data-dir="-1"' + (page === 0 ? " disabled" : "") + '>Previous</button>' +
+      '<button class="btn" type="button" data-dir="1"' + (page >= pages - 1 ? " disabled" : "") + '>Next</button>';
+    ["pagerTop", "pagerBottom"].forEach(function(id){ document.getElementById(id).innerHTML = html; });
+  }
+  ["pagerTop", "pagerBottom"].forEach(function(id){
+    document.getElementById(id).addEventListener("click", function(e){
+      var b = e.target.closest("button[data-dir]"); if (!b || b.disabled) return;
+      page += Number(b.getAttribute("data-dir")); render();
+      if (id === "pagerBottom") document.getElementById("pages").scrollIntoView({block: "start"});
+    });
+  });
+  document.getElementById("pageRows").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-edit]"); if (b) openEditor(Number(b.getAttribute("data-edit")), b);
+  });
+  q.addEventListener("input", function(){ page = 0; render(); });
+  ftype.addEventListener("change", function(){ page = 0; render(); });
+  fissue.addEventListener("change", function(){ page = 0; render(); });
+  render();
+
+  // ---------- Editor ----------
+  var ov = document.getElementById("editor");
+  var F = {title: "ed-title", description: "ed-desc", h1: "ed-h1", canonical: "ed-canon", robots: "ed-robots"};
+  var LABEL = {title: "Title", description: "Meta description", h1: "H1", canonical: "Canonical", robots: "Robots"};
+  var el = function(id){ return document.getElementById(id); };
+  var cur = null, orig = null, returnTo = null, saving = false;
+  function currentValues(p){
+    var robots = /noindex/i.test(p[7]) ? (/nofollow/i.test(p[7]) ? "noindex, nofollow" : "noindex, follow") : (/nofollow/i.test(p[7]) ? "index, nofollow" : "index, follow");
+    return {title: p[2], description: p[3], h1: p[4], canonical: p[6] === "self" ? p[0] : p[6], robots: robots};
+  }
+  function vals(){ var v = {}; Object.keys(F).forEach(function(k){ v[k] = el(F[k]).value.replace(/\s+/g, " ").trim(); }); return v; }
+  function changes(v){ var c = {}; Object.keys(F).forEach(function(k){ if (v[k] !== orig[k]) c[k] = {from: orig[k], to: v[k]}; }); return c; }
+  function openEditor(i, btn){
+    cur = P[i]; orig = currentValues(cur); returnTo = btn || null;
+    el("edType").textContent = T[cur[1]].name;
+    el("edLink").textContent = cur[0]; el("edLink").href = BASE + cur[0];
+    Object.keys(F).forEach(function(k){ el(F[k]).value = orig[k]; });
+    el("ed-note").value = ""; el("edErr").textContent = "";
+    ov.hidden = false; document.body.style.overflow = "hidden";
+    check(); el("ed-title").focus();
+  }
+  function closeEditor(){
+    ov.hidden = true; document.body.style.overflow = ""; cur = null;
+    if (returnTo && document.body.contains(returnTo)) returnTo.focus();
+  }
+  function hint(id, parts){ el(id).innerHTML = parts.join(" "); }
+  function check(){
+    if (!cur) return;
+    var v = vals(), errs = [];
+    var tl = v.title.length, dl = v.description.length;
+    hint("h-title", [pill(tl + " characters", tl >= 1 && tl <= TMAX ? "good" : "warn"), '<span>Your rule: up to ' + TMAX + '. Google cuts longer titles.</span>']);
+    hint("h-desc", [pill(dl + " characters", dl >= DMIN && dl <= DMAX ? "good" : "warn"), '<span>Your rule: ' + DMIN + ' to ' + DMAX + '.</span>']);
+    hint("h-h1", [v.h1 ? pill("Set", "good") : pill("Empty", "warn"), '<span>One H1 per page.</span>']);
+    var canonOk = !v.canonical || v.canonical.charAt(0) === "/" || v.canonical === BASE || v.canonical.indexOf(BASE + "/") === 0;
+    var self = v.canonical === cur[0] || v.canonical === BASE + cur[0];
+    hint("h-canon", [canonOk ? (self ? pill("Points to itself", "good") : (v.canonical ? pill("Points elsewhere", "warn") : pill("Empty", "warn"))) : pill("Not this site", "bad"), '<span>A path on this site, like ' + esc(cur[0]) + '</span>']);
+    hint("h-robots", [/noindex/.test(v.robots) ? pill("Hidden from Google", "bad") : pill("Shown in Google", "good")]);
+    var all = [v.title, v.description, v.h1, v.canonical, el("ed-note").value].join(" ");
+    if (!v.title) errs.push("The title can't be empty.");
+    D.rules.forbidden.forEach(function(f){ if (all.indexOf(f.text) >= 0 && errs.indexOf(f.message) < 0) errs.push(f.message); });
+    if (!canonOk) errs.push("The canonical must be a path on venkatapagadala.com.");
+    var c = changes(v), n = Object.keys(c).length;
+    el("s-url").textContent = BASE.replace(/^https?:\/\//, "") + cur[0].split("/").filter(Boolean).map(function(s){ return " › " + s; }).join("");
+    el("s-title").textContent = v.title.length > 60 ? v.title.slice(0, 57) + "…" : v.title;
+    el("s-desc").textContent = v.description.length > 160 ? v.description.slice(0, 157) + "…" : v.description;
+    el("edErr").textContent = errs.join(" ");
+    var ready = dbState === "on" && !errs.length && n > 0 && !saving;
+    el("edSave").disabled = !ready;
+    el("edState").textContent = dbState === "connecting" ? "Connecting to your edit list…" :
+      dbState === "off" ? "Saving isn't available in this view. Open the page on claude.ai to save edits." :
+      dbState === "readonly" ? "You can look, but only the owner can save edits." :
+      (n ? n + (n === 1 ? " field changed" : " fields changed") : "No changes yet");
+  }
+  ["ed-title", "ed-desc", "ed-h1", "ed-canon", "ed-note"].forEach(function(id){ el(id).addEventListener("input", check); });
+  el("ed-robots").addEventListener("change", check);
+  el("edClose").addEventListener("click", closeEditor);
+  el("edCancel").addEventListener("click", closeEditor);
+  ov.addEventListener("click", function(e){ if (e.target === ov) closeEditor(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !ov.hidden) closeEditor(); });
+  el("edSave").addEventListener("click", function(){
+    if (!db || !cur || saving) return;
+    var v = vals(), c = changes(v);
+    if (!Object.keys(c).length) return;
+    saving = true; check(); el("edState").textContent = "Saving…";
+    var now = nowIso(), url = cur[0];
+    var body = {url: url, type: T[cur[1]].name, changes: c, note: el("ed-note").value.trim(), status: "pending", statusNote: "", createdAt: now, updatedAt: now};
+    var attempt = function(retry){
+      return db.collection("edits").add(body).catch(function(err){
+        if (retry && err && err.code === "unavailable") return new Promise(function(r){ setTimeout(r, 400 + Math.random() * 600); }).then(function(){ return attempt(false); });
+        throw err;
+      });
+    };
+    attempt(true).then(function(){
+      saving = false; closeEditor(); show("edits");
+    }).catch(function(err){
+      saving = false;
+      var code = err && err.code;
+      if (code === "invalid_argument") { dbState = "readonly"; }
+      el("edErr").textContent = code === "quota_exceeded" ? "Your edit list is full. Delete old edits in the Edits tab, then save again." :
+        code === "invalid_argument" ? "Only the owner can save edits on this page." :
+        "The edit wasn't saved. Try again in a moment.";
+      check();
+    });
+  });
+
+  // ---------- Edits list ----------
+  var STATUS = {pending: ["Waiting for Claude", "warn"], applied: ["Applied, going live", "acc"], live: ["Live", "good"], rejected: ["Not applied", "bad"], cancelled: ["Cancelled", ""]};
+  function renderEdits(){
+    var list = el("editList");
+    var openN = EDITS.filter(function(e){ return e.d.status === "pending" || e.d.status === "applied"; }).length;
+    el("tab-edits").textContent = openN ? "Edits (" + openN + " open)" : "Edits";
+    if (dbState === "off") { list.innerHTML = '<p class="empty">Your saved edits show here when this page is open on claude.ai.</p>'; return; }
+    if (dbState === "connecting") { list.innerHTML = '<p class="empty">Loading your edits…</p>'; return; }
+    if (!EDITS.length) { list.innerHTML = '<p class="empty">No edits yet. Open Pages and SEO and press Edit on any page.</p>'; return; }
+    list.innerHTML = EDITS.map(function(e){
+      var d = e.d, s = STATUS[d.status] || [String(d.status || "Unknown"), ""], p = byUrl[d.url];
+      var rows = Object.keys(d.changes || {}).map(function(k){
+        var ch = d.changes[k] || {};
+        return '<dt>' + esc(LABEL[k] || k) + '</dt><dd><span class="from">' + esc(ch.from || "(empty)") + '</span><span>' + esc(ch.to || "(empty)") + '</span></dd>';
+      }).join("");
+      return '<article class="edit"><div class="etop"><div><a class="url" href="' + esc(BASE + d.url) + '" target="_blank" rel="noopener">' + path(d.url) + '</a><span class="sub">' + esc(d.type || (p ? T[p[1]].name : "")) + ' · saved ' + esc(when(d.createdAt)) + (d.updatedAt && d.updatedAt !== d.createdAt ? ' · updated ' + esc(when(d.updatedAt)) : '') + '</span></div>' +
+        '<div class="status">' + pill(s[0], s[1]) + (d.status === "pending" ? '<button class="btn small" type="button" data-cancel="' + esc(e.id) + '">Cancel</button>' : '') + '</div></div>' +
+        '<dl class="chg">' + rows + '</dl>' +
+        (d.note ? '<p class="msg muted">Your note: ' + esc(d.note) + '</p>' : '') +
+        (d.statusNote ? '<p class="msg ' + (d.status === "rejected" ? "err" : "muted") + '">Claude: ' + esc(d.statusNote) + '</p>' : '') + '</article>';
+    }).join("");
+  }
+  el("editList").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-cancel]"); if (!b || !db) return;
+    b.disabled = true;
+    db.doc("edits/" + b.getAttribute("data-cancel")).update({status: "cancelled", updatedAt: nowIso()}).catch(function(){ b.disabled = false; });
+  });
+
+  // ---------- Site-wide ----------
+  el("suffixes").innerHTML = '<dl class="kv">' + D.site.suffixes.map(function(s){ return '<dt class="mono">%s' + esc(s[0]) + '</dt><dd>' + fmt(s[1]) + ' pages</dd>'; }).join("") + '</dl>';
+  el("suffixNote").textContent = "The suffix alone pushes " + fmt(D.site.suffixPush) + " titles past 60 characters; the page's own part fits.";
+  el("defaults").innerHTML = D.site.defaults.map(function(kv){ return '<dt>' + esc(kv[0]) + '</dt><dd>' + esc(kv[1]) + '</dd>'; }).join("");
+  el("robots").textContent = D.site.robotsTxt;
+
+  // ---------- Agent ----------
+  var modeCls = {"Live on your OK": "good", "Draft for review": "warn", "Blocked": "bad"};
+  el("perms").innerHTML = D.perms.map(function(r){
+    return '<tr><td><h3>' + esc(r[0]) + '</h3>' + (r[5] ? '<span class="sub">' + esc(r[5]) + '</span>' : '') + '</td>' + r.slice(1, 5).map(function(m){ return '<td>' + pill(m, modeCls[m] || "") + '</td>'; }).join("") + '</tr>';
+  }).join("");
+
+  el("foot").textContent = "Source: the live sitemap (" + fmt(D.totals.sitemapUrls) + " URLs) and every page on it, fetched " + D.taken + ". Page types come from the site's code. Edits are stored with this page and applied by Claude.";
+
+  // ---------- Tabs ----------
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var ids = tabs.map(function(t){ return t.getAttribute("data-tab"); });
+  function show(id){
+    tabs.forEach(function(t){ var on = t.getAttribute("data-tab") === id; t.setAttribute("aria-selected", on ? "true" : "false"); t.tabIndex = on ? 0 : -1; el(t.getAttribute("data-tab")).hidden = !on; });
+    if (location.hash !== "#" + id) { try { history.replaceState(null, "", "#" + id); } catch (e) {} }
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener("click", function(){ show(t.getAttribute("data-tab")); });
+    t.addEventListener("keydown", function(e){
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!d) return;
+      var n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); show(n.getAttribute("data-tab"));
+    });
+  });
+  var start = (location.hash || "").slice(1);
+  show(ids.indexOf(start) >= 0 ? start : "types");
+
+  // ---------- Edit store (db capability) ----------
+  function setState(s){ dbState = s; renderEdits(); check(); }
+  var claudeRt = window.claude;
+  if (claudeRt && typeof claudeRt.use === "function") {
+    claudeRt.use("db").then(function(x){
+      if (!x) { setState("off"); return; }
+      db = x; setState("on");
+      db.collection("edits").orderBy("createdAt", "desc").limit(300).onSnapshot(function(snap){
+        EDITS = snap.docs.filter(function(d){ return d.exists; }).map(function(d){ return {id: d.id, d: d.data() || {}}; });
+        renderEdits(); render();
+      }, function(){ setState("off"); });
+    }, function(){ setState("off"); });
+  } else {
+    setState("off");
+  }
+})();
+</script>

@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26.** This describes the first agentic CMS, which was removed (it held no data and no live page used it). The current CMS is described in [cms/README.md](../cms/README.md).
+
 # Agentic CMS: research and specification
 
 Researched and written 2026-08-17, after the owner looked at the existing

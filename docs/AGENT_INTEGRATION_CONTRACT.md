@@ -1,3 +1,5 @@
+> **Superseded 2026-09-26.** This describes the first agentic CMS, which was removed (it held no data and no live page used it). The current CMS is described in [cms/README.md](../cms/README.md).
+
 # What a domain site must expose to be agent-writable
 
 Reference implementation: venkatapagadala.com. Written 2026-08-19 to answer
