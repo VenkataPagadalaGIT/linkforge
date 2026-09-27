@@ -136,6 +136,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
 export const NOT_INDEXED_ROUTES: { route: string; reason: string }[] = [
   { route: "/admin", reason: "CMS administration, behind sign-in" },
   { route: "/admin/*", reason: "CMS administration, behind sign-in" },
+  { route: "/api/revalidate", reason: "signed refresh endpoint for no-deploy publishing (POST only)" },
   { route: "/brand", reason: "internal brand reference sheet" },
   { route: "/library", reason: "internal component showcase" },
 ];
