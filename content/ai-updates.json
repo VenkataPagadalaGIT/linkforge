@@ -810,7 +810,7 @@
     "date": "2026-03-16",
     "summary": "Dynamo 1.0 is NVIDIA's inference optimization software that delivers up to 7x performance boost on Blackwell GPUs. It rearchitects inference by splitting work between GPUs (prefill/attention) and Groq LPUs (decode/generation).",
     "takeaways": [
-      "Delivers up to 7x inference performance boost on Blackwell GPUs — same hardware, updated software stack.",
+      "Delivers up to 7x inference performance boost on Blackwell GPUs: same hardware, updated software stack.",
       "Uses disaggregated inference: splits prefill/attention (memory-heavy) to GPUs and decode/generation (bandwidth-limited) to Groq LPUs.",
       "Already adopted by AWS, Azure, Google Cloud, Oracle, plus Cursor, Perplexity, ByteDance, PayPal, and Pinterest.",
       "Standalone modules available: KVBM (memory), NIXL (GPU-to-GPU data movement), Grove (scaling)."
@@ -821,8 +821,8 @@
       "Adoption"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
-    "body": "<h3 id=\"the-core-insight\">The Core Insight</h3>\n<p>Jensen explained that throughput and latency are \"enemies of each other\" in chip design. Dynamo solves this via <strong>disaggregated inference</strong> — splitting prefill and attention (memory-heavy) to Rubin GPUs, and decode/token generation (bandwidth-limited) to Groq LPUs.</p>\n\n<h3 id=\"performance\">Performance</h3>\n<ul>\n<li>Up to <strong>7x inference performance boost</strong> on Blackwell GPUs</li>\n<li>Token speeds jumping from 700 to nearly 5,000 per second — same hardware, updated software stack</li>\n<li>Token generation speed across a one-gigawatt factory: 2 million → 700 million (350x increase in two years)</li>\n</ul>\n\n<h3 id=\"adoption\">Adoption</h3>\n<p>Already deployed across:</p>\n<ul>\n<li><strong>Cloud providers:</strong> AWS, Microsoft Azure, Google Cloud, Oracle</li>\n<li><strong>AI-native companies:</strong> Cursor, Perplexity, Baseten, Deep Infra, Fireworks</li>\n<li><strong>Enterprise:</strong> ByteDance, Meituan, PayPal, Pinterest</li>\n</ul>\n<p>Core modules available standalone: <strong>KVBM</strong> (memory management), <strong>NIXL</strong> (GPU-to-GPU data movement), <strong>Grove</strong> (scaling). NVIDIA also contributes TensorRT-LLM CUDA kernels to the <strong>FlashInfer</strong> project for integration with vLLM, SGLang, and LangChain.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
+    "body": "<h3 id=\"the-core-insight\">The Core Insight</h3>\n<p>Jensen explained that throughput and latency are \"enemies of each other\" in chip design. Dynamo solves this via <strong>disaggregated inference</strong>: splitting prefill and attention (memory-heavy) to Rubin GPUs, and decode/token generation (bandwidth-limited) to Groq LPUs.</p>\n\n<h3 id=\"performance\">Performance</h3>\n<ul>\n<li>Up to <strong>7x inference performance boost</strong> on Blackwell GPUs</li>\n<li>Token speeds jumping from 700 to nearly 5,000 per second: same hardware, updated software stack</li>\n<li>Token generation speed across a one-gigawatt factory: 2 million → 700 million (350x increase in two years)</li>\n</ul>\n\n<h3 id=\"adoption\">Adoption</h3>\n<p>Already deployed across:</p>\n<ul>\n<li><strong>Cloud providers:</strong> AWS, Microsoft Azure, Google Cloud, Oracle</li>\n<li><strong>AI-native companies:</strong> Cursor, Perplexity, Baseten, Deep Infra, Fireworks</li>\n<li><strong>Enterprise:</strong> ByteDance, Meituan, PayPal, Pinterest</li>\n</ul>\n<p>Core modules available standalone: <strong>KVBM</strong> (memory management), <strong>NIXL</strong> (GPU-to-GPU data movement), <strong>Grove</strong> (scaling). NVIDIA also contributes TensorRT-LLM CUDA kernels to the <strong>FlashInfer</strong> project for integration with vLLM, SGLang, and LangChain.</p>",
     "sourceUrl": "https://nvidianews.nvidia.com/news/dynamo-1-0",
     "tags": [
       "NVIDIA",
