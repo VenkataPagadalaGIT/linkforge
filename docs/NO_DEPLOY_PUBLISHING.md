@@ -224,15 +224,17 @@ And the whole-site regression (R01, R02): crawl a production build of the previo
 - **Nothing visible changes.** Every page renders exactly as before (R01). Pages now re-render at most hourly, only when visited.
 - Claude verifies on the live domain: the deployment id changed, a sample of pages keep their titles, `sitemap.xml` is unchanged, and `/api/revalidate` still refuses (503, no secret yet).
 
-**Step 2. Turn on the one-minute refresh (you, about 2 minutes), only after step 1 is live.**
-1. Copy the secret already in your Keychain:
-   ```bash
-   security find-generic-password -s vp-content-revalidate -a venkatapagadala.com -w | pbcopy
-   ```
-2. In Railway, open the `mono-mind-frontend-v2` service in production. Add `CONTENT_REVALIDATE_SECRET` with the pasted value, then apply the change.
-3. **Strongly recommended:** add `CONTENT_GITHUB_TOKEN`. Create a fine-grained GitHub token with read-only "Contents" access to the linkforge repo only.
-   - Railway's outbound addresses may be shared with other customers, and GitHub's anonymous limit of 60 reads an hour is counted per address.
-   - The token is required if the repo turns private.
+**Step 2. Turn on the one-minute refresh. Done 2026-09-27, 22:42 EDT** (deployment `29c0f4bd`).
+- Set the secret from Terminal without a deploy, then upload. The value goes straight from the Keychain to Railway, never through the clipboard or the screen:
+  ```bash
+  cd ~/Desktop/mono-mind-stage && security find-generic-password -s vp-content-revalidate -a venkatapagadala.com -w | tr -d '\n' | railway variable set CONTENT_REVALIDATE_SECRET --stdin --skip-deploys -s mono-mind-frontend-v2 -e production && railway up --detach --service mono-mind-frontend-v2
+  ```
+- **Never click Deploy in Railway's dashboard for `mono-mind-frontend-v2`** while it is linked to GitHub. Railway then rebuilds the old `railway-frontend-deploy` branch (incident below). Change variables with `--skip-deploys` and ship with `railway up`.
+- **Verified live:**
+  - An unsigned refresh is refused as "missing" (401), and the container holds the 64-character secret.
+  - One signed refresh of news and SEO was accepted (200).
+  - Two crawls after it: all 1,084 pages answer 200 and match the morning snapshot on every SEO field.
+- **Still recommended:** a read-only `CONTENT_GITHUB_TOKEN`, set the same way.
 
 Without step 2, a publish still goes live, just slower: within 5 minutes for news and within about 2 hours for page SEO.
 
@@ -246,6 +248,20 @@ Without step 2, a publish still goes live, just slower: within 5 minutes for new
 - **All overrides at once:** publish `{"pages": {}}` (no deploy), or set `CONTENT_SEO_SOURCE_URL=off` in Railway.
 - **The code:** redeploy the previous site deployment (`6cb326ad`) in Railway.
   - If you roll back after step 2, also remove `CONTENT_REVALIDATE_SECRET`. The old code has the 404 trap described above.
+
+### Incident 2026-09-27, 22:19 to 22:42 EDT: the old site went live twice
+
+- **What happened:** adding the refresh secret in Railway's dashboard and clicking Deploy rebuilt `mono-mind-frontend-v2` from GitHub (linkforge, branch `railway-frontend-deploy`, commit `ee692736`, an old version of the site). The service is linked to that branch, even though releases ship with `railway up`.
+- **Impact:** about 18 minutes in total (`b68a92c2` 22:19 to 22:31, and `462272df` 22:36 to 22:42). The site served the old version: the brightonSEO recap and `/personas` answered 404, the What is Jev guide said "Guide not found", and titles carried em dashes.
+- **Also found:** the pasted secret was 18 characters, not the 64 in the Keychain. The site refused it as not configured, which is the minimum-length check working.
+- **Recovery:**
+  - `railway up` restored the site (`6653ea04`); a second dashboard Deploy reverted it again (`462272df`).
+  - The secret was then set from Terminal with `--skip-deploys`, followed by `railway up` (`29c0f4bd`).
+  - The restored site matched the morning snapshot on all 1,084 pages.
+- **Prevention:**
+  - Disconnect the GitHub source from `mono-mind-frontend-v2` (Railway, Settings, Source).
+  - Until then, never click Deploy in the dashboard for this service.
+  - Before telling the owner to click a deploy button, check the service's source (`railway status --json`, `source.repo`).
 
 ### News (done 2026-09-27)
 
