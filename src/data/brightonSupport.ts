@@ -578,6 +578,10 @@ export const THANK_YOU: ThankYou[] = [
     "url": "https://www.linkedin.com/in/anjul-singhvi-seo-digital-marketing/"
   },
   {
+    "name": "Anu Jagga Narang",
+    "url": "https://www.linkedin.com/in/ajnarang/"
+  },
+  {
     "name": "Balvinder Singh",
     "url": "https://www.linkedin.com/in/balvinder-singh-10bb4a225/"
   },
@@ -778,6 +782,10 @@ export const THANK_YOU: ThankYou[] = [
     "url": "https://www.linkedin.com/in/ruthvik-pagadala-a96b9441a/"
   },
   {
+    "name": "Sabitha Venugopal",
+    "url": "https://www.linkedin.com/in/sabitha-venugopal-mba-586aa78/"
+  },
+  {
     "name": "Sagar Kumar",
     "url": "https://www.linkedin.com/in/hackit-sagar/"
   },
@@ -864,6 +872,6 @@ export const SUPPORT_TOTALS = {
   "theirReactions": 1124,
   "theirComments": 130,
   "commenters": 0,
-  "helpers": 52,
-  "people": 74
+  "helpers": 54,
+  "people": 76
 };

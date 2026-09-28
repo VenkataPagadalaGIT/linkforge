@@ -18,7 +18,7 @@ HTML page: https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-
 - 1,638 reactions on the 27 LinkedIn posts about the talk: 514 on his 4 posts, 1,124 on the 23 posts by others.
 - 291 comments: 161 on his posts, 130 on theirs.
 - 23 posts by 22 people and pages named the talk: 12 before, 4 on the day, 7 after.
-- 74 people thanked by name.
+- 76 people thanked by name.
 - Counts as LinkedIn showed them on Sep 25, 2026.
 
 To everyone who supported him, guided him directly, mentored him, and came to the session at brightonSEO: thank you. Some posted, commented and shared. Some guided him through the slides and the presentation. Some were in the room in Track 1.
@@ -27,7 +27,7 @@ To Kelvin Newman, Carmen Aragones and the brightonSEO team. And to his mom, to w
 
 ## Everyone, by name
 
-74 names, in alphabetical order, each with their LinkedIn.
+76 names, in alphabetical order, each with their LinkedIn.
 
 - Alison Delamota: https://www.linkedin.com/in/alisondelamota/
 - Amal Alexander: https://www.linkedin.com/in/amal-alexander-305780131/
@@ -36,6 +36,7 @@ To Kelvin Newman, Carmen Aragones and the brightonSEO team. And to his mom, to w
 - Andrew Ansley: https://www.linkedin.com/in/andrew-ansley-marketing/
 - Angela Skane: https://www.linkedin.com/in/angelaskane/
 - Anjul Singhvi: https://www.linkedin.com/in/anjul-singhvi-seo-digital-marketing/
+- Anu Jagga Narang: https://www.linkedin.com/in/ajnarang/
 - Balvinder Singh: https://www.linkedin.com/in/balvinder-singh-10bb4a225/
 - Bryan Grossbauch: https://www.linkedin.com/in/bryan-grossbauch/
 - Callie Collins: https://www.linkedin.com/in/callie-collins-2bb46821b/
@@ -86,6 +87,7 @@ To Kelvin Newman, Carmen Aragones and the brightonSEO team. And to his mom, to w
 - Raymond Martinez: https://www.linkedin.com/in/raymond-martinez-seo/
 - Russ Macumber: https://www.linkedin.com/in/russmacumber/
 - Ruthvik Pagadala: https://www.linkedin.com/in/ruthvik-pagadala-a96b9441a/
+- Sabitha Venugopal: https://www.linkedin.com/in/sabitha-venugopal-mba-586aa78/
 - Sagar Kumar: https://www.linkedin.com/in/hackit-sagar/
 - Samantha Torres: https://www.linkedin.com/in/samantha-torres-seo/
 - Sanjay Singh: https://www.linkedin.com/in/sanjaysingh7727/

@@ -73,6 +73,8 @@ HELPERS = [
     ("Callie Collins", "https://www.linkedin.com/in/callie-collins-2bb46821b/"),
     ("Pedro Angel", "https://www.linkedin.com/in/pedro-angel-2618061aa/"),
     ("Logan Young", "https://www.linkedin.com/in/logan-young-812ab6209/"),
+    ("Anu Jagga Narang", "https://www.linkedin.com/in/ajnarang/"),
+    ("Sabitha Venugopal", "https://www.linkedin.com/in/sabitha-venugopal-mba-586aa78/"),
     ("Alison Delamota", "https://www.linkedin.com/in/alisondelamota/"),
     ("Neil Burtt", "https://www.linkedin.com/in/neilburtt/"),
     ("Karen Krause", "https://www.linkedin.com/in/karen-krause-2691698b/"),
