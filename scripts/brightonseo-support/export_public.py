@@ -75,6 +75,7 @@ HELPERS = [
     ("Logan Young", "https://www.linkedin.com/in/logan-young-812ab6209/"),
     ("Anu Jagga Narang", "https://www.linkedin.com/in/ajnarang/"),
     ("Sabitha Venugopal", "https://www.linkedin.com/in/sabitha-venugopal-mba-586aa78/"),
+    ("Krinal Mehta", "https://www.linkedin.com/in/krinal/"),
     ("Alison Delamota", "https://www.linkedin.com/in/alisondelamota/"),
     ("Neil Burtt", "https://www.linkedin.com/in/neilburtt/"),
     ("Karen Krause", "https://www.linkedin.com/in/karen-krause-2691698b/"),

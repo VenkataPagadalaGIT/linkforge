@@ -18,7 +18,7 @@ HTML page: https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-
 - 1,638 reactions on the 27 LinkedIn posts about the talk: 514 on his 4 posts, 1,124 on the 23 posts by others.
 - 291 comments: 161 on his posts, 130 on theirs.
 - 23 posts by 22 people and pages named the talk: 12 before, 4 on the day, 7 after.
-- 76 people thanked by name.
+- 77 people thanked by name.
 - Counts as LinkedIn showed them on Sep 25, 2026.
 
 To everyone who supported him, guided him directly, mentored him, and came to the session at brightonSEO: thank you. Some posted, commented and shared. Some guided him through the slides and the presentation. Some were in the room in Track 1.
@@ -27,7 +27,7 @@ To Kelvin Newman, Carmen Aragones and the brightonSEO team. And to his mom, to w
 
 ## Everyone, by name
 
-76 names, in alphabetical order, each with their LinkedIn.
+77 names, in alphabetical order, each with their LinkedIn.
 
 - Alison Delamota: https://www.linkedin.com/in/alisondelamota/
 - Amal Alexander: https://www.linkedin.com/in/amal-alexander-305780131/
@@ -68,6 +68,7 @@ To Kelvin Newman, Carmen Aragones and the brightonSEO team. And to his mom, to w
 - Karimjon Umarov: https://www.linkedin.com/in/karimjon-umarov-b2417a59/
 - Kelly LaVoie, MS, RD, LDN: https://www.linkedin.com/in/kelly-lavoie-rd/
 - Kelvin Newman: https://www.linkedin.com/in/kelvinnewman/
+- Krinal Mehta: https://www.linkedin.com/in/krinal/
 - Kunjal Chawhan: https://www.linkedin.com/in/kunjal-chawhan/
 - Laurie Bell: https://www.linkedin.com/in/laurie-bell/
 - Link Building HQ: https://www.linkedin.com/company/linkbuildinghq/

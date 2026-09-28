@@ -706,6 +706,10 @@ export const THANK_YOU: ThankYou[] = [
     "url": "https://www.linkedin.com/in/kelvinnewman/"
   },
   {
+    "name": "Krinal Mehta",
+    "url": "https://www.linkedin.com/in/krinal/"
+  },
+  {
     "name": "Kunjal Chawhan",
     "url": "https://www.linkedin.com/in/kunjal-chawhan/"
   },
@@ -872,6 +876,6 @@ export const SUPPORT_TOTALS = {
   "theirReactions": 1124,
   "theirComments": 130,
   "commenters": 0,
-  "helpers": 54,
-  "people": 76
+  "helpers": 55,
+  "people": 77
 };
