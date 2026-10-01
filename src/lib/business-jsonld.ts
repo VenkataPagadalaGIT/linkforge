@@ -69,3 +69,23 @@ export function personLd(p: Person, company: Company | undefined) {
     subjectOf: citations(p.sources),
   };
 }
+
+/** "PT5M57S" for 357 seconds. */
+const isoDuration = (sec: number) => `PT${Math.floor(sec / 60)}M${Math.round(sec % 60)}S`;
+
+export function videoLd(a: BusinessArticle) {
+  if (!a.video) return null;
+  const v = a.video;
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: v.title,
+    description: a.description,
+    thumbnailUrl: abs(v.poster),
+    uploadDate: v.uploadDate,
+    duration: isoDuration(v.duration),
+    contentUrl: abs(v.src),
+    author,
+    ...(v.transcript ? { transcript: v.transcript } : {}),
+  };
+}

@@ -4,7 +4,7 @@ import PageSidebar from "@/components/PageSidebar";
 import RichText, { HIGHLIGHT_CLASS } from "@/components/business/RichText";
 import { Link } from "@/lib/router-shim";
 import { ArrowLeft, BookMarked, Calendar } from "lucide-react";
-import type { Fact, Picture, Section, Source, Stat } from "@/lib/business-validate";
+import type { Fact, Picture, Section, Source, Stat, Video } from "@/lib/business-validate";
 import type { NameMap } from "@/lib/business-paths";
 
 /** One related group under the summary: the people on a call, a person's company, and so on. */
@@ -21,6 +21,7 @@ export type BusinessEntryProps = {
   summary: string;
   legend?: string;
   stats?: Stat[];
+  video?: Video;
   facts?: Fact[];
   related?: RelatedGroup[];
   sections: Section[];
@@ -39,6 +40,7 @@ const longDate = (d: string) =>
  */
 export default function BusinessEntry(p: BusinessEntryProps) {
   const toc = [
+    ...(p.video ? [{ label: "Video", id: "video" }] : []),
     ...(p.facts?.length ? [{ label: "Key facts", id: "key-facts" }] : []),
     ...p.sections.map((s) => ({ label: s.title, id: s.id })),
     { label: "Sources", id: "sources" },
@@ -74,6 +76,26 @@ export default function BusinessEntry(p: BusinessEntryProps) {
               </p>
             )}
           </ScrollReveal>
+
+          {p.video && (
+            <ScrollReveal>
+              <section id="video" className="scroll-mt-28 mb-10">
+                <video controls playsInline preload="metadata" poster={p.video.poster} className="w-full aspect-video border border-border bg-black">
+                  <source src={p.video.src} type="video/mp4" />
+                  {p.video.captions && <track kind="captions" src={p.video.captions} srcLang="en" label="English" />}
+                </video>
+                <p className="font-mono text-[11px] text-muted-foreground mt-2">
+                  {p.video.title} · {Math.floor(p.video.duration / 60)}:{String(Math.round(p.video.duration % 60)).padStart(2, "0")}
+                </p>
+                {p.video.transcript && (
+                  <details className="mt-3 border border-border p-3">
+                    <summary className="font-mono text-xs text-foreground cursor-pointer">Read the video transcript</summary>
+                    <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-3 whitespace-pre-line">{p.video.transcript}</p>
+                  </details>
+                )}
+              </section>
+            </ScrollReveal>
+          )}
 
           {p.stats && p.stats.length > 0 && (
             <ScrollReveal>

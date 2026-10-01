@@ -22,11 +22,13 @@ export type Stat = { value: string; label: string; cite?: number; highlight?: bo
 export type Block = { type: "p"; text: string } | { type: "list"; items: string[]; ordered?: boolean } | { type: "stats"; items: Stat[] };
 /** A photo or logo, shown with its credit. url is a site path (/logos/x.svg) or an https file on Wikimedia. */
 export type Picture = { url: string; alt: string; credit: string };
+/** A self-hosted video with its poster, captions and transcript. Paths are site paths (/videos/...). */
+export type Video = { src: string; poster: string; captions?: string; title: string; duration: number; uploadDate: string; transcript?: string };
 export type Section = { id: string; title: string; blocks: Block[] };
 export type BusinessArticle = {
   slug: string; title: string; seoTitle: string; description: string; summary: string;
   date: string; eventDate: string; kind: string; company: string; people: string[];
-  legend?: string; stats?: Stat[]; sections: Section[]; sources: Source[];
+  legend?: string; stats?: Stat[]; video?: Video; sections: Section[]; sources: Source[];
 };
 export type Company = {
   slug: string; name: string; legalName: string; summary: string; seoTitle: string; description: string;
@@ -207,6 +209,16 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
       }
       checkSections(item, at, errs);
       const sourceIds = checkSources(item, at, errs);
+      if (item.video !== undefined) {
+        const v = item.video;
+        if (!isObj(v) || !isStr(v.src) || !isStr(v.poster) || !isStr(v.title) || !isStr(v.uploadDate)) errs.push(`${at}: video needs src, poster, title and uploadDate`);
+        else {
+          for (const f of ["src", "poster", "captions"]) if (v[f] !== undefined && !(isStr(v[f]) && PAGE.test(v[f] as string))) errs.push(`${at}: video ${f} must be a site path such as /videos/name.mp4`);
+          if (!DATE.test(v.uploadDate as string)) errs.push(`${at}: video uploadDate must be YYYY-MM-DD`);
+          if (typeof v.duration !== "number" || !(v.duration > 0)) errs.push(`${at}: video duration must be a number of seconds`);
+          if (v.transcript !== undefined && !isStr(v.transcript)) errs.push(`${at}: video transcript must be text`);
+        }
+      }
       for (const f of ["logo", "photo"]) {
         const pic = item[f];
         if (pic === undefined) continue;
