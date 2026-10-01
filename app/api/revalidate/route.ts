@@ -4,6 +4,7 @@ import { forgetReads } from "@/lib/content-github";
 import { verifyContentSignature } from "@/lib/content-signature";
 import { NEWS_TAG } from "@/lib/news-source";
 import { SEO_TAG } from "@/lib/seo-overrides";
+import { BUSINESS_TAG } from "@/lib/business-source";
 import { PAGE_PATH } from "@/lib/seo-validate";
 
 /**
@@ -30,6 +31,17 @@ const PATHS: Record<string, PathToRefresh[]> = {
   // sitemap.xml is built per request. The publisher also names the changed
   // pages in "paths".
   [SEO_TAG]: [],
+  // Business Notebook: its pages, plus every surface that lists them
+  [BUSINESS_TAG]: [
+    { path: "/notebook/business" },
+    { path: "/notebook/business/[slug]", type: "page" },
+    { path: "/notebook/business/companies/[slug]", type: "page" },
+    { path: "/notebook/business/people/[slug]", type: "page" },
+    { path: "/sitemap" },
+    { path: "/sitemap/[section]", type: "page" },
+    { path: "/llms.txt" },
+    { path: "/llms-full.txt" },
+  ],
 };
 const MAX_PATHS = 200;
 

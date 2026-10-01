@@ -22,6 +22,8 @@ import type { MetadataRoute } from "next";
 import { toDate } from "@/lib/date";
 import { getSitemapData } from "@/lib/content-fetch";
 import { getNews } from "@/lib/news-source";
+import { getBusiness } from "@/lib/business-source";
+import { articleHref, companyHref, personHref } from "@/lib/business-paths";
 import { PERSONAS, PERSONAS_LAST_UPDATED } from "@/data/personas";
 import { QUESTIONS } from "@/data/corpusQuestions";
 import { guides } from "@/data/guides";
@@ -37,7 +39,7 @@ import { linkedPapers } from "@/data/research";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
-  | "research" | "pages" | "personas" | "notebook" | "encyclopedia" | "map"
+  | "research" | "pages" | "personas" | "notebook" | "business" | "encyclopedia" | "map"
   | "contributors" | "updates" | "insights" | "speakers" | "solutions" | "machines";
 
 export interface SectionMeta {
@@ -60,6 +62,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "pages", label: "Main pages", blurb: "Home, about, experience and the site's front doors." },
   { id: "personas", label: "Personas", blurb: "Audience personas backed by published research, and the persona tools." },
   { id: "notebook", label: "AI Notebook", blurb: "The AI and business notebooks: roadmap, statistics and the book shelf." },
+  { id: "business", label: "Business Notebook", blurb: "Earnings-call notes, the companies behind them and the people who speak for them." },
   { id: "encyclopedia", label: "AI Encyclopedia", blurb: "Every AI concept, one page each, by category." },
   { id: "map", label: "AI Systems Map", blurb: "Every entity in the AI value chain, one page each, by layer." },
   { id: "contributors", label: "AI Contributors", blurb: "The people building AI, in ranked order." },
@@ -114,7 +117,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/notebook/ai/agents", "AI agent statistics", "notebook"],
   ["/notebook/ai/roadmap", "AI roadmap", "notebook"],
   ["/notebook/ai/shelf", "The complete shelf: free AI books", "notebook"],
-  ["/notebook/business", "Business Notebook", "notebook"],
+  ["/notebook/business", "Business Notebook", "business", true],
   ["/notebook/ai/encyclopedia", "AI Encyclopedia", "encyclopedia", true],
   ["/notebook/ai/map", "AI Systems Map", "map", true],
   ["/notebook/ai/graph", "AI Systems Map: graph view", "map", true],
@@ -285,6 +288,30 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
   out.push(...updates.sort((a, b) => (b.note ?? "").localeCompare(a.note ?? "")));
+
+  // Business Notebook: the published content file is the one source, so a
+  // note, company or person published without a deploy is listed at once.
+  // Companies and people date from their newest source.
+  const biz = await getBusiness();
+  const newest = (dates: string[]) => toDate(dates.sort().at(-1) ?? "2026-01-01");
+  for (const a of biz.articles) {
+    out.push({
+      href: articleHref(a.slug), title: a.title, section: "business", group: "Earnings calls", note: a.eventDate,
+      xml: { lastModified: toDate(a.date), changeFrequency: "monthly", priority: 0.7 },
+    });
+  }
+  for (const c of biz.companies) {
+    out.push({
+      href: companyHref(c.slug), title: c.name, section: "business", group: "Companies",
+      xml: { lastModified: newest(c.sources.map((x) => x.date)), changeFrequency: "monthly", priority: 0.6 },
+    });
+  }
+  for (const p of biz.people) {
+    out.push({
+      href: personHref(p.slug), title: `${p.name}, ${p.role}`, section: "business", group: "People",
+      xml: { lastModified: newest(p.sources.map((x) => x.date)), changeFrequency: "monthly", priority: 0.5 },
+    });
+  }
 
   // Insights: the backend decides which exist (as sitemap.xml always has);
   // titles come from the local module, falling back to the slug

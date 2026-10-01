@@ -1,0 +1,490 @@
+{
+  "note": "Business Notebook content: earnings-call notes, companies and people. Goes live without a deploy: node scripts/cms/publish.mjs check business, then publish. Markup: ==green highlight==, [^n] citation, [[person:slug]] [[company:slug|label]] [[article:slug|label]] [[page:/path|label]] links.",
+  "articles": [
+    {
+      "slug": "costco-q4-fy2026-ai-search",
+      "title": "Costco's Q4 FY2026 earnings call: what the CFO said about AI search",
+      "seoTitle": "Costco Q4 FY2026 Earnings Call: What It Said About AI",
+      "description": "Costco's CFO said AI search traffic grew triple digits for a second quarter and converts best of any source. Every AI statement from the call, with sources.",
+      "summary": "Costco reported its fourth quarter of fiscal 2026 on September 24, 2026. On the call, CFO [[person:gary-millerchip]] said traffic from AI search grew triple digits for the second quarter in a row and converts better than any other traffic to costco.com. This note collects every AI and digital statement from the call, highlighted in green, each with its source.",
+      "date": "2026-10-01",
+      "eventDate": "2026-09-24",
+      "kind": "Earnings call",
+      "company": "costco",
+      "people": [
+        "ron-vachris",
+        "gary-millerchip"
+      ],
+      "legend": "Green marks what Costco said about AI and digital. Every line carries a numbered source.",
+      "stats": [
+        {
+          "value": "Triple digits",
+          "label": "Growth in AI search traffic, second quarter in a row",
+          "cite": 2,
+          "highlight": true
+        },
+        {
+          "value": "Highest",
+          "label": "Conversion rate of any traffic to costco.com: AI search",
+          "cite": 2,
+          "highlight": true
+        },
+        {
+          "value": "19.5%",
+          "label": "Q4 digitally enabled comparable sales growth",
+          "cite": 1,
+          "highlight": true
+        },
+        {
+          "value": "$93.9B",
+          "label": "Q4 net sales, up 11.2%",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "why-earnings-calls",
+          "title": "Why read an earnings call?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I talked about collecting data from sources most search teams never open, and earnings calls were one of them. A call is dated, on the record, and every statement has a name attached: here, Costco's CEO [[person:ron-vachris]] and CFO [[person:gary-millerchip]]. That makes it primary evidence of how AI is changing shopping, from the company that sees the numbers."
+            }
+          ]
+        },
+        {
+          "id": "in-30-seconds",
+          "title": "The call in 30 seconds",
+          "blocks": [
+            {
+              "type": "list",
+              "ordered": true,
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row, and it converts better than any other source of traffic.==[^2]",
+                "==Sales that start in AI tools also grew triple digits, from a low base. The CFO named Gemini, Anthropic and OpenAI.==[^2]",
+                "==Costco does no paid digital advertising, so the CFO sees AI as a neutral place where its value can show up on its own merits.==[^2]",
+                "==The work behind it is data: Costco's teams are cleaning up product data and product pages for the AI models.==[^2]",
+                "==Digitally enabled comparable sales rose 19.5% in the quarter==, on net sales of $93.9 billion, up 11.2%.[^1]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ai-search",
+          "title": "What did Costco say about AI search?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==Traffic to Costco's site from AI search grew at a triple-digit rate for the second consecutive quarter, and it still has the highest conversion rate of all traffic to the site.==[^2] ==The channel is young: the CFO said it is growing from a low base compared with Costco's other channels, while AI keeps gaining influence on how members search for products.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Sales that start in AI search are led by appliances and consumer electronics, the same categories that lead Costco's e-commerce overall.==[^2] ==The Costco membership itself is among the top items that AI searches lead to, which the CFO read as a sign of how members value it.==[^2]"
+            }
+          ]
+        },
+        {
+          "id": "agentic-commerce",
+          "title": "Is this agentic commerce yet?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Rupesh Parikh of Oppenheimer asked how Costco is positioned for agentic commerce.[^2] ==The CFO's answer: not agentic commerce at the moment. What Costco sees is members using AI as a tool to search for products as they plan what to buy.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Sales that originate from searches on the large language models are growing at triple-digit rates. He named the tools: Gemini, Anthropic and OpenAI.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Costco does no paid digital advertising. The CFO described AI as a neutral environment where Costco's value and quality can show up transparently, helped by a curated range of items its buyers vet personally.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==The work behind it: Costco's teams are working with the large language models on how to clean up and update its product data and product pages, so its value keeps showing up accurately.==[^2]"
+            }
+          ]
+        },
+        {
+          "id": "digital",
+          "title": "What else moved in digital?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Digitally enabled comparable sales grew 19.5% in the quarter (19.8% excluding currency) and 20.9% for the full year.==[^1]",
+                "==Total site and app traffic was up 30%.==[^2]",
+                "==Personalization, through product placements and emails, grew sales at a triple-digit rate, and 10% of costco.com orders now include a personalized item.==[^2]",
+                "==Costco is discontinuing Costco Next, its extended marketplace, and moving its most popular items and brands into the main app and website.==[^2]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "numbers",
+          "title": "What were the headline numbers?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "Net sales for the 16-week quarter were $93.9 billion, up 11.2%. For fiscal 2026 they were $297.2 billion, up 10.1%.[^1]",
+                "Comparable sales grew 9.4% in the quarter, or 6.7% excluding gas prices and currency.[^1]",
+                "Net income was $2.998 billion, $6.75 per diluted share, including a one-time benefit of $0.15 per share from tariff refunds.[^1]",
+                "Membership fees were $1.85 billion in the quarter.[^1] Costco has 84.1 million paid members, 42.3 million of them executive members.[^2]",
+                "Renewal rates were 92.3% in the US and Canada and 89.8% worldwide.[^2]",
+                "Costco operates 939 warehouses.[^1]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "my-read",
+          "title": "What should search and AI teams take from this?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This part is my read, not Costco's words."
+            },
+            {
+              "type": "list",
+              "items": [
+                "AI answers are now a sales channel that a retailer of Costco's size measures: it tracks the traffic, the conversion rate and the products sold.",
+                "The lever Costco named is product data and product pages. That is work search teams already own.",
+                "A brand with no paid digital ads can still win in AI answers, if its value is visible in its own data.",
+                "Earnings calls are free, dated and attributable. Read them for every company in your market, and log what they say about AI each quarter."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "who-was-on-the-call",
+          "title": "Who was on the call?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "[[person:ron-vachris]], President and CEO, and [[person:gary-millerchip]], Executive Vice President and CFO, spoke for [[company:costco]]. The CEO led the business review: warehouses, sales, digital and membership. The CFO presented the financial results.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "Analysts who asked questions, in order:[^2]"
+            },
+            {
+              "type": "list",
+              "ordered": true,
+              "items": [
+                "Michael Lasser, UBS",
+                "Simeon Gutman, Morgan Stanley",
+                "Chuck Grom, Gordon Haskett",
+                "Scot Ciccarelli, Truist",
+                "John Heinbockel, Guggenheim",
+                "Rupesh Parikh, Oppenheimer (asked about agentic commerce)",
+                "Corey Tarlowe, Jefferies",
+                "Kelly Bania, BMO Capital Markets",
+                "Greg Melich, Evercore ISI",
+                "Gabriella Garr for Oliver Chen, TD Cowen",
+                "Kate McShane, Goldman Sachs",
+                "Chris Horvers, JPMorgan",
+                "David Bellinger, Mizuho",
+                "Christopher Nardone, Bank of America"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Reports Fourth Quarter and Fiscal Year 2026 Operating Results",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2026-09-24",
+          "url": "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-Fourth-Quarter-and-Fiscal-Year-2026-Operating-Results/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/",
+          "note": "Call held September 24, 2026, 2:00 p.m. PT."
+        }
+      ]
+    }
+  ],
+  "companies": [
+    {
+      "slug": "costco",
+      "name": "Costco",
+      "legalName": "Costco Wholesale Corporation",
+      "seoTitle": "Costco: Company Profile, Leadership and AI Notes",
+      "description": "Costco Wholesale Corporation: 939 membership warehouses, its leadership, and what it says about AI search on earnings calls, with every fact sourced.",
+      "summary": "Costco Wholesale Corporation runs membership warehouses: 939 of them as of September 2026, with e-commerce sites in nine countries.[^1] It began operations in 1983 in Seattle, and its executive offices are in Issaquah, Washington.[^5] It trades on Nasdaq as COST.[^1]",
+      "website": "https://www.costco.com",
+      "sameAs": [
+        "https://www.costco.com",
+        "https://investor.costco.com",
+        "https://en.wikipedia.org/wiki/Costco"
+      ],
+      "facts": [
+        {
+          "label": "Legal name",
+          "value": "Costco Wholesale Corporation",
+          "cite": 1
+        },
+        {
+          "label": "Ticker",
+          "value": "Nasdaq: COST",
+          "cite": 1
+        },
+        {
+          "label": "Headquarters",
+          "value": "Issaquah, Washington",
+          "cite": 5
+        },
+        {
+          "label": "Began operations",
+          "value": "1983, in Seattle, Washington",
+          "cite": 5
+        },
+        {
+          "label": "Warehouses",
+          "value": "939, as of September 24, 2026",
+          "cite": 1
+        },
+        {
+          "label": "Fiscal 2026 net sales",
+          "value": "$297.2 billion, up 10.1%",
+          "cite": 1
+        },
+        {
+          "label": "Paid members",
+          "value": "84.1 million, with 150.4 million cardholders",
+          "cite": 2
+        },
+        {
+          "label": "Employees",
+          "value": "About 355,000, per the CEO on the Q4 FY2026 call",
+          "cite": 2
+        },
+        {
+          "label": "President and CEO",
+          "value": "[[person:ron-vachris]], since January 1, 2024",
+          "cite": 3
+        },
+        {
+          "label": "Executive Vice President and CFO",
+          "value": "[[person:gary-millerchip]], since March 15, 2024",
+          "cite": 4
+        }
+      ],
+      "sections": [
+        {
+          "id": "ai",
+          "title": "What has Costco said about AI?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row and has the highest conversion rate of any traffic source.==[^2]",
+                "==Sales that start in AI tools grew triple digits from a low base. The CFO named Gemini, Anthropic and OpenAI.==[^2]",
+                "==Costco does no paid digital advertising, and the CFO sees AI as a neutral environment where its value can show up transparently.==[^2]",
+                "==Its teams are cleaning up product data and product pages for the large language models.==[^2]",
+                "==Personalization sales grew at a triple-digit rate, and 10% of costco.com orders include a personalized item.==[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        },
+        {
+          "id": "where-it-operates",
+          "title": "Where does Costco operate?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Of the 939 warehouses: 647 in the United States and Puerto Rico, 115 in Canada, 43 in Mexico, 37 in Japan, 29 in the United Kingdom, 20 in Korea, 15 in Australia, 14 in Taiwan, 7 in China, 5 in Spain, 3 in France, 2 in Sweden, and 1 each in Iceland and New Zealand.[^1] Costco also runs e-commerce sites in the US, Canada, the UK, Mexico, Korea, Taiwan, Japan, Australia and China.[^1]"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Reports Fourth Quarter and Fiscal Year 2026 Operating Results",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2026-09-24",
+          "url": "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-Fourth-Quarter-and-Fiscal-Year-2026-Operating-Results/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/",
+          "note": "Call held September 24, 2026."
+        },
+        {
+          "id": 3,
+          "title": "Costco Wholesale Corporation Announces Craig Jelinek Will Step Down as CEO, Ron Vachris Elected as New CEO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2023-10-18",
+          "url": "https://investor.costco.com/news/news-details/2023/Costco-Wholesale-Corporation-Announces-Craig-Jelinek-Will-Step-Down-as-CEO-Ron-Vachris-Elected-as-New-CEO-And-Quarterly-Cash-Dividend-Declared/default.aspx"
+        },
+        {
+          "id": 4,
+          "title": "Costco Wholesale Corporation Announces Richard Galanti Will Step Down as CFO, Names Gary Millerchip New CFO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2024-02-06",
+          "url": "https://investor.costco.com/news/news-details/2024/Costco-Wholesale-Corporation-Announces-Richard-Galanti-Will-Step-Down-as-CFO-Names-Gary-Millerchip-New-CFO/default.aspx"
+        },
+        {
+          "id": 5,
+          "title": "Costco Wholesale Corporation Form 10-K for the fiscal year ended August 31, 2025",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2025-10-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/909832/000090983225000101/cost-20250831.htm"
+        }
+      ]
+    }
+  ],
+  "people": [
+    {
+      "slug": "ron-vachris",
+      "name": "Ron Vachris",
+      "role": "President and Chief Executive Officer, Costco",
+      "company": "costco",
+      "seoTitle": "Ron Vachris: Costco President and CEO",
+      "description": "Ron Vachris has led Costco as President and CEO since January 2024, after more than forty years at the company. His role and what he said on earnings calls.",
+      "summary": "Ron Vachris has been President and CEO of [[company:costco]] since January 1, 2024. He has more than forty years of service at Costco, starting as a forklift driver, and was President and Chief Operating Officer from February 2022.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "President and Chief Executive Officer, [[company:costco]]",
+          "cite": 1
+        },
+        {
+          "label": "CEO since",
+          "value": "January 1, 2024, succeeding Craig Jelinek",
+          "cite": 1
+        },
+        {
+          "label": "Previous role",
+          "value": "President and Chief Operating Officer, from February 2022",
+          "cite": 1
+        },
+        {
+          "label": "At Costco",
+          "value": "More than forty years, starting as a forklift driver",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "q4-fy2026-call",
+          "title": "On the Q4 FY2026 earnings call",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "Led the business review in Costco's prepared remarks on September 24, 2026: warehouses, sales, gas, pharmacy, travel, digital, membership and tariff refunds.[^2]",
+                "Reported 28 warehouse openings in fiscal 2026, three of them relocations, for 939 in total, and 33 planned for fiscal 2027, five of them relocations.[^2]",
+                "Thanked Costco's 355,000 employees worldwide.[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Announces Craig Jelinek Will Step Down as CEO, Ron Vachris Elected as New CEO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2023-10-18",
+          "url": "https://investor.costco.com/news/news-details/2023/Costco-Wholesale-Corporation-Announces-Craig-Jelinek-Will-Step-Down-as-CEO-Ron-Vachris-Elected-as-New-CEO-And-Quarterly-Cash-Dividend-Declared/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/"
+        }
+      ]
+    },
+    {
+      "slug": "gary-millerchip",
+      "name": "Gary Millerchip",
+      "role": "Executive Vice President and Chief Financial Officer, Costco",
+      "company": "costco",
+      "seoTitle": "Gary Millerchip: Costco EVP and CFO",
+      "description": "Gary Millerchip is Costco's CFO, formerly CFO of Kroger. What he said about AI search, conversion and product data on Costco's Q4 FY2026 earnings call.",
+      "summary": "Gary Millerchip has been Executive Vice President and CFO of [[company:costco]] since March 15, 2024, succeeding Richard Galanti. Before Costco he was Senior Vice President and CFO of The Kroger Co., from April 2019 to February 2024.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Executive Vice President and Chief Financial Officer, [[company:costco]]",
+          "cite": 1
+        },
+        {
+          "label": "Executive Vice President since",
+          "value": "February 29, 2024",
+          "cite": 1
+        },
+        {
+          "label": "CFO since",
+          "value": "March 15, 2024, succeeding Richard Galanti",
+          "cite": 1
+        },
+        {
+          "label": "Before Costco",
+          "value": "Senior Vice President and CFO, The Kroger Co., April 2019 to February 2024",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "ai-q4-fy2026",
+          "title": "What did he say about AI on the Q4 FY2026 call?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row and has the highest conversion rate of all site traffic.==[^2]",
+                "==Sales that originate from searches on the large language models are growing at triple-digit rates, from a low base. He named Gemini, Anthropic and OpenAI.==[^2]",
+                "==It is AI search more than agentic commerce for now: members use AI as a tool to search for products.==[^2]",
+                "==Costco does no paid digital advertising, so AI is a neutral environment where its value and quality can show up transparently.==[^2]",
+                "==Costco's teams are working with the large language models to clean up and update product data and product pages.==[^2]",
+                "==Personalization grew sales at a triple-digit rate, and 10% of costco.com orders include a personalized item.==[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Announces Richard Galanti Will Step Down as CFO, Names Gary Millerchip New CFO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2024-02-06",
+          "url": "https://investor.costco.com/news/news-details/2024/Costco-Wholesale-Corporation-Announces-Richard-Galanti-Will-Step-Down-as-CFO-Names-Gary-Millerchip-New-CFO/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/"
+        }
+      ]
+    }
+  ]
+}

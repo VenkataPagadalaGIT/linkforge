@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 // Publish content without a deploy (docs/NO_DEPLOY_PUBLISHING.md).
 //
-//   node scripts/cms/publish.mjs check news|seo              validate the file
+//   node scripts/cms/publish.mjs check news|seo|business     validate the file
 //   node scripts/cms/publish.mjs publish news|seo            check, write to the `content` branch, refresh the site, verify live
 //   node scripts/cms/publish.mjs publish news|seo --dry-run  show what publish would do, change nothing
 //   node scripts/cms/publish.mjs verify news|seo             check that the live site shows what the file says
 //   node scripts/cms/publish.mjs init                        create the `content` branch (once)
 //
 // news is content/ai-updates.json (the articles); seo is
-// content/seo-overrides.json (page titles, descriptions, canonicals, robots).
+// content/seo-overrides.json (page titles, descriptions, canonicals, robots);
+// business is content/business.json (Business Notebook notes, companies, people).
 //
 // publish and init write to GitHub: Claude runs them only on the owner's
 // explicit "publish" / "push". Uses the owner's `gh` login for the write,
@@ -20,6 +21,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateNews } from "../../src/lib/news-validate.ts";
 import { validateSeo } from "../../src/lib/seo-validate.ts";
+import { validateBusiness } from "../../src/lib/business-validate.ts";
 import { signContent } from "../../src/lib/content-signature.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -54,6 +56,12 @@ function seoFields(html) {
     robots: meta("robots"),
   };
 }
+
+/** "article:slug" and friends to the page they live on. */
+const businessHref = (key) => {
+  const [type, slug] = key.split(":");
+  return type === "company" ? `/notebook/business/companies/${slug}` : type === "person" ? `/notebook/business/people/${slug}` : `/notebook/business/${slug}`;
+};
 
 const notFoundPage = (p) => p.status !== 200 || p.html.includes("<title>Not found");
 
@@ -101,6 +109,23 @@ const KINDS = {
       const want = { ...data.pages[path] };
       if (want.canonical) want.canonical = new URL(want.canonical, SITE).pathname;
       return Object.entries(want).every(([f, v]) => live[f] === v);
+    },
+  },
+  business: {
+    file: "content/business.json",
+    label: "Business Notebook",
+    validate: (data, published) => validateBusiness(data, published),
+    refreshBody: (check) => ({ tags: ["business"], paths: [...check.changed, ...check.removed].map(businessHref) }),
+    /** New pages cannot be live before they are published: nothing to check first. */
+    beforePublish: async () => [],
+    /** Changed items show their title or name; removed ones answer 404. */
+    isLive: async (data, key, removed) => {
+      const p = await fetchPage(businessHref(key));
+      if (removed) return p.status === 404 || notFoundPage(p);
+      const [type, slug] = key.split(":");
+      const list = { article: data.articles, company: data.companies, person: data.people }[type];
+      const item = list.find((x) => x.slug === slug);
+      return p.status === 200 && p.html.includes(item.title ?? item.name);
     },
   },
 };
@@ -186,12 +211,14 @@ async function main() {
   }
   const kind = KINDS[kindName];
   if (!kind || !["check", "publish", "verify"].includes(cmd)) {
-    console.log("Usage: node scripts/cms/publish.mjs check|publish|verify news|seo [--dry-run], or init [--dry-run]");
+    console.log("Usage: node scripts/cms/publish.mjs check|publish|verify news|seo|business [--dry-run], or init [--dry-run]");
     process.exit(2);
   }
   const data = localCopy(kind);
   if (cmd === "verify") {
-    const ids = kindName === "seo" ? Object.keys(data.pages) : data.map((u) => u.slug);
+    const ids = kindName === "seo" ? Object.keys(data.pages)
+      : kindName === "business" ? [...data.articles.map((x) => `article:${x.slug}`), ...data.companies.map((x) => `company:${x.slug}`), ...data.people.map((x) => `person:${x.slug}`)]
+      : data.map((u) => u.slug);
     const stuck = [];
     for (const id of ids) if (!(await kind.isLive(data, id, false))) stuck.push(id);
     console.log(stuck.length ? `Not live on ${SITE}: ${stuck.join(", ")}` : `Live on ${SITE}: all ${ids.length} entries show what the file says.`);
