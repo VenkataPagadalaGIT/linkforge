@@ -11,7 +11,7 @@ import { hrefFor, type NameMap } from "@/lib/business-paths";
  * full-strength foreground, so contrast holds in both themes.
  */
 export const HIGHLIGHT_CLASS =
-  "bg-emerald-500/15 text-foreground rounded-sm px-0.5 ring-1 ring-emerald-700/30 dark:ring-emerald-300/30 [box-decoration-break:clone]";
+  "bg-emerald-500/15 dark:bg-emerald-400/25 text-foreground rounded-sm px-0.5 ring-1 ring-emerald-700/40 dark:ring-emerald-300/40 [box-decoration-break:clone]";
 
 export default function RichText({ text, names }: { text: string; names: NameMap }) {
   const segments = parseInline(text);
