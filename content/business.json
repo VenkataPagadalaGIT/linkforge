@@ -50,6 +50,14 @@
             {
               "type": "p",
               "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I ([[page:/about|Venkata Pagadala]]) talked about collecting data from sources most search teams never open, and earnings calls were one of them. A call is dated, on the record, and every statement has a name attached: here, Costco's CEO [[person:ron-vachris]] and CFO [[person:gary-millerchip]]. That makes it primary evidence of how AI is changing shopping, from the company that sees the numbers."
+            },
+            {
+              "type": "list",
+              "items": [
+                "The slides: [[url:https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=22|Industrial context graphs]] on Speaker Deck, opening at slide 22.",
+                "The write-up: [[url:https://previsible.com/brightonseo/demand-research-beyond-keywords/|User First, Algorithm Second: Researching Demand Beyond Search Volume]] on Previsible.",
+                "The talk on this site: [[page:/research-and-talks#brightonseo-san-diego-2026|Research and Talks]]."
+              ]
             }
           ]
         },

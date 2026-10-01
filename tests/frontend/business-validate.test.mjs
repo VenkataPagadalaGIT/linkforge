@@ -45,6 +45,8 @@ test("B03 references must resolve: citations, entity links, companies and people
     "article company not in the file": (f) => { f.articles[0].company = "walmart"; return f; },
     "article person not in the file": (f) => { f.articles[0].people.push("nobody"); return f; },
     "unclosed highlight": (f) => { f.articles[0].summary += " ==never closed"; return f; },
+    "outside link not https": (f) => { f.articles[0].summary += " [[url:http://example.com|x]]"; return f; },
+    "outside link without a label": (f) => { f.articles[0].summary += " [[url:https://example.com]]"; return f; },
   };
   for (const [name, mutate] of Object.entries(cases)) {
     const r = validateBusiness(mutate(FILE()), undefined, false);

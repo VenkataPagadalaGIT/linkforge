@@ -34,7 +34,14 @@ export default function RichText({ text, names }: { text: string; names: NameMap
         </sup>
       );
     }
-    const label = s.label ?? (s.target === "page" ? s.ref : names[s.target][s.ref]) ?? s.ref;
+    const label = s.label ?? (s.target === "page" || s.target === "url" ? s.ref : names[s.target][s.ref]) ?? s.ref;
+    if (s.target === "url") {
+      return (
+        <a key={i} href={s.ref} target="_blank" rel="noopener noreferrer" className="underline decoration-foreground/40 underline-offset-2 hover:decoration-foreground">
+          {label}
+        </a>
+      );
+    }
     return (
       <Link key={i} to={hrefFor(s.target, s.ref)} className="underline decoration-foreground/40 underline-offset-2 hover:decoration-foreground">
         {label}

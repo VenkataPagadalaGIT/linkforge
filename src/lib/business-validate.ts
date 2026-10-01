@@ -12,7 +12,8 @@
  *   [[person:slug]]              link to a person, shown as their name
  *   [[company:slug|label]]       link to a company, with custom text
  *   [[article:slug|label]]       link to an article
- *   [[page:/a/site/path|label]]  link to another page of this site
+ *   [[page:/a/site/path|label]]  link to another page of this site, optionally with a #section
+ *   [[url:https://...|label]]    link to another site (https only), opens in a new tab
  */
 
 export type Source = { id: number; title: string; publisher: string; date: string; url: string; note?: string };
@@ -42,12 +43,15 @@ export type BusinessCheck = { ok: boolean; issues: BusinessIssue[]; changed: str
 export type Segment =
   | { kind: "text"; text: string; highlight: boolean }
   | { kind: "cite"; id: number; highlight: boolean }
-  | { kind: "link"; target: "person" | "company" | "article" | "page"; ref: string; label?: string; highlight: boolean };
+  | { kind: "link"; target: "person" | "company" | "article" | "page" | "url"; ref: string; label?: string; highlight: boolean };
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const PAGE = /^\/(?:[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*)?$/;
-const TOKEN = /\[\^(\d+)\]|\[\[(person|company|article|page):([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+const TOKEN = /\[\^(\d+)\]|\[\[(person|company|article|page|url):([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+/** A page link may point at a section: /research-and-talks#brightonseo-san-diego-2026. */
+const PAGE_REF = /^\/(?:[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*)?(?:#[A-Za-z0-9_-]+)?$/;
+const URL_REF = /^https:\/\/[^\s<>"]+$/;
 const EM_DASH = "\u2014";
 /** Article slugs that would collide with the notebook's own folders. */
 const RESERVED = new Set(["companies", "people"]);
@@ -226,7 +230,8 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
         for (const s of segs) {
           if (s.kind === "cite" && !sourceIds.has(s.id)) errs.push(`${at}: cites [^${s.id}], which is not in its sources`);
           if (s.kind === "link") {
-            const ok = s.target === "page" ? PAGE.test(s.ref) : slugs[s.target === "article" ? "article" : s.target].has(s.ref);
+            const ok = s.target === "page" ? PAGE_REF.test(s.ref) : s.target === "url" ? URL_REF.test(s.ref) && !!s.label
+              : slugs[s.target].has(s.ref);
             if (!ok) errs.push(`${at}: links to ${s.target} "${s.ref}", which does not exist`);
           }
         }
