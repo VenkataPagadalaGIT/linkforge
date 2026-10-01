@@ -240,14 +240,17 @@ async function main() {
   console.log(`${kind.label} check:`);
   report(check);
   if (!check.ok) process.exit(1);
-  if (!check.changed.length && !check.removed.length) return console.log("Nothing changed; nothing to publish.");
+  // A file not yet on the content branch always publishes: the site is serving
+  // the copy built into the deploy, which can differ from the last commit.
+  if (published && !check.changed.length && !check.removed.length) return console.log("Nothing changed; nothing to publish.");
   const problems = await kind.beforePublish(data, check);
   for (const p of problems) console.log(`  BLOCK  ${p}`);
   if (problems.length) {
     console.log("  live checks FAILED: nothing will be published");
     process.exit(1);
   }
-  const message = `Publish ${kind.label.toLowerCase()}: ${[...check.changed, ...check.removed.map((s) => `remove ${s}`)].join(", ")}`;
+  const what = [...check.changed, ...check.removed.map((s) => `remove ${s}`)].join(", ") || `first copy of ${kind.file}`;
+  const message = `Publish ${kind.label.toLowerCase()}: ${what}`;
   if (dryRun) return console.log(`Dry run: would commit "${message}" to ${BRANCH}, refresh ${SITE}, and verify live.`);
   const secret = refreshSecret();
   if (!secret) {
