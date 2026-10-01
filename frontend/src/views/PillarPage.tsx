@@ -1,13 +1,16 @@
 "use client";
 import { useParams, Link } from "@/lib/router-shim";
-import { getPillarBySlug, getBlogsByPillar } from "@/data/insights";
+import { getPillarBySlug, getBlogsByPillar, type PillarPage as PillarPage_ } from "@/data/insights";
 import ScrollReveal from "@/components/ScrollReveal";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import SEO from "@/components/SEO";
 
-const PillarPage = () => {
+/** Accepts the pillar the server already resolved, so a pillar authored in
+ *  the CMS renders instead of hitting the static-only lookup and showing
+ *  its own 404 under correct SEO metadata. */
+const PillarPage = ({ initialPillar }: { initialPillar?: PillarPage_ | null } = {}) => {
   const { slug } = useParams<{ slug: string }>();
-  const pillar = getPillarBySlug(slug || "");
+  const pillar = getPillarBySlug(slug || "") ?? initialPillar ?? undefined;
   const relatedPosts = getBlogsByPillar(slug || "");
 
   if (!pillar) {

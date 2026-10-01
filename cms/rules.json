@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "note": "The owner's SEO rules. The CMS page, the page SEO checks (src/lib/seo-validate.ts, run by scripts/cms/publish.mjs and by the site) and every future check read this file; do not copy the numbers anywhere else. 'block' stops an edit; 'warn' flags it and lets the owner decide.",
+  "site": "https://venkatapagadala.com",
+  "fields": {
+    "title": {"label": "Title", "min": 1, "max": 60, "severity": "warn", "emptySeverity": "block"},
+    "description": {"label": "Meta description", "min": 140, "max": 160, "severity": "warn"},
+    "h1": {"label": "H1", "exactlyOnePerPage": true, "severity": "warn"},
+    "canonical": {"label": "Canonical", "onSiteOnly": true, "severity": "block"},
+    "robots": {"label": "Robots", "allowed": ["index, follow", "noindex, follow", "index, nofollow", "noindex, nofollow"], "severity": "block"}
+  },
+  "forbidden": [
+    {"text": "\u2014", "message": "Remove the em dash. Your rule: no em dashes."},
+    {"text": "<", "message": "Remove < and > characters."},
+    {"text": ">", "message": "Remove < and > characters."}
+  ],
+  "titleSuffixes": [" · Venkata Pagadala", " · AI Encyclopedia", " | Teardowns"],
+  "ownerOnly": ["title template", "default robots", "robots.txt", "sitemap rules"]
+}

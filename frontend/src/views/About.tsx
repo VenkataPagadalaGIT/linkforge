@@ -1,10 +1,12 @@
 import ScrollReveal from "@/components/ScrollReveal";
+import { linkedPapers } from "@/data/research";
 import SEO from "@/components/SEO";
 import PageSidebar from "@/components/PageSidebar";
 const venkatPhoto = "/venkata-pagadala.jpeg";
 
 const stats = [
   { value: "10+", label: "Years Experience" },
+  { value: "160B+", label: "Digital Assets Handled" },
   { value: "50M+", label: "Pages Managed" },
   { value: "25M+", label: "Pages Audited Bi-Weekly" },
   { value: "5.3M", label: "Keywords Classified" },
@@ -25,7 +27,7 @@ const experiences = [
   {
     company: "AT&T",
     role: "Lead Technical Product Manager, AI & Automation",
-    period: "March 2025 — Present",
+    period: "March 2025 to Present",
     location: "Atlanta, Georgia",
     achievements: [
       "Built AI-powered metadata automation with knowledge graphs and content guardrails (legal, brand voice), scaling to 100K+ pages with multi-model LLM testing",
@@ -41,7 +43,7 @@ const experiences = [
   {
     company: "CoStar Group (Apartments.com)",
     role: "SEO Product Lead (Level 3)",
-    period: "Oct 2022 — March 2025",
+    period: "Oct 2022 to March 2025",
     location: "Atlanta, Georgia",
     achievements: [
       "Owned technical SEO across 5 properties (40M+ pages); shipped AI-powered content translation (GPT-4) across 1M+ pages",
@@ -51,7 +53,7 @@ const experiences = [
   {
     company: "American Addiction Centers",
     role: "Senior SEO Software Developer",
-    period: "Apr 2019 — Oct 2022",
+    period: "Apr 2019 to Oct 2022",
     location: "San Diego, California",
     achievements: [
       "Led PHP to React.js migration; implemented JSON-LD structured data across 1M+ page healthcare portfolio",
@@ -60,14 +62,14 @@ const experiences = [
   {
     company: "Dyad Ventures",
     role: "Search Marketing Strategist",
-    period: "Jan 2018 — Feb 2019",
+    period: "Jan 2018 to Feb 2019",
     location: "",
     achievements: [],
   },
   {
     company: "Sprout for Business",
     role: "SEO Manager",
-    period: "Apr 2016 — Dec 2017",
+    period: "Apr 2016 to Dec 2017",
     location: "",
     achievements: [],
   },
@@ -76,6 +78,7 @@ const tocSections = [
   { label: "About", id: "about" },
   { label: "Stats", id: "stats" },
   { label: "Skills", id: "skills" },
+  { label: "Research", id: "research" },
   { label: "Experience", id: "experience" },
   { label: "Education", id: "education" },
 ];
@@ -90,17 +93,17 @@ const About = () => {
       />
       <div className="max-w-6xl mx-auto">
         <div className="lg:flex lg:gap-10">
-          <PageSidebar sections={tocSections} shareTitle="About Venkata Pagadala — AI Product Owner & SEO Leader" />
+          <PageSidebar sections={tocSections} shareTitle="About Venkata Pagadala · AI Product Owner & SEO Leader" />
 
           <div className="flex-1 min-w-0">
             {/* ── About Section ── */}
             <div id="about" className="scroll-mt-28">
               <ScrollReveal>
                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
-                  {"{01}"} — About
+                  {"{01}"} · About
                 </p>
                 <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-12">
-                  Venkata Pagadala — AI Product Owner & SEO Lead
+                  Venkata Pagadala · AI Product Owner & SEO Lead
                 </h1>
               </ScrollReveal>
 
@@ -113,10 +116,10 @@ const About = () => {
                     AI integrations connecting LLMs to live SEO data for automated keyword research and content optimization. A RAG-powered internal linking engine using vector embeddings and entity recognition. Automated pipelines that run technical SEO audits at scale. A market share content tool with geo-segmentation that generates 3-year roadmaps.
                   </p>
                   <p className="font-mono text-sm leading-relaxed text-muted-foreground mb-6">
-                    10 years in Technical SEO — the fundamentals that power how Google ranks content today. Site migrations, crawl budget optimization, structured data at enterprise scale, Core Web Vitals, international SEO. Tools: Botify (50M+ crawls), Screaming Frog, Ahrefs, SEMrush, BigQuery, Python.
+                    10 years in Technical SEO, the fundamentals that power how Google ranks content today. Site migrations, crawl budget optimization, structured data at enterprise scale, Core Web Vitals, international SEO. Tools: Botify (50M+ crawls), Screaming Frog, Ahrefs, SEMrush, BigQuery, Python.
                   </p>
                   <p className="font-mono text-sm leading-relaxed text-muted-foreground">
-                    Previously scaled SEO for CoStar Group (Apartments.com, ApartmentFinders.com, ForRent.com) and built technical SEO infrastructure across multiple verticals. Published researcher — "Google, SEO and Helpful Content: How AI Can Be Helpful for E-Commerce Websites" in the Journal of Digital & Social Media Marketing, December 2024.
+                    Previously scaled SEO for CoStar Group (Apartments.com, ApartmentFinders.com, ForRent.com) and built technical SEO infrastructure across multiple verticals. Published researcher of "Google, SEO and Helpful Content: How AI Can Be Helpful for E-Commerce Websites" in the Journal of Digital & Social Media Marketing, December 2024.
                   </p>
                 </ScrollReveal>
 
@@ -136,7 +139,7 @@ const About = () => {
 
             {/* Stats */}
             <div id="stats" className="scroll-mt-28 mb-20">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                 {stats.map((stat, i) => (
                   <ScrollReveal key={stat.label} delay={i * 100}>
                     <div className="border border-border p-6 text-center border-glow-hover">
@@ -170,11 +173,50 @@ const About = () => {
               </div>
             </div>
 
+            {/* ── Published Research ── */}
+            <div id="research" className="scroll-mt-28 mb-20">
+              <ScrollReveal>
+                <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
+                  {"{02}"} · Published Research
+                </p>
+                <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+                  Peer-reviewed work on how AI is reshaping search, published in academic
+                  venues and open to read in full.
+                </p>
+              </ScrollReveal>
+              <div className="space-y-3">
+                {linkedPapers.map((paper, i) => (
+                  <ScrollReveal key={paper.url} delay={i * 60}>
+                    <a
+                      href={paper.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block border border-border p-5 hover:bg-secondary/20 border-glow-hover transition-all"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="font-display text-base font-bold text-foreground mb-2 leading-snug">
+                            {paper.title}
+                          </h3>
+                          <p className="font-mono text-[11px] text-muted-foreground">
+                            {paper.venue} · {paper.year}
+                          </p>
+                        </div>
+                        <span className="font-mono text-[10px] tracking-widest uppercase text-foreground/50 flex-shrink-0">
+                          {paper.host}
+                        </span>
+                      </div>
+                    </a>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+
             {/* ── Experience Section ── */}
             <div id="experience" className="scroll-mt-28 mb-20">
               <ScrollReveal>
                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
-                  {"{02}"} — Experience
+                  {"{03}"} · Experience
                 </p>
                 <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-16">
                   Career Timeline

@@ -1,0 +1,4 @@
+{
+  "note": "Page SEO fields that go live without a deploy. See docs/NO_DEPLOY_PUBLISHING.md. Check with: node scripts/cms/publish.mjs check seo",
+  "pages": {}
+}

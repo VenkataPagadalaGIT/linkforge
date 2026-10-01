@@ -304,7 +304,7 @@ export default function PostEditorClient({ slug }: { slug: string }) {
             <div className="space-y-5" data-testid="cms-seo-tab">
               <div className="border border-foreground/10 p-5">
                 <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-3">Search engines</div>
-                <Field label="Meta Title" hint={`${(form.seo.metaTitle || form.title || "").length}/60 — what shows in Google`}>
+                <Field label="Meta Title" hint={`${(form.seo.metaTitle || form.title || "").length}/60, what shows in Google`}>
                   <input value={form.seo.metaTitle || ""} onChange={(e) => updateSeo("metaTitle", e.target.value)} placeholder={form.title || "Defaults to post title"} className="w-full bg-background border border-foreground/15 px-3 py-2 text-sm" data-testid="cms-seo-metaTitle" />
                 </Field>
                 <Field label="Meta Description" hint={`${(form.seo.metaDescription || form.excerpt || "").length}/160 — search snippet`}>

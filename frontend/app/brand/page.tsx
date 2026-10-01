@@ -181,7 +181,7 @@ export default function BrandPage() {
       </Section>
 
       <Section
-        title="Brand accent — emerald"
+        title="Brand accent: emerald"
         description='The conference / notebook signal color. Used on "PUBLISHED", "FIELD NOTES", "LIVE NOTES" badges, the take-notes pill, and emphasized inline keywords. In light mode the original emerald-300 / 400 tints are auto-darkened to emerald-700 family for AAA contrast.'
       >
         {BRAND.map((s) => (
@@ -200,7 +200,7 @@ export default function BrandPage() {
 
       <Section
         title="UI component samples"
-        description="Real components rendered in the active theme — quick visual sanity check."
+        description="Real components rendered in the active theme: a quick visual sanity check."
       >
         <div className="border border-border bg-card p-4 flex flex-col gap-3 col-span-2">
           <div className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground mb-2">

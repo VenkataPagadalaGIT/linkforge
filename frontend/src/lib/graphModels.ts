@@ -311,7 +311,7 @@ export function buildVectorSpace(): GraphView {
     id: "vector-index",
     title: "Vector / Embedding Index",
     caption:
-      "No classes, no typed edges — just position. Similar things sit close; retrieval finds nearest neighbors by distance. Fast and fuzzy: it surfaces relevant content but can’t tell you *why* or guarantee a fact.",
+      "No typed relationships — the dashed lines are similarity scores (cosine distance), not semantic edges. Meaning lives in the positions: things close to the query are retrieved, things far away aren’t. Fast and fuzzy; can’t tell you why two items match or guarantee a fact.",
     legend: [
       { kind: "query", label: "Query embedding" },
       { kind: "product", label: "Near neighbor" },
@@ -341,3 +341,77 @@ export const VIEW_BUILDERS: Record<string, () => GraphView> = {
   "context-graph": buildContextGraph,
   "vector-index": buildVectorSpace,
 };
+
+/* ------------------------------------------------------------------ *
+ * 3D data — the knowledge graph laid out in space for the interactive
+ * <Graph3D> centerpiece (react-three-fiber). Deterministic positions.
+ * ------------------------------------------------------------------ */
+export interface GNode3D {
+  id: string;
+  label: string;
+  kind: string;
+  pos: [number, number, number];
+  size?: number;
+}
+export interface GEdge3D {
+  source: string;
+  target: string;
+  label?: string;
+  dashed?: boolean;
+}
+
+export function buildKnowledgeGraph3D(): { nodes: GNode3D[]; edges: GEdge3D[] } {
+  const nodes: GNode3D[] = [
+    { id: "road", label: "Road Running", kind: "concept", pos: [0, 2.3, 0], size: 0.42 },
+    { id: "pegasus", label: "Nike Pegasus 41", kind: "product", pos: [-1.9, 0.7, 0.6], size: 0.55 },
+    { id: "clifton", label: "Hoka Clifton 9", kind: "product", pos: [1.9, 0.5, -0.5], size: 0.55 },
+    { id: "nike", label: "Nike", kind: "brand", pos: [-3.1, -0.5, -0.9], size: 0.45 },
+    { id: "hoka", label: "Hoka", kind: "brand", pos: [3.1, -0.7, 0.7], size: 0.45 },
+    { id: "modCush", label: "Moderate Cushioning", kind: "attr", pos: [-2.5, -1.9, 1.1], size: 0.36 },
+    { id: "maxCush", label: "Max Cushioning", kind: "attr", pos: [2.5, -1.7, -1.1], size: 0.36 },
+    { id: "wikidata", label: "Wikidata: Nike", kind: "external", pos: [-3.8, -2.1, -1.7], size: 0.34 },
+  ];
+  const edges: GEdge3D[] = [
+    { source: "pegasus", target: "nike", label: "madeBy" },
+    { source: "clifton", target: "hoka", label: "madeBy" },
+    { source: "pegasus", target: "road", label: "suitedFor" },
+    { source: "clifton", target: "road", label: "suitedFor" },
+    { source: "pegasus", target: "modCush", label: "has" },
+    { source: "clifton", target: "maxCush", label: "has" },
+    { source: "nike", target: "wikidata", label: "sameAs", dashed: true },
+  ];
+  return { nodes, edges };
+}
+
+/**
+ * viewTo3D — project any 2D GraphView into 3D coordinates so the interactive
+ * <Graph3D> can render ANY of the six figures. Deterministic: x/y come from the
+ * curated 2D layout (centered + scaled), z is a stable per-node spread so the
+ * graph reads as dimensional rather than flat. No randomness → SSR-safe.
+ */
+export function viewTo3D(view: GraphView): {
+  nodes: { id: string; label: string; kind: string; pos: [number, number, number]; size: number }[];
+  edges: { source: string; target: string; label?: string; kind?: string; dashed?: boolean }[];
+} {
+  const { width: W, height: H } = view;
+  const zFor = (id: string) => {
+    let s = 0;
+    for (let i = 0; i < id.length; i++) s = (s * 31 + id.charCodeAt(i)) >>> 0;
+    return ((s % 1000) / 1000 - 0.5) * 3.4;
+  };
+  const nodes = view.nodes.map((n) => ({
+    id: n.id,
+    label: n.label,
+    kind: n.kind,
+    pos: [(n.x / W - 0.5) * 8.4, (0.5 - n.y / H) * 5.2, zFor(n.id)] as [number, number, number],
+    size: 0.26 * (n.size ?? 1) + 0.16,
+  }));
+  const edges = view.edges.map((e) => ({
+    source: e.source,
+    target: e.target,
+    label: e.label,
+    kind: e.kind,
+    dashed: e.dashed,
+  }));
+  return { nodes, edges };
+}

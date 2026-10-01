@@ -5,6 +5,32 @@ import { Link, useNavigate } from "@/lib/router-shim";
 import { ArrowRight, Network, Brain, List, ExternalLink } from "lucide-react";
 import { services } from "@/components/ServicesGrid";
 import ContextGraphCanvas from "@/components/ContextGraphCanvas";
+
+/**
+ * A poster still that yields to its live canvas on mount. The canvases here
+ * are transparent 2D, so layering does not work; instead the still is
+ * removed once the effect runs. On script-blocked corporate networks the
+ * effect never runs and the reader sees the settled graph instead of an
+ * empty box.
+ */
+function PosterUntilLive({ children }: { children: React.ReactNode }) {
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    setLive(true);
+  }, []);
+  return (
+    <>
+      {!live && (
+        <img
+          src="/posters/solutions.jpg"
+          alt="The capability graph: six service pillars with their offerings"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {children}
+    </>
+  );
+}
 import { useCanvasThemeColors } from "@/lib/canvas-theme";
 
 type ViewMode = "graph" | "neural" | "structured";
@@ -179,7 +205,7 @@ const NeuralSolutionsCanvas = () => {
 
     const draw = () => {
 
-      // Theme-aware alpha — light bg needs ~1.7× the alpha to match the
+      // Theme-aware alpha: light bg needs ~1.7× the alpha to match the
       // perceived weight that the dark-mode design was tuned to.
       const aMul = themeColorsRef.current.isDark ? 1 : 1.7;
       const setA = (a: number) => { ctx.globalAlpha = Math.min(1, a * aMul); };
@@ -519,7 +545,7 @@ const NeuralSolutionsCanvas = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Info panel when hovering a domain — CLICKABLE */}
+      {/* Info panel when hovering a domain, CLICKABLE */}
       <AnimatePresence mode="wait">
         {activeService && (
           <motion.div
@@ -579,7 +605,7 @@ const NeuralSolutionsCanvas = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Legend — bottom left, below canvas content */}
+      {/* Legend: bottom left, below canvas content */}
       <div className="absolute bottom-4 left-4 z-40 pointer-events-none">
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
           {services.map((s) => {
@@ -648,7 +674,7 @@ const JsonLdScript = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "name": "Venkata Pagadala — Enterprise Solutions",
+    "name": "Venkata Pagadala · Enterprise Solutions",
     "provider": {
       "@type": "Person",
       "name": "Venkata Pagadala",
@@ -707,7 +733,7 @@ const SolutionsGraph = () => {
   }, []);
 
   // Physics loop for jellyfish motion
-  // Idle wobble offsets — computed each frame from time
+  // Idle wobble offsets, computed each frame from time
   const idleTimeRef = useRef(0);
 
   useEffect(() => {
@@ -888,11 +914,13 @@ const SolutionsGraph = () => {
         {viewMode === "neural" && (
           <motion.div key="neural" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
             <div className="border border-border relative overflow-hidden" style={{ minHeight: 640 }}>
-              <NeuralSolutionsCanvas />
-              {/* Overlay labels — top-right so we don't collide with the
+              <PosterUntilLive>
+                <NeuralSolutionsCanvas />
+              </PosterUntilLive>
+              {/* Overlay labels, top-right so we don't collide with the
                   in-canvas legend pinned at bottom-left */}
               <div className="absolute top-4 right-4 font-mono text-[9px] text-muted-foreground/40 tracking-widest uppercase pointer-events-none">
-                Neural Network Mode — {services.length} Layers × {totalServices} Nodes
+                Neural Network Mode · {services.length} Layers × {totalServices} Nodes
               </div>
             </div>
           </motion.div>
@@ -924,7 +952,9 @@ const SolutionsGraph = () => {
 
               {/* Canvas Graph */}
               <div className="flex-1 border border-border relative overflow-hidden" style={{ minHeight: 640 }}>
+                <PosterUntilLive>
                 <ContextGraphCanvas />
+              </PosterUntilLive>
               </div>
             </div>
           </motion.div>
@@ -936,7 +966,7 @@ const SolutionsGraph = () => {
         <h2>Solutions by Venkata Pagadala</h2>
         {services.map((s) => (
           <section key={s.slug} aria-label={s.title}>
-            <h3>{s.title} — {s.tagline}</h3>
+            <h3>{s.title}: {s.tagline}</h3>
             <ul>
               {s.items.map((item) => (<li key={item}>{item}</li>))}
             </ul>

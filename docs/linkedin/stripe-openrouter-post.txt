@@ -1,0 +1,57 @@
+=== OPTION A: the analyst post (recommended, pairs with the card) ===
+
+Stripe is reportedly buying OpenRouter for more than $7B.
+
+Three months ago it raised at $1.3B.
+
+What Stripe is actually buying, in my read:
+
+1. The meter, not the router.
+OpenRouter already counts every token for 10M+ developers across 500+ models. Stripe's entire business is sitting in the middle of a transaction and metering it. Same position, new rail.
+
+2. The only neutral view in AI.
+OpenAI sees OpenAI. OpenRouter sees who switches from whom, at what price, the moment quality slips. That vantage point cannot be rebuilt later.
+
+3. The missing half of agent payments.
+Stripe spent a year shipping rails so AI agents can buy things. The thing agents buy most is inference itself.
+
+4. The tell is the price tag next door.
+Stripe also has a $53B bid in for PayPal. Two bets on two different futures of payments. This one costs 13% of the other.
+
+The caveat most posts are skipping: neither company has confirmed. Both declined to comment, and Stripe's newsroom is silent. Bloomberg reported it.
+
+Reported, not official.
+
+Full breakdown with every source: [LINK]
+
+If this closes, does Stripe stay neutral, or does owning the router change what gets routed?
+
+#AI #Stripe #OpenRouter #AIInfrastructure #Payments
+
+
+=== OPTION B: the 15-second version ===
+
+Stripe is reportedly paying $7B+ for OpenRouter.
+
+Three months ago it was worth $1.3B.
+
+Stripe is not buying a model router. It is buying the meter that already counts every token for 10M+ developers across 500+ models, plus the only neutral view of who switches from whom, at what price.
+
+Same toll booth Stripe built in payments. New rail.
+
+Caveat: neither company has confirmed. Both declined to comment. Reported, not official.
+
+Breakdown with sources: [LINK]
+
+#AI #Stripe #OpenRouter #AIInfrastructure
+
+
+=== POSTING NOTES ===
+
+- Attach the square card (or the 30s video, once the voice is upgraded).
+- LinkedIn suppresses posts with outbound links in the body. Either drop
+  [LINK] and put the URL in your first comment, or accept the reach hit.
+- First two lines are what shows before "see more" on mobile. Both options
+  are built so the hook survives that cut.
+- Link once live:
+  https://venkatapagadala.com/ai-updates/stripe-openrouter-acquisition-7-billion

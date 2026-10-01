@@ -3,7 +3,7 @@ import AIContributors from "@/views/AIContributors";
 
 export const metadata: Metadata = {
   title: "AI Notebook",
-  description: "The AI notebook — encyclopedia of AI contributors, roadmaps and concept maps.",
+  description: "The AI notebook: encyclopedia of AI contributors, roadmaps, and concept maps.",
   alternates: { canonical: "/notebook/ai" },
   openGraph: { url: "/notebook/ai", title: "AI Notebook · Venkata Pagadala" },
 };

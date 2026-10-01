@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sp = getSpeakerBySlug(params.slug);
   if (!sp) return { title: "Speaker not found", robots: { index: false } };
-  const title = `${sp.name} — ${sp.role}, ${sp.company}`;
+  const title = `${sp.name} · ${sp.role}, ${sp.company}`;
   const desc = sp.bio;
   const url = `/notebook/conference/speakers/${sp.slug}`;
   return {
@@ -26,14 +26,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       url,
       type: "profile",
-      title: `${sp.name} — ${sp.role} at ${sp.company}`,
+      title: `${sp.name} · ${sp.role} at ${sp.company}`,
       description: desc,
       images: sp.photo ? [sp.photo] : undefined,
-      siteName: "Venkata Pagadala — Mono Mind",
+      siteName: "Venkata Pagadala · Mono Mind",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${sp.name} — ${sp.role}`,
+      title: `${sp.name} · ${sp.role}`,
       description: desc,
       images: sp.photo ? [sp.photo] : undefined,
     },

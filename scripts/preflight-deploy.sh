@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+# preflight-deploy.sh — MANDATORY gate before any `railway up` on this repo.
+# Rule: deployment failures are not acceptable. This script checks the two
+# layers a local app smoke test cannot see: the upload manifest and the
+# platform build plan's known failure classes.
+#
+# Born from deploy 77725b9f (2026-07-16): Nixpacks generated a cache mount
+# targeting /app/tsconfig.tsbuildinfo; the tracked artifact file at that path
+# aborted the build container before npm run build even started.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+FAIL=0
+
+say() { printf '%s\n' "$*"; }
+bad() { say "FAIL: $*"; FAIL=1; }
+ok()  { say "ok:   $*"; }
+
+# 1. Build artifacts must never be tracked or uploadable.
+if git ls-files | grep -qE '\.tsbuildinfo$'; then
+  bad "*.tsbuildinfo is tracked in git (Nixpacks cache-mount killer). Run: git rm --cached <file>"
+else
+  ok "no tracked *.tsbuildinfo"
+fi
+
+# 2. Root .railwayignore must exist and cover the artifact classes.
+if [ ! -f .railwayignore ]; then
+  bad "root .railwayignore missing (railway up sweeps local artifacts without it)"
+else
+  grep -q 'tsbuildinfo' .railwayignore && ok ".railwayignore covers *.tsbuildinfo" \
+    || bad ".railwayignore does not cover *.tsbuildinfo"
+fi
+
+# 3. No secrets in the upload set (tracked or untracked-but-unignored).
+LEAKS=$(git status --short --untracked-files=all | awk '{print $2}' | grep -E '^\.env|\.pem$|\.key$' || true)
+[ -z "$LEAKS" ] && ok "no env/key files in upload set" || bad "possible secret files in upload set: $LEAKS"
+
+# 4. Working tree committed (deploys must be reproducible from a commit).
+if [ -n "$(git status --porcelain)" ]; then
+  bad "working tree not clean; commit before deploying"
+else
+  ok "working tree clean at $(git rev-parse --short HEAD)"
+fi
+
+# 5. Local production build must be green (app-level smoke precondition).
+# Persona surface gate: every page discoverable, rendered server-side, and
+# carrying the schema an answer engine needs.
+#
+# Runs BEFORE the build, deliberately. It needs a live server, and the build
+# below replaces .next underneath a running `next dev`, which makes every route
+# 500 with "Cannot find module ./vendor-chunks/...". Ordered the other way this
+# failed all 33 pages and blocked a deploy over nothing, which is worse than no
+# gate: a gate that cries wolf gets switched off.
+PERSONA_BASE="${PERSONA_BASE:-http://127.0.0.1:3402}"
+if curl -sf -o /dev/null --max-time 5 "$PERSONA_BASE/personas"; then
+  if python3 scripts/audit-personas.py "$PERSONA_BASE" > /tmp/preflight-personas.log 2>&1; then
+    ok "persona surface: linked, rendered, schema complete"
+  else
+    bad "persona audit failed; see /tmp/preflight-personas.log"
+  fi
+else
+  say "  - persona audit skipped (no server at $PERSONA_BASE)"
+fi
+
+
+say "running production build (this is the slow step; it will stop any running next dev)..."
+if node node_modules/next/dist/bin/next build > /tmp/preflight-build.log 2>&1; then
+  ok "next build green"
+else
+  bad "next build failed; see /tmp/preflight-build.log"
+fi
+
+# Published counts must match the data they describe. This is the OKF
+# attested computation running as a gate: it re-derives every number from
+# the data modules and fails if any surface still states an old one. Counts
+# drifted silently for weeks before this existed.
+if python3 scripts/okf_corpus_counts.py > /tmp/preflight-receipt.json 2>/tmp/preflight-counts.log \
+   && python3 scripts/okf_attest.py /tmp/preflight-receipt.json >> /tmp/preflight-counts.log 2>&1; then
+  ok "published counts match the data (OKF attester)"
+else
+  bad "published counts disagree with the data; see /tmp/preflight-counts.log"
+fi
+
+# Markdown twin gate: /research-and-talks.md is generated from the same two
+# data modules the page renders from. A stale twin tells an AI client something
+# the page no longer says, and nothing on the page would look wrong.
+if npx tsx scripts/gen-guide-md.ts --all --check > /tmp/preflight-guide-md.log 2>&1; then
+  ok "guide markdown twins match their data (public/guides/*.md)"
+else
+  bad "a guide markdown twin is stale; run: npx tsx scripts/gen-guide-md.ts --all"
+fi
+
+
+if python3 scripts/check-event-schema.py --base "$PERSONA_BASE" > /tmp/preflight-event-schema.log 2>&1; then
+  ok "one valid Event per conference and session page (see /tmp/preflight-event-schema.log)"
+else
+  bad "a conference or session page has a missing, duplicate or invalid Event; see /tmp/preflight-event-schema.log"
+fi
+
+if python3 scripts/check-route-coverage.py --base "$PERSONA_BASE" > /tmp/preflight-route-coverage.log 2>&1; then
+  ok "every app route is registered in src/lib/siteIndex.ts or deliberately not indexed"
+else
+  bad "an app route is missing from src/lib/siteIndex.ts; see /tmp/preflight-route-coverage.log"
+fi
+
+if python3 scripts/check-discovery-surfaces.py --base "$PERSONA_BASE" > /tmp/preflight-discovery-surfaces.log 2>&1; then
+  ok "sitemap.xml, /sitemap, llms.txt, llms-full.txt and the OKF site index agree (see /tmp/preflight-discovery-surfaces.log)"
+else
+  bad "a discovery surface misses or disagrees on a page; see /tmp/preflight-discovery-surfaces.log"
+fi
+
+if python3 scripts/check-guide-topics.py --base "$PERSONA_BASE" > /tmp/preflight-guide-topics.log 2>&1; then
+  ok "guide topic taxonomy: no orphans (see /tmp/preflight-guide-topics.log)"
+else
+  bad "guide topic taxonomy has an orphan or a broken hub; see /tmp/preflight-guide-topics.log"
+fi
+
+if npx tsx scripts/gen-brighton-md.ts --check > /tmp/preflight-brighton-md.log 2>&1; then
+  ok "brightonSEO recap markdown twin matches the data"
+else
+  bad "the brightonSEO recap markdown twin is stale; run: npx tsx scripts/gen-brighton-md.ts"
+fi
+
+if npx tsx scripts/gen-research-md.ts --check > /tmp/preflight-md.log 2>&1; then
+  ok "markdown twin matches the data"
+else
+  bad "markdown twin is stale; run: npx tsx scripts/gen-research-md.ts"
+fi
+
+# Persona fan-out gate: selecting a different scenario must change every
+# question, for every preset and stage. Shipped once with a third of the
+# questions persona-invariant and nothing visibly wrong.
+if npx tsx scripts/check-fanout.ts > /tmp/preflight-fanout.log 2>&1; then
+  ok "fan-out: every question varies by persona"
+else
+  bad "fan-out gate failed; see /tmp/preflight-fanout.log"
+fi
+
+# Framework gate: the page, its markdown twin and the workbook must agree.
+# Both derived files are generated from the workbook; a stale one tells a
+# reader or an AI client something the source no longer says.
+if python3 data/persona-framework/gen_framework.py --check > /tmp/preflight-framework.log 2>&1; then
+  ok "framework: data module and markdown twin match the workbook"
+else
+  bad "framework gate failed; run: python3 data/persona-framework/gen_framework.py"
+fi
+
+# Brand and accessibility gate: accent colors carry theme pairs, readable
+# text never drops below the /70 floor. See docs/BRAND_GUIDELINES.md.
+if python3 scripts/check-brand.py > /tmp/preflight-brand.log 2>&1; then
+  ok "brand gate: accent pairs and text-contrast floor hold"
+else
+  bad "brand gate failed; see /tmp/preflight-brand.log"
+fi
+
+# CSS token gate: an HSL-triplet token used as a raw colour is an invalid
+# declaration, so nothing paints and nothing looks broken.
+if python3 scripts/check-css-tokens.py > /tmp/preflight-css.log 2>&1; then
+  ok "css tokens: no bare triplet used as a colour"
+else
+  bad "css token gate failed; see /tmp/preflight-css.log"
+fi
+
+# Admin sign-in and no-deploy publishing gate: the sign-in decisions, the
+# news and page SEO file checks, every page reading its SEO overrides, the
+# signed refresh message (tests/frontend), and the attacks on the Clerk
+# verifier. See docs/CLERK_SETUP.md and docs/NO_DEPLOY_PUBLISHING.md for the
+# full catalogs.
+if node --test "tests/frontend/*.test.mjs" > /tmp/preflight-admin-auth.log 2>&1 \
+   && node scripts/cms/publish.mjs check news >> /tmp/preflight-admin-auth.log 2>&1 \
+   && node scripts/cms/publish.mjs check seo >> /tmp/preflight-admin-auth.log 2>&1 \
+   && (cd backend && .venv/bin/python -m pytest -q -p no:cacheprovider tests/test_clerk_auth.py) >> /tmp/preflight-admin-auth.log 2>&1; then
+  ok "sign-in and publishing: frontend tests, news and page SEO file checks, Clerk verifier attacks pass"
+else
+  bad "admin sign-in tests failed; see /tmp/preflight-admin-auth.log"
+fi
+
+if [ "$FAIL" -ne 0 ]; then
+  say ""
+  say "PREFLIGHT FAILED. Do NOT run railway up."
+  exit 1
+fi
+say ""
+say "PREFLIGHT PASSED. Deploy with: railway up --detach, then WATCH the"
+say "deployment to success and verify content markers on the live domain."

@@ -10,8 +10,12 @@ import AITimeline from "@/components/AITimeline";
 import AIGlossary from "@/components/AIGlossary";
 import CuratedReadingLists from "@/components/CuratedReadingLists";
 import AILearningRoadmap from "@/components/AILearningRoadmap";
+import BookShelfLazy from "@/components/library/BookShelfLazy";
+import { roadmapShelfVolumes, roadmapShelfStats } from "@/data/roadmapShelf";
+import ContributorAlbumLazy from "@/components/library/ContributorAlbumLazy";
 import AIEncyclopedia from "@/components/AIEncyclopedia";
 import { aiContributors } from "@/data/aiContributors";
+import { roadmapTopics } from "@/data/aiRoadmap";
 import { encyclopediaConcepts } from "@/data/aiEncyclopedia";
 import { Link, useNavigate, useLocation } from "@/lib/router-shim";
 import { ArrowLeft, ArrowRight, Linkedin, Mail } from "lucide-react";
@@ -30,29 +34,29 @@ const STORAGE_KEY = "ai-contributors-explored";
 type TopLevelTab = "contributors" | "roadmap" | "encyclopedia";
 
 const topTabs = [
-  { id: "contributors" as TopLevelTab, path: "/notebook/ai", label: "📚 Top 100 Contributors", shortLabel: "Contributors" },
-  { id: "roadmap" as TopLevelTab, path: "/notebook/ai/roadmap", label: "🗺️ Learning Roadmap", shortLabel: "Roadmap" },
-  { id: "encyclopedia" as TopLevelTab, path: "/notebook/ai/encyclopedia", label: "🧠 Concepts Encyclopedia", shortLabel: "Encyclopedia" },
+  { id: "contributors" as TopLevelTab, path: "/notebook/ai", label: "📚 AI Contributors", shortLabel: "Contributors" },
+  { id: "roadmap" as TopLevelTab, path: "/notebook/ai/roadmap", label: "🗺️ AI Roadmap", shortLabel: "Roadmap" },
+  { id: "encyclopedia" as TopLevelTab, path: "/notebook/ai/encyclopedia", label: "🧠 AI Encyclopedia", shortLabel: "Encyclopedia" },
 ];
 
 const TAB_META: Record<TopLevelTab, { title: string; description: string; canonical: string; ogTitle: string }> = {
   contributors: {
-    title: "Best 100 AI Contributors 2026 — Definitive Directory | Venkata Pagadala",
-    description: "The best and most authoritative directory of 100 AI pioneers shaping the field in 2026. Explore profiles, research timelines, glossary, and curated reading lists — curated by Venkata Pagadala.",
+    title: "Best 100 AI Contributors 2026 · Definitive Directory | Venkata Pagadala",
+    description: "The best and most authoritative directory of 100 AI pioneers shaping the field in 2026. Explore profiles, research timelines, glossary, and curated reading lists, curated by Venkata Pagadala.",
     canonical: "https://venkatapagadala.com/notebook/ai",
-    ogTitle: "Best 100 AI Contributors 2026 — The Definitive Directory",
+    ogTitle: "Best 100 AI Contributors 2026 · The Definitive Directory",
   },
   roadmap: {
-    title: "Free AI Roadmap March 2026 — Zero to Hero in 18 Weeks | Venkata Pagadala",
-    description: "The best free AI roadmap for March 2026. A structured 23-topic curriculum with 90+ curated resources — videos, courses, books, repos, and pro tips. From beginner to advanced, completely free.",
+    title: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks | Venkata Pagadala",
+    description: "The best free AI roadmap for 2026. A structured 28-topic curriculum with 400+ curated free resources: videos, courses, books, repos, and pro tips. From beginner to advanced, completely free.",
     canonical: "https://venkatapagadala.com/notebook/ai/roadmap",
-    ogTitle: "Free AI Roadmap March 2026 — Zero to Hero in 18 Weeks",
+    ogTitle: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks",
   },
   encyclopedia: {
-    title: "Best AI Concepts Encyclopedia 2026 — 110 Concepts Explained | Venkata Pagadala",
-    description: "The best AI concepts encyclopedia: 110 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
+    title: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained | Venkata Pagadala",
+    description: "The best AI concepts encyclopedia: 123 concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links.",
     canonical: "https://venkatapagadala.com/notebook/ai/encyclopedia",
-    ogTitle: "Best AI Concepts Encyclopedia 2026 — 110 Concepts Explained",
+    ogTitle: "Best AI Concepts Encyclopedia 2026 · 117 Concepts Explained",
   },
 };
 
@@ -67,15 +71,26 @@ const AIContributors = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const topTab = getTabFromPath(location.pathname);
+  // Counts come from the data so the headline can never drift from what the
+  // page actually contains.
+  const resourceCount = roadmapTopics.reduce(
+    (n, t) => n + t.bestVideos.length + t.bestCourses.length + t.books.length + t.githubRepos.length,
+    0,
+  );
 
-  const [exploredIds, setExploredIds] = useState<Set<string>>(() => {
+  // localStorage must not feed the FIRST render: the server prerendered this
+  // page with an empty set, and hydration demands the client's first pass
+  // match it ("0/100" vs "1/100" was an unhandled runtime error). Start
+  // empty, then load after mount.
+  const [exploredIds, setExploredIds] = useState<Set<string>>(() => new Set());
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? new Set(JSON.parse(stored)) : new Set();
+      if (stored) setExploredIds(new Set(JSON.parse(stored)));
     } catch {
-      return new Set();
+      /* first visit or blocked storage: the empty set is already right */
     }
-  });
+  }, []);
 
   const [activeSection, setActiveSection] = useState<string>("explorer");
   
@@ -171,7 +186,7 @@ const AIContributors = () => {
     // Add Course structured data for roadmap
     if (topTab === "roadmap") {
       (ldData as Record<string, unknown>)["@type"] = "Course";
-      ldData.name = "Free AI Roadmap — Zero to Hero in 18 Weeks";
+      ldData.name = "Free AI Roadmap · Zero to Hero in 18 Weeks";
       ldData.provider = { "@type": "Person", name: "Venkata Pagadala", url: "https://venkatapagadala.com" };
       ldData.isAccessibleForFree = true;
       ldData.offers = { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock" };
@@ -280,18 +295,41 @@ const AIContributors = () => {
           <ArrowLeft size={12} /> Back to Notebooks
         </Link>
 
-        {/* Hero — compact two column */}
+        {/* Hero: compact two column */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
           <div className="flex-1">
             <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground/30 mb-2 uppercase">
               The AI Notebook · 2026 Edition
             </p>
             <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-1">
-              {topTab === "roadmap" ? "Free AI Roadmap — March 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
+              {topTab === "roadmap" ? "Free AI Roadmap 2026" : topTab === "encyclopedia" ? "AI Concepts Encyclopedia 2026" : "Top 100 AI Contributors 2026"}
             </h1>
             <p className="font-mono text-xs text-muted-foreground/60 max-w-xl leading-relaxed">
-              Your complete AI learning companion — from zero to hero. A roadmap with 90+ resources, 110 concepts explained, and 100 contributors profiled.
+              Your complete AI learning companion, from zero to hero. A roadmap with {resourceCount}+ curated resources (92% free), {encyclopediaConcepts.length} concepts explained, and {aiContributors.length} contributors profiled.
             </p>
+            <p className="font-mono text-[10px] text-muted-foreground/40 mt-2">
+              Last reviewed July 2026. Every profile, every link and every definition checked by hand, not assumed.
+            </p>
+            <div className="mt-4 flex flex-col gap-2 items-start">
+              <a
+                href="/notebook/ai/map"
+                className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
+              >
+                <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The AI Systems Map →</span>
+                <span className="font-mono text-[10px] text-muted-foreground/60">
+                  471 entities · 7 layers · the whole AI value chain as one dependency graph
+                </span>
+              </a>
+              <a
+                href="/notebook/ai/shelf"
+                className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-foreground/30 bg-foreground/[0.03] px-4 py-2.5 hover:border-foreground/60 hover:bg-foreground/[0.06] transition-all group"
+              >
+                <span className="font-display text-sm font-bold text-foreground group-hover:text-glow">The Complete Shelf →</span>
+                <span className="font-mono text-[10px] text-muted-foreground/60">
+                  19 free books in 3D · browse the shelf, pull one out, read it free
+                </span>
+              </a>
+            </div>
           </div>
 
             {/* Author card */}
@@ -309,7 +347,7 @@ const AIContributors = () => {
                   </div>
                 </div>
                 <p className="font-mono text-[10px] text-muted-foreground/50 leading-relaxed mb-3">
-                  AI Product & Research. Search — SEO, GEO & Automation at enterprise level. 10M+ pages managed.
+                  AI Product & Research. Search, SEO, GEO & Automation at enterprise level. 10M+ pages managed.
                 </p>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {[
@@ -374,12 +412,37 @@ const AIContributors = () => {
         {topTab === "roadmap" && (
           <div>
             <div className="flex-1 min-w-0">
+              {/* The roadmap as a shelf: 28 topics as volumes, browse along
+                  the curriculum, pull one out, jump into its resources below.
+                  Quietly absent without WebGL; the list below is the truth. */}
+              <ScrollReveal>
+                <div className="relative h-[62vh] min-h-[380px] border border-border mb-8 overflow-hidden">
+                  <BookShelfLazy
+                    poster="/posters/roadmap-shelf.jpg"
+                    posterAlt="The AI Roadmap shelf: the What is AI? volume pulled forward"
+                    volumes={roadmapShelfVolumes}
+                    coverBrand="The AI Roadmap"
+                    captions={[
+                      `${roadmapShelfStats.volumes} topics · ${roadmapShelfStats.weeks} weeks`,
+                      "01 continuous curriculum",
+                    ]}
+                  />
+                  <div className="pointer-events-none absolute top-4 left-5 z-10">
+                    <p className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#2e2418" }}>
+                      The AI Roadmap, as a shelf
+                    </p>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase mt-1" style={{ color: "#8a7860" }}>
+                      every volume is a topic · click a spine
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
               <div className="mb-6">
                  <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                   🗺️ Free AI Roadmap — Zero to Hero (March 2026)
+                   🗺️ Free AI Roadmap, Zero to Hero · July 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                   A free, structured 18-week AI curriculum with 90+ curated resources — videos, courses, books, repos, and pro tips. Your complete free AI learning roadmap for 2026.
+                   A structured AI curriculum with 400+ curated resources: videos, courses, books, repos, and pro tips. 92% are completely free. Every link was opened and checked in July 2026.
                  </p>
               </div>
               <AILearningRoadmap />
@@ -393,10 +456,10 @@ const AIContributors = () => {
             <div className="flex-1 min-w-0">
               <div className="mb-6">
                 <h2 className="font-display text-xl font-bold text-foreground mb-1">
-                  🧠 AI Concepts Encyclopedia — Zero to Hero (2026)
+                  🧠 AI Concepts Encyclopedia · July 2026
                 </h2>
                 <p className="font-mono text-[11px] text-muted-foreground/40 max-w-2xl leading-relaxed">
-                  110 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Filter by category and difficulty.
+                  123 concepts across 10 categories with descriptions, key terms, prerequisites, and curated learn-more links. Every definition and link reviewed July 2026.
                 </p>
               </div>
               <AIEncyclopedia />
@@ -407,6 +470,22 @@ const AIContributors = () => {
         {/* === CONTRIBUTORS TAB === */}
         {topTab === "contributors" && (
           <>
+            {/* The hundred as ONE book: a page per person, with their photo.
+                A directory is skimmed; an album is browsed. */}
+            <ScrollReveal>
+              <div className="relative h-[62vh] min-h-[420px] border border-border mb-10 overflow-hidden">
+                <ContributorAlbumLazy />
+                <div className="pointer-events-none absolute top-4 left-5 z-10">
+                  <p className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold" style={{ color: "#2e2418" }}>
+                    The Top 100, as one book
+                  </p>
+                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase mt-1" style={{ color: "#8a7860" }}>
+                    a page per person · turn the pages
+                  </p>
+                </div>
+              </div>
+            </ScrollReveal>
+
             {/* Stats */}
             <ScrollReveal delay={50}>
               <div className="flex flex-wrap gap-6 mb-10 pb-8 border-b border-border">
@@ -470,7 +549,7 @@ const AIContributors = () => {
 
               <PageSidebar
                 sections={pageTocSections}
-                shareTitle="Top 100 AI Contributors 2026 — The Definitive AI Notebook"
+                shareTitle="Top 100 AI Contributors 2026, The Definitive AI Notebook"
                 onSectionClick={(id) => setActiveSection(id)}
               />
             </div>

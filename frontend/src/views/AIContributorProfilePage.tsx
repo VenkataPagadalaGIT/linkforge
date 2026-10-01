@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { photoCreditFor } from "@/data/photoCredits";
 import { useParams, Link, useNavigate } from "@/lib/router-shim";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
@@ -8,6 +9,8 @@ import PageSidebar, { TocItem } from "@/components/PageSidebar";
 import { aiContributors, SEGMENT_COLORS } from "@/data/aiContributors";
 import { contributorToRoadmap, contributorToEncyclopedia } from "@/data/crossLinks";
 import CrossLinks from "@/components/CrossLinks";
+import { aiUpdates } from "@/data/aiUpdates";
+import { roadmapTopics } from "@/data/aiRoadmap";
 import {
   ArrowLeft, ArrowRight, ExternalLink, GraduationCap, Award, MapPin,
   Quote, BookOpen, Link2, Play, Clock, Linkedin, Github, Share2, Copy, Check, Star, Users
@@ -178,12 +181,24 @@ const AIContributorProfilePage = () => {
             <div className="flex items-start gap-6 mb-8">
               <div className="shrink-0">
                 {contributor.photoUrl ? (
-                  <img
-                    src={contributor.photoUrl}
-                    alt={`Photo of ${contributor.name}`}
-                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-sm"
-                    loading="lazy"
-                  />
+                  <div>
+                    <img
+                      src={contributor.photoUrl}
+                      alt={`Photo of ${contributor.name}`}
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-sm"
+                      loading="lazy"
+                    />
+                    {photoCreditFor(contributor.id) && (
+                      <a
+                        href={photoCreditFor(contributor.id)!.source}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block mt-1 font-mono text-[8px] leading-tight text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors max-w-24"
+                      >
+                        Photo: {photoCreditFor(contributor.id)!.author}, {photoCreditFor(contributor.id)!.license}
+                      </a>
+                    )}
+                  </div>
                 ) : (
                   <div
                     className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center font-mono text-xl sm:text-2xl font-bold text-background"
@@ -192,7 +207,10 @@ const AIContributorProfilePage = () => {
                     {contributor.name.split(" ").map((w) => w[0]).join("")}
                   </div>
                 )}
-                {contributor.photoCredit && (
+                {/* The structured credit (author, license, source link) wins;
+                    the legacy free-text string renders only where no verified
+                    entry exists yet. */}
+                {contributor.photoCredit && !photoCreditFor(contributor.id) && (
                   <p className="font-mono text-[8px] text-muted-foreground/25 mt-1 max-w-24 leading-tight">
                     {contributor.photoCredit}
                   </p>
@@ -550,6 +568,65 @@ const AIContributorProfilePage = () => {
           })()}
 
           {/* ── Other Resources (books, projects, etc.) ── */}
+          {/* In the news: any update that names this contributor. The edge is
+              declared once on the article and read from both ends. */}
+          {(() => {
+            const news = aiUpdates.filter((u) => u.contributors?.includes(contributor.id));
+            if (!news.length) return null;
+            return (
+              <ScrollReveal delay={80}>
+                <div id="in-the-news" className="mb-10 scroll-mt-24">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                    📰 In the News
+                  </h2>
+                  <div className="space-y-3">
+                    {news.map((u) => (
+                      <Link key={u.slug} to={`/ai-updates/${u.slug}`}
+                        className="block border border-border p-5 hover:border-foreground/20 transition-all group">
+                        <p className="font-display text-sm font-bold text-foreground group-hover:text-glow transition-all mb-1">{u.title}</p>
+                        <p className="font-mono text-[9px] text-muted-foreground/30 mb-2">{u.date}</p>
+                        <p className="font-mono text-[11px] text-muted-foreground/50 leading-relaxed">{u.summary}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+            );
+          })()}
+
+          {/* Free resources in the roadmap that this person personally made. */}
+          {(() => {
+            const mine = roadmapTopics.flatMap((t) =>
+              [...t.bestVideos, ...t.bestCourses, ...t.books, ...t.githubRepos]
+                .filter((r) => r.authors?.includes(contributor.id))
+                .map((r) => ({ ...r, topicId: t.id, topicTitle: t.topic })),
+            );
+            if (!mine.length) return null;
+            const seen = new Set<string>();
+            const uniq = mine.filter((r) => (seen.has(r.url) ? false : seen.add(r.url)));
+            return (
+              <ScrollReveal delay={90}>
+                <div id="in-the-roadmap" className="mb-10 scroll-mt-24">
+                  <h2 className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-widest mb-6">
+                    🗺️ In the Learning Roadmap
+                  </h2>
+                  <div className="space-y-2">
+                    {uniq.map((r) => (
+                      <a key={r.url} href={r.url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-baseline gap-2 border border-border p-3 hover:border-foreground/20 transition-all group">
+                        <span className="font-mono text-[11px] text-foreground group-hover:text-glow transition-all flex-1">{r.title}</span>
+                        <span className="font-mono text-[9px] text-muted-foreground/30 shrink-0">{r.topicTitle}</span>
+                      </a>
+                    ))}
+                  </div>
+                  <Link to="/notebook/ai/roadmap" className="inline-block mt-3 font-mono text-[10px] text-muted-foreground/50 hover:text-foreground transition-colors">
+                    See the full free roadmap →
+                  </Link>
+                </div>
+              </ScrollReveal>
+            );
+          })()}
+
           {(() => {
             const other = contributor.resources?.filter(r => !["paper", "talk", "interview", "podcast"].includes(r.type)) || [];
             if (other.length === 0) return null;

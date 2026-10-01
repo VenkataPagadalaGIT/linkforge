@@ -1,0 +1,40 @@
+{
+  "posts": [
+    {
+      "slug": "ai-agents-automation",
+      "title": "AI Agents & Automation for SEO",
+      "url": "/insights/ai-agents-automation",
+      "tags": ["MCP", "A2A", "AI Agents", "Claude Code", "Automation", "LLMs"]
+    },
+    {
+      "slug": "ai-ml-search-optimization",
+      "title": "AI & Machine Learning for Search Optimization",
+      "url": "/insights/ai-ml-search-optimization",
+      "tags": ["RAG", "Knowledge Graphs", "NLP", "Vector Embeddings", "LLMs", "AEO"]
+    },
+    {
+      "slug": "enterprise-technical-seo",
+      "title": "Enterprise Technical SEO at Scale",
+      "url": "/insights/enterprise-technical-seo",
+      "tags": ["Technical SEO", "Crawl Optimization", "Structured Data", "Core Web Vitals"]
+    },
+    {
+      "slug": "answer-engine-optimization",
+      "title": "Answer Engine Optimization",
+      "url": "/insights/answer-engine-optimization",
+      "tags": ["AEO", "GEO", "AI Overviews", "AI Search"]
+    },
+    {
+      "slug": "editorial-seo-content-strategy",
+      "title": "Editorial SEO & Content Strategy",
+      "url": "/insights/editorial-seo-content-strategy",
+      "tags": ["Content Strategy", "Topical Authority", "Editorial SEO"]
+    },
+    {
+      "slug": "seo-performance-analytics",
+      "title": "SEO Performance Analytics",
+      "url": "/insights/seo-performance-analytics",
+      "tags": ["Analytics", "Growth Forecasting", "KPI Tracking", "CRO"]
+    }
+  ]
+}

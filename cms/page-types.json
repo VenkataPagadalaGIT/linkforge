@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "note": "The one list of page types for venkatapagadala.com. It replaces the ten types of the retired agentic CMS: 'formerly' names the old type id where one matched. Retired old types with no pages on the site: notebook, roadmap-topic, publication, lecture. 'today' and 'plan' describe how a change reaches the live site; update them as the no-deploy setup lands. SEO fields (title, description, canonical, robots) publish without a deploy on every type: content/seo-overrides.json.",
+  "types": [
+    {"id": "ai-map-node", "name": "AI map node", "route": "/notebook/ai/map/[id]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "encyclopedia-concept", "name": "Encyclopedia concept", "route": "/notebook/ai/encyclopedia/[id]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": "concept"},
+    {"id": "ai-contributor", "name": "AI contributor profile", "route": "/ai-contributors/[id]", "source": "Database (old backend)", "today": "No editor today", "plan": "Step 1: live in about a minute", "formerly": "contributor"},
+    {"id": "conference-speaker", "name": "Conference speaker", "route": "/notebook/conference/speakers/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "conference-session", "name": "Conference session", "route": "/notebook/conference/[slug]/sessions/[sessionId]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "guide-topic-hub", "name": "Guide topic hub", "route": "/guides/topics/[topic]", "source": "Built from guide tags", "today": "Updates itself, no deploy", "plan": "Updates itself", "formerly": null},
+    {"id": "persona", "name": "Persona", "route": "/personas/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "insight-post", "name": "Insight post", "route": "/insights/[slug]/[postSlug]", "source": "Database (old backend)", "today": "Old admin editor, no deploy", "plan": "Step 1: live in about a minute", "formerly": "insight"},
+    {"id": "site-map-section", "name": "Site map section", "route": "/sitemap/[section]", "source": "Built from all pages", "today": "Updates itself, no deploy", "plan": "Updates itself", "formerly": null},
+    {"id": "ai-update", "name": "AI update (news)", "route": "/ai-updates/[slug]", "source": "content/ai-updates.json (published without a deploy)", "today": "Publish, no deploy, once set up", "plan": "Live about a minute after publish (docs/NO_DEPLOY_PUBLISHING.md)", "formerly": "ai-update"},
+    {"id": "guide", "name": "Guide", "route": "/guides/[slug]", "source": "Code", "today": "A deploy", "plan": "Text later (3D stays code)", "formerly": "guide"},
+    {"id": "insight-pillar", "name": "Insight pillar", "route": "/insights/[slug]", "source": "Database (old backend)", "today": "No editor today", "plan": "Step 1: live in about a minute", "formerly": null},
+    {"id": "solution", "name": "Solution", "route": "/solutions/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "conference", "name": "Conference", "route": "/notebook/conference/[slug]", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": null},
+    {"id": "standalone", "name": "Standalone page", "route": null, "note": "Home, about, contact, hubs, tools, the brightonSEO recap", "source": "Code", "today": "A deploy", "plan": "Content later", "formerly": "hub"}
+  ]
+}

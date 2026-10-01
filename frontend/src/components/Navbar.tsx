@@ -1,23 +1,120 @@
 "use client";
-import { useState, useEffect } from "react";
+/**
+ * Navbar: three mega menus (Teardowns, 3D, Research), plain links after them,
+ * About last, and Contact as the CTA.
+ *
+ * Labels and slugs are independent: the section a visitor reads as
+ * "Teardowns" is still served from /guides/*, so the site can read
+ * differently without moving a single page.
+ *
+ * Progressive enhancement, and it is load-bearing rather than theoretical.
+ * Corporate proxies intercept .js and answer with their own block page;
+ * Chrome refuses the non-script response (reported as CORB) and NOTHING on
+ * the site runs. So every menu label is a real <a href> to its section hub,
+ * upgraded by JS into a menu toggle. With scripts blocked, clicking a label
+ * navigates to a page listing that whole section; with scripts alive, the
+ * panel opens as before. The panel itself renders only while open, so its
+ * deep links live in the hubs, the footer and the sitemap instead.
+ */
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./theme/ThemeToggle";
 
-const navLinks = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Notebook", to: "/notebook" },
-  { label: "AI Updates", to: "/ai-updates" },
-  { label: "Lab", to: "/publications" },
-  { label: "Insights", to: "/insights" },
-  { label: "Guides", to: "/guides" },
-  { label: "Contact", to: "/contact" },
+interface MenuItem {
+  label: string;
+  /** Plain-English descriptor: the label is the door, this explains it. */
+  note: string;
+  to: string;
+  /** Flags a new arrival in the menu. */
+  badge?: string;
+}
+interface MegaMenu {
+  id: string;
+  label: string;
+  /** Small-caps heading above the item grid. */
+  heading: string;
+  items: MenuItem[];
+  /** Closing line: positioning for Teardowns, scope for Research. */
+  footnote: string;
+  /** Index link so hub pages never become orphans, and the menu can overflow. */
+  seeAll: { label: string; to: string };
+  /** Any path under these prefixes marks the parent as active. */
+  active: string[];
+}
+
+const MEGA: MegaMenu[] = [
+  {
+    id: "teardowns",
+    label: "Teardowns",
+    heading: "How things actually work",
+    items: [
+      { label: "How LLMs Work", note: "21 stages, explorable in 3D", to: "/guides/how-llms-work" },
+      { label: "Inside a Home HVAC System", note: "same method, physical hardware", to: "/guides/hvac-system-troubleshooting" },
+      { label: "Graph Types for AI Agents", note: "one dataset, six structures", to: "/guides/graph-types-for-ai-agents" },
+      { label: "Screaming Frog, Complete", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
+      { label: "3D Game", note: "walk and drive a 2040 city", to: "/3d-game", badge: "new" },
+    ],
+    footnote:
+      "I take complex systems apart so you can see how they work. A language model, a crawler, the AI economy, even the furnace in your basement. Same method.",
+    seeAll: { label: "See all teardowns", to: "/guides" },
+    active: ["/guides", "/3d-game"],
+  },
+  {
+    id: "threed",
+    label: "3D",
+    heading: "Explorable, in three dimensions",
+    items: [
+      { label: "3D Game: the 2040 City", note: "walk and drive a 2040 city", to: "/3d-game" },
+      { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/", badge: "new" },
+      { label: "How LLMs Work", note: "21 stages, explorable in 3D", to: "/guides/how-llms-work" },
+      { label: "Inside a Home HVAC System", note: "same method, physical hardware", to: "/guides/hvac-system-troubleshooting" },
+      { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf" },
+      { label: "The AI Roadmap Shelf", note: "28 topics as clothbound volumes", to: "/notebook/ai/roadmap" },
+      { label: "The Top 100 Album", note: "a glass book of 100 faces", to: "/notebook/ai", badge: "new" },
+      { label: "Map of the AI Economy", note: "471 players, flat or in 3D", to: "/notebook/ai/map" },
+    ],
+    footnote:
+      "Every one of these is generated geometry running in your browser. No downloads, no model files: the whole third dimension ships as code.",
+    seeAll: { label: "See everything in 3D", to: "/3d" },
+    active: ["/3d-game", "/3d"],
+  },
+  {
+    id: "research",
+    label: "Research",
+    heading: "The reference layer",
+    items: [
+      { label: "AI Roadmap", note: "zero to hero in 18 weeks, 92% free", to: "/notebook/ai/roadmap" },
+      { label: "AI Encyclopedia", note: "123 concepts, defined", to: "/notebook/ai/encyclopedia" },
+      { label: "AI Contributors", note: "the 100 people building it", to: "/ai-contributors" },
+      { label: "The Complete Shelf", note: "19 free books, in 3D", to: "/notebook/ai/shelf", badge: "new" },
+      { label: "Map of the AI Economy", note: "471 players, who controls what", to: "/notebook/ai/map" },
+      { label: "Conference Notebook", note: "talks, speakers, session notes", to: "/notebook/conference" },
+      { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
+      { label: "AI Updates", note: "the news, with primary sources", to: "/ai-updates" },
+      { label: "Published Papers", note: "peer-reviewed, on SSRN and in journals", to: "/publications" },
+    ],
+    footnote:
+      "The map, the definitions, and the people behind everything above. Where the data studies and benchmarks will live.",
+    seeAll: { label: "See the full notebook", to: "/notebook" },
+    active: ["/notebook", "/ai-contributors", "/ai-updates", "/publications"],
+  },
+];
+
+/** Plain links after the menus. About sits last and quieter on purpose.
+ *  The old flat "3D Game" link grew into the 3D mega menu above. */
+const FLAT = [
+  { label: "Insights", to: "/insights", dim: false },
+  { label: "About", to: "/about", dim: true },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [mobileSection, setMobileSection] = useState<string | null>(null);
+  const closeTimer = useRef<number | null>(null);
+  const openTimer = useRef<number | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,40 +125,111 @@ const Navbar = () => {
 
   useEffect(() => {
     setMobileOpen(false);
+    setOpenMenu(null);
+    setMobileSection(null);
   }, [location.pathname]);
+
+  // Escape closes an open mega menu from anywhere, including keyboard focus.
+  useEffect(() => {
+    if (!openMenu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenMenu(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openMenu]);
+
+  useEffect(
+    () => () => {
+      if (closeTimer.current) window.clearTimeout(closeTimer.current);
+      if (openTimer.current) window.clearTimeout(openTimer.current);
+    },
+    []
+  );
 
   // Admin/CMS shell controls its own chrome — public navbar is irrelevant there.
   if (location.pathname?.startsWith("/admin")) return null;
+
+  const path = location.pathname ?? "";
+  const isActive = (prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
+
+  // Hover with intent: a short delay in prevents flicker when the pointer
+  // crosses a label on its way somewhere else; a delay out lets the pointer
+  // travel from the label down into the panel without it snapping shut.
+  const hoverOpen = (id: string) => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    if (openTimer.current) window.clearTimeout(openTimer.current);
+    openTimer.current = window.setTimeout(() => setOpenMenu(id), 130);
+  };
+  const hoverClose = () => {
+    if (openTimer.current) window.clearTimeout(openTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpenMenu(null), 180);
+  };
 
   return (
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "bg-background/95 backdrop-blur-sm border-b border-border" : "bg-transparent"
+          scrolled || openMenu ? "bg-background border-b border-border" : "bg-transparent"
         }`}
+        onMouseLeave={hoverClose}
       >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="font-mono text-sm tracking-widest text-foreground hover:text-glow transition-all">
+          <Link href="/" className="font-mono text-sm tracking-widest text-foreground hover:text-glow transition-all">
             VP_
           </Link>
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {MEGA.map((m) => (
+              <div key={m.id} onMouseEnter={() => hoverOpen(m.id)} className="relative">
+                {/* A real link, JS-enhanced into a menu toggle. On locked-down
+                    corporate networks the security proxy blocks our scripts
+                    (Chrome reports it as CORB), so with no JS this navigates
+                    to the section's hub page instead of clicking into nothing.
+                    With JS, preventDefault keeps the click-to-toggle behavior. */}
+                <a
+                  href={m.seeAll.to}
+                  aria-expanded={openMenu === m.id}
+                  aria-haspopup="true"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenMenu(openMenu === m.id ? null : m.id);
+                  }}
+                  className={`font-mono text-xs tracking-wider uppercase transition-all hover:text-foreground flex items-center gap-1 ${
+                    isActive(m.active) || openMenu === m.id ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {m.label}
+                  <ChevronDown
+                    size={13}
+                    className={`transition-transform ${openMenu === m.id ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </a>
+              </div>
+            ))}
+            {FLAT.map((l) => (
               <Link
-                key={link.to}
-                to={link.to}
+                key={l.to}
+                href={l.to}
                 className={`font-mono text-xs tracking-wider uppercase transition-all hover:text-foreground ${
-                   location.pathname === link.to || 
-                   (link.to === "/solutions" && location.pathname.startsWith("/solutions")) ||
-                   (link.to === "/notebook" && location.pathname.startsWith("/notebook")) ||
-                   (link.to === "/ai-updates" && location.pathname.startsWith("/ai-updates"))
-                     ? "text-foreground" : "text-muted-foreground"
+                  path === l.to || path.startsWith(`${l.to}/`)
+                    ? "text-foreground"
+                    : l.dim
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
                 }`}
               >
-                {link.label}
+                {l.label}
               </Link>
             ))}
+            <Link
+              href="/contact"
+              className="font-mono text-xs tracking-wider uppercase px-4 py-2 bg-foreground text-background rounded-md hover:opacity-90 transition-opacity"
+            >
+              Contact
+            </Link>
             <ThemeToggle className="ml-2" />
           </div>
 
@@ -83,32 +251,135 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Mega panel: full-bleed under the bar, desktop only. Rendered on
+            open, so its destinations are not in the server HTML; the label
+            above is a real link to the section hub, which is how a
+            script-blocked browser (and a crawler that does not run JS)
+            reaches everything inside. Hubs, footer and sitemap carry the
+            deep links. */}
+        {MEGA.map((m) =>
+          openMenu === m.id ? (
+            <div
+              key={m.id}
+              className="hidden md:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
+              onMouseEnter={() => {
+                if (closeTimer.current) window.clearTimeout(closeTimer.current);
+              }}
+              data-testid={`mega-${m.id}`}
+            >
+              <div className="max-w-7xl mx-auto px-6 py-7">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50 mb-4">
+                  {m.heading}
+                </p>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+                  {m.items.map((it) => (
+                    <Link key={it.to} href={it.to} className="group block">
+                      <p className="font-display text-sm font-semibold text-foreground group-hover:text-glow transition-all">
+                        {it.label}
+                        {it.badge && (
+                          <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-300/80">
+                            {it.badge}
+                          </span>
+                        )}
+                      </p>
+                      <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{it.note}</p>
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-6 pt-4 border-t border-border/60 flex items-start justify-between gap-6 flex-wrap">
+                  <p className="font-mono text-[11px] text-muted-foreground/70 leading-relaxed max-w-2xl">
+                    {m.footnote}
+                  </p>
+                  <Link
+                    href={m.seeAll.to}
+                    className="font-mono text-[11px] text-foreground/85 hover:text-foreground whitespace-nowrap transition-colors"
+                  >
+                    {m.seeAll.label} →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : null
+        )}
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu: each mega menu becomes an accordion section */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-background/98 backdrop-blur-md flex flex-col items-center justify-center gap-8 md:hidden"
+          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto md:hidden"
           role="dialog"
           aria-modal="true"
-          onClick={(e) => {
-            // Tap on backdrop (not on a link) closes the menu
-            if (e.target === e.currentTarget) setMobileOpen(false);
-          }}
           data-testid="mobile-menu-panel"
         >
-          {navLinks.map((link) => (
+          <div className="px-6 py-8 flex flex-col gap-6">
+            {MEGA.map((m) => (
+              <div key={m.id}>
+                {/* Same progressive enhancement as desktop: without JS the
+                    drawer never opens anyway, but keeping the label a real
+                    link means any rendering of this list stays navigable. */}
+                <a
+                  href={m.seeAll.to}
+                  aria-expanded={mobileSection === m.id}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileSection(mobileSection === m.id ? null : m.id);
+                  }}
+                  className="w-full flex items-center justify-between font-mono text-base tracking-widest uppercase text-foreground"
+                >
+                  {m.label}
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${mobileSection === m.id ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </a>
+                {mobileSection === m.id && (
+                  <div className="mt-4 pl-3 border-l border-border flex flex-col gap-4">
+                    {m.items.map((it) => (
+                      <Link key={it.to} href={it.to} onClick={() => setMobileOpen(false)} className="block">
+                        <p className="font-display text-sm font-semibold text-foreground">
+                          {it.label}
+                          {it.badge && (
+                            <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-300/80">
+                              {it.badge}
+                            </span>
+                          )}
+                        </p>
+                        <p className="font-mono text-[11px] text-muted-foreground">{it.note}</p>
+                      </Link>
+                    ))}
+                    <Link
+                      href={m.seeAll.to}
+                      onClick={() => setMobileOpen(false)}
+                      className="font-mono text-[11px] text-foreground/85"
+                    >
+                      {m.seeAll.label} →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ))}
+            {FLAT.map((l) => (
+              <Link
+                key={l.to}
+                href={l.to}
+                onClick={() => setMobileOpen(false)}
+                className={`font-mono text-base tracking-widest uppercase ${
+                  path === l.to ? "text-foreground text-glow" : "text-muted-foreground"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
             <Link
-              key={link.to}
-              to={link.to}
+              href="/contact"
               onClick={() => setMobileOpen(false)}
-              className={`font-mono text-lg tracking-widest uppercase transition-all ${
-                location.pathname === link.to ? "text-foreground text-glow" : "text-muted-foreground"
-              }`}
+              className="font-mono text-sm tracking-widest uppercase px-5 py-3 bg-foreground text-background rounded-md text-center"
             >
-              {link.label}
+              Contact
             </Link>
-          ))}
+          </div>
         </div>
       )}
     </>

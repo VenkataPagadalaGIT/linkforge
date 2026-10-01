@@ -1,0 +1,148 @@
+/**
+ * Everything on this site that runs in three dimensions, in one list.
+ *
+ * The nav's 3D menu and the /3d hub both read from here, so adding the next
+ * 3D experience is one entry, not three edits. Every one of these is
+ * generated geometry running in the browser: no model files, no downloads.
+ *
+ * That sentence was false for a while: the nav hand-coded two items while this
+ * list held ten, so eight 3D experiences were missing from the menu and nobody
+ * noticed, because a missing link looks like nothing. The nav now maps over
+ * this array and groups by `group`, which is the only way the claim stays true.
+ */
+
+import { JEV_COUNTS } from "./jev";
+
+/** Menu sections, in display order. */
+export const THREE_D_GROUPS = ["Learn in 3D", "Systems & maps", "Books in 3D", "Play"] as const;
+export type ThreeDGroup = (typeof THREE_D_GROUPS)[number];
+
+export interface ThreeDExperience {
+  title: string;
+  to: string;
+  /** One line for the menu. */
+  note: string;
+  /** A fuller sentence for the hub card. */
+  blurb: string;
+  /** Small-caps tags on the hub card. */
+  tags: string[];
+  badge?: string;
+  /** Which nav menu section it sits in. */
+  group: ThreeDGroup;
+}
+
+export const threeDExperiences: ThreeDExperience[] = [
+  {
+    title: "3D Game: the 2040 City",
+    to: "/3d-game",
+    group: "Play",
+    note: "walk and drive a 2040 city",
+    blurb:
+      "A city that runs itself, and you can interrupt it. Walk the humanoid, greet the crew, or take the controls of any truck, robotaxi, semi or barge from a formula-style cockpit.",
+    tags: ["playable", "procedural traffic", "cockpit"],
+  },
+  {
+    title: "The Living Portrait",
+    to: "/#living-portrait",
+    group: "Play",
+    note: "65k tiles wearing a neural net",
+    blurb:
+      "The homepage portrait assembles from sixty-five thousand mosaic tiles, wears a pulsing neural net, tilts with your pointer, and shatters and heals when you click it.",
+    tags: ["65,536 tiles", "chain firing", "on the homepage"],
+    badge: "new",
+  },
+  {
+    title: "What is Jev?",
+    to: "/guides/what-is-jev",
+    group: "Learn in 3D",
+    note: "a decision model, not a chatbot: one ticket through the bench",
+    blurb:
+      "TypeSafe AI's System One model as a working bench: your code supplies the evidence and the questions, Jev stamps typed Choice, Score and Noul answers with probabilities, and your rules decide what happens next. Then the same primitives inside a coding agent, and the independent evidence on where it fails.",
+    tags: [`${JEV_COUNTS.stations} stations`, "guided journey", "primary-sourced"],
+    badge: "new",
+  },
+  {
+    title: "How Quantum Computers Work",
+    to: "/guides/how-quantum-computers-work",
+    group: "Learn in 3D",
+    note: "down the golden chandelier, plate by plate",
+    blurb:
+      "A dilution refrigerator drawn at its real temperatures, drive pulses attenuating down and readout echoes amplifying up, a Bloch sphere, an entangled pair, an interference station where wrong answers cancel, and the error-correction grid. Primary-sourced, adversarially re-verified.",
+    tags: ["16 stations", "guided journey", "primary-sourced"],
+    badge: "new",
+  },
+  {
+    title: "How Neural Networks Work",
+    to: "/guides/how-neural-networks-work",
+    group: "Learn in 3D",
+    note: "13,002 parameters, every fiber drawn",
+    blurb:
+      "The canonical 784-16-16-10 MNIST network as a film-set machine: a digit dissolves into pixels, the forward pass ripples through every rendered weight, and gradient descent really runs on the loss terrain.",
+    tags: ["13,002 params", "guided journey", "primary-sourced"],
+    badge: "new",
+  },
+  {
+    title: "How LLMs Work",
+    to: "/guides/how-llms-work",
+    group: "Learn in 3D",
+    note: "21 stages, explorable in 3D",
+    blurb:
+      "Every stage a prompt passes through, modeled as an explorable machine: tokenizer, attention, MoE experts, KV cache, sampling, and the training story, with a guided token journey.",
+    tags: ["21 stages", "guided journey", "teardown"],
+  },
+  {
+    title: "Graph Types for AI Agents",
+    to: "/guides/graph-types-for-ai-agents",
+    group: "Learn in 3D",
+    note: "one dataset, six structures",
+    blurb:
+      "Taxonomy, ontology, knowledge graph, information graph, context graph and vector index, each modeled on the same dataset and explorable in 2D and 3D, with runnable code and primary sources.",
+    tags: ["6 structures", "GraphRAG", "runnable code"],
+  },
+  {
+    title: "Inside a Home HVAC System",
+    to: "/guides/hvac-system-troubleshooting",
+    group: "Systems & maps",
+    note: "same method, physical hardware",
+    blurb:
+      "A full split system in 3D wired to a fault ontology: watch healthy power-on sequences, trip cold-climate faults, and diagnose from symptoms like a tech would.",
+    tags: ["fault library", "diagnosis", "teardown"],
+  },
+  {
+    title: "The Complete Shelf",
+    to: "/notebook/ai/shelf",
+    group: "Books in 3D",
+    note: "19 free books, in 3D",
+    blurb:
+      "A walnut shelf of nineteen genuinely free AI books, typeset covers and spines generated in code. Pull one out, inspect it, and read it free at the publisher.",
+    tags: ["19 volumes", "all free", "typeset in code"],
+  },
+  {
+    title: "The AI Roadmap, as a Shelf",
+    to: "/notebook/ai/roadmap#roadmap-shelf",
+    group: "Books in 3D",
+    note: "35 topics as clothbound volumes",
+    blurb:
+      "The 18-week core and seven depth tracks as a shelf of thirty-five volumes: cloth colour from the phase, thickness from the resource count, and every volume opens into its real resources.",
+    tags: ["35 topics", "93% free", "curriculum"],
+  },
+  {
+    title: "The Top 100, as One Book",
+    to: "/notebook/ai#contributor-album",
+    group: "Books in 3D",
+    note: "a glass album of 100 faces",
+    blurb:
+      "One glass-bound album with a hundred photo pages, one per contributor. It starts closed with an etched title, opens itself or lets you pull the cover, and every page opens a profile.",
+    tags: ["100 pages", "glass case", "page turns"],
+    badge: "new",
+  },
+  {
+    title: "Map of the AI Economy",
+    to: "/notebook/ai/map",
+    group: "Systems & maps",
+    note: "455 players, who controls what",
+    blurb:
+      "The whole AI value chain as one dependency graph: 455 entities across 7 layers, explorable flat or in 3D, with every edge reviewed by hand.",
+    tags: ["455 entities", "7 layers", "graph"],
+  },
+];
