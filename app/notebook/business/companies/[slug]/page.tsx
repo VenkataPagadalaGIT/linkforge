@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BusinessEntry from "@/views/BusinessEntry";
 import { getBusiness, namesOf } from "@/lib/business-source";
-import { BUSINESS_BASE, articleHref, companyHref, personHref } from "@/lib/business-paths";
+import { BUSINESS_BASE, articleHref, companyHref, initialsOf, personHref } from "@/lib/business-paths";
 import { breadcrumbLd, companyLd } from "@/lib/business-jsonld";
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
@@ -48,10 +48,12 @@ export default async function Page({ params }: { params: Params }) {
         back={{ href: BUSINESS_BASE, label: "Business Notebook" }}
         eyebrow="Company"
         title={c.name}
+        picture={c.logo}
+        initials={initialsOf(c.name)}
         summary={c.summary}
         facts={c.facts}
         related={[
-          ...(people.length ? [{ title: "People", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role })) }] : []),
+          ...(people.length ? [{ title: "People", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) }] : []),
           ...(articles.length ? [{ title: "Notes", links: articles.map((a) => ({ href: articleHref(a.slug), label: a.title, note: a.kind })) }] : []),
         ]}
         sections={c.sections}

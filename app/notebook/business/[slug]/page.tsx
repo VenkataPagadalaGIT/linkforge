@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BusinessEntry from "@/views/BusinessEntry";
 import { getBusiness, namesOf } from "@/lib/business-source";
-import { BUSINESS_BASE, articleHref, companyHref, personHref } from "@/lib/business-paths";
+import { BUSINESS_BASE, articleHref, companyHref, initialsOf, personHref } from "@/lib/business-paths";
 import { articleLd, breadcrumbLd } from "@/lib/business-jsonld";
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
@@ -59,8 +59,8 @@ export default async function Page({ params }: { params: Params }) {
         legend={a.legend}
         stats={a.stats}
         related={[
-          { title: "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role })) },
-          ...(company ? [{ title: "Company", links: [{ href: companyHref(company.slug), label: company.name, note: company.legalName }] }] : []),
+          { title: "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) },
+          ...(company ? [{ title: "Company", links: [{ href: companyHref(company.slug), label: company.name, note: company.legalName, picture: company.logo, initials: initialsOf(company.name) }] }] : []),
         ]}
         sections={a.sections}
         sources={a.sources}

@@ -18,7 +18,9 @@
 export type Source = { id: number; title: string; publisher: string; date: string; url: string; note?: string };
 export type Fact = { label: string; value: string; cite?: number };
 export type Stat = { value: string; label: string; cite?: number; highlight?: boolean };
-export type Block = { type: "p"; text: string } | { type: "list"; items: string[]; ordered?: boolean };
+export type Block = { type: "p"; text: string } | { type: "list"; items: string[]; ordered?: boolean } | { type: "stats"; items: Stat[] };
+/** A photo or logo, shown with its credit. url is a site path (/logos/x.svg) or an https file on Wikimedia. */
+export type Picture = { url: string; alt: string; credit: string };
 export type Section = { id: string; title: string; blocks: Block[] };
 export type BusinessArticle = {
   slug: string; title: string; seoTitle: string; description: string; summary: string;
@@ -27,11 +29,11 @@ export type BusinessArticle = {
 };
 export type Company = {
   slug: string; name: string; legalName: string; summary: string; seoTitle: string; description: string;
-  website: string; sameAs?: string[]; facts: Fact[]; sections: Section[]; sources: Source[];
+  website: string; sameAs?: string[]; logo?: Picture; facts: Fact[]; sections: Section[]; sources: Source[];
 };
 export type Person = {
   slug: string; name: string; role: string; company: string; summary: string; seoTitle: string; description: string;
-  facts: Fact[]; sections: Section[]; sources: Source[];
+  photo?: Picture; facts: Fact[]; sections: Section[]; sources: Source[];
 };
 export type BusinessFile = { note?: string; articles: BusinessArticle[]; companies: Company[]; people: Person[] };
 export type BusinessIssue = { level: "block" | "warn"; at?: string; message: string };
@@ -130,7 +132,9 @@ function checkSections(item: Record<string, unknown>, at: string, errs: string[]
     for (const b of (s.blocks as Record<string, unknown>[]) ?? []) {
       const okP = isObj(b) && b.type === "p" && isStr(b.text);
       const okList = isObj(b) && b.type === "list" && Array.isArray(b.items) && b.items.length > 0 && b.items.every(isStr);
-      if (!okP && !okList) errs.push(`${at}: section "${s.id}" has a block that is not a paragraph or a list of text`);
+      const okStats = isObj(b) && b.type === "stats" && Array.isArray(b.items) && b.items.length > 0 &&
+        b.items.every((x) => isObj(x) && isStr(x.value) && isStr(x.label));
+      if (!okP && !okList && !okStats) errs.push(`${at}: section "${s.id}" has a block that is not a paragraph, a list of text or a list of stats`);
     }
   }
 }
@@ -199,11 +203,21 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
       }
       checkSections(item, at, errs);
       const sourceIds = checkSources(item, at, errs);
+      for (const f of ["logo", "photo"]) {
+        const pic = item[f];
+        if (pic === undefined) continue;
+        if (!isObj(pic) || !isStr(pic.url) || !isStr(pic.alt) || !isStr(pic.credit)) { errs.push(`${at}: ${f} needs url, alt and credit`); continue; }
+        if (!(PAGE.test(pic.url) || /^https:\/\/upload\.wikimedia\.org\/[^\s]+$/.test(pic.url))) errs.push(`${at}: ${f} url must be a site path or a Wikimedia upload link`);
+      }
 
       // references: every citation and link must resolve, and every highlight must close
+      const blockStats = ((item.sections as Section[] | undefined) ?? [])
+        .flatMap((s) => s?.blocks ?? [])
+        .flatMap((b) => (b?.type === "stats" && Array.isArray(b.items) ? b.items : []));
       const cited = [
         ...((item.facts as Fact[] | undefined) ?? []).map((f) => f?.cite),
         ...((item.stats as Stat[] | undefined) ?? []).map((s) => s?.cite),
+        ...blockStats.map((s) => s?.cite),
       ].filter((c) => c !== undefined);
       for (const c of cited) if (!sourceIds.has(c as number)) errs.push(`${at}: cites source ${c}, which is not in its sources`);
       for (const t of markedTexts(item)) {

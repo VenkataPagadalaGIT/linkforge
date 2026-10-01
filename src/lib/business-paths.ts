@@ -13,3 +13,7 @@ export function hrefFor(target: "person" | "company" | "article" | "page", ref: 
   if (target === "article") return articleHref(ref);
   return ref;
 }
+
+/** "Gary Millerchip" to "GM": the badge shown when there is no licensed photo. */
+export const initialsOf = (name: string) =>
+  name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();

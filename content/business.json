@@ -36,9 +36,10 @@
           "highlight": true
         },
         {
-          "value": "$93.9B",
-          "label": "Q4 net sales, up 11.2%",
-          "cite": 1
+          "value": "30%",
+          "label": "Growth in total site and app traffic",
+          "cite": 2,
+          "highlight": true
         }
       ],
       "sections": [
@@ -48,7 +49,7 @@
           "blocks": [
             {
               "type": "p",
-              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I talked about collecting data from sources most search teams never open, and earnings calls were one of them. A call is dated, on the record, and every statement has a name attached: here, Costco's CEO [[person:ron-vachris]] and CFO [[person:gary-millerchip]]. That makes it primary evidence of how AI is changing shopping, from the company that sees the numbers."
+              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I ([[page:/about|Venkata Pagadala]]) talked about collecting data from sources most search teams never open, and earnings calls were one of them. A call is dated, on the record, and every statement has a name attached: here, Costco's CEO [[person:ron-vachris]] and CFO [[person:gary-millerchip]]. That makes it primary evidence of how AI is changing shopping, from the company that sees the numbers."
             }
           ]
         },
@@ -113,26 +114,10 @@
               "type": "list",
               "items": [
                 "==Digitally enabled comparable sales grew 19.5% in the quarter (19.8% excluding currency) and 20.9% for the full year.==[^1]",
+                "==Digitally enabled sales, including third-party delivery, exceeded $33 billion for the year, up more than 20%.==[^2]",
                 "==Total site and app traffic was up 30%.==[^2]",
                 "==Personalization, through product placements and emails, grew sales at a triple-digit rate, and 10% of costco.com orders now include a personalized item.==[^2]",
                 "==Costco is discontinuing Costco Next, its extended marketplace, and moving its most popular items and brands into the main app and website.==[^2]"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "numbers",
-          "title": "What were the headline numbers?",
-          "blocks": [
-            {
-              "type": "list",
-              "items": [
-                "Net sales for the 16-week quarter were $93.9 billion, up 11.2%. For fiscal 2026 they were $297.2 billion, up 10.1%.[^1]",
-                "Comparable sales grew 9.4% in the quarter, or 6.7% excluding gas prices and currency.[^1]",
-                "Net income was $2.998 billion, $6.75 per diluted share, including a one-time benefit of $0.15 per share from tariff refunds.[^1]",
-                "Membership fees were $1.85 billion in the quarter.[^1] Costco has 84.1 million paid members, 42.3 million of them executive members.[^2]",
-                "Renewal rates were 92.3% in the US and Canada and 89.8% worldwide.[^2]",
-                "Costco operates 939 warehouses.[^1]"
               ]
             }
           ]
@@ -152,6 +137,89 @@
                 "The lever Costco named is product data and product pages. That is work search teams already own.",
                 "A brand with no paid digital ads can still win in AI answers, if its value is visible in its own data.",
                 "Earnings calls are free, dated and attributable. Read them for every company in your market, and log what they say about AI each quarter."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance-numbers",
+          "title": "What were the finance numbers?",
+          "blocks": [
+            {
+              "type": "stats",
+              "items": [
+                {
+                  "value": "$93.9B",
+                  "label": "Q4 net sales, up 11.2%",
+                  "cite": 1
+                },
+                {
+                  "value": "9.4%",
+                  "label": "Q4 comparable sales; 6.7% excluding gas and currency",
+                  "cite": 1
+                },
+                {
+                  "value": "$2.998B",
+                  "label": "Q4 net income",
+                  "cite": 1
+                },
+                {
+                  "value": "$6.75",
+                  "label": "Q4 earnings per diluted share, including a one-time $0.15 from tariff refunds",
+                  "cite": 1
+                },
+                {
+                  "value": "$1.849B",
+                  "label": "Q4 membership fee income, up 7.3%",
+                  "cite": 2
+                },
+                {
+                  "value": "84.1M",
+                  "label": "Paid members, up 3.8%; 42.3M executive members",
+                  "cite": 2
+                },
+                {
+                  "value": "92.3%",
+                  "label": "Renewal rate in the US and Canada; 89.8% worldwide",
+                  "cite": 2
+                },
+                {
+                  "value": "$297.2B",
+                  "label": "Fiscal 2026 net sales, up 10.1%",
+                  "cite": 1
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "items": [
+                "Excluding the one-time tariff benefit, net income grew 12.3% and earnings per share 12.4%.[^2]",
+                "Fiscal 2026 net income was $9.226 billion, $20.76 per diluted share.[^1]",
+                "Gross margin was 11.02%, down 11 basis points, or up 20 basis points excluding gas. The LIFO charge was $152 million, against $43 million a year earlier.[^2]",
+                "SG&A was 8.94% of sales, 27 basis points better than a year ago. The tax rate was 25.2%.[^2]",
+                "Capital spending was $2.21 billion in Q4 and $6.4 billion for fiscal 2026, with about $7.5 billion planned for fiscal 2027.[^2]",
+                "Q4 was the last quarter to benefit from the membership fee increase.[^2]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rest-of-the-call",
+          "title": "What else did Costco cover on the call?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "Warehouses: 12 opened in Q4, 10 of them new US buildings, and 28 in fiscal 2026, three of them relocations, for 939 in total.[^1][^2] Costco plans 33 openings in fiscal 2027, five of them relocations, including 4 in Europe, 5 in Canada and 1 in Mexico, and new US markets such as Buffalo, New York and Lawrence, Kansas.[^2]",
+                "Gas: a record year. The share of US member households buying gas reached an all-time high, and Costco estimates it saved members over $3.2 billion.[^2]",
+                "Pharmacy: sales grew nearly 20%, helped by GLP-1 and fertility programs, and Costco has a new partnership with SCAN to develop Medicare Advantage benefits.[^2]",
+                "Travel: Costco sent over 750,000 members on cruises, up 16%.[^2]",
+                "Members: the member base under 40 has grown nearly 60% since COVID and is now more than a quarter of all members.[^2]",
+                "Tariff refunds: Costco received $184 million in Q4, $174 million in refunds plus $10 million in interest, a little more than a third of what it expects.[^2] Part of the refunds was reinvested in increased member value.[^1]",
+                "Merchandise: non-foods comparable sales grew mid- to high-single digits, led by gold and jewelry and home furnishings. Fresh grew mid-single digits, led by bakery and meat, with in-house pastries up over 100%.[^2]",
+                "Kirkland Signature price cuts: walnuts from $13.79 to $9.99, and Colombian whole bean coffee from $21.99 to $19.99.[^2]",
+                "Ancillary businesses: comparable sales up in the high 20s, with gas up in the mid-30s. Inflation stayed in the low single digits.[^2]",
+                "Next update: September sales results on October 7, 2026.[^2]"
               ]
             }
           ]
@@ -345,7 +413,12 @@
           "date": "2025-10-07",
           "url": "https://www.sec.gov/Archives/edgar/data/909832/000090983225000101/cost-20250831.htm"
         }
-      ]
+      ],
+      "logo": {
+        "url": "/logos/costco.svg",
+        "alt": "Costco Wholesale logo",
+        "credit": "Logo: Costco Wholesale, via Wikimedia Commons (public domain; a registered trademark)"
+      }
     }
   ],
   "people": [
