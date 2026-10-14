@@ -193,6 +193,43 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
           )}
         </figure>
       );
+    case "table":
+      return (
+        <figure className="my-6">
+          <div className="overflow-x-auto border border-border">
+            <table className={`w-full border-collapse ${block.headers.length > 3 ? "min-w-[680px]" : ""}`}>
+              <thead>
+                <tr className="bg-secondary/30">
+                  {block.headers.map((h, j) => (
+                    <th
+                      key={j}
+                      scope="col"
+                      className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 text-left p-3 border-b border-border"
+                      dangerouslySetInnerHTML={{ __html: inline(h) }}
+                    />
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {block.rows.map((r, i) => (
+                  <tr key={i} className="align-top hover:bg-secondary/10 transition-colors">
+                    {r.map((c, j) => (
+                      <td
+                        key={j}
+                        className={`font-mono text-[11.5px] leading-relaxed p-3 border-b border-border/50 ${j === 0 ? "text-foreground font-semibold" : "text-muted-foreground"}`}
+                        dangerouslySetInnerHTML={{ __html: inline(c) }}
+                      />
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {block.caption && (
+            <figcaption className="font-mono text-[11px] text-muted-foreground/70 mt-2 leading-relaxed">{block.caption}</figcaption>
+          )}
+        </figure>
+      );
     case "callout":
       return (
         <div className="my-6 border border-foreground/20 bg-foreground/[0.03] p-5">

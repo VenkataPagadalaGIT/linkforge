@@ -67,6 +67,23 @@ for (const block of guide.blocks as Block[]) {
       push(`### ${block.text}`);
       push();
       break;
+    case "table": {
+      const cell = (s: string) => s.replace(/\|/g, "\\|").replace(/\n/g, " ");
+      if (block.caption) {
+        push(`*${block.caption}*`);
+        push();
+      }
+      push(`| ${block.headers.map(cell).join(" | ")} |`);
+      push(`|${block.headers.map(() => "---").join("|")}|`);
+      for (const r of block.rows) push(`| ${r.map(cell).join(" | ")} |`);
+      push();
+      break;
+    }
+    case "image":
+      push(`![${block.alt}](${SITE}${block.src})`);
+      if (block.caption) push(`*${block.caption}*`);
+      push();
+      break;
     case "nn":
     case "jev":
       push(`*(Interactive 3D content: explore it at ${SITE}/guides/${guide.slug})*`);

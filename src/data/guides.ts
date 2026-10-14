@@ -28,6 +28,7 @@ import { NN_COUNTS, NN_PARAMS, NN_WEIGHTS } from "./nn";
 import { QC_COUNTS } from "./quantum";
 import { sfGuide } from "./sfGuide";
 import { jevGuide } from "./jevGuide";
+import { agentsGuide } from "./agentsGuide";
 
 export interface DefinedTerm {
   slug: string;
@@ -70,6 +71,7 @@ export type Block =
   | { kind: "comparison" }
   | { kind: "termcard"; termSlug: string }
   | { kind: "code"; caption?: string; code: string }
+  | { kind: "table"; caption?: string; headers: string[]; rows: string[][] }
   | { kind: "callout"; title: string; text: string }
   | { kind: "list"; ordered?: boolean; items: string[] }
   | { kind: "decision"; items: { when: string; use: string }[] }
@@ -2045,6 +2047,7 @@ const qcBlocks: Block[] = [
 ];
 
 export const guides: Guide[] = [
+  agentsGuide,
   jevGuide,
   sfGuide,
   {
