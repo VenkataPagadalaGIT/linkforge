@@ -16,11 +16,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/agent-loop.webp",
+    "src": "/guides/ai-agents-for-marketing/agent-loop.svg",
     "alt": "The agent loop: goal and context go to the LLM, which decides the next step or that it is done, calls a tool, checks whether the goal is met, and feeds the result back if not.",
     "caption": "The agent loop: observe, decide, act, check, repeated until the goal is met. The loop is what separates an agent from a single prompt.",
-    "width": 1344,
-    "height": 490
+    "width": 1200,
+    "height": 352
   },
   {
     "kind": "p",
@@ -178,11 +178,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/script-workflow-agent.webp",
+    "src": "/guides/ai-agents-for-marketing/script-workflow-agent.svg",
     "alt": "Decision tree with three questions: fixed steps with no judgment means a plain script; known steps that each need language skill means an LLM workflow; a next step that depends on what was just found means an AI agent; otherwise re-scope the job.",
     "caption": "Three questions decide between a script, a workflow and an agent. Answer top to bottom; the first yes is your answer.",
-    "width": 1344,
-    "height": 756
+    "width": 1200,
+    "height": 704
   },
   {
     "kind": "p",
@@ -477,11 +477,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/competitor-monitor-architecture.webp",
+    "src": "/guides/ai-agents-for-marketing/competitor-monitor-architecture.svg",
     "alt": "Competitor monitor architecture: collect with feedparser and httpx, dedupe by hash against SQLite, judge with a cheap model and summarize with a better model through OpenRouter (the only paid steps), deliver to Slack or email, and store items, scores, digests, run logs and cost in SQLite or Postgres.",
-    "caption": "Code collects and delivers; the LLM only judges and summarizes. Triggered by cron or GitHub Actions each weekday; traces go to Langfuse.",
-    "width": 1344,
-    "height": 632
+    "caption": "Code collects and delivers; the LLM only judges and summarizes. Scheduled on weekdays by cron or GitHub Actions; every run logs its calls and cost.",
+    "width": 1200,
+    "height": 572
   },
   {
     "kind": "h3",
@@ -884,11 +884,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/campaign-orchestrator.webp",
+    "src": "/guides/ai-agents-for-marketing/campaign-orchestrator.svg",
     "alt": "Campaign orchestrator: a JSON campaign brief goes to a manager agent that writes a plan of 2 to 6 typed tasks; SEO, email, social and paid specialists run at the same time with asyncio.gather, each with its own call cap; a brand and compliance reviewer scores every asset with a cheap model; a human approves, with flagged assets listed first.",
-    "caption": "A manager plans, four specialists work in parallel, a reviewer scores, a human approves. State is a typed CampaignState object, checkpointed to disk after every stage.",
-    "width": 1344,
-    "height": 898
+    "caption": "A manager plans, four specialists work in parallel, a reviewer scores, a human approves. State is a typed CampaignState object, checkpointed after every stage; a rerun resumes from the last checkpoint.",
+    "width": 1200,
+    "height": 912
   },
   {
     "kind": "h3",
@@ -968,11 +968,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/seo-audit-swarm.webp",
+    "src": "/guides/ai-agents-for-marketing/seo-audit-swarm.svg",
     "alt": "SEO audit swarm: a job queue of clients feeds one worker per tenant with a page cap, a dollar cap and a semaphore of 8; each page is triaged by a cheap model, pages with severity 3 or more hand off to technical, content or links specialists; results are aggregated in code into a client report checked by a critic.",
-    "caption": "One worker per client: pages fan out to triage, hard cases hand off to specialists. Every page result is cached by its content hash, so re-running the same crawl is nearly free.",
-    "width": 1344,
-    "height": 880
+    "caption": "One worker per client: pages fan out to triage, hard cases hand off to specialists. Workers for different clients run concurrently, and every page result is cached, so re-running the same crawl re-triages nothing.",
+    "width": 1200,
+    "height": 800
   },
   {
     "kind": "h3",
@@ -1482,11 +1482,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "image",
-    "src": "/guides/ai-agents-for-marketing/rollout-timeline.webp",
+    "src": "/guides/ai-agents-for-marketing/rollout-timeline.svg",
     "alt": "Rollout timeline for one agent: spec and ROI signed off Oct 19 to Oct 21, build and offline tests Oct 21 to Oct 25, shadow mode Oct 26 to Nov 6, a one-user pilot Nov 9 to Nov 13, go-live Nov 16, first weekly review Nov 23.",
     "caption": "Five weeks from spec to go-live, with two weeks of shadow mode. Dates assume a start the week of Oct 19; shift them to yours.",
-    "width": 1344,
-    "height": 576
+    "width": 1200,
+    "height": 540
   },
   {
     "kind": "p",

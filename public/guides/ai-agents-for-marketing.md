@@ -13,7 +13,7 @@ Tags: AI Agents, Agentic AI, AI Agents for Marketing, Marketing Automation, Cont
 
 An AI agent is a program that uses a language model to **decide what to do next**, does it with tools, looks at the result, and repeats until a goal is met. A chatbot answers one message. An agent pursues a goal across many steps.
 
-![The agent loop: goal and context go to the LLM, which decides the next step or that it is done, calls a tool, checks whether the goal is met, and feeds the result back if not.](https://venkatapagadala.com/guides/ai-agents-for-marketing/agent-loop.webp)
+![The agent loop: goal and context go to the LLM, which decides the next step or that it is done, calls a tool, checks whether the goal is met, and feeds the result back if not.](https://venkatapagadala.com/guides/ai-agents-for-marketing/agent-loop.svg)
 *The agent loop: observe, decide, act, check, repeated until the goal is met. The loop is what separates an agent from a single prompt.*
 
 Each pass through the loop costs at least one model call, so loops must be short and capped. In practice they are: in a 2026 study of deployed agents, most ran ten steps or fewer before a human stepped in.
@@ -61,7 +61,7 @@ Agents differ by **how much they decide for themselves** and **how they are arra
 
 A **workflow** is code that calls an LLM at fixed points. An **agent** is an LLM that calls code at points it chooses. Workflows are cheaper, faster and easier to test; agents handle work you can't fully script. Most production systems are workflows with a small agent inside.
 
-![Decision tree with three questions: fixed steps with no judgment means a plain script; known steps that each need language skill means an LLM workflow; a next step that depends on what was just found means an AI agent; otherwise re-scope the job.](https://venkatapagadala.com/guides/ai-agents-for-marketing/script-workflow-agent.webp)
+![Decision tree with three questions: fixed steps with no judgment means a plain script; known steps that each need language skill means an LLM workflow; a next step that depends on what was just found means an AI agent; otherwise re-scope the job.](https://venkatapagadala.com/guides/ai-agents-for-marketing/script-workflow-agent.svg)
 *Three questions decide between a script, a workflow and an agent. Answer top to bottom; the first yes is your answer.*
 
 Answer the questions top to bottom; the first "yes" is your answer.
@@ -176,8 +176,8 @@ At 50 clients (an agency), the same code gives 50 daily digests for well under $
 
 The design rule: **everything that can be code is code; the model gets the two jobs only a model can do.** That keeps cost near zero, makes testing easy, and means a model outage degrades to "no digest today, picked up tomorrow", not "nothing works".
 
-![Competitor monitor architecture: collect with feedparser and httpx, dedupe by hash against SQLite, judge with a cheap model and summarize with a better model through OpenRouter (the only paid steps), deliver to Slack or email, and store items, scores, digests, run logs and cost in SQLite or Postgres.](https://venkatapagadala.com/guides/ai-agents-for-marketing/competitor-monitor-architecture.webp)
-*Code collects and delivers; the LLM only judges and summarizes. Triggered by cron or GitHub Actions each weekday; traces go to Langfuse.*
+![Competitor monitor architecture: collect with feedparser and httpx, dedupe by hash against SQLite, judge with a cheap model and summarize with a better model through OpenRouter (the only paid steps), deliver to Slack or email, and store items, scores, digests, run logs and cost in SQLite or Postgres.](https://venkatapagadala.com/guides/ai-agents-for-marketing/competitor-monitor-architecture.svg)
+*Code collects and delivers; the LLM only judges and summarizes. Scheduled on weekdays by cron or GitHub Actions; every run logs its calls and cost.*
 
 ### Tech stack and the purpose of each piece
 
@@ -395,8 +395,8 @@ If the model writes "bounce rate fell to 37%" and 37 is not in the data, the dra
 
 **What the agent does.** A manager agent turns the brief into typed tasks; four specializt agents produce their assets at the same time; a reviewer agent scores each one; everything lands in an approval bundle with the flagged items on top.
 
-![Campaign orchestrator: a JSON campaign brief goes to a manager agent that writes a plan of 2 to 6 typed tasks; SEO, email, social and paid specialists run at the same time with asyncio.gather, each with its own call cap; a brand and compliance reviewer scores every asset with a cheap model; a human approves, with flagged assets listed first.](https://venkatapagadala.com/guides/ai-agents-for-marketing/campaign-orchestrator.webp)
-*A manager plans, four specialists work in parallel, a reviewer scores, a human approves. State is a typed CampaignState object, checkpointed to disk after every stage.*
+![Campaign orchestrator: a JSON campaign brief goes to a manager agent that writes a plan of 2 to 6 typed tasks; SEO, email, social and paid specialists run at the same time with asyncio.gather, each with its own call cap; a brand and compliance reviewer scores every asset with a cheap model; a human approves, with flagged assets listed first.](https://venkatapagadala.com/guides/ai-agents-for-marketing/campaign-orchestrator.svg)
+*A manager plans, four specialists work in parallel, a reviewer scores, a human approves. State is a typed CampaignState object, checkpointed after every stage; a rerun resumes from the last checkpoint.*
 
 ### Patterns: orchestrator-workers + parallelization + shared state + checkpoints + human gate.
 
@@ -442,8 +442,8 @@ state.status = "awaiting_approval"; checkpoint(state, run_name)
 
 **What the agent does.** For every client it triages each crawled page in parallel with a cheap model, hands only the serious pages to a technical, content or links specializt, aggregates counts in code, has a critic check the report, and writes one JSON report per client. Each client gets its own worker with its own page cap and dollar cap, and clients missing from the config table get default caps.
 
-![SEO audit swarm: a job queue of clients feeds one worker per tenant with a page cap, a dollar cap and a semaphore of 8; each page is triaged by a cheap model, pages with severity 3 or more hand off to technical, content or links specialists; results are aggregated in code into a client report checked by a critic.](https://venkatapagadala.com/guides/ai-agents-for-marketing/seo-audit-swarm.webp)
-*One worker per client: pages fan out to triage, hard cases hand off to specialists. Every page result is cached by its content hash, so re-running the same crawl is nearly free.*
+![SEO audit swarm: a job queue of clients feeds one worker per tenant with a page cap, a dollar cap and a semaphore of 8; each page is triaged by a cheap model, pages with severity 3 or more hand off to technical, content or links specialists; results are aggregated in code into a client report checked by a critic.](https://venkatapagadala.com/guides/ai-agents-for-marketing/seo-audit-swarm.svg)
+*One worker per client: pages fan out to triage, hard cases hand off to specialists. Workers for different clients run concurrently, and every page result is cached, so re-running the same crawl re-triages nothing.*
 
 ### Patterns: fan-out/fan-in + routing handoffs + multi-tenant budgets + queue/workers + idempotency.
 
@@ -658,7 +658,7 @@ Decide these numbers before launch and review them weekly. An agent with no succ
 
 Every agent in this guide goes live the same way: a short build, a long shadow period, a one-person pilot, then everyone. The shadow period is where you catch what the tests can't.
 
-![Rollout timeline for one agent: spec and ROI signed off Oct 19 to Oct 21, build and offline tests Oct 21 to Oct 25, shadow mode Oct 26 to Nov 6, a one-user pilot Nov 9 to Nov 13, go-live Nov 16, first weekly review Nov 23.](https://venkatapagadala.com/guides/ai-agents-for-marketing/rollout-timeline.webp)
+![Rollout timeline for one agent: spec and ROI signed off Oct 19 to Oct 21, build and offline tests Oct 21 to Oct 25, shadow mode Oct 26 to Nov 6, a one-user pilot Nov 9 to Nov 13, go-live Nov 16, first weekly review Nov 23.](https://venkatapagadala.com/guides/ai-agents-for-marketing/rollout-timeline.svg)
 *Five weeks from spec to go-live, with two weeks of shadow mode. Dates assume a start the week of Oct 19; shift them to yours.*
 
 Dates shown are for an agent started the week of 19 Oct; shift them to your start.
