@@ -229,40 +229,64 @@ const agentsComparison: ComparisonRow[] = [
 
 const agentsFaqs: FaqItem[] = [
   {
-    q: "What is an AI agent in marketing?",
-    a: "An AI agent is a program that uses a language model to decide its next step, act with tools such as fetching a page or querying analytics, check the result, and repeat until a goal is met. In marketing that means jobs like monitoring competitors, drafting review replies, writing content briefs or explaining weekly analytics, with a person approving anything public.",
+    q: "What is an AI agent?",
+    a:
+      "An AI agent is a program that uses a language model to decide what to do next, acts with tools, checks the result, and repeats until a goal is met or a limit stops it. OpenAI's guide names three core parts (a model, tools and instructions); production agents add memory and a capped loop. A chatbot answers one message, while an agent pursues a goal across many steps.",
   },
   {
     q: "What is the difference between an AI agent and a workflow?",
-    a: "In a workflow your code decides the next step and calls the model at fixed points; in an agent the model decides. Workflows are cheaper, faster and easier to test, so use one whenever you can write every step down in advance. Use an agent only when the next step depends on what the last step found.",
+    a:
+      "In a workflow, your code decides every step and calls the model at fixed points; in an agent, the model decides which tool to use next. Anthropic draws the line the same way: workflows run on predefined code paths, while agents direct their own process and tool use. If you can write every step down in advance, build a workflow, because it is cheaper, faster and easier to test.",
   },
   {
-    q: "Do I need a framework like LangGraph, CrewAI or an agent SDK?",
-    a: "Not to start. All six agents in this guide are plain Python with Pydantic schemas and one shared OpenRouter client, so every pattern is visible. Move to a framework when you need durable state, complex graphs or team conventions, and you will know which features you need.",
+    q: "Is a chatbot or an AI assistant the same as an AI agent?",
+    a:
+      "No. A chatbot answers one message and an assistant helps a person who drives the task; neither plans and acts across many steps on its own. Many products sold as agents are rebranded assistants or automation, which Gartner calls agent washing; it estimates only about 130 of the thousands of agentic AI vendors are real.",
   },
   {
-    q: "How much does it cost to run a marketing AI agent?",
-    a: "With a cheap model for judging and a stronger model for writing, the agents in this guide cost cents per run: about $0.02 to $0.06 for a daily five-company monitor and $0.01 to $0.04 for a weekly analytics note. The bigger cost is usually the person's time to review, which is why the success metrics focus on adoption and first-pass acceptance.",
+    q: "What are the types of AI agents?",
+    a:
+      "The textbook list, summarized by IBM, has five: simple reflex, model-based reflex, goal-based, utility-based and learning agents. For LLM agents, the practical split is by autonomy (fixed workflow, tool-using loop, planning agent, long-running agent) and by arrangement (single agent, pipeline, orchestrator with specialists, parallel fan-out, human in the loop). Pick the simplest type that does the job.",
   },
   {
-    q: "How do I stop an agent from looping or overspending?",
-    a: "Use three walls: a spend limit on the API key itself, per-run caps in code on calls and dollars, and per-step caps such as max tokens, a maximum number of loop steps and limits on expensive tools. Then write a test that proves the agent stops when the model never says it is done.",
+    q: "Is ChatGPT an AI agent?",
+    a:
+      "ChatGPT is an assistant built on large language models; it acts as an agent only when it plans and carries out multi-step tasks with tools on your behalf. The test is the same for any product: does the model decide the next step, or does a fixed script? Product features change often, so check OpenAI's own help pages for what is available today.",
   },
   {
-    q: "Should an AI agent publish content or reply to customers on its own?",
-    a: "Not today. Public, paid and customer-facing actions are irreversible, so the agents in this guide end in an approval queue and a person clicks approve. Track how often drafts are approved without edits; that number tells you when, if ever, a narrow action can be automated.",
+    q: "Can I build an AI agent without coding?",
+    a:
+      "Yes, for simple jobs. Visual tools such as n8n, Zapier and Make can run a workflow with an AI step, and the competitor monitor in this guide maps onto RSS, HTTP, AI and Slack nodes. Write code when you need per-run cost caps, offline tests, per-client budgets or your own data rules.",
   },
   {
-    q: "How do I test an AI agent?",
-    a: "In layers: unit tests for the code steps, contract tests that reject bad model output, behavior tests that prove the loop and budget caps hold, and an end-to-end dry run, all offline with a mock model. Then run real models with no side effects on 20 to 30 real inputs, and keep a golden set of 30 to 50 cases as the release gate for prompt changes.",
+    q: "How much does it cost to run an AI agent?",
+    a:
+      "The companion repo runs for $0 in mock mode. With real models, every run is capped in code, and at October 14, 2026 list prices the ceilings are cents: about $0.04 for a content brief, $0.10 for the competitor monitor's daily run, and the SEO swarm stops at a $2.00 cap per client. Every run prints its measured cost, so budget from your own numbers.",
   },
   {
-    q: "How do I protect an AI agent from prompt injection?",
-    a: "Assume any web page, review or crawl it reads may contain instructions aimed at the model. Remove at least one leg of the lethal trifecta: keep private data out of prompts that read untrusted text, and never let the model choose where data is sent. Add detectors as a second layer only.",
+    q: "Are AI agents safe to use with company data?",
+    a:
+      "They are as safe as their design. The main risk is prompt injection: an agent that reads untrusted content, has access to private data and can send data out (Simon Willison's lethal trifecta) can be tricked into leaking it. Remove one of the three, keep a human approving anything public, and cap spend with per-key and per-run limits.",
   },
   {
-    q: "What is the best first AI agent for a marketing team?",
-    a: "A competitor or market monitor: it is high value, it touches nothing public, its worst failure is a boring digest, and it can be built and tested in a weekend. It also teaches every core skill, including dedupe, cheap-model judging, structured output, budgets and scheduling.",
+    q: "Can AI agents replace a marketing team?",
+    a:
+      "Not today. In a 2026 study of deployed agents, 68% executed at most 10 steps before a person stepped in, and in the TheAgentCompany benchmark the best agent fully completed about 30% of simulated office tasks. The realistic win is taking repetitive monitoring, drafting and reporting off people's plates while a human reviews the output.",
+  },
+  {
+    q: "What is MCP, and do I need it?",
+    a:
+      "The Model Context Protocol is an open standard for connecting AI applications to tools and data, now governed by the Agentic AI Foundation under the Linux Foundation. Write a tool once as an MCP server and any MCP-capable assistant can call it. You do not need it to start: the repo uses plain Python tools so the loop stays visible, and any MCP server you connect needs the same security review as any other tool.",
+  },
+  {
+    q: "Is it legal to use AI to reply to reviews or write marketing copy?",
+    a:
+      "Generally yes, with care; this is not legal advice. AI-written fake reviews are banned under the FTC's 2024 rule on fake reviews and testimonials, and a business answers for what its chatbot tells customers (Moffatt v. Air Canada, 2024). Health practices must never disclose patient details in replies: HHS settled with a dental practice for $23,000 over Yelp replies that did.",
+  },
+  {
+    q: "How do I know if an agent is working?",
+    a:
+      "Set success numbers before launch: recall, false alarms, on-time delivery, cost per run, and whether people actually read the output. Run it in shadow mode beside the person doing the job and pool results over several weeks before deciding. Keep a golden set of 30 to 50 real cases (Anthropic says 20 to 50 is a great start) as the release gate for every prompt or model change.",
   },
 ];
 
@@ -317,12 +341,12 @@ export const agentsGuide: Guide = {
   metaDescription:
     "What AI agents are, when to use one instead of a workflow, and how to build six marketing agents with code, costs, tests and a production checklist.",
   agentSummary:
-    "A field guide to AI agents for marketing teams. One job, monitoring five competitors, goes from first principles to a running agent; five more agents follow (review replies, SEO content briefs, an analytics narrator, a campaign orchestrator and a multi-client SEO audit swarm), each with its pattern, code, ROI, costs and failure modes. Then cost limits with OpenRouter, offline tests, success metrics, the MAST failure research, a five-week rollout and prompt-injection defense. All six agents are in a public MIT-licensed repo with 42 offline tests and a prompt pack generated from the code. Sources checked 2026-10-14.",
+    "A field guide to AI agents for marketing teams. One job, monitoring five competitors, goes from first principles to a running agent; five more agents follow (review replies, SEO content briefs, an analytics narrator, a campaign orchestrator and a multi-client SEO audit swarm), each with its pattern, code, ROI, costs and failure modes. Then cost limits with OpenRouter, offline tests, success metrics, the MAST failure research, a five-week rollout and prompt-injection defense. All six agents are in a public MIT-licensed repo with 43 offline tests and a prompt pack generated from the code. Sources checked 2026-10-14.",
   headline: "The Complete Guide to AI Agents for Marketing: From Zero to Production",
   kicker: "Field Guide",
   subhead:
     "One real problem, \"watch 5 companies and tell me what changed\", from first principles to a running agent, then five more marketing agents of rising difficulty, with the code, the costs, the tests and the rollout plan.",
-  deck: "Parts 1 to 4 explain what agents are and when to use one. Parts 5 to 8 build the first agent end to end. Parts 9 to 13 add five more, from a review reply drafter to a multi-client SEO audit swarm. Parts 14 to 18 cover cost limits, testing, success criteria, production and security. Every agent runs from the public companion repo, offline, for $0: github.com/VenkataPagadalaGIT/marketing-ai-agents.",
+  deck: "Parts 1 to 4 explain what agents are and when to use one. Parts 5 to 8 build the first agent end to end. Parts 9 to 13 add five more, from a review reply drafter to a multi-client SEO audit swarm. Parts 14 to 18 cover cost limits, testing, success criteria, production, security and the law, and Part 19 is a checked reading list of 62 resources from Anthropic, OpenAI, Google, IBM, MIT and others. Every agent runs from the public companion repo, offline, for $0: github.com/VenkataPagadalaGIT/marketing-ai-agents.",
   author: {
     name: "Venkata Pagadala",
     title: "AI Product Manager (Search · SEO · GEO)",
@@ -338,8 +362,8 @@ export const agentsGuide: Guide = {
   },
   datePublished: "2026-10-14",
   dateModified: "2026-10-14",
-  readingTime: "40 min read",
-  tags: ["AI Agents", "Agentic AI", "AI Agents for Marketing", "Marketing Automation", "Context Engineering", "Prompt Injection", "AI Evaluation", "OpenRouter", "Python"],
+  readingTime: "60 min read",
+  tags: ["AI Agents", "Agentic AI", "AI Agents for Marketing", "Marketing Automation", "Context Engineering", "Prompt Injection", "AI Evaluation", "MCP", "OpenRouter", "Python"],
   terms: agentsTerms,
   comparison: agentsComparison,
   comparisonHeaders: ["Type", "What it is", "Question it answers", "Structure", "Marketing example", "Best for", "Limit"],
