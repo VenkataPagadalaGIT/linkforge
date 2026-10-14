@@ -1062,7 +1062,7 @@ export const agentsGuideBlocks: Block[] = [
       [
         "Try a cheaper model",
         "New SDK, new auth, new response shape",
-        "Change `CHEAP_MODEL=` in `.env`"
+        "Change `CHEAP_MODEL=` in `.env` (the monitor uses `JUDGE_MODEL=`)"
       ],
       [
         "Hard spend limit",
@@ -1095,8 +1095,8 @@ export const agentsGuideBlocks: Block[] = [
     "kind": "list",
     "ordered": true,
     "items": [
-      "**The key's own limit** (OpenRouter dashboard → Keys → limit + reset). A key capped at $25/week cannot spend $26 no matter what your code does. Make one key per agent or per client.",
-      "**Per-run caps in code** (`MAX_COST_USD_PER_RUN`, `MAX_LLM_CALLS_PER_RUN`). The run stops cleanly, logs the reason, and still records what it did.",
+      "**The key's own limit** (a credit limit with a daily, weekly or monthly reset, set on the key in OpenRouter). Once it is used up, OpenRouter rejects requests until the reset, whatever your code does. Treat it as the outer backstop, not an exact meter. Make one key per agent or per client.",
+      "**Per-run caps in code** (`MAX_COST_USD_PER_RUN`, `MAX_LLM_CALLS_PER_RUN`), checked before every call, retries included. The run stops, logs the reason, and keeps what it finished.",
       "**Per-step caps** (`max_tokens`, per-agent call caps in the orchestrator, per-tenant page caps in the swarm)."
     ]
   },
@@ -1120,7 +1120,7 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "p",
-    "text": "If `limit_remaining` is below what the batch needs, queue it for tomorrow instead of starting and failing halfway."
+    "text": "If `limit_remaining` is below what the batch needs, queue it until the key's next reset (see `limit_reset`) instead of starting and failing halfway. A null `limit_remaining` means the key has no limit."
   },
   {
     "kind": "h3",
@@ -1173,7 +1173,7 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "p",
-    "text": "**Context is the real budget.** Anthropic's [context engineering guide](https://anthropic.com/engineering/effective-context-engineering-for-ai-agents) makes the point that every token in the window draws down a finite attention budget, and quality degrades before the window is full. Cost control and quality control are therefore the same discipline. How the repo applies its seven principles:"
+    "text": "**Context is the real budget.** Anthropic's [context engineering guide](https://anthropic.com/engineering/effective-context-engineering-for-ai-agents) makes the point that every token in the window draws down a finite attention budget, and quality degrades before the window is full. Cost control and quality control are therefore the same discipline. How the repo applies seven ideas from it:"
   },
   {
     "kind": "table",
@@ -1205,13 +1205,13 @@ export const agentsGuideBlocks: Block[] = [
       ],
       [
         "Compaction",
-        "Summarize and continue when context grows",
-        "Content brief keeps only the last 12 research notes"
+        "Summarize or drop old context when it grows",
+        "Content brief sends only its last 12 research notes and cuts every tool result to 1,200 characters"
       ],
       [
         "Structured note-taking",
         "Persist state outside the window",
-        "SQLite tables, `CampaignState` checkpoints"
+        "SQLite tables; `CampaignState` checkpoints with resume"
       ],
       [
         "Sub-agents with clean windows",
@@ -1239,12 +1239,12 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "code",
-    "code": "class Judgement(BaseModel):\n    model_config = ConfigDict(json_schema_extra={\"example\": {\"relevance\": 8, \"category\": \"product\", \"reason\": \"mock\"}})\n    relevance: int = Field(ge=0, le=10)\n    ...\n\n# common/llm.py\ndef _mock_response(self, schema):\n    self.stats.llm_calls += 1\n    return schema.model_validate(schema.model_config[\"json_schema_extra\"][\"example\"])"
+    "code": "class Judgement(BaseModel):\n    model_config = ConfigDict(json_schema_extra={\"example\": {\"relevance\": 8, \"category\": \"product\", \"reason\": \"mock\"}})\n    relevance: int = Field(ge=0, le=10)\n    ...\n\n# common/llm.py\ndef _mock_response(self, schema, user=\"\"):\n    fake = self.mock.get(schema.__name__)          # an agent may register a realistic fake\n    if callable(fake):\n        return schema.model_validate(fake(user))\n    return schema.model_validate(schema.model_config[\"json_schema_extra\"][\"example\"])"
   },
   {
     "kind": "h3",
-    "text": "Three layers of tests, and what each catches",
-    "id": "three-layers-of-tests-and-what-each-catches"
+    "text": "Four layers of tests, and what each catches",
+    "id": "four-layers-of-tests-and-what-each-catches"
   },
   {
     "kind": "table",
@@ -1265,9 +1265,9 @@ export const agentsGuideBlocks: Block[] = [
         "A model answer that would corrupt the next step"
       ],
       [
-        "Behavior (limits & flow)",
-        "`test_budget_cap_stops_the_run`, `test_step_cap_holds`, `test_rerun_is_idempotent_and_free`, `test_tenant_page_cap`",
-        "Runaway loops, runaway spend, double-processing"
+        "Behavior (limits and flow)",
+        "`test_step_cap_holds`, `test_budget_stop_keeps_unfinished_items_for_the_next_run`, `test_resume_skips_finished_stages`, `test_fetch_page_only_accepts_urls_from_the_serp`, `test_rerun_is_idempotent_and_free`",
+        "Runaway loops and spend, lost work, unsafe tool use, double-processing"
       ],
       [
         "End to end",
@@ -1283,11 +1283,11 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "code",
-    "code": "def test_step_cap_holds(monkeypatch):\n    # make the mock never say \"finish\": the loop must still end\n    monkeypatch.setitem(agent.Action.model_config[\"json_schema_extra\"][\"example\"], \"tool\", \"keyword_data\")\n    monkeypatch.setattr(agent, \"MAX_STEPS\", 3)\n    agent.run(\"best crm for small agencies\")      # would loop forever without the cap"
+    "code": "def test_step_cap_holds(monkeypatch):\n    # make the mock never say \"finish\": the loop must still end at MAX_STEPS\n    example = agent.Action.model_config[\"json_schema_extra\"][\"example\"]\n    monkeypatch.setitem(example, \"tool\", \"keyword_data\")\n    monkeypatch.setitem(example, \"args\", {\"keyword\": \"x\"})\n    monkeypatch.setattr(agent, \"MAX_STEPS\", 3)\n    agent.run(\"best crm for small agencies\")      # count the loop's model calls: exactly 3"
   },
   {
     "kind": "p",
-    "text": "**Then the second kind of local testing: real models, no side effects.** `MOCK_LLM=0 DRY_RUN=1` calls OpenRouter but prints instead of sending. Do this on 20–30 real inputs before go-live and read every output. This is where you tune prompts and thresholds; it costs a few cents."
+    "text": "**Then the second kind of local testing: real models, nothing sent.** `DRY_RUN=1` calls OpenRouter but prints the digest instead of posting it. Point `DB_PATH` at a scratch file, because a dry run still records what it saw. Do this on 20–30 real inputs before go-live and read every output. This is where you tune prompts and thresholds; it costs a few cents."
   },
   {
     "kind": "p",
@@ -1295,7 +1295,7 @@ export const agentsGuideBlocks: Block[] = [
   },
   {
     "kind": "code",
-    "code": "pytest -q                                   # 42 passed, about 1 s, $0\nMOCK_LLM=0 DRY_RUN=1 python -m competitor_monitor.main   # real run, prints the digest"
+    "code": "pytest -q                                   # 42 passed, about 1 s, $0\nDB_PATH=/tmp/scratch.db DRY_RUN=1 python -m competitor_monitor.main   # real models, prints the digest"
   },
   {
     "kind": "h2",
@@ -1332,12 +1332,12 @@ export const agentsGuideBlocks: Block[] = [
       [
         "First-pass acceptance",
         "≥ 80% of drafts approved without edits",
-        "Status field in the approval queue"
+        "A decision field (approved, edited, rejected) the approver sets in the queue"
       ],
       [
         "Reliability",
-        "≥ 98% of scheduled runs complete",
-        "Run log"
+        "≥ 98% of scheduled runs finish with no errors",
+        "Run log (`runs` table)"
       ],
       [
         "Cost",
@@ -1390,9 +1390,9 @@ export const agentsGuideBlocks: Block[] = [
         "Trim tool output; cap retries; check the model string"
       ],
       [
-        "Runs fail at 7:00",
-        "Feed down, rate limit, expired key",
-        "Fallback models; alert on 3 consecutive failures"
+        "Digest empty, or runs fail at 7:00",
+        "Feed down, rate limit, out-of-credit key",
+        "Fallback models cover rate limits and provider outages; alert on 3 consecutive failed or empty runs"
       ],
       [
         "Same mistake every week",
@@ -1599,7 +1599,7 @@ export const agentsGuideBlocks: Block[] = [
       [
         "Access to private data",
         "No",
-        "The judge and summarizer see only the article text and a title. No config, no keys, no database rows reach the prompt"
+        "The judge and summarizer see only the item's company, source, title, URL and text. No keys, no config values, no database rows reach the prompt"
       ],
       [
         "Can send data out",
@@ -1736,7 +1736,7 @@ export const agentsGuideBlocks: Block[] = [
         "Observability / tracing",
         "MLflow, Braintrust",
         "Parts 16, 17",
-        "all (run log), Langfuse hook"
+        "all (per-run call and cost counters; a run log table in 1)"
       ],
       [
         "Cost control and gateway routing",
@@ -1760,13 +1760,13 @@ export const agentsGuideBlocks: Block[] = [
         "Security: secrets, PII, prompt injection from fetched content",
         "OpenAI, practitioner guides",
         "Parts 8, 17",
-        "1 (web content is data, never instructions)"
+        "1 and 3 (no secrets in prompts, fixed destinations, URL allowlist)"
       ],
       [
         "Incremental deployment and a kill switch",
-        "OpenAI",
+        "OpenAI (incremental approach); kill switch: this guide",
         "Part 17",
-        "all"
+        "all (`AGENT_ENABLED=0`)"
       ]
     ]
   },
@@ -1846,7 +1846,7 @@ export const agentsGuideBlocks: Block[] = [
       ],
       [
         "[Toolformer (Schick et al., 2023)](https://arxiv.org/abs/2302.04761)",
-        "Models can learn when to call tools; the origin of tool-use as a first-class skill"
+        "Models can teach themselves, self-supervised, when and how to call APIs; a landmark for tool use as a learned skill"
       ],
       [
         "[Reflexion (Shinn et al., 2023)](https://arxiv.org/abs/2303.11366)",
@@ -1854,7 +1854,7 @@ export const agentsGuideBlocks: Block[] = [
       ],
       [
         "[Why Do Multi-Agent LLM Systems Fail? (Cemri et al., 2025)](https://arxiv.org/abs/2503.13657) **core**",
-        "The MAST taxonomy: most failures are design and coordination, not the model"
+        "The MAST taxonomy: 14 failure modes in 3 groups from 1,642 traces across 7 frameworks; many failures come from system design, not only the model"
       ],
       [
         "[WebAgentGuard (Chen et al., 2026)](https://arxiv.org/abs/2604.12284) and [WARD (ICML 2026)](https://icml.cc/virtual/2026/67778)",
@@ -1912,7 +1912,7 @@ export const agentsGuideBlocks: Block[] = [
       [
         "[Hugging Face Agents Course](https://huggingface.co/learn/agents-course/unit0/introduction)",
         "Free course",
-        "Hands-on, framework-agnostic units, certificate"
+        "Hands-on units with smolagents, LlamaIndex and LangGraph; free certificates"
       ],
       [
         "[Microsoft: AI Agents for Beginners](https://github.com/microsoft/ai-agents-for-beginners)",

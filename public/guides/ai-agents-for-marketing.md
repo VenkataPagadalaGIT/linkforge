@@ -489,7 +489,7 @@ async def triage_page(self, page):
 
 | Need | Without a gateway | With OpenRouter |
 |---|---|---|
-| Try a cheaper model | New SDK, new auth, new response shape | Change `CHEAP_MODEL=` in `.env` |
+| Try a cheaper model | New SDK, new auth, new response shape | Change `CHEAP_MODEL=` in `.env` (the monitor uses `JUDGE_MODEL=`) |
 | Hard spend limit | Build your own meter | Per-key credit limit with daily/weekly/monthly reset, set in the dashboard or the keys API |
 | Provider outage | Your run fails | `models: [primary, fallback1, fallback2]` in the request |
 | Know what a call cost | Compute from token prices you maintain | `usage.cost` comes back in the response |
@@ -497,8 +497,8 @@ async def triage_page(self, page):
 
 ### Three walls, outermost first
 
-1. **The key's own limit** (OpenRouter dashboard → Keys → limit + reset). A key capped at $25/week cannot spend $26 no matter what your code does. Make one key per agent or per client.
-2. **Per-run caps in code** (`MAX_COST_USD_PER_RUN`, `MAX_LLM_CALLS_PER_RUN`). The run stops cleanly, logs the reason, and still records what it did.
+1. **The key's own limit** (a credit limit with a daily, weekly or monthly reset, set on the key in OpenRouter). Once it is used up, OpenRouter rejects requests until the reset, whatever your code does. Treat it as the outer backstop, not an exact meter. Make one key per agent or per client.
+2. **Per-run caps in code** (`MAX_COST_USD_PER_RUN`, `MAX_LLM_CALLS_PER_RUN`), checked before every call, retries included. The run stops, logs the reason, and keeps what it finished.
 3. **Per-step caps** (`max_tokens`, per-agent call caps in the orchestrator, per-tenant page caps in the swarm).
 
 ### The request every agent in the repo sends
@@ -525,7 +525,7 @@ curl -s https://openrouter.ai/api/v1/key -H "Authorization: Bearer $OPENROUTER_A
 # {"data": {"limit": 25, "limit_remaining": 18.4, "limit_reset": "weekly", ...}}
 ```
 
-If `limit_remaining` is below what the batch needs, queue it for tomorrow instead of starting and failing halfway.
+If `limit_remaining` is below what the batch needs, queue it until the key's next reset (see `limit_reset`) instead of starting and failing halfway. A null `limit_remaining` means the key has no limit.
 
 ### What things cost in practice (estimates at OpenRouter list prices on 2026-10-14: Claude Haiku 5.5 at $0.10/$0.50 and Claude Sonnet 5.5 at $2/$10 per million input/output tokens; every run prints its real cost)
 
@@ -540,7 +540,7 @@ If `limit_remaining` is below what the batch needs, queue it for tomorrow instea
 
 **Habits that keep cost flat as you scale:** route by step (cheap for judging, strong for writing); trim every tool result before it reaches the model; pass structured objects between agents, not transcripts; cache tool results and triage results by content hash; use the provider's batch mode for anything that can wait overnight; and alert when cost per successful output moves more than 30% week over week.
 
-**Context is the real budget.** Anthropic's [context engineering guide](https://anthropic.com/engineering/effective-context-engineering-for-ai-agents) makes the point that every token in the window draws down a finite attention budget, and quality degrades before the window is full. Cost control and quality control are therefore the same discipline. How the repo applies its seven principles:
+**Context is the real budget.** Anthropic's [context engineering guide](https://anthropic.com/engineering/effective-context-engineering-for-ai-agents) makes the point that every token in the window draws down a finite attention budget, and quality degrades before the window is full. Cost control and quality control are therefore the same discipline. How the repo applies seven ideas from it:
 
 | Principle | What it means | Where the repo does it |
 |---|---|---|
@@ -548,8 +548,8 @@ If `limit_remaining` is below what the batch needs, queue it for tomorrow instea
 | System prompt at the right altitude | Specific enough to steer, loose enough for judgment | The judge rubric gives score bands, not a decision tree |
 | Self-contained, unambiguous tools | No overlapping tools, no bloated results | One verb per tool; `fetch_page` returns `{url, h2s, word_count}` |
 | Just-in-time retrieval | Hold references, load data when needed | `brand_facts(query)` is called by the agent, not pre-loaded |
-| Compaction | Summarize and continue when context grows | Content brief keeps only the last 12 research notes |
-| Structured note-taking | Persist state outside the window | SQLite tables, `CampaignState` checkpoints |
+| Compaction | Summarize or drop old context when it grows | Content brief sends only its last 12 research notes and cuts every tool result to 1,200 characters |
+| Structured note-taking | Persist state outside the window | SQLite tables; `CampaignState` checkpoints with resume |
 | Sub-agents with clean windows | Specialists return condensed results to a lead | Campaign orchestrator passes typed `Asset` objects, never transcripts |
 
 Sources: [OpenRouter limits](https://openrouter.ai/docs/api-reference/limits), [team spend controls](https://openrouter.ai/blog/tutorials/team-spend-controls-setup/).
@@ -567,37 +567,41 @@ class Judgement(BaseModel):
     ...
 
 # common/llm.py
-def _mock_response(self, schema):
-    self.stats.llm_calls += 1
+def _mock_response(self, schema, user=""):
+    fake = self.mock.get(schema.__name__)          # an agent may register a realistic fake
+    if callable(fake):
+        return schema.model_validate(fake(user))
     return schema.model_validate(schema.model_config["json_schema_extra"]["example"])
 ```
 
-### Three layers of tests, and what each catches
+### Four layers of tests, and what each catches
 
 | Layer | Example from the repo | Catches |
 |---|---|---|
 | Unit (code steps) | `test_collect_parses_feed`, `test_analysis_is_deterministic`, `test_guardrails_catch_promises_and_missing_phone` | Parsing bugs, wrong math, guardrail regressions |
 | Contract (model boundary) | `test_schema_rejects_bad_llm_output`, `test_grounding_check_rejects_invented_numbers` | A model answer that would corrupt the next step |
-| Behavior (limits & flow) | `test_budget_cap_stops_the_run`, `test_step_cap_holds`, `test_rerun_is_idempotent_and_free`, `test_tenant_page_cap` | Runaway loops, runaway spend, double-processing |
+| Behavior (limits and flow) | `test_step_cap_holds`, `test_budget_stop_keeps_unfinished_items_for_the_next_run`, `test_resume_skips_finished_stages`, `test_fetch_page_only_accepts_urls_from_the_serp`, `test_rerun_is_idempotent_and_free` | Runaway loops and spend, lost work, unsafe tool use, double-processing |
 | End to end | `test_full_run_dry`, `test_orchestrator_runs_specialists_in_parallel_and_gates` | The pieces not fitting together |
 
 ### The test that matters most is the one that proves the agent stops:
 
 ```
 def test_step_cap_holds(monkeypatch):
-    # make the mock never say "finish": the loop must still end
-    monkeypatch.setitem(agent.Action.model_config["json_schema_extra"]["example"], "tool", "keyword_data")
+    # make the mock never say "finish": the loop must still end at MAX_STEPS
+    example = agent.Action.model_config["json_schema_extra"]["example"]
+    monkeypatch.setitem(example, "tool", "keyword_data")
+    monkeypatch.setitem(example, "args", {"keyword": "x"})
     monkeypatch.setattr(agent, "MAX_STEPS", 3)
-    agent.run("best crm for small agencies")      # would loop forever without the cap
+    agent.run("best crm for small agencies")      # count the loop's model calls: exactly 3
 ```
 
-**Then the second kind of local testing: real models, no side effects.** `MOCK_LLM=0 DRY_RUN=1` calls OpenRouter but prints instead of sending. Do this on 20–30 real inputs before go-live and read every output. This is where you tune prompts and thresholds; it costs a few cents.
+**Then the second kind of local testing: real models, nothing sent.** `DRY_RUN=1` calls OpenRouter but prints the digest instead of posting it. Point `DB_PATH` at a scratch file, because a dry run still records what it saw. Do this on 20–30 real inputs before go-live and read every output. This is where you tune prompts and thresholds; it costs a few cents.
 
 **A golden set for quality (not in CI, run on prompt changes).** 30–50 real inputs with the answer you'd expect: for the monitor, which items a human would have flagged; for the narrator, the numbers that must appear; for the responder, which reviews must escalate. Pass rate on this set is your release gate.
 
 ```
 pytest -q                                   # 42 passed, about 1 s, $0
-MOCK_LLM=0 DRY_RUN=1 python -m competitor_monitor.main   # real run, prints the digest
+DB_PATH=/tmp/scratch.db DRY_RUN=1 python -m competitor_monitor.main   # real models, prints the digest
 ```
 
 ## Part 16: Success, failure, and when the agent needs enhancements
@@ -610,8 +614,8 @@ Decide these numbers before launch and review them weekly. An agent with no succ
 |---|---|---|
 | Recall | ≥ 90% of items a human would have flagged | Weekly spot check of 20 items vs the agent's output |
 | Precision | ≤ 2 irrelevant items per output | Count them in the digest / report |
-| First-pass acceptance | ≥ 80% of drafts approved without edits | Status field in the approval queue |
-| Reliability | ≥ 98% of scheduled runs complete | Run log |
+| First-pass acceptance | ≥ 80% of drafts approved without edits | A decision field (approved, edited, rejected) the approver sets in the queue |
+| Reliability | ≥ 98% of scheduled runs finish with no errors | Run log (`runs` table) |
 | Cost | Under the per-run cap, flat week over week | `cost_usd` in the run log |
 | Adoption | The person reads it 5 days out of 5, for 4 weeks | Ask them; or track link clicks |
 
@@ -624,7 +628,7 @@ Decide these numbers before launch and review them weekly. An agent with no succ
 | Missed the big story | Source not watched, or collected but thin text | Add the source; fetch full page when summary < 300 chars |
 | Invented facts | Model saw too little context or no grounding check | Give the text, not a snippet; add a grounding check (Part 11) |
 | Cost doubling | Tool output grew, retries looping, or a bigger model slipped in | Trim tool output; cap retries; check the model string |
-| Runs fail at 7:00 | Feed down, rate limit, expired key | Fallback models; alert on 3 consecutive failures |
+| Digest empty, or runs fail at 7:00 | Feed down, rate limit, out-of-credit key | Fallback models cover rate limits and provider outages; alert on 3 consecutive failed or empty runs |
 | Same mistake every week | Prompt or threshold never updated | The weekly loop below |
 
 **The research on why agents fail.** The most useful study is [Why Do Multi-Agent LLM Systems Fail?](https://arxiv.org/abs/2503.13657) (Cemri et al., NeurIPS 2025), which built a 14-mode failure taxonomy (MAST) from 150 hand-labeled traces, then used a validated model annotator to label 1,642 traces from seven agent frameworks. Two findings matter for anyone shipping agents. First, about three quarters of the labeled failures fall under **system design (44%) and inter-agent coordination (32%)**, not the model alone: in the authors' case studies the same model did better once roles, stopping rules and verification were fixed, though the gains were uneven. Second, the two most common single failures were **step repetition** (15.7%) and **reasoning-action mismatch** (13.2%), the agent saying one thing and doing another. Adding a high-level verification step raised task success by 15.6% on one benchmark. The table maps the taxonomy to this guide's use cases.
@@ -701,7 +705,7 @@ A worked example on the competitor monitor. A competitor's blog post contains, i
 | Trifecta leg | Does the monitor have it? | Why it is safe anyway |
 |---|---|---|
 | Reads untrusted content | Yes, every run | Unavoidable; this is the job |
-| Access to private data | No | The judge and summarizer see only the article text and a title. No config, no keys, no database rows reach the prompt |
+| Access to private data | No | The judge and summarizer see only the item's company, source, title, URL and text. No keys, no config values, no database rows reach the prompt |
 | Can send data out | Only to one fixed Slack webhook set in config | The model cannot choose a destination; the worst case is a strange sentence in a digest a human reads |
 
 The orchestrator and swarm give the model no tools at all. The content brief agent does have a URL tool, so code restricts it to URLs its own SERP search returned. No agent lets the model choose a free-form URL, email address or file path. Where you cannot remove a leg, add a detector: a cheap classifier that flags fetched text containing instruction-like language before it reaches the main prompt, and a review of any output that mentions keys, passwords or URLs not in the source. Research guard models such as [WebAgentGuard](https://arxiv.org/abs/2604.12284) and [WARD](https://icml.cc/virtual/2026/67778) show this is an active area; treat detectors as a second layer, never the first.
@@ -729,12 +733,12 @@ To make sure nothing is missed, the topics below were cross-checked against Anth
 | Memory: working, retrieval, state across runs | MLflow, practitioner guides | Parts 8, 10 | 1 (SQLite), 3 (FTS) |
 | Grounding / hallucination control | Practitioner guides | Part 11 | 4 |
 | Evaluation: offline tests, golden sets, shadow mode | OpenAI ("set up evals before optimizing"), Braintrust | Parts 15, 17 | all |
-| Observability / tracing | MLflow, Braintrust | Parts 16, 17 | all (run log), Langfuse hook |
+| Observability / tracing | MLflow, Braintrust | Parts 16, 17 | all (per-run call and cost counters; a run log table in 1) |
 | Cost control and gateway routing | Practitioner guides | Part 14 | all |
 | Idempotency, retries, checkpoints | MLflow (deployment challenges) | Parts 12, 13, 17 | 5, 6 |
 | Multi-tenancy and scaling | Practitioner guides | Parts 13, 17 | 6 |
-| Security: secrets, PII, prompt injection from fetched content | OpenAI, practitioner guides | Parts 8, 17 | 1 (web content is data, never instructions) |
-| Incremental deployment and a kill switch | OpenAI | Part 17 | all |
+| Security: secrets, PII, prompt injection from fetched content | OpenAI, practitioner guides | Parts 8, 17 | 1 and 3 (no secrets in prompts, fixed destinations, URL allowlist) |
+| Incremental deployment and a kill switch | OpenAI (incremental approach); kill switch: this guide | Part 17 | all (`AGENT_ENABLED=0`) |
 
 Two topics the leading guides mention that this guide deliberately keeps light: **long-running autonomous agents** (hours-long, self-directed; not yet worth the risk for marketing work) and **agent frameworks** (LangGraph, CrewAI, the Agent SDKs). The six use cases use plain Python on purpose so the patterns are visible; every one ports to a framework once you know what you need from it.
 
@@ -758,9 +762,9 @@ These are the sources worth a student's time, in the order to read them. Each li
 | Paper | What it established |
 |---|---|
 | [ReAct (Yao et al., 2022)](https://arxiv.org/abs/2210.03629) **core** | Interleave reasoning and tool calls; the loop every agent uses |
-| [Toolformer (Schick et al., 2023)](https://arxiv.org/abs/2302.04761) | Models can learn when to call tools; the origin of tool-use as a first-class skill |
+| [Toolformer (Schick et al., 2023)](https://arxiv.org/abs/2302.04761) | Models can teach themselves, self-supervised, when and how to call APIs; a landmark for tool use as a learned skill |
 | [Reflexion (Shinn et al., 2023)](https://arxiv.org/abs/2303.11366) | Self-critique with verbal feedback improves the next attempt; the evaluator-optimizer loop |
-| [Why Do Multi-Agent LLM Systems Fail? (Cemri et al., 2025)](https://arxiv.org/abs/2503.13657) **core** | The MAST taxonomy: most failures are design and coordination, not the model |
+| [Why Do Multi-Agent LLM Systems Fail? (Cemri et al., 2025)](https://arxiv.org/abs/2503.13657) **core** | The MAST taxonomy: 14 failure modes in 3 groups from 1,642 traces across 7 frameworks; many failures come from system design, not only the model |
 | [WebAgentGuard (Chen et al., 2026)](https://arxiv.org/abs/2604.12284) and [WARD (ICML 2026)](https://icml.cc/virtual/2026/67778) | Current defenses against prompt injection in web-reading agents |
 
 ### Practitioner writing
@@ -777,7 +781,7 @@ These are the sources worth a student's time, in the order to read them. Each li
 
 | Source | Format | Why |
 |---|---|---|
-| [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/unit0/introduction) | Free course | Hands-on, framework-agnostic units, certificate |
+| [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/unit0/introduction) | Free course | Hands-on units with smolagents, LlamaIndex and LangGraph; free certificates |
 | [Microsoft: AI Agents for Beginners](https://github.com/microsoft/ai-agents-for-beginners) | GitHub course | Lessons with code, covers patterns, tool use, trust, memory |
 | [DeepLearning.AI: Agentic AI (Andrew Ng)](https://www.deeplearning.ai/courses/agentic-ai/) | Course | Reflection, tool use, planning, multi-agent, with evals |
 | [DeepLearning.AI: AI Agents in LangGraph (Harrison Chase)](https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/) | Short course | Explicit state graphs, when you outgrow plain loops |
