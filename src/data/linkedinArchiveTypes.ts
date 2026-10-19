@@ -26,11 +26,59 @@ export interface LiItem {
   duration?: number;
   /** "pdf" or "pptx", documents only. */
   docExt?: string;
+  /** The article or post this media belongs to (LiPost id), when known. */
+  post?: string;
   /** Present only in local previews: the item is waiting for the owner's review and must never ship. */
   review?: boolean;
 }
 
-export type LiNodeType = "topic" | "entity" | "item";
+export type LiPostType = "article" | "post";
+
+/** Engagement as LinkedIn reported it on a given day (LinkedIn's data export has none; it comes from post analytics). */
+export interface LiEngagement {
+  reactions?: number;
+  comments?: number;
+  reposts?: number;
+  impressions?: number;
+  /** Day the numbers were read, YYYY-MM-DD. */
+  asOf: string;
+  /** Where the numbers came from, e.g. "LinkedIn post analytics export". */
+  source: string;
+}
+
+/** Someone the text links to on LinkedIn (named publicly by Venkata in the post or article). */
+export interface LiPerson {
+  name: string;
+  url: string;
+}
+
+/** A LinkedIn article (and, once LinkedIn's posts export is in, a post). Bodies live in linkedinPostBodiesData.ts. */
+export interface LiPost {
+  /** URL slug on this site (/linkedin/articles/<id>). FROZEN once live. */
+  id: string;
+  type: LiPostType;
+  title: string;
+  /** LinkedIn newsletter the article belongs to, and its edition number. */
+  series?: string;
+  edition?: number;
+  /** Published, ISO 8601 UTC (LinkedIn's export gives GMT to the minute). */
+  date: string;
+  /** The original on LinkedIn. */
+  url: string;
+  /** Cover image (LiItem idx). */
+  cover?: string;
+  /** Every public image in it (LiItem idx), in reading order. */
+  media: string[];
+  people: LiPerson[];
+  topics: string[];
+  words: number;
+  excerpt: string;
+  engagement?: LiEngagement;
+  /** Local previews only: an unpublished draft; must never ship. */
+  review?: boolean;
+}
+
+export type LiNodeType = "topic" | "entity" | "item" | "post";
 
 /** The three graph views (layouts computed at build time). */
 export type LiView = "topics" | "timeline" | "map";
@@ -39,7 +87,7 @@ export const LI_VIEWS: LiView[] = ["topics", "timeline", "map"];
 export interface LiGraphNode {
   id: string;
   type: LiNodeType;
-  /** Topic id for topics, the name for entities, empty for items. */
+  /** Topic id for topics, the name for entities, the title for posts, empty for items. */
   label: string;
   /** Items attached to a topic or entity node (all items tagged with it). */
   count?: number;
@@ -48,6 +96,8 @@ export interface LiGraphNode {
   /** Item nodes only. */
   idx?: string;
   kind?: LiKind;
+  /** Post nodes only: article or post (the node id is "p:" + the LiPost id). */
+  postType?: LiPostType;
   /** Topic nodes, Topics view: the label sits above the flower (chosen at build time to avoid collisions). */
   labelAbove?: boolean;
   /** Topic nodes, Map view: label offset from the node (collision-free placement computed at build time). */
@@ -64,6 +114,12 @@ export interface LiGraph {
   links: [string, string][];
   /** Hairlines drawn at rest in each view. */
   lines: Record<LiView, [string, string][]>;
-  timeline: { axisY: number; left: number; years: { year: string; x0: number; x1: number }[] };
+  timeline: {
+    axisY: number;
+    left: number;
+    years: { year: string; x0: number; x1: number }[];
+    /** One lane per post type, above the topic lanes. */
+    postLanes: { type: LiPostType; y: number; count: number }[];
+  };
   map: { cx: number; cy: number; rings: { r: number; label: string }[] };
 }

@@ -5,7 +5,7 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { ALL_LINKEDIN_TOPICS, LINKEDIN_PROFILE, fullUrl, getLinkedInTopic, isoDuration, posterUrl, thumbUrl, type LiItem } from "@/data/linkedinArchive";
+import { ALL_LINKEDIN_TOPICS, LINKEDIN_PROFILE, fullUrl, getLinkedInTopic, isoDuration, postPath, posterUrl, thumbUrl, type LiItem } from "@/data/linkedinArchive";
 
 type Params = { topic: string };
 
@@ -24,12 +24,13 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const topic = getLinkedInTopic(params.topic);
   if (!topic) return { title: "Topic not found" };
   const n = topic.items.length;
-  const description = `${n} item${n === 1 ? "" : "s"} on ${topic.label} from Venkata Pagadala's LinkedIn. ${topic.blurb}`.slice(0, 300);
+  const a = topic.posts.length;
+  const description = `${n} item${n === 1 ? "" : "s"}${a ? ` and ${a} article${a === 1 ? "" : "s"}` : ""} on ${topic.label} from Venkata Pagadala's LinkedIn. ${topic.blurb}`.slice(0, 300);
   return {
     title: { absolute: `${topic.label}: LinkedIn Archive | Venkata Pagadala` },
     description,
     alternates: { canonical: `/linkedin/topics/${topic.slug}` },
-    ...(n === 0 ? { robots: { index: false, follow: true } } : {}),
+    ...(n + a === 0 ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "website",
       url: `/linkedin/topics/${topic.slug}`,
@@ -89,7 +90,10 @@ export default function Page({ params }: { params: Params }) {
       description: topic.blurb,
       url,
       isPartOf: { "@type": "CollectionPage", name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
-      hasPart: topic.items.slice(0, 60).map(itemLd),
+      hasPart: [
+        ...topic.posts.map((p) => ({ "@type": "Article", headline: p.title, url: `${SITE_URL}${postPath(p)}`, datePublished: p.date })),
+        ...topic.items.slice(0, 60).map(itemLd),
+      ],
     },
     breadcrumbJsonLd([
       { name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },

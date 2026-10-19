@@ -9,10 +9,11 @@
  * a local static server in development), never from this repository.
  */
 import { LINKEDIN_ITEMS } from "./linkedinArchiveData";
-import type { LiItem, LiKind } from "./linkedinArchiveTypes";
+import { LINKEDIN_POSTS } from "./linkedinPostsData";
+import type { LiItem, LiKind, LiPost } from "./linkedinArchiveTypes";
 
-export type { LiItem, LiKind, LiGraph, LiGraphNode } from "./linkedinArchiveTypes";
-export { LINKEDIN_ITEMS };
+export type { LiItem, LiKind, LiGraph, LiGraphNode, LiPost, LiPerson, LiEngagement } from "./linkedinArchiveTypes";
+export { LINKEDIN_ITEMS, LINKEDIN_POSTS };
 
 export const LINKEDIN_PROFILE = "https://www.linkedin.com/in/venkata-pagadala";
 export const LINKEDIN_ACTIVITY = `${LINKEDIN_PROFILE}/recent-activity/all/`;
@@ -72,6 +73,26 @@ export const KIND_LABEL: Record<LiKind, string> = { image: "Image", video: "Vide
 /** Items the site may show. Review items exist only in local preview data. */
 export const PUBLIC_ITEMS: LiItem[] = LINKEDIN_ITEMS;
 
+/** Articles, newest first (drafts exist only in local preview data). */
+export const LINKEDIN_ARTICLES: LiPost[] = LINKEDIN_POSTS.filter((p) => p.type === "article");
+const postById = new Map(LINKEDIN_POSTS.map((p) => [p.id, p]));
+export const getLinkedInPost = (id: string) => postById.get(id);
+/** This site's page for an article (or post). */
+export const postPath = (p: Pick<LiPost, "id" | "type">) => `/linkedin/${p.type === "article" ? "articles" : "posts"}/${p.id}`;
+/** Minutes to read at 230 words a minute. */
+export const readingMinutes = (words: number) => Math.max(1, Math.round(words / 230));
+export const formatDateTime = (iso: string) =>
+  new Date(iso).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" });
+/** Articles that share the most topics with this one. */
+export function relatedPosts(p: LiPost, limit = 3) {
+  return LINKEDIN_ARTICLES.filter((q) => q.id !== p.id)
+    .map((q) => ({ q, n: q.topics.filter((t) => p.topics.includes(t)).length }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n || b.q.date.localeCompare(a.q.date))
+    .slice(0, limit)
+    .map((x) => x.q);
+}
+
 /**
  * Every topic that has a page ("Other" has none). Pages exist for all of them so
  * a URL never 404s once live; a topic that currently has no items renders noindex
@@ -79,10 +100,15 @@ export const PUBLIC_ITEMS: LiItem[] = LINKEDIN_ITEMS;
  */
 export const ALL_LINKEDIN_TOPICS = Object.keys(TOPIC_META)
   .filter((id) => id !== "other")
-  .map((id) => ({ id, ...TOPIC_META[id], items: PUBLIC_ITEMS.filter((i) => i.topics.includes(id)) }));
+  .map((id) => ({
+    id,
+    ...TOPIC_META[id],
+    items: PUBLIC_ITEMS.filter((i) => i.topics.includes(id)),
+    posts: LINKEDIN_ARTICLES.filter((p) => p.topics.includes(id)),
+  }));
 
-/** Topics with at least one item, largest first: the ones listed and linked. */
-export const LINKEDIN_TOPICS = ALL_LINKEDIN_TOPICS.filter((t) => t.items.length > 0).sort((a, b) => b.items.length - a.items.length);
+/** Topics with at least one item or article, largest first: the ones listed and linked. */
+export const LINKEDIN_TOPICS = ALL_LINKEDIN_TOPICS.filter((t) => t.items.length + t.posts.length > 0).sort((a, b) => b.items.length - a.items.length);
 
 export const getLinkedInTopic = (slug: string) => ALL_LINKEDIN_TOPICS.find((t) => t.slug === slug);
 
@@ -112,6 +138,7 @@ export const LINKEDIN_COUNTS = {
   images: PUBLIC_ITEMS.filter((i) => i.kind === "image").length,
   videos: PUBLIC_ITEMS.filter((i) => i.kind === "video").length,
   documents: PUBLIC_ITEMS.filter((i) => i.kind === "document").length,
+  articles: LINKEDIN_ARTICLES.length,
   topics: LINKEDIN_TOPICS.length,
   firstYear: years[0] ?? "",
   lastYear: years[years.length - 1] ?? "",

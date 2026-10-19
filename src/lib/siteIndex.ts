@@ -36,7 +36,7 @@ import { aiContributors } from "@/data/aiContributors";
 import { pillarPages, blogPosts } from "@/data/insights";
 import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc } from "@/data/talks";
 import { linkedPapers } from "@/data/research";
-import { LINKEDIN_TOPICS } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES, LINKEDIN_TOPICS, postPath } from "@/data/linkedinArchive";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
@@ -66,7 +66,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "business", label: "Business Notebook", blurb: "Earnings-call notes, the companies behind them and the people who speak for them." },
   { id: "encyclopedia", label: "AI Encyclopedia", blurb: "Every AI concept, one page each, by category." },
   { id: "map", label: "AI Systems Map", blurb: "Every entity in the AI value chain, one page each, by layer." },
-  { id: "linkedin", label: "LinkedIn archive", blurb: "Images, videos and documents I shared on LinkedIn, kept here, by topic." },
+  { id: "linkedin", label: "LinkedIn archive", blurb: "My LinkedIn articles in full, and the images, videos and documents I shared, kept here, by topic." },
   { id: "contributors", label: "AI Contributors", blurb: "The people building AI, in ranked order." },
   { id: "updates", label: "AI Updates", blurb: "AI news with primary sources, newest first." },
   { id: "insights", label: "Insights", blurb: "Essays on AI, search and systems, by pillar." },
@@ -272,15 +272,29 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // LinkedIn archive: the hub and one page per topic
+  // LinkedIn archive: the hub, the articles (each in full) and one page per topic
   out.push({
     href: "/linkedin", title: "LinkedIn archive: knowledge graph", section: "linkedin", hub: true,
     xml: { lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   });
+  if (LINKEDIN_ARTICLES.length) {
+    out.push({
+      href: "/linkedin/articles", title: "LinkedIn articles", section: "linkedin", hub: true,
+      note: `${LINKEDIN_ARTICLES.length} articles`,
+      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    });
+  }
+  for (const a of LINKEDIN_ARTICLES) {
+    out.push({
+      href: postPath(a), title: a.title, section: "linkedin", group: "Articles",
+      note: a.date.slice(0, 10),
+      xml: { lastModified: new Date(a.date), changeFrequency: "yearly", priority: 0.6 },
+    });
+  }
   for (const t of LINKEDIN_TOPICS) {
     out.push({
-      href: `/linkedin/topics/${t.slug}`, title: t.label, section: "linkedin",
-      note: `${t.items.length} item${t.items.length === 1 ? "" : "s"}`,
+      href: `/linkedin/topics/${t.slug}`, title: t.label, section: "linkedin", group: "Topics",
+      note: `${t.items.length} item${t.items.length === 1 ? "" : "s"}${t.posts.length ? `, ${t.posts.length} article${t.posts.length === 1 ? "" : "s"}` : ""}`,
       xml: { lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     });
   }

@@ -1,7 +1,8 @@
 import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
-import { LINKEDIN_COUNTS, LINKEDIN_PROFILE, LINKEDIN_TOPICS } from "@/data/linkedinArchive";
+import ArticleCard from "@/components/linkedin/ArticleCard";
+import { LINKEDIN_ARTICLES, LINKEDIN_COUNTS, LINKEDIN_PROFILE, LINKEDIN_TOPICS } from "@/data/linkedinArchive";
 
 const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="border border-border p-5">
@@ -23,6 +24,11 @@ export default function LinkedInArchiveView() {
             My LinkedIn, kept here and mapped
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-3">
+            {c.articles > 0 && (
+              <>
+                <a href="/linkedin/articles" className="underline hover:text-foreground">{c.articles} articles</a> in full, and{" "}
+              </>
+            )}
             {c.items} images, videos and documents I shared in LinkedIn posts, articles and comments, mapped as one knowledge graph
             by topic and by the names that recur: conferences, companies, products and people. Search it, filter it, or follow a
             topic. LinkedIn is where I share; this site is where the work lives.
@@ -36,7 +42,7 @@ export default function LinkedInArchiveView() {
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
-            <Stat label="Items" value={c.items} />
+            <Stat label="Articles" value={c.articles} />
             <Stat label="Images" value={c.images} />
             <Stat label="Videos" value={<span className="text-rose-700 dark:text-rose-300">{c.videos}</span>} />
             <Stat label="Topics" value={c.topics} />
@@ -44,6 +50,26 @@ export default function LinkedInArchiveView() {
         </ScrollReveal>
 
         <LinkedInExplorer />
+
+        {LINKEDIN_ARTICLES.length > 0 && (
+          <section className="mt-16" aria-labelledby="li-articles-h">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+              <h2 id="li-articles-h" className="font-display text-xl font-bold text-foreground">
+                Articles, in full
+              </h2>
+              <a href="/linkedin/articles" className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+                All {LINKEDIN_ARTICLES.length} articles
+              </a>
+            </div>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {LINKEDIN_ARTICLES.slice(0, 4).map((a) => (
+                <li key={a.id}>
+                  <ArticleCard post={a} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section className="mt-16" aria-labelledby="li-topics-h">
           <h2 id="li-topics-h" className="font-display text-xl font-bold text-foreground mb-4">

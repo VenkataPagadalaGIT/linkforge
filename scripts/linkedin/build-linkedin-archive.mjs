@@ -15,10 +15,14 @@
  *   map      - a semantic map: PCA of item features (topics, names, kind,
  *              context, year), typical items at the centre, outliers at the edge
  *
- * Usage:
- *   node scripts/linkedin/build-linkedin-archive.mjs --items <path/to/items.json> [--include-review]
+ * Articles (posts.json, from scripts/linkedin/extract-linkedin-posts.py) join
+ * their media by LinkedIn's asset id; each becomes a page and a graph node
+ * linked to its images, topics and the names it shares with the media.
  *
- * --include-review keeps items flagged `review` (local preview only).
+ * Usage:
+ *   node scripts/linkedin/build-linkedin-archive.mjs --items <items.json> --posts <posts.json> [--include-review]
+ *
+ * --include-review keeps items flagged `review` and unpublished drafts (local preview only).
  * scripts/linkedin/check-linkedin-data.mjs fails if any such item is present,
  * so a preview build can never be committed or deployed by accident.
  */
@@ -36,8 +40,11 @@ const includeReview = args.includes("--include-review");
 const suffix = includeReview ? ".preview" : "";
 const OUT_ITEMS = path.join(ROOT, `src/data/linkedinArchiveData${suffix}.ts`);
 const OUT_GRAPH = path.join(ROOT, `src/data/linkedinGraphData${suffix}.ts`);
-if (!itemsPath || args.indexOf("--items") < 0) {
-  console.error("usage: build-linkedin-archive.mjs --items <items.json> [--include-review]");
+const OUT_POSTS = path.join(ROOT, `src/data/linkedinPostsData${suffix}.ts`);
+const OUT_BODIES = path.join(ROOT, `src/data/linkedinPostBodiesData${suffix}.ts`);
+const postsPath = args.indexOf("--posts") >= 0 ? args[args.indexOf("--posts") + 1] : null;
+if (!itemsPath || args.indexOf("--items") < 0 || !postsPath) {
+  console.error("usage: build-linkedin-archive.mjs --items <items.json> --posts <posts.json> [--include-review]");
   process.exit(2);
 }
 
@@ -95,6 +102,53 @@ const items = raw
 if (!items.length) {
   console.error("build-linkedin-archive: no items to build (check --items and the review filter)");
   process.exit(1);
+}
+
+// ---- articles (and later posts): public = published; drafts only in a preview ----
+const itemByIdx = new Map(items.map((i) => [i.idx, i]));
+const posts = JSON.parse(fs.readFileSync(postsPath, "utf8"))
+  .filter((p) => includeReview || !p.draft)
+  .filter((p) => p.date && (p.title || p.draft))
+  .map((p) => {
+    const media = p.media.filter((m) => itemByIdx.has(m));
+    const out = {
+      id: p.id,
+      type: p.type,
+      title: clean(p.title || "Untitled draft"),
+      date: p.date,
+      url: p.url ?? "",
+      media,
+      people: p.people.map((x) => ({ name: clean(x.name), url: x.url })),
+      topics: p.topics,
+      words: p.words,
+      excerpt: clean(p.excerpt),
+    };
+    if (p.series) out.series = clean(p.series);
+    if (p.edition) out.edition = p.edition;
+    if (p.cover && itemByIdx.has(p.cover)) out.cover = p.cover;
+    if (p.engagement) out.engagement = p.engagement;
+    if (p.draft) out.review = true;
+    return out;
+  })
+  .sort((a, b) => b.date.localeCompare(a.date));
+// Bodies swap images that are not on the site for nothing (a preview may hold more media than a public build).
+const bodies = Object.fromEntries(
+  JSON.parse(fs.readFileSync(postsPath, "utf8"))
+    .filter((p) => posts.some((q) => q.id === p.id))
+    .map((p) => [p.id, p.html
+      // Images not on the site go; an image without the author's alt text gets its public caption.
+      .replace(/<img [^>]*data-li-idx="(\d{4})"[^>]*>/g, (tag, idx) => {
+        const it = itemByIdx.get(idx);
+        if (!it) return "";
+        const esc = it.description.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return tag.replace(/alt=""/, `alt="${esc}"`);
+      })
+      .replace(/<figure>(?:(?!<img)[\s\S])*?<\/figure>/g, "")]),
+);
+for (const p of posts) for (const m of p.media) {
+  const it = itemByIdx.get(m);
+  if (!it.post) it.post = p.id;
+  else if (it.post !== p.id) console.warn(`build-linkedin-archive: ${m} is in "${it.post}" and "${p.id}"; its card links the first`);
 }
 
 // ---- shared counts ----
@@ -218,6 +272,32 @@ const labelSide = new Map();
     for (const it of list) posT.set(`e:${slug(it.e)}`, [x, it.y]);
   }
 }
+// Articles sit on the rim of the flower that holds their images: start at the images' centre,
+// then walk out on a spiral to the first spot clear of every card, hub and other article.
+const POST_W = 9, POST_H = 11;
+const freeSpot = (pos, start, others, minItem, minPost) => {
+  for (let step = 0; step < 4000; step++) {
+    const a = step * 0.5, r = step * 0.45;
+    const x = start[0] + Math.cos(a) * r, y = start[1] + Math.sin(a) * r;
+    let ok = true;
+    for (const [k, p] of pos) {
+      if (k.startsWith("e:")) continue;
+      const need = k.startsWith("t:") ? 22 : k.startsWith("p:") ? minPost : minItem;
+      if (Math.hypot(p[0] - x, p[1] - y) < need) { ok = false; break; }
+    }
+    if (ok && others.every((o) => Math.hypot(o[0] - x, o[1] - y) >= minPost)) return [x, y];
+  }
+  return start;
+};
+const centreOf = (pos, ids) => {
+  const ps = ids.map((id) => pos.get(id)).filter(Boolean);
+  return ps.length ? [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length] : null;
+};
+for (const p of posts) {
+  const start = centreOf(posT, p.media.map((m) => `i:${m}`)) ?? posT.get(`t:${p.topics.find((t) => posT.has(`t:${t}`))}`) ?? [0, 0];
+  posT.set(`p:${p.id}`, freeSpot(posT, start, [], 10, 16));
+}
+
 // Fit into the shared viewBox (labels need room).
 const M = 24;
 const ENT_CHAR = 6.6; // entity label character width (11, mono)
@@ -253,7 +333,7 @@ W = Math.round(W); H = Math.round(H);
 // View 2: timeline garden
 // =====================================================================
 const posL = new Map();
-const yearsList = [...new Set(items.map((i) => i.date.slice(0, 4)))].sort();
+const yearsList = [...new Set([...items, ...posts].map((i) => i.date.slice(0, 4)))].sort();
 const yCount = new Map(yearsList.map((y) => [y, items.filter((i) => i.date.startsWith(y)).length]));
 const LEFT = 262, RIGHT = 30, TOP = 78, AXIS = H - 40;
 const weights = yearsList.map((y) => Math.max(Math.sqrt(yCount.get(y)), 2.2));
@@ -263,11 +343,13 @@ const bands = [];
   let x = LEFT;
   yearsList.forEach((y, k) => { const bw = ((W - LEFT - RIGHT) * weights[k]) / wsum; bands.push({ year: y, x0: x, x1: x + bw }); x += bw; });
 }
+const postTypes = ["article", "post"].filter((t) => posts.some((p) => p.type === t));
 const laneTopics = order.filter((t) => t !== "other").concat(order.includes("other") ? ["other"] : []);
-const laneY = new Map(laneTopics.map((t, k) => [t, TOP + ((AXIS - 34 - TOP) * k) / Math.max(1, laneTopics.length - 1)]));
-const dayFrac = (d) => { const t = new Date(`${d}T00:00:00Z`); const s = Date.UTC(t.getUTCFullYear(), 0, 1); return (t - s) / (366 * 864e5); };
-const lanePlaced = new Map(laneTopics.map((t) => [t, []]));
-const LANE_GAP = (AXIS - 34 - TOP) / Math.max(1, laneTopics.length - 1);
+const lanes = [...postTypes.map((t) => `@${t}`), ...laneTopics];
+const laneY = new Map(lanes.map((t, k) => [t, TOP + ((AXIS - 34 - TOP) * k) / Math.max(1, lanes.length - 1)]));
+const dayFrac = (d) => { const t = new Date(`${d.slice(0, 10)}T00:00:00Z`); const s = Date.UTC(t.getUTCFullYear(), 0, 1); return (t - s) / (366 * 864e5); };
+const lanePlaced = new Map(lanes.map((t) => [t, []]));
+const LANE_GAP = (AXIS - 34 - TOP) / Math.max(1, lanes.length - 1);
 const OFF = [0, -9, 9].filter((o) => Math.abs(o) <= LANE_GAP / 2 - 4);
 const MIN_D = 8.6; // a card is 8 units: no two cards closer than this
 for (const it of [...items].sort((a, b) => a.date.localeCompare(b.date))) {
@@ -286,6 +368,20 @@ for (const it of [...items].sort((a, b) => a.date.localeCompare(b.date))) {
   posL.set(`i:${it.idx}`, [round(x), round(y)]);
 }
 for (const t of laneTopics) posL.set(`t:${t}`, [LEFT - 16, round(laneY.get(t))]);
+// Articles get their own lane, by publish date, stacked the same way as cards.
+for (const p of [...posts].sort((a, b) => a.date.localeCompare(b.date))) {
+  const lane = `@${p.type}`, y0 = laneY.get(lane), placed = lanePlaced.get(lane);
+  const b = bands.find((x) => x.year === p.date.slice(0, 4));
+  const x = b.x0 + 6 + (b.x1 - b.x0 - 12) * dayFrac(p.date);
+  let px = x, y = y0;
+  for (let shift = 0, found = false; shift < 40 && !found; shift++) {
+    px = x + shift * (POST_W + 2);
+    for (const o of OFF) if (placed.every((q) => Math.abs(q[0] - px) >= POST_W + 2 || Math.abs(q[1] - (y0 + o)) >= POST_H + 1)) { y = y0 + o; found = true; break; }
+  }
+  if (px > W - RIGHT) throw new Error(`build-linkedin-archive: the ${p.type} lane is full past ${p.date.slice(0, 4)}; it needs more rows`);
+  placed.push([px, y]);
+  posL.set(`p:${p.id}`, [round(px), round(y)]);
+}
 {
   const ps = items.map((it) => posL.get(`i:${it.idx}`));
   let clashes = 0;
@@ -376,6 +472,11 @@ const mapLabel = new Map();
   for (const l of L) mapLabel.set(l.t, [round(l.x - l.ax), round(l.y - l.ay)]);
 }
 for (const e of entities) posM.set(`e:${slug(e)}`, meanOf((it) => it.entities.includes(e)));
+for (const p of posts) {
+  const start = centreOf(posM, p.media.map((m) => `i:${m}`)) ?? posM.get(`t:${p.topics.find((t) => posM.has(`t:${t}`))}`) ?? [W / 2, H / 2];
+  const [x, y] = freeSpot(posM, start, [], 9, 14);
+  posM.set(`p:${p.id}`, [round(Math.max(12, Math.min(W - 12, x))), round(Math.max(12, Math.min(H - 12, y)))]);
+}
 const cxM = pts.reduce((s, p) => s + p[0], 0) / pts.length, cyM = pts.reduce((s, p) => s + p[1], 0) / pts.length;
 const dists = pts.map((p) => Math.hypot(p[0] - cxM, p[1] - cyM)).sort((a, b) => a - b);
 const pct = (q) => dists[Math.min(dists.length - 1, Math.floor(q * dists.length))];
@@ -397,10 +498,18 @@ const nodes = [];
 for (const t of order) nodes.push({ id: `t:${t}`, type: "topic", label: t, count: topicCount.get(t), own: members.get(t).length, labelAbove: labelSide.get(t) === "above" || undefined, mapLabel: mapLabel.get(t), pos: { topics: at(posT, `t:${t}`), timeline: at(posL, `t:${t}`), map: at(posM, `t:${t}`) } });
 for (const e of entities) nodes.push({ id: `e:${slug(e)}`, type: "entity", label: e, count: entityCount.get(e), pos: { topics: at(posT, `e:${slug(e)}`), timeline: null, map: at(posM, `e:${slug(e)}`) } });
 for (const it of items) nodes.push({ id: `i:${it.idx}`, type: "item", label: "", idx: it.idx, kind: it.kind, pos: { topics: at(posT, `i:${it.idx}`), timeline: at(posL, `i:${it.idx}`), map: at(posM, `i:${it.idx}`) } });
+for (const p of posts) nodes.push({ id: `p:${p.id}`, type: "post", label: p.title, postType: p.type, count: p.media.length, pos: { topics: at(posT, `p:${p.id}`), timeline: at(posL, `p:${p.id}`), map: at(posM, `p:${p.id}`) } });
 const links = [];
 for (const it of items) {
   for (const t of it.topics) links.push([`i:${it.idx}`, `t:${t}`]);
   for (const e of it.entities) if (entitySet.has(e)) links.push([`i:${it.idx}`, `e:${slug(e)}`]);
+}
+const entityByName = new Map(entities.map((e) => [e.toLowerCase(), e]));
+for (const p of posts) {
+  for (const m of p.media) links.push([`p:${p.id}`, `i:${m}`]);
+  for (const t of p.topics) if (topicCount.has(t)) links.push([`p:${p.id}`, `t:${t}`]);
+  const names = new Set([...p.people.map((x) => x.name), ...p.media.flatMap((m) => itemByIdx.get(m).entities)].map((n) => n.toLowerCase()));
+  for (const n of names) if (entityByName.has(n)) links.push([`p:${p.id}`, `e:${slug(entityByName.get(n))}`]);
 }
 const lines = {
   topics: items.map((it) => [`i:${it.idx}`, `t:${primary(it)}`]),
@@ -409,7 +518,10 @@ const lines = {
 };
 const graph = {
   width: W, height: H, nodes, links, lines,
-  timeline: { axisY: AXIS, left: LEFT, years: bands.map((b) => ({ year: b.year, x0: round(b.x0), x1: round(b.x1) })) },
+  timeline: {
+    axisY: AXIS, left: LEFT, years: bands.map((b) => ({ year: b.year, x0: round(b.x0), x1: round(b.x1) })),
+    postLanes: postTypes.map((t) => ({ type: t, y: round(laneY.get(`@${t}`)), count: posts.filter((p) => p.type === t).length })),
+  },
   map: { cx: round(cxM), cy: round(cyM), rings: [{ r: round(pct(0.5)), label: "typical" }, { r: round(pct(0.9)), label: "outlier" }] },
 };
 
@@ -424,7 +536,19 @@ import type { LiGraph } from "./linkedinArchiveTypes";
 
 export const LINKEDIN_GRAPH: LiGraph = ${JSON.stringify(graph)};
 `;
+const postsSrc = `/* GENERATED by scripts/linkedin/build-linkedin-archive.mjs. Do not edit by hand. ${note} */
+import type { LiPost } from "./linkedinArchiveTypes";
+
+export const LINKEDIN_POSTS: LiPost[] = ${JSON.stringify(posts)};
+`;
+const bodiesSrc = `/* GENERATED by scripts/linkedin/build-linkedin-archive.mjs. Do not edit by hand. ${note}
+ * Article bodies, rebuilt from an allowlist of tags by extract-linkedin-posts.py; "{{media}}" is the media base URL. */
+
+export const LINKEDIN_POST_BODIES: Record<string, string> = ${JSON.stringify(bodies)};
+`;
 fs.writeFileSync(OUT_ITEMS, itemsSrc);
 fs.writeFileSync(OUT_GRAPH, graphSrc);
+fs.writeFileSync(OUT_POSTS, postsSrc);
+fs.writeFileSync(OUT_BODIES, bodiesSrc);
 const kb = (t) => (Buffer.byteLength(t) / 1024).toFixed(0);
-console.log(`wrote ${path.relative(ROOT, OUT_ITEMS)} (${kb(itemsSrc)} KB) and ${path.relative(ROOT, OUT_GRAPH)} (${kb(graphSrc)} KB): ${items.length} items (${items.filter((i) => i.review).length} review), ${order.length} flowers, ${entities.length} names, viewBox ${W}x${H}, ${lines.map.length} map hairlines`);
+console.log(`wrote ${path.relative(ROOT, OUT_ITEMS)} (${kb(itemsSrc)} KB), ${path.relative(ROOT, OUT_GRAPH)} (${kb(graphSrc)} KB), posts (${kb(postsSrc)} KB) and bodies (${kb(bodiesSrc)} KB): ${items.length} items (${items.filter((i) => i.review).length} review), ${posts.length} articles (${posts.filter((p) => p.review).length} drafts), ${order.length} flowers, ${entities.length} names, viewBox ${W}x${H}, ${lines.map.length} map hairlines`);

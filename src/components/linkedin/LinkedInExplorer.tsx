@@ -5,16 +5,19 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import {
   KIND_LABEL,
   LINKEDIN_ACTIVITY,
+  LINKEDIN_POSTS,
   PUBLIC_ITEMS,
   formatDay,
   formatDuration,
   fullUrl,
+  postPath,
   posterUrl,
   thumbUrl,
   topicLabel,
   topicSlug,
   type LiItem,
   type LiKind,
+  type LiPost,
 } from "@/data/linkedinArchive";
 
 /**
@@ -52,15 +55,21 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const [openIdx, setOpenIdx] = React.useState<string | null>(null);
 
   const itemsByIdx = React.useMemo(() => new Map(PUBLIC_ITEMS.map((i) => [i.idx, i])), []);
+  const postsById = React.useMemo(() => new Map(LINKEDIN_POSTS.map((p) => [p.id, p])), []);
+  // An item is found by its own words and by the title of the article it is in.
   const haystack = React.useMemo(
     () =>
       new Map(
         items.map((i) => [
           i.idx,
-          norm(`${i.description} ${i.label} ${i.entities.join(" ")} ${i.topics.map(topicLabel).join(" ")} ${i.date} ${KIND_LABEL[i.kind]}`),
+          norm(
+            `${i.description} ${i.label} ${i.entities.join(" ")} ${i.topics.map(topicLabel).join(" ")} ${i.date} ${KIND_LABEL[i.kind]} ${
+              i.post ? postsById.get(i.post)?.title ?? "" : ""
+            }`,
+          ),
         ]),
       ),
-    [items],
+    [items, postsById],
   );
 
   const terms = norm(query).split(/\s+/).filter(Boolean);
@@ -78,6 +87,24 @@ export default function LinkedInExplorer({ topicId }: Props) {
   );
   const filterActive = kind !== "all" || !!year || !!query.trim() || (!!topic && !hideGraph);
   const matching = React.useMemo(() => (filterActive ? new Set(filtered.map((i) => i.idx)) : null), [filterActive, filtered]);
+  // An article lights when one of its images matches, or (no kind filter) its own title, text or people do.
+  const matchingPosts = React.useMemo(() => {
+    if (!matching) return null;
+    const out = new Set<string>();
+    for (const p of LINKEDIN_POSTS) {
+      if (p.media.some((m) => matching.has(m))) out.add(p.id);
+      else if (
+        kind === "all" &&
+        (!year || p.date.startsWith(year)) &&
+        (!topic || p.topics.includes(topic)) &&
+        (terms.length === 0 ||
+          terms.every((t) => norm(`${p.title} ${p.excerpt} ${p.people.map((x) => x.name).join(" ")} ${p.topics.map(topicLabel).join(" ")}`).includes(t)))
+      )
+        out.add(p.id);
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matching, kind, year, topic, query]);
 
   const counts = React.useMemo(() => {
     const c: Record<KindFilter, number> = { all: items.length, image: 0, video: 0, document: 0 };
@@ -140,15 +167,19 @@ export default function LinkedInExplorer({ topicId }: Props) {
           </div>
           <LinkedInGraph
             itemsByIdx={itemsByIdx}
+            postsById={postsById}
             matching={matching}
+            matchingPosts={matchingPosts}
             activeTopic={topic}
             onTopic={setTopic}
             onItem={setOpenIdx}
           />
           <p className="li-js mt-3 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
             Three views: 01 Topics (each topic a flower), 02 Timeline (press Grow to replay the garden) and 03 Map (similar items
-            together, outliers at the edge). Hover a topic or a name to light up everything connected to it, click a topic to
-            filter the cards below, click any item to open it. Zoom with the buttons or Ctrl/⌘ and scroll, then drag to move.
+            together, outliers at the edge). Hover anything to preview what it connects to; click it to pin it: its connections stay
+            lit and a panel lists each one (articles with time and engagement, images, topics, names), so you can walk the graph
+            click by click. Esc, ✕ or a click on empty space unpins; a pinned topic&apos;s panel has a button to filter the cards below.
+            Zoom with the buttons or Ctrl/⌘ and scroll, then drag to move.
           </p>
         </section>
       )}
@@ -185,7 +216,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
       <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" data-testid="linkedin-grid">
         {filtered.map((it) => (
           <li key={it.idx}>
-            <Card item={it} onOpen={() => setOpenIdx(it.idx)} />
+            <Card item={it} post={it.post ? postsById.get(it.post) : undefined} onOpen={() => setOpenIdx(it.idx)} />
           </li>
         ))}
       </ul>
@@ -193,7 +224,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
         <p className="font-mono text-sm text-muted-foreground py-10 text-center">Nothing matches. Try fewer words or reset the filters.</p>
       )}
 
-      <Viewer item={open} onClose={() => setOpenIdx(null)} onPrev={() => step(-1)} onNext={() => step(1)} position={openPos} total={filtered.length} />
+      <Viewer item={open} postsById={postsById} onClose={() => setOpenIdx(null)} onPrev={() => step(-1)} onNext={() => step(1)} position={openPos} total={filtered.length} />
     </div>
   );
 }
@@ -204,6 +235,9 @@ function Legend() {
     <ul className="flex flex-wrap items-center gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
       <li className="inline-flex items-center gap-1.5"><i className="inline-block w-3 h-3 rounded-full border-2 border-foreground" /> Topic</li>
       <li className="inline-flex items-center gap-1.5"><i className="inline-block w-2 h-2 rotate-45 bg-sky-600 dark:bg-sky-300" /> Name</li>
+      <li className="inline-flex items-center gap-1.5">
+        <svg viewBox="-5 -6 10 12" className="w-2.5 h-3" aria-hidden="true"><path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z M 2 -5.5 V -3 H 4.5" className="fill-background stroke-foreground" strokeWidth={1.2} /></svg> Article
+      </li>
       <li className="inline-flex items-center gap-1.5"><i className={`${dot} border-border`} /> Image</li>
       <li className="inline-flex items-center gap-1.5 text-rose-700 dark:text-rose-300"><i className={`${dot} border-rose-600 dark:border-rose-300`} /> Video</li>
       <li className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-300"><i className="inline-block w-2.5 h-2.5 border border-amber-600 dark:border-amber-300" /> Document</li>
@@ -211,7 +245,7 @@ function Legend() {
   );
 }
 
-function Card({ item, onOpen }: { item: LiItem; onOpen: () => void }) {
+function Card({ item, post, onOpen }: { item: LiItem; post?: LiPost; onOpen: () => void }) {
   return (
     <a
       href={fullUrl(item)}
@@ -256,6 +290,7 @@ function Card({ item, onOpen }: { item: LiItem; onOpen: () => void }) {
           {formatDay(item.date)} · {item.label}
         </p>
         <p className="font-mono text-[11px] leading-snug text-foreground/90 line-clamp-3">{item.description}</p>
+        {post && <p className="mt-1 font-mono text-[10px] leading-snug text-muted-foreground line-clamp-2">In the article: {post.title}</p>}
       </div>
     </a>
   );
@@ -263,6 +298,7 @@ function Card({ item, onOpen }: { item: LiItem; onOpen: () => void }) {
 
 function Viewer({
   item,
+  postsById,
   onClose,
   onPrev,
   onNext,
@@ -270,6 +306,7 @@ function Viewer({
   total,
 }: {
   item: LiItem | null;
+  postsById: Map<string, LiPost>;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -280,6 +317,7 @@ function Viewer({
   const last = React.useRef<LiItem | null>(null);
   if (item) last.current = item;
   const shown = item ?? last.current;
+  const post = shown?.post ? postsById.get(shown.post) : undefined;
 
   React.useEffect(() => {
     if (!item) return;
@@ -324,6 +362,25 @@ function Viewer({
                 {KIND_LABEL[shown.kind]} from Venkata Pagadala&apos;s LinkedIn, {formatDay(shown.date)}.
               </DialogDescription>
 
+              {post && (
+                <div className="mb-4 border border-border p-3" data-testid="linkedin-viewer-post">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
+                    From the article · {formatDay(post.date.slice(0, 10))}
+                  </p>
+                  <a href={postPath(post)} className="block font-display text-sm font-bold text-foreground leading-snug hover:underline mb-1.5">
+                    {post.title}
+                  </a>
+                  <p className="font-mono text-[11px] leading-relaxed text-muted-foreground line-clamp-4 mb-2">{post.excerpt}</p>
+                  <div className="flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-[0.15em]">
+                    <a href={postPath(post)} className="underline text-foreground hover:text-foreground/80">Read it here</a>
+                    {post.url && (
+                      <a href={post.url} target="_blank" rel="noopener noreferrer" className="underline text-muted-foreground hover:text-foreground">
+                        On LinkedIn ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
               {shown.topics.filter((t) => t !== "other").length > 0 && (
                 <div className="mb-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1.5">Topics</p>
@@ -348,8 +405,8 @@ function Viewer({
                 <a href={fullUrl(shown)} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-foreground text-foreground text-center hover:bg-foreground hover:text-background transition-colors">
                   {shown.kind === "document" ? `Open ${(shown.docExt ?? "pdf").toUpperCase()}` : shown.kind === "video" ? "Open video file" : "Open full image"}
                 </a>
-                <a href={LINKEDIN_ACTIVITY} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground text-center hover:text-foreground hover:border-foreground/50 transition-colors">
-                  See my LinkedIn activity
+                <a href={post?.url || LINKEDIN_ACTIVITY} target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground text-center hover:text-foreground hover:border-foreground/50 transition-colors">
+                  {post?.url ? "See it on LinkedIn" : "See my LinkedIn activity"}
                 </a>
               </div>
               {position >= 0 && total > 1 && (

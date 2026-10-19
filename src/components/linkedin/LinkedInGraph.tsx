@@ -2,6 +2,7 @@
 import * as React from "react";
 import { LINKEDIN_GRAPH } from "@/data/linkedinGraphData";
 import { LI_VIEWS, type LiView } from "@/data/linkedinArchiveTypes";
+import GraphPanel from "./GraphPanel";
 import {
   fullUrl,
   nodeImageUrl,
@@ -10,8 +11,11 @@ import {
   topicSlug,
   formatDay,
   formatDuration,
+  postPath,
+  readingMinutes,
   type LiGraphNode,
   type LiItem,
+  type LiPost,
 } from "@/data/linkedinArchive";
 
 /**
@@ -20,16 +24,24 @@ import {
  *   02 Timeline  a growing garden: year bands, one lane per topic, a stem per item; "Grow" replays it
  *   03 Map       a semantic map (PCA of item features): typical items at the centre, outliers at the edge
  * Switching views morphs every node to its new place (CSS transitions, no per-frame JS).
+ * Hover previews a node's connections; a click pins them (they stay lit while the pointer travels)
+ * and opens GraphPanel beside the graph, which lists every connection as a link to walk to.
  *
- * No-JS: the server HTML is the Topics view, fully drawn; topic nodes are real links and the cards
- * below carry every item's link. Item nodes are pointer shortcuts (tabIndex -1, aria-hidden).
+ * Articles are page glyphs linked to their images, topics and names: on the rim of their flower, in
+ * their own timeline lane, at the centre of their images on the map.
+ *
+ * No-JS: the server HTML is the Topics view, fully drawn; topic and article nodes are real links and
+ * the cards below carry every item's link. Item nodes are pointer shortcuts (tabIndex -1, aria-hidden).
  * Labels are SVG text, so they are in the DOM for readers, crawlers and audits.
  */
 
 interface Props {
   itemsByIdx: Map<string, LiItem>;
+  postsById: Map<string, LiPost>;
   /** Item ids (idx) that match the current search and filters; null = no filter. */
   matching: Set<string> | null;
+  /** Post ids that match the current search and filters; null = no filter. */
+  matchingPosts: Set<string> | null;
   activeTopic: string | null;
   onTopic: (topicId: string | null) => void;
   onItem: (idx: string) => void;
@@ -51,16 +63,23 @@ const HALO: React.CSSProperties = { paintOrder: "stroke", stroke: "hsl(var(--bac
 const isPlainClick = (e: React.MouseEvent) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 /** Node morphs live in CSS so reduced motion can switch them off (and the HTML stays small). */
 const MOTION_CSS = `.li-m{transition:transform ${MORPH_MS}ms cubic-bezier(.22,.8,.2,1),opacity 400ms}@media (prefers-reduced-motion: reduce){.li-m{transition:none}}`;
+const EMPTY: Set<string> = new Set();
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTopic, onItem }: Props) {
+export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchingPosts, activeTopic, onTopic, onItem }: Props) {
   const graph = LINKEDIN_GRAPH;
   const { width: W, height: H } = graph;
   const [view, setView] = React.useState<LiView>("topics");
   const [settled, setSettled] = React.useState(true);
   const [zoom, setZoom] = React.useState({ k: 1, x: 0, y: 0 });
   const [hover, setHover] = React.useState<string | null>(null);
-  const [tip, setTip] = React.useState<{ idx: string; left: number; top: number } | null>(null);
+  /** The pinned node: its neighbourhood stays lit and its details show in the panel until unpinned. */
+  const [pinned, setPinned] = React.useState<string | null>(null);
+  /** The drawer shows only while the graph is on screen (it must not sit over the cards below). */
+  const [graphInView, setGraphInView] = React.useState(true);
+  /** The graph element that pinned the current node, for returning keyboard focus on unpin. */
+  const pinTrigger = React.useRef<Element | null>(null);
+  const [tip, setTip] = React.useState<{ id: string; left: number; top: number } | null>(null);
   const [showThumbs, setShowThumbs] = React.useState(false);
   const [reduced, setReduced] = React.useState(false);
   /** Timeline "grow" cursor, 0..1 across the time axis; null = everything shown. */
@@ -179,7 +198,9 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
 
   const items = React.useMemo(() => graph.nodes.filter((n) => n.type === "item"), [graph]);
   const entityNodes = React.useMemo(() => graph.nodes.filter((n) => n.type === "entity"), [graph]);
+  const entityIdByLabel = React.useMemo(() => new Map(entityNodes.map((n) => [n.label, n.id])), [entityNodes]);
   const topicNodes = React.useMemo(() => graph.nodes.filter((n) => n.type === "topic"), [graph]);
+  const postNodes = React.useMemo(() => graph.nodes.filter((n) => n.type === "post"), [graph]);
   const timelineXs = React.useMemo(() => items.map((n) => n.pos.timeline?.[0] ?? 0).sort((a, b) => a - b), [items]);
   const growCut = React.useMemo(() => {
     if (growX == null) return null;
@@ -189,13 +210,19 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
   }, [growX, timelineXs]);
 
   // What is lit: the hovered node and its neighbours, else the active topic's.
-  const focusId = hover ?? (activeTopic ? `t:${activeTopic}` : null);
+  // A pinned node wins over hover, so its connections stay lit while the pointer travels to them.
+  const focusId = pinned ?? hover ?? (activeTopic ? `t:${activeTopic}` : null);
   const lit = React.useMemo(() => (focusId ? new Set<string>([focusId, ...(neighbours.get(focusId) ?? [])]) : null), [focusId, neighbours]);
   const visible = (n: LiGraphNode) => !!n.pos[view];
+  const postHidden = (n: LiGraphNode) => view === "timeline" && growX != null && (n.pos.timeline?.[0] ?? 0) > growX;
   const isLit = (n: LiGraphNode) => {
     if (n.type === "item") {
       if (matching && !matching.has(n.idx!)) return false;
       if (view === "timeline" && growCut != null && (n.pos.timeline?.[0] ?? 0) > growCut) return false;
+    }
+    if (n.type === "post") {
+      if (matchingPosts && !matchingPosts.has(n.id.slice(2))) return false;
+      if (postHidden(n)) return false;
     }
     return lit ? lit.has(n.id) : true;
   };
@@ -247,15 +274,23 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
     setTimeout(() => (drag.current = null), 0);
   };
   const wasDrag = () => !!drag.current?.moved;
-  const showTip = React.useCallback((idx: string, target: Element) => {
+  const showTip = React.useCallback((id: string, target: Element) => {
     const wrap = wrapRef.current?.getBoundingClientRect();
     const t = target.getBoundingClientRect();
-    if (wrap) setTip({ idx, left: t.left - wrap.left + t.width / 2, top: t.top - wrap.top });
+    if (wrap) setTip({ id, left: t.left - wrap.left + t.width / 2, top: t.top - wrap.top });
   }, []);
   const itemEnter = React.useCallback((idx: string, el: Element) => {
     setHover(`i:${idx}`);
-    showTip(idx, el);
+    showTip(`i:${idx}`, el);
   }, [showTip]);
+  const postEnter = (id: string, el: Element) => {
+    setHover(id);
+    showTip(id, el);
+  };
+  const postLeave = (id: string) => {
+    setHover((h) => (h === id ? null : h));
+    setTip(null);
+  };
   const itemLeave = React.useCallback((idx: string) => {
     setHover((h) => (h === `i:${idx}` ? null : h));
     setTip(null);
@@ -264,8 +299,52 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
     if (drag.current?.moved) return e.preventDefault();
     if (!isPlainClick(e)) return;
     e.preventDefault();
-    onItemRef.current(idx);
+    setPinned(`i:${idx}`);
   }, []);
+  /** Plain click on a node: pin it (modified clicks keep the link's own behaviour). */
+  const pinClick = (e: React.MouseEvent, id: string) => {
+    if (wasDrag()) return e.preventDefault();
+    if (!isPlainClick(e)) return;
+    e.preventDefault();
+    setTip(null);
+    pinTrigger.current = e.currentTarget;
+    setPinned((p) => (p === id ? null : id));
+  };
+  /** Unpin; if focus was in the drawer, give it back to the pinned node (or the element that opened the drawer). */
+  const unpin = React.useCallback(() => {
+    const inDrawer = !!document.activeElement?.closest?.("[data-testid=linkedin-graph-panel]");
+    setPinned((current) => {
+      if (inDrawer) {
+        const el = current ? document.querySelector<HTMLElement>(`[data-node-id="${current}"]`) : null;
+        const target = el && el.tabIndex >= 0 ? el : (pinTrigger.current as HTMLElement | null);
+        window.setTimeout(() => (target?.isConnected ? target.focus({ preventScroll: true }) : svgRef.current?.focus?.()), 0);
+      }
+      return null;
+    });
+  }, []);
+  const pinFromPanel = React.useCallback((id: string) => {
+    setTip(null);
+    setPinned(id);
+  }, []);
+  const openFromPanel = React.useCallback((idx: string) => onItemRef.current(idx), []);
+  React.useEffect(() => {
+    if (!pinned) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented || document.querySelector("[role=dialog]")) return;
+      if ((e.target as Element | null)?.closest?.("input, textarea, select, [contenteditable]")) return; // Esc there clears the field, not the pin
+      unpin();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [pinned, unpin]);
+  React.useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((es) => setGraphInView(es.some((x) => x.isIntersecting)), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const pinnedNode = pinned ? nodeById.get(pinned) : undefined;
 
   const move = (x: number, y: number, extra = ""): React.CSSProperties => ({ transform: `translate(${x}px, ${y}px)${extra}` });
 
@@ -282,15 +361,17 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
   );
   const restLines = settled ? graph.lines[view] : [];
   const litLines = lit && settled ? graph.links.filter(([a, b]) => lit.has(a) && lit.has(b)) : [];
-  const hoveredItem = hover?.startsWith("i:") ? nodeById.get(hover) : undefined;
+  // The lens enlarges the hovered card, else the pinned one.
+  const hoveredItem = hover?.startsWith("i:") ? nodeById.get(hover) : pinned?.startsWith("i:") ? nodeById.get(pinned) : undefined;
   const meta = VIEW_META[view];
 
   return (
-    <>
-    <div ref={wrapRef} className="relative" data-testid="linkedin-graph" data-view={view}>
+    <div>
+    <div ref={wrapRef} className="relative" data-testid="linkedin-graph" data-view={view} data-pinned={pinned ?? undefined}>
       <style>{MOTION_CSS}</style>
       {/* Controls: views, grow, zoom (JS only) */}
-      <div className="li-js mb-2 flex flex-wrap justify-end gap-1 sm:mb-0 sm:absolute sm:top-2 sm:right-2 sm:z-10">
+      {/* Controls sit top left: the pinned drawer opens on the right */}
+      <div className="li-js mb-2 flex flex-wrap justify-start gap-1 sm:mb-0 sm:absolute sm:top-2 sm:left-2 sm:z-10">
         {LI_VIEWS.map((v) => (
           <button
             key={v}
@@ -322,7 +403,11 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
           viewBox={`0 0 ${W} ${H}`}
           className="block w-full min-w-[720px] h-auto select-none"
           role="group"
-          aria-label={`Knowledge graph of the LinkedIn archive, ${meta.label} view: ${meta.hint}. Each topic opens its page; the cards below list every item.`}
+          aria-label={`Knowledge graph of the LinkedIn archive, ${meta.label} view: ${meta.hint}. Activate a topic or article to pin it and list its connections; the cards below list every item.`}
+          onClick={(e) => {
+            // A click on empty space (anything that is not a node) unpins.
+            if (!wasDrag() && !(e.target as Element).closest("a, [data-node-id]")) setPinned(null);
+          }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -342,6 +427,9 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
                   </g>
                 ))}
                 <line x1={axisX0} x2={axisX1} y1={tl.axisY} y2={tl.axisY} className="stroke-foreground" strokeOpacity={0.5} />
+                {tl.postLanes.map((l) => (
+                  <line key={l.type} x1={tl.left - 10} x2={W} y1={l.y} y2={l.y} className="stroke-foreground" strokeOpacity={0.25} strokeDasharray="1 3" />
+                ))}
                 {stems}
                 {growX != null && (
                   <g>
@@ -403,6 +491,50 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
               })}
             </g>
 
+            {/* Articles: page glyphs, real links to the article pages */}
+            <g>
+              {view === "timeline" &&
+                settled &&
+                tl.postLanes.map((l) => (
+                  <a key={l.type} href="/linkedin/articles" aria-label={`All ${l.count} articles`}>
+                    <text x={tl.left - 16} y={l.y + 4} textAnchor="end" className="fill-foreground font-mono" fontSize={11} fontWeight={700} style={HALO}>
+                      {l.type === "article" ? "Articles" : "Posts"} · {l.count}
+                    </text>
+                  </a>
+                ))}
+              {postNodes.map((n) => {
+                const shown = visible(n) && !postHidden(n);
+                const [x, y] = P(n);
+                const on = shown && isLit(n);
+                const hot = hover === n.id || pinned === n.id;
+                const post = postsById.get(n.id.slice(2));
+                if (!post) return null;
+                return (
+                  <a
+                    key={n.id}
+                    href={postPath(post)}
+                    aria-label={`Article: ${post.title}`}
+                    aria-expanded={pinned === n.id}
+                    data-node-id={n.id}
+                    tabIndex={shown ? undefined : -1}
+                    aria-hidden={shown ? undefined : true}
+                    className="li-m"
+                    onClick={(e) => pinClick(e, n.id)}
+                    onMouseEnter={(e) => postEnter(n.id, e.currentTarget)}
+                    onMouseLeave={() => postLeave(n.id)}
+                    onFocus={(e) => postEnter(n.id, e.currentTarget)}
+                    onBlur={() => postLeave(n.id)}
+                    style={{ ...move(x, y, shown ? "" : " scale(0)"), opacity: shown ? (on ? 1 : 0.18) : 0, pointerEvents: shown ? "auto" : "none", cursor: "pointer" }}
+                    data-testid={`linkedin-graph-post-${post.id}`}
+                  >
+                    <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z" className={hot ? "fill-foreground" : "fill-background"} />
+                    <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z M 2 -5.5 V -3 H 4.5" fill="none" className="stroke-foreground" strokeWidth={hot ? 1.4 : 1} strokeLinejoin="round" />
+                    <path d="M -2.6 -1.4 H 2.6 M -2.6 0.8 H 2.6 M -2.6 3 H 1" className={hot ? "stroke-background" : "stroke-foreground"} strokeWidth={0.6} strokeOpacity={0.7} />
+                  </a>
+                );
+              })}
+            </g>
+
             {/* Recurring names */}
             <g>
               {entityNodes.map((n) => {
@@ -415,12 +547,14 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
                     <g
                       key={n.id}
                       className="li-m"
-                      style={{ ...move(x, y), opacity: shown ? (on ? 1 : 0.15) : 0, pointerEvents: shown ? "auto" : "none" }}
+                      style={{ ...move(x, y), opacity: shown ? (on ? 1 : 0.15) : 0, pointerEvents: shown ? "auto" : "none", cursor: "pointer" }}
                       onMouseEnter={() => setHover(n.id)}
                       onMouseLeave={() => setHover((h) => (h === n.id ? null : h))}
+                      onClick={(e) => pinClick(e, n.id)}
+                      data-node-id={n.id}
                     >
                       <title>{`${n.label}: ${n.count} items`}</title>
-                      <rect x={-3.5} y={-3.5} width={7} height={7} transform="rotate(45)" className="fill-sky-600 dark:fill-sky-300" />
+                      <rect x={-3.5} y={-3.5} width={7} height={7} transform="rotate(45)" className={`fill-sky-600 dark:fill-sky-300 ${pinned === n.id ? "stroke-foreground" : ""}`} strokeWidth={pinned === n.id ? 1.6 : 0} />
                       <text
                         x={leftSide ? -8 : 8}
                         y={4}
@@ -442,7 +576,7 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
                   const id = n.label;
                   const shown = visible(n);
                   const [x, y] = P(n);
-                  const active = activeTopic === id;
+                  const active = activeTopic === id || pinned === n.id;
                   const on = shown && (isLit(n) || active);
                   const r = view === "map" ? 4 + Math.sqrt(n.count ?? 1) * 0.6 : 8 + Math.sqrt(n.count ?? 1);
                   const inTimeline = view === "timeline";
@@ -500,13 +634,10 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
                       key={n.id}
                       href={`/linkedin/topics/${topicSlug(id)}`}
                       aria-label={`${topicLabel(id)}: ${n.count} items tagged`}
+                      aria-expanded={pinned === n.id}
+                      data-node-id={n.id}
                       className="li-m"
-                      onClick={(e) => {
-                        if (wasDrag()) return e.preventDefault();
-                        if (!isPlainClick(e)) return;
-                        e.preventDefault();
-                        onTopic(active ? null : id);
-                      }}
+                      onClick={(e) => pinClick(e, n.id)}
                       onMouseEnter={() => setHover(n.id)}
                       onMouseLeave={() => setHover((h) => (h === n.id ? null : h))}
                       onFocus={() => setHover(n.id)}
@@ -537,17 +668,21 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
       </div>
 
       {/* HUD: view readout (JS only, hidden without scripts) */}
-      <div className="li-js hidden sm:block pointer-events-none absolute top-2 left-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 leading-relaxed">
+      <div className="li-js hidden sm:block pointer-events-none absolute top-2 right-3 text-right font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 leading-relaxed">
         <p>
           <span className="text-foreground">View {meta.n} · {meta.label}</span> · {items.length} items
         </p>
         <p className="normal-case tracking-normal">{meta.hint}</p>
       </div>
       <div className="li-js hidden sm:block pointer-events-none absolute bottom-2 left-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-        Zoom {zoom.k.toFixed(1)}×{hover ? ` · ${hover.startsWith("t:") ? topicLabel(hover.slice(2)) : hover.startsWith("e:") ? nodeById.get(hover)?.label : formatDay(itemsByIdx.get(hover.slice(2))?.date ?? "2020-01-01")}` : ""}
+        Zoom {zoom.k.toFixed(1)}×{hover ? ` · ${hover.startsWith("t:") ? topicLabel(hover.slice(2)) : hover.startsWith("e:") ? nodeById.get(hover)?.label : hover.startsWith("p:") ? "Article" : formatDay(itemsByIdx.get(hover.slice(2))?.date ?? "2020-01-01")}` : ""}
       </div>
 
-      {tip && itemsByIdx.get(tip.idx) && <HoverCard item={itemsByIdx.get(tip.idx)!} left={tip.left} top={tip.top} />}
+      {/* No hover card for the pinned node: the panel already shows it. */}
+      {tip?.id.startsWith("i:") && tip.id !== pinned && itemsByIdx.get(tip.id.slice(2)) && (
+        <HoverCard item={itemsByIdx.get(tip.id.slice(2))!} post={postsById.get(itemsByIdx.get(tip.id.slice(2))!.post ?? "")} left={tip.left} top={tip.top} />
+      )}
+      {tip?.id.startsWith("p:") && tip.id !== pinned && postsById.get(tip.id.slice(2)) && <PostCard post={postsById.get(tip.id.slice(2))!} left={tip.left} top={tip.top} />}
     </div>
       {view === "timeline" && (
         <div className="li-js mt-2 flex items-center gap-3 border border-border bg-background/90 px-3 py-1.5">
@@ -583,8 +718,25 @@ export default function LinkedInGraph({ itemsByIdx, matching, activeTopic, onTop
           </span>
         </div>
       )}
-
-    </>
+      {/* The pinned node's details: a drawer at the right (a sheet at the bottom on phones), so the graph keeps its size. */}
+      {pinnedNode && graphInView && (
+        <div className="fixed z-40 inset-x-2 bottom-2 max-h-[42dvh] overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] shadow-2xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-24 sm:w-[340px] sm:max-h-[calc(100vh-7rem)] sm:pb-0">
+          <GraphPanel
+            node={pinnedNode}
+            nodeById={nodeById}
+            entityIdByLabel={entityIdByLabel}
+            neighbours={neighbours.get(pinnedNode.id) ?? EMPTY}
+            itemsByIdx={itemsByIdx}
+            postsById={postsById}
+            activeTopic={activeTopic}
+            onPin={pinFromPanel}
+            onOpenItem={openFromPanel}
+            onFilterTopic={onTopic}
+            onClose={unpin}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -624,7 +776,7 @@ const ItemNode = React.memo(function ItemNode({ it, x, y, on, hidden, thumbs, on
   );
 });
 
-function HoverCard({ item, left, top }: { item: LiItem; left: number; top: number }) {
+function HoverCard({ item, post, left, top }: { item: LiItem; post?: LiPost; left: number; top: number }) {
   return (
     <div className="pointer-events-none absolute z-20 w-60 -translate-x-1/2 -translate-y-full border border-border bg-background shadow-lg" style={{ left, top: top - 26 }} role="tooltip">
       <div className="relative">
@@ -637,6 +789,31 @@ function HoverCard({ item, left, top }: { item: LiItem; left: number; top: numbe
           {formatDay(item.date)} · {item.label}
         </p>
         <p className="font-mono text-[11px] leading-snug text-foreground">{item.description}</p>
+        {post && <p className="mt-1.5 font-mono text-[10px] leading-snug text-muted-foreground">In the article: {post.title}</p>}
+      </div>
+    </div>
+  );
+}
+
+function PostCard({ post, left, top }: { post: LiPost; left: number; top: number }) {
+  const e = post.engagement;
+  return (
+    <div className="pointer-events-none absolute z-20 w-64 -translate-x-1/2 -translate-y-full border border-foreground/60 bg-background shadow-lg" style={{ left, top: top - 12 }} role="tooltip">
+      {post.cover && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={thumbUrl({ idx: post.cover })} alt="" className="block w-full h-28 object-cover" />
+      )}
+      <div className="p-2.5">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
+          Article · {formatDay(post.date.slice(0, 10))} · {readingMinutes(post.words)} min
+        </p>
+        <p className="font-display text-sm font-bold leading-snug text-foreground mb-1">{post.title}</p>
+        <p className="font-mono text-[10px] leading-snug text-muted-foreground">
+          {post.media.length} image{post.media.length === 1 ? "" : "s"}
+          {post.people.length ? ` · ${post.people.length} people named` : ""}
+          {e?.reactions != null ? ` · ${e.reactions.toLocaleString("en-US")} reactions` : ""}
+        </p>
+        <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground">Click to pin it and see its links</p>
       </div>
     </div>
   );
