@@ -130,6 +130,19 @@ const nextConfig = {
     cpus: 1,
     workerThreads: false,
   },
+  // Local preview only: LINKEDIN_PREVIEW=1 swaps the /linkedin data modules for
+  // their git-ignored *.preview.ts twins (items still waiting for the owner's
+  // review). Unset everywhere else, so builds always use the public modules.
+  webpack(config, { webpack }) {
+    if (process.env.LINKEDIN_PREVIEW === "1") {
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(/\/(linkedinArchiveData|linkedinGraphData)$/, (resource) => {
+          resource.request = `${resource.request}.preview`;
+        }),
+      );
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

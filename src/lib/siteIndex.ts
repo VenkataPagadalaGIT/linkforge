@@ -36,11 +36,12 @@ import { aiContributors } from "@/data/aiContributors";
 import { pillarPages, blogPosts } from "@/data/insights";
 import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc } from "@/data/talks";
 import { linkedPapers } from "@/data/research";
+import { LINKEDIN_TOPICS } from "@/data/linkedinArchive";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
   | "research" | "pages" | "personas" | "notebook" | "business" | "encyclopedia" | "map"
-  | "contributors" | "updates" | "insights" | "speakers" | "solutions" | "machines";
+  | "contributors" | "updates" | "insights" | "speakers" | "solutions" | "machines" | "linkedin";
 
 export interface SectionMeta {
   id: SectionId;
@@ -65,6 +66,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "business", label: "Business Notebook", blurb: "Earnings-call notes, the companies behind them and the people who speak for them." },
   { id: "encyclopedia", label: "AI Encyclopedia", blurb: "Every AI concept, one page each, by category." },
   { id: "map", label: "AI Systems Map", blurb: "Every entity in the AI value chain, one page each, by layer." },
+  { id: "linkedin", label: "LinkedIn archive", blurb: "Images, videos and documents I shared on LinkedIn, kept here, by topic." },
   { id: "contributors", label: "AI Contributors", blurb: "The people building AI, in ranked order." },
   { id: "updates", label: "AI Updates", blurb: "AI news with primary sources, newest first." },
   { id: "insights", label: "Insights", blurb: "Essays on AI, search and systems, by pillar." },
@@ -267,6 +269,19 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     out.push({
       href: `/notebook/ai/map/${n.id}`, title: n.name, section: "map", group: LAYER_BY_ID.get(n.layer)?.label ?? "Other",
       xml: { lastModified: now, changeFrequency: "monthly", priority: n.chokepoint ? 0.7 : 0.6 },
+    });
+  }
+
+  // LinkedIn archive: the hub and one page per topic
+  out.push({
+    href: "/linkedin", title: "LinkedIn archive: knowledge graph", section: "linkedin", hub: true,
+    xml: { lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+  });
+  for (const t of LINKEDIN_TOPICS) {
+    out.push({
+      href: `/linkedin/topics/${t.slug}`, title: t.label, section: "linkedin",
+      note: `${t.items.length} item${t.items.length === 1 ? "" : "s"}`,
+      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     });
   }
 

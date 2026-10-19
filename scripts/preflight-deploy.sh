@@ -152,6 +152,15 @@ else
   bad "brand gate failed; see /tmp/preflight-brand.log"
 fi
 
+# LinkedIn archive gate: the tracked /linkedin data holds public items only
+# (no items pending the owner's review, no DM or personal media, no classifier
+# wording), and the local preview twins stay git-ignored.
+if node scripts/linkedin/check-linkedin-data.mjs > /tmp/preflight-linkedin.log 2>&1; then
+  ok "linkedin archive: public items only, preview data untracked"
+else
+  bad "linkedin archive gate failed; see /tmp/preflight-linkedin.log"
+fi
+
 # CSS token gate: an HSL-triplet token used as a raw colour is an invalid
 # declaration, so nothing paints and nothing looks broken.
 if python3 scripts/check-css-tokens.py > /tmp/preflight-css.log 2>&1; then

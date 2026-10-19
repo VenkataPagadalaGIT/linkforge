@@ -53,3 +53,6 @@ data/corpus/cache/
 
 # CMS page build output (scripts/cms), never committed or uploaded
 .cms/
+
+# LinkedIn archive local preview data (includes items pending the owner's review): never commit
+src/data/*.preview.ts
