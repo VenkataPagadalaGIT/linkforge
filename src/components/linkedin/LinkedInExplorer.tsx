@@ -146,8 +146,9 @@ export default function LinkedInExplorer({ topicId }: Props) {
             onItem={setOpenIdx}
           />
           <p className="li-js mt-3 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
-            Hover a topic or a name to light up everything connected to it. Click a topic to filter the cards below, click any
-            item to open it. Drag to move around once zoomed in; zoom with the buttons or Ctrl/⌘ and scroll.
+            Three views: 01 Topics (each topic a flower), 02 Timeline (press Grow to replay the garden) and 03 Map (similar items
+            together, outliers at the edge). Hover a topic or a name to light up everything connected to it, click a topic to
+            filter the cards below, click any item to open it. Zoom with the buttons or Ctrl/⌘ and scroll, then drag to move.
           </p>
         </section>
       )}
@@ -198,7 +199,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
 }
 
 function Legend() {
-  const dot = "inline-block w-2.5 h-2.5 rounded-full border";
+  const dot = "inline-block w-2.5 h-2.5 border";
   return (
     <ul className="flex flex-wrap items-center gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
       <li className="inline-flex items-center gap-1.5"><i className="inline-block w-3 h-3 rounded-full border-2 border-foreground" /> Topic</li>

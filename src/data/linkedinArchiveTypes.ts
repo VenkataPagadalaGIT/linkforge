@@ -32,24 +32,38 @@ export interface LiItem {
 
 export type LiNodeType = "topic" | "entity" | "item";
 
+/** The three graph views (layouts computed at build time). */
+export type LiView = "topics" | "timeline" | "map";
+export const LI_VIEWS: LiView[] = ["topics", "timeline", "map"];
+
 export interface LiGraphNode {
   id: string;
   type: LiNodeType;
-  /** Layout position in the graph's own coordinate box (see LiGraph width/height). */
-  x: number;
-  y: number;
+  /** Topic id for topics, the name for entities, empty for items. */
   label: string;
-  /** Items attached to a topic or entity node. */
+  /** Items attached to a topic or entity node (all items tagged with it). */
   count?: number;
+  /** Topic nodes: items whose first topic it is, i.e. the cards drawn in its flower and lane. */
+  own?: number;
   /** Item nodes only. */
   idx?: string;
   kind?: LiKind;
+  /** Topic nodes, Topics view: the label sits above the flower (chosen at build time to avoid collisions). */
+  labelAbove?: boolean;
+  /** Topic nodes, Map view: label offset from the node (collision-free placement computed at build time). */
+  mapLabel?: [number, number];
+  /** Position in each view, in the graph's coordinate box; null = not shown in that view. */
+  pos: Record<LiView, [number, number] | null>;
 }
 
 export interface LiGraph {
   width: number;
   height: number;
   nodes: LiGraphNode[];
-  /** [source id, target id]; every edge joins an item to a topic or an entity. */
-  edges: [string, string][];
+  /** Every item's topics and recurring names: lit on hover in any view. */
+  links: [string, string][];
+  /** Hairlines drawn at rest in each view. */
+  lines: Record<LiView, [string, string][]>;
+  timeline: { axisY: number; left: number; years: { year: string; x0: number; x1: number }[] };
+  map: { cx: number; cy: number; rings: { r: number; label: string }[] };
 }

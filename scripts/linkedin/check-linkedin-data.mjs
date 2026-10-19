@@ -40,6 +40,9 @@ for (const f of ["src/data/linkedinArchiveData.preview.ts", "src/data/linkedinGr
 const graph = fs.readFileSync(path.join(ROOT, "src/data/linkedinGraphData.ts"), "utf8");
 const ids = new Set(items.map((i) => i.idx));
 for (const m2 of graph.matchAll(/"idx":"(\d{4})"/g)) if (!ids.has(m2[1])) problems.push(`graph node ${m2[1]} is not a public item`);
+// Every topic an item carries must have a node in the graph (its link in the no-JS view).
+const topicNodes = new Set([...graph.matchAll(/"id":"t:([a-z_]+)"/g)].map((x) => x[1]));
+for (const t of new Set(items.flatMap((i) => i.topics))) if (!topicNodes.has(t)) problems.push(`topic "${t}" has items but no graph node`);
 if (problems.length) {
   console.error(`check-linkedin-data: FAIL (${problems.length})\n  ` + problems.slice(0, 20).join("\n  "));
   console.error("Rebuild without --include-review before committing or deploying.");
