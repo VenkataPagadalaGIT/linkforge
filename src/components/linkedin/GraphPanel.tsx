@@ -2,42 +2,43 @@
 import * as React from "react";
 import {
   KIND_LABEL,
-  LINKEDIN_ACTIVITY,
+  childTopics,
   engagementSource,
-  linkedinUrl,
-  postFromNode,
+  entryPath,
   formatDateTime,
   formatDay,
   formatDuration,
-  postPath,
+  getItem,
+  getTopic,
+  inTopic,
+  mostEngaging,
   readingMinutes,
   thumbUrl,
   topicLabel,
-  topicSlug,
+  topicPath,
+  topicTrail,
   type LiEngagement,
+  type LiEntry,
   type LiGraphNode,
   type LiItem,
-  type LiPost,
 } from "@/data/linkedinArchive";
 
 /**
- * The details of the node pinned in the knowledge graph. Pinning keeps the node's
- * connections lit while the pointer travels, and this panel lists every one of them
- * as a button, so the graph can be walked click by click: an article to its images,
- * an image to its topic, a topic to its names.
+ * The details of the node pinned in the knowledge graph. Pinning keeps the node's connections lit while the pointer
+ * travels, and this panel lists them as buttons, so the graph can be walked click by click: a post to its topics, a
+ * topic to its area and subtopics, a subtopic to its posts, a post to the names in it.
  */
 
 interface Props {
   node: LiGraphNode;
   nodeById: Map<string, LiGraphNode>;
+  neighbours: Set<string>;
+  entriesByKey: Map<string, LiEntry>;
   /** Recurring name -> its graph node id. */
   entityIdByLabel: Map<string, string>;
-  neighbours: Set<string>;
-  itemsByIdx: Map<string, LiItem>;
-  postsById: Map<string, LiPost>;
   activeTopic: string | null;
   onPin: (id: string) => void;
-  onOpenItem: (idx: string) => void;
+  onOpenEntry: (key: string, idx?: string) => void;
   onFilterTopic: (topicId: string | null) => void;
   onClose: () => void;
 }
@@ -47,6 +48,8 @@ const CHIP = "font-mono text-[11px] px-2 py-1 border border-border text-foregrou
 const PRIMARY = "font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-foreground text-foreground text-center hover:bg-foreground hover:text-background transition-colors";
 const SECONDARY = "font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground text-center hover:text-foreground hover:border-foreground/50 transition-colors";
 const plural = (n: number, w: string) => `${n.toLocaleString("en-US")} ${w}${n === 1 ? "" : "s"}`;
+const LEVEL_NAME = { 1: "Area", 2: "Topic", 3: "Subtopic" } as const;
+const entryKindLabel = (e: LiEntry) => (e.kind === "article" ? "Article" : e.kind === "post" ? "Post" : KIND_LABEL[getItem(e.id)?.kind ?? "image"]);
 
 function GraphPanel(p: Props) {
   const { node } = p;
@@ -57,7 +60,8 @@ function GraphPanel(p: Props) {
     ref.current?.focus({ preventScroll: true });
     ref.current?.parentElement?.scrollTo(0, 0);
   }, [node.id]);
-  const kindLabel = node.type === "post" ? (node.postType === "post" ? "Post" : "Article") : node.type === "topic" ? "Topic" : node.type === "entity" ? "Name" : "Item";
+  const entry = node.type === "entry" ? p.entriesByKey.get(node.label) : undefined;
+  const kindLabel = entry ? entryKindLabel(entry) : node.type === "topic" ? LEVEL_NAME[getTopic(node.label)?.level ?? 2] : "Name";
   return (
     <aside
       ref={ref}
@@ -72,8 +76,7 @@ function GraphPanel(p: Props) {
           ✕
         </button>
       </div>
-      {node.type === "post" && <PostDetails {...p} headingId={headingId} />}
-      {node.type === "item" && <ItemDetails {...p} headingId={headingId} />}
+      {entry && <EntryDetails {...p} entry={entry} headingId={headingId} />}
       {node.type === "topic" && <TopicDetails {...p} headingId={headingId} />}
       {node.type === "entity" && <EntityDetails {...p} headingId={headingId} />}
       <p className="mt-5 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
@@ -98,7 +101,7 @@ function Engagement({ e }: { e?: LiEngagement }) {
   if (!e)
     return (
       <Section title="Engagement">
-        <p className="font-mono text-[11px] text-muted-foreground">Not recorded yet.</p>
+        <p className="font-mono text-[11px] text-muted-foreground">Not recorded.</p>
       </Section>
     );
   const rows = (
@@ -125,15 +128,66 @@ function Engagement({ e }: { e?: LiEngagement }) {
   );
 }
 
-/** Thumbnails of items; each pins its item. */
-function Thumbs({ idxs, itemsByIdx, onPin, max = 18 }: { idxs: string[]; itemsByIdx: Map<string, LiItem>; onPin: (id: string) => void; max?: number }) {
-  const list = idxs.map((i) => itemsByIdx.get(i)).filter((x): x is LiItem => !!x);
+/** The path to a topic, root first; each step pins its node. */
+function Trail({ id, onPin, nodeById }: { id: string; onPin: (id: string) => void; nodeById: Map<string, LiGraphNode> }) {
+  const trail = topicTrail(id);
+  return (
+    <nav aria-label="Topic path" className="flex flex-wrap items-center gap-1 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+      {trail.map((t, k) => (
+        <React.Fragment key={t.id}>
+          {k > 0 && <span aria-hidden="true">›</span>}
+          {k < trail.length - 1 && nodeById.has(`t:${t.id}`) ? (
+            <button type="button" onClick={() => onPin(`t:${t.id}`)} className="underline decoration-dotted underline-offset-2 hover:text-foreground">
+              {t.label}
+            </button>
+          ) : (
+            <span className={k === trail.length - 1 ? "text-foreground" : ""}>{t.label}</span>
+          )}
+        </React.Fragment>
+      ))}
+    </nav>
+  );
+}
+
+/** Topic chips for an entry: each L2 topic with its area, then the L3 subtopics. */
+function EntryTopics({ entry, nodeById, onPin }: { entry: LiEntry; nodeById: Map<string, LiGraphNode>; onPin: (id: string) => void }) {
+  if (!entry.topics.length) return <p className="font-mono text-[11px] text-muted-foreground">No topic yet.</p>;
+  return (
+    <div className="flex flex-col gap-1.5">
+      {entry.topics.map((t, k) => {
+        const area = getTopic(t)?.parent;
+        const subs = entry.subtopics.filter((s) => getTopic(s)?.parent === t);
+        return (
+          <div key={t} className="flex flex-wrap items-center gap-1.5">
+            {area && nodeById.has(`t:${area}`) && (
+              <button type="button" onClick={() => onPin(`t:${area}`)} className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground">
+                {topicLabel(area)} ›
+              </button>
+            )}
+            <button type="button" onClick={() => onPin(`t:${t}`)} className={`${CHIP} ${k === 0 ? "border-foreground/60" : ""}`} title={k === 0 ? "Main topic" : undefined}>
+              {topicLabel(t)}
+            </button>
+            {subs.map((s) => (
+              <button key={s} type="button" onClick={() => onPin(`t:${s}`)} className={`${CHIP} text-muted-foreground`}>
+                ⬡ {topicLabel(s)}
+              </button>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Thumbnails; each opens the entry's viewer. */
+function Thumbs({ idxs, onOpen, max = 12 }: { idxs: string[]; onOpen: (idx: string) => void; max?: number }) {
+  const list = idxs.map((i) => getItem(i)).filter((x): x is LiItem => !!x);
   return (
     <>
       <ul className="grid grid-cols-4 gap-1.5">
         {list.slice(0, max).map((it) => (
           <li key={it.idx}>
-            <button type="button" onClick={() => onPin(`i:${it.idx}`)} className="group relative block w-full aspect-square overflow-hidden border border-border hover:border-foreground" title={it.description}>
+            <button type="button" onClick={() => onOpen(it.idx)} className="group relative block w-full aspect-square overflow-hidden border border-border hover:border-foreground" title={it.description}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={thumbUrl(it)} alt={it.description} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
               {it.kind === "video" && <span className="absolute bottom-0.5 right-0.5 font-mono text-[9px] px-1 bg-black/80 text-white" aria-hidden="true">▶</span>}
@@ -141,40 +195,24 @@ function Thumbs({ idxs, itemsByIdx, onPin, max = 18 }: { idxs: string[]; itemsBy
           </li>
         ))}
       </ul>
-      {list.length > max && <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">and {list.length - max} more in the cards below</p>}
+      {list.length > max && <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">and {list.length - max} more in its viewer</p>}
     </>
   );
 }
 
-function TopicChips({ ids, onPin }: { ids: string[]; onPin: (id: string) => void }) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {ids.map((t) => (
-        <button key={t} type="button" onClick={() => onPin(`t:${t}`)} className={CHIP}>
-          {topicLabel(t)}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-/** Posts and articles as buttons, most reactions first; at most `max`, then a pointer to the full list. */
-function PostButtons({ ids, postsById, nodeById, onPin, max = 20, moreHref }: { ids: string[]; postsById: Map<string, LiPost>; nodeById: Map<string, LiGraphNode>; onPin: (id: string) => void; max?: number; moreHref?: string }) {
-  const list = ids
-    .map((id) => postsById.get(id) ?? (nodeById.get(`p:${id}`) ? postFromNode(nodeById.get(`p:${id}`)!) : undefined))
-    .filter((q): q is LiPost => !!q)
-    .sort((a, b) => (b.engagement?.reactions ?? -1) - (a.engagement?.reactions ?? -1) || b.date.localeCompare(a.date));
+/** Entries as buttons that pin them; at most `max`, then a pointer to the full list. */
+function EntryButtons({ list, onPin, max = 12, moreHref }: { list: LiEntry[]; onPin: (id: string) => void; max?: number; moreHref?: string }) {
   return (
     <>
       <ul className="flex flex-col gap-1.5">
         {list.slice(0, max).map((q) => (
-          <li key={q.id}>
-            <button type="button" onClick={() => onPin(`p:${q.id}`)} className={`${CHIP} w-full`}>
+          <li key={q.key}>
+            <button type="button" onClick={() => onPin(`e:${q.key}`)} className={`${CHIP} w-full`}>
               <span className="block text-[10px] text-muted-foreground">
-                {q.type === "article" ? "Article" : "Post"} · {formatDay(q.date.slice(0, 10))}
+                {entryKindLabel(q)} · {formatDay(q.date)}
                 {q.engagement?.reactions != null ? ` · ${q.engagement.reactions.toLocaleString("en-US")} reactions` : ""}
               </span>
-              {q.title}
+              <span className="line-clamp-2">{q.title}</span>
             </button>
           </li>
         ))}
@@ -184,10 +222,10 @@ function PostButtons({ ids, postsById, nodeById, onPin, max = 20, moreHref }: { 
           and {list.length - max} more
           {moreHref ? (
             <>
-              {" "}on <a href={moreHref} className="underline hover:text-foreground">the topic page</a>
+              {" "}on <a href={moreHref} className="underline hover:text-foreground">its page</a>
             </>
           ) : (
-            " in the timeline"
+            " in the cards below"
           )}
         </p>
       )}
@@ -195,76 +233,7 @@ function PostButtons({ ids, postsById, nodeById, onPin, max = 20, moreHref }: { 
   );
 }
 
-function PostDetails({ node, postsById, itemsByIdx, nodeById, neighbours, entityIdByLabel, onPin, headingId }: Props & { headingId: string }) {
-  const post = postsById.get(node.id.slice(2)) ?? postFromNode(node, [...neighbours].filter((x) => x.startsWith("t:")).map((x) => x.slice(2)));
-  const realMedia = post.media.filter((m) => itemsByIdx.has(m));
-  const url = linkedinUrl(post);
-  const names = post.media
-    .flatMap((m) => itemsByIdx.get(m)?.entities ?? [])
-    .filter((e, i, a) => a.indexOf(e) === i);
-  return (
-    <div>
-      {post.cover && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={thumbUrl({ idx: post.cover })} alt="" className="block w-full h-36 object-cover border border-border mb-3" />
-      )}
-      <p className={EYEBROW}>
-        LinkedIn {post.type} · <time dateTime={post.date}>{formatDateTime(post.date)}</time>
-      </p>
-      <h3 id={headingId} className="mt-1 font-display text-lg font-bold text-foreground leading-snug">
-        <a href={postPath(post)} className="hover:underline">{post.title}</a>
-      </h3>
-      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-        {post.type === "article" ? `${plural(post.words, "word")} · ${readingMinutes(post.words)} min read · ${plural(post.media.length, "image")}` : `${post.media.length} media`}
-        {post.people.length ? ` · ${post.people.length === 1 ? "1 person" : `${post.people.length} people`} named` : ""}
-      </p>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <a href={postPath(post)} className={PRIMARY}>Read it here</a>
-        {url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
-        ) : (
-          <span className={`${SECONDARY} opacity-70`}>Full text on its page</span>
-        )}
-      </div>
-      <Engagement e={post.engagement} />
-      {post.excerpt && (
-        <Section title={post.type === "post" ? "Text" : "Opening"}>
-          <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">{post.excerpt}</p>
-        </Section>
-      )}
-      {post.topics.length > 0 && (
-        <Section title="Topics">
-          <TopicChips ids={post.topics.filter((t) => nodeById.has(`t:${t}`))} onPin={onPin} />
-        </Section>
-      )}
-      {realMedia.length > 0 && (
-        <Section title={`${post.type === "post" ? "Media" : "Images"} in it (${realMedia.length})`}>
-          <Thumbs idxs={realMedia} itemsByIdx={itemsByIdx} onPin={onPin} />
-        </Section>
-      )}
-      {post.people.length > 0 && (
-        <Section title={`People named (${post.people.length})`}>
-          <ul className="flex flex-wrap gap-1.5">
-            {post.people.map((x) => (
-              <li key={x.url}>
-                <a href={x.url} target="_blank" rel="noopener noreferrer" className={`${CHIP} inline-block`}>
-                  {x.name} <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      )}
-      {names.some((e) => entityIdByLabel.has(e)) && (
-        <Section title="Names in its images">
-          <EntityChips names={names} byLabel={entityIdByLabel} onPin={onPin} />
-        </Section>
-      )}
-    </div>
-  );
-}
-
-function EntityChips({ names, byLabel, onPin }: { names: string[]; byLabel: Map<string, string>; onPin: (id: string) => void }) {
+function NameChips({ names, byLabel, onPin }: { names: string[]; byLabel: Map<string, string>; onPin: (id: string) => void }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {names.map((e) =>
@@ -280,110 +249,172 @@ function EntityChips({ names, byLabel, onPin }: { names: string[]; byLabel: Map<
   );
 }
 
-function ItemDetails({ node, itemsByIdx, postsById, nodeById, entityIdByLabel, onPin, onOpenItem, headingId }: Props & { headingId: string }) {
-  const it = itemsByIdx.get(node.idx!);
-  if (!it) return null;
-  const post = it.post ? postsById.get(it.post) : undefined;
+function EntryDetails({ entry, nodeById, entityIdByLabel, onPin, onOpenEntry, headingId }: Props & { entry: LiEntry; headingId: string }) {
+  const cover = entry.media[0] ? getItem(entry.media[0]) : undefined;
+  const media = entry.media.filter((m) => getItem(m));
+  const commentMedia = (entry.commentMedia ?? []).filter((m) => getItem(m));
+  const isMedia = entry.kind === "media";
+  const open = (idx?: string) => onOpenEntry(entry.key, idx);
   return (
     <div>
-      <button type="button" onClick={() => onOpenItem(it.idx)} className="group relative block w-full border border-border hover:border-foreground mb-3" aria-label={`Open ${KIND_LABEL[it.kind].toLowerCase()} full size`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={thumbUrl(it)} alt="" className="block w-full max-h-56 object-contain bg-black/40" />
-        {it.kind === "video" && <span className="absolute bottom-1 right-1 font-mono text-[10px] px-1.5 py-0.5 bg-black/80 text-white">▶ {formatDuration(it.duration)}</span>}
-      </button>
+      {cover && (
+        <button type="button" onClick={() => open()} className="group relative block w-full border border-border hover:border-foreground mb-3" aria-label="Open it in the viewer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={thumbUrl(cover)} alt="" className="block w-full max-h-48 object-cover" />
+          {cover.kind === "video" && <span className="absolute bottom-1 right-1 font-mono text-[10px] px-1.5 py-0.5 bg-black/80 text-white">▶ {formatDuration(cover.duration)}</span>}
+        </button>
+      )}
       <p className={EYEBROW}>
-        {KIND_LABEL[it.kind]} · {formatDay(it.date)} · {it.label}
+        {entryKindLabel(entry)} ·{" "}
+        <time dateTime={entry.date}>{entry.date.length > 10 ? formatDateTime(entry.date) : formatDay(entry.date)}</time>
       </p>
-      <h3 id={headingId} className="mt-1 font-display text-base font-bold text-foreground leading-snug">{it.description}</h3>
+      <h3 id={headingId} className="mt-1 font-display text-lg font-bold text-foreground leading-snug">
+        {isMedia ? entry.title : <a href={entryPath(entry)} className="hover:underline">{entry.title}</a>}
+      </h3>
+      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+        {entry.kind === "article" && entry.words ? `${plural(entry.words, "word")} · ${readingMinutes(entry.words)} min read · ` : ""}
+        {isMedia ? cover?.label ?? "" : plural(media.length, "media item")}
+      </p>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => onOpenItem(it.idx)} className={PRIMARY}>Open full view</button>
-        <a href={post?.url || LINKEDIN_ACTIVITY} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
+        {isMedia ? (
+          <button type="button" onClick={() => open()} className={PRIMARY}>Open full view</button>
+        ) : (
+          <a href={entryPath(entry)} className={PRIMARY}>Read it here</a>
+        )}
+        {entry.url ? (
+          <a href={entry.url} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
+        ) : media.length > 0 && !isMedia ? (
+          <button type="button" onClick={() => open()} className={SECONDARY}>Open the media</button>
+        ) : (
+          <span />
+        )}
       </div>
-      {post && (
-        <Section title={it.inComment ? "From my comment on the post" : `From the ${post.type}`}>
-          <PostButtons ids={[post.id]} postsById={postsById} nodeById={nodeById} onPin={onPin} />
+      {!isMedia && <Engagement e={entry.engagement} />}
+      {entry.excerpt && (
+        <Section title={entry.kind === "article" ? "Opening" : entry.kind === "post" ? "Text" : "What it shows"}>
+          <p className="font-mono text-[11px] leading-relaxed text-muted-foreground line-clamp-[10]">{entry.excerpt}</p>
         </Section>
       )}
-      {it.topics.filter((t) => t !== "other").length > 0 && (
-        <Section title="Topics">
-          <TopicChips ids={it.topics.filter((t) => t !== "other" && nodeById.has(`t:${t}`))} onPin={onPin} />
+      <Section title="Topics">
+        <EntryTopics entry={entry} nodeById={nodeById} onPin={onPin} />
+      </Section>
+      {!isMedia && media.length > 0 && (
+        <Section title={`Media in it (${media.length})`}>
+          <Thumbs idxs={media} onOpen={open} />
         </Section>
       )}
-      {it.entities.length > 0 && (
+      {commentMedia.length > 0 && (
+        <Section title={`In my comments on it (${commentMedia.length})`}>
+          <Thumbs idxs={commentMedia} onOpen={open} />
+        </Section>
+      )}
+      {entry.names.length > 0 && (
         <Section title="Names in it">
-          <EntityChips names={it.entities} byLabel={entityIdByLabel} onPin={onPin} />
+          <NameChips names={entry.names} byLabel={entityIdByLabel} onPin={onPin} />
         </Section>
       )}
     </div>
   );
 }
 
-function TopicDetails({ node, itemsByIdx, postsById, nodeById, neighbours, entityIdByLabel, activeTopic, onPin, onFilterTopic, headingId }: Props & { headingId: string }) {
-  const id = node.label;
-  const items = [...itemsByIdx.values()].filter((i) => i.topics.includes(id)).sort((a, b) => b.date.localeCompare(a.date));
-  const posts = [...neighbours].filter((n) => n.startsWith("p:")).map((n) => n.slice(2));
+function TopicDetails({ node, nodeById, entriesByKey, entityIdByLabel, activeTopic, onPin, onFilterTopic, headingId }: Props & { headingId: string }) {
+  const t = getTopic(node.label);
+  const all = React.useMemo(() => [...entriesByKey.values()], [entriesByKey]);
+  const entries = React.useMemo(() => (t ? all.filter((e) => inTopic(e, t.id)).sort((a, b) => b.date.localeCompare(a.date)) : []), [all, t]);
+  if (!t) return null;
+  const kids = childTopics(t.id)
+    .map((c) => ({ c, n: entries.filter((e) => inTopic(e, c.id)).length }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n);
   const nameCounts = new Map<string, number>();
-  for (const it of items) for (const e of it.entities) nameCounts.set(e, (nameCounts.get(e) ?? 0) + 1);
+  for (const e of entries) for (const n of e.names) nameCounts.set(n, (nameCounts.get(n) ?? 0) + 1);
   const names = [...nameCounts].sort((a, b) => b[1] - a[1]).map(([e]) => e).filter((e) => entityIdByLabel.has(e)).slice(0, 12);
-  const years = items.map((i) => i.date.slice(0, 4));
-  const active = activeTopic === id;
+  const years = entries.map((e) => e.date.slice(0, 4));
+  const posts = entries.filter((e) => e.kind !== "media");
+  const active = activeTopic === t.id;
   return (
     <div>
-      <h3 id={headingId} className="font-display text-xl font-bold text-foreground">{topicLabel(id)}</h3>
-      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-        {plural(items.length, "item")}
-        {posts.length ? ` · ${posts.length} ${posts.length === 1 ? "post or article" : "posts and articles"}` : ""}
+      {t.level > 1 && <Trail id={t.id} onPin={onPin} nodeById={nodeById} />}
+      <h3 id={headingId} className="mt-1 font-display text-xl font-bold text-foreground">
+        {t.level === 3 ? "⬡ " : ""}
+        {t.label}
+      </h3>
+      {t.description && <p className="mt-1 font-mono text-[11px] leading-relaxed text-muted-foreground">{t.description}</p>}
+      <p className="mt-1.5 font-mono text-[11px] text-foreground/80">
+        {posts.length.toLocaleString("en-US")} {posts.length === 1 ? "post or article" : "posts and articles"}
+        {entries.length > posts.length ? ` · ${plural(entries.length - posts.length, "media item")} on their own` : ""}
         {years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
       </p>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        {id !== "other" ? <a href={`/linkedin/topics/${topicSlug(id)}`} className={PRIMARY}>Topic page</a> : <span />}
-        <button type="button" onClick={() => onFilterTopic(active ? null : id)} aria-pressed={active} className={`${SECONDARY} ${active ? "border-foreground text-foreground" : ""}`}>
-          Filter the cards by this topic
+        <a href={topicPath(t.id)} className={PRIMARY}>{LEVEL_NAME[t.level]} page</a>
+        <button type="button" onClick={() => onFilterTopic(active ? null : t.id)} aria-pressed={active} className={`${SECONDARY} ${active ? "border-foreground text-foreground" : ""}`}>
+          {active ? "Clear the filter" : "Show only these"}
         </button>
       </div>
+      {kids.length > 0 && (
+        <Section title={t.level === 1 ? `Topics in it (${kids.length})` : `Subtopics (${kids.length})`}>
+          <div className="flex flex-wrap gap-1.5">
+            {kids.map(({ c, n }) =>
+              nodeById.has(`t:${c.id}`) ? (
+                <button key={c.id} type="button" onClick={() => onPin(`t:${c.id}`)} className={CHIP}>
+                  {c.level === 3 ? "⬡ " : ""}
+                  {c.label} <span className="text-muted-foreground">{n}</span>
+                </button>
+              ) : (
+                <a key={c.id} href={topicPath(c.id)} className={CHIP}>
+                  {c.label} <span className="text-muted-foreground">{n}</span>
+                </a>
+              ),
+            )}
+          </div>
+        </Section>
+      )}
       {posts.length > 0 && (
-        <Section title={`Posts and articles (${posts.length})`}>
-          <PostButtons ids={posts} postsById={postsById} nodeById={nodeById} onPin={onPin} moreHref={id !== "other" ? `/linkedin/topics/${topicSlug(id)}` : undefined} />
+        <Section title="Most engaging">
+          <EntryButtons list={mostEngaging(posts, posts.length)} onPin={onPin} max={8} moreHref={topicPath(t.id)} />
         </Section>
       )}
       {names.length > 0 && (
         <Section title="Names that recur here">
-          <EntityChips names={names} byLabel={entityIdByLabel} onPin={onPin} />
+          <NameChips names={names} byLabel={entityIdByLabel} onPin={onPin} />
         </Section>
       )}
-      <Section title="Newest items">
-        <Thumbs idxs={items.map((i) => i.idx)} itemsByIdx={itemsByIdx} onPin={onPin} max={12} />
-      </Section>
     </div>
   );
 }
 
-function EntityDetails({ node, itemsByIdx, postsById, nodeById, neighbours, onPin, headingId }: Props & { headingId: string }) {
-  const items = [...neighbours].filter((n) => n.startsWith("i:")).map((n) => itemsByIdx.get(n.slice(2))).filter((x): x is LiItem => !!x).sort((a, b) => b.date.localeCompare(a.date));
-  const posts = [...neighbours].filter((n) => n.startsWith("p:")).map((n) => n.slice(2));
-  const topicCounts = new Map<string, number>();
-  for (const it of items) for (const t of it.topics) if (t !== "other") topicCounts.set(t, (topicCounts.get(t) ?? 0) + 1);
-  const years = items.map((i) => i.date.slice(0, 4));
+function EntityDetails({ node, neighbours, entriesByKey, nodeById, onPin, headingId }: Props & { headingId: string }) {
+  const entries = [...neighbours]
+    .filter((n) => n.startsWith("e:"))
+    .map((n) => entriesByKey.get(n.slice(2)))
+    .filter((x): x is LiEntry => !!x)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const counts = new Map<string, number>();
+  for (const e of entries) for (const t of e.topics) counts.set(t, (counts.get(t) ?? 0) + 1);
+  const years = entries.map((e) => e.date.slice(0, 4));
   return (
     <div>
       <h3 id={headingId} className="font-display text-xl font-bold text-foreground">◆ {node.label}</h3>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-        In {plural(items.length, "item")}
-        {posts.length ? ` and ${posts.length} ${posts.length === 1 ? "post or article" : "posts and articles"}` : ""}
+        In {plural(entries.length, "post")}
         {years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
       </p>
-      {posts.length > 0 && (
-        <Section title="Posts and articles">
-          <PostButtons ids={posts} postsById={postsById} nodeById={nodeById} onPin={onPin} />
-        </Section>
-      )}
-      {topicCounts.size > 0 && (
+      {counts.size > 0 && (
         <Section title="Topics">
-          <TopicChips ids={[...topicCounts].sort((a, b) => b[1] - a[1]).map(([t]) => t)} onPin={onPin} />
+          <div className="flex flex-wrap gap-1.5">
+            {[...counts]
+              .sort((a, b) => b[1] - a[1])
+              .filter(([t]) => nodeById.has(`t:${t}`))
+              .map(([t, n]) => (
+                <button key={t} type="button" onClick={() => onPin(`t:${t}`)} className={CHIP}>
+                  {topicLabel(t)} <span className="text-muted-foreground">{n}</span>
+                </button>
+              ))}
+          </div>
         </Section>
       )}
-      <Section title={`Items (${items.length})`}>
-        <Thumbs idxs={items.map((i) => i.idx)} itemsByIdx={itemsByIdx} onPin={onPin} />
+      <Section title={`Posts (${entries.length})`}>
+        <EntryButtons list={entries} onPin={onPin} max={14} />
       </Section>
     </div>
   );

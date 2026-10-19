@@ -5,13 +5,13 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_PROFILE, fullUrl, isoDuration, postPath, posterUrl, thumbUrl, type LiItem } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, PUBLIC_ITEMS, fullUrl, inTopic, isoDuration, linkedinUrl, postPath, posterUrl, thumbUrl, topicPath, topicTrail, type LiItem } from "@/data/linkedinArchive";
 import { ALL_LINKEDIN_TOPICS, getLinkedInTopic } from "@/data/linkedinArchiveServer";
 
 type Params = { topic: string };
 
-// One static page per topic id (slugs are frozen); an unknown slug hard-404s.
-// A topic with no items today still renders, noindex, so a live URL never breaks.
+// One static page per node of the topic tree (slugs are frozen); an unknown slug hard-404s.
+// A node with no entries today still renders, noindex, so a live URL never breaks.
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
@@ -21,25 +21,27 @@ export function generateStaticParams() {
 
 export const generateMetadata = withSeoOverrides("/linkedin/topics/[topic]", baseMetadata);
 
+const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? "" : "s"}`;
+
 async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const topic = getLinkedInTopic(params.topic);
   if (!topic) return { title: "Topic not found" };
-  const n = topic.items.length;
-  const a = topic.posts.length + topic.socialPosts.length;
+  const trail = topicTrail(topic.id);
   const parts = [
-    topic.socialPosts.length ? `${topic.socialPosts.length} post${topic.socialPosts.length === 1 ? "" : "s"}` : "",
-    topic.posts.length ? `${topic.posts.length} article${topic.posts.length === 1 ? "" : "s"}` : "",
-    n ? `${n} image${n === 1 ? "" : "s"}, video${n === 1 ? "" : "s"} and document${n === 1 ? "" : "s"}` : "",
+    topic.posts.length ? plural(topic.posts.length, "post") : "",
+    topic.articles.length ? plural(topic.articles.length, "article") : "",
+    topic.itemCount ? `${topic.itemCount} images, videos and documents` : "",
   ].filter(Boolean);
-  const description = `${parts.join(", ") || "Nothing yet"} on ${topic.label} from Venkata Pagadala's LinkedIn. ${topic.blurb}`.slice(0, 300);
+  const where = trail.length > 1 ? ` (${trail.slice(0, -1).map((n) => n.label).join(" › ")})` : "";
+  const description = `${parts.join(", ") || "Nothing yet"} on ${topic.label}${where} from Venkata Pagadala's LinkedIn. ${topic.description}`.slice(0, 300);
   return {
     title: { absolute: `${topic.label}: LinkedIn Archive | Venkata Pagadala` },
     description,
-    alternates: { canonical: `/linkedin/topics/${topic.slug}` },
-    ...(n + a === 0 ? { robots: { index: false, follow: true } } : {}),
+    alternates: { canonical: topicPath(topic.id) },
+    ...(topic.entries.length === 0 ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "website",
-      url: `/linkedin/topics/${topic.slug}`,
+      url: topicPath(topic.id),
       title: `${topic.label}: LinkedIn Archive`,
       description,
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
@@ -47,8 +49,9 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   };
 }
 
+const author = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
+
 function itemLd(it: LiItem) {
-  const author = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
   if (it.kind === "document") {
     return {
       "@type": "DigitalDocument",
@@ -87,23 +90,33 @@ export default function Page({ params }: { params: Params }) {
   const topic = getLinkedInTopic(params.topic);
   if (!topic) notFound();
 
-  const url = `${SITE_URL}/linkedin/topics/${topic.slug}`;
+  const url = `${SITE_URL}${topicPath(topic.id)}`;
+  const trail = topicTrail(topic.id);
+  const items = PUBLIC_ITEMS.filter((i) => inTopic(i, topic.id)).slice(0, 30);
   const jsonLd = [
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
       name: `${topic.label}: LinkedIn archive`,
-      description: topic.blurb,
+      description: topic.description,
       url,
       isPartOf: { "@type": "CollectionPage", name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
       hasPart: [
-        ...topic.posts.map((p) => ({ "@type": "Article", headline: p.title, url: `${SITE_URL}${postPath(p)}`, datePublished: p.date })),
-        ...topic.items.slice(0, 60).map(itemLd),
+        ...topic.articles.map((p) => ({ "@type": "Article", headline: p.title, url: `${SITE_URL}${postPath(p)}`, datePublished: p.date, author })),
+        ...topic.posts.slice(0, 60).map((p) => ({
+          "@type": "SocialMediaPosting",
+          headline: p.title,
+          url: `${SITE_URL}${postPath(p)}`,
+          datePublished: p.date,
+          author,
+          ...(linkedinUrl(p) ? { sameAs: linkedinUrl(p) } : {}),
+        })),
+        ...items.map(itemLd),
       ],
     },
     breadcrumbJsonLd([
       { name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
-      { name: topic.label, url },
+      ...trail.map((n) => ({ name: n.label, url: `${SITE_URL}${topicPath(n.id)}` })),
     ]),
   ];
 

@@ -36,7 +36,7 @@ import { aiContributors } from "@/data/aiContributors";
 import { pillarPages, blogPosts } from "@/data/insights";
 import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc } from "@/data/talks";
 import { linkedPapers } from "@/data/research";
-import { postPath } from "@/data/linkedinArchive";
+import { postPath, topicPath, topicTrail } from "@/data/linkedinArchive";
 import { LINKEDIN_ARTICLES, LINKEDIN_SOCIAL_POSTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 export type SectionId =
@@ -273,7 +273,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // LinkedIn archive: the hub, the articles (each in full) and one page per topic
+  // LinkedIn archive: the hub, the articles (each in full), the posts and one page per node of the topic tree
   out.push({
     href: "/linkedin", title: "LinkedIn archive: knowledge graph", section: "linkedin", hub: true,
     xml: { lastModified: now, changeFrequency: "weekly", priority: 0.7 },
@@ -306,11 +306,18 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
       xml: { lastModified: new Date(p.date), changeFrequency: "yearly", priority: 0.4 },
     });
   }
+  // The topic tree: each area, then its topics and subtopics, grouped under the area.
   for (const t of LINKEDIN_TOPICS) {
+    const area = t.level === 1 ? t : LINKEDIN_TOPICS.find((a) => a.id === topicTrail(t.id)[0]?.id);
+    const parts = [
+      t.posts.length ? `${t.posts.length} post${t.posts.length === 1 ? "" : "s"}` : "",
+      t.articles.length ? `${t.articles.length} article${t.articles.length === 1 ? "" : "s"}` : "",
+      t.itemCount ? `${t.itemCount} media` : "",
+    ].filter(Boolean);
     out.push({
-      href: `/linkedin/topics/${t.slug}`, title: t.label, section: "linkedin", group: "Topics",
-      note: `${t.items.length} item${t.items.length === 1 ? "" : "s"}${t.posts.length ? `, ${t.posts.length} article${t.posts.length === 1 ? "" : "s"}` : ""}${t.socialPosts.length ? `, ${t.socialPosts.length} post${t.socialPosts.length === 1 ? "" : "s"}` : ""}`,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+      href: topicPath(t.id), title: t.level === 3 ? `${t.label} (${topicTrail(t.id)[1]?.label ?? ""})` : t.label, section: "linkedin",
+      group: `Topics: ${area?.label ?? "Other"}`, note: parts.join(", "),
+      xml: { lastModified: now, changeFrequency: "monthly", priority: t.level === 1 ? 0.6 : t.level === 2 ? 0.5 : 0.4 },
     });
   }
 

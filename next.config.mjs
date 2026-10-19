@@ -136,7 +136,7 @@ const nextConfig = {
   webpack(config, { webpack }) {
     if (process.env.LINKEDIN_PREVIEW === "1") {
       config.plugins.push(
-        new webpack.NormalModuleReplacementPlugin(/\/(linkedinArchiveData|linkedinGraphData|linkedinPostsData|linkedinPostBodiesData|linkedinPostRefsData)$/, (resource) => {
+        new webpack.NormalModuleReplacementPlugin(/\/(linkedinArchiveData|linkedinGraphData|linkedinPostsData|linkedinPostBodiesData|linkedinEntriesData|linkedinSearchData)$/, (resource) => {
           resource.request = `${resource.request}.preview`;
         }),
       );

@@ -8,7 +8,7 @@ import { LINKEDIN_PROFILE } from "@/data/linkedinArchive";
 import { LINKEDIN_COUNTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 const c = LINKEDIN_COUNTS;
-const desc = `${c.items} images, videos and documents from Venkata Pagadala's LinkedIn (${c.firstYear} to ${c.lastYear}), as one searchable knowledge graph across ${c.topics} topics: SEO, AI, Google updates, conferences and more.`;
+const desc = `${c.posts} posts, ${c.articles} articles and ${c.items} images, videos and documents from Venkata Pagadala's LinkedIn (${c.firstYear} to ${c.lastYear}), as one searchable knowledge graph: ${c.areas} areas, ${c.topics} topics and ${c.subtopics} subtopics across AI, SEO, AI search, data and more.`;
 
 const metadata: Metadata = {
   title: "LinkedIn Archive: Knowledge Graph",
@@ -33,7 +33,8 @@ const jsonLd = [
     description: desc,
     url: `${SITE_URL}/linkedin`,
     author: { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] },
-    hasPart: LINKEDIN_TOPICS.map((t) => ({
+    // The areas (L1); each area page lists its topics and subtopics.
+    hasPart: LINKEDIN_TOPICS.filter((t) => t.level === 1).map((t) => ({
       "@type": "CollectionPage",
       name: `${t.label}: LinkedIn archive`,
       url: `${SITE_URL}/linkedin/topics/${t.slug}`,

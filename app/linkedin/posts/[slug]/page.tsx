@@ -65,7 +65,7 @@ export default function Page({ params }: { params: Params }) {
       url,
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
       datePublished: p.date,
-      keywords: p.topics.map(topicLabel).join(", "),
+      keywords: [...p.topics, ...p.subtopics].map(topicLabel).join(", "),
       ...(image(p.cover) ? { image: image(p.cover) } : {}),
       author,
       // The same post on LinkedIn.

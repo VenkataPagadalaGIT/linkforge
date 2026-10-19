@@ -13,8 +13,9 @@ import {
   posterUrl,
   readingMinutes,
   thumbUrl,
+  getTopic,
   topicLabel,
-  topicSlug,
+  topicPath,
   type LiItem,
   type LiPost,
 } from "@/data/linkedinArchive";
@@ -68,11 +69,28 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
           </p>
           <h1 className={`font-display font-bold text-foreground text-glow mb-6 ${isPost ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl lg:text-5xl"}`}>{post.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mb-6">
-            {post.topics.map((t) => (
-              <a key={t} href={`/linkedin/topics/${topicSlug(t)}`} className="font-mono text-[10px] uppercase tracking-[0.15em] border border-border px-2 py-1 text-muted-foreground hover:text-foreground hover:border-foreground/50">
-                {topicLabel(t)}
-              </a>
-            ))}
+            {post.topics.map((t) => {
+              const area = getTopic(t)?.parent;
+              return (
+                <span key={t} className="inline-flex items-center gap-1.5">
+                  {area && (
+                    <a href={topicPath(area)} className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/80 hover:text-foreground">
+                      {topicLabel(area)} ›
+                    </a>
+                  )}
+                  <a href={topicPath(t)} className="font-mono text-[10px] uppercase tracking-[0.15em] border border-border px-2 py-1 text-muted-foreground hover:text-foreground hover:border-foreground/50">
+                    {topicLabel(t)}
+                  </a>
+                  {post.subtopics
+                    .filter((x) => getTopic(x)?.parent === t)
+                    .map((x) => (
+                      <a key={x} href={topicPath(x)} className="font-mono text-[10px] uppercase tracking-[0.15em] border border-dashed border-border px-2 py-1 text-muted-foreground hover:text-foreground hover:border-foreground/50">
+                        {topicLabel(x)}
+                      </a>
+                    ))}
+                </span>
+              );
+            })}
           </div>
           <div className="flex flex-wrap gap-3 mb-10">
             <a

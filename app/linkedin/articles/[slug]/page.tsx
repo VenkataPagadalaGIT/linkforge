@@ -65,7 +65,7 @@ export default function Page({ params }: { params: Params }) {
       datePublished: p.date,
       dateModified: p.date,
       wordCount: p.words,
-      keywords: p.topics.map(topicLabel).join(", "),
+      keywords: [...p.topics, ...p.subtopics].map(topicLabel).join(", "),
       ...(cover(p.cover) ? { image: cover(p.cover) } : {}),
       author,
       publisher: author,
