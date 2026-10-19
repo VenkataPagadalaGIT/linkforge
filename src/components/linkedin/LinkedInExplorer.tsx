@@ -5,8 +5,11 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import {
   KIND_LABEL,
   LINKEDIN_ACTIVITY,
-  LINKEDIN_POSTS,
+  LINKEDIN_POST_REFS,
   PUBLIC_ITEMS,
+  engagementLine,
+  linkedinUrl,
+  formatDateTime,
   formatDay,
   formatDuration,
   fullUrl,
@@ -55,7 +58,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const [openIdx, setOpenIdx] = React.useState<string | null>(null);
 
   const itemsByIdx = React.useMemo(() => new Map(PUBLIC_ITEMS.map((i) => [i.idx, i])), []);
-  const postsById = React.useMemo(() => new Map(LINKEDIN_POSTS.map((p) => [p.id, p])), []);
+  const postsById = React.useMemo(() => new Map(LINKEDIN_POST_REFS.map((p) => [p.id, p])), []);
   // An item is found by its own words and by the title of the article it is in.
   const haystack = React.useMemo(
     () =>
@@ -87,24 +90,12 @@ export default function LinkedInExplorer({ topicId }: Props) {
   );
   const filterActive = kind !== "all" || !!year || !!query.trim() || (!!topic && !hideGraph);
   const matching = React.useMemo(() => (filterActive ? new Set(filtered.map((i) => i.idx)) : null), [filterActive, filtered]);
-  // An article lights when one of its images matches, or (no kind filter) its own title, text or people do.
-  const matchingPosts = React.useMemo(() => {
-    if (!matching) return null;
-    const out = new Set<string>();
-    for (const p of LINKEDIN_POSTS) {
-      if (p.media.some((m) => matching.has(m))) out.add(p.id);
-      else if (
-        kind === "all" &&
-        (!year || p.date.startsWith(year)) &&
-        (!topic || p.topics.includes(topic)) &&
-        (terms.length === 0 ||
-          terms.every((t) => norm(`${p.title} ${p.excerpt} ${p.people.map((x) => x.name).join(" ")} ${p.topics.map(topicLabel).join(" ")}`).includes(t)))
-      )
-        out.add(p.id);
-    }
-    return out;
+  // The graph lights a post or article that matches these (or holds a matching item); it knows every post's bar.
+  const postFilter = React.useMemo(
+    () => (filterActive ? { terms, year, topic: hideGraph ? null : topic, kind } : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matching, kind, year, topic, query]);
+    [filterActive, query, year, topic, kind, hideGraph],
+  );
 
   const counts = React.useMemo(() => {
     const c: Record<KindFilter, number> = { all: items.length, image: 0, video: 0, document: 0 };
@@ -169,7 +160,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
             itemsByIdx={itemsByIdx}
             postsById={postsById}
             matching={matching}
-            matchingPosts={matchingPosts}
+            postFilter={postFilter}
             activeTopic={topic}
             onTopic={setTopic}
             onItem={setOpenIdx}
@@ -290,7 +281,11 @@ function Card({ item, post, onOpen }: { item: LiItem; post?: LiPost; onOpen: () 
           {formatDay(item.date)} · {item.label}
         </p>
         <p className="font-mono text-[11px] leading-snug text-foreground/90 line-clamp-3">{item.description}</p>
-        {post && <p className="mt-1 font-mono text-[10px] leading-snug text-muted-foreground line-clamp-2">In the article: {post.title}</p>}
+        {post && (
+          <p className="mt-1 font-mono text-[10px] leading-snug text-muted-foreground line-clamp-2">
+            {item.inComment ? "In a comment on the post" : `In the ${post.type}`}: {post.title}
+          </p>
+        )}
       </div>
     </a>
   );
@@ -365,16 +360,17 @@ function Viewer({
               {post && (
                 <div className="mb-4 border border-border p-3" data-testid="linkedin-viewer-post">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
-                    From the article · {formatDay(post.date.slice(0, 10))}
+                    {shown.inComment ? "From my comment on the post" : `From the ${post.type}`} · {formatDateTime(post.date)}
                   </p>
                   <a href={postPath(post)} className="block font-display text-sm font-bold text-foreground leading-snug hover:underline mb-1.5">
                     {post.title}
                   </a>
-                  <p className="font-mono text-[11px] leading-relaxed text-muted-foreground line-clamp-4 mb-2">{post.excerpt}</p>
+                  <p className="font-mono text-[11px] leading-relaxed text-muted-foreground line-clamp-6 mb-2">{post.excerpt}</p>
+                  {engagementLine(post) && <p className="font-mono text-[10px] leading-relaxed text-foreground mb-2">{engagementLine(post)}</p>}
                   <div className="flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-[0.15em]">
                     <a href={postPath(post)} className="underline text-foreground hover:text-foreground/80">Read it here</a>
-                    {post.url && (
-                      <a href={post.url} target="_blank" rel="noopener noreferrer" className="underline text-muted-foreground hover:text-foreground">
+                    {linkedinUrl(post) && (
+                      <a href={linkedinUrl(post)} target="_blank" rel="noopener noreferrer" className="underline text-muted-foreground hover:text-foreground">
                         On LinkedIn ↗
                       </a>
                     )}

@@ -28,6 +28,8 @@ export interface LiItem {
   docExt?: string;
   /** The article or post this media belongs to (LiPost id), when known. */
   post?: string;
+  /** The media was attached to my comment on that post, not to the post itself. */
+  inComment?: boolean;
   /** Present only in local previews: the item is waiting for the owner's review and must never ship. */
   review?: boolean;
 }
@@ -40,9 +42,15 @@ export interface LiEngagement {
   comments?: number;
   reposts?: number;
   impressions?: number;
+  /** LinkedIn's own total of interactions (reactions, comments, reposts, clicks), from post analytics. */
+  engagements?: number;
+  /** The impressions figure is a floor (summed from monthly top-post lists), not LinkedIn's exact total. */
+  impressionsAtLeast?: boolean;
+  /** The engagements figure is a floor, as above. */
+  engagementsAtLeast?: boolean;
   /** Day the numbers were read, YYYY-MM-DD. */
   asOf: string;
-  /** Where the numbers came from, e.g. "LinkedIn post analytics export". */
+  /** Where the numbers came from: a key of ENGAGEMENT_SOURCES (src/data/linkedinArchive.ts) or plain text. */
   source: string;
 }
 
@@ -52,10 +60,12 @@ export interface LiPerson {
   url: string;
 }
 
-/** A LinkedIn article (and, once LinkedIn's posts export is in, a post). Bodies live in linkedinPostBodiesData.ts. */
+/** A LinkedIn article or post. Bodies live in linkedinPostBodiesData.ts. */
 export interface LiPost {
-  /** URL slug on this site (/linkedin/articles/<id>). FROZEN once live. */
+  /** URL slug on this site (/linkedin/articles/<id> or /linkedin/posts/<id>). FROZEN once live. */
   id: string;
+  /** Posts: LinkedIn's activity id (the post's permanent id; its slug is frozen against it in scripts/linkedin/post-slugs.json). */
+  activityId?: string;
   type: LiPostType;
   title: string;
   /** LinkedIn newsletter the article belongs to, and its edition number. */
@@ -69,6 +79,8 @@ export interface LiPost {
   cover?: string;
   /** Every public image in it (LiItem idx), in reading order. */
   media: string[];
+  /** Images I attached to my own comments on it (LiItem idx). */
+  commentMedia?: string[];
   people: LiPerson[];
   topics: string[];
   words: number;
@@ -77,6 +89,10 @@ export interface LiPost {
   /** Local previews only: an unpublished draft; must never ship. */
   review?: boolean;
 }
+
+/** The browser's compact post record (see linkedinPostRefsData.ts); linkedinArchive.ts expands it to LiPost. */
+export type LiPostRef = Omit<LiPost, "url" | "people" | "topics" | "words" | "engagement"> &
+  Partial<Pick<LiPost, "url" | "people" | "topics" | "words">> & { engagement?: Omit<LiEngagement, "asOf"> };
 
 export type LiNodeType = "topic" | "entity" | "item" | "post";
 
@@ -98,6 +114,13 @@ export interface LiGraphNode {
   kind?: LiKind;
   /** Post nodes only: article or post (the node id is "p:" + the LiPost id). */
   postType?: LiPostType;
+  /** Post nodes of type "post": bar height in the Timeline view (scaled from reactions). */
+  bar?: number;
+  /** Post nodes of type "post": [published ISO time, reactions, comments, reposts, impressions, flags] for the hover
+   *  card and panel; flags: "a" = numbers include analytics, "f" = impressions are a floor. */
+  meta?: [string, number | null, number | null, number | null, number | null, string];
+  /** Post bars: half the width of the hover/click area, so neighbouring bars never overlap. */
+  hw?: number;
   /** Topic nodes, Topics view: the label sits above the flower (chosen at build time to avoid collisions). */
   labelAbove?: boolean;
   /** Topic nodes, Map view: label offset from the node (collision-free placement computed at build time). */
@@ -118,8 +141,10 @@ export interface LiGraph {
     axisY: number;
     left: number;
     years: { year: string; x0: number; x1: number }[];
-    /** One lane per post type, above the topic lanes. */
-    postLanes: { type: LiPostType; y: number; count: number }[];
+    /** One lane per post type, above the topic lanes. Posts draw as bars rising from the lane, height by engagement. */
+    postLanes: { type: LiPostType; y: number; count: number; height?: number }[];
   };
   map: { cx: number; cy: number; rings: { r: number; label: string }[] };
+  /** Day the post engagement numbers were read. */
+  engagementAsOf?: string;
 }

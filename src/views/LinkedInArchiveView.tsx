@@ -2,7 +2,8 @@ import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
 import ArticleCard from "@/components/linkedin/ArticleCard";
-import { LINKEDIN_ARTICLES, LINKEDIN_COUNTS, LINKEDIN_PROFILE, LINKEDIN_TOPICS } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, mostEngaging } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES, LINKEDIN_COUNTS, LINKEDIN_SOCIAL_POSTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="border border-border p-5">
@@ -24,6 +25,11 @@ export default function LinkedInArchiveView() {
             My LinkedIn, kept here and mapped
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-3">
+            {c.posts > 0 && (
+              <>
+                <a href="/linkedin/posts" className="underline hover:text-foreground">{c.posts} posts</a> with their engagement,{" "}
+              </>
+            )}
             {c.articles > 0 && (
               <>
                 <a href="/linkedin/articles" className="underline hover:text-foreground">{c.articles} articles</a> in full, and{" "}
@@ -42,14 +48,34 @@ export default function LinkedInArchiveView() {
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
+            <Stat label="Posts" value={c.posts} />
             <Stat label="Articles" value={c.articles} />
-            <Stat label="Images" value={c.images} />
             <Stat label="Videos" value={<span className="text-rose-700 dark:text-rose-300">{c.videos}</span>} />
             <Stat label="Topics" value={c.topics} />
           </div>
         </ScrollReveal>
 
         <LinkedInExplorer />
+
+        {LINKEDIN_SOCIAL_POSTS.length > 0 && (
+          <section className="mt-16" aria-labelledby="li-posts-h">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+              <h2 id="li-posts-h" className="font-display text-xl font-bold text-foreground">
+                Most engaging posts
+              </h2>
+              <a href="/linkedin/posts" className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+                All {LINKEDIN_SOCIAL_POSTS.length} posts
+              </a>
+            </div>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {mostEngaging(LINKEDIN_SOCIAL_POSTS, 8).map((p) => (
+                <li key={p.id}>
+                  <ArticleCard post={p} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {LINKEDIN_ARTICLES.length > 0 && (
           <section className="mt-16" aria-labelledby="li-articles-h">

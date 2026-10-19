@@ -49,13 +49,19 @@ const ATTRS = { a: new Set(["href", "target", "rel"]), img: new Set(["src", "alt
 const ATTR_STRING = /^(?:\s[a-z-]+="[^"<>]*")*$/;
 const HREF = /^(https?:\/\/[^\s"\\]+|\/(?![/\\])[^\s"\\]*)$/;
 const EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+const PHONE = /(?<![\d/.-])(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}(?![\d/])/;
 for (const p of posts) {
   if (p.review) problems.push(`article ${p.id}: unpublished draft (preview build)`);
-  // Posts need their own route (/linkedin/posts/<id>) before they may ship.
-  if (p.type !== "article") problems.push(`${p.id}: type "${p.type}" has no route yet`);
+  if (p.type !== "article" && p.type !== "post") problems.push(`${p.id}: type "${p.type}" has no route`);
+  if (p.type === "post" && !/^https:\/\/www\.linkedin\.com\/feed\/update\/urn:li:activity:\d+\/$/.test(p.url)) problems.push(`post ${p.id}: LinkedIn URL missing`);
+  const e = p.engagement;
+  if (e) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(e.asOf) || !e.source) problems.push(`${p.id}: engagement without a date or source`);
+    for (const k of ["reactions", "comments", "reposts", "impressions", "engagements"]) if (e[k] != null && !(Number.isInteger(e[k]) && e[k] >= 0)) problems.push(`${p.id}: engagement ${k} is not a count`);
+  }
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.id)) problems.push(`article ${p.id}: id is not a clean slug`);
   if (p.type === "article" && !/^https:\/\/www\.linkedin\.com\/pulse\//.test(p.url)) problems.push(`article ${p.id}: LinkedIn URL missing`);
-  for (const m3 of p.media) if (!ids.has(m3)) problems.push(`article ${p.id}: media ${m3} is not a public item`);
+  for (const m3 of [...p.media, ...(p.commentMedia ?? [])]) if (!ids.has(m3)) problems.push(`article ${p.id}: media ${m3} is not a public item`);
   if (p.cover && !ids.has(p.cover)) problems.push(`article ${p.id}: cover ${p.cover} is not a public item`);
   for (const f of [p.title, p.excerpt, ...p.people.map((x) => x.name)]) if (/—/.test(f)) problems.push(`article ${p.id}: em dash in "${f.slice(0, 40)}"`);
   for (const x of p.people) if (!/^https:\/\/www\.linkedin\.com\/in\/[^/]+\/$/.test(x.url)) problems.push(`article ${p.id}: person link ${x.url} is not a LinkedIn profile`);
@@ -63,8 +69,11 @@ for (const p of posts) {
   if (html == null) { problems.push(`article ${p.id}: no body`); continue; }
   if (/—/.test(html)) problems.push(`article ${p.id}: em dash in body`);
   if (/alt="no alt text provided/i.test(html)) problems.push(`article ${p.id}: LinkedIn's "No alt text provided" placeholder as alt text`);
-  if (/\bowner\b/i.test(html.replace(/<[^>]*>/g, (t) => t.match(/alt="[^"]*"/)?.[0] ?? ""))) problems.push(`article ${p.id}: classifier wording ("owner") in an image caption`);
-  if (EMAIL.test(html.replace(/<[^>]*>/g, " "))) problems.push(`article ${p.id}: an email address in the body`);
+  // Image captions only (alt text); a post may say "owner" in its own words.
+  if (/\bowner\b/i.test([...html.matchAll(/alt="([^"]*)"/g)].map((x) => x[1]).join(" "))) problems.push(`article ${p.id}: classifier wording ("owner") in an image caption`);
+  const bodyText = html.replace(/<[^>]*>/g, " ");
+  if (EMAIL.test(bodyText)) problems.push(`article ${p.id}: an email address in the body`);
+  if (PHONE.test(bodyText)) problems.push(`article ${p.id}: something like a phone number in the body`);
   if (/<(?![a-zA-Z/])/.test(html)) problems.push(`article ${p.id}: a stray "<" in the body`);
   const open = [];
   for (const t of html.matchAll(/<(\/?)([a-zA-Z0-9]+)([^>]*)>/g)) {
@@ -100,15 +109,36 @@ try {
   const was = JSON.parse(prev.match(/= (\[.*?\]);\n/s)[1]).map((p) => p.id);
   const retiredFile = path.join(ROOT, "scripts/linkedin/retired-article-slugs.json");
   const retired = new Set(fs.existsSync(retiredFile) ? JSON.parse(fs.readFileSync(retiredFile, "utf8")) : []);
-  for (const id of was) if (!postIds.has(id) && !retired.has(id)) problems.push(`article URL /linkedin/articles/${id} was live and is gone (frozen URL; retire it with a redirect)`);
+  for (const id of was) if (!postIds.has(id) && !retired.has(id)) problems.push(`URL for "${id}" was live and is gone (frozen URL; retire it with a redirect)`);
 } catch {
   // No committed articles yet: nothing to compare.
 }
 for (const k of Object.keys(bodies)) if (!postIds.has(k)) problems.push(`body ${k} has no article`);
+// The browser's post index: only public posts, each a real one.
+{
+  const rs = fs.readFileSync(path.join(ROOT, "src/data/linkedinPostRefsData.ts"), "utf8").match(/LINKEDIN_POST_REFS_RAW: LiPostRef\[\] = JSON\.parse\(("(?:[^"\\]|\\.)*")\)/s);
+  if (!rs) problems.push("could not read the browser post index");
+  else for (const r of JSON.parse(JSON.parse(rs[1]))) {
+    if (!postIds.has(r.id)) problems.push(`browser index: ${r.id} is not a public post`);
+    if (r.review) problems.push(`browser index: ${r.id} is a draft`);
+  }
+}
+// Post URLs are frozen against LinkedIn's activity id (scripts/linkedin/post-slugs.json).
+{
+  const slugFile = path.join(ROOT, "scripts/linkedin/post-slugs.json");
+  const slugs = fs.existsSync(slugFile) ? JSON.parse(fs.readFileSync(slugFile, "utf8")) : {};
+  for (const p of posts) if (p.type === "post" && slugs[p.activityId] !== p.id) problems.push(`post ${p.id}: not the frozen slug for activity ${p.activityId}`);
+  try {
+    const prevSlugs = JSON.parse(execFileSync("git", ["show", "HEAD:scripts/linkedin/post-slugs.json"], { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] }).toString());
+    for (const [a, sl] of Object.entries(prevSlugs)) if (slugs[a] !== sl) problems.push(`post-slugs.json: activity ${a} was ${sl}, now ${slugs[a] ?? "gone"} (frozen)`);
+  } catch {
+    // Not committed yet.
+  }
+}
 for (const it of items) if (it.post && !postIds.has(it.post)) problems.push(`${it.idx}: points to article ${it.post}, which is not public`);
 
 // The preview twins must never be tracked or staged.
-for (const f of ["src/data/linkedinArchiveData.preview.ts", "src/data/linkedinGraphData.preview.ts", "src/data/linkedinPostsData.preview.ts", "src/data/linkedinPostBodiesData.preview.ts"]) {
+for (const f of ["src/data/linkedinArchiveData.preview.ts", "src/data/linkedinGraphData.preview.ts", "src/data/linkedinPostsData.preview.ts", "src/data/linkedinPostBodiesData.preview.ts", "src/data/linkedinPostRefsData.preview.ts"]) {
   try {
     execFileSync("git", ["check-ignore", "-q", f], { cwd: ROOT });
   } catch {
@@ -117,15 +147,22 @@ for (const f of ["src/data/linkedinArchiveData.preview.ts", "src/data/linkedinGr
   const tracked = execFileSync("git", ["ls-files", "--", f], { cwd: ROOT }).toString().trim();
   if (tracked) problems.push(`${f} is tracked by git`);
 }
-const graph = fs.readFileSync(path.join(ROOT, "src/data/linkedinGraphData.ts"), "utf8");
-for (const m2 of graph.matchAll(/"idx":"(\d{4})"/g)) if (!ids.has(m2[1])) problems.push(`graph node ${m2[1]} is not a public item`);
+const graphSrc = fs.readFileSync(path.join(ROOT, "src/data/linkedinGraphData.ts"), "utf8");
+const gm = graphSrc.match(/JSON\.parse\(("(?:[^"\\]|\\.)*")\)/s);
+if (!gm) {
+  console.error("check-linkedin-data: could not read LINKEDIN_GRAPH");
+  process.exit(1);
+}
+const graphData = JSON.parse(JSON.parse(gm[1]));
+for (const n of graphData.nodes) if (n.type === "item" && !ids.has(n.idx)) problems.push(`graph node ${n.idx} is not a public item`);
 // Every topic an item carries must have a node in the graph (its link in the no-JS view).
-const topicNodes = new Set([...graph.matchAll(/"id":"t:([a-z_]+)"/g)].map((x) => x[1]));
+const topicNodes = new Set(graphData.nodes.filter((n) => n.type === "topic").map((n) => n.label));
 for (const t of new Set(items.flatMap((i) => i.topics))) if (!topicNodes.has(t)) problems.push(`topic "${t}" has items but no graph node`);
-for (const m4 of graph.matchAll(/"id":"p:([a-z0-9-]+)"/g)) if (!postIds.has(m4[1])) problems.push(`graph article ${m4[1]} is not a public article`);
+for (const n of graphData.nodes) if (n.type === "post" && !postIds.has(n.id.slice(2))) problems.push(`graph post ${n.id} is not a public post`);
+if (graphData.nodes.filter((n) => n.type === "item").length !== items.length) problems.push("graph and item list disagree on the number of items");
 if (problems.length) {
   console.error(`check-linkedin-data: FAIL (${problems.length})\n  ` + problems.slice(0, 20).join("\n  "));
   console.error("Rebuild without --include-review before committing or deploying.");
   process.exit(1);
 }
-console.log(`check-linkedin-data: OK (${items.length} public items, ${posts.length} published articles, none pending review)`);
+console.log(`check-linkedin-data: OK (${items.length} public items, ${posts.filter((p) => p.type === "article").length} published articles, ${posts.filter((p) => p.type === "post").length} posts, none pending review)`);

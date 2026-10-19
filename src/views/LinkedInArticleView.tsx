@@ -2,12 +2,29 @@ import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import ArticleCard from "@/components/linkedin/ArticleCard";
 import { LINKEDIN_POST_BODIES } from "@/data/linkedinPostBodiesData";
-import { LINKEDIN_ITEMS, LINKEDIN_MEDIA_BASE, formatDateTime, fullUrl, readingMinutes, relatedPosts, topicLabel, topicSlug, type LiPost } from "@/data/linkedinArchive";
+import {
+  KIND_LABEL,
+  LINKEDIN_ITEMS,
+  engagementSource,
+  LINKEDIN_MEDIA_BASE,
+  formatDateTime,
+  formatDuration,
+  fullUrl,
+  posterUrl,
+  readingMinutes,
+  thumbUrl,
+  topicLabel,
+  topicSlug,
+  type LiItem,
+  type LiPost,
+} from "@/data/linkedinArchive";
+import { relatedPosts } from "@/data/linkedinArchiveServer";
 
 /**
- * One LinkedIn article, kept here in full: the text as published, its images
- * served from this site, the people it names, its topics, and the link back to
- * the original on LinkedIn. Server-rendered; no JavaScript needed.
+ * One LinkedIn article or post, kept here in full: the text as published, its
+ * images, videos and documents served from this site, the people it names, its
+ * topics, its engagement (with date and source), and the link back to the
+ * original on LinkedIn. Server-rendered; no JavaScript needed.
  */
 
 /** Typography for the article body (the HTML is rebuilt from an allowlist at build time, so only these tags occur). */
@@ -28,7 +45,12 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
   const html = (LINKEDIN_POST_BODIES[post.id] ?? "").replaceAll("{{media}}", LINKEDIN_MEDIA_BASE);
   const related = relatedPosts(post);
   const e = post.engagement;
-  const cover = post.cover ? LINKEDIN_ITEMS.find((i) => i.idx === post.cover) : undefined;
+  const isPost = post.type === "post";
+  const hub = isPost ? { href: "/linkedin/posts", label: "Posts" } : { href: "/linkedin/articles", label: "Articles" };
+  // Articles carry their images inside the text (cover above it); a post's media follows its text.
+  const cover = !isPost && post.cover ? LINKEDIN_ITEMS.find((i) => i.idx === post.cover) : undefined;
+  const media = isPost ? post.media.map((m) => LINKEDIN_ITEMS.find((i) => i.idx === m)).filter((x): x is LiItem => !!x) : [];
+  const commentMedia = (post.commentMedia ?? []).map((m) => LINKEDIN_ITEMS.find((i) => i.idx === m)).filter((x): x is LiItem => !!x);
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20 px-6">
@@ -37,13 +59,14 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
           <nav className="font-mono text-xs text-muted-foreground mb-8 flex items-center gap-2 flex-wrap" aria-label="Breadcrumb">
             <a href="/linkedin" className="hover:text-foreground transition-colors">LinkedIn archive</a>
             <span aria-hidden="true">/</span>
-            <a href="/linkedin/articles" className="hover:text-foreground transition-colors">Articles</a>
+            <a href={hub.href} className="hover:text-foreground transition-colors">{hub.label}</a>
           </nav>
           <p className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase mb-4">
-            LinkedIn article · <time dateTime={post.date}>{formatDateTime(post.date)}</time> · {post.words.toLocaleString("en-US")} words · {readingMinutes(post.words)} min read
+            LinkedIn {post.type} · <time dateTime={post.date}>{formatDateTime(post.date)}</time>
+            {isPost ? "" : ` · ${post.words.toLocaleString("en-US")} words · ${readingMinutes(post.words)} min read`}
             {post.series ? ` · ${post.series}${post.edition ? `, edition ${post.edition}` : ""}` : ""}
           </p>
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground text-glow mb-6">{post.title}</h1>
+          <h1 className={`font-display font-bold text-foreground text-glow mb-6 ${isPost ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl lg:text-5xl"}`}>{post.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mb-6">
             {post.topics.map((t) => (
               <a key={t} href={`/linkedin/topics/${topicSlug(t)}`} className="font-mono text-[10px] uppercase tracking-[0.15em] border border-border px-2 py-1 text-muted-foreground hover:text-foreground hover:border-foreground/50">
@@ -59,7 +82,7 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
               className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
               data-testid="linkedin-article-original"
             >
-              Read it on LinkedIn ↗
+              {isPost ? "See it on LinkedIn ↗" : "Read it on LinkedIn ↗"}
             </a>
             <a href="/linkedin" className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
               See it in the knowledge graph
@@ -81,7 +104,8 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
                   ["Reactions", e.reactions],
                   ["Comments", e.comments],
                   ["Reposts", e.reposts],
-                  ["Impressions", e.impressions],
+                  [e.impressionsAtLeast ? "Impressions (at least)" : "Impressions", e.impressions],
+                  [e.engagementsAtLeast ? "Engagements (at least)" : "Engagements", e.engagements],
                 ] as const
               )
                 .filter(([, v]) => v != null)
@@ -92,7 +116,7 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
                   </div>
                 ))}
             </dl>
-            <p className="mt-3 font-mono text-[10px] text-muted-foreground/70">Source: {e.source}.</p>
+            <p className="mt-3 font-mono text-[10px] text-muted-foreground/70">Source: {engagementSource(e)}.</p>
           </section>
         )}
 
@@ -111,10 +135,54 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
 
         <article className={`border-t border-border pt-8 ${BODY}`} data-testid="linkedin-article-body" dangerouslySetInnerHTML={{ __html: html }} />
 
+        {media.length > 0 && (
+          <section aria-label="Media in this post" className="mt-8 grid gap-4" data-testid="linkedin-post-media">
+            {media.map((it) =>
+              it.kind === "video" ? (
+                <figure key={it.idx} className="border border-border">
+                  <video src={fullUrl(it)} poster={posterUrl(it.idx)} controls preload="none" playsInline className="block w-full bg-black" />
+                  <figcaption className="px-3 py-2 font-mono text-[11px] text-muted-foreground">
+                    Video · {formatDuration(it.duration)} · {it.description}
+                  </figcaption>
+                </figure>
+              ) : it.kind === "document" ? (
+                <a key={it.idx} href={fullUrl(it)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 border border-border p-3 hover:border-foreground/50">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={thumbUrl(it)} alt="" loading="lazy" className="w-20 h-20 object-cover border border-border" />
+                  <span className="font-mono text-[11px] text-foreground">
+                    {KIND_LABEL[it.kind]} ({(it.docExt ?? "pdf").toUpperCase()}): {it.description} ↗
+                  </span>
+                </a>
+              ) : (
+                <figure key={it.idx} className="border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={fullUrl(it)} alt={it.description} width={it.width} height={it.height} loading="lazy" decoding="async" className="block w-full h-auto" />
+                </figure>
+              ),
+            )}
+          </section>
+        )}
+
+        {commentMedia.length > 0 && (
+          <section aria-labelledby="li-cm-h" className="mt-8">
+            <h2 id="li-cm-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">
+              Shared in my comments on this {post.type}
+            </h2>
+            <div className="grid gap-4">
+              {commentMedia.map((it) => (
+                <figure key={it.idx} className="border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={fullUrl(it)} alt={it.description} width={it.width} height={it.height} loading="lazy" decoding="async" className="block w-full h-auto" />
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
+
         {post.people.length > 0 && (
           <section aria-labelledby="li-people-h" className="border-t border-border mt-12 pt-8">
             <h2 id="li-people-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">
-              People named in this article ({post.people.length})
+              People named in this {post.type} ({post.people.length})
             </h2>
             <ul className="flex flex-wrap gap-1.5">
               {post.people.map((p) => (
@@ -131,13 +199,19 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
         <p className="mt-12 font-mono text-[11px] text-muted-foreground/70 leading-relaxed">
           First published on LinkedIn on {formatDateTime(post.date)} (
           <a href={post.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">original</a>
-          ). Kept here in full so it stays available; the images are this site&apos;s copies of the ones in the article, also in{" "}
-          <a href="/linkedin" className="underline hover:text-foreground">the LinkedIn archive</a>.
+          ). Kept here in full so it stays available
+          {media.length + commentMedia.length > 0 || (!isPost && post.media.length > 0) ? (
+            <>
+              ; the media are this site&apos;s copies of the ones on LinkedIn, also in{" "}
+              <a href="/linkedin" className="underline hover:text-foreground">the LinkedIn archive</a>
+            </>
+          ) : null}
+          .
         </p>
 
         {related.length > 0 && (
           <section aria-labelledby="li-rel-h" className="border-t border-border mt-12 pt-8">
-            <h2 id="li-rel-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-4">More articles on these topics</h2>
+            <h2 id="li-rel-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-4">More {isPost ? "posts" : "articles"} on these topics</h2>
             <ul className="grid sm:grid-cols-3 gap-3">
               {related.map((r) => (
                 <li key={r.id}>

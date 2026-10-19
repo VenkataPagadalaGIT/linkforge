@@ -4,7 +4,8 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_ARTICLES, LINKEDIN_PROFILE, postPath } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, postPath } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES } from "@/data/linkedinArchiveServer";
 
 const n = LINKEDIN_ARTICLES.length;
 const desc = `${n} articles Venkata Pagadala published on LinkedIn, kept here in full with their images: brightonSEO notes, Python for SEO, keyword clustering, Google Search operators and the AI systems he built.`;

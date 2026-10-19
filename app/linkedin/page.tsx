@@ -4,7 +4,8 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_COUNTS, LINKEDIN_PROFILE, LINKEDIN_TOPICS } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE } from "@/data/linkedinArchive";
+import { LINKEDIN_COUNTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 const c = LINKEDIN_COUNTS;
 const desc = `${c.items} images, videos and documents from Venkata Pagadala's LinkedIn (${c.firstYear} to ${c.lastYear}), as one searchable knowledge graph across ${c.topics} topics: SEO, AI, Google updates, conferences and more.`;

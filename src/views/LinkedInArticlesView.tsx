@@ -1,7 +1,8 @@
 import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import ArticleCard from "@/components/linkedin/ArticleCard";
-import { LINKEDIN_ARTICLES, LINKEDIN_PROFILE } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES } from "@/data/linkedinArchiveServer";
 
 /** Every LinkedIn article, newest first, each kept here in full. */
 export default function LinkedInArticlesView() {

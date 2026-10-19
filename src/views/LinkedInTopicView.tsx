@@ -2,10 +2,10 @@ import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
 import ArticleCard from "@/components/linkedin/ArticleCard";
-import { relatedTopics, topEntities, type LiItem, type LiPost } from "@/data/linkedinArchive";
+import { mostEngaging, relatedTopics, topEntities, type LiItem, type LiPost } from "@/data/linkedinArchive";
 
 interface Props {
-  topic: { id: string; slug: string; label: string; blurb: string; items: LiItem[]; posts: LiPost[] };
+  topic: { id: string; slug: string; label: string; blurb: string; items: LiItem[]; posts: LiPost[]; socialPosts: LiPost[] };
 }
 
 export default function LinkedInTopicView({ topic }: Props) {
@@ -30,7 +30,8 @@ export default function LinkedInTopicView({ topic }: Props) {
           <p className="font-mono text-xs text-muted-foreground/70 mb-8">
             {topic.items.length} item{topic.items.length === 1 ? "" : "s"}
             {videos ? `, ${videos} video${videos === 1 ? "" : "s"}` : ""}
-            {topic.posts.length ? `, ${topic.posts.length} article${topic.posts.length === 1 ? "" : "s"}` : ""}.
+            {topic.posts.length ? `, ${topic.posts.length} article${topic.posts.length === 1 ? "" : "s"}` : ""}
+            {topic.socialPosts.length ? `, ${topic.socialPosts.length} post${topic.socialPosts.length === 1 ? "" : "s"}` : ""}.
           </p>
         </ScrollReveal>
 
@@ -78,9 +79,29 @@ export default function LinkedInTopicView({ topic }: Props) {
           </section>
         )}
 
+        {topic.socialPosts.length > 0 && (
+          <section className="mb-10" aria-labelledby="li-topic-posts-h">
+            <h2 id="li-topic-posts-h" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-3">
+              Posts on {topic.label} ({topic.socialPosts.length}), most engaging first
+            </h2>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {mostEngaging(topic.socialPosts, 8).map((p) => (
+                <li key={p.id}>
+                  <ArticleCard post={p} compact />
+                </li>
+              ))}
+            </ul>
+            {topic.socialPosts.length > 8 && (
+              <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+                and {topic.socialPosts.length - 8} more in <a href="/linkedin/posts" className="underline hover:text-foreground">all posts</a>.
+              </p>
+            )}
+          </section>
+        )}
+
         {topic.items.length > 0 ? (
           <LinkedInExplorer topicId={topic.id} />
-        ) : topic.posts.length > 0 ? null : (
+        ) : topic.posts.length + topic.socialPosts.length > 0 ? null : (
           <p className="font-mono text-sm text-muted-foreground">
             Nothing here right now. <a href="/linkedin" className="underline hover:text-foreground">Browse the whole archive</a>.
           </p>

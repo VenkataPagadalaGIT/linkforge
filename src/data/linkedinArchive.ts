@@ -4,16 +4,32 @@
  *
  * Items come from linkedinArchiveData.ts and the precomputed graph from
  * linkedinGraphData.ts (both generated; the graph module is imported only by
- * the graph component so topic pages do not ship it).
+ * the graph component so topic pages do not ship it). This module is shared by
+ * server and browser code, so it holds only the small post index
+ * (LINKEDIN_POST_REFS); every post's full record, the topic lists and the counts
+ * live in linkedinArchiveServer.ts, which only server code imports.
  * Media files are served from LINKEDIN_MEDIA_BASE (Cloudflare R2 in production,
  * a local static server in development), never from this repository.
  */
 import { LINKEDIN_ITEMS } from "./linkedinArchiveData";
-import { LINKEDIN_POSTS } from "./linkedinPostsData";
-import type { LiItem, LiKind, LiPost } from "./linkedinArchiveTypes";
+import { ENGAGEMENT_AS_OF, LINKEDIN_POST_REFS_RAW } from "./linkedinPostRefsData";
+import type { LiEngagement, LiItem, LiKind, LiPost } from "./linkedinArchiveTypes";
 
 export type { LiItem, LiKind, LiGraph, LiGraphNode, LiPost, LiPerson, LiEngagement } from "./linkedinArchiveTypes";
-export { LINKEDIN_ITEMS, LINKEDIN_POSTS };
+export { LINKEDIN_ITEMS, ENGAGEMENT_AS_OF };
+
+/** A post on LinkedIn, from its activity id. */
+export const activityUrl = (activityId: string) => `https://www.linkedin.com/feed/update/urn:li:activity:${activityId}/`;
+
+/** The browser's post index (articles, and posts some public media belongs to), expanded to full LiPost shape. */
+export const LINKEDIN_POST_REFS: LiPost[] = LINKEDIN_POST_REFS_RAW.map((r) => ({
+  ...r,
+  url: r.url ?? (r.activityId ? activityUrl(r.activityId) : ""),
+  people: r.people ?? [],
+  topics: r.topics ?? [],
+  words: r.words ?? 0,
+  engagement: r.engagement ? { asOf: ENGAGEMENT_AS_OF, ...r.engagement } : undefined,
+}));
 
 export const LINKEDIN_PROFILE = "https://www.linkedin.com/in/venkata-pagadala";
 export const LINKEDIN_ACTIVITY = `${LINKEDIN_PROFILE}/recent-activity/all/`;
@@ -35,6 +51,18 @@ export const fullUrl = (it: Pick<LiItem, "idx" | "kind" | "docExt">) =>
     : `${LINKEDIN_MEDIA_BASE}/f/${it.idx}.webp`;
 /** Video poster (960px). */
 export const posterUrl = (idx: string) => `${LINKEDIN_MEDIA_BASE}/p/${idx}.webp`;
+/** An image for a media item (share cards, structured data): the image, a video's poster, a document's thumbnail. */
+export const imageUrlFor = (idx?: string) => {
+  const it = idx ? LINKEDIN_ITEMS.find((i) => i.idx === idx) : undefined;
+  if (!it) return undefined;
+  return it.kind === "video" ? posterUrl(it.idx) : it.kind === "document" ? thumbUrl(it) : fullUrl(it);
+};
+/** Text cut to at most n characters at a word boundary (whole characters, so emoji survive). */
+export const clipText = (s: string, n: number) => {
+  const chars = Array.from(s);
+  if (chars.length <= n) return s;
+  return `${chars.slice(0, n).join("").replace(/\s+\S*$/, "").replace(/[,;:]$/, "")}...`;
+};
 
 interface TopicMeta {
   /** URL slug. FROZEN once live: never change it without the owner's redirect plan. */
@@ -73,44 +101,51 @@ export const KIND_LABEL: Record<LiKind, string> = { image: "Image", video: "Vide
 /** Items the site may show. Review items exist only in local preview data. */
 export const PUBLIC_ITEMS: LiItem[] = LINKEDIN_ITEMS;
 
-/** Articles, newest first (drafts exist only in local preview data). */
-export const LINKEDIN_ARTICLES: LiPost[] = LINKEDIN_POSTS.filter((p) => p.type === "article");
-const postById = new Map(LINKEDIN_POSTS.map((p) => [p.id, p]));
-export const getLinkedInPost = (id: string) => postById.get(id);
+
+/** Posts with the most reactions first (ties: newest first). */
+export const mostEngaging = (list: LiPost[], limit = 12) =>
+  [...list].sort((a, b) => (b.engagement?.reactions ?? 0) - (a.engagement?.reactions ?? 0) || b.date.localeCompare(a.date)).slice(0, limit);
+/** Where engagement numbers came from (LiEngagement.source keys). */
+export const ENGAGEMENT_SOURCES: Record<string, string> = {
+  page: "LinkedIn activity page (reactions, comments, reposts)",
+  "page+analytics": "LinkedIn activity page (reactions, comments, reposts) and LinkedIn creator analytics export (impressions, engagements)",
+};
+export const engagementSource = (e: Pick<LiEngagement, "source">) => ENGAGEMENT_SOURCES[e.source] ?? e.source;
+/** The LinkedIn URL of an article or post (posts may only carry their activity id). */
+export const linkedinUrl = (p: Pick<LiPost, "url" | "activityId">) => p.url || (p.activityId ? activityUrl(p.activityId) : "");
+/** "262 reactions · 89 comments · 11 reposts · 31,130 impressions" (only the numbers that exist). */
+export function engagementLine(p: Pick<LiPost, "engagement">) {
+  const e = p.engagement;
+  if (!e) return "";
+  const n = (v: number | undefined, w: string, floor = false) => (v == null ? null : `${floor ? "at least " : ""}${v.toLocaleString("en-US")} ${w}${v === 1 ? "" : "s"}`);
+  return [n(e.reactions, "reaction"), n(e.comments, "comment"), n(e.reposts, "repost"), n(e.impressions, "impression", e.impressionsAtLeast)].filter(Boolean).join(" · ");
+}
+/**
+ * A post outside the browser index, rebuilt from its timeline bar: title, exact time, counts with their source and
+ * floor flag, media count; topics come from the caller (the node's graph neighbours). Enough for a card and a link.
+ */
+export function postFromNode(
+  n: { id: string; label: string; postType?: LiPost["type"]; count?: number; meta?: [string, number | null, number | null, number | null, number | null, string] },
+  topics: string[] = [],
+): LiPost {
+  const [date, reactions, comments, reposts, impressions, flags] = n.meta ?? ["", null, null, null, null, ""];
+  const e: LiEngagement = { asOf: ENGAGEMENT_AS_OF, source: flags.includes("a") ? "page+analytics" : "page" };
+  if (reactions != null) e.reactions = reactions;
+  if (comments != null) e.comments = comments;
+  if (reposts != null) e.reposts = reposts;
+  if (impressions != null) e.impressions = impressions;
+  if (flags.includes("f")) e.impressionsAtLeast = true;
+  const has = reactions != null || comments != null || reposts != null || impressions != null;
+  // count = media items (articles: images); stand-in ids so lengths read right in cards and the panel.
+  const media = Array.from({ length: n.count ?? 0 }, (_, k) => `?${k}`);
+  return { id: n.id.slice(2), type: n.postType ?? "post", title: n.label, date, url: "", media, people: [], topics, words: 0, excerpt: "", engagement: has ? e : undefined };
+}
 /** This site's page for an article (or post). */
 export const postPath = (p: Pick<LiPost, "id" | "type">) => `/linkedin/${p.type === "article" ? "articles" : "posts"}/${p.id}`;
 /** Minutes to read at 230 words a minute. */
 export const readingMinutes = (words: number) => Math.max(1, Math.round(words / 230));
 export const formatDateTime = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" });
-/** Articles that share the most topics with this one. */
-export function relatedPosts(p: LiPost, limit = 3) {
-  return LINKEDIN_ARTICLES.filter((q) => q.id !== p.id)
-    .map((q) => ({ q, n: q.topics.filter((t) => p.topics.includes(t)).length }))
-    .filter((x) => x.n > 0)
-    .sort((a, b) => b.n - a.n || b.q.date.localeCompare(a.q.date))
-    .slice(0, limit)
-    .map((x) => x.q);
-}
-
-/**
- * Every topic that has a page ("Other" has none). Pages exist for all of them so
- * a URL never 404s once live; a topic that currently has no items renders noindex
- * and stays out of the site registry.
- */
-export const ALL_LINKEDIN_TOPICS = Object.keys(TOPIC_META)
-  .filter((id) => id !== "other")
-  .map((id) => ({
-    id,
-    ...TOPIC_META[id],
-    items: PUBLIC_ITEMS.filter((i) => i.topics.includes(id)),
-    posts: LINKEDIN_ARTICLES.filter((p) => p.topics.includes(id)),
-  }));
-
-/** Topics with at least one item or article, largest first: the ones listed and linked. */
-export const LINKEDIN_TOPICS = ALL_LINKEDIN_TOPICS.filter((t) => t.items.length + t.posts.length > 0).sort((a, b) => b.items.length - a.items.length);
-
-export const getLinkedInTopic = (slug: string) => ALL_LINKEDIN_TOPICS.find((t) => t.slug === slug);
 
 /** Topics that most often share items with this one. */
 export function relatedTopics(id: string, limit = 6) {
@@ -131,19 +166,6 @@ export function topEntities(items: LiItem[], limit = 12) {
   for (const it of items) for (const e of it.entities) counts.set(e, (counts.get(e) ?? 0) + 1);
   return [...counts].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([name, n]) => ({ name, count: n }));
 }
-
-const years = PUBLIC_ITEMS.map((i) => i.date.slice(0, 4)).sort();
-export const LINKEDIN_COUNTS = {
-  items: PUBLIC_ITEMS.length,
-  images: PUBLIC_ITEMS.filter((i) => i.kind === "image").length,
-  videos: PUBLIC_ITEMS.filter((i) => i.kind === "video").length,
-  documents: PUBLIC_ITEMS.filter((i) => i.kind === "document").length,
-  articles: LINKEDIN_ARTICLES.length,
-  topics: LINKEDIN_TOPICS.length,
-  firstYear: years[0] ?? "",
-  lastYear: years[years.length - 1] ?? "",
-  years: [...new Set(years)].sort().reverse(),
-};
 
 export const formatDay = (day: string) =>
   new Date(`${day}T12:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });

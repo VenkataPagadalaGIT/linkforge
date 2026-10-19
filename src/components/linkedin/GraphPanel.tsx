@@ -3,6 +3,9 @@ import * as React from "react";
 import {
   KIND_LABEL,
   LINKEDIN_ACTIVITY,
+  engagementSource,
+  linkedinUrl,
+  postFromNode,
   formatDateTime,
   formatDay,
   formatDuration,
@@ -54,7 +57,7 @@ function GraphPanel(p: Props) {
     ref.current?.focus({ preventScroll: true });
     ref.current?.parentElement?.scrollTo(0, 0);
   }, [node.id]);
-  const kindLabel = node.type === "post" ? "Article" : node.type === "topic" ? "Topic" : node.type === "entity" ? "Name" : "Item";
+  const kindLabel = node.type === "post" ? (node.postType === "post" ? "Post" : "Article") : node.type === "topic" ? "Topic" : node.type === "entity" ? "Name" : "Item";
   return (
     <aside
       ref={ref}
@@ -103,7 +106,8 @@ function Engagement({ e }: { e?: LiEngagement }) {
       ["Reactions", e.reactions],
       ["Comments", e.comments],
       ["Reposts", e.reposts],
-      ["Impressions", e.impressions],
+      [e.impressionsAtLeast ? "Impressions (at least)" : "Impressions", e.impressions],
+      [e.engagementsAtLeast ? "Engagements (at least)" : "Engagements", e.engagements],
     ] as const
   ).filter(([, v]) => v != null);
   return (
@@ -116,7 +120,7 @@ function Engagement({ e }: { e?: LiEngagement }) {
           </div>
         ))}
       </dl>
-      <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">Source: {e.source}</p>
+      <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">Source: {engagementSource(e)}</p>
     </Section>
   );
 }
@@ -154,28 +158,47 @@ function TopicChips({ ids, onPin }: { ids: string[]; onPin: (id: string) => void
   );
 }
 
-function PostButtons({ ids, postsById, onPin }: { ids: string[]; postsById: Map<string, LiPost>; onPin: (id: string) => void }) {
+/** Posts and articles as buttons, most reactions first; at most `max`, then a pointer to the full list. */
+function PostButtons({ ids, postsById, nodeById, onPin, max = 20, moreHref }: { ids: string[]; postsById: Map<string, LiPost>; nodeById: Map<string, LiGraphNode>; onPin: (id: string) => void; max?: number; moreHref?: string }) {
+  const list = ids
+    .map((id) => postsById.get(id) ?? (nodeById.get(`p:${id}`) ? postFromNode(nodeById.get(`p:${id}`)!) : undefined))
+    .filter((q): q is LiPost => !!q)
+    .sort((a, b) => (b.engagement?.reactions ?? -1) - (a.engagement?.reactions ?? -1) || b.date.localeCompare(a.date));
   return (
-    <ul className="flex flex-col gap-1.5">
-      {ids.map((id) => {
-        const q = postsById.get(id);
-        if (!q) return null;
-        return (
-          <li key={id}>
-            <button type="button" onClick={() => onPin(`p:${id}`)} className={`${CHIP} w-full`}>
-              <span className="block text-[10px] text-muted-foreground">{formatDay(q.date.slice(0, 10))}</span>
+    <>
+      <ul className="flex flex-col gap-1.5">
+        {list.slice(0, max).map((q) => (
+          <li key={q.id}>
+            <button type="button" onClick={() => onPin(`p:${q.id}`)} className={`${CHIP} w-full`}>
+              <span className="block text-[10px] text-muted-foreground">
+                {q.type === "article" ? "Article" : "Post"} · {formatDay(q.date.slice(0, 10))}
+                {q.engagement?.reactions != null ? ` · ${q.engagement.reactions.toLocaleString("en-US")} reactions` : ""}
+              </span>
               {q.title}
             </button>
           </li>
-        );
-      })}
-    </ul>
+        ))}
+      </ul>
+      {list.length > max && (
+        <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">
+          and {list.length - max} more
+          {moreHref ? (
+            <>
+              {" "}on <a href={moreHref} className="underline hover:text-foreground">the topic page</a>
+            </>
+          ) : (
+            " in the timeline"
+          )}
+        </p>
+      )}
+    </>
   );
 }
 
-function PostDetails({ node, postsById, itemsByIdx, nodeById, entityIdByLabel, onPin, headingId }: Props & { headingId: string }) {
-  const post = postsById.get(node.id.slice(2));
-  if (!post) return null;
+function PostDetails({ node, postsById, itemsByIdx, nodeById, neighbours, entityIdByLabel, onPin, headingId }: Props & { headingId: string }) {
+  const post = postsById.get(node.id.slice(2)) ?? postFromNode(node, [...neighbours].filter((x) => x.startsWith("t:")).map((x) => x.slice(2)));
+  const realMedia = post.media.filter((m) => itemsByIdx.has(m));
+  const url = linkedinUrl(post);
   const names = post.media
     .flatMap((m) => itemsByIdx.get(m)?.entities ?? [])
     .filter((e, i, a) => a.indexOf(e) === i);
@@ -192,25 +215,31 @@ function PostDetails({ node, postsById, itemsByIdx, nodeById, entityIdByLabel, o
         <a href={postPath(post)} className="hover:underline">{post.title}</a>
       </h3>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-        {plural(post.words, "word")} · {readingMinutes(post.words)} min read · {plural(post.media.length, "image")}
+        {post.type === "article" ? `${plural(post.words, "word")} · ${readingMinutes(post.words)} min read · ${plural(post.media.length, "image")}` : `${post.media.length} media`}
         {post.people.length ? ` · ${post.people.length === 1 ? "1 person" : `${post.people.length} people`} named` : ""}
       </p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <a href={postPath(post)} className={PRIMARY}>Read it here</a>
-        <a href={post.url} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
+        {url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
+        ) : (
+          <span className={`${SECONDARY} opacity-70`}>Full text on its page</span>
+        )}
       </div>
       <Engagement e={post.engagement} />
-      <Section title="Opening">
-        <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">{post.excerpt}</p>
-      </Section>
+      {post.excerpt && (
+        <Section title={post.type === "post" ? "Text" : "Opening"}>
+          <p className="font-mono text-[11px] leading-relaxed text-muted-foreground">{post.excerpt}</p>
+        </Section>
+      )}
       {post.topics.length > 0 && (
         <Section title="Topics">
           <TopicChips ids={post.topics.filter((t) => nodeById.has(`t:${t}`))} onPin={onPin} />
         </Section>
       )}
-      {post.media.length > 0 && (
-        <Section title={`Images in it (${post.media.length})`}>
-          <Thumbs idxs={post.media} itemsByIdx={itemsByIdx} onPin={onPin} />
+      {realMedia.length > 0 && (
+        <Section title={`${post.type === "post" ? "Media" : "Images"} in it (${realMedia.length})`}>
+          <Thumbs idxs={realMedia} itemsByIdx={itemsByIdx} onPin={onPin} />
         </Section>
       )}
       {post.people.length > 0 && (
@@ -271,8 +300,8 @@ function ItemDetails({ node, itemsByIdx, postsById, nodeById, entityIdByLabel, o
         <a href={post?.url || LINKEDIN_ACTIVITY} target="_blank" rel="noopener noreferrer" className={SECONDARY}>On LinkedIn ↗</a>
       </div>
       {post && (
-        <Section title="From the article">
-          <PostButtons ids={[post.id]} postsById={postsById} onPin={onPin} />
+        <Section title={it.inComment ? "From my comment on the post" : `From the ${post.type}`}>
+          <PostButtons ids={[post.id]} postsById={postsById} nodeById={nodeById} onPin={onPin} />
         </Section>
       )}
       {it.topics.filter((t) => t !== "other").length > 0 && (
@@ -289,7 +318,7 @@ function ItemDetails({ node, itemsByIdx, postsById, nodeById, entityIdByLabel, o
   );
 }
 
-function TopicDetails({ node, itemsByIdx, postsById, neighbours, entityIdByLabel, activeTopic, onPin, onFilterTopic, headingId }: Props & { headingId: string }) {
+function TopicDetails({ node, itemsByIdx, postsById, nodeById, neighbours, entityIdByLabel, activeTopic, onPin, onFilterTopic, headingId }: Props & { headingId: string }) {
   const id = node.label;
   const items = [...itemsByIdx.values()].filter((i) => i.topics.includes(id)).sort((a, b) => b.date.localeCompare(a.date));
   const posts = [...neighbours].filter((n) => n.startsWith("p:")).map((n) => n.slice(2));
@@ -303,7 +332,7 @@ function TopicDetails({ node, itemsByIdx, postsById, neighbours, entityIdByLabel
       <h3 id={headingId} className="font-display text-xl font-bold text-foreground">{topicLabel(id)}</h3>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
         {plural(items.length, "item")}
-        {posts.length ? ` · ${plural(posts.length, "article")}` : ""}
+        {posts.length ? ` · ${posts.length} ${posts.length === 1 ? "post or article" : "posts and articles"}` : ""}
         {years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
       </p>
       <div className="mt-3 grid grid-cols-2 gap-2">
@@ -313,8 +342,8 @@ function TopicDetails({ node, itemsByIdx, postsById, neighbours, entityIdByLabel
         </button>
       </div>
       {posts.length > 0 && (
-        <Section title={`Articles (${posts.length})`}>
-          <PostButtons ids={posts} postsById={postsById} onPin={onPin} />
+        <Section title={`Posts and articles (${posts.length})`}>
+          <PostButtons ids={posts} postsById={postsById} nodeById={nodeById} onPin={onPin} moreHref={id !== "other" ? `/linkedin/topics/${topicSlug(id)}` : undefined} />
         </Section>
       )}
       {names.length > 0 && (
@@ -329,7 +358,7 @@ function TopicDetails({ node, itemsByIdx, postsById, neighbours, entityIdByLabel
   );
 }
 
-function EntityDetails({ node, itemsByIdx, postsById, neighbours, onPin, headingId }: Props & { headingId: string }) {
+function EntityDetails({ node, itemsByIdx, postsById, nodeById, neighbours, onPin, headingId }: Props & { headingId: string }) {
   const items = [...neighbours].filter((n) => n.startsWith("i:")).map((n) => itemsByIdx.get(n.slice(2))).filter((x): x is LiItem => !!x).sort((a, b) => b.date.localeCompare(a.date));
   const posts = [...neighbours].filter((n) => n.startsWith("p:")).map((n) => n.slice(2));
   const topicCounts = new Map<string, number>();
@@ -340,12 +369,12 @@ function EntityDetails({ node, itemsByIdx, postsById, neighbours, onPin, heading
       <h3 id={headingId} className="font-display text-xl font-bold text-foreground">◆ {node.label}</h3>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
         In {plural(items.length, "item")}
-        {posts.length ? ` and ${plural(posts.length, "article")}` : ""}
+        {posts.length ? ` and ${posts.length} ${posts.length === 1 ? "post or article" : "posts and articles"}` : ""}
         {years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
       </p>
       {posts.length > 0 && (
-        <Section title="Articles">
-          <PostButtons ids={posts} postsById={postsById} onPin={onPin} />
+        <Section title="Posts and articles">
+          <PostButtons ids={posts} postsById={postsById} nodeById={nodeById} onPin={onPin} />
         </Section>
       )}
       {topicCounts.size > 0 && (

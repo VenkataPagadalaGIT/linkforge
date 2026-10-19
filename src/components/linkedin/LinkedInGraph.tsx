@@ -11,6 +11,8 @@ import {
   topicSlug,
   formatDay,
   formatDuration,
+  engagementLine,
+  postFromNode,
   postPath,
   readingMinutes,
   type LiGraphNode,
@@ -40,8 +42,8 @@ interface Props {
   postsById: Map<string, LiPost>;
   /** Item ids (idx) that match the current search and filters; null = no filter. */
   matching: Set<string> | null;
-  /** Post ids that match the current search and filters; null = no filter. */
-  matchingPosts: Set<string> | null;
+  /** The current search and filters, for lighting posts and articles; null = no filter. */
+  postFilter: { terms: string[]; year: string | null; topic: string | null; kind: string } | null;
   activeTopic: string | null;
   onTopic: (topicId: string | null) => void;
   onItem: (idx: string) => void;
@@ -66,7 +68,7 @@ const MOTION_CSS = `.li-m{transition:transform ${MORPH_MS}ms cubic-bezier(.22,.8
 const EMPTY: Set<string> = new Set();
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchingPosts, activeTopic, onTopic, onItem }: Props) {
+export default function LinkedInGraph({ itemsByIdx, postsById, matching, postFilter, activeTopic, onTopic, onItem }: Props) {
   const graph = LINKEDIN_GRAPH;
   const { width: W, height: H } = graph;
   const [view, setView] = React.useState<LiView>("topics");
@@ -201,6 +203,28 @@ export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchin
   const entityIdByLabel = React.useMemo(() => new Map(entityNodes.map((n) => [n.label, n.id])), [entityNodes]);
   const topicNodes = React.useMemo(() => graph.nodes.filter((n) => n.type === "topic"), [graph]);
   const postNodes = React.useMemo(() => graph.nodes.filter((n) => n.type === "post"), [graph]);
+  const topicsOf = React.useCallback((id: string) => [...(neighbours.get(id) ?? [])].filter((x) => x.startsWith("t:")).map((x) => x.slice(2)), [neighbours]);
+  /** A post as the browser knows it: its index record, else rebuilt from its timeline bar. */
+  const postOf = React.useCallback((n: LiGraphNode) => postsById.get(n.id.slice(2)) ?? postFromNode(n, topicsOf(n.id)), [postsById, topicsOf]);
+  // Posts that match the search and filters: one of their items matches, or (all kinds) their own day, topic and words do.
+  const matchingPosts = React.useMemo(() => {
+    if (!postFilter) return null;
+    const out = new Set<string>();
+    for (const n of postNodes) {
+      const nb = neighbours.get(n.id) ?? new Set<string>();
+      if (matching && [...nb].some((x) => x.startsWith("i:") && matching.has(x.slice(2)))) {
+        out.add(n.id.slice(2));
+        continue;
+      }
+      if (postFilter.kind !== "all") continue;
+      const ref = postsById.get(n.id.slice(2));
+      if (postFilter.year && !(ref?.date ?? n.meta?.[0] ?? "").startsWith(postFilter.year)) continue;
+      if (postFilter.topic && !nb.has(`t:${postFilter.topic}`)) continue;
+      const hay = `${n.label} ${ref?.excerpt ?? ""} ${ref?.people.map((x) => x.name).join(" ") ?? ""}`.toLowerCase();
+      if (postFilter.terms.every((t) => hay.includes(t))) out.add(n.id.slice(2));
+    }
+    return out;
+  }, [postFilter, postNodes, neighbours, matching, postsById]);
   const timelineXs = React.useMemo(() => items.map((n) => n.pos.timeline?.[0] ?? 0).sort((a, b) => a - b), [items]);
   const growCut = React.useMemo(() => {
     if (growX == null) return null;
@@ -496,24 +520,27 @@ export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchin
               {view === "timeline" &&
                 settled &&
                 tl.postLanes.map((l) => (
-                  <a key={l.type} href="/linkedin/articles" aria-label={`All ${l.count} articles`}>
+                  <a key={l.type} href={l.type === "article" ? "/linkedin/articles" : "/linkedin/posts"} aria-label={`All ${l.count} ${l.type}s`}>
                     <text x={tl.left - 16} y={l.y + 4} textAnchor="end" className="fill-foreground font-mono" fontSize={11} fontWeight={700} style={HALO}>
                       {l.type === "article" ? "Articles" : "Posts"} · {l.count}
                     </text>
                   </a>
                 ))}
               {postNodes.map((n) => {
+                // Post bars exist only in the Timeline: not drawn (or sent in the HTML) for the other views.
+                if (n.postType === "post" && view !== "timeline") return null;
                 const shown = visible(n) && !postHidden(n);
                 const [x, y] = P(n);
                 const on = shown && isLit(n);
                 const hot = hover === n.id || pinned === n.id;
-                const post = postsById.get(n.id.slice(2));
-                if (!post) return null;
+                const post = postOf(n);
+                const isBar = n.postType === "post";
+                const known = n.meta?.[1] != null;
                 return (
                   <a
                     key={n.id}
                     href={postPath(post)}
-                    aria-label={`Article: ${post.title}`}
+                    aria-label={`${isBar ? "Post" : "Article"}: ${post.title}`}
                     aria-expanded={pinned === n.id}
                     data-node-id={n.id}
                     tabIndex={shown ? undefined : -1}
@@ -527,9 +554,26 @@ export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchin
                     style={{ ...move(x, y, shown ? "" : " scale(0)"), opacity: shown ? (on ? 1 : 0.18) : 0, pointerEvents: shown ? "auto" : "none", cursor: "pointer" }}
                     data-testid={`linkedin-graph-post-${post.id}`}
                   >
-                    <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z" className={hot ? "fill-foreground" : "fill-background"} />
-                    <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z M 2 -5.5 V -3 H 4.5" fill="none" className="stroke-foreground" strokeWidth={hot ? 1.4 : 1} strokeLinejoin="round" />
-                    <path d="M -2.6 -1.4 H 2.6 M -2.6 0.8 H 2.6 M -2.6 3 H 1" className={hot ? "stroke-background" : "stroke-foreground"} strokeWidth={0.6} strokeOpacity={0.7} />
+                    {isBar ? (
+                      <>
+                        {/* A post: a bar rising from the lane, its height set by reactions; a wider invisible hit area */}
+                        <rect x={-(n.hw ?? 2.5)} y={-(n.bar ?? 3) - 2} width={2 * (n.hw ?? 2.5)} height={(n.bar ?? 3) + 4} fill="transparent" />
+                        <rect
+                          x={hot ? -1.4 : -0.9}
+                          y={-(n.bar ?? 3)}
+                          width={hot ? 2.8 : 1.8}
+                          height={n.bar ?? 3}
+                          className={hot ? "fill-rose-600 dark:fill-rose-300" : "fill-foreground"}
+                          fillOpacity={hot ? 1 : known ? 0.7 : 0.3}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z" className={hot ? "fill-foreground" : "fill-background"} />
+                        <path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z M 2 -5.5 V -3 H 4.5" fill="none" className="stroke-foreground" strokeWidth={hot ? 1.4 : 1} strokeLinejoin="round" />
+                        <path d="M -2.6 -1.4 H 2.6 M -2.6 0.8 H 2.6 M -2.6 3 H 1" className={hot ? "stroke-background" : "stroke-foreground"} strokeWidth={0.6} strokeOpacity={0.7} />
+                      </>
+                    )}
                   </a>
                 );
               })}
@@ -675,14 +719,16 @@ export default function LinkedInGraph({ itemsByIdx, postsById, matching, matchin
         <p className="normal-case tracking-normal">{meta.hint}</p>
       </div>
       <div className="li-js hidden sm:block pointer-events-none absolute bottom-2 left-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-        Zoom {zoom.k.toFixed(1)}×{hover ? ` · ${hover.startsWith("t:") ? topicLabel(hover.slice(2)) : hover.startsWith("e:") ? nodeById.get(hover)?.label : hover.startsWith("p:") ? "Article" : formatDay(itemsByIdx.get(hover.slice(2))?.date ?? "2020-01-01")}` : ""}
+        Zoom {zoom.k.toFixed(1)}×{hover ? ` · ${hover.startsWith("t:") ? topicLabel(hover.slice(2)) : hover.startsWith("e:") ? nodeById.get(hover)?.label : hover.startsWith("p:") ? (nodeById.get(hover)?.postType === "post" ? "Post" : "Article") : formatDay(itemsByIdx.get(hover.slice(2))?.date ?? "2020-01-01")}` : ""}
       </div>
 
       {/* No hover card for the pinned node: the panel already shows it. */}
       {tip?.id.startsWith("i:") && tip.id !== pinned && itemsByIdx.get(tip.id.slice(2)) && (
         <HoverCard item={itemsByIdx.get(tip.id.slice(2))!} post={postsById.get(itemsByIdx.get(tip.id.slice(2))!.post ?? "")} left={tip.left} top={tip.top} />
       )}
-      {tip?.id.startsWith("p:") && tip.id !== pinned && postsById.get(tip.id.slice(2)) && <PostCard post={postsById.get(tip.id.slice(2))!} left={tip.left} top={tip.top} />}
+      {tip?.id.startsWith("p:") && tip.id !== pinned && nodeById.get(tip.id) && (
+        <PostCard post={postOf(nodeById.get(tip.id)!)} left={tip.left} top={tip.top} />
+      )}
     </div>
       {view === "timeline" && (
         <div className="li-js mt-2 flex items-center gap-3 border border-border bg-background/90 px-3 py-1.5">
@@ -789,7 +835,12 @@ function HoverCard({ item, post, left, top }: { item: LiItem; post?: LiPost; lef
           {formatDay(item.date)} · {item.label}
         </p>
         <p className="font-mono text-[11px] leading-snug text-foreground">{item.description}</p>
-        {post && <p className="mt-1.5 font-mono text-[10px] leading-snug text-muted-foreground">In the article: {post.title}</p>}
+        {post && (
+          <p className="mt-1.5 font-mono text-[10px] leading-snug text-muted-foreground">
+            {item.inComment ? "In a comment on the post" : `In the ${post.type}`}: {post.title}
+            {post.engagement?.reactions != null ? ` · ${post.engagement.reactions.toLocaleString("en-US")} reactions` : ""}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -805,13 +856,14 @@ function PostCard({ post, left, top }: { post: LiPost; left: number; top: number
       )}
       <div className="p-2.5">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">
-          Article · {formatDay(post.date.slice(0, 10))} · {readingMinutes(post.words)} min
+          {post.type === "post" ? "Post" : "Article"} · {formatDay(post.date.slice(0, 10))}
+          {post.type === "article" ? ` · ${readingMinutes(post.words)} min` : ""}
         </p>
         <p className="font-display text-sm font-bold leading-snug text-foreground mb-1">{post.title}</p>
         <p className="font-mono text-[10px] leading-snug text-muted-foreground">
-          {post.media.length} image{post.media.length === 1 ? "" : "s"}
+          {post.media.length} media
           {post.people.length ? ` · ${post.people.length} people named` : ""}
-          {e?.reactions != null ? ` · ${e.reactions.toLocaleString("en-US")} reactions` : ""}
+          {e ? ` · ${engagementLine(post)}` : ""}
         </p>
         <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground">Click to pin it and see its links</p>
       </div>

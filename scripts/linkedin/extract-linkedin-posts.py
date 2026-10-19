@@ -13,6 +13,14 @@ private, but the export is, so only this script lives in the repository.
     --items "<LinkedIn-Data>/web/linkedin/items.json" \
     --out "<LinkedIn-Data>/web/linkedin/posts.json"
 
+Posts come from --activity (my own posts as read from my LinkedIn activity page,
+a JSON list of {id, date, header, actor, text, reactions, comments, reposts,
+assets, links}) and --engagement (linkedin_post_engagement.csv, merged from
+LinkedIn's creator analytics exports). Only my own original posts are kept
+(no reposts of other people's posts, no comments or reactions). Each post's
+media joins by LinkedIn asset id, exactly as for articles; analytics numbers
+join by publish time (both LinkedIn ids encode it to the millisecond).
+
 What it does, per article (Articles/Articles/*.html):
   - reads title, LinkedIn URL, created and published times (GMT, as LinkedIn
     writes them); an article never published is kept as a draft (never public)
@@ -25,6 +33,8 @@ What it does, per article (Articles/Articles/*.html):
     article with topics from its images and its text
 """
 import argparse
+import csv
+import datetime as dt
 import html
 import json
 import os
@@ -35,7 +45,8 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 OWN_PROFILE = "venkata-pagadala"
 OWN_HOSTS = {"venkatapagadala.com", "www.venkatapagadala.com"}
-ASSET = re.compile(r"(?:urn:li:digitalmediaAsset:|/media|/v2/|/image/)([CD][0-9A-Z]{2}\d{2}AQ[\w-]{10,})")
+# LinkedIn media asset id, in any of its URL forms: /v2/<id>/, /image/<id>, /vid/dynamic/<id>/, /media<id>, or the URN.
+ASSET = re.compile(r"(?:urn:li:digitalmediaAsset:|/media|/)([CD][0-9A-Z]{2}\d{2}AQ[\w-]{10,})(?=[/?\s\"]|$)")
 
 # Site URL for an article: the LinkedIn slug minus the author suffix LinkedIn adds,
 # unless an explicit slug reads better. FROZEN once live.
@@ -62,13 +73,19 @@ TOPIC_OVERRIDES = {
 
 # Topic rules over the title and text (ids are the archive's topic ids).
 TOPIC_RULES = [
-    ("events_conferences", r"\b(conference|brighton ?seo|tech ?seo ?connect|summit|searchnorwich|keynote)\b"),
-    ("seo_search", r"\b(seo|search engines?|keywords?|serps?|rankings?)\b"),
-    ("ai_llm", r"\b(ai|llms?|gpt[\w-]*|machine learning|nlp|chatgpt|claude)\b"),
-    ("data_engineering", r"\b(python|script|clustering|taxonomy|classif\w*|pipeline|dataset)\b"),
-    ("search_console_analytics", r"\bsearch console\b"),
-    ("google_updates", r"\b(algorithm update|core update)\b"),
-    ("career_education", r"\b(learning system|roadmap|courses?|certifications?|learn python)\b"),
+    ("events_conferences", r"\b(conference|brighton ?seo|tech ?seo ?connect|seo ?week|summit|searchnorwich|keynote|meetup|webinar)\b"),
+    ("seo_search", r"\b(seo|search engines?|keywords?|serps?|rankings?|geo|aeo|backlinks?|crawl\w*|indexing)\b"),
+    ("ai_llm", r"\b(ai|llms?|gpt[\w-]*|machine learning|nlp|chatgpt|claude|gemini|openai|anthropic|agents?|agentic)\b"),
+    ("data_engineering", r"\b(python|script|clustering|taxonomy|classif\w*|pipeline|dataset|sql|knowledge graph|ontology)\b"),
+    ("search_console_analytics", r"\b(search console|google analytics|ga4|analytics)\b"),
+    ("google_updates", r"\b(algorithm update|core update|helpful content|spam update|google update)\b"),
+    ("career_education", r"\b(learning system|roadmap|courses?|certifi\w+|new role|promot\w+|hired|hiring|career|graduat\w+)\b"),
+    ("marketing_growth", r"\b(marketing|growth|brand|ppc|paid search|ads|conversion|lead gen\w*)\b"),
+    ("content_social", r"\b(content strategy|content marketing|social media|newsletter|blog|followers)\b"),
+    ("speaking_media", r"\b(podcast|talk|speaking|speaker|interview|panel|presented)\b"),
+    ("motivation_quotes", r"\b(believe|motivation|mindset|consisten\w+|success|grateful|gratitude|never give up)\b"),
+    ("awards_recognition", r"\b(award|recogni\w+|honou?red|top \d+|featured)\b"),
+    ("product_tools", r"\b(screaming frog|semrush|ahrefs|botify|dashboard|chrome extension|perplexity|cursor|replit)\b"),
 ]
 
 ALLOWED = {"p", "h2", "h3", "h4", "ul", "ol", "li", "strong", "em", "a", "blockquote", "pre", "code", "hr", "br", "figure", "figcaption", "img", "sup", "sub"}
@@ -262,10 +279,12 @@ def site_slug(li_slug):
 def topics_for(title, text, media, public):
     score = {}
     low_t, low = title.lower(), text.lower()
+    # Short posts mention a subject once or twice; long articles need it three times to count.
+    need = 1 if len(low.split()) < 150 else 2 if len(low.split()) < 500 else 3
     for tid, pat in TOPIC_RULES:
         n = len(re.findall(pat, low))
         s = (6 if re.search(pat, low_t) else 0) + min(n, 12) * 0.5
-        if re.search(pat, low_t) or n >= 3:
+        if re.search(pat, low_t) or n >= need:
             score[tid] = score.get(tid, 0) + s
     for idx in media:
         for t in public[idx]["topics"]:
@@ -345,12 +364,215 @@ def excerpt(text, n=240):
     return cut + "..."
 
 
+# A URL in post text, trimmed of trailing punctuation by trim_url (which keeps a ")" that closes a "(" in it).
+URL_RE = re.compile(r"https?://[^\s<>\"]+")
+EMAIL_RE = re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.I)
+OWNER = "Venkata Pagadala"
+# Feed headers on posts that are not mine to publish (someone else's post I reposted, liked or commented on).
+NOT_MINE = re.compile(r"\b(reposted|likes?|loves?|celebrates?|supports?|finds|commented|replied|insightful|funny)\b", re.I)
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def clip(s, n):
+    """At most n characters (whole characters, so emoji survive), cut at a word boundary."""
+    chars = list(s)
+    if len(chars) <= n:
+        return s
+    return "".join(chars[:n]).rsplit(" ", 1)[0].rstrip(",;:") + "..."
+
+
+def trim_url(u):
+    while u and u[-1] in ".,;:!?]'\"":
+        u = u[:-1]
+    while u.endswith(")") and u.count(")") > u.count("("):
+        u = u[:-1]
+    return u
+
+
+def post_title(text):
+    lines = [re.sub(r"\s+", " ", clean_text(l.strip())) for l in text.split("\n") if l.strip()]
+    if not lines:
+        return ""
+    first = lines[0]
+    # A first line that is only hashtags or a few words ("#SEOWeek Notes") names nothing on its own: add the next line.
+    if (re.fullmatch(r"(#\w+[\s,]*)+", first) or len(first.split()) < 5) and len(lines) > 1:
+        first = f"{first.rstrip(':')}: {lines[1]}"
+    return clip(first, 100)
+
+
+def post_slug(date, title, taken):
+    words = re.sub(r"https?://\S+|#\w+", " ", title.lower())
+    words = re.sub(r"[^a-z0-9]+", " ", words).split()
+    base = f"{date[:10]}-{'-'.join(words[:8])}".rstrip("-") or date[:10]
+    slug, n = base, 2
+    while slug in taken:
+        slug, n = f"{base}-{n}", n + 1
+    taken.add(slug)
+    return slug
+
+
+def post_html(text):
+    """Plain post text to safe HTML: paragraphs, line breaks, and links (http(s) only); emails removed."""
+    def plain_part(t):
+        return html.escape(EMAIL_RE.sub("(email removed)", t), quote=False)
+
+    out = []
+    for para in re.split(r"\n\s*\n", clean_text(text).strip()):
+        lines = []
+        for line in para.split("\n"):
+            parts, last = [], 0
+            for m in URL_RE.finditer(line):
+                raw = trim_url(m.group(0))
+                parts.append(plain_part(line[last:m.start()]))
+                href = clean_href(raw)
+                label = html.escape(raw, quote=False)
+                if href:
+                    ext = "" if href.startswith("/") else ' target="_blank" rel="noopener noreferrer"'
+                    parts.append(f'<a href="{html.escape(href)}"{ext}>{label}</a>')
+                else:
+                    parts.append(label)
+                last = m.start() + len(raw)
+            parts.append(plain_part(line[last:]))
+            lines.append("".join(parts))
+        body = "<br>".join(lines)
+        if body.strip():
+            out.append(f"<p>{body}</p>")
+    return "".join(out)
+
+
+def load_engagement(path):
+    rows = []
+    if path and os.path.exists(path):
+        with open(path, encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                m = re.search(r"-(\d{15,})-", r["post_url"])
+                if m:
+                    r["ts"] = int(m.group(1)) >> 22
+                    rows.append(r)
+    return rows
+
+
+def url_words(post_url):
+    """The words LinkedIn put in a post's URL ("knowledgegraph", "seo", ...)."""
+    m = re.search(r"/posts/[^_]+_(.+?)-(?:ugcPost|share|activity)-\d+", post_url)
+    return [w for w in (m.group(1).split("-") if m else []) if len(w) > 2]
+
+
+def match_analytics(recs, eng_rows):
+    """One analytics row per post and one post per row: every pair published within 10 minutes, closest first.
+    Beyond 5 seconds apart, at least half the words in the row's URL must appear in the post's text."""
+    pairs = []
+    for i, r in enumerate(recs):
+        low = re.sub(r"[^a-z0-9#]+", " ", r["_text"].lower())
+        for j, e in enumerate(eng_rows):
+            gap = abs(e["ts"] - r["_ts"])
+            if gap > 600_000:
+                continue
+            words = url_words(e["post_url"])
+            if gap > 5_000 and words and sum(1 for w in words if w in low) * 2 < len(words):
+                continue
+            pairs.append((gap, i, j))
+    pairs.sort()
+    used_i, used_j, out = set(), set(), {}
+    for gap, i, j in pairs:
+        if i in used_i or j in used_j:
+            continue
+        used_i.add(i)
+        used_j.add(j)
+        out[i] = eng_rows[j]
+    return out
+
+
+def posts_from_activity(path, asset_to_idx, public, eng_rows, taken, slugs, as_of):
+    """My own posts from the activity page. Slugs come from scripts/linkedin/post-slugs.json (activity id -> slug,
+    FROZEN once live); only posts not in it get a new slug, minted in activity-id order."""
+    recs = []
+    for r in json.load(open(path, encoding="utf-8")):
+        if r.get("actor") != OWNER or NOT_MINE.search(r.get("header") or ""):
+            continue
+        # LinkedIn's page puts a screen-reader label "hashtag" before every tag: keep the tag as written.
+        r["_text"] = re.sub(r"hashtag\s*#", "#", (r.get("text") or "")).strip()
+        r["_ts"] = int(r["id"]) >> 22
+        r["_media"] = []
+        for a in r.get("assets") or []:
+            idx = asset_to_idx.get(a)
+            if idx and idx in public and idx not in r["_media"]:
+                r["_media"].append(idx)
+        if r["_text"] or r["_media"]:
+            recs.append(r)
+    recs.sort(key=lambda r: int(r["id"]))
+    analytics = match_analytics(recs, eng_rows)
+    taken.update(slugs.values())
+    posts = []
+    for i, r in enumerate(recs):
+        text, media, ts = r["_text"], r["_media"], r["_ts"]
+        an = analytics.get(i)
+        # source is a key; the site shows its label (ENGAGEMENT_SOURCES in src/data/linkedinArchive.ts).
+        engagement = {"asOf": as_of, "source": "page"}
+        for k in ("reactions", "comments", "reposts"):
+            if r.get(k) is not None:
+                engagement[k] = r[k]
+        if an and an["in_window"] == "True":
+            engagement["impressions"] = int(an["impressions"])
+            engagement["engagements"] = int(an["engagements"])
+            if an["impressions_kind"] != "total":
+                engagement["impressionsAtLeast"] = True
+            if an["engagements_kind"] != "total":
+                engagement["engagementsAtLeast"] = True
+            engagement["source"] = "page+analytics"
+        title = post_title(text) or clip(f"Post: {public[media[0]]['description']}", 100)
+        date = dt.datetime.fromtimestamp(ts / 1000, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        h = post_html(text)
+        plain_text = plain(h)
+        if r["id"] not in slugs:
+            slugs[r["id"]] = post_slug(date, title, taken)
+        posts.append({
+            "id": slugs[r["id"]],
+            "type": "post",
+            "draft": False,
+            "title": title,
+            "series": None,
+            "edition": None,
+            "created": date,
+            "date": date,
+            "url": f"https://www.linkedin.com/feed/update/urn:li:activity:{r['id']}/",
+            "cover": media[0] if media else None,
+            "media": media,
+            "people": [],
+            "links": r.get("links") or [],
+            "topics": topics_for(title, plain_text, media, public),
+            "words": len(re.findall(r"\b\w+\b", plain_text)),
+            "excerpt": excerpt(plain_text),
+            "html": h,
+            "engagement": engagement if len(engagement) > 2 else None,
+            "activityId": r["id"],
+        })
+    return posts
+
+
+def attach_comment_images(posts, public, path):
+    """Images I attached to my own comments, linked to their post only by the hand-checked list
+    (scripts/linkedin/comment-images.json: archive idx -> activity id). Never guessed from timing."""
+    if not os.path.exists(path):
+        return
+    by_activity = {p.get("activityId"): p for p in posts if p.get("activityId")}
+    for idx, activity in json.load(open(path, encoding="utf-8")).items():
+        if idx.startswith("_") or idx not in public or activity not in by_activity:
+            continue
+        by_activity[activity].setdefault("commentMedia", []).append(idx)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--export", action="append", required=True)
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--items", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--activity", help="my posts read from the LinkedIn activity page (JSON)")
+    ap.add_argument("--engagement", help="linkedin_post_engagement.csv (creator analytics, merged)")
+    ap.add_argument("--as-of", help="day the activity page was read (YYYY-MM-DD); default: the date in the --activity file name")
+    ap.add_argument("--slugs", default=os.path.join(HERE, "post-slugs.json"), help="activity id -> slug (FROZEN once live)")
+    ap.add_argument("--comment-images", default=os.path.join(HERE, "comment-images.json"))
     a = ap.parse_args()
 
     manifest = json.load(open(a.manifest, encoding="utf-8"))
@@ -369,14 +591,26 @@ def main():
         for f in sorted(os.listdir(art)):
             if f.endswith(".html") and not f.startswith("._"):
                 posts.append(article(os.path.join(art, f), asset_to_idx, public))
+    if a.activity:
+        taken = {p["id"] for p in posts}
+        slugs = json.load(open(a.slugs, encoding="utf-8")) if os.path.exists(a.slugs) else {}
+        m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(a.activity))
+        as_of = a.as_of or (m.group(1) if m else dt.date.today().isoformat())
+        posts += posts_from_activity(a.activity, asset_to_idx, public, load_engagement(a.engagement), taken, slugs, as_of)
+        attach_comment_images(posts, public, a.comment_images)
+        with open(a.slugs, "w", encoding="utf-8") as fh:
+            json.dump(dict(sorted(slugs.items(), key=lambda kv: int(kv[0]))), fh, indent=1)
+            fh.write("\n")
     ids = [p["id"] for p in posts]
     dup = {i for i in ids if ids.count(i) > 1}
     if dup:
         sys.exit(f"extract-linkedin-posts: duplicate ids {sorted(dup)}")
     posts.sort(key=lambda p: p["date"] or "", reverse=True)
     json.dump(posts, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    pub = [p for p in posts if not p["draft"]]
-    print(f"wrote {a.out}: {len(pub)} published articles, {len(posts) - len(pub)} drafts (never public)")
+    pub = [p for p in posts if not p["draft"] and p["type"] == "article"]
+    ps = [p for p in posts if p["type"] == "post"]
+    print(f"wrote {a.out}: {len(pub)} published articles, {len([p for p in posts if p['draft']])} drafts (never public), {len(ps)} posts"
+          f" ({sum(1 for p in ps if p['media'])} with media, {sum(1 for p in ps if (p['engagement'] or {}).get('impressions'))} with impressions)")
     for p in pub:
         print(f"  {p['date'][:10]}  {p['words']:6} words  {len(p['media']):2} media  {len(p['people']):2} people  {','.join(p['topics']):60}  /linkedin/articles/{p['id']}")
 

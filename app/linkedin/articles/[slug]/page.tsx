@@ -5,7 +5,8 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_ARTICLES, LINKEDIN_PROFILE, fullUrl, getLinkedInPost, postPath, topicLabel } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, imageUrlFor, postPath, topicLabel } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES, getLinkedInPost } from "@/data/linkedinArchiveServer";
 
 type Params = { slug: string };
 
@@ -21,7 +22,7 @@ const article = (slug: string) => {
   const p = getLinkedInPost(slug);
   return p && p.type === "article" ? p : undefined;
 };
-const cover = (idx?: string) => (idx ? fullUrl({ idx, kind: "image" }) : undefined);
+const cover = imageUrlFor;
 
 export const generateMetadata = withSeoOverrides("/linkedin/articles/[slug]", baseMetadata);
 

@@ -5,7 +5,8 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { ALL_LINKEDIN_TOPICS, LINKEDIN_PROFILE, fullUrl, getLinkedInTopic, isoDuration, postPath, posterUrl, thumbUrl, type LiItem } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, fullUrl, isoDuration, postPath, posterUrl, thumbUrl, type LiItem } from "@/data/linkedinArchive";
+import { ALL_LINKEDIN_TOPICS, getLinkedInTopic } from "@/data/linkedinArchiveServer";
 
 type Params = { topic: string };
 
@@ -24,8 +25,13 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const topic = getLinkedInTopic(params.topic);
   if (!topic) return { title: "Topic not found" };
   const n = topic.items.length;
-  const a = topic.posts.length;
-  const description = `${n} item${n === 1 ? "" : "s"}${a ? ` and ${a} article${a === 1 ? "" : "s"}` : ""} on ${topic.label} from Venkata Pagadala's LinkedIn. ${topic.blurb}`.slice(0, 300);
+  const a = topic.posts.length + topic.socialPosts.length;
+  const parts = [
+    topic.socialPosts.length ? `${topic.socialPosts.length} post${topic.socialPosts.length === 1 ? "" : "s"}` : "",
+    topic.posts.length ? `${topic.posts.length} article${topic.posts.length === 1 ? "" : "s"}` : "",
+    n ? `${n} image${n === 1 ? "" : "s"}, video${n === 1 ? "" : "s"} and document${n === 1 ? "" : "s"}` : "",
+  ].filter(Boolean);
+  const description = `${parts.join(", ") || "Nothing yet"} on ${topic.label} from Venkata Pagadala's LinkedIn. ${topic.blurb}`.slice(0, 300);
   return {
     title: { absolute: `${topic.label}: LinkedIn Archive | Venkata Pagadala` },
     description,
