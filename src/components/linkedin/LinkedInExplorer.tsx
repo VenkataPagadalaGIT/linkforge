@@ -311,9 +311,9 @@ export default function LinkedInExplorer({ topicId }: Props) {
                 onQuery={setQuery}
               />
               <p className="li-js mt-3 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
-                Three views: 01 Topics (each area a region; each topic a flower of its posts, with its subtopics around it and
+                Five views: 01 Topics (each area a region; each topic a flower of its posts, with its subtopics around it and
                 the tree drawn as lines; drag an area or a topic, anywhere inside its circle, to move it), 02 Timeline (one lane per area; press Grow to
-                replay it), 03 Map (similar posts together, outliers at the edge) and 04 Story (an animated tour: every post
+                replay it), 03 Map (similar posts together, outliers at the edge), 04 Story (an animated tour: every post
                 gathers around one centre, then the top posts play as a slideshow; Reel 9:16 frames it for Instagram) and 05 Universe
                 (a 3D galaxy of every post: fly into a topic, lock on to a star, open its post). Search, or pick a topic in the sidebar,
                 and the graph lights and zooms to what matches. Hover anything to preview what it connects to; click it to pin

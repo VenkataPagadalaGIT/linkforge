@@ -223,6 +223,12 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   const [orbit, setOrbit] = React.useState(true);
   const [images, setImages] = React.useState(true);
   const [full, setFull] = React.useState(false);
+  const [canFull, setCanFull] = React.useState(false);
+  const [touch, setTouch] = React.useState(false);
+  React.useEffect(() => {
+    setCanFull(!!document.fullscreenEnabled);
+    setTouch(!!window.matchMedia?.("(pointer: coarse)").matches);
+  }, []);
   const [explored, setExplored] = React.useState<Set<string>>(() => new Set());
   const [toast, setToast] = React.useState<string | null>(null);
   const synth = React.useMemo(() => (typeof window === "undefined" ? null : makeSound()), []);
@@ -320,7 +326,11 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       // Opening a post from the whole galaxy also focuses its topic, so its neighbours are there after the viewer
       // closes; inside a focus or a search, the focus (and the page's filter) stays as it is.
       const main = entryByKey.get(key)?.topics[0];
-      if (main && !activeTopic && !matching) onTopic(main);
+      if (main && !activeTopic && !matching) {
+        // The focus about to open replaces what is on screen: park keyboard focus on a control that stays.
+        if (wrapRef.current?.contains(document.activeElement)) igniteRef.current?.focus();
+        onTopic(main);
+      }
       const go = () => onOpenEntry(key);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {}).finally(go);
       else go();
@@ -413,7 +423,15 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             />
           </label>
         )}
-        <button ref={igniteRef} type="button" className={btn} onClick={() => setIgniteKey((k) => k + 1)}>
+        <button
+          ref={igniteRef}
+          type="button"
+          className={btn}
+          onClick={() => {
+            setHover(null);
+            setIgniteKey((k) => k + 1);
+          }}
+        >
           <span aria-hidden="true">↻ </span>Ignite
         </button>
         <button type="button" className={btn} onClick={() => setImages((v) => !v)} aria-pressed={images}>
@@ -438,9 +456,11 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         <button type="button" className={btn} onClick={leaveFocus} disabled={!activeTopic} aria-disabled={!activeTopic}>
           ✕ All
         </button>
-        <button type="button" className={btn} onClick={toggleFull}>
-          {full ? "Exit full screen" : "Full screen"}
-        </button>
+        {canFull && (
+          <button type="button" className={btn} onClick={toggleFull}>
+            {full ? "Exit full screen" : "Full screen"}
+          </button>
+        )}
       </div>
 
       <div
@@ -479,7 +499,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         )}
 
         {/* HUD */}
-        <div className="pointer-events-none absolute left-3 top-3 font-mono text-white">
+        <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-white">
           <p className="text-[11px] font-bold tracking-[0.25em]">VP_ MISSION CONTROL</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-white/60">
             {u.stars.length} objects · {u.areas.length} sectors · {u.topics.length} topics · {u.years.from} to {u.years.to}
@@ -492,13 +512,13 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           )}
         </div>
         {count && (
-          <div className="pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
+          <div className="pointer-events-none absolute z-40 inset-0 grid place-items-center" aria-hidden="true">
             <p className={`font-mono font-bold tracking-[0.4em] text-white ${count === "IGNITION" ? "text-4xl text-[#36ffb0]" : "text-3xl"}`}>{count}</p>
           </div>
         )}
 
         {hoverEntry && (
-          <div className="pointer-events-none absolute bottom-3 left-3 w-[300px] max-w-[60%] border border-[#36ffb0]/50 bg-black/80 p-3 font-mono text-white" data-testid="linkedin-universe-target">
+          <div className="pointer-events-none absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[#36ffb0]/50 bg-black/80 p-3 font-mono text-white" data-testid="linkedin-universe-target">
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#36ffb0]">Target locked</p>
             <div className="mt-2 flex gap-3">
               {hoverEntry.media[0] && getItem(hoverEntry.media[0]) && (
@@ -522,7 +542,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           </div>
         )}
 
-        <div className="pointer-events-none absolute bottom-3 right-3 w-[200px] font-mono text-white" data-testid="linkedin-universe-log">
+        <div className="pointer-events-none absolute z-40 bottom-3 right-3 w-[200px] font-mono text-white" data-testid="linkedin-universe-log">
           <p className="text-[10px] uppercase tracking-[0.18em] text-white/60">
             Explored <span className="text-white">{explored.size}</span> / {u.topics.length} topics
           </p>
@@ -530,12 +550,12 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             <div className="h-full bg-[#36ffb0] transition-[width] duration-500" style={{ width: `${Math.min(100, (explored.size / u.topics.length) * 100)}%` }} />
           </div>
           <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/40">
-            Drag to orbit · {full ? "scroll" : "Ctrl/⌘ + scroll"} to zoom · click to fly
+            {touch && !full ? "Two fingers to orbit and zoom · tap to open" : `Drag to orbit · ${full ? "scroll" : "Ctrl/⌘ + scroll"} to zoom · click to fly`}
           </p>
         </div>
 
         {toast && (
-          <div className="pointer-events-none absolute left-1/2 top-14 -translate-x-1/2 border border-[#36ffb0] bg-black/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#36ffb0]" role="status">
+          <div className="pointer-events-none absolute z-40 left-1/2 top-14 -translate-x-1/2 border border-[#36ffb0] bg-black/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#36ffb0]" role="status">
             {toast}
           </div>
         )}
@@ -584,7 +604,9 @@ const Card = React.memo(function Card({
   reduced,
   onHover,
   onOpen,
+  tabbable = true,
 }: {
+  tabbable?: boolean;
   entry: LiEntry;
   on: boolean;
   width: number;
@@ -600,6 +622,7 @@ const Card = React.memo(function Card({
       onPointerEnter={(e) => e.pointerType === "mouse" && onHover(entry.key)}
       onFocus={() => onHover(entry.key)}
       onClick={() => onOpen(entry.key)}
+      tabIndex={tabbable ? 0 : -1}
       aria-label={`${entry.title} (${formatDay(entry.date)})`}
       className={`block overflow-hidden border bg-black text-left transition-[transform,border-color] duration-200 ${on ? "scale-110 border-[#36ffb0]" : "border-white/30 hover:scale-105 hover:border-white"}`}
       style={{ width, animation: reduced ? undefined : `liPop 520ms cubic-bezier(.2,1.4,.4,1) ${delay}s both` }}
@@ -619,10 +642,13 @@ const Card = React.memo(function Card({
 
 function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey }: SceneProps) {
   const { camera, size, gl, invalidate } = useThree();
+  /** The element the controls listen on (R3F's outer div): touch and wheel handling must sit there. */
+  const surface = useThree((st) => st.events.connected) as HTMLElement | undefined;
   const controls = React.useRef<OrbitControlsImpl>(null);
   const start = React.useRef(performance.now());
   React.useEffect(() => {
     start.current = performance.now();
+    setNear([]);
     invalidate();
   }, [igniteKey, invalidate]);
   const elapsed = () => (reduced ? 999 : (performance.now() - start.current) / 1000);
@@ -742,37 +768,47 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       else handlers.current.onHover(null); // a click on empty space releases the lock
     };
     const leave = () => (pointer.current.inside = false);
-    // The page scrolls past the view: zoom only with Ctrl/⌘ held (any wheel in full screen).
-    const parent = el.parentElement;
+    // The page scrolls past the view: zoom only with Ctrl/⌘ held (any wheel in full screen). The controls listen on
+    // the outer element, which also holds the cards and labels, so the switch sits there (capture: it runs first).
+    const parent = surface ?? el.parentElement;
     const wheel = (e: WheelEvent) => {
       if (controls.current) controls.current.enableZoom = full || e.ctrlKey || e.metaKey;
+    };
+    // Touch zoom (two fingers) is always on.
+    const touchDown = (e: PointerEvent) => {
+      if (e.pointerType === "touch" && controls.current) controls.current.enableZoom = true;
     };
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerdown", down);
     el.addEventListener("click", click);
     el.addEventListener("pointerleave", leave);
     parent?.addEventListener("wheel", wheel, { capture: true });
+    parent?.addEventListener("pointerdown", touchDown, { capture: true });
     return () => {
       el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("click", click);
       el.removeEventListener("pointerleave", leave);
       parent?.removeEventListener("wheel", wheel, { capture: true });
+      parent?.removeEventListener("pointerdown", touchDown, { capture: true });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gl, camera, u, reduced, full]);
+  }, [gl, camera, u, reduced, full, surface]);
   // Touch: one finger scrolls the page, two fingers orbit and zoom (in full screen, one finger orbits).
   React.useEffect(() => {
     const c = controls.current;
     if (!c) return;
     c.touches = full ? { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN } : { ONE: -1 as unknown as THREE.TOUCH, TWO: THREE.TOUCH.DOLLY_ROTATE };
-    gl.domElement.style.touchAction = full ? "none" : "pan-y";
-  }, [full, gl]);
+    // The browser combines touch-action down the tree, so it must be set where the controls set theirs.
+    for (const el of [surface, gl.domElement]) if (el) el.style.touchAction = full ? "none" : "pan-y";
+  }, [full, gl, surface]);
 
   // ---- camera flights: only when the destination really changes (not on every keystroke) ----
   const flight = React.useRef<{ p0: THREE.Vector3; p1: THREE.Vector3; t0: THREE.Vector3; t1: THREE.Vector3; at: number; dur: number } | null>(null);
   const dest = focus ? `${focus.center.toArray().map((v) => v.toFixed(1)).join(",")}|${focus.dist}` : "home";
   React.useEffect(() => {
+    // A search that matches nothing for a moment (a typo) keeps the camera where it is.
+    if (matching && !matching.size && !activeTopic) return;
     const go = () => {
       const c = controls.current;
       if (!c) return;
@@ -800,12 +836,19 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       const gx = card * 1.1, gy = ch * 1.14, keep = Math.max(110, Math.min(size.width, size.height) * 0.2);
       const cells: { x: number; y: number; d: number; a: number }[] = [];
       const hw = size.width / 2 - card / 2 - 8;
-      const yTop = -size.height / 2 + 84 + ch / 2, yBottom = size.height / 2 - 70 - ch / 2;
+      const yTop = -size.height / 2 + 84 + ch / 2, yBottom = size.height / 2 - 8 - ch / 2;
+      // The telemetry panel (bottom left) and the log (bottom right), in canvas pixels.
+      const panels = [
+        [0, size.height - 190, 330, size.height],
+        [size.width - 230, size.height - 84, size.width, size.height],
+      ];
       for (let i = -Math.floor(hw / gx); i <= Math.floor(hw / gx); i++)
         for (let j = Math.ceil(yTop / gy); j <= Math.floor(yBottom / gy); j++) {
           const x = i * gx, y = j * gy;
           const qx = Math.max(Math.abs(x) - card / 2, 0), qy = Math.max(Math.abs(y) - ch / 2, 0);
           if (Math.hypot(qx, qy) < keep) continue;
+          const l = size.width / 2 + x - card / 2, r = l + card, tp = size.height / 2 + y - ch / 2, b = tp + ch;
+          if (panels.some(([x0, y0, x1, y1]) => l < x1 && r > x0 && tp < y1 && b > y0)) continue;
           cells.push({ x, y, d: Math.hypot(x, y), a: Math.atan2(y, x) });
         }
       if (cells.length >= n || card <= 56) {
@@ -882,9 +925,22 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     }
     // The halo always faces the camera.
     if (haloRef.current) haloRef.current.quaternion.copy(camera.quaternion);
+    // Camera flight (the controls update themselves otherwise; updating twice would double the auto-orbit)
+    const f = flight.current, c = controls.current;
+    if (f && c) {
+      const k = f.dur ? Math.min(1, (performance.now() - f.at) / f.dur) : 1;
+      const e = ease(k);
+      camera.position.lerpVectors(f.p0, f.p1, e);
+      c.target.lerpVectors(f.t0, f.t1, e);
+      c.update();
+      if (k >= 1) flight.current = null;
+      else invalidate();
+    }
+    // The halo's spacing was set for the focus distance: it scales with the camera, so zooming keeps cards apart.
+    if (haloRef.current && focus) haloRef.current.scale.setScalar(camera.position.distanceTo(focus.center) / focus.dist);
     // Image pop-ups: every 0.3 s, the nearest posts with an image that are in view, spaced apart on screen.
     nearClock.current += dt;
-    if (images && !focus && t > IGNITE_AT + 2.2 && nearClock.current > 0.3) {
+    if (images && !focus && t > IGNITE_AT + 2.2 && (reduced || nearClock.current > 0.3)) {
       nearClock.current = 0;
       const cand: { key: string; d: number; x: number; y: number }[] = [];
       const m = matchRef.current;
@@ -903,21 +959,11 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       const keys = chosen.map((c) => c.key).sort();
       setNear((prev) => (prev.join("|") === keys.join("|") ? prev : keys));
     }
-    // Camera flight (the controls update themselves otherwise; updating twice would double the auto-orbit)
-    const f = flight.current, c = controls.current;
-    if (f && c) {
-      const k = f.dur ? Math.min(1, (performance.now() - f.at) / f.dur) : 1;
-      const e = ease(k);
-      camera.position.lerpVectors(f.p0, f.p1, e);
-      c.target.lerpVectors(f.t0, f.t1, e);
-      c.update();
-      if (k >= 1) flight.current = null;
-      else invalidate();
-    }
   });
   React.useEffect(() => {
     if (!images || focus) setNear([]);
-  }, [images, focus]);
+    invalidate();
+  }, [images, focus, invalidate]);
 
   // ---- lines: centre > areas > topics > stars ----
   const lineGeom = React.useMemo(() => {
@@ -1025,7 +1071,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         if (!s || !e) return null;
         return (
           <Html key={`n-${key}`} position={s.pos} zIndexRange={[15, 0]} style={{ transform: "translate(10px, -100%)" }}>
-            <Card entry={e} on={hover === key} width={76} delay={0} reduced={reduced} onHover={onHover} onOpen={onOpen} />
+            <Card entry={e} on={hover === key} width={76} delay={0} reduced={reduced} onHover={onHover} onOpen={onOpen} tabbable={false} />
           </Html>
         );
       })}
