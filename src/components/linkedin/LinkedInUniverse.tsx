@@ -137,6 +137,7 @@ uniform float uField;
 uniform float uScale;
 uniform float uPixel;
 uniform float uMaxPoint;
+uniform float uSizeK;
 attribute float aDelay;
 attribute float aSize;
 attribute float aMatch;
@@ -159,7 +160,7 @@ void main() {
   p += (d / max(length(d), 1e-3)) * uField * 1.5 * uScale * f;
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
-  gl_PointSize = min(aSize * (1.0 + aHot * 1.8) * (0.4 + 0.6 * aMatch) * uPixel / -mv.z, uMaxPoint);
+  gl_PointSize = min(aSize * uSizeK * (1.0 + aHot * 1.8) * (0.4 + 0.6 * aMatch) * uPixel / -mv.z, uMaxPoint);
   vAlpha = (0.18 + 0.82 * aMatch) * (k > 0.0 ? 1.0 : 0.0) * smoothstep(0.4, 2.5, -mv.z);
   vHot = aHot;
 }`;
@@ -167,6 +168,7 @@ const FRAG = /* glsl */ `
 uniform vec3 uColor;
 uniform vec3 uAccent;
 uniform float uBoost;
+uniform float uCrisp;
 varying float vAlpha;
 varying float vHot;
 void main() {
@@ -174,7 +176,9 @@ void main() {
   if (r > 0.5) discard;
   float core = smoothstep(0.5, 0.0, r);
   vec3 col = mix(uColor, uAccent, vHot);
-  gl_FragColor = vec4(col, min(1.0, vAlpha * uBoost * (pow(core, 2.4) * 0.9 + core * 0.12)));
+  // Dark: a soft glow (bloom finishes it). Light: a crisp dot, like a plotted point.
+  float shape = uCrisp > 0.5 ? 1.0 - smoothstep(0.34, 0.42, r) : pow(core, 2.4) * 0.9 + core * 0.12;
+  gl_FragColor = vec4(col, min(1.0, vAlpha * uBoost * shape));
 }`;
 
 /** A tiny synth: clicks and whooshes made on the fly (no sound files). Off until the viewer turns it on. */
@@ -540,17 +544,21 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         className={`relative overflow-hidden border border-border bg-background ${
           full ? "flex-1 min-h-0" : standalone ? "w-full h-[78vh] min-h-[560px] max-h-[900px]" : "w-full aspect-[16/10] min-h-[520px] max-h-[85vh]"
         }`}
-        style={{ cursor: "crosshair" }}
+        style={{
+          cursor: "crosshair",
+          // Light: engineering paper (a faint dot grid) behind the transparent scene.
+          ...(light ? { backgroundImage: "radial-gradient(hsl(var(--foreground) / 0.07) 1px, transparent 1.2px)", backgroundSize: "22px 22px" } : {}),
+        }}
       >
         {gl.ok && (
           <Canvas
             dpr={[1, 1.5]}
             frameloop={!visible ? "never" : reduced ? "demand" : "always"}
             camera={{ position: [0, 7, 34], fov: 50, near: 0.1, far: 200 }}
-            gl={{ powerPreference: gl.power, antialias: false }}
+            gl={{ powerPreference: gl.power, antialias: light, alpha: true }}
             onCreated={({ gl: r }) => r.domElement.setAttribute("aria-hidden", "true")}
           >
-            <color attach="background" args={[light ? "#ffffff" : "#000000"]} />
+            {!light && <color attach="background" args={["#000000"]} />}
             <Scene
               u={u}
               igniteKey={igniteKey}
@@ -751,7 +759,7 @@ function TopicsPanel({
     <div
       ref={panelRef}
       id="li-universe-topics"
-      className={`absolute right-3 z-40 w-[360px] max-w-[calc(100%-1.5rem)] border border-border bg-background font-mono text-foreground shadow-2xl ${below ? "top-[96px]" : "top-3"}`}
+      className={`absolute right-3 z-40 w-[360px] max-w-[calc(100%-1.5rem)] border border-border bg-background font-mono text-foreground shadow-sm dark:shadow-2xl ${below ? "top-[96px]" : "top-3"}`}
       data-testid="linkedin-universe-topics"
     >
       <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
@@ -1005,15 +1013,19 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
           uColor: { value: new THREE.Color("#ffffff") },
           uAccent: { value: new THREE.Color(RADIUM) },
           uBoost: { value: 1 },
+          uCrisp: { value: 0 },
+          uSizeK: { value: 1 },
         },
       }),
     [],
   );
   React.useEffect(() => () => (geom.dispose(), mat.dispose()), [geom, mat]);
   React.useEffect(() => {
-    mat.uniforms.uColor.value.set(light ? "#3a3a3a" : "#ffffff");
+    mat.uniforms.uColor.value.set(light ? "#1c1c1c" : "#ffffff");
     mat.uniforms.uAccent.value.set(accent);
-    mat.uniforms.uBoost.value = light ? 0.85 : 1;
+    mat.uniforms.uBoost.value = light ? 0.82 : 1;
+    mat.uniforms.uCrisp.value = light ? 1 : 0;
+    mat.uniforms.uSizeK.value = light ? 0.5 : 1;
     mat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
     mat.needsUpdate = true;
     invalidate();
@@ -1212,7 +1224,8 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     mat.uniforms.uIntro.value = reduced ? 0 : 1;
     pixelRef.current = state.viewport.dpr * Math.min(1.4, size.height / 600) * 28;
     mat.uniforms.uPixel.value = pixelRef.current;
-    mat.uniforms.uMaxPoint.value = 96 * state.viewport.dpr;
+    // Light: plotted points stay small even close up (big flat discs read as blots on white).
+    mat.uniforms.uMaxPoint.value = (light ? 20 : 96) * state.viewport.dpr;
     mat.uniforms.uScale.value = Math.max(0.15, camera.position.distanceTo(controls.current?.target ?? tmp.set(0, 0, 0)) / 34);
     // The field follows the pointer, and fades in and out.
     field.current += ((pointer.current.inside && !reduced && t > IGNITE_AT + 1.5 ? 1 : 0) - field.current) * Math.min(1, dt * 4);
@@ -1240,7 +1253,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       }
     }
     if (core.current) core.current.scale.setScalar((reduced ? 1 : t < IGNITE_AT ? 0.4 + 0.25 * Math.sin(t * 9) : 1 + 0.12 * Math.sin(t * 2.4)) * 0.45);
-    if (lines.current) (lines.current.material as THREE.LineBasicMaterial).opacity = (reduced ? 1 : Math.min(1, Math.max(0, it - 1.4) / 1.2)) * (light ? 0.1 : 0.075);
+    if (lines.current) (lines.current.material as THREE.LineBasicMaterial).opacity = (reduced ? 1 : Math.min(1, Math.max(0, it - 1.4) / 1.2)) * (light ? 0.13 : 0.075);
     // The pulse runs centre > area > topic > star, again and again while a star is locked.
     if (pulse.current) {
       const i = hoverRef.current ? u.starIndex.get(hoverRef.current) : undefined;
