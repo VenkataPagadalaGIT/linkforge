@@ -6,7 +6,7 @@ import { Html, Line, OrbitControls } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useWebGL } from "@/lib/webgl";
-import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, type LiEntry } from "@/data/linkedinArchive";
+import { LINKEDIN_ENTRIES, SOURCE_LABEL, TOPIC_NODES, childTopics, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, topicTrail, type LiEntry } from "@/data/linkedinArchive";
 
 /**
  * 05 Universe: the archive as a 3D space to fly through, styled as mission control.
@@ -15,8 +15,8 @@ import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, fullUrl, getItem, getTopic, t
  *   Field     the cursor ripples the stars around it (the star under it stays put, so it can be locked)
  *   Lock      hovering a star fires a radium pulse centre > area > topic > star and the telemetry locks on
  *   Images    the posts nearest the camera pop up as image cards beside their stars, so flying in reveals them
- *   Fly       a click on an area or topic (or the sidebar, or a search) flies the camera there and opens a halo of its
- *             posts around the cluster (facing the camera); a click on a star or card opens the post, and the focus stays for its neighbours
+ *   Fly       a click on an area or topic (or the sidebar, or a search) flies the camera there and opens a globe of its
+ *             posts round the cluster, revolving (drag to turn it, hover a card to stop it); a click on a star or card opens the post, and the focus stays for its neighbours
  *   Log       "explored" counts the topics visited (kept in this browser only)
  * One draw call for the stars (THREE.Points, custom shader); labels and cards are HTML in 3D. The page scrolls past it:
  * zoom is Ctrl/⌘ + scroll (any scroll in full screen), and on touch two fingers orbit. Rendering stops offscreen.
@@ -28,9 +28,12 @@ interface Props {
   activeTopic: string | null;
   onTopic: (id: string | null) => void;
   onOpenEntry: (key: string) => void;
-  /** The page's search: shown as a box in full screen, where the page's own box is out of reach. */
-  query: string;
-  onQuery: (q: string) => void;
+  /** Search and filters (compact), shown in full screen, and always when standalone. */
+  filters?: React.ReactNode;
+  /** On its own (the home page): its filters and the Topics menu show, and it sits on a dark band. */
+  standalone?: boolean;
+  /** Entries matching the search and filters other than the topic (null: all); the Topics menu counts within them. */
+  countIn?: Set<string> | null;
 }
 
 const RADIUM = "#36ffb0";
@@ -40,7 +43,6 @@ const MAX_CARDS = 72;
 /** Image pop-ups: at most this many at once, the posts nearest the camera. */
 const NEAR_CARDS = 22;
 const LOG_KEY = "li-universe-explored";
-const TAN_HALF_FOV = Math.tan((50 / 2) * (Math.PI / 180));
 const SHORT: Record<string, string> = {
   ai: "AI",
   seo: "SEO",
@@ -208,21 +210,55 @@ function makeSound() {
   };
 }
 
-export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpenEntry, query, onQuery }: Props) {
+export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpenEntry, filters, standalone = false, countIn = null }: Props) {
   const gl = useWebGL();
   const u = React.useMemo(buildUniverse, []);
   const entryByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const wrapRef = React.useRef<HTMLDivElement>(null);
   const igniteRef = React.useRef<HTMLButtonElement>(null);
   const [reduced, setReduced] = React.useState(false);
-  const [visible, setVisible] = React.useState(true);
+  /** On screen? Rendering stops off screen, and the ignition waits until the view is first seen. */
+  const [visible, setVisible] = React.useState(false);
   const [hover, setHover] = React.useState<string | null>(null);
+  /** A post picked in the level bar: the camera flies to its star (n changes on every pick). */
+  const [starTarget, setStarTarget] = React.useState<{ key: string; n: number } | null>(null);
   const [igniteKey, setIgniteKey] = React.useState(0);
   const [count, setCount] = React.useState<string | null>(null);
   const [sound, setSound] = React.useState(false);
   const [orbit, setOrbit] = React.useState(true);
   const [images, setImages] = React.useState(true);
   const [full, setFull] = React.useState(false);
+  /** Full screen and the home page: the controls sit on black, so they take the dark theme there. */
+  const onBlack = full || standalone;
+  /** The Topics menu: open by default on black (full screen, home page); minimized to its header otherwise. */
+  const [menu, setMenu] = React.useState<boolean | null>(null);
+  /** The 3D box's width: below 820 px the Topics menu sits under the HUD's title and starts minimized. */
+  const boxRef = React.useRef<HTMLDivElement>(null);
+  const [boxW, setBoxW] = React.useState(1200);
+  const menuOpen = menu ?? (onBlack && boxW >= 820);
+  /** Where the Topics menu sits in the 3D box (canvas pixels): pop-up cards keep out of it. */
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const menuRect = React.useRef<[number, number, number, number] | null>(null);
+  React.useEffect(() => {
+    const el = panelRef.current, box = boxRef.current;
+    if (!el || !box || !("ResizeObserver" in window)) return;
+    const sync = () => {
+      const a = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+      menuRect.current = [a.left - b.left - 12, a.top - b.top - 12, a.right - b.left + 12, a.bottom - b.top + 12];
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, [gl.ok, menuOpen]);
+  React.useEffect(() => {
+    const el = boxRef.current;
+    if (!el || !("ResizeObserver" in window)) return;
+    const ro = new ResizeObserver(() => setBoxW(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [gl.ok]);
   const [canFull, setCanFull] = React.useState(false);
   const [touch, setTouch] = React.useState(false);
   React.useEffect(() => {
@@ -247,11 +283,18 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   // Rendering stops while the view is off screen.
   React.useEffect(() => {
     const el = wrapRef.current;
-    if (!el || !("IntersectionObserver" in window)) return;
+    if (!el || !("IntersectionObserver" in window)) return setVisible(true);
     const io = new IntersectionObserver((es) => setVisible(es.some((e) => e.isIntersecting)), { threshold: 0 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  const seen = React.useRef(false);
+  React.useEffect(() => {
+    if (visible && !seen.current) {
+      seen.current = true;
+      setIgniteKey((k) => k + 1);
+    }
+  }, [visible]);
   React.useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(LOG_KEY) ?? "[]");
@@ -299,9 +342,14 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     if (activeTopic) logTopic(getTopic(activeTopic)?.level === 3 ? getTopic(activeTopic)?.parent ?? undefined : activeTopic);
   }, [activeTopic, logTopic]);
 
+  /** How the current lock was made: by the pointer passing over (the panel only shows it), or picked on purpose (a
+   * list row or keyboard focus: the panel opens it). A pointer crossing other stars on its way would otherwise
+   * re-lock, and a click on the panel would open the wrong post. */
+  const [lockVia, setLockVia] = React.useState<"pointer" | "pick">("pointer");
   const onHover = React.useCallback(
-    (key: string | null) => {
+    (key: string | null, via: "pointer" | "pick" = "pointer") => {
       setHover(key);
+      setLockVia(via);
       if (key) {
         logTopic(entryByKey.get(key)?.topics[0]);
         if (soundRef.current) synth?.blip(1500);
@@ -336,6 +384,15 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       else go();
     },
     [onOpenEntry, onTopic, synth, entryByKey, activeTopic, matching],
+  );
+  /** Lock on to a post and fly to its star (the level bar's L4). */
+  const lock = React.useCallback(
+    (key: string) => {
+      onHover(key, "pick");
+      setStarTarget((t) => ({ key, n: (t?.n ?? 0) + 1 }));
+      if (soundRef.current) synth?.whoosh();
+    },
+    [onHover, synth],
   );
   const pick = React.useCallback(
     (id: string | null) => {
@@ -387,7 +444,11 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       center.divideScalar(focusKeys.length);
       dist = 20;
     }
-    return center ? { center: center.clone(), dist, keys: focusKeys.slice(0, MAX_CARDS), total: focusKeys.length, search: !t } : null;
+    if (!center) return null;
+    const keys = focusKeys.slice(0, MAX_CARDS);
+    // The globe of cards round the cluster: big enough to hold them, and the camera far enough to see all of it.
+    const globeR = Math.max(2.6, Math.sqrt((keys.length * 2.3) / (4 * Math.PI)) + 0.6);
+    return { center: center.clone(), dist: Math.max(dist, globeR * 2.9), keys, total: focusKeys.length, search: !t, globeR };
   }, [focusKeys, activeTopic, u]);
 
   const toggleFull = () => {
@@ -396,33 +457,26 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   };
   const hoverEntry = hover ? entryByKey.get(hover) : undefined;
   const BTN = "font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40";
-  const DARK_BTN = "font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border border-white/25 bg-black text-white/70 hover:text-white hover:border-white/60";
-  const btn = full ? DARK_BTN : BTN;
+  const btn = BTN;
 
   if (gl.ok === false)
     return (
       <div className="border border-border p-6 font-mono text-[12px] text-muted-foreground">
-        This browser cannot draw 3D graphics (WebGL is off), so the Universe view is not available. The other views and the cards below show everything.
+        This browser cannot draw 3D graphics (WebGL is off), so the Universe view is not available.{" "}
+        {standalone ? (
+          <a href="/linkedin" className="underline text-foreground">
+            The LinkedIn archive lists every post.
+          </a>
+        ) : (
+          "The other views and the cards below show everything."
+        )}
       </div>
     );
 
   return (
-    <div ref={wrapRef} className={full ? "bg-black h-full flex flex-col p-3" : ""} data-testid="linkedin-universe">
+    <div ref={wrapRef} className={`${onBlack ? "dark text-foreground" : ""} ${full ? "bg-black h-full flex flex-col p-3" : ""}`} data-testid="linkedin-universe">
+      {onBlack && filters && <div className="mb-2">{filters}</div>}
       <div className="mb-2 flex flex-wrap items-center gap-1">
-        {full && (
-          // In full screen the page's search box is out of reach: this one drives the same search.
-          <label className="flex min-w-[220px] flex-1 items-center gap-2 border border-white/25 px-2 py-1 sm:flex-none sm:w-[300px]">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">Search</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => onQuery(e.target.value)}
-              placeholder="seoweek, knowledge graph…"
-              className="flex-1 bg-transparent font-mono text-[12px] text-white outline-none placeholder:text-white/35"
-              data-testid="linkedin-universe-search"
-            />
-          </label>
-        )}
         <button
           ref={igniteRef}
           type="button"
@@ -433,6 +487,9 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           }}
         >
           <span aria-hidden="true">↻ </span>Ignite
+        </button>
+        <button type="button" className={btn} onClick={() => setMenu(!(menuOpen))} aria-expanded={menuOpen} aria-controls="li-universe-topics" data-testid="linkedin-universe-topics-toggle">
+          Topics {(menuOpen) ? "▴" : "▾"}
         </button>
         <button type="button" className={btn} onClick={() => setImages((v) => !v)} aria-pressed={images}>
           Images {images ? "on" : "off"}
@@ -464,7 +521,10 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       </div>
 
       <div
-        className={`relative overflow-hidden border border-border bg-black ${full ? "flex-1" : "w-full aspect-[16/10] min-h-[520px] max-h-[85vh]"}`}
+        ref={boxRef}
+        className={`relative overflow-hidden border border-border bg-black ${
+          full ? "flex-1 min-h-0" : standalone ? "w-full h-[78vh] min-h-[560px] max-h-[900px]" : "w-full aspect-[16/10] min-h-[520px] max-h-[85vh]"
+        }`}
         style={{ cursor: "crosshair" }}
       >
         {gl.ok && (
@@ -491,6 +551,8 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
               images={images}
               full={full}
               entryByKey={entryByKey}
+              starTarget={starTarget}
+              menuRect={menuRect}
             />
             <EffectComposer multisampling={0}>
               <Bloom intensity={1.15} luminanceThreshold={0.12} luminanceSmoothing={0.3} mipmapBlur radius={0.7} />
@@ -499,6 +561,20 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         )}
 
         {/* HUD */}
+        <TopicsPanel
+          panelRef={panelRef}
+          countIn={countIn}
+          below={boxW < 820}
+          open={menuOpen}
+          onToggle={() => setMenu(!(menuOpen))}
+          activeTopic={activeTopic}
+          onTopic={pick}
+          posts={focusKeys ?? []}
+          entryByKey={entryByKey}
+          locked={hover}
+          onLock={lock}
+          onOpen={open}
+        />
         <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-white">
           <p className="text-[11px] font-bold tracking-[0.25em]">VP_ MISSION CONTROL</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-white/60">
@@ -518,28 +594,37 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         )}
 
         {hoverEntry && (
-          <div className="pointer-events-none absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[#36ffb0]/50 bg-black/80 p-3 font-mono text-white" data-testid="linkedin-universe-target">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#36ffb0]">Target locked</p>
-            <div className="mt-2 flex gap-3">
+          <button
+            type="button"
+            onClick={() => lockVia === "pick" && open(hoverEntry.key)}
+            tabIndex={lockVia === "pick" ? 0 : -1}
+            aria-hidden={lockVia === "pick" ? undefined : true}
+            className={`absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[#36ffb0]/50 bg-black/80 p-3 text-left font-mono text-white ${
+              lockVia === "pick" ? "hover:border-[#36ffb0]" : "pointer-events-none"
+            }`}
+            data-testid="linkedin-universe-target"
+          >
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-[#36ffb0]">Target locked · {SOURCE_LABEL[hoverEntry.source]}</span>
+            <span className="mt-2 flex gap-3">
               {hoverEntry.media[0] && getItem(hoverEntry.media[0]) && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={thumbUrl(getItem(hoverEntry.media[0])!)} alt="" className="h-16 w-16 shrink-0 object-cover border border-white/20" />
               )}
-              <div className="min-w-0">
-                <p className="text-[11px] leading-snug line-clamp-3">{hoverEntry.title}</p>
-                <p className="mt-1 text-[10px] text-white/60">
+              <span className="block min-w-0">
+                <span className="block text-[11px] leading-snug line-clamp-3">{hoverEntry.title}</span>
+                <span className="mt-1 block text-[10px] text-white/60">
                   {hoverEntry.engagement?.reactions != null ? `${hoverEntry.engagement.reactions} reactions · ` : ""}
                   {formatDay(hoverEntry.date)}
-                </p>
-              </div>
-            </div>
+                </span>
+              </span>
+            </span>
             {hoverEntry.topics[0] && (
-              <p className="mt-2 truncate text-[10px] uppercase tracking-[0.15em] text-white/60">
+              <span className="mt-2 block truncate text-[10px] uppercase tracking-[0.15em] text-white/60">
                 {topicLabel(getTopic(hoverEntry.topics[0])?.parent ?? "")} › {topicLabel(hoverEntry.topics[0])}
-              </p>
+              </span>
             )}
-            <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-white/80">Click to open</p>
-          </div>
+            <span className="mt-1 block text-[10px] uppercase tracking-[0.15em] text-white/80">{lockVia === "pick" ? "Click to open" : "Click the star or card to open"}</span>
+          </button>
         )}
 
         <div className="pointer-events-none absolute z-40 bottom-3 right-3 w-[200px] font-mono text-white" data-testid="linkedin-universe-log">
@@ -563,10 +648,199 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       <p className={`mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] ${full ? "text-white/50" : "text-muted-foreground/70"}`}>
         <span className={full ? "text-white" : "text-foreground"}>View 05 · Universe</span>{" "}
         <span className="normal-case tracking-normal">
-          · every post a star around one core; the nearest posts pop up as images. Hover a star to lock on, click a sector or a topic to fly in and see its
-          posts around it, click a card or a star to open it. Esc goes back. The cards below list everything.
+          · every post a star around one core; the nearest posts pop up as images. Pick a level (L1 area, L2 topic, L3 subtopic, L4 post), or hover a star to
+          lock on and click a sector or a topic to fly in; click a card, a star or the locked target to open it. Esc goes back.
+          {standalone ? "" : " The cards below list everything."}
         </span>
       </p>
+    </div>
+  );
+}
+
+/** Per topic node: entries under it and their reactions (computed once). */
+function useTopicStats(countIn: Set<string> | null) {
+  return React.useMemo(() => {
+    const list = countIn ? LINKEDIN_ENTRIES.filter((e) => countIn.has(e.key)) : LINKEDIN_ENTRIES;
+    const posts = topicCounts(list);
+    const reactions = new Map<string, number>();
+    for (const e of list) {
+      const r = e.engagement?.reactions ?? 0;
+      if (!r) continue;
+      const ids = new Set<string>([...e.topics, ...e.subtopics, ...(e.topics.map((t) => getTopic(t)?.parent).filter(Boolean) as string[])]);
+      for (const id of ids) reactions.set(id, (reactions.get(id) ?? 0) + r);
+    }
+    return { posts, reactions };
+  }, [countIn]);
+}
+const fmt = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}K` : n.toLocaleString("en-US"));
+
+/**
+ * The Topics menu: a panel over the view (minimizes to its header). It lists the current level as a table (L1
+ * areas, then the picked area's topics, then subtopics) with posts, reactions and how many levels lie below, and
+ * the picked topic's posts (L4) under it. A row flies the camera there; a post locks on and flies to its star, and
+ * the locked post opens on a second click. The trail at the top goes back up.
+ */
+function TopicsPanel({
+  panelRef,
+  countIn,
+  below,
+  open,
+  onToggle,
+  activeTopic,
+  onTopic,
+  posts,
+  entryByKey,
+  locked,
+  onLock,
+  onOpen,
+}: {
+  panelRef: React.RefObject<HTMLDivElement>;
+  countIn: Set<string> | null;
+  below: boolean;
+  open: boolean;
+  onToggle: () => void;
+  activeTopic: string | null;
+  onTopic: (id: string | null) => void;
+  posts: string[];
+  entryByKey: Map<string, LiEntry>;
+  locked: string | null;
+  onLock: (key: string) => void;
+  onOpen: (key: string) => void;
+}) {
+  const stats = useTopicStats(countIn);
+  const crumbs = React.useRef<HTMLElement>(null);
+  /** After a row changes the level, keyboard focus moves to the trail's last step (the row itself is replaced). */
+  const go = (id: string | null) => {
+    const kb = !!(document.activeElement && panelRef.current?.contains(document.activeElement));
+    onTopic(id);
+    if (kb) window.requestAnimationFrame(() => (crumbs.current?.querySelector("button:last-of-type") as HTMLElement | null)?.focus());
+  };
+  const trail = activeTopic ? topicTrail(activeTopic) : [];
+  const current = trail[trail.length - 1];
+  const has = (id: string) => (stats.posts.get(id) ?? 0) > 0;
+  const kids = (id: string | null) =>
+    (id ? childTopics(id) : TOPIC_NODES.filter((n) => n.level === 1)).filter((n) => has(n.id)).sort((a, b) => (stats.posts.get(b.id) ?? 0) - (stats.posts.get(a.id) ?? 0));
+  // Rows: the children of the current node (at the bottom of the tree, its siblings, so the level stays in view).
+  const rowsParent = current && kids(current.id).length === 0 ? current.parent : current?.id ?? null;
+  const rows = kids(rowsParent);
+  const level = rows[0]?.level ?? 1;
+  const nextName = level === 1 ? "Topics" : level === 2 ? "Subs" : "";
+  const MAX_POSTS = 50;
+  const th = "px-1.5 py-1.5 text-right font-normal";
+  return (
+    <div
+      ref={panelRef}
+      id="li-universe-topics"
+      className={`absolute right-3 z-40 w-[360px] max-w-[calc(100%-1.5rem)] border border-white/20 bg-black font-mono text-white shadow-2xl ${below ? "top-[96px]" : "top-3"}`}
+      data-testid="linkedin-universe-topics"
+    >
+      <div className="flex items-center justify-between gap-2 border-b border-white/15 px-3 py-2">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em]">
+          Topics <span className="font-normal text-white/55">· L{level}</span>
+        </p>
+        <button type="button" onClick={onToggle} aria-expanded={open} aria-label={open ? "Minimize the topics menu" : "Open the topics menu"} className="px-1 text-[12px] text-white/70 hover:text-white">
+          {open ? "▾" : "▴"}
+        </button>
+      </div>
+      {open && (
+        <div className="max-h-[min(60vh,460px)] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,.25)_transparent]">
+          {/* the trail: back up the tree */}
+          <nav ref={crumbs} aria-label="Topic path" className="flex flex-wrap items-center gap-1 border-b border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-white/55">
+            <button type="button" onClick={() => go(null)} aria-current={trail.length ? undefined : "location"} className={trail.length ? "underline decoration-dotted underline-offset-2 hover:text-white" : "text-[#36ffb0]"}>
+              All
+            </button>
+            {trail.map((n, k) => (
+              <React.Fragment key={n.id}>
+                <span aria-hidden="true">›</span>
+                <button
+                  type="button"
+                  onClick={() => go(n.id)}
+                  aria-current={k === trail.length - 1 ? "location" : undefined}
+                  className={k === trail.length - 1 ? "text-[#36ffb0]" : "underline decoration-dotted underline-offset-2 hover:text-white"}
+                >
+                  {n.label}
+                </button>
+              </React.Fragment>
+            ))}
+          </nav>
+          <table className="w-full border-collapse text-[11px]">
+            <thead>
+              <tr className="text-[9px] uppercase tracking-[0.15em] text-white/50">
+                <th className="px-3 py-1.5 text-left font-normal">{level === 1 ? "Area" : level === 2 ? "Topic" : "Subtopic"}</th>
+                <th className={th}>Posts</th>
+                <th className={th}>Reactions</th>
+                {nextName && <th className={`${th} pr-3`}>{nextName}</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((n) => {
+                const on = trail.some((t) => t.id === n.id);
+                const below = childTopics(n.id).filter((c) => has(c.id)).length;
+                return (
+                  <tr key={n.id} className={`border-t border-white/10 ${on ? "bg-[#36ffb0]/10" : "hover:bg-white/[0.06]"}`}>
+                    <td className="px-3 py-0">
+                      <button
+                        type="button"
+                        onClick={() => go(activeTopic === n.id ? n.parent : n.id)}
+                        aria-pressed={on}
+                        className={`flex w-full items-center gap-2 py-1.5 text-left ${on ? "text-[#36ffb0]" : "text-white/90 hover:text-white"}`}
+                      >
+                        <span className={`h-2 w-2 shrink-0 ${on ? "bg-[#36ffb0]" : "border border-white/50"}`} aria-hidden="true" />
+                        <span className="truncate">{n.label}</span>
+                      </button>
+                    </td>
+                    <td className="px-1.5 text-right tabular-nums text-white/80">{fmt(stats.posts.get(n.id) ?? 0)}</td>
+                    <td className="px-1.5 text-right tabular-nums text-white/80">{fmt(stats.reactions.get(n.id) ?? 0)}</td>
+                    {nextName && <td className="px-1.5 pr-3 text-right tabular-nums text-white/60">{below || "·"}</td>}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {activeTopic && posts.length > 0 && (
+            <>
+              <p className="border-t border-white/15 px-3 pb-1 pt-2.5 text-[9px] uppercase tracking-[0.15em] text-white/50">
+                L4 · Posts in {current?.label} · {posts.length}
+                {posts.length > MAX_POSTS ? ` (top ${MAX_POSTS})` : ""}
+              </p>
+              <ul data-testid="linkedin-universe-posts">
+                {posts.slice(0, MAX_POSTS).map((key) => {
+                  const e = entryByKey.get(key);
+                  if (!e) return null;
+                  const it = e.media[0] ? getItem(e.media[0]) : undefined;
+                  const on = locked === key;
+                  return (
+                    <li key={key}>
+                      <button
+                        type="button"
+                        onClick={() => (on ? onOpen(key) : onLock(key))}
+                        aria-pressed={on}
+                        title={on ? "Open it" : "Fly to it"}
+                        className={`flex w-full items-center gap-2 border-t border-white/10 px-3 py-1.5 text-left ${on ? "bg-[#36ffb0]/10 text-[#36ffb0]" : "text-white/85 hover:bg-white/[0.06] hover:text-white"}`}
+                      >
+                        {it ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={thumbUrl(it)} alt="" className="h-7 w-7 shrink-0 object-cover" loading="lazy" />
+                        ) : (
+                          <span className="h-7 w-7 shrink-0 border border-white/30" aria-hidden="true" />
+                        )}
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[11px]">{e.title}</span>
+                          <span className="block text-[9px] uppercase tracking-[0.12em] text-white/50">
+                            {SOURCE_LABEL[e.source]} · {e.engagement?.reactions != null ? `${e.engagement.reactions} reactions · ` : ""}
+                            {e.date.slice(0, 4)}
+                          </span>
+                        </span>
+                        {on && <span className="shrink-0 text-[9px] uppercase tracking-[0.15em]">Open ›</span>}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -577,6 +851,8 @@ interface Focus {
   keys: string[];
   total: number;
   search: boolean;
+  /** Radius of the globe of cards. */
+  globeR: number;
 }
 interface SceneProps {
   u: Universe;
@@ -584,7 +860,7 @@ interface SceneProps {
   reduced: boolean;
   matching: Set<string> | null;
   hover: string | null;
-  onHover: (key: string | null) => void;
+  onHover: (key: string | null, via?: "pointer" | "pick") => void;
   onOpen: (key: string) => void;
   onPick: (id: string | null) => void;
   activeTopic: string | null;
@@ -593,6 +869,9 @@ interface SceneProps {
   images: boolean;
   full: boolean;
   entryByKey: Map<string, LiEntry>;
+  starTarget: { key: string; n: number } | null;
+  /** Where the Topics menu covers the view (canvas pixels): pop-up cards keep out of it. */
+  menuRect: React.MutableRefObject<[number, number, number, number] | null>;
 }
 
 /** One image card in 3D (the halo round a focus, or a pop-up beside a star). */
@@ -604,23 +883,34 @@ const Card = React.memo(function Card({
   reduced,
   onHover,
   onOpen,
+  onHold,
   tabbable = true,
 }: {
+  /** Globe cards: hold its turning while the pointer or keyboard is on the card. */
+  onHold?: (on: boolean) => void;
   tabbable?: boolean;
   entry: LiEntry;
   on: boolean;
   width: number;
   delay: number;
   reduced: boolean;
-  onHover: (key: string) => void;
+  onHover: (key: string, via?: "pointer" | "pick") => void;
   onOpen: (key: string) => void;
 }) {
   const it = entry.media[0] ? getItem(entry.media[0]) : undefined;
   return (
     <button
       type="button"
-      onPointerEnter={(e) => e.pointerType === "mouse" && onHover(entry.key)}
-      onFocus={() => onHover(entry.key)}
+      onPointerEnter={(e) => {
+        onHold?.(true);
+        if (e.pointerType === "mouse") onHover(entry.key);
+      }}
+      onPointerLeave={() => onHold?.(false)}
+      onFocus={() => {
+        onHold?.(true);
+        onHover(entry.key, "pick");
+      }}
+      onBlur={() => onHold?.(false)}
       onClick={() => onOpen(entry.key)}
       tabIndex={tabbable ? 0 : -1}
       aria-label={`${entry.title} (${formatDay(entry.date)})`}
@@ -640,7 +930,7 @@ const Card = React.memo(function Card({
   );
 });
 
-function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey }: SceneProps) {
+function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect }: SceneProps) {
   const { camera, size, gl, invalidate } = useThree();
   /** The element the controls listen on (R3F's outer div): touch and wheel handling must sit there. */
   const surface = useThree((st) => st.events.connected) as HTMLElement | undefined;
@@ -806,9 +1096,15 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
   // ---- camera flights: only when the destination really changes (not on every keystroke) ----
   const flight = React.useRef<{ p0: THREE.Vector3; p1: THREE.Vector3; t0: THREE.Vector3; t1: THREE.Vector3; at: number; dur: number } | null>(null);
   const dest = focus ? `${focus.center.toArray().map((v) => v.toFixed(1)).join(",")}|${focus.dist}` : "home";
+  const lastDest = React.useRef("");
+  /** A post pick moved the camera off its focus view: the next topic change flies back even if the centre is the same. */
+  const displaced = React.useRef(false);
   React.useEffect(() => {
     // A search that matches nothing for a moment (a typo) keeps the camera where it is.
     if (matching && !matching.size && !activeTopic) return;
+    if (dest === lastDest.current && !displaced.current) return;
+    lastDest.current = dest;
+    displaced.current = false;
     const go = () => {
       const c = controls.current;
       if (!c) return;
@@ -822,41 +1118,46 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     const t = window.setTimeout(go, focus?.search ? 350 : 0);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dest]);
+  }, [dest, activeTopic]);
 
-  // ---- halo: a focus's posts round its cluster, in the plane facing the camera ----
-  const halo = React.useMemo(() => {
+  // A post picked in the Topics menu. In a focus, the globe turns (the camera orbits it) until the post's card faces
+  // us; with no focus, the camera flies close to its star.
+  React.useEffect(() => {
+    const c = controls.current;
+    if (!c || !starTarget) return;
+    const pt = globe?.pts.find((x) => x.key === starTarget.key);
+    if (focus && pt) {
+      const dir = new THREE.Vector3(...pt.p).normalize();
+      flight.current = { p0: camera.position.clone(), p1: focus.center.clone().add(dir.multiplyScalar(focus.dist)), t0: c.target.clone(), t1: focus.center.clone(), at: performance.now(), dur: reduced ? 0 : 1100 };
+    } else if (!focus) {
+      const s = u.stars[u.starIndex.get(starTarget.key) ?? -1];
+      if (!s) return;
+      const dir = camera.position.clone().sub(c.target).normalize();
+      flight.current = { p0: camera.position.clone(), p1: s.pos.clone().add(dir.multiplyScalar(6)), t0: c.target.clone(), t1: s.pos.clone(), at: performance.now(), dur: reduced ? 0 : 1100 };
+      displaced.current = true;
+    } else return; // a post outside the focus (it is only tagged here): lock on, stay put
+    invalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [starTarget?.n]);
+
+  // ---- globe: a focus's posts on a sphere round its cluster. It revolves (the camera orbits it) and turns under a
+  // drag like a globe; cards face the camera, the far side fades back and cannot be clicked. ----
+  const globe = React.useMemo(() => {
     if (!focus) return null;
-    const n = focus.keys.length;
-    const ppu = size.height / 2 / (focus.dist * TAN_HALF_FOV); // pixels per world unit at the focus distance
-    // A grid round the cluster, filled nearest-first (rings in effect); a grid keeps the cards from overlapping.
-    for (let card = 112; ; card -= 8) {
-      const ch = Math.round(card * 0.66) + (card >= 90 ? 18 : 0);
-      // Clear of the cluster (its topic names stay readable) and of the HUD bands at the top and bottom.
-      const gx = card * 1.1, gy = ch * 1.14, keep = Math.max(110, Math.min(size.width, size.height) * 0.2);
-      const cells: { x: number; y: number; d: number; a: number }[] = [];
-      const hw = size.width / 2 - card / 2 - 8;
-      const yTop = -size.height / 2 + 84 + ch / 2, yBottom = size.height / 2 - 8 - ch / 2;
-      // The telemetry panel (bottom left) and the log (bottom right), in canvas pixels.
-      const panels = [
-        [0, size.height - 190, 330, size.height],
-        [size.width - 230, size.height - 84, size.width, size.height],
-      ];
-      for (let i = -Math.floor(hw / gx); i <= Math.floor(hw / gx); i++)
-        for (let j = Math.ceil(yTop / gy); j <= Math.floor(yBottom / gy); j++) {
-          const x = i * gx, y = j * gy;
-          const qx = Math.max(Math.abs(x) - card / 2, 0), qy = Math.max(Math.abs(y) - ch / 2, 0);
-          if (Math.hypot(qx, qy) < keep) continue;
-          const l = size.width / 2 + x - card / 2, r = l + card, tp = size.height / 2 + y - ch / 2, b = tp + ch;
-          if (panels.some(([x0, y0, x1, y1]) => l < x1 && r > x0 && tp < y1 && b > y0)) continue;
-          cells.push({ x, y, d: Math.hypot(x, y), a: Math.atan2(y, x) });
-        }
-      if (cells.length >= n || card <= 56) {
-        cells.sort((p, q) => p.d - q.d || p.a - q.a);
-        return { width: card, slots: cells.slice(0, n).map((c) => [c.x / ppu, -c.y / ppu] as [number, number]) };
-      }
-    }
-  }, [focus, size]);
+    const n = focus.keys.length, R = focus.globeR;
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const pts = focus.keys.map((key, i) => {
+      const y = 1 - (2 * (i + 0.5)) / n;
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
+      const a = i * golden;
+      return { key, p: [Math.cos(a) * r * R, y * R * 0.9, Math.sin(a) * r * R] as [number, number, number] };
+    });
+    return { R, pts };
+  }, [focus]);
+  const cardEls = React.useRef(new Map<string, HTMLDivElement>());
+  const camDir = React.useMemo(() => new THREE.Vector3(), []);
+  const [holdSpin, setHoldSpin] = React.useState(false);
+  React.useEffect(() => setHoldSpin(false), [focus]);
 
   // ---- image pop-ups: the posts nearest the camera, beside their stars ----
   const [near, setNear] = React.useState<string[]>([]);
@@ -868,7 +1169,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
   const wave = React.useRef<THREE.Mesh>(null);
   const core = React.useRef<THREE.Mesh>(null);
   const lines = React.useRef<THREE.LineSegments>(null);
-  const haloRef = React.useRef<THREE.Group>(null);
+  const globeRef = React.useRef<THREE.Group>(null);
   const pathPts = React.useMemo(() => [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()], []);
   const segs = React.useMemo(() => [0, 0, 0], []);
   useFrame((state, dt) => {
@@ -923,8 +1224,18 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         pulse.current.position.copy(pathPts[k]).lerp(pathPts[k + 1], Math.min(1, left / (segs[k] || 1)));
       }
     }
-    // The halo always faces the camera.
-    if (haloRef.current) haloRef.current.quaternion.copy(camera.quaternion);
+    // The globe breathes a little, and each card fades with how far round the back it is.
+    if (globeRef.current && globe && focus) {
+      if (!reduced) globeRef.current.scale.setScalar(1 + 0.025 * Math.sin(state.clock.elapsedTime * 1.3));
+      camDir.copy(camera.position).sub(focus.center).normalize();
+      for (const pt of globe.pts) {
+        const el = cardEls.current.get(pt.key);
+        if (!el) continue;
+        const f = (pt.p[0] * camDir.x + pt.p[1] * camDir.y + pt.p[2] * camDir.z) / globe.R; // 1 facing us, -1 behind
+        el.style.opacity = (f > -0.1 ? 0.4 + 0.6 * Math.min(1, (f + 0.1) / 0.6) : 0.1).toFixed(2);
+        el.style.pointerEvents = f > -0.05 ? "auto" : "none";
+      }
+    }
     // Camera flight (the controls update themselves otherwise; updating twice would double the auto-orbit)
     const f = flight.current, c = controls.current;
     if (f && c) {
@@ -936,8 +1247,6 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       if (k >= 1) flight.current = null;
       else invalidate();
     }
-    // The halo's spacing was set for the focus distance: it scales with the camera, so zooming keeps cards apart.
-    if (haloRef.current && focus) haloRef.current.scale.setScalar(camera.position.distanceTo(focus.center) / focus.dist);
     // Image pop-ups: every 0.3 s, the nearest posts with an image that are in view, spaced apart on screen.
     nearClock.current += dt;
     if (images && !focus && t > IGNITE_AT + 2.2 && (reduced || nearClock.current > 0.3)) {
@@ -948,6 +1257,9 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         if (!s.image || (m && !m.has(s.key))) continue;
         tmp.copy(s.pos).project(camera);
         if (tmp.z > 1 || Math.abs(tmp.x) > 0.9 || Math.abs(tmp.y) > 0.85) continue;
+        const px = ((tmp.x + 1) / 2) * size.width, py = ((1 - tmp.y) / 2) * size.height;
+        const mr = menuRect.current;
+        if (mr && px > mr[0] - 90 && px < mr[2] && py > mr[1] - 60 && py < mr[3]) continue; // its card would sit under the Topics menu
         cand.push({ key: s.key, d: camera.position.distanceTo(s.pos), x: tmp.x * size.width * 0.5, y: tmp.y * size.height * 0.5 });
       }
       cand.sort((a, b) => a.d - b.d);
@@ -1008,7 +1320,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
 
   return (
     <>
-      <OrbitControls ref={controls} makeDefault enablePan={false} enableZoom={full} enableDamping dampingFactor={0.08} minDistance={3} maxDistance={70} autoRotate={orbit && !focus} autoRotateSpeed={0.35} />
+      <OrbitControls ref={controls} makeDefault enablePan={false} enableZoom={full} enableDamping dampingFactor={0.08} minDistance={3} maxDistance={70} autoRotate={orbit && !holdSpin} autoRotateSpeed={focus ? 0.8 : 0.35} />
       <points geometry={geom} material={mat} frustumCulled={false} />
       <lineSegments ref={lines} geometry={lineGeom} frustumCulled={false}>
         <lineBasicMaterial color="#ffffff" transparent opacity={0.075} depthWrite={false} blending={THREE.AdditiveBlending} />
@@ -1076,16 +1388,23 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         );
       })}
 
-      {/* the focus: its posts as a halo round the cluster, facing the camera */}
-      {focus && halo && (
-        <group ref={haloRef} position={focus.center}>
-          {focus.keys.map((key, i) => {
-            const e = entryByKey.get(key);
-            const slot = halo.slots[i];
-            if (!e || !slot) return null;
+      {/* the focus: its posts on a revolving globe round the cluster */}
+      {focus && globe && (
+        <group ref={globeRef} position={focus.center}>
+          {globe.pts.map((pt, i) => {
+            const e = entryByKey.get(pt.key);
+            if (!e) return null;
             return (
-              <Html key={key} position={[slot[0], slot[1], 0]} center zIndexRange={[18, 0]}>
-                <Card entry={e} on={hover === key} width={halo.width} delay={Math.min(1.1, i * 0.018)} reduced={reduced} onHover={onHover} onOpen={onOpen} />
+              <Html key={pt.key} position={pt.p} transform sprite center distanceFactor={4.8} zIndexRange={[18, 0]}>
+                <div
+                  ref={(el) => {
+                    if (el) cardEls.current.set(pt.key, el);
+                    else cardEls.current.delete(pt.key);
+                  }}
+                  style={{ transition: "opacity 180ms linear" }}
+                >
+                  <Card entry={e} on={hover === pt.key} width={104} delay={Math.min(1.1, i * 0.016)} reduced={reduced} onHover={onHover} onOpen={onOpen} onHold={setHoldSpin} />
+                </div>
               </Html>
             );
           })}

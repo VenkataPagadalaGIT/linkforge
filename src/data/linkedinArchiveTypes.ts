@@ -111,10 +111,18 @@ export interface LiTopicNode {
 /** What the archive lists and the graph draws: a post, an article, or a media item that is in no post. */
 export type LiEntryKind = "post" | "article" | "media";
 
+/**
+ * Where an entry comes from. Today every entry is from LinkedIn; the archive is built to take the others (each new
+ * source shows up in the Source filter as soon as its entries exist).
+ */
+export type LiSource = "linkedin" | "website" | "substack" | "youtube" | "instagram" | "facebook" | "podcast" | "book";
+
 export interface LiEntry {
   /** "post:<slug>", "article:<slug>" or "media:<idx>". */
   key: string;
   kind: LiEntryKind;
+  /** Where it was published. */
+  source: LiSource;
   /** Post or article slug, or media idx. */
   id: string;
   title: string;
@@ -142,7 +150,7 @@ export interface LiEntry {
  * The browser's compact entry (linkedinEntriesData.ts), expanded to LiEntry by linkedinArchive.ts:
  * k kind, i id, t title, d date, x excerpt, m media, cm comment media, a activity id, u url (articles),
  * e engagement [reactions, comments, reposts, impressions, engagements, flags: a analytics, f impressions floor,
- * g engagements floor], l2/l3 topics, n names, w words, rv review.
+ * g engagements floor], l2/l3 topics, n names, w words, rv review, src source (absent: LinkedIn).
  */
 export interface LiEntryRaw {
   k: LiEntryKind;
@@ -160,6 +168,8 @@ export interface LiEntryRaw {
   n?: string[];
   w?: number;
   rv?: 1;
+  /** Source; absent means LinkedIn. */
+  src?: LiSource;
 }
 
 export type LiNodeType = "topic" | "entity" | "entry";

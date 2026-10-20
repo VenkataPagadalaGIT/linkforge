@@ -12,6 +12,7 @@ import ServicesShowcase from "@/components/ServicesShowcase";
 import SEO from "@/components/SEO";
 import SystemAssemblyNav from "@/components/SystemAssemblyNav";
 import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
+import HomeUniverse from "@/components/home/HomeUniverse";
 
 const Home = () => {
 
@@ -132,6 +133,9 @@ const Home = () => {
         ATLANTA, GA
       </div>
       </div>
+
+      {/* My LinkedIn as a 3D universe (loads when scrolled near) */}
+      <HomeUniverse />
 
       {/* Services Showcase */}
       <ServicesShowcase />

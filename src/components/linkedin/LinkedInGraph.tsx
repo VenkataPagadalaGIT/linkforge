@@ -53,9 +53,10 @@ interface Props {
   onTopic: (topicId: string | null) => void;
   /** Open the entry's viewer, at this media item when given. */
   onOpenEntry: (key: string, idx?: string) => void;
-  /** The page's search, so the full-screen views can offer it too. */
-  query: string;
-  onQuery: (q: string) => void;
+  /** The page's search and filters (compact), for the full-screen views, where the page's own are out of reach. */
+  fullFilters?: React.ReactNode;
+  /** Entries matching the filters other than the topic (the Universe's Topics menu counts within them). */
+  countIn?: Set<string> | null;
 }
 
 const VIEW_META: Record<LiView, { n: string; label: string; hint: string }> = {
@@ -79,7 +80,7 @@ const MOTION_CSS = `.li-m{transition:transform ${MORPH_MS}ms cubic-bezier(.22,.8
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const EMPTY: Set<string> = new Set();
 
-export default function LinkedInGraph({ entriesByKey, matching, activeTopic, focus, onTopic, onOpenEntry, query, onQuery }: Props) {
+export default function LinkedInGraph({ entriesByKey, matching, activeTopic, focus, onTopic, onOpenEntry, fullFilters, countIn = null }: Props) {
   const graph = LINKEDIN_GRAPH;
   const { width: W, height: H } = graph;
   const [view, setView] = React.useState<LiView>("topics");
@@ -563,9 +564,9 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
             </button>
           )}
         </div>
-        {extra === "story" && <LinkedInStory matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} query={query} onQuery={onQuery} />}
+        {extra === "story" && <LinkedInStory matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} filters={fullFilters} />}
         {extra === "universe" && (
-          <LinkedInUniverse matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} query={query} onQuery={onQuery} />
+          <LinkedInUniverse matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} filters={fullFilters} countIn={countIn} />
         )}
         {/* The SVG stays mounted under Story (hidden), so its zoom and size listeners keep their element. */}
         <div className={`overflow-x-auto border border-border bg-card/30 ${story ? "hidden" : ""}`}>

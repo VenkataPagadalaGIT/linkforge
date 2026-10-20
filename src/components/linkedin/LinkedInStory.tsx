@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, type LiEntry } from "@/data/linkedinArchive";
+import { LINKEDIN_ENTRIES, SOURCE_LABEL, TOPIC_NODES, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, type LiEntry } from "@/data/linkedinArchive";
 
 /**
  * 04 Story: the archive as one animated piece, made to be watched and recorded (Reel mode frames it 9:16).
@@ -24,9 +24,8 @@ interface Props {
   activeTopic: string | null;
   onTopic: (id: string | null) => void;
   onOpenEntry: (key: string) => void;
-  /** The page's search: shown as a box in full screen, where the page's own box is out of reach. */
-  query: string;
-  onQuery: (q: string) => void;
+  /** The page's search and filters (compact): shown in full screen, where the page's own are out of reach. */
+  filters?: React.ReactNode;
 }
 
 const SLIDES = 7;
@@ -187,7 +186,7 @@ function tileLayout(keys: string[], w: number, h: number, reel: boolean) {
   return { tiles, T, more: keys.length - tiles.length };
 }
 
-export default function LinkedInStory({ matching, activeTopic, onTopic, onOpenEntry, query, onQuery }: Props) {
+export default function LinkedInStory({ matching, activeTopic, onTopic, onOpenEntry, filters }: Props) {
   const layout = React.useMemo(buildLayout, []);
   const entryByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const wrapRef = React.useRef<HTMLDivElement>(null);
@@ -780,20 +779,7 @@ export default function LinkedInStory({ matching, activeTopic, onTopic, onOpenEn
       <style>{`@keyframes liCardIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}@keyframes liTileIn{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}`}</style>
       <span ref={probeRef} className="font-mono hidden" aria-hidden="true" />
       <div className="mb-2 flex flex-wrap items-center gap-1">
-        {full && (
-          // In full screen the page's search box is out of reach: this one drives the same search.
-          <label className="flex min-w-[220px] flex-1 items-center gap-2 border border-border px-2 py-1 sm:flex-none sm:w-[300px]">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Search</span>
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => onQuery(e.target.value)}
-              placeholder="seoweek, knowledge graph…"
-              className="flex-1 bg-transparent font-mono text-[12px] text-foreground outline-none placeholder:text-muted-foreground/70"
-              data-testid="linkedin-story-search"
-            />
-          </label>
-        )}
+        {full && filters && <div className="mb-1 w-full">{filters}</div>}
         <button ref={playRef} type="button" className={BTN} onClick={() => setPlaying((p) => !p)}>
           <span aria-hidden="true">{playing ? "❚❚ " : "▶ "}</span>
           {playing ? "Pause" : "Play"}
@@ -1000,7 +986,7 @@ function SlideCard({ entry, side }: { entry: LiEntry; side: number }) {
       <div className="flex flex-1 flex-col px-[7%] py-[5%] min-h-0">
         {roomy && (
           <p className="font-mono uppercase tracking-[0.15em] text-muted-foreground truncate" style={{ fontSize: small }}>
-            {area ? `${topicLabel(area)} › ` : ""}
+            {SOURCE_LABEL[entry.source]} · {area ? `${topicLabel(area)} › ` : ""}
             {main ? topicLabel(main) : "Post"}
           </p>
         )}

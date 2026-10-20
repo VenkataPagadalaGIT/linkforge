@@ -2,6 +2,7 @@
 import * as React from "react";
 import {
   KIND_LABEL,
+  SOURCE_LABEL,
   childTopics,
   engagementSource,
   entryPath,
@@ -71,7 +72,9 @@ function GraphPanel(p: Props) {
       data-testid="linkedin-graph-panel"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <p className={EYEBROW}>Pinned · {kindLabel}</p>
+        <p className={EYEBROW}>
+          Pinned · {entry ? `${SOURCE_LABEL[entry.source]} ${kindLabel.toLowerCase()}` : kindLabel}
+        </p>
         <button type="button" onClick={p.onClose} className="font-mono text-[11px] px-2 py-0.5 border border-border text-muted-foreground hover:text-foreground" aria-label="Unpin and close (Esc)">
           ✕
         </button>

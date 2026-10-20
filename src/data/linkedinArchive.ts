@@ -15,9 +15,22 @@
 import { LINKEDIN_ITEMS } from "./linkedinArchiveData";
 import { ENGAGEMENT_AS_OF, LINKEDIN_ENTRIES_RAW } from "./linkedinEntriesData";
 import TAXONOMY from "./linkedinTaxonomy.json";
-import type { LiEngagement, LiEntry, LiEntryRaw, LiItem, LiKind, LiPost, LiTopicNode } from "./linkedinArchiveTypes";
+import type { LiEngagement, LiEntry, LiEntryRaw, LiItem, LiKind, LiPost, LiSource, LiTopicNode } from "./linkedinArchiveTypes";
 
-export type { LiItem, LiKind, LiGraph, LiGraphNode, LiPost, LiPerson, LiEngagement, LiEntry, LiEntryKind, LiTopicNode } from "./linkedinArchiveTypes";
+export type { LiItem, LiKind, LiGraph, LiGraphNode, LiPost, LiPerson, LiEngagement, LiEntry, LiEntryKind, LiSource, LiTopicNode } from "./linkedinArchiveTypes";
+
+/** Display names for every source the archive knows (only those with entries appear in filters). */
+export const SOURCE_LABEL: Record<LiSource, string> = {
+  linkedin: "LinkedIn",
+  website: "Website",
+  substack: "Substack",
+  youtube: "YouTube",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  podcast: "Podcast",
+  book: "Book",
+};
+export const SOURCES = Object.keys(SOURCE_LABEL) as LiSource[];
 export { LINKEDIN_ITEMS, ENGAGEMENT_AS_OF };
 
 export const LINKEDIN_PROFILE = "https://www.linkedin.com/in/venkata-pagadala";
@@ -106,6 +119,7 @@ function expand(r: LiEntryRaw): LiEntry {
   return {
     key: `${r.k}:${r.i}`,
     kind: r.k,
+    source: r.src ?? "linkedin",
     id: r.i,
     title: r.t,
     date: r.d,

@@ -3,17 +3,19 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import TopicTree from "./TopicTree";
+import ArchiveFilters from "./ArchiveFilters";
+import { KIND_FILTERS, compileQuery, entryHaystack, entryKindLabel, hasKind, mediaOf, sourceCounts, useFullText, type KindFilter, type SourceFilter } from "@/lib/linkedinSearch";
 import type { FocusRequest } from "./LinkedInGraph";
 import {
   KIND_LABEL,
   LINKEDIN_ENTRIES,
+  SOURCE_LABEL,
   engagementLine,
   entryPath,
   formatDateTime,
   formatDay,
   formatDuration,
   fullUrl,
-  getItem,
   getTopic,
   inTopic,
   posterUrl,
@@ -23,8 +25,6 @@ import {
   topicPath,
   topicTrail,
   type LiEntry,
-  type LiItem,
-  type LiKind,
 } from "@/data/linkedinArchive";
 
 /**
@@ -42,16 +42,7 @@ import {
 // The graph and its data load as their own chunk (still server-rendered), so topic pages never ship them.
 const LinkedInGraph = dynamic(() => import("./LinkedInGraph"));
 
-type KindFilter = "all" | "post" | "article" | LiKind;
 type SortOrder = "newest" | "engaging";
-const KIND_FILTERS: { id: KindFilter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "post", label: "Posts" },
-  { id: "article", label: "Articles" },
-  { id: "video", label: "Videos" },
-  { id: "image", label: "Images" },
-  { id: "document", label: "Documents" },
-];
 /** The sidebar's last row: entries with no topic (one-line replies and reshares). */
 const NONE = "_none";
 const PAGE = 60;
@@ -61,42 +52,10 @@ interface Props {
   topicId?: string;
 }
 
-const norm = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
-const squash = (s: string) => s.replace(/[^a-z0-9]+/g, "");
-const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-/**
- * Each search word must match at the start of a word ("graph" finds "graphs", "search" does not find "research",
- * "ai" does not find "said"); punctuation around a word is ignored ("seo," is "seo"). Words of five or more letters
- * also match with spaces and punctuation between their letters, still from a word start, so "seoweek" finds
- * "SEO Week"; and a multi-word query also matches run together ("knowledge graph" finds "#KnowledgeGraph").
- * Returns null for an empty query.
- */
-function compileQuery(q: string): ((text: string) => boolean) | null {
-  const terms = norm(q)
-    .split(/\s+/)
-    .map((t) => t.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, ""))
-    .filter(Boolean);
-  if (!terms.length) return null;
-  const START = "(?:^|[^a-z0-9])";
-  const loose = (sq: string) => new RegExp(START + sq.split("").map(escapeRe).join("[^a-z0-9]*"));
-  const each = terms.map((t) => {
-    const exact = new RegExp(START + escapeRe(t));
-    const sq = squash(t);
-    const flex = sq.length >= 5 ? loose(sq) : null;
-    return (text: string) => exact.test(text) || (!!flex && flex.test(text));
-  });
-  const joined = squash(terms.join(""));
-  const whole = terms.length > 1 && joined.length >= 5 ? loose(joined) : null;
-  return (text) => each.every((m) => m(text)) || (!!whole && whole.test(text));
-}
 /** A plain left click; modified clicks keep the browser's own behaviour (new tab, etc.). */
 const isPlainClick = (e: React.MouseEvent) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 /** Controls that only work with JavaScript are hidden when scripts are blocked; the sidebar always shows. */
 const NOSCRIPT_STYLE = { __html: "<style>.li-js{display:none!important}.li-tree{display:block!important}</style>" };
-const entryKindLabel = (e: LiEntry) => (e.kind === "article" ? "Article" : e.kind === "post" ? "Post" : KIND_LABEL[getItem(e.id)?.kind ?? "image"]);
-const mediaOf = (e: LiEntry) => [...e.media, ...(e.commentMedia ?? [])].map(getItem).filter((x): x is LiItem => !!x);
-const hasKind = (e: LiEntry, k: KindFilter) =>
-  k === "all" ? true : k === "post" || k === "article" ? e.kind === k : e.media.some((m) => getItem(m)?.kind === k);
 const newestFirst = (a: LiEntry, b: LiEntry) => b.date.localeCompare(a.date);
 
 export default function LinkedInExplorer({ topicId }: Props) {
@@ -105,6 +64,8 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const entriesByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const [query, setQuery] = React.useState("");
   const [kind, setKind] = React.useState<KindFilter>("all");
+  const [source, setSource] = React.useState<SourceFilter>("all");
+  const sources = React.useMemo(() => sourceCounts(entries), [entries]);
   const [year, setYear] = React.useState<string | null>(null);
   const [topic, setTopic] = React.useState<string | null>(null);
   const [sort, setSort] = React.useState<SortOrder>("newest");
@@ -116,43 +77,12 @@ export default function LinkedInExplorer({ topicId }: Props) {
   React.useEffect(() => setMounted(true), []);
 
   // Full text: loaded once, on first use of the search box.
-  const [fullText, setFullText] = React.useState<Record<string, string> | null>(null);
-  const loading = React.useRef(false);
-  const loadFullText = React.useCallback(() => {
-    if (loading.current) return;
-    loading.current = true;
-    import("@/data/linkedinSearchData")
-      .then((m) => setFullText(m.LINKEDIN_SEARCH_TEXT))
-      .catch(() => (loading.current = false));
-  }, []);
+  const { fullText, load: loadFullText } = useFullText();
   React.useEffect(() => {
     if (query.trim()) loadFullText();
   }, [query, loadFullText]);
 
-  const haystack = React.useMemo(
-    () =>
-      new Map(
-        entries.map((e) => {
-          const areas = [...new Set(e.topics.map((t) => getTopic(t)?.parent).filter(Boolean) as string[])];
-          const text = norm(
-            [
-              e.title,
-              e.excerpt,
-              entryKindLabel(e),
-              e.date.slice(0, 10),
-              ...areas.map(topicLabel),
-              ...e.topics.map(topicLabel),
-              ...e.subtopics.map(topicLabel),
-              ...e.names,
-              ...mediaOf(e).map((it) => `${it.description} ${it.label} ${it.entities.join(" ")} ${KIND_LABEL[it.kind]}`),
-              fullText?.[e.key] ?? "",
-            ].join(" "),
-          );
-          return [e.key, text];
-        }),
-      ),
-    [entries, fullText],
-  );
+  const haystack = React.useMemo(() => new Map(entries.map((e) => [e.key, entryHaystack(e, fullText)])), [entries, fullText]);
 
   const matcher = React.useMemo(() => compileQuery(query), [query]);
   // Everything but the topic: the sidebar counts follow the search, the kind and the year.
@@ -160,21 +90,25 @@ export default function LinkedInExplorer({ topicId }: Props) {
     () =>
       entries.filter((e) => {
         if (!hasKind(e, kind)) return false;
+        if (source !== "all" && e.source !== source) return false;
         if (year && !e.date.startsWith(year)) return false;
         if (!matcher) return true;
         const h = haystack.get(e.key);
         return !!h && matcher(h);
       }),
-    [entries, kind, year, matcher, haystack],
+    [entries, kind, source, year, matcher, haystack],
   );
   const filtered = React.useMemo(() => {
     const list = !topic || scoped ? beforeTopic : topic === NONE ? beforeTopic.filter((e) => !e.topics.length) : beforeTopic.filter((e) => inTopic(e, topic));
     return sort === "engaging" ? [...list].sort((a, b) => (b.engagement?.reactions ?? -1) - (a.engagement?.reactions ?? -1) || newestFirst(a, b)) : list;
   }, [beforeTopic, topic, scoped, sort]);
-  const filterActive = kind !== "all" || !!year || !!matcher || (!!topic && !scoped);
+  const filterActive = kind !== "all" || source !== "all" || !!year || !!matcher || (!!topic && !scoped);
   const matching = React.useMemo(() => (filterActive ? new Set(filtered.map((e) => e.key)) : null), [filterActive, filtered]);
   // The graph (about 1,100 nodes) follows the typing at its own pace, so the search box stays responsive.
   const graphMatching = React.useDeferredValue(matching);
+  // The Universe's Topics menu counts within the search and filters, whatever the topic.
+  const nonTopicActive = kind !== "all" || source !== "all" || !!year || !!matcher;
+  const countIn = React.useDeferredValue(React.useMemo(() => (nonTopicActive ? new Set(beforeTopic.map((e) => e.key)) : null), [nonTopicActive, beforeTopic]));
 
   const treeCounts = React.useMemo(() => topicCounts(beforeTopic), [beforeTopic]);
   const unsorted = React.useMemo(() => beforeTopic.filter((e) => !e.topics.length).length, [beforeTopic]);
@@ -186,7 +120,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const years = React.useMemo(() => [...new Set(entries.map((e) => e.date.slice(0, 4)))].sort().reverse(), [entries]);
 
   // New filters start the list from the top, and ask the graph to zoom to what they match.
-  const signature = `${query.trim()}|${kind}|${year}|${topic}|${query.trim() && fullText ? 1 : 0}`;
+  const signature = `${query.trim()}|${kind}|${source}|${year}|${topic}|${query.trim() && fullText ? 1 : 0}`;
   const firstSig = React.useRef(signature);
   React.useEffect(() => {
     setShown(PAGE);
@@ -218,6 +152,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const resetAll = () => {
     setQuery("");
     setKind("all");
+    setSource("all");
     setYear(null);
     if (!scoped) setTopic(null);
   };
@@ -259,38 +194,21 @@ export default function LinkedInExplorer({ topicId }: Props) {
 
         <div className="min-w-0">
           {/* Controls (JS only) */}
-          <div className="li-js flex flex-wrap items-center gap-2 mb-3">
-            <label className="flex items-center gap-2 flex-1 min-w-[240px] border border-border px-3 py-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Search</span>
-              <input
-                type="search"
-                value={query}
-                onFocus={loadFullText}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="seoweek, knowledge graph, Claude, Search Console…"
-                className="flex-1 bg-transparent outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground/70"
-                data-testid="linkedin-search"
-              />
-            </label>
-          </div>
-          <div className="li-js flex flex-wrap items-center gap-1.5 mb-3">
-            {KIND_FILTERS.map((k) =>
-              kindCounts[k.id] || k.id === "all" ? (
-                <button key={k.id} type="button" onClick={() => setKind(k.id)} aria-pressed={kind === k.id} className={chip(kind === k.id)} data-testid={`linkedin-kind-${k.id}`}>
-                  {k.label} · {kindCounts[k.id]}
-                </button>
-              ) : null,
-            )}
-          </div>
-          <div className="li-js flex flex-wrap items-center gap-1.5 mb-6">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mr-1">Year</span>
-            <button type="button" onClick={() => setYear(null)} aria-pressed={!year} className={chip(!year)}>All</button>
-            {years.map((y) => (
-              <button key={y} type="button" onClick={() => setYear(year === y ? null : y)} aria-pressed={year === y} className={chip(year === y)}>
-                {y}
-              </button>
-            ))}
-          </div>
+          <ArchiveFilters
+            query={query}
+            onQuery={setQuery}
+            onSearchFocus={loadFullText}
+            kind={kind}
+            onKind={setKind}
+            kindCounts={kindCounts}
+            source={source}
+            onSource={setSource}
+            sources={sources}
+            year={year}
+            onYear={setYear}
+            years={years}
+            testIds
+          />
 
           {activeNode && !scoped && <ActiveTopic id={activeNode.id} count={filtered.length} onSelect={selectTopic} />}
 
@@ -307,8 +225,24 @@ export default function LinkedInExplorer({ topicId }: Props) {
                 focus={focus}
                 onTopic={selectTopic}
                 onOpenEntry={openFromGraph}
-                query={query}
-                onQuery={setQuery}
+                countIn={countIn}
+                fullFilters={
+                  <ArchiveFilters
+                    compact
+                    query={query}
+                    onQuery={setQuery}
+                    onSearchFocus={loadFullText}
+                    kind={kind}
+                    onKind={setKind}
+                    kindCounts={kindCounts}
+                    source={source}
+                    onSource={setSource}
+                    sources={sources}
+                    year={year}
+                    onYear={setYear}
+                    years={years}
+                  />
+                }
               />
               <p className="li-js mt-3 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
                 Five views: 01 Topics (each area a region; each topic a flower of its posts, with its subtopics around it and
@@ -521,7 +455,9 @@ function EntryCard({ entry, onOpen }: { entry: LiEntry; onOpen: () => void }) {
         </div>
       )}
       <div className="p-2.5 flex-1 flex flex-col">
-        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-1">{formatDay(entry.date)}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mb-1" data-testid="linkedin-card-source">
+          {SOURCE_LABEL[entry.source]} · {formatDay(entry.date)}
+        </p>
         <p className="font-mono text-[11px] leading-snug text-foreground line-clamp-3">{entry.title}</p>
         {r && (r.reactions != null || r.comments != null) && (
           <p className="mt-1 font-mono text-[10px] text-muted-foreground">
@@ -630,7 +566,7 @@ function Viewer({
             )}
             <div className={`p-5 ${media.length ? "md:overflow-y-auto md:max-h-[88vh] border-t md:border-t-0 md:border-l border-border" : ""}`}>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
-                {entryKindLabel(shown)} · {shown.date.length > 10 ? formatDateTime(shown.date) : formatDay(shown.date)}
+                {SOURCE_LABEL[shown.source]} {entryKindLabel(shown).toLowerCase()} · {shown.date.length > 10 ? formatDateTime(shown.date) : formatDay(shown.date)}
               </p>
               <DialogTitle className="font-display text-lg font-bold text-foreground leading-snug mb-3">{shown.title}</DialogTitle>
               <DialogDescription className="sr-only">
