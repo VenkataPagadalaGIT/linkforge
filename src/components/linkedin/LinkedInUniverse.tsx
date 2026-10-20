@@ -610,7 +610,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         {/* HUD */}
 
         <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-foreground">
-          <p className="text-[11px] font-bold tracking-[0.25em]">VP_ MISSION CONTROL</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em]">Venkata Pagadala - Universe</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             {u.stars.length} objects · {u.areas.length} sectors · {u.topics.length} topics · {u.years.from} to {u.years.to}
           </p>

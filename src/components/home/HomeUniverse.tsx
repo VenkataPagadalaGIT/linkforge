@@ -20,7 +20,7 @@ function Placeholder() {
 }
 
 /**
- * Home page section: my LinkedIn as a universe. A full-width band in the site's theme (light or dark); the 3D view
+ * Home page section: Venkata Pagadala - Universe (every source in one graph; LinkedIn first). A full-width band in the site's theme (light or dark); the 3D view
  * mounts when it is about to be seen. Without JavaScript (or before it mounts) the band still says what it is and links to the archive.
  */
 /** Mounted only once the section is near: probes WebGL, then loads the view (or says 3D is off, in one short line). */
@@ -52,13 +52,13 @@ export default function HomeUniverse() {
       <div className="mx-auto max-w-[1600px] px-4 py-16 sm:px-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">LinkedIn archive · mission control</p>
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Mission control · every source, one graph</p>
             <h2 id="home-universe-h" className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              My LinkedIn, as a universe
+              Venkata Pagadala - Universe
             </h2>
             <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
-              Every post, article and image I have shared since 2016 is a star around one core, grouped by area, topic and subtopic. Search it, pick a level, or
-              fly in and open any post.
+              Everything I share, as stars around one core, grouped by area, topic and subtopic. LinkedIn is the first source (every post, article and
+              image since 2016); my website, Substack, YouTube and more join next. Search it, pick a level, or fly in and open any post.
             </p>
           </div>
           <a href="/linkedin" className="font-mono text-[11px] uppercase tracking-[0.15em] border border-foreground px-3 py-2 text-foreground transition-colors hover:bg-foreground hover:text-background">
