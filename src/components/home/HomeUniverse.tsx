@@ -15,7 +15,7 @@ const LinkedInUniverseSection = dynamic(() => import("@/components/linkedin/Link
 function Placeholder() {
   return (
     <div className="grid place-items-center border border-border bg-background" style={{ height: "calc(min(max(78vh, 560px), 900px) + 96px)" }}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">Preparing ignition…</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">Loading the Universe…</p>
     </div>
   );
 }

@@ -11,8 +11,9 @@ import { LINKEDIN_ENTRIES, SOURCE_LABEL, UNIVERSE_PATH, TOPIC_NODES, childTopics
 
 /**
  * 05 Universe: the archive as a 3D space to fly through, styled as mission control.
- *   Ignition  a countdown, a flash, and every post bursts out of one point (me) into a galaxy: each area a cluster,
- *             each topic a nebula, each post a star (brighter with more reactions)
+ *   Galaxy    it opens already formed: each area a cluster, each topic a nebula, each post a star (brighter with more
+ *             reactions), with image cards popping up at once. "Ignite" replays the show on demand: a countdown, a
+ *             flash, and every post bursts out of one point (me) into the galaxy
  *   Field     the cursor ripples the stars around it (the star under it stays put, so it can be locked)
  *   Lock      hovering a star fires a radium pulse centre > area > topic > star and the telemetry locks on
  *   Images    the posts nearest the camera pop up as image cards beside their stars, so flying in reveals them
@@ -41,6 +42,8 @@ const RADIUM = "#36ffb0";
 /** The accent on white: the same green, dark enough to read (about 5:1 on white). */
 const RADIUM_ON_LIGHT = "#0a7d50";
 const IGNITE_AT = 2.4;
+/** Seconds into the show by which every star has landed: the galaxy opens at this point, already formed. */
+const SETTLED = IGNITE_AT + 6;
 const AREA_R = 11;
 const MAX_CARDS = 72;
 /** Image pop-ups: at most this many at once, the posts nearest the camera. */
@@ -234,14 +237,17 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   const u = React.useMemo(buildUniverse, []);
   const entryByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const wrapRef = React.useRef<HTMLDivElement>(null);
-  const igniteRef = React.useRef<HTMLButtonElement>(null);
+  /** The first toolbar button (Ignite, or Topics with reduced motion): keyboard focus lands here when cards go. */
+  const firstBtnRef = React.useRef<HTMLButtonElement>(null);
   const [reduced, setReduced] = React.useState(false);
-  /** On screen? Rendering stops off screen, and the ignition waits until the view is first seen. */
+  /** On screen? Rendering stops off screen. */
   const [visible, setVisible] = React.useState(false);
   const [hover, setHover] = React.useState<string | null>(null);
   /** A post picked in the level bar: the camera flies to its star (n changes on every pick). */
   const [starTarget, setStarTarget] = React.useState<{ key: string; n: number } | null>(null);
   const [igniteKey, setIgniteKey] = React.useState(0);
+  /** The galaxy opens already formed; the ignition show (countdown, burst) plays only when Ignite is pressed. */
+  const [play, setPlay] = React.useState(false);
   const [count, setCount] = React.useState<string | null>(null);
   const [sound, setSound] = React.useState(false);
   const [orbit, setOrbit] = React.useState(true);
@@ -310,13 +316,6 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  const seen = React.useRef(false);
-  React.useEffect(() => {
-    if (visible && !seen.current) {
-      seen.current = true;
-      setIgniteKey((k) => k + 1);
-    }
-  }, [visible]);
   React.useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(LOG_KEY) ?? "[]");
@@ -330,13 +329,13 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     document.addEventListener("fullscreenchange", sync);
     return () => document.removeEventListener("fullscreenchange", sync);
   }, []);
-  // Countdown, then ignition (skipped with reduced motion).
+  // Countdown, then ignition: only on Ignite (and never with reduced motion).
   React.useEffect(() => {
-    if (reduced) return setCount(null);
+    if (reduced || !play) return setCount(null);
     const steps: [number, string | null][] = [[0, "T-3"], [0.6, "T-2"], [1.2, "T-1"], [1.8, "IGNITION"], [IGNITE_AT + 0.6, null]];
     const timers = steps.map(([at, label]) => window.setTimeout(() => setCount(label), at * 1000));
     return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [igniteKey, reduced]);
+  }, [igniteKey, reduced, play]);
 
   const logTopic = React.useCallback(
     (topicId: string | undefined) => {
@@ -398,7 +397,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       const main = entryByKey.get(key)?.topics[0];
       if (main && !activeTopic && !matching) {
         // The focus about to open replaces what is on screen: park keyboard focus on a control that stays.
-        if (wrapRef.current?.contains(document.activeElement)) igniteRef.current?.focus();
+        if (wrapRef.current?.contains(document.activeElement)) firstBtnRef.current?.focus();
         onTopic(main);
       }
       const go = () => onOpenEntry(key);
@@ -423,9 +422,9 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     },
     [onTopic, synth],
   );
-  /** Leave the focus; keyboard focus moves to Ignite first, since the cards are about to go. */
+  /** Leave the focus; keyboard focus moves to the first toolbar button, since the cards are about to go. */
   const leaveFocus = React.useCallback(() => {
-    if (wrapRef.current?.contains(document.activeElement)) igniteRef.current?.focus();
+    if (wrapRef.current?.contains(document.activeElement)) firstBtnRef.current?.focus();
     onTopic(null);
   }, [onTopic]);
   // Esc leaves a focus, when the view is on screen (unless a dialog or a text field has it).
@@ -499,18 +498,22 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     <div ref={wrapRef} style={themeVars} className={`${onBlack ? "text-foreground" : ""} ${full ? "bg-background h-full flex flex-col p-3" : ""}`} data-testid="linkedin-universe">
       {onBlack && filters && <div className="mb-2">{filters}</div>}
       <div className="mb-2 flex flex-wrap items-center gap-1">
-        <button
-          ref={igniteRef}
-          type="button"
-          className={btn}
-          onClick={() => {
-            setHover(null);
-            setIgniteKey((k) => k + 1);
-          }}
-        >
-          <span aria-hidden="true">↻ </span>Ignite
-        </button>
-        <button type="button" className={btn} onClick={() => setMenu(!(menuOpen))} aria-expanded={menuOpen} aria-controls="li-universe-topics" data-testid="linkedin-universe-topics-toggle">
+        {/* Replays the ignition show; with reduced motion there is no show, so no button */}
+        {!reduced && (
+          <button
+            ref={firstBtnRef}
+            type="button"
+            className={btn}
+            onClick={() => {
+              setHover(null);
+              setPlay(true);
+              setIgniteKey((k) => k + 1);
+            }}
+          >
+            <span aria-hidden="true">↻ </span>Ignite
+          </button>
+        )}
+        <button ref={reduced ? firstBtnRef : undefined} type="button" className={btn} onClick={() => setMenu(!(menuOpen))} aria-expanded={menuOpen} aria-controls="li-universe-topics" data-testid="linkedin-universe-topics-toggle">
           Topics {(menuOpen) ? "▴" : "▾"}
         </button>
         <button type="button" className={btn} onClick={() => setImages((v) => !v)} aria-pressed={images}>
@@ -581,6 +584,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             <Scene
               u={u}
               igniteKey={igniteKey}
+              play={play}
               reduced={reduced}
               matching={matching}
               hover={hover}
@@ -892,6 +896,8 @@ interface Focus {
 interface SceneProps {
   u: Universe;
   igniteKey: number;
+  /** Play the ignition show; otherwise the galaxy starts formed. */
+  play: boolean;
   reduced: boolean;
   matching: Set<string> | null;
   hover: string | null;
@@ -979,17 +985,18 @@ const Card = React.memo(function Card({
   );
 });
 
-function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect, light, accent }: SceneProps) {
+function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect, light, accent }: SceneProps) {
   const { camera, size, gl, invalidate } = useThree();
   /** The element the controls listen on (R3F's outer div): touch and wheel handling must sit there. */
   const surface = useThree((st) => st.events.connected) as HTMLElement | undefined;
   const controls = React.useRef<OrbitControlsImpl>(null);
-  const start = React.useRef(performance.now());
+  // The show's clock: from zero when Ignite plays it, otherwise already past the burst (every star landed).
+  const start = React.useRef(performance.now() - (play ? 0 : SETTLED * 1000));
   React.useEffect(() => {
-    start.current = performance.now();
+    start.current = performance.now() - (play ? 0 : SETTLED * 1000);
     setNear([]);
     invalidate();
-  }, [igniteKey, invalidate]);
+  }, [igniteKey, play, invalidate]);
   const elapsed = () => (reduced ? 999 : (performance.now() - start.current) / 1000);
 
   // ---- stars ----
@@ -1451,7 +1458,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         <meshBasicMaterial color={accent} toneMapped={false} />
       </mesh>
 
-      {/* sector (area) names: buttons that fly there; keyed by the ignition, so a replay fades them in again */}
+      {/* sector (area) names: buttons that fly there; keyed by the ignition, so a replay fades them in again (on first open they are just there) */}
       {u.areas.map((a) => (
         <Html key={`${a.id}-${igniteKey}`} position={a.pos} center zIndexRange={[40000, 30000]}>
           <button
@@ -1462,7 +1469,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
             className={`whitespace-nowrap font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-colors ${
               activeArea === a.id ? "text-[color:var(--uni-a)]" : "text-foreground/80 hover:text-[color:var(--uni-a)]"
             }`}
-            style={{ textShadow: "0 0 8px var(--uni-halo)", animation: reduced ? undefined : `liFade 600ms ${IGNITE_AT + 1.6}s both` }}
+            style={{ textShadow: "0 0 8px var(--uni-halo)", animation: reduced || !play ? undefined : `liFade 600ms ${IGNITE_AT + 1.6}s both` }}
           >
             {SHORT[a.id] ?? a.label} · {a.count}
           </button>
