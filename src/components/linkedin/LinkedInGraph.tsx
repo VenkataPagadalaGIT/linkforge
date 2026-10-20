@@ -2,7 +2,11 @@
 import * as React from "react";
 import { LINKEDIN_GRAPH } from "@/data/linkedinGraphData";
 import { LI_VIEWS, type LiView } from "@/data/linkedinArchiveTypes";
+import dynamic from "next/dynamic";
 import GraphPanel from "./GraphPanel";
+
+// 04 Story is a canvas animation: it loads only when chosen.
+const LinkedInStory = dynamic(() => import("./LinkedInStory"), { ssr: false });
 import {
   engagementLine,
   entryPath,
@@ -75,6 +79,8 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
   const graph = LINKEDIN_GRAPH;
   const { width: W, height: H } = graph;
   const [view, setView] = React.useState<LiView>("topics");
+  /** 04 Story (the animated tour) replaces the three layouts while it is on. */
+  const [story, setStory] = React.useState(false);
   const [settled, setSettled] = React.useState(true);
   const [zoom, setZoom] = React.useState({ k: 1, x: 0, y: 0 });
   const [zoomAnim, setZoomAnim] = React.useState(false);
@@ -503,18 +509,38 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
             <button
               key={v}
               type="button"
-              onClick={() => switchView(v)}
-              aria-pressed={view === v}
+              onClick={() => {
+                setStory(false);
+                switchView(v);
+              }}
+              aria-pressed={!story && view === v}
               className={`font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border ${
-                view === v ? "border-foreground text-foreground bg-foreground/[0.08]" : "border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+                !story && view === v ? "border-foreground text-foreground bg-foreground/[0.08]" : "border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40"
               }`}
               data-testid={`linkedin-view-${v}`}
             >
               {VIEW_META[v].n} {VIEW_META[v].label}
             </button>
           ))}
-          <span className="w-2" />
-          {[
+          <button
+            type="button"
+            onClick={() => {
+              setStory(true);
+              setPinned(null);
+              setHover(null);
+              setTip(null);
+              setPlaying(false);
+            }}
+            aria-pressed={story}
+            className={`font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border ${
+              story ? "border-foreground text-foreground bg-foreground/[0.08]" : "border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+            }`}
+            data-testid="linkedin-view-story"
+          >
+            04 Story
+          </button>
+          {!story && <span className="w-2" />}
+          {!story && [
             { label: "+", title: "Zoom in", fn: () => zoomAt(1.4) },
             { label: "−", title: "Zoom out", fn: () => zoomAt(1 / 1.4) },
             { label: "Fit", title: "Fit everything", fn: () => { animate(); setZoom({ k: 1, x: 0, y: 0 }); } },
@@ -523,13 +549,15 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
               {b.label}
             </button>
           ))}
-          {view === "topics" && hasOffsets && (
+          {!story && view === "topics" && hasOffsets && (
             <button type="button" onClick={() => setOffsets({})} className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border border-border bg-background/90 text-muted-foreground hover:text-foreground">
               Reset layout
             </button>
           )}
         </div>
-        <div className="overflow-x-auto border border-border bg-card/30">
+        {story && <LinkedInStory matching={matching} onOpenEntry={onOpenEntry} />}
+        {/* The SVG stays mounted under Story (hidden), so its zoom and size listeners keep their element. */}
+        <div className={`overflow-x-auto border border-border bg-card/30 ${story ? "hidden" : ""}`}>
           <svg
             ref={svgRef}
             viewBox={`0 0 ${W} ${H}`}
@@ -855,10 +883,11 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
           </svg>
         </div>
 
-        {tip && tip.id !== pinned && entriesByKey.get(nodeById.get(tip.id)?.label ?? "") && (
+        {!story && tip && tip.id !== pinned && entriesByKey.get(nodeById.get(tip.id)?.label ?? "") && (
           <EntryCard entry={entriesByKey.get(nodeById.get(tip.id)!.label)!} left={tip.left} top={tip.top} />
         )}
       </div>
+      {!story && (
       <div className="li-js mt-1.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70" data-testid="linkedin-graph-status">
         <p>
           <span className="text-foreground">View {meta.n} · {meta.label}</span> <span className="normal-case tracking-normal">· {meta.hint}</span>
@@ -869,7 +898,8 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
           {activeTopic ? ` · ${topicLabel(activeTopic)}` : ""}
         </p>
       </div>
-      {view === "timeline" && (
+      )}
+      {!story && view === "timeline" && (
         <div className="li-js mt-2 flex items-center gap-3 border border-border bg-background/90 px-3 py-1.5">
           <button
             type="button"
@@ -903,7 +933,7 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
           </span>
         </div>
       )}
-      {pinnedNode && graphInView && (
+      {!story && pinnedNode && graphInView && (
         <div className="fixed z-40 inset-x-2 bottom-2 max-h-[42dvh] overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] shadow-2xl sm:inset-x-auto sm:bottom-auto sm:right-4 sm:top-24 sm:w-[340px] sm:max-h-[calc(100vh-7rem)] sm:pb-0">
           <GraphPanel
             node={pinnedNode}
