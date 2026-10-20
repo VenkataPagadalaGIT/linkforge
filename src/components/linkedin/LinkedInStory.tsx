@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, getItem, getTopic, thumbUrl, topicCounts, topicLabel, type LiEntry } from "@/data/linkedinArchive";
+import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, type LiEntry } from "@/data/linkedinArchive";
 
 /**
  * 04 Story: the archive as one animated piece, made to be watched and recorded (Reel mode frames it 9:16).
@@ -9,14 +9,24 @@ import { LINKEDIN_ENTRIES, TOPIC_NODES, formatDay, getItem, getTopic, thumbUrl, 
  *   3. the top posts (or the current search's matches) play as a slideshow in the centre, while a pulse travels
  *      centre > area > topic > post
  *   4. the graph dissolves back into the cloud and the loop starts again with the next posts
- * Canvas draws the 1,000 points and lines; the centre card is HTML. A click on a point, or on the card, opens that
- * post. Reduced motion: the assembled graph, slides change without flights, pulses or turning ticks.
+ * Focus: picking a topic (a click on its node, its area's name or one of its points, or the sidebar) or searching
+ * lays every matching post out as thumbnails in rings around the centre and plays only those; the focus stays after a
+ * post is opened and closed. Hovering a point or a thumbnail shows that post in the centre and keeps it there until
+ * the pointer moves to another one or leaves the frame.
+ * Canvas draws the 1,000 points and lines; the centre card and the thumbnails are HTML. Reduced motion: the assembled
+ * graph, slides change without flights, pulses or turning ticks.
  */
 
 interface Props {
-  /** Entry keys matching the search and filters (null = everything): they lead the slideshow. */
+  /** Entry keys matching the search and filters (null = everything): when set, the Story focuses on them. */
   matching: Set<string> | null;
+  /** The topic picked in the sidebar or here (any level), or null. */
+  activeTopic: string | null;
+  onTopic: (id: string | null) => void;
   onOpenEntry: (key: string) => void;
+  /** The page's search: shown as a box in full screen, where the page's own box is out of reach. */
+  query: string;
+  onQuery: (q: string) => void;
 }
 
 const SLIDES = 7;
@@ -26,6 +36,8 @@ const T_TOPICS = 3.4;
 const T_POSTS = 4.8;
 const T_SLIDES = 7.6;
 const REDUCED_SLIDE_S = 5;
+/** Focus: at most this many thumbnails around the centre (the rest are in the cards below). */
+const MAX_TILES = 160;
 // Radii as a share of R: the card sits inside HUB.
 const HUB = 0.4;
 const AREA_R = 0.47;
@@ -146,7 +158,36 @@ function geom(w: number, h: number, reel: boolean) {
   return { cx: w / 2, cy: h / 2, R };
 }
 
-export default function LinkedInStory({ matching, onOpenEntry }: Props) {
+/**
+ * Focus: thumbnails on a grid around the centre, filled nearest-first, so the most-reacted posts sit closest to the
+ * centre and the whole reads as rings; a grid keeps square thumbnails from ever overlapping, and a wide frame holds
+ * more of them.
+ */
+function tileLayout(keys: string[], w: number, h: number, reel: boolean) {
+  const { cx, cy, R } = geom(w, h, reel);
+  const T = Math.round(Math.max(24, Math.min(60, R * 0.15)));
+  const G = T * 1.12;
+  const keepOut = HUB * R + 6;
+  const cells: { x: number; y: number; d: number; a: number }[] = [];
+  // The usable frame: all of it, or in Reel the band between the title and the address.
+  const top = reel ? h * 0.1 : 2, bottom = reel ? h * 0.92 : h - 2;
+  const i0 = Math.ceil((2 + T / 2 - cx) / G - 0.5), i1 = Math.floor((w - 2 - T / 2 - cx) / G - 0.5);
+  const j0 = Math.ceil((top + T / 2 - cy) / G - 0.5), j1 = Math.floor((bottom - T / 2 - cy) / G - 0.5);
+  for (let i = i0; i <= i1; i++)
+    for (let j = j0; j <= j1; j++) {
+      const x = cx + (i + 0.5) * G, y = cy + (j + 0.5) * G;
+      // Leave the hub (and the card in it) clear: the cell's nearest point must be outside it.
+      const qx = Math.max(Math.abs(x - cx) - T / 2, 0), qy = Math.max(Math.abs(y - cy) - T / 2, 0);
+      if (Math.hypot(qx, qy) < keepOut) continue;
+      cells.push({ x, y, d: Math.hypot(x - cx, y - cy), a: Math.atan2(y - cy, x - cx) });
+    }
+  cells.sort((p, q) => p.d - q.d || p.a - q.a);
+  const count = Math.min(keys.length, MAX_TILES, cells.length);
+  const tiles = keys.slice(0, count).map((key, k) => ({ key, x: cells[k].x, y: cells[k].y, a: cells[k].a }));
+  return { tiles, T, more: keys.length - tiles.length };
+}
+
+export default function LinkedInStory({ matching, activeTopic, onTopic, onOpenEntry, query, onQuery }: Props) {
   const layout = React.useMemo(buildLayout, []);
   const entryByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const wrapRef = React.useRef<HTMLDivElement>(null);
@@ -160,14 +201,24 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
   const [reduced, setReduced] = React.useState(false);
   /** The centre card: "hidden", the intro, or an entry key. */
   const [card, setCard] = React.useState<string>("hidden");
+  /** The post under the pointer (a point or a thumbnail): shown in the centre until another one is hovered. */
+  const [preview, setPreview] = React.useState<string | null>(null);
 
-  // The slideshow: the matches when a search or filter is on, else everything; most reactions first.
-  const slideList = React.useMemo(() => {
-    // No matches: no slides (the intro plays, and the line under the frame says so).
-    const list = LINKEDIN_ENTRIES.filter((e) => e.kind !== "media" && layout.dotIndex.has(e.key) && (!matching || matching.has(e.key)));
-    list.sort((a, b) => (b.engagement?.reactions ?? 0) - (a.engagement?.reactions ?? 0) || b.date.localeCompare(a.date));
-    return list.map((e) => e.key);
-  }, [matching, layout]);
+  const byReactions = (a: LiEntry, b: LiEntry) => (b.engagement?.reactions ?? 0) - (a.engagement?.reactions ?? 0) || b.date.localeCompare(a.date);
+  /** Focus: every entry that matches (posts, articles and media), most reactions first; null = no focus. */
+  const focusKeys = React.useMemo(
+    () => (matching ? LINKEDIN_ENTRIES.filter((e) => matching.has(e.key) && layout.dotIndex.has(e.key)).sort(byReactions).map((e) => e.key) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [matching, layout],
+  );
+  const focused = focusKeys != null;
+  // The slideshow: in focus, every match in turn; otherwise the top posts, seven per loop.
+  const slideList = React.useMemo(
+    () => focusKeys ?? LINKEDIN_ENTRIES.filter((e) => e.kind !== "media" && layout.dotIndex.has(e.key)).sort(byReactions).map((e) => e.key),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [focusKeys, layout],
+  );
+  const tiles = React.useMemo(() => (focusKeys && size.w ? tileLayout(focusKeys, size.w, size.h, reel) : null), [focusKeys, size, reel]);
 
   const [canFull, setCanFull] = React.useState(false);
   React.useEffect(() => setCanFull(!!document.fullscreenEnabled), []);
@@ -175,15 +226,17 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
   const clock = React.useRef({ t: 0, wall: 0, loop: 0, last: 0 });
   /** The frame must be drawn even if nothing moves (a resize, a jump, a new search, a theme change). */
   const dirty = React.useRef(true);
-  const live = React.useRef({ size, reel, playing, reduced, matching, slideList, visible: true, card, hold: false });
-  live.current = { ...live.current, size, reel, playing, reduced, matching, slideList, card };
+  const live = React.useRef({ size, reel, playing, reduced, matching, slideList, focused, tiles, preview, visible: true, card, hold: false });
+  live.current = { ...live.current, size, reel, playing, reduced, matching, slideList, focused, tiles, preview, card };
   if (card === "hidden") live.current.hold = false; // a card that went away cannot hold the show
   React.useEffect(() => {
     dirty.current = true;
-  }, [size, reel, playing, reduced, matching, slideList]);
+  }, [size, reel, playing, reduced, matching, slideList, tiles, preview]);
   const positions = React.useRef(new Float32Array(layout.dots.length * 2));
   /** Each point's place in the assembled graph, recomputed only when the frame changes size. */
   const targets = React.useRef({ key: "", xy: new Float32Array(layout.dots.length * 2) });
+  /** Where the topic nodes and area names were drawn last frame (for clicks). */
+  const hits = React.useRef<{ topics: [string, number, number][]; areas: [string, number, number, number, number][] }>({ topics: [], areas: [] });
 
   React.useEffect(() => {
     const q = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -213,16 +266,56 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
     document.addEventListener("fullscreenchange", sync);
     return () => document.removeEventListener("fullscreenchange", sync);
   }, []);
-  // A new search restarts the show with its matches.
+  // A new search or topic restarts the show with its posts (a focus skips the intro).
   React.useEffect(() => {
-    clock.current.t = live.current.reduced ? T_SLIDES : 0;
+    clock.current.t = live.current.reduced || focusKeys ? T_SLIDES : 0;
     clock.current.loop = 0;
+    setPreview(null);
     dirty.current = true;
-  }, [slideList]);
+  }, [slideList, focusKeys]);
+  const playRef = React.useRef<HTMLButtonElement>(null);
+  /** Leave the topic focus; keyboard focus moves to Play first, since the tiles and this button are about to go. */
+  const leaveFocus = React.useCallback(() => {
+    if (wrapRef.current?.contains(document.activeElement)) playRef.current?.focus();
+    onTopic(null);
+  }, [onTopic]);
+  // Esc leaves a topic focus, when the Story is on screen (unless a dialog is open or the key is for a text field).
+  React.useEffect(() => {
+    if (!activeTopic) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented || document.querySelector("[role=dialog]")) return;
+      if ((e.target as Element | null)?.closest?.("input, textarea, select, [contenteditable]")) return;
+      if (!live.current.visible && !wrapRef.current?.contains(document.activeElement)) return;
+      leaveFocus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeTopic, leaveFocus]);
+  // Resting on a post for a moment loads its full image ahead, so opening it is instant (a quick sweep loads nothing).
+  React.useEffect(() => {
+    const e = preview ? entryByKey.get(preview) : undefined;
+    const it = e?.media[0] ? getItem(e.media[0]) : undefined;
+    if (!it || it.kind !== "image") return;
+    const t = window.setTimeout(() => (new Image().src = fullUrl(it)), 250);
+    return () => window.clearTimeout(t);
+  }, [preview, entryByKey]);
+  // Keyboard: one tab stop for the thumbnails; arrow keys, Home and End move between them.
+  const [rove, setRove] = React.useState(0);
+  React.useEffect(() => setRove(0), [focusKeys]);
+  const onTilesKey = (e: React.KeyboardEvent) => {
+    const n = tiles?.tiles.length ?? 0;
+    if (!n) return;
+    const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    const to = e.key === "Home" ? 0 : e.key === "End" ? n - 1 : step ? (rove + step + n) % n : -1;
+    if (to < 0) return;
+    e.preventDefault();
+    setRove(to);
+    (e.currentTarget.querySelectorAll("[data-testid=linkedin-story-tile]")[to] as HTMLElement | undefined)?.focus();
+  };
 
   /** The slides of the current loop. */
-  const slidesFor = (loop: number, list: string[]) => {
-    if (list.length <= SLIDES) return list;
+  const slidesFor = (loop: number, list: string[], all: boolean) => {
+    if (all || list.length <= SLIDES) return list;
     const start = (loop * SLIDES) % list.length;
     return Array.from({ length: SLIDES }, (_, k) => list[(start + k) % list.length]);
   };
@@ -258,38 +351,41 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
 
       // ---- time ----
       const c = clock.current;
+      const skipIntro = L.reduced || L.focused;
       const slideS = L.reduced ? REDUCED_SLIDE_S : SLIDE_S;
-      // A loop lasts as long as its slides (a search with 2 matches plays 2, not 7).
-      const loopLen = (n: number) => (L.reduced ? T_SLIDES + Math.max(1, n) * slideS : T_SLIDES + n * slideS + 1.4);
-      // The show stands still while paused, or while the pointer or keyboard focus is on the card.
-      const running = L.playing && !L.hold;
-      if (running) {
-        c.t += dt;
-        c.wall += dt;
-      }
-      if (L.reduced && c.t < T_SLIDES) c.t = T_SLIDES;
-      let slides = slidesFor(c.loop, L.slideList);
+      // A loop lasts as long as its slides (a search with 2 matches plays 2, not 7); a focus loops its slides only.
+      const loopLen = (n: number) => (skipIntro ? T_SLIDES + Math.max(1, n) * slideS : T_SLIDES + n * slideS + 1.4);
+      // The show stands still while paused, while a post is previewed, or while the card has the pointer or focus.
+      const running = L.playing && !L.hold && !L.preview;
+      if (running) c.t += dt;
+      if (L.playing) c.wall += dt;
+      if (skipIntro && c.t < T_SLIDES) c.t = T_SLIDES;
+      // In focus, the slideshow plays the posts that have a thumbnail on screen.
+      const list = L.focused && L.tiles ? L.slideList.slice(0, L.tiles.tiles.length) : L.slideList;
+      let slides = slidesFor(c.loop, list, L.focused);
       if (c.t >= loopLen(slides.length)) {
-        c.t = L.reduced ? T_SLIDES : c.t - loopLen(slides.length);
+        c.t = skipIntro ? T_SLIDES : c.t - loopLen(slides.length);
         c.loop++;
-        slides = slidesFor(c.loop, L.slideList);
+        slides = slidesFor(c.loop, list, L.focused);
       }
       const t = c.t;
       const n = slides.length;
-      const outStart = L.reduced ? Infinity : T_SLIDES + n * slideS;
+      const outStart = skipIntro ? Infinity : T_SLIDES + n * slideS;
       const si = n && t >= T_SLIDES && t < T_SLIDES + n * slideS ? Math.min(n - 1, Math.floor((t - T_SLIDES) / slideS)) : -1;
       const slideKey = si >= 0 ? slides[si] : null;
       const slideT = si >= 0 ? t - T_SLIDES - si * slideS : 0;
-      const wantCard = slideKey ?? (t >= T_AREAS && t < outStart ? "intro" : "hidden");
+      const shownKey = L.preview ?? slideKey;
+      const wantCard = shownKey ?? (!L.focused && t >= T_AREAS && t < outStart ? "intro" : "hidden");
       if (wantCard !== L.card) {
         L.card = wantCard;
         setCard(wantCard);
         dirty.current = true;
       }
       // Nothing moves when paused or with reduced motion: draw only when something changed.
-      if (!(running && !L.reduced) && !dirty.current) return;
+      if (!(L.playing && !L.reduced) && !dirty.current) return;
       dirty.current = false;
       const wall = c.wall;
+      const pulseOn = !L.reduced && running;
 
       // ---- canvas ----
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -304,24 +400,25 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
       const s = R / 300;
       // The graph holds still so its names stay put; the hub's ticks turn.
       const tickSpin = L.reduced ? 0 : wall * 0.06;
-      const out = L.reduced ? 0 : clamp01((t - outStart) / 1.3);
+      const out = skipIntro ? 0 : clamp01((t - outStart) / 1.3);
       const gather = 1 - ease(out);
       const at = (a: number, r: number): [number, number] => [cx + Math.cos(a) * r * R, cy + Math.sin(a) * r * R];
 
       // Phase progress
-      const areaK = (i: number) => (L.reduced ? 1 : ease(clamp01((t - T_AREAS - i * 0.08) / 0.8))) * gather;
-      const topicK = (i: number) => (L.reduced ? 1 : ease(clamp01((t - T_TOPICS - i * 0.06) / 0.8))) * gather;
+      const areaK = (i: number) => (skipIntro ? 1 : ease(clamp01((t - T_AREAS - i * 0.08) / 0.8))) * gather;
+      const topicK = (i: number) => (skipIntro ? 1 : ease(clamp01((t - T_TOPICS - i * 0.06) / 0.8))) * gather;
       const areaIndex = layout.areaIndex;
 
-      // Highlighted path
-      const hiDot = slideKey != null ? layout.dotIndex.get(slideKey) : undefined;
+      // Highlighted path: the previewed post, or the current slide
+      const hiDot = shownKey != null ? layout.dotIndex.get(shownKey) : undefined;
       const hi = hiDot != null ? layout.dots[hiDot] : null;
       const hiTopic = hi?.topic ? layout.topicById.get(hi.topic) : undefined;
       const hiArea = hiTopic ? layout.areaById.get(hiTopic.area) : undefined;
       const dimOthers = hi ? 0.55 : 1;
+      const pulseT = L.preview ? 10 : slideT; // a preview shows its path at once
 
       // Hub: an instrument ring with ticks
-      const hubK = L.reduced ? 1 : ease(clamp01((t - T_AREAS + 0.4) / 0.9)) * gather;
+      const hubK = skipIntro ? 1 : ease(clamp01((t - T_AREAS + 0.4) / 0.9)) * gather;
       if (hubK > 0) {
         ctx.strokeStyle = fg(0.35 * hubK);
         ctx.lineWidth = 1;
@@ -379,11 +476,13 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
       }
       const txy = targets.current.xy;
       const topicXY = layout.topics.map((tp) => at(tp.a, TOPIC_R));
+      // Only nodes that are drawn take clicks (none in the cloud phase, the outro or a focus).
+      hits.current.topics = L.tiles ? [] : layout.topics.flatMap((tp, i) => (topicK(areaIndex.get(tp.area) ?? 0) > 0.05 ? [[tp.id, topicXY[i][0], topicXY[i][1]] as [string, number, number]] : []));
       const strings = new Path2D();
       const drift = L.reduced ? 0 : 0.025;
       for (let i = 0; i < dots.length; i++) {
         const d = dots[i];
-        const p = L.reduced ? 1 : ease(clamp01((t - T_POSTS - d.delay) / 1.0)) * gather;
+        const p = skipIntro ? 1 : ease(clamp01((t - T_POSTS - d.delay) / 1.0)) * gather;
         const sx = cx + (d.sx + Math.sin(wall * 0.5 + d.phase) * drift) * R;
         const sy = cy + (d.sy + Math.cos(wall * 0.43 + d.phase * 1.3) * drift) * R;
         const x = sx + (txy[i * 2] - sx) * p, y = sy + (txy[i * 2 + 1] - sy) * p;
@@ -430,10 +529,51 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
         ctx.stroke();
       }
 
-      // The path of the current slide, with a pulse running along it
-      if (hi && hiTopic && hiArea && hiDot != null) {
+      // Focus: the graph steps back, and spokes run from the centre to each thumbnail
+      const T = L.tiles;
+      if (T) {
+        ctx.fillStyle = bg(0.72);
+        ctx.fillRect(0, 0, w, h);
+        const spokes = new Path2D();
+        for (const tile of T.tiles) {
+          spokes.moveTo(cx + Math.cos(tile.a) * HUB * R, cy + Math.sin(tile.a) * HUB * R);
+          spokes.lineTo(tile.x, tile.y);
+        }
+        ctx.strokeStyle = fg(0.14);
+        ctx.stroke(spokes);
+        ctx.strokeStyle = fg(0.4);
+        ctx.beginPath();
+        ctx.arc(cx, cy, HUB * R, 0, Math.PI * 2);
+        ctx.stroke();
+        const cur = shownKey ? T.tiles.find((x) => x.key === shownKey) : undefined;
+        if (cur) {
+          const x0 = cx + Math.cos(cur.a) * HUB * R, y0 = cy + Math.sin(cur.a) * HUB * R;
+          const u = !pulseOn ? 1 : clamp01(pulseT / 0.7);
+          const hx = x0 + (cur.x - x0) * ease(u), hy = y0 + (cur.y - y0) * ease(u);
+          ctx.strokeStyle = fg(0.95);
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(hx, hy);
+          ctx.stroke();
+          ctx.lineWidth = 1;
+          if (u < 1) {
+            ctx.save();
+            ctx.shadowColor = fg(1);
+            ctx.shadowBlur = 14;
+            ctx.fillStyle = fg(1);
+            ctx.beginPath();
+            ctx.arc(hx, hy, 3.2 * s + 1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+      }
+
+      // The path of the shown post, with a pulse running along it
+      if (!T && hi && hiTopic && hiArea && hiDot != null) {
         const pts: [number, number][] = [at(hiArea.a, HUB), at(hiArea.a, AREA_R), at(hiTopic.a, TOPIC_R), [pos[hiDot * 2], pos[hiDot * 2 + 1]]];
-        const u = L.reduced || !running ? 1 : clamp01(slideT / 0.9);
+        const u = !pulseOn ? 1 : clamp01(pulseT / 0.9);
         const segs = pts.slice(1).map((p, k) => Math.hypot(p[0] - pts[k][0], p[1] - pts[k][1]));
         const total = segs.reduce((a, b) => a + b, 0);
         let left = total * ease(u);
@@ -450,7 +590,7 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
         }
         ctx.stroke();
         ctx.lineWidth = 1;
-        if (!L.reduced && u < 1) {
+        if (u < 1) {
           ctx.save();
           ctx.shadowColor = fg(1);
           ctx.shadowBlur = 14;
@@ -459,9 +599,8 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
           ctx.arc(head[0], head[1], 3.2 * s + 1, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
-        }
-        if (u >= 1) {
-          const ring = L.reduced || !running ? 0.5 : Math.max(0, slideT - 0.9) % 1.2;
+        } else {
+          const ring = !pulseOn ? 0.5 : Math.max(0, pulseT - 0.9) % 1.2;
           const [px, py] = pts[3];
           ctx.strokeStyle = fg(Math.max(0, 0.9 - ring * 0.75));
           ctx.beginPath();
@@ -495,16 +634,17 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
         ctx.lineWidth = 1;
       }
 
-      // Area names
+      // Area names (not in focus: the thumbnails take their place)
       const afs = Math.max(8, Math.min(12, 10.5 * s));
       ctx.font = `700 ${afs}px ${font}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       // Place each name at the area's spoke; when it would overlap a name already placed, move it out along the spoke.
       const placed: [number, number, number, number][] = [];
+      const areaHits: [string, number, number, number, number][] = [];
       for (const [i, a] of layout.areas.entries()) {
         const k = areaK(i);
-        if (k <= 0.05) continue;
+        if (T || k <= 0.05) continue;
         const label = w > 560 ? `${a.label} · ${a.count}` : a.label;
         const tw = ctx.measureText(label).width + 8, th = afs + 4;
         let x = 0, y = 0;
@@ -516,6 +656,7 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
             break;
           }
         }
+        areaHits.push([a.id, x - tw / 2, y - th / 2, x + tw / 2, y + th / 2]);
         ctx.globalAlpha = k * (hi && hiArea?.id !== a.id ? 0.55 : 1);
         ctx.lineWidth = 4;
         ctx.strokeStyle = bg(1);
@@ -524,6 +665,7 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
         ctx.fillText(label, x, y);
         ctx.globalAlpha = 1;
       }
+      hits.current.areas = areaHits;
       ctx.lineWidth = 1;
 
       // Reel frame: a title and the address, inside the recording
@@ -543,11 +685,11 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
         ctx.fillText("venkatapagadala.com/linkedin", w / 2, h - h * 0.045);
         // Caption under the circle: where the current post sits in the tree, and which slide this is.
         const capY = cy + R * 1.18;
-        if (hiTopic && hiArea && capY < h * 0.86) {
+        if (hiTopic && hiArea && capY < h * 0.86 && !T) {
           ctx.textAlign = "left";
           ctx.font = `600 ${tfs * 0.72}px ${font}`;
           ctx.fillStyle = fg(0.6);
-          ctx.fillText(`${topicLabel(hiArea.id).toUpperCase()}   ${String(si + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`, w * 0.07, capY);
+          ctx.fillText(`${topicLabel(hiArea.id).toUpperCase()}   ${String(si + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`, w * 0.07, capY);
           let cfs = tfs * 1.25;
           ctx.font = `700 ${cfs}px ${font}`;
           const name = topicLabel(hiTopic.id);
@@ -557,7 +699,7 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
           }
           ctx.fillStyle = fg(1);
           ctx.fillText(name, w * 0.07, capY + cfs * 1.5);
-        } else if (t >= T_AREAS && !hi && capY < h * 0.86 && !L.reduced && out === 0) {
+        } else if (t >= T_AREAS && !hi && !T && capY < h * 0.86 && !L.reduced && out === 0) {
           ctx.textAlign = "left";
           ctx.font = `600 ${tfs * 0.72}px ${font}`;
           ctx.fillStyle = fg(0.6);
@@ -574,9 +716,11 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
   }, [layout]);
 
   // ---- interaction ----
-  const nearest = (clientX: number, clientY: number) => {
+  const local = (clientX: number, clientY: number) => {
     const r = canvasRef.current!.getBoundingClientRect();
-    const x = clientX - r.left, y = clientY - r.top;
+    return [clientX - r.left, clientY - r.top] as const;
+  };
+  const nearest = (x: number, y: number) => {
     let best = -1, bd = 12 * 12;
     const pos = positions.current;
     for (let i = 0; i < layout.dots.length; i++) {
@@ -585,22 +729,30 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
     }
     return best;
   };
+  /** A topic node or an area name under the pointer. */
+  const topicAt = (x: number, y: number) => {
+    for (const [id, tx, ty] of hits.current.topics) if ((tx - x) ** 2 + (ty - y) ** 2 < 11 * 11) return id;
+    for (const [id, x0, y0, x1, y1] of hits.current.areas) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) return id;
+    return null;
+  };
   const next = () => {
     const c = clock.current;
-    const n = slidesFor(c.loop, slideList).length;
+    setPreview(null);
+    const n = slidesFor(c.loop, slideList, focused).length;
     const slideS = reduced ? REDUCED_SLIDE_S : SLIDE_S;
     if (c.t < T_SLIDES && n) c.t = T_SLIDES;
     else {
       const k = Math.floor((c.t - T_SLIDES) / slideS) + 1;
       if (k >= n) {
-        c.t = reduced ? T_SLIDES : 0;
+        c.t = reduced || focused ? T_SLIDES : 0;
         c.loop++;
       } else c.t = T_SLIDES + k * slideS;
     }
     dirty.current = true;
   };
   const replay = () => {
-    clock.current.t = reduced ? T_SLIDES : 0;
+    setPreview(null);
+    clock.current.t = reduced || focused ? T_SLIDES : 0;
     clock.current.loop = 0;
     dirty.current = true;
   };
@@ -621,13 +773,28 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
   const side = Math.round(R * 0.56);
   const entry = card !== "hidden" && card !== "intro" ? entryByKey.get(card) : undefined;
   const BTN = "font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40";
+  const focusName = activeTopic ? topicLabel(activeTopic) : "Matches";
 
   return (
     <div ref={wrapRef} className={full ? "bg-background p-3 flex flex-col h-full" : ""} data-testid="linkedin-story">
-      <style>{`@keyframes liCardIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@keyframes liCardIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}@keyframes liTileIn{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}`}</style>
       <span ref={probeRef} className="font-mono hidden" aria-hidden="true" />
       <div className="mb-2 flex flex-wrap items-center gap-1">
-        <button type="button" className={BTN} onClick={() => setPlaying((p) => !p)}>
+        {full && (
+          // In full screen the page's search box is out of reach: this one drives the same search.
+          <label className="flex min-w-[220px] flex-1 items-center gap-2 border border-border px-2 py-1 sm:flex-none sm:w-[300px]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">Search</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => onQuery(e.target.value)}
+              placeholder="seoweek, knowledge graph…"
+              className="flex-1 bg-transparent font-mono text-[12px] text-foreground outline-none placeholder:text-muted-foreground/70"
+              data-testid="linkedin-story-search"
+            />
+          </label>
+        )}
+        <button ref={playRef} type="button" className={BTN} onClick={() => setPlaying((p) => !p)}>
           <span aria-hidden="true">{playing ? "❚❚ " : "▶ "}</span>
           {playing ? "Pause" : "Play"}
         </button>
@@ -646,10 +813,25 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
             {full ? "Exit full screen" : "Full screen"}
           </button>
         )}
+        {focused && (
+          <span className="ml-auto inline-flex flex-wrap items-center gap-2 border border-foreground/50 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground" data-testid="linkedin-story-focus">
+            {focusName} · {focusKeys!.length}
+            {tiles && tiles.more > 0 ? <span className="normal-case tracking-normal text-muted-foreground">(top {tiles.tiles.length} here, all in the cards below)</span> : null}
+            {activeTopic && (
+              <button type="button" onClick={leaveFocus} className="underline text-muted-foreground hover:text-foreground">
+                All posts
+              </button>
+            )}
+          </span>
+        )}
       </div>
       <div className={`flex justify-center ${full ? "flex-1 min-h-0" : ""}`}>
         <div
           ref={boxRef}
+          onMouseLeave={() => setPreview(null)}
+          onBlur={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPreview(null);
+          }}
           className={`relative overflow-hidden border border-border ${
             reel ? (full ? "h-full aspect-[9/16]" : "h-[78vh] max-h-[900px] aspect-[9/16] max-w-full") : full ? "w-full h-full" : "w-full aspect-[16/10] min-h-[460px] max-h-[80vh]"
           }`}
@@ -660,13 +842,75 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
             role="img"
             aria-label={`Animated knowledge graph: ${layout.intro.entries} posts gather around one centre, branch into ${layout.intro.areas} areas and ${layout.intro.topics} topics, then the top posts play as a slideshow. The cards below list every post.`}
             onClick={(e) => {
-              const i = nearest(e.clientX, e.clientY);
-              if (i >= 0) open(layout.dots[i].key);
+              if (focused && tiles) return; // in focus, the thumbnails take the clicks
+              const [x, y] = local(e.clientX, e.clientY);
+              const tp = topicAt(x, y);
+              if (tp) return onTopic(tp);
+              const i = nearest(x, y);
+              if (i < 0) return;
+              // Opening a post also focuses its topic, so after the viewer closes its neighbours are right there.
+              const main = entryByKey.get(layout.dots[i].key)?.topics[0];
+              if (main) onTopic(main);
+              open(layout.dots[i].key);
             }}
-            onMouseMove={(e) => {
-              e.currentTarget.style.cursor = nearest(e.clientX, e.clientY) >= 0 ? "pointer" : "default";
+            onPointerMove={(e) => {
+              if (focused && tiles) {
+                e.currentTarget.style.cursor = "default";
+                return;
+              }
+              if (e.pointerType !== "mouse") return; // touch: a tap opens, no hover preview to get stuck
+              const [x, y] = local(e.clientX, e.clientY);
+              const tp = topicAt(x, y);
+              const i = tp ? -1 : nearest(x, y);
+              e.currentTarget.style.cursor = tp || i >= 0 ? "pointer" : "default";
+              if (i >= 0 && layout.dots[i].key !== preview) setPreview(layout.dots[i].key);
             }}
           />
+          {tiles && (
+            <div role="group" aria-label={`${focusName}: ${tiles.tiles.length} posts (arrow keys move between them)`} onKeyDown={onTilesKey}>
+            {tiles.tiles.map((tile, k) => {
+              const e = entryByKey.get(tile.key);
+              if (!e) return null;
+              const it = e.media[0] ? getItem(e.media[0]) : undefined;
+              const on = tile.key === card;
+              return (
+                <button
+                  key={tile.key}
+                  type="button"
+                  tabIndex={k === rove ? 0 : -1}
+                  onPointerEnter={(ev) => ev.pointerType === "mouse" && setPreview(tile.key)}
+                  onFocus={() => {
+                    setRove(k);
+                    setPreview(tile.key);
+                  }}
+                  onClick={() => open(tile.key)}
+                  aria-label={`${e.title} (${formatDay(e.date)}${e.engagement?.reactions != null ? `, ${e.engagement.reactions} reactions` : ""})`}
+                  className={`absolute overflow-hidden border bg-background transition-[border-color,box-shadow] ${on ? "z-10 border-foreground shadow-[0_0_0_2px_hsl(var(--foreground))]" : "border-foreground/30 hover:border-foreground"}`}
+                  style={{
+                    left: tile.x,
+                    top: tile.y,
+                    width: tiles.T,
+                    height: tiles.T,
+                    transform: "translate(-50%,-50%)",
+                    animation: reduced ? undefined : `liTileIn 420ms cubic-bezier(.22,.8,.2,1) ${Math.min(0.9, k * 0.012)}s both`,
+                  }}
+                  data-testid="linkedin-story-tile"
+                >
+                  {it ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={thumbUrl(it)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  ) : (
+                    <span className="absolute inset-0 flex flex-col justify-center gap-[3px] px-[20%]" aria-hidden="true">
+                      <i className="block h-px bg-foreground/60" />
+                      <i className="block h-px bg-foreground/60" />
+                      <i className="block h-px w-2/3 bg-foreground/60" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+            </div>
+          )}
           {card !== "hidden" && side > 60 && (
             // One stable element (keyboard focus survives slide changes); its content changes, with a short fade.
             <div
@@ -685,10 +929,10 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
               onMouseLeave={() => hold(false)}
               onFocus={() => hold(true)}
               onBlur={() => hold(false)}
-              className={`absolute overflow-hidden border border-foreground/50 bg-background text-left ${entry ? "cursor-pointer hover:border-foreground" : "pointer-events-none"}`}
+              className={`absolute z-20 overflow-hidden border border-foreground/50 bg-background text-left ${entry ? "cursor-pointer hover:border-foreground" : "pointer-events-none"}`}
               style={{ left: cx, top: cy, width: side, height: side, transform: "translate(-50%,-50%)" }}
             >
-              <div key={card} className="flex h-full flex-col" style={{ animation: reduced ? undefined : "liCardIn 520ms cubic-bezier(.22,.8,.2,1)" }}>
+              <div key={card} className="flex h-full flex-col" style={{ animation: reduced ? undefined : "liCardIn 420ms cubic-bezier(.22,.8,.2,1)" }}>
                 {entry ? <SlideCard entry={entry} side={side} /> : <IntroCard side={side} intro={layout.intro} />}
               </div>
             </div>
@@ -698,9 +942,16 @@ export default function LinkedInStory({ matching, onOpenEntry }: Props) {
       <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
         <span className="text-foreground">View 04 · Story</span>{" "}
         <span className="normal-case tracking-normal">
-          · every post gathers around one centre, then the top {matching ? "matches" : "posts"} play in the middle
-          {matching && !slideList.length ? " (no posts match the search, so only the intro plays)" : ""}. Click a point or the card to open it. To
-          make a Reel: turn on Reel 9:16, go full screen and screen-record (⌘⇧5 on a Mac).
+          {focused
+            ? `· ${
+                focusKeys!.length
+                  ? `every post in ${activeTopic ? focusName : "the search and filters"} around the centre; hover one to see it, click to open it. ${
+                      activeTopic ? 'Esc or "All posts" goes back.' : "Clear the search or filters to go back."
+                    }`
+                  : "no posts match: clear the search or filters, or pick another topic."
+              }`
+            : "· every post gathers around one centre, then the top posts play in the middle. Hover a point to see it; click a topic, an area or a point to see all its posts."}{" "}
+          To make a Reel: turn on Reel 9:16, go full screen and screen-record (⌘⇧5 on a Mac).
         </span>
       </p>
     </div>

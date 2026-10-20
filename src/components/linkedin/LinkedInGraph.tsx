@@ -5,8 +5,9 @@ import { LI_VIEWS, type LiView } from "@/data/linkedinArchiveTypes";
 import dynamic from "next/dynamic";
 import GraphPanel from "./GraphPanel";
 
-// 04 Story is a canvas animation: it loads only when chosen.
+// 04 Story (a canvas animation) and 05 Universe (3D) load only when chosen.
 const LinkedInStory = dynamic(() => import("./LinkedInStory"), { ssr: false });
+const LinkedInUniverse = dynamic(() => import("./LinkedInUniverse"), { ssr: false });
 import {
   engagementLine,
   entryPath,
@@ -52,6 +53,9 @@ interface Props {
   onTopic: (topicId: string | null) => void;
   /** Open the entry's viewer, at this media item when given. */
   onOpenEntry: (key: string, idx?: string) => void;
+  /** The page's search, so the full-screen views can offer it too. */
+  query: string;
+  onQuery: (q: string) => void;
 }
 
 const VIEW_META: Record<LiView, { n: string; label: string; hint: string }> = {
@@ -75,12 +79,13 @@ const MOTION_CSS = `.li-m{transition:transform ${MORPH_MS}ms cubic-bezier(.22,.8
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const EMPTY: Set<string> = new Set();
 
-export default function LinkedInGraph({ entriesByKey, matching, activeTopic, focus, onTopic, onOpenEntry }: Props) {
+export default function LinkedInGraph({ entriesByKey, matching, activeTopic, focus, onTopic, onOpenEntry, query, onQuery }: Props) {
   const graph = LINKEDIN_GRAPH;
   const { width: W, height: H } = graph;
   const [view, setView] = React.useState<LiView>("topics");
-  /** 04 Story (the animated tour) replaces the three layouts while it is on. */
-  const [story, setStory] = React.useState(false);
+  /** 04 Story (the animated tour) or 05 Universe (3D) replaces the three layouts while it is on. */
+  const [extra, setExtra] = React.useState<null | "story" | "universe">(null);
+  const story = extra != null;
   const [settled, setSettled] = React.useState(true);
   const [zoom, setZoom] = React.useState({ k: 1, x: 0, y: 0 });
   const [zoomAnim, setZoomAnim] = React.useState(false);
@@ -510,7 +515,7 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
               key={v}
               type="button"
               onClick={() => {
-                setStory(false);
+                setExtra(null);
                 switchView(v);
               }}
               aria-pressed={!story && view === v}
@@ -522,23 +527,26 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
               {VIEW_META[v].n} {VIEW_META[v].label}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={() => {
-              setStory(true);
-              setPinned(null);
-              setHover(null);
-              setTip(null);
-              setPlaying(false);
-            }}
-            aria-pressed={story}
-            className={`font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border ${
-              story ? "border-foreground text-foreground bg-foreground/[0.08]" : "border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40"
-            }`}
-            data-testid="linkedin-view-story"
-          >
-            04 Story
-          </button>
+          {(["story", "universe"] as const).map((x) => (
+            <button
+              key={x}
+              type="button"
+              onClick={() => {
+                setExtra(x);
+                setPinned(null);
+                setHover(null);
+                setTip(null);
+                setPlaying(false);
+              }}
+              aria-pressed={extra === x}
+              className={`font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border ${
+                extra === x ? "border-foreground text-foreground bg-foreground/[0.08]" : "border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40"
+              }`}
+              data-testid={`linkedin-view-${x}`}
+            >
+              {x === "story" ? "04 Story" : "05 Universe"}
+            </button>
+          ))}
           {!story && <span className="w-2" />}
           {!story && [
             { label: "+", title: "Zoom in", fn: () => zoomAt(1.4) },
@@ -555,7 +563,10 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
             </button>
           )}
         </div>
-        {story && <LinkedInStory matching={matching} onOpenEntry={onOpenEntry} />}
+        {extra === "story" && <LinkedInStory matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} query={query} onQuery={onQuery} />}
+        {extra === "universe" && (
+          <LinkedInUniverse matching={matching} activeTopic={activeTopic} onTopic={onTopic} onOpenEntry={onOpenEntry} query={query} onQuery={onQuery} />
+        )}
         {/* The SVG stays mounted under Story (hidden), so its zoom and size listeners keep their element. */}
         <div className={`overflow-x-auto border border-border bg-card/30 ${story ? "hidden" : ""}`}>
           <svg
