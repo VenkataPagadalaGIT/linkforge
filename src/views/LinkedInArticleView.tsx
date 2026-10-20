@@ -17,6 +17,10 @@ import {
   topicLabel,
   topicPath,
   type LiItem,
+  LINKEDIN_ARTICLES_PATH,
+  LINKEDIN_POSTS_PATH,
+  UNIVERSE_NAME,
+  UNIVERSE_PATH,
   type LiPost,
 } from "@/data/linkedinArchive";
 import { relatedPosts } from "@/data/linkedinArchiveServer";
@@ -47,7 +51,7 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
   const related = relatedPosts(post);
   const e = post.engagement;
   const isPost = post.type === "post";
-  const hub = isPost ? { href: "/linkedin/posts", label: "Posts" } : { href: "/linkedin/articles", label: "Articles" };
+  const hub = isPost ? { href: LINKEDIN_POSTS_PATH, label: "LinkedIn posts" } : { href: LINKEDIN_ARTICLES_PATH, label: "LinkedIn articles" };
   // Articles carry their images inside the text (cover above it); a post's media follows its text.
   const cover = !isPost && post.cover ? LINKEDIN_ITEMS.find((i) => i.idx === post.cover) : undefined;
   const media = isPost ? post.media.map((m) => LINKEDIN_ITEMS.find((i) => i.idx === m)).filter((x): x is LiItem => !!x) : [];
@@ -58,7 +62,7 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
       <div className="max-w-3xl mx-auto">
         <ScrollReveal>
           <nav className="font-mono text-xs text-muted-foreground mb-8 flex items-center gap-2 flex-wrap" aria-label="Breadcrumb">
-            <a href="/linkedin" className="hover:text-foreground transition-colors">LinkedIn archive</a>
+            <a href={UNIVERSE_PATH} className="hover:text-foreground transition-colors">{UNIVERSE_NAME}</a>
             <span aria-hidden="true">/</span>
             <a href={hub.href} className="hover:text-foreground transition-colors">{hub.label}</a>
           </nav>
@@ -102,8 +106,8 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
             >
               {isPost ? "See it on LinkedIn ↗" : "Read it on LinkedIn ↗"}
             </a>
-            <a href="/linkedin" className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
-              See it in the knowledge graph
+            <a href={UNIVERSE_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] px-3 py-2 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
+              See it in the Universe
             </a>
           </div>
           {post.review && (
@@ -221,7 +225,7 @@ export default function LinkedInArticleView({ post }: { post: LiPost }) {
           {media.length + commentMedia.length > 0 || (!isPost && post.media.length > 0) ? (
             <>
               ; the media are this site&apos;s copies of the ones on LinkedIn, also in{" "}
-              <a href="/linkedin" className="underline hover:text-foreground">the LinkedIn archive</a>
+              <a href={UNIVERSE_PATH} className="underline hover:text-foreground">{UNIVERSE_NAME}</a>
             </>
           ) : null}
           .

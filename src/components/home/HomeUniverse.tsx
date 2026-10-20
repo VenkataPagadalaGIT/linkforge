@@ -2,6 +2,7 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import { useWebGL } from "@/lib/webgl";
+import { UNIVERSE_NAME, UNIVERSE_PATH } from "@/data/universe";
 
 // The Universe and the archive's data load only when the section comes near the screen, so the home page's first
 // load carries none of it.
@@ -29,7 +30,7 @@ function NearUniverse() {
   if (gl.ok === false)
     return (
       <p className="border border-border px-4 py-6 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-        3D is off in this browser. Open the full archive above to see every post.
+        3D is off in this browser. Open the full Universe above to see every post.
       </p>
     );
   return gl.ok ? <LinkedInUniverseSection /> : <Placeholder />;
@@ -54,15 +55,15 @@ export default function HomeUniverse() {
           <div>
             <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Mission control · every source, one graph</p>
             <h2 id="home-universe-h" className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Venkata Pagadala - Universe
+              {UNIVERSE_NAME}
             </h2>
             <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
               Everything I share, as stars around one core, grouped by area, topic and subtopic. LinkedIn is the first source (every post, article and
               image since 2016); my website, Substack, YouTube and more join next. Search it, pick a level, or fly in and open any post.
             </p>
           </div>
-          <a href="/linkedin" className="font-mono text-[11px] uppercase tracking-[0.15em] border border-foreground px-3 py-2 text-foreground transition-colors hover:bg-foreground hover:text-background">
-            Open the full archive →
+          <a href={UNIVERSE_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] border border-foreground px-3 py-2 text-foreground transition-colors hover:bg-foreground hover:text-background">
+            Open the full Universe →
           </a>
         </div>
         <div ref={ref}>{near ? <NearUniverse /> : <Placeholder />}</div>

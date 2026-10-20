@@ -1,7 +1,8 @@
 /**
- * The LinkedIn archive (/linkedin): Venkata's own LinkedIn posts, articles and
- * media, kept on this site so the work lives here first and LinkedIn is one
- * place it is shared.
+ * Venkata Pagadala - Universe (UNIVERSE_PATH): everything Venkata shares, as one
+ * graph by topic, kept on this site so the work lives here first. LinkedIn is
+ * the first source (its posts, articles and media); each source has its pages
+ * under the Universe (LINKEDIN_PATH), and topics span every source.
  *
  * Shared by server and browser code. It holds the media items, the topic tree
  * (linkedinTaxonomy.json: L1 areas, L2 topics, L3 subtopics) and the compact
@@ -16,6 +17,9 @@ import { LINKEDIN_ITEMS } from "./linkedinArchiveData";
 import { ENGAGEMENT_AS_OF, LINKEDIN_ENTRIES_RAW } from "./linkedinEntriesData";
 import TAXONOMY from "./linkedinTaxonomy.json";
 import type { LiEngagement, LiEntry, LiEntryRaw, LiItem, LiKind, LiPost, LiSource, LiTopicNode } from "./linkedinArchiveTypes";
+import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, UNIVERSE_PATH } from "./universe";
+
+export * from "./universe";
 
 export type { LiItem, LiKind, LiGraph, LiGraphNode, LiPost, LiPerson, LiEngagement, LiEntry, LiEntryKind, LiSource, LiTopicNode } from "./linkedinArchiveTypes";
 
@@ -80,7 +84,7 @@ export const getTopic = (id: string) => topicById.get(id);
 export const getTopicBySlug = (slug: string) => topicBySlug.get(slug);
 export const topicLabel = (id: string) => topicById.get(id)?.label ?? id.replace(/[_-]/g, " ");
 export const topicSlug = (id: string) => topicById.get(id)?.slug ?? id;
-export const topicPath = (id: string) => `/linkedin/topics/${topicSlug(id)}`;
+export const topicPath = (id: string) => `${UNIVERSE_PATH}/topics/${topicSlug(id)}`;
 export const childTopics = (id: string | null) => TOPIC_NODES.filter((n) => n.parent === id);
 /** The topic and its ancestors, root first (L1, L2, L3). */
 export function topicTrail(id: string): LiTopicNode[] {
@@ -143,10 +147,10 @@ export const getEntry = (key: string) => entryByKey.get(key);
 export const entryForItem = (it: LiItem) => entryByKey.get(it.post ? `post:${it.post}` : "") ?? entryByKey.get(it.post ? `article:${it.post}` : "") ?? entryByKey.get(`media:${it.idx}`);
 /** This site's page for an entry: the post or article page, or the full media file. */
 export function entryPath(e: Pick<LiEntry, "kind" | "id">) {
-  if (e.kind === "article") return `/linkedin/articles/${e.id}`;
-  if (e.kind === "post") return `/linkedin/posts/${e.id}`;
+  if (e.kind === "article") return `${LINKEDIN_ARTICLES_PATH}/${e.id}`;
+  if (e.kind === "post") return `${LINKEDIN_POSTS_PATH}/${e.id}`;
   const it = itemByIdx.get(e.id);
-  return it ? fullUrl(it) : "/linkedin";
+  return it ? fullUrl(it) : UNIVERSE_PATH;
 }
 
 export const KIND_LABEL: Record<LiKind, string> = { image: "Image", video: "Video", document: "Document" };
@@ -172,7 +176,7 @@ export function engagementLine(p: { engagement?: LiEngagement }) {
   return [n(e.reactions, "reaction"), n(e.comments, "comment"), n(e.reposts, "repost"), n(e.impressions, "impression", e.impressionsAtLeast)].filter(Boolean).join(" · ");
 }
 /** This site's page for an article (or post). */
-export const postPath = (p: Pick<LiPost, "id" | "type">) => `/linkedin/${p.type === "article" ? "articles" : "posts"}/${p.id}`;
+export const postPath = (p: Pick<LiPost, "id" | "type">) => `${p.type === "article" ? LINKEDIN_ARTICLES_PATH : LINKEDIN_POSTS_PATH}/${p.id}`;
 /** Minutes to read at 230 words a minute. */
 export const readingMinutes = (words: number) => Math.max(1, Math.round(words / 230));
 export const formatDateTime = (iso: string) =>

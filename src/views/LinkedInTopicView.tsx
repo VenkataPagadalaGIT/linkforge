@@ -3,7 +3,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
 import ArticleCard from "@/components/linkedin/ArticleCard";
 import TopicTree from "@/components/linkedin/TopicTree";
-import { entryPath, formatDay, mostEngaging, relatedTopics, topNames, topicCounts, topicPath, topicTrail } from "@/data/linkedinArchive";
+import { UNIVERSE_NAME, UNIVERSE_PATH, entryPath, formatDay, mostEngaging, relatedTopics, topNames, topicCounts, topicPath, topicTrail } from "@/data/linkedinArchive";
 import type { LinkedInTopicPage } from "@/data/linkedinArchiveServer";
 
 const LEVEL_NAME = { 1: "Area", 2: "Topic", 3: "Subtopic" } as const;
@@ -32,7 +32,7 @@ export default function LinkedInTopicView({ topic }: { topic: LinkedInTopicPage 
         <div className="min-w-0">
           <ScrollReveal>
             <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 font-mono text-xs text-muted-foreground mb-8">
-              <a href="/linkedin" className="hover:text-foreground transition-colors">LinkedIn archive</a>
+              <a href={UNIVERSE_PATH} className="hover:text-foreground transition-colors">{UNIVERSE_NAME}</a>
               {trail.map((n, k) => (
                 <React.Fragment key={n.id}>
                   <span aria-hidden="true">›</span>
@@ -45,7 +45,7 @@ export default function LinkedInTopicView({ topic }: { topic: LinkedInTopicPage 
               ))}
             </nav>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
-              LinkedIn archive · {LEVEL_NAME[topic.level]}
+              {UNIVERSE_NAME} · {LEVEL_NAME[topic.level]}
               {years.length ? ` · ${years[0]}` : ""}
               {years.length > 1 ? ` to ${years[years.length - 1]}` : ""}
             </p>
@@ -82,7 +82,7 @@ export default function LinkedInTopicView({ topic }: { topic: LinkedInTopicPage 
                   </h2>
                   <div className="flex flex-wrap gap-1.5">
                     {related.map((r) => (
-                      <a key={r.id} href={`/linkedin/topics/${r.slug}`} className="font-mono text-[11px] px-2 py-1 border border-border text-foreground hover:border-foreground/50">
+                      <a key={r.id} href={topicPath(r.id)} className="font-mono text-[11px] px-2 py-1 border border-border text-foreground hover:border-foreground/50">
                         {r.label} <span className="text-muted-foreground/70">· {r.shared} shared</span>
                       </a>
                     ))}
@@ -150,7 +150,7 @@ export default function LinkedInTopicView({ topic }: { topic: LinkedInTopicPage 
             </section>
           ) : (
             <p className="font-mono text-sm text-muted-foreground">
-              Nothing here right now. <a href="/linkedin" className="underline hover:text-foreground">Browse the whole archive</a>.
+              Nothing here right now. <a href={UNIVERSE_PATH} className="underline hover:text-foreground">Browse the whole Universe</a>.
             </p>
           )}
         </div>

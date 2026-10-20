@@ -24,6 +24,7 @@ import {
   topicLabel,
   topicPath,
   topicTrail,
+  LINKEDIN_POSTS_PATH,
   type LiEntry,
 } from "@/data/linkedinArchive";
 
@@ -313,7 +314,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
                 "The full list follows."
               ) : (
                 <>
-                  <a href="/linkedin/posts" className="underline">Every post, by year</a>, and each topic page in the sidebar list the rest.
+                  <a href={LINKEDIN_POSTS_PATH} className="underline">Every LinkedIn post, by year</a>, and each topic page in the sidebar list the rest.
                 </>
               )}
             </p>

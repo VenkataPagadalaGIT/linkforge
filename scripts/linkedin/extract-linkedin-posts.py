@@ -2,7 +2,7 @@
 """
 Extracts Venkata's LinkedIn articles from the LinkedIn data export into
 posts.json, the input that build-linkedin-archive.mjs turns into the
-/linkedin/articles pages and the article nodes of the knowledge graph.
+/venkata-pagadala-universe/linkedin/articles pages and the article nodes of the knowledge graph.
 
 Runs on the owner's machine against the export on the SSD; nothing here is
 private, but the export is, so only this script lives in the repository.
@@ -612,7 +612,7 @@ def main():
     print(f"wrote {a.out}: {len(pub)} published articles, {len([p for p in posts if p['draft']])} drafts (never public), {len(ps)} posts"
           f" ({sum(1 for p in ps if p['media'])} with media, {sum(1 for p in ps if (p['engagement'] or {}).get('impressions'))} with impressions)")
     for p in pub:
-        print(f"  {p['date'][:10]}  {p['words']:6} words  {len(p['media']):2} media  {len(p['people']):2} people  {','.join(p['topics']):60}  /linkedin/articles/{p['id']}")
+        print(f"  {p['date'][:10]}  {p['words']:6} words  {len(p['media']):2} media  {len(p['people']):2} people  {','.join(p['topics']):60}  /venkata-pagadala-universe/linkedin/articles/{p['id']}")
 
 
 if __name__ == "__main__":

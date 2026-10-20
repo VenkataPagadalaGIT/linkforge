@@ -124,13 +124,26 @@ const nextConfig = {
         destination: "https://venkatapagadala.com/:path*",
         permanent: true,
       },
+      // The archive moved from /linkedin to Venkata Pagadala - Universe (src/data/universe.ts): LinkedIn is one of
+      // its sources, so its posts and articles sit under /venkata-pagadala-universe/linkedin, and topic pages (which
+      // span every source) under /venkata-pagadala-universe/topics. Every old URL keeps working.
+      { source: "/linkedin", destination: "/venkata-pagadala-universe", permanent: true },
+      { source: "/linkedin/topics/:topic", destination: "/venkata-pagadala-universe/topics/:topic", permanent: true },
+      { source: "/linkedin/:kind(posts|articles)", destination: "/venkata-pagadala-universe/linkedin/:kind", permanent: true },
+      { source: "/linkedin/:kind(posts|articles)/:slug", destination: "/venkata-pagadala-universe/linkedin/:kind/:slug", permanent: true },
+      { source: "/sitemap/linkedin", destination: "/sitemap/universe", permanent: true },
+      // No pages of their own yet (the hub filters by source and lists the topics): send them to the hub, not a 404.
+      // Redirects run before pages, so DELETE the matching line when app/venkata-pagadala-universe/linkedin/page.tsx
+      // or app/venkata-pagadala-universe/topics/page.tsx is added, or that page will never be shown.
+      { source: "/venkata-pagadala-universe/:part(linkedin|topics)", destination: "/venkata-pagadala-universe", permanent: false },
+      { source: "/linkedin/topics", destination: "/venkata-pagadala-universe", permanent: false },
     ];
   },
   experimental: {
     cpus: 1,
     workerThreads: false,
   },
-  // Local preview only: LINKEDIN_PREVIEW=1 swaps the /linkedin data modules for
+  // Local preview only: LINKEDIN_PREVIEW=1 swaps the Universe's LinkedIn data modules for
   // their git-ignored *.preview.ts twins (items still waiting for the owner's
   // review). Unset everywhere else, so builds always use the public modules.
   webpack(config, { webpack }) {

@@ -139,7 +139,7 @@ const topicById = new Map(taxonomy.map((n) => [n.id, n]));
   // Topic URLs are frozen once committed: a slug at HEAD must still exist.
   try {
     const prev = JSON.parse(execFileSync("git", ["show", "HEAD:src/data/linkedinTaxonomy.json"], { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] }).toString()).nodes;
-    for (const n of prev) if (!slugs.has(n.slug)) problems.push(`topic URL /linkedin/topics/${n.slug} was committed and is gone (frozen URL; keep the slug or add a redirect)`);
+    for (const n of prev) if (!slugs.has(n.slug)) problems.push(`topic URL /venkata-pagadala-universe/topics/${n.slug} was committed and is gone (frozen URL; keep the slug or add a redirect)`);
   } catch {
     // Not committed yet.
   }

@@ -7,7 +7,7 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useWebGL } from "@/lib/webgl";
 import { useTheme } from "@/components/theme/ThemeProvider";
-import { LINKEDIN_ENTRIES, SOURCE_LABEL, TOPIC_NODES, childTopics, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, topicTrail, type LiEntry } from "@/data/linkedinArchive";
+import { LINKEDIN_ENTRIES, SOURCE_LABEL, UNIVERSE_PATH, TOPIC_NODES, childTopics, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, topicTrail, type LiEntry } from "@/data/linkedinArchive";
 
 /**
  * 05 Universe: the archive as a 3D space to fly through, styled as mission control.
@@ -486,8 +486,8 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       <div className="border border-border p-6 font-mono text-[12px] text-muted-foreground">
         This browser cannot draw 3D graphics (WebGL is off), so the Universe view is not available.{" "}
         {standalone ? (
-          <a href="/linkedin" className="underline text-foreground">
-            The LinkedIn archive lists every post.
+          <a href={UNIVERSE_PATH} className="underline text-foreground">
+            The full archive lists every post.
           </a>
         ) : (
           "The other views and the cards below show everything."

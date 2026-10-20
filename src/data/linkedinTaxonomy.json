@@ -1,5 +1,5 @@
 {
-  "_note": "Topic tree for the LinkedIn archive: L1 areas, L2 topics, L3 subtopics. Built 2026-10-19 from the 923 posts, 8 articles and 489 media items (hashtags, recurring terms, products and events). Slugs are URLs (/linkedin/topics/<slug>): FROZEN once live. Descriptions are page copy and the classification guide.",
+  "_note": "Topic tree for Venkata Pagadala - Universe (LinkedIn is its first source): L1 areas, L2 topics, L3 subtopics. Built 2026-10-19 from the 923 posts, 8 articles and 489 media items (hashtags, recurring terms, products and events). Slugs are URLs (/venkata-pagadala-universe/topics/<slug>): FROZEN once live. Descriptions are page copy and the classification guide.",
   "nodes": [
     { "id": "ai", "level": 1, "parent": null, "label": "AI and LLMs", "slug": "ai-and-llms", "description": "Large language models, AI agents, knowledge graphs, retrieval and the AI I build and use every day." },
     { "id": "llm-assistants", "level": 2, "parent": "ai", "label": "LLMs and AI assistants", "slug": "llms-and-ai-assistants", "description": "ChatGPT, Claude, Gemini, Perplexity and other models: releases, features, comparisons and how I use them." },

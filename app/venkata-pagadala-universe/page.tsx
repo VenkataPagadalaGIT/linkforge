@@ -4,43 +4,43 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_PROFILE } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, UNIVERSE_NAME, UNIVERSE_PATH, topicPath } from "@/data/linkedinArchive";
 import { LINKEDIN_COUNTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 const c = LINKEDIN_COUNTS;
-const desc = `${c.posts} posts, ${c.articles} articles and ${c.items} images, videos and documents from Venkata Pagadala's LinkedIn (${c.firstYear} to ${c.lastYear}), as one searchable knowledge graph: ${c.areas} areas, ${c.topics} topics and ${c.subtopics} subtopics across AI, SEO, AI search, data and more.`;
+const desc = `Everything Venkata Pagadala shares, in one searchable graph: ${c.areas} areas, ${c.topics} topics, ${c.subtopics} subtopics. LinkedIn first: ${c.posts} posts, ${c.articles} articles and ${c.items} media items.`;
 
 const metadata: Metadata = {
-  title: "LinkedIn Archive: Knowledge Graph",
+  title: { absolute: UNIVERSE_NAME },
   description: desc,
-  alternates: { canonical: "/linkedin" },
+  alternates: { canonical: UNIVERSE_PATH },
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
-    url: "/linkedin",
+    url: UNIVERSE_PATH,
     type: "website",
-    title: "LinkedIn Archive: Knowledge Graph",
+    title: UNIVERSE_NAME,
     description: desc,
     siteName: "Venkata Pagadala · Mono Mind",
   },
 };
-export const generateMetadata = withSeoOverrides("/linkedin", metadata);
+export const generateMetadata = withSeoOverrides("/venkata-pagadala-universe", metadata);
 
 const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "LinkedIn Archive",
+    name: UNIVERSE_NAME,
     description: desc,
-    url: `${SITE_URL}/linkedin`,
+    url: `${SITE_URL}${UNIVERSE_PATH}`,
     author: { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] },
     // The areas (L1); each area page lists its topics and subtopics.
     hasPart: LINKEDIN_TOPICS.filter((t) => t.level === 1).map((t) => ({
       "@type": "CollectionPage",
-      name: `${t.label}: LinkedIn archive`,
-      url: `${SITE_URL}/linkedin/topics/${t.slug}`,
+      name: `${t.label}: ${UNIVERSE_NAME}`,
+      url: `${SITE_URL}${topicPath(t.id)}`,
     })),
   },
-  breadcrumbJsonLd([{ name: "LinkedIn archive", url: `${SITE_URL}/linkedin` }]),
+  breadcrumbJsonLd([{ name: UNIVERSE_NAME, url: `${SITE_URL}${UNIVERSE_PATH}` }]),
 ];
 
 export default function Page() {

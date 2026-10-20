@@ -2,7 +2,7 @@ import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
 import ArticleCard from "@/components/linkedin/ArticleCard";
-import { LINKEDIN_PROFILE, mostEngaging } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, LINKEDIN_PROFILE, UNIVERSE_NAME, mostEngaging } from "@/data/linkedinArchive";
 import { LINKEDIN_ARTICLES, LINKEDIN_COUNTS, LINKEDIN_SOCIAL_POSTS } from "@/data/linkedinArchiveServer";
 
 const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
@@ -19,33 +19,33 @@ export default function LinkedInArchiveView() {
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
-            LinkedIn archive · {c.firstYear} to {c.lastYear}
+            Every source, one graph · LinkedIn first · {c.firstYear} to {c.lastYear}
           </p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-4">
-            My LinkedIn, kept here and mapped
+            {UNIVERSE_NAME}
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-3">
+            Everything I share, mapped as one knowledge graph: {c.areas} areas, {c.topics} topics and {c.subtopics} subtopics, plus
+            the names that recur (conferences, companies, products and people). LinkedIn is the first source:{" "}
             {c.posts > 0 && (
               <>
-                <a href="/linkedin/posts" className="underline hover:text-foreground">{c.posts} posts</a> with their engagement,{" "}
+                <a href={LINKEDIN_POSTS_PATH} className="underline hover:text-foreground">{c.posts} posts</a> with their engagement,{" "}
               </>
             )}
             {c.articles > 0 && (
               <>
-                <a href="/linkedin/articles" className="underline hover:text-foreground">{c.articles} articles</a> in full, and{" "}
+                <a href={LINKEDIN_ARTICLES_PATH} className="underline hover:text-foreground">{c.articles} articles</a> in full, and{" "}
               </>
             )}
-            {c.items} images, videos and documents I shared in LinkedIn posts, articles and comments, mapped as one knowledge graph:
-            {" "}{c.areas} areas, {c.topics} topics and {c.subtopics} subtopics, plus the names that recur (conferences, companies,
-            products and people). Search it, browse the topics in the sidebar, or follow one to its page. LinkedIn is where I share;
-            this site is where the work lives.
+            {c.items} images, videos and documents from posts, articles and comments. My website, Substack, YouTube and more join
+            next. Search it, browse the topics in the sidebar, or follow one to its page.
           </p>
           <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed max-w-3xl mb-8">
             Follow along on{" "}
             <a href={LINKEDIN_PROFILE} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
               LinkedIn
             </a>
-            . Private messages and anything with personal details are not part of this archive.
+            . Private messages and anything with personal details are not part of the Universe.
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
@@ -62,9 +62,9 @@ export default function LinkedInArchiveView() {
           <section className="mt-16" aria-labelledby="li-posts-h">
             <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
               <h2 id="li-posts-h" className="font-display text-xl font-bold text-foreground">
-                Most engaging posts
+                Most engaging LinkedIn posts
               </h2>
-              <a href="/linkedin/posts" className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+              <a href={LINKEDIN_POSTS_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
                 All {LINKEDIN_SOCIAL_POSTS.length} posts
               </a>
             </div>
@@ -82,9 +82,9 @@ export default function LinkedInArchiveView() {
           <section className="mt-16" aria-labelledby="li-articles-h">
             <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
               <h2 id="li-articles-h" className="font-display text-xl font-bold text-foreground">
-                Articles, in full
+                LinkedIn articles, in full
               </h2>
-              <a href="/linkedin/articles" className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+              <a href={LINKEDIN_ARTICLES_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
                 All {LINKEDIN_ARTICLES.length} articles
               </a>
             </div>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import ArticleCard from "@/components/linkedin/ArticleCard";
-import { LINKEDIN_PROFILE, formatDay, mostEngaging, postPath } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, UNIVERSE_NAME, UNIVERSE_PATH, formatDay, mostEngaging, postPath } from "@/data/linkedinArchive";
 import { LINKEDIN_SOCIAL_POSTS } from "@/data/linkedinArchiveServer";
 
 /** Every LinkedIn post kept here: the most engaging first, then all of them by year. */
@@ -19,11 +19,11 @@ export default function LinkedInPostsView() {
     <div className="min-h-screen bg-background pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6">
         <ScrollReveal>
-          <a href="/linkedin" className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors mb-8">
-            ← LinkedIn archive
+          <a href={UNIVERSE_PATH} className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors mb-8">
+            ← {UNIVERSE_NAME}
           </a>
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
-            LinkedIn archive · Posts{years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
+            LinkedIn · Posts{years.length ? ` · ${years[years.length - 1]} to ${years[0]}` : ""}
           </p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-4">My LinkedIn posts</h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-10">

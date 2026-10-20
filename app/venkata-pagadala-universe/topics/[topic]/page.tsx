@@ -5,7 +5,7 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_PROFILE, PUBLIC_ITEMS, fullUrl, inTopic, isoDuration, linkedinUrl, postPath, posterUrl, thumbUrl, topicPath, topicTrail, type LiItem } from "@/data/linkedinArchive";
+import { LINKEDIN_PROFILE, PUBLIC_ITEMS, UNIVERSE_NAME, UNIVERSE_PATH, fullUrl, inTopic, isoDuration, linkedinUrl, postPath, posterUrl, thumbUrl, topicPath, topicTrail, type LiItem } from "@/data/linkedinArchive";
 import { ALL_LINKEDIN_TOPICS, getLinkedInTopic } from "@/data/linkedinArchiveServer";
 
 type Params = { topic: string };
@@ -19,7 +19,7 @@ export function generateStaticParams() {
   return ALL_LINKEDIN_TOPICS.map((t) => ({ topic: t.slug }));
 }
 
-export const generateMetadata = withSeoOverrides("/linkedin/topics/[topic]", baseMetadata);
+export const generateMetadata = withSeoOverrides("/venkata-pagadala-universe/topics/[topic]", baseMetadata);
 
 const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? "" : "s"}`;
 
@@ -35,14 +35,14 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const where = trail.length > 1 ? ` (${trail.slice(0, -1).map((n) => n.label).join(" › ")})` : "";
   const description = `${parts.join(", ") || "Nothing yet"} on ${topic.label}${where} from Venkata Pagadala's LinkedIn. ${topic.description}`.slice(0, 300);
   return {
-    title: { absolute: `${topic.label}: LinkedIn Archive | Venkata Pagadala` },
+    title: { absolute: `${topic.label} | ${UNIVERSE_NAME}` },
     description,
     alternates: { canonical: topicPath(topic.id) },
     ...(topic.entries.length === 0 ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "website",
       url: topicPath(topic.id),
-      title: `${topic.label}: LinkedIn Archive`,
+      title: `${topic.label} | ${UNIVERSE_NAME}`,
       description,
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     },
@@ -97,10 +97,10 @@ export default function Page({ params }: { params: Params }) {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: `${topic.label}: LinkedIn archive`,
+      name: `${topic.label}: ${UNIVERSE_NAME}`,
       description: topic.description,
       url,
-      isPartOf: { "@type": "CollectionPage", name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
+      isPartOf: { "@type": "CollectionPage", name: UNIVERSE_NAME, url: `${SITE_URL}${UNIVERSE_PATH}` },
       hasPart: [
         ...topic.articles.map((p) => ({ "@type": "Article", headline: p.title, url: `${SITE_URL}${postPath(p)}`, datePublished: p.date, author })),
         ...topic.posts.slice(0, 60).map((p) => ({
@@ -115,7 +115,7 @@ export default function Page({ params }: { params: Params }) {
       ],
     },
     breadcrumbJsonLd([
-      { name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
+      { name: UNIVERSE_NAME, url: `${SITE_URL}${UNIVERSE_PATH}` },
       ...trail.map((n) => ({ name: n.label, url: `${SITE_URL}${topicPath(n.id)}` })),
     ]),
   ];

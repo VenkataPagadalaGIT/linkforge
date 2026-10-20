@@ -36,13 +36,13 @@ import { aiContributors } from "@/data/aiContributors";
 import { pillarPages, blogPosts } from "@/data/insights";
 import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc } from "@/data/talks";
 import { linkedPapers } from "@/data/research";
-import { postPath, topicPath, topicTrail } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, UNIVERSE_NAME, UNIVERSE_PATH, postPath, topicPath, topicTrail } from "@/data/linkedinArchive";
 import { LINKEDIN_ARTICLES, LINKEDIN_SOCIAL_POSTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
   | "research" | "pages" | "personas" | "notebook" | "business" | "encyclopedia" | "map"
-  | "contributors" | "updates" | "insights" | "speakers" | "solutions" | "machines" | "linkedin";
+  | "contributors" | "updates" | "insights" | "speakers" | "solutions" | "machines" | "universe";
 
 export interface SectionMeta {
   id: SectionId;
@@ -67,7 +67,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "business", label: "Business Notebook", blurb: "Earnings-call notes, the companies behind them and the people who speak for them." },
   { id: "encyclopedia", label: "AI Encyclopedia", blurb: "Every AI concept, one page each, by category." },
   { id: "map", label: "AI Systems Map", blurb: "Every entity in the AI value chain, one page each, by layer." },
-  { id: "linkedin", label: "LinkedIn archive", blurb: "My LinkedIn posts and articles in full, with their media and engagement, kept here, by topic." },
+  { id: "universe", label: "Venkata Pagadala - Universe", blurb: "Everything I share, in one graph by topic. LinkedIn first: every post and article in full, with its media and engagement." },
   { id: "contributors", label: "AI Contributors", blurb: "The people building AI, in ranked order." },
   { id: "updates", label: "AI Updates", blurb: "AI news with primary sources, newest first." },
   { id: "insights", label: "Insights", blurb: "Essays on AI, search and systems, by pillar." },
@@ -273,35 +273,35 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // LinkedIn archive: the hub, the articles (each in full), the posts and one page per node of the topic tree
+  // Venkata Pagadala - Universe: the hub, then LinkedIn (its articles, each in full, and its posts) and one page per node of the topic tree
   out.push({
-    href: "/linkedin", title: "LinkedIn archive: knowledge graph", section: "linkedin", hub: true,
+    href: UNIVERSE_PATH, title: UNIVERSE_NAME, section: "universe", hub: true,
     xml: { lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   });
   if (LINKEDIN_ARTICLES.length) {
     out.push({
-      href: "/linkedin/articles", title: "LinkedIn articles", section: "linkedin", hub: true,
+      href: LINKEDIN_ARTICLES_PATH, title: "LinkedIn articles", section: "universe", hub: true,
       note: `${LINKEDIN_ARTICLES.length} articles`,
       xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     });
   }
   for (const a of LINKEDIN_ARTICLES) {
     out.push({
-      href: postPath(a), title: a.title, section: "linkedin", group: "Articles",
+      href: postPath(a), title: a.title, section: "universe", group: "LinkedIn articles",
       note: a.date.slice(0, 10),
       xml: { lastModified: new Date(a.date), changeFrequency: "yearly", priority: 0.6 },
     });
   }
   if (LINKEDIN_SOCIAL_POSTS.length) {
     out.push({
-      href: "/linkedin/posts", title: "LinkedIn posts", section: "linkedin", hub: true,
+      href: LINKEDIN_POSTS_PATH, title: "LinkedIn posts", section: "universe", hub: true,
       note: `${LINKEDIN_SOCIAL_POSTS.length} posts`,
       xml: { lastModified: now, changeFrequency: "weekly", priority: 0.6 },
     });
   }
   for (const p of LINKEDIN_SOCIAL_POSTS) {
     out.push({
-      href: postPath(p), title: p.title, section: "linkedin", group: `Posts ${p.date.slice(0, 4)}`,
+      href: postPath(p), title: p.title, section: "universe", group: `LinkedIn posts ${p.date.slice(0, 4)}`,
       note: p.date.slice(0, 10),
       xml: { lastModified: new Date(p.date), changeFrequency: "yearly", priority: 0.4 },
     });
@@ -315,7 +315,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
       t.itemCount ? `${t.itemCount} media` : "",
     ].filter(Boolean);
     out.push({
-      href: topicPath(t.id), title: t.level === 3 ? `${t.label} (${topicTrail(t.id)[1]?.label ?? ""})` : t.label, section: "linkedin",
+      href: topicPath(t.id), title: t.level === 3 ? `${t.label} (${topicTrail(t.id)[1]?.label ?? ""})` : t.label, section: "universe",
       group: `Topics: ${area?.label ?? "Other"}`, note: parts.join(", "),
       xml: { lastModified: now, changeFrequency: "monthly", priority: t.level === 1 ? 0.6 : t.level === 2 ? 0.5 : 0.4 },
     });

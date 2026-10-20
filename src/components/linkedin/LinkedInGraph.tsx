@@ -18,6 +18,7 @@ import {
   thumbUrl,
   topicLabel,
   topicPath,
+  UNIVERSE_NAME,
   type LiEntry,
   type LiGraphNode,
 } from "@/data/linkedinArchive";
@@ -575,7 +576,7 @@ export default function LinkedInGraph({ entriesByKey, matching, activeTopic, foc
             viewBox={`0 0 ${W} ${H}`}
             className="block w-full min-w-[640px] sm:min-w-0 h-auto select-none"
             role="group"
-            aria-label={`Knowledge graph of the LinkedIn archive, ${meta.label} view: ${meta.hint}. Activate an area, topic or subtopic to pin it and list its connections; the cards below list every post.`}
+            aria-label={`Knowledge graph of ${UNIVERSE_NAME}, ${meta.label} view: ${meta.hint}. Activate an area, topic or subtopic to pin it and list its connections; the cards below list every post.`}
             onClick={(e) => {
               if (!suppressClick.current && !(e.target as Element).closest("a, [data-node-id]")) setPinned(null);
             }}

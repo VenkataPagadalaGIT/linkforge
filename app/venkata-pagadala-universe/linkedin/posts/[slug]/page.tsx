@@ -5,38 +5,38 @@ import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { breadcrumbJsonLd } from "@/lib/content-fetch";
-import { LINKEDIN_PROFILE, imageUrlFor, postPath, topicLabel } from "@/data/linkedinArchive";
-import { LINKEDIN_ARTICLES, getLinkedInPost } from "@/data/linkedinArchiveServer";
+import { LINKEDIN_POSTS_PATH, LINKEDIN_PROFILE, UNIVERSE_NAME, UNIVERSE_PATH, clipText, formatDay, imageUrlFor, postPath, topicLabel } from "@/data/linkedinArchive";
+import { LINKEDIN_SOCIAL_POSTS, getLinkedInPost } from "@/data/linkedinArchiveServer";
 
 type Params = { slug: string };
 
-// One static page per published article (slugs are frozen); an unknown slug hard-404s.
+// One static page per post (slugs are frozen); an unknown slug hard-404s.
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return LINKEDIN_ARTICLES.map((a) => ({ slug: a.id }));
+  return LINKEDIN_SOCIAL_POSTS.map((p) => ({ slug: p.id }));
 }
 
-const article = (slug: string) => {
+const post = (slug: string) => {
   const p = getLinkedInPost(slug);
-  return p && p.type === "article" ? p : undefined;
+  return p && p.type === "post" ? p : undefined;
 };
-const cover = imageUrlFor;
+const image = imageUrlFor;
 
-export const generateMetadata = withSeoOverrides("/linkedin/articles/[slug]", baseMetadata);
+export const generateMetadata = withSeoOverrides("/venkata-pagadala-universe/linkedin/posts/[slug]", baseMetadata);
 
 async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const p = article(params.slug);
+  const p = post(params.slug);
   if (!p) return { title: "Not found", robots: { index: false, follow: false } };
   const description = p.excerpt.slice(0, 300);
-  const image = cover(p.cover);
+  const img = image(p.cover);
   return {
-    title: { absolute: `${p.title} | Venkata Pagadala` },
+    // The day keeps short or repeated titles ("#seo", "Interesting") distinct.
+    title: { absolute: `${clipText(p.title, 64)} (${formatDay(p.date.slice(0, 10))}) | Venkata Pagadala on LinkedIn` },
     description,
     authors: [{ name: "Venkata Pagadala", url: SITE_URL }],
     alternates: { canonical: postPath(p) },
-    ...(p.review ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type: "article",
       url: postPath(p),
@@ -44,40 +44,39 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
       description,
       publishedTime: p.date,
       authors: ["Venkata Pagadala"],
-      images: image ? [{ url: image }] : [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
+      images: img ? [{ url: img }] : [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     },
   };
 }
 
 export default function Page({ params }: { params: Params }) {
-  const p = article(params.slug);
+  const p = post(params.slug);
   if (!p) notFound();
   const url = `${SITE_URL}${postPath(p)}`;
   const author = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
+  const e = p.engagement;
+  const counter = (type: string, n?: number) => (n == null ? [] : [{ "@type": "InteractionCounter", interactionType: `https://schema.org/${type}`, userInteractionCount: n }]);
   const jsonLd = [
     {
       "@context": "https://schema.org",
-      "@type": "Article",
+      "@type": "SocialMediaPosting",
       headline: p.title,
       description: p.excerpt,
       url,
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
       datePublished: p.date,
-      dateModified: p.date,
-      wordCount: p.words,
       keywords: [...p.topics, ...p.subtopics].map(topicLabel).join(", "),
-      ...(cover(p.cover) ? { image: cover(p.cover) } : {}),
+      ...(image(p.cover) ? { image: image(p.cover) } : {}),
       author,
-      publisher: author,
-      // The same article, first published on LinkedIn.
+      // The same post on LinkedIn.
       sameAs: p.url,
-      ...(p.people.length ? { mentions: p.people.map((x) => ({ "@type": "Person", name: x.name, sameAs: x.url })) } : {}),
-      isPartOf: { "@type": "CollectionPage", name: "LinkedIn articles", url: `${SITE_URL}/linkedin/articles` },
+      ...(e ? { interactionStatistic: [...counter("LikeAction", e.reactions), ...counter("CommentAction", e.comments), ...counter("ShareAction", e.reposts)] } : {}),
+      isPartOf: { "@type": "CollectionPage", name: "LinkedIn posts", url: `${SITE_URL}${LINKEDIN_POSTS_PATH}` },
     },
     breadcrumbJsonLd([
-      { name: "LinkedIn archive", url: `${SITE_URL}/linkedin` },
-      { name: "Articles", url: `${SITE_URL}/linkedin/articles` },
-      { name: p.title, url },
+      { name: UNIVERSE_NAME, url: `${SITE_URL}${UNIVERSE_PATH}` },
+      { name: "LinkedIn posts", url: `${SITE_URL}${LINKEDIN_POSTS_PATH}` },
+      { name: clipText(p.title, 80), url },
     ]),
   ];
   return (
