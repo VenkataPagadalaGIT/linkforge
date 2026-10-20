@@ -123,6 +123,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(websiteJsonLd) }}
         />
+        {/* Google News (Publisher Center): the publisher script on every page; async, so it never blocks rendering. */}
+        <script async src="https://news.google.com/swg/js/v1/publisher.js" />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <PlatformColors />

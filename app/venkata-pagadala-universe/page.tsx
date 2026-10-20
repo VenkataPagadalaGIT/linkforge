@@ -22,6 +22,7 @@ const metadata: Metadata = {
     description: desc,
     siteName: "Venkata Pagadala · Mono Mind",
   },
+  twitter: { card: "summary_large_image", title: UNIVERSE_NAME, description: desc, images: [OG_IMAGE] },
 };
 export const generateMetadata = withSeoOverrides("/venkata-pagadala-universe", metadata);
 

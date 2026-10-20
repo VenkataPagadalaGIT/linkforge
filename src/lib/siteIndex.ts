@@ -67,7 +67,7 @@ export const SECTIONS: SectionMeta[] = [
   { id: "business", label: "Business Notebook", blurb: "Earnings-call notes, the companies behind them and the people who speak for them." },
   { id: "encyclopedia", label: "AI Encyclopedia", blurb: "Every AI concept, one page each, by category." },
   { id: "map", label: "AI Systems Map", blurb: "Every entity in the AI value chain, one page each, by layer." },
-  { id: "universe", label: "Venkata Pagadala - Universe", blurb: "Everything I share, in one graph by topic. LinkedIn first: every post and article in full, with its media and engagement." },
+  { id: "universe", label: "Venkata Pagadala - Universe", blurb: "Everything I share, one graph by topic. LinkedIn first: every post and article in full, with media and engagement." },
   { id: "contributors", label: "AI Contributors", blurb: "The people building AI, in ranked order." },
   { id: "updates", label: "AI Updates", blurb: "AI news with primary sources, newest first." },
   { id: "insights", label: "Insights", blurb: "Essays on AI, search and systems, by pillar." },
