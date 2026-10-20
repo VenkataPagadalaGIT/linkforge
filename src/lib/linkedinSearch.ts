@@ -68,7 +68,6 @@ export function entryHaystack(e: LiEntry, fullText?: Record<string, string> | nu
     [
       e.title,
       e.excerpt,
-      SOURCE_LABEL[e.source],
       entryKindLabel(e),
       e.date.slice(0, 10),
       ...areas.map(topicLabel),

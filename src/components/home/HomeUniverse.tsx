@@ -11,10 +11,10 @@ const LinkedInUniverseSection = dynamic(() => import("@/components/linkedin/Link
 });
 
 /** Holds the space the view will take (its controls row plus the 3D box), so mounting it never shifts the page. */
-function Placeholder({ text = "Preparing ignition…" }: { text?: string }) {
+function Placeholder() {
   return (
     <div className="grid place-items-center border border-border bg-background" style={{ height: "calc(min(max(78vh, 560px), 900px) + 96px)" }}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">{text}</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">Preparing ignition…</p>
     </div>
   );
 }
@@ -23,10 +23,21 @@ function Placeholder({ text = "Preparing ignition…" }: { text?: string }) {
  * Home page section: my LinkedIn as a universe. A full-width band in the site's theme (light or dark); the 3D view
  * mounts when it is about to be seen. Without JavaScript (or before it mounts) the band still says what it is and links to the archive.
  */
+/** Mounted only once the section is near: probes WebGL, then loads the view (or says 3D is off, in one short line). */
+function NearUniverse() {
+  const gl = useWebGL();
+  if (gl.ok === false)
+    return (
+      <p className="border border-border px-4 py-6 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+        3D is off in this browser. Open the full archive above to see every post.
+      </p>
+    );
+  return gl.ok ? <LinkedInUniverseSection /> : <Placeholder />;
+}
+
 export default function HomeUniverse() {
   const ref = React.useRef<HTMLDivElement>(null);
   const [near, setNear] = React.useState(false);
-  const gl = useWebGL();
   React.useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -54,15 +65,7 @@ export default function HomeUniverse() {
             Open the full archive →
           </a>
         </div>
-        <div ref={ref}>
-          {gl.ok === false ? (
-            <Placeholder text="3D is off in this browser: open the full archive above" />
-          ) : near && gl.ok ? (
-            <LinkedInUniverseSection />
-          ) : (
-            <Placeholder />
-          )}
-        </div>
+        <div ref={ref}>{near ? <NearUniverse /> : <Placeholder />}</div>
       </div>
     </section>
   );

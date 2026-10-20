@@ -253,7 +253,10 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   const [menu, setMenu] = React.useState<boolean | null>(null);
   /** The 3D box's width: below 820 px the Topics menu sits under the HUD's title and starts minimized. */
   const boxRef = React.useRef<HTMLDivElement>(null);
-  const [boxW, setBoxW] = React.useState(1200);
+  const [boxW, setBoxW] = React.useState(0);
+  React.useLayoutEffect(() => {
+    if (boxRef.current) setBoxW(boxRef.current.clientWidth);
+  }, [gl.ok]);
   const menuOpen = menu ?? (onBlack && boxW >= 820);
   /** Where the Topics menu sits in the 3D box (canvas pixels): pop-up cards keep out of it. */
   const panelRef = React.useRef<HTMLDivElement>(null);
@@ -270,7 +273,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     ro.observe(el);
     ro.observe(box);
     return () => ro.disconnect();
-  }, [gl.ok, menuOpen]);
+  }, [gl.ok, menuOpen, boxW < 820]);
   React.useEffect(() => {
     const el = boxRef.current;
     if (!el || !("ResizeObserver" in window)) return;
@@ -550,8 +553,24 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           ...(light ? { backgroundImage: "radial-gradient(hsl(var(--foreground) / 0.07) 1px, transparent 1.2px)", backgroundSize: "22px 22px" } : {}),
         }}
       >
+        {/* first in the DOM, so the keyboard reaches the menu before the 3D labels and cards */}
+        <TopicsPanel
+          panelRef={panelRef}
+          countIn={countIn}
+          below={boxW < 820}
+          open={menuOpen}
+          onToggle={() => setMenu(!(menuOpen))}
+          activeTopic={activeTopic}
+          onTopic={pick}
+          posts={focusKeys ?? []}
+          entryByKey={entryByKey}
+          locked={hover}
+          onLock={lock}
+          onOpen={open}
+        />
         {gl.ok && (
           <Canvas
+            className="isolate"
             dpr={[1, 1.5]}
             frameloop={!visible ? "never" : reduced ? "demand" : "always"}
             camera={{ position: [0, 7, 34], fov: 50, near: 0.1, far: 200 }}
@@ -589,20 +608,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         )}
 
         {/* HUD */}
-        <TopicsPanel
-          panelRef={panelRef}
-          countIn={countIn}
-          below={boxW < 820}
-          open={menuOpen}
-          onToggle={() => setMenu(!(menuOpen))}
-          activeTopic={activeTopic}
-          onTopic={pick}
-          posts={focusKeys ?? []}
-          entryByKey={entryByKey}
-          locked={hover}
-          onLock={lock}
-          onOpen={open}
-        />
+
         <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-foreground">
           <p className="text-[11px] font-bold tracking-[0.25em]">VP_ MISSION CONTROL</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -625,10 +631,11 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           <button
             type="button"
             onClick={() => lockVia === "pick" && open(hoverEntry.key)}
+            // It always takes the pointer (so it never lets a click through to a hidden star); in pointer mode it only shows.
             tabIndex={lockVia === "pick" ? 0 : -1}
             aria-hidden={lockVia === "pick" ? undefined : true}
             className={`absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[color:var(--uni-a50)] bg-background/90 p-3 text-left font-mono text-foreground ${
-              lockVia === "pick" ? "hover:border-[color:var(--uni-a)]" : "pointer-events-none"
+              lockVia === "pick" ? "hover:border-[color:var(--uni-a)]" : "cursor-default"
             }`}
             data-testid="linkedin-universe-target"
           >
@@ -915,10 +922,13 @@ const Card = React.memo(function Card({
   onHover,
   onOpen,
   onHold,
+  onFace,
   tabbable = true,
 }: {
   /** Globe cards: hold its turning while the pointer or keyboard is on the card. */
   onHold?: (on: boolean) => void;
+  /** Globe cards: a card reached by keyboard turns the globe until it faces the viewer. */
+  onFace?: (key: string) => void;
   tabbable?: boolean;
   entry: LiEntry;
   on: boolean;
@@ -929,20 +939,28 @@ const Card = React.memo(function Card({
   onOpen: (key: string) => void;
 }) {
   const it = entry.media[0] ? getItem(entry.media[0]) : undefined;
+  /** Where a press began: a drag that turns the globe and ends on this card is not a click on it. */
+  const downAt = React.useRef<[number, number] | null>(null);
   return (
     <button
       type="button"
+      onPointerDown={(e) => (downAt.current = [e.clientX, e.clientY])}
       onPointerEnter={(e) => {
         onHold?.(true);
         if (e.pointerType === "mouse") onHover(entry.key);
       }}
       onPointerLeave={() => onHold?.(false)}
-      onFocus={() => {
+      onFocus={(e) => {
         onHold?.(true);
         onHover(entry.key, "pick");
+        if (e.currentTarget.matches(":focus-visible")) onFace?.(entry.key);
       }}
       onBlur={() => onHold?.(false)}
-      onClick={() => onOpen(entry.key)}
+      onClick={(e) => {
+        const d = downAt.current;
+        if (e.detail && d && Math.hypot(e.clientX - d[0], e.clientY - d[1]) > 5) return;
+        onOpen(entry.key);
+      }}
       tabIndex={tabbable ? 0 : -1}
       aria-label={`${entry.title} (${formatDay(entry.date)})`}
       className={`block overflow-hidden border bg-background text-left transition-[transform,border-color] duration-200 ${on ? "scale-110 border-[color:var(--uni-a)]" : "border-border hover:scale-105 hover:border-foreground"}`}
@@ -1140,7 +1158,18 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
   }, [full, gl, surface]);
 
   // ---- camera flights: only when the destination really changes (not on every keystroke) ----
-  const flight = React.useRef<{ p0: THREE.Vector3; p1: THREE.Vector3; t0: THREE.Vector3; t1: THREE.Vector3; at: number; dur: number } | null>(null);
+  /** A camera flight: a straight line, or (orbit) an arc round a centre, so turning the globe never cuts through it. */
+  const flight = React.useRef<{
+    p0: THREE.Vector3;
+    p1: THREE.Vector3;
+    t0: THREE.Vector3;
+    t1: THREE.Vector3;
+    at: number;
+    dur: number;
+    orbit?: { c: THREE.Vector3; u0: THREE.Vector3; q: THREE.Quaternion; r0: number; r1: number };
+  } | null>(null);
+  const qTmp = React.useMemo(() => new THREE.Quaternion(), []);
+  const vTmp = React.useMemo(() => new THREE.Vector3(), []);
   const dest = focus ? `${focus.center.toArray().map((v) => v.toFixed(1)).join(",")}|${focus.dist}` : "home";
   const lastDest = React.useRef("");
   /** A post pick moved the camera off its focus view: the next topic change flies back even if the centre is the same. */
@@ -1166,25 +1195,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dest, activeTopic]);
 
-  // A post picked in the Topics menu. In a focus, the globe turns (the camera orbits it) until the post's card faces
-  // us; with no focus, the camera flies close to its star.
-  React.useEffect(() => {
-    const c = controls.current;
-    if (!c || !starTarget) return;
-    const pt = globe?.pts.find((x) => x.key === starTarget.key);
-    if (focus && pt) {
-      const dir = new THREE.Vector3(...pt.p).normalize();
-      flight.current = { p0: camera.position.clone(), p1: focus.center.clone().add(dir.multiplyScalar(focus.dist)), t0: c.target.clone(), t1: focus.center.clone(), at: performance.now(), dur: reduced ? 0 : 1100 };
-    } else if (!focus) {
-      const s = u.stars[u.starIndex.get(starTarget.key) ?? -1];
-      if (!s) return;
-      const dir = camera.position.clone().sub(c.target).normalize();
-      flight.current = { p0: camera.position.clone(), p1: s.pos.clone().add(dir.multiplyScalar(6)), t0: c.target.clone(), t1: s.pos.clone(), at: performance.now(), dur: reduced ? 0 : 1100 };
-      displaced.current = true;
-    } else return; // a post outside the focus (it is only tagged here): lock on, stay put
-    invalidate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [starTarget?.n]);
+
 
   // ---- globe: a focus's posts on a sphere round its cluster. It revolves (the camera orbits it) and turns under a
   // drag like a globe; cards face the camera, the far side fades back and cannot be clicked. ----
@@ -1201,7 +1212,47 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     return { R, pts };
   }, [focus]);
   const cardEls = React.useRef(new Map<string, HTMLDivElement>());
+  /** The last opacity and pointer-events written to each card (styles are written only when they change). */
+  const cardStyle = React.useRef(new Map<string, string>());
   const camDir = React.useMemo(() => new THREE.Vector3(), []);
+  /** Turn the globe (orbit the camera round its centre, on an arc) until this post's card faces us. */
+  const orbitTo = (key: string) => {
+    const c = controls.current;
+    const pt = globe?.pts.find((x) => x.key === key);
+    if (!c || !focus || !pt) return false;
+    const u0 = camera.position.clone().sub(focus.center);
+    const r0 = u0.length();
+    u0.normalize();
+    const u1 = new THREE.Vector3(...pt.p).normalize();
+    flight.current = {
+      p0: camera.position.clone(),
+      p1: focus.center.clone().add(u1.clone().multiplyScalar(focus.dist)),
+      t0: c.target.clone(),
+      t1: focus.center.clone(),
+      at: performance.now(),
+      dur: reduced ? 0 : 1100,
+      orbit: { c: focus.center.clone(), u0, q: new THREE.Quaternion().setFromUnitVectors(u0, u1), r0, r1: focus.dist },
+    };
+    invalidate();
+    return true;
+  };
+  // A post picked in the Topics menu: in a focus, the globe turns to its card (a post only tagged here, whose star is
+  // in another cluster, just locks); with no focus, the camera flies close to its star.
+  React.useEffect(() => {
+    const c = controls.current;
+    if (!c || !starTarget) return;
+    if (focus) {
+      orbitTo(starTarget.key);
+      return;
+    }
+    const s = u.stars[u.starIndex.get(starTarget.key) ?? -1];
+    if (!s) return;
+    const dir = camera.position.clone().sub(c.target).normalize();
+    flight.current = { p0: camera.position.clone(), p1: s.pos.clone().add(dir.multiplyScalar(6)), t0: c.target.clone(), t1: s.pos.clone(), at: performance.now(), dur: reduced ? 0 : 1100 };
+    displaced.current = true;
+    invalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [starTarget?.n]);
   const [holdSpin, setHoldSpin] = React.useState(false);
   React.useEffect(() => setHoldSpin(false), [focus]);
 
@@ -1279,8 +1330,13 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         const el = cardEls.current.get(pt.key);
         if (!el) continue;
         const f = (pt.p[0] * camDir.x + pt.p[1] * camDir.y + pt.p[2] * camDir.z) / globe.R; // 1 facing us, -1 behind
-        el.style.opacity = (f > -0.1 ? 0.4 + 0.6 * Math.min(1, (f + 0.1) / 0.6) : 0.1).toFixed(2);
-        el.style.pointerEvents = f > -0.05 ? "auto" : "none";
+        const op = (f > -0.1 ? 0.4 + 0.6 * Math.min(1, (f + 0.1) / 0.6) : 0.1).toFixed(2);
+        const pe = f > -0.05 ? "auto" : "none";
+        const next = `${op}|${pe}`;
+        if (cardStyle.current.get(pt.key) === next) continue;
+        cardStyle.current.set(pt.key, next);
+        el.style.opacity = op;
+        el.style.pointerEvents = pe;
       }
     }
     // Camera flight (the controls update themselves otherwise; updating twice would double the auto-orbit)
@@ -1288,7 +1344,11 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
     if (f && c) {
       const k = f.dur ? Math.min(1, (performance.now() - f.at) / f.dur) : 1;
       const e = ease(k);
-      camera.position.lerpVectors(f.p0, f.p1, e);
+      if (f.orbit) {
+        qTmp.identity().slerp(f.orbit.q, e);
+        vTmp.copy(f.orbit.u0).applyQuaternion(qTmp).multiplyScalar(f.orbit.r0 + (f.orbit.r1 - f.orbit.r0) * e);
+        camera.position.copy(f.orbit.c).add(vTmp);
+      } else camera.position.lerpVectors(f.p0, f.p1, e);
       c.target.lerpVectors(f.t0, f.t1, e);
       c.update();
       if (k >= 1) flight.current = null;
@@ -1306,7 +1366,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         if (tmp.z > 1 || Math.abs(tmp.x) > 0.9 || Math.abs(tmp.y) > 0.85) continue;
         const px = ((tmp.x + 1) / 2) * size.width, py = ((1 - tmp.y) / 2) * size.height;
         const mr = menuRect.current;
-        if (mr && px > mr[0] - 90 && px < mr[2] && py > mr[1] - 60 && py < mr[3]) continue; // its card would sit under the Topics menu
+        if (mr && px > mr[0] - 90 && px < mr[2] && py > mr[1] && py < mr[3] + 56) continue; // its card (above-right) would sit under the Topics menu
         cand.push({ key: s.key, d: camera.position.distanceTo(s.pos), x: tmp.x * size.width * 0.5, y: tmp.y * size.height * 0.5 });
       }
       cand.sort((a, b) => a.d - b.d);
@@ -1393,7 +1453,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
 
       {/* sector (area) names: buttons that fly there; keyed by the ignition, so a replay fades them in again */}
       {u.areas.map((a) => (
-        <Html key={`${a.id}-${igniteKey}`} position={a.pos} center zIndexRange={[30, 20]}>
+        <Html key={`${a.id}-${igniteKey}`} position={a.pos} center zIndexRange={[40000, 30000]}>
           <button
             type="button"
             onClick={() => onPick(activeTopic === a.id ? null : a.id)}
@@ -1410,7 +1470,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       ))}
       {u.topics.map((t, i) =>
         showTopicLabels.has(i) ? (
-          <Html key={t.id} position={t.pos} center zIndexRange={[29, 20]}>
+          <Html key={t.id} position={t.pos} center zIndexRange={[39999, 30000]}>
             <button
               type="button"
               onClick={() => onPick(t.id)}
@@ -1429,7 +1489,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
         const e = entryByKey.get(key);
         if (!s || !e) return null;
         return (
-          <Html key={`n-${key}`} position={s.pos} zIndexRange={[15, 0]} style={{ transform: "translate(10px, -100%)" }}>
+          <Html key={`n-${key}`} position={s.pos} zIndexRange={[900, 0]} style={{ transform: "translate(10px, -100%)" }}>
             <Card entry={e} on={hover === key} width={76} delay={0} reduced={reduced} onHover={onHover} onOpen={onOpen} tabbable={false} />
           </Html>
         );
@@ -1442,15 +1502,24 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
             const e = entryByKey.get(pt.key);
             if (!e) return null;
             return (
-              <Html key={pt.key} position={pt.p} transform sprite center distanceFactor={4.8} zIndexRange={[18, 0]}>
+              <Html key={pt.key} position={pt.p} center distanceFactor={0.012 * size.height} zIndexRange={[20000, 1000]} style={{ pointerEvents: "none" }}>
                 <div
                   ref={(el) => {
                     if (el) cardEls.current.set(pt.key, el);
                     else cardEls.current.delete(pt.key);
                   }}
-                  style={{ transition: "opacity 180ms linear" }}
                 >
-                  <Card entry={e} on={hover === pt.key} width={104} delay={Math.min(1.1, i * 0.016)} reduced={reduced} onHover={onHover} onOpen={onOpen} onHold={setHoldSpin} />
+                  <Card
+                    entry={e}
+                    on={hover === pt.key}
+                    width={104}
+                    delay={Math.min(1.1, i * 0.016)}
+                    reduced={reduced}
+                    onHover={onHover}
+                    onOpen={onOpen}
+                    onHold={setHoldSpin}
+                    onFace={orbitTo}
+                  />
                 </div>
               </Html>
             );
