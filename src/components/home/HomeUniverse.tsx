@@ -13,15 +13,15 @@ const LinkedInUniverseSection = dynamic(() => import("@/components/linkedin/Link
 /** Holds the space the view will take (its controls row plus the 3D box), so mounting it never shifts the page. */
 function Placeholder({ text = "Preparing ignition…" }: { text?: string }) {
   return (
-    <div className="grid place-items-center border border-border bg-black" style={{ height: "calc(min(max(78vh, 560px), 900px) + 96px)" }}>
+    <div className="grid place-items-center border border-border bg-background" style={{ height: "calc(min(max(78vh, 560px), 900px) + 96px)" }}>
       <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">{text}</p>
     </div>
   );
 }
 
 /**
- * Home page section: my LinkedIn as a universe. A full-width dark band; the 3D view mounts when it is about to be
- * seen. Without JavaScript (or before it mounts) the band still says what it is and links to the archive.
+ * Home page section: my LinkedIn as a universe. A full-width band in the site's theme (light or dark); the 3D view
+ * mounts when it is about to be seen. Without JavaScript (or before it mounts) the band still says what it is and links to the archive.
  */
 export default function HomeUniverse() {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -37,7 +37,7 @@ export default function HomeUniverse() {
     return () => io.disconnect();
   }, []);
   return (
-    <section className="dark relative z-10 border-y border-border bg-black text-foreground" aria-labelledby="home-universe-h" data-testid="home-universe">
+    <section className="relative z-10 border-y border-border bg-background text-foreground" aria-labelledby="home-universe-h" data-testid="home-universe">
       <div className="mx-auto max-w-[1600px] px-4 py-16 sm:px-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>

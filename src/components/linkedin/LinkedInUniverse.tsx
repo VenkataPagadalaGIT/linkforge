@@ -6,6 +6,7 @@ import { Html, Line, OrbitControls } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useWebGL } from "@/lib/webgl";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { LINKEDIN_ENTRIES, SOURCE_LABEL, TOPIC_NODES, childTopics, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, topicTrail, type LiEntry } from "@/data/linkedinArchive";
 
 /**
@@ -37,6 +38,8 @@ interface Props {
 }
 
 const RADIUM = "#36ffb0";
+/** The accent on white: the same green, dark enough to read (about 5:1 on white). */
+const RADIUM_ON_LIGHT = "#0a7d50";
 const IGNITE_AT = 2.4;
 const AREA_R = 11;
 const MAX_CARDS = 72;
@@ -163,6 +166,7 @@ void main() {
 const FRAG = /* glsl */ `
 uniform vec3 uColor;
 uniform vec3 uAccent;
+uniform float uBoost;
 varying float vAlpha;
 varying float vHot;
 void main() {
@@ -170,7 +174,7 @@ void main() {
   if (r > 0.5) discard;
   float core = smoothstep(0.5, 0.0, r);
   vec3 col = mix(uColor, uAccent, vHot);
-  gl_FragColor = vec4(col, vAlpha * (pow(core, 2.4) * 0.9 + core * 0.12));
+  gl_FragColor = vec4(col, min(1.0, vAlpha * uBoost * (pow(core, 2.4) * 0.9 + core * 0.12)));
 }`;
 
 /** A tiny synth: clicks and whooshes made on the fly (no sound files). Off until the viewer turns it on. */
@@ -212,6 +216,17 @@ function makeSound() {
 
 export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpenEntry, filters, standalone = false, countIn = null }: Props) {
   const gl = useWebGL();
+  // It follows the site's theme (Auto, Light, Dark): white space and dark stars in light, black space and glowing
+  // stars in dark; the accent keeps its contrast in both.
+  const { resolvedTheme } = useTheme();
+  const light = resolvedTheme === "light";
+  const accent = light ? RADIUM_ON_LIGHT : RADIUM;
+  const themeVars = {
+    "--uni-a": accent,
+    "--uni-a50": light ? "rgba(10,125,80,.5)" : "rgba(54,255,176,.5)",
+    "--uni-a10": light ? "rgba(10,125,80,.1)" : "rgba(54,255,176,.1)",
+    "--uni-halo": light ? "rgba(255,255,255,.95)" : "rgba(0,0,0,.9)",
+  } as React.CSSProperties;
   const u = React.useMemo(buildUniverse, []);
   const entryByKey = React.useMemo(() => new Map(LINKEDIN_ENTRIES.map((e) => [e.key, e])), []);
   const wrapRef = React.useRef<HTMLDivElement>(null);
@@ -474,7 +489,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     );
 
   return (
-    <div ref={wrapRef} className={`${onBlack ? "dark text-foreground" : ""} ${full ? "bg-black h-full flex flex-col p-3" : ""}`} data-testid="linkedin-universe">
+    <div ref={wrapRef} style={themeVars} className={`${onBlack ? "text-foreground" : ""} ${full ? "bg-background h-full flex flex-col p-3" : ""}`} data-testid="linkedin-universe">
       {onBlack && filters && <div className="mb-2">{filters}</div>}
       <div className="mb-2 flex flex-wrap items-center gap-1">
         <button
@@ -522,7 +537,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
 
       <div
         ref={boxRef}
-        className={`relative overflow-hidden border border-border bg-black ${
+        className={`relative overflow-hidden border border-border bg-background ${
           full ? "flex-1 min-h-0" : standalone ? "w-full h-[78vh] min-h-[560px] max-h-[900px]" : "w-full aspect-[16/10] min-h-[520px] max-h-[85vh]"
         }`}
         style={{ cursor: "crosshair" }}
@@ -535,7 +550,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             gl={{ powerPreference: gl.power, antialias: false }}
             onCreated={({ gl: r }) => r.domElement.setAttribute("aria-hidden", "true")}
           >
-            <color attach="background" args={["#000000"]} />
+            <color attach="background" args={[light ? "#ffffff" : "#000000"]} />
             <Scene
               u={u}
               igniteKey={igniteKey}
@@ -552,11 +567,16 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
               full={full}
               entryByKey={entryByKey}
               starTarget={starTarget}
+              light={light}
+              accent={accent}
               menuRect={menuRect}
             />
-            <EffectComposer multisampling={0}>
-              <Bloom intensity={1.15} luminanceThreshold={0.12} luminanceSmoothing={0.3} mipmapBlur radius={0.7} />
-            </EffectComposer>
+            {/* Glow only on black: on white it would wash the stars out. */}
+            {!light && (
+              <EffectComposer multisampling={0}>
+                <Bloom intensity={1.15} luminanceThreshold={0.12} luminanceSmoothing={0.3} mipmapBlur radius={0.7} />
+              </EffectComposer>
+            )}
           </Canvas>
         )}
 
@@ -575,13 +595,13 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           onLock={lock}
           onOpen={open}
         />
-        <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-white">
+        <div className="pointer-events-none absolute z-40 left-3 top-3 font-mono text-foreground">
           <p className="text-[11px] font-bold tracking-[0.25em]">VP_ MISSION CONTROL</p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-white/60">
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
             {u.stars.length} objects · {u.areas.length} sectors · {u.topics.length} topics · {u.years.from} to {u.years.to}
           </p>
           {focus && (
-            <p className="mt-2 inline-block border border-[#36ffb0]/60 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[#36ffb0]" data-testid="linkedin-universe-focus">
+            <p className="mt-2 inline-block border border-[color:var(--uni-a50)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[color:var(--uni-a)]" data-testid="linkedin-universe-focus">
               {activeTopic ? topicLabel(activeTopic) : "Matches"} · {focus.total}
               {focus.total > focus.keys.length ? ` (top ${focus.keys.length} as cards)` : ""}
             </p>
@@ -589,7 +609,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
         </div>
         {count && (
           <div className="pointer-events-none absolute z-40 inset-0 grid place-items-center" aria-hidden="true">
-            <p className={`font-mono font-bold tracking-[0.4em] text-white ${count === "IGNITION" ? "text-4xl text-[#36ffb0]" : "text-3xl"}`}>{count}</p>
+            <p className={`font-mono font-bold tracking-[0.4em] text-foreground ${count === "IGNITION" ? "text-4xl text-[color:var(--uni-a)]" : "text-3xl"}`}>{count}</p>
           </div>
         )}
 
@@ -599,54 +619,54 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             onClick={() => lockVia === "pick" && open(hoverEntry.key)}
             tabIndex={lockVia === "pick" ? 0 : -1}
             aria-hidden={lockVia === "pick" ? undefined : true}
-            className={`absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[#36ffb0]/50 bg-black/80 p-3 text-left font-mono text-white ${
-              lockVia === "pick" ? "hover:border-[#36ffb0]" : "pointer-events-none"
+            className={`absolute z-40 bottom-3 left-3 w-[300px] max-w-[60%] border border-[color:var(--uni-a50)] bg-background/90 p-3 text-left font-mono text-foreground ${
+              lockVia === "pick" ? "hover:border-[color:var(--uni-a)]" : "pointer-events-none"
             }`}
             data-testid="linkedin-universe-target"
           >
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-[#36ffb0]">Target locked · {SOURCE_LABEL[hoverEntry.source]}</span>
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-[color:var(--uni-a)]">Target locked · {SOURCE_LABEL[hoverEntry.source]}</span>
             <span className="mt-2 flex gap-3">
               {hoverEntry.media[0] && getItem(hoverEntry.media[0]) && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbUrl(getItem(hoverEntry.media[0])!)} alt="" className="h-16 w-16 shrink-0 object-cover border border-white/20" />
+                <img src={thumbUrl(getItem(hoverEntry.media[0])!)} alt="" className="h-16 w-16 shrink-0 object-cover border border-border" />
               )}
               <span className="block min-w-0">
                 <span className="block text-[11px] leading-snug line-clamp-3">{hoverEntry.title}</span>
-                <span className="mt-1 block text-[10px] text-white/60">
+                <span className="mt-1 block text-[10px] text-muted-foreground">
                   {hoverEntry.engagement?.reactions != null ? `${hoverEntry.engagement.reactions} reactions · ` : ""}
                   {formatDay(hoverEntry.date)}
                 </span>
               </span>
             </span>
             {hoverEntry.topics[0] && (
-              <span className="mt-2 block truncate text-[10px] uppercase tracking-[0.15em] text-white/60">
+              <span className="mt-2 block truncate text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
                 {topicLabel(getTopic(hoverEntry.topics[0])?.parent ?? "")} › {topicLabel(hoverEntry.topics[0])}
               </span>
             )}
-            <span className="mt-1 block text-[10px] uppercase tracking-[0.15em] text-white/80">{lockVia === "pick" ? "Click to open" : "Click the star or card to open"}</span>
+            <span className="mt-1 block text-[10px] uppercase tracking-[0.15em] text-foreground/80">{lockVia === "pick" ? "Click to open" : "Click the star or card to open"}</span>
           </button>
         )}
 
-        <div className="pointer-events-none absolute z-40 bottom-3 right-3 w-[200px] font-mono text-white" data-testid="linkedin-universe-log">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-white/60">
-            Explored <span className="text-white">{explored.size}</span> / {u.topics.length} topics
+        <div className="pointer-events-none absolute z-40 bottom-3 right-3 w-[200px] font-mono text-foreground" data-testid="linkedin-universe-log">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Explored <span className="text-foreground">{explored.size}</span> / {u.topics.length} topics
           </p>
-          <div className="mt-1 h-[3px] w-full bg-white/15">
-            <div className="h-full bg-[#36ffb0] transition-[width] duration-500" style={{ width: `${Math.min(100, (explored.size / u.topics.length) * 100)}%` }} />
+          <div className="mt-1 h-[3px] w-full bg-foreground/15">
+            <div className="h-full bg-[color:var(--uni-a)] transition-[width] duration-500" style={{ width: `${Math.min(100, (explored.size / u.topics.length) * 100)}%` }} />
           </div>
-          <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/40">
+          <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
             {touch && !full ? "Two fingers to orbit and zoom · tap to open" : `Drag to orbit · ${full ? "scroll" : "Ctrl/⌘ + scroll"} to zoom · click to fly`}
           </p>
         </div>
 
         {toast && (
-          <div className="pointer-events-none absolute z-40 left-1/2 top-14 -translate-x-1/2 border border-[#36ffb0] bg-black/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[#36ffb0]" role="status">
+          <div className="pointer-events-none absolute z-40 left-1/2 top-14 -translate-x-1/2 border border-[color:var(--uni-a)] bg-background/90 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-[color:var(--uni-a)]" role="status">
             {toast}
           </div>
         )}
       </div>
-      <p className={`mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] ${full ? "text-white/50" : "text-muted-foreground/70"}`}>
-        <span className={full ? "text-white" : "text-foreground"}>View 05 · Universe</span>{" "}
+      <p className={`mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] ${full ? "text-muted-foreground" : "text-muted-foreground/70"}`}>
+        <span className={full ? "text-foreground" : "text-foreground"}>View 05 · Universe</span>{" "}
         <span className="normal-case tracking-normal">
           · every post a star around one core; the nearest posts pop up as images. Pick a level (L1 area, L2 topic, L3 subtopic, L4 post), or hover a star to
           lock on and click a sector or a topic to fly in; click a card, a star or the locked target to open it. Esc goes back.
@@ -731,22 +751,22 @@ function TopicsPanel({
     <div
       ref={panelRef}
       id="li-universe-topics"
-      className={`absolute right-3 z-40 w-[360px] max-w-[calc(100%-1.5rem)] border border-white/20 bg-black font-mono text-white shadow-2xl ${below ? "top-[96px]" : "top-3"}`}
+      className={`absolute right-3 z-40 w-[360px] max-w-[calc(100%-1.5rem)] border border-border bg-background font-mono text-foreground shadow-2xl ${below ? "top-[96px]" : "top-3"}`}
       data-testid="linkedin-universe-topics"
     >
-      <div className="flex items-center justify-between gap-2 border-b border-white/15 px-3 py-2">
+      <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em]">
-          Topics <span className="font-normal text-white/55">· L{level}</span>
+          Topics <span className="font-normal text-muted-foreground">· L{level}</span>
         </p>
-        <button type="button" onClick={onToggle} aria-expanded={open} aria-label={open ? "Minimize the topics menu" : "Open the topics menu"} className="px-1 text-[12px] text-white/70 hover:text-white">
+        <button type="button" onClick={onToggle} aria-expanded={open} aria-label={open ? "Minimize the topics menu" : "Open the topics menu"} className="px-1 text-[12px] text-foreground/80 hover:text-foreground">
           {open ? "▾" : "▴"}
         </button>
       </div>
       {open && (
-        <div className="max-h-[min(60vh,460px)] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,.25)_transparent]">
+        <div className="max-h-[min(60vh,460px)] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:hsl(var(--muted-foreground)/.45)_transparent]">
           {/* the trail: back up the tree */}
-          <nav ref={crumbs} aria-label="Topic path" className="flex flex-wrap items-center gap-1 border-b border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-white/55">
-            <button type="button" onClick={() => go(null)} aria-current={trail.length ? undefined : "location"} className={trail.length ? "underline decoration-dotted underline-offset-2 hover:text-white" : "text-[#36ffb0]"}>
+          <nav ref={crumbs} aria-label="Topic path" className="flex flex-wrap items-center gap-1 border-b border-border px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+            <button type="button" onClick={() => go(null)} aria-current={trail.length ? undefined : "location"} className={trail.length ? "underline decoration-dotted underline-offset-2 hover:text-foreground" : "text-[color:var(--uni-a)]"}>
               All
             </button>
             {trail.map((n, k) => (
@@ -756,7 +776,7 @@ function TopicsPanel({
                   type="button"
                   onClick={() => go(n.id)}
                   aria-current={k === trail.length - 1 ? "location" : undefined}
-                  className={k === trail.length - 1 ? "text-[#36ffb0]" : "underline decoration-dotted underline-offset-2 hover:text-white"}
+                  className={k === trail.length - 1 ? "text-[color:var(--uni-a)]" : "underline decoration-dotted underline-offset-2 hover:text-foreground"}
                 >
                   {n.label}
                 </button>
@@ -765,7 +785,7 @@ function TopicsPanel({
           </nav>
           <table className="w-full border-collapse text-[11px]">
             <thead>
-              <tr className="text-[9px] uppercase tracking-[0.15em] text-white/50">
+              <tr className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
                 <th className="px-3 py-1.5 text-left font-normal">{level === 1 ? "Area" : level === 2 ? "Topic" : "Subtopic"}</th>
                 <th className={th}>Posts</th>
                 <th className={th}>Reactions</th>
@@ -777,21 +797,21 @@ function TopicsPanel({
                 const on = trail.some((t) => t.id === n.id);
                 const below = childTopics(n.id).filter((c) => has(c.id)).length;
                 return (
-                  <tr key={n.id} className={`border-t border-white/10 ${on ? "bg-[#36ffb0]/10" : "hover:bg-white/[0.06]"}`}>
+                  <tr key={n.id} className={`border-t border-border ${on ? "bg-[color:var(--uni-a10)]" : "hover:bg-foreground/[0.06]"}`}>
                     <td className="px-3 py-0">
                       <button
                         type="button"
                         onClick={() => go(activeTopic === n.id ? n.parent : n.id)}
                         aria-pressed={on}
-                        className={`flex w-full items-center gap-2 py-1.5 text-left ${on ? "text-[#36ffb0]" : "text-white/90 hover:text-white"}`}
+                        className={`flex w-full items-center gap-2 py-1.5 text-left ${on ? "text-[color:var(--uni-a)]" : "text-foreground/90 hover:text-foreground"}`}
                       >
-                        <span className={`h-2 w-2 shrink-0 ${on ? "bg-[#36ffb0]" : "border border-white/50"}`} aria-hidden="true" />
+                        <span className={`h-2 w-2 shrink-0 ${on ? "bg-[color:var(--uni-a)]" : "border border-foreground/50"}`} aria-hidden="true" />
                         <span className="truncate">{n.label}</span>
                       </button>
                     </td>
-                    <td className="px-1.5 text-right tabular-nums text-white/80">{fmt(stats.posts.get(n.id) ?? 0)}</td>
-                    <td className="px-1.5 text-right tabular-nums text-white/80">{fmt(stats.reactions.get(n.id) ?? 0)}</td>
-                    {nextName && <td className="px-1.5 pr-3 text-right tabular-nums text-white/60">{below || "·"}</td>}
+                    <td className="px-1.5 text-right tabular-nums text-foreground/80">{fmt(stats.posts.get(n.id) ?? 0)}</td>
+                    <td className="px-1.5 text-right tabular-nums text-foreground/80">{fmt(stats.reactions.get(n.id) ?? 0)}</td>
+                    {nextName && <td className="px-1.5 pr-3 text-right tabular-nums text-muted-foreground">{below || "·"}</td>}
                   </tr>
                 );
               })}
@@ -799,7 +819,7 @@ function TopicsPanel({
           </table>
           {activeTopic && posts.length > 0 && (
             <>
-              <p className="border-t border-white/15 px-3 pb-1 pt-2.5 text-[9px] uppercase tracking-[0.15em] text-white/50">
+              <p className="border-t border-border px-3 pb-1 pt-2.5 text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
                 L4 · Posts in {current?.label} · {posts.length}
                 {posts.length > MAX_POSTS ? ` (top ${MAX_POSTS})` : ""}
               </p>
@@ -816,17 +836,17 @@ function TopicsPanel({
                         onClick={() => (on ? onOpen(key) : onLock(key))}
                         aria-pressed={on}
                         title={on ? "Open it" : "Fly to it"}
-                        className={`flex w-full items-center gap-2 border-t border-white/10 px-3 py-1.5 text-left ${on ? "bg-[#36ffb0]/10 text-[#36ffb0]" : "text-white/85 hover:bg-white/[0.06] hover:text-white"}`}
+                        className={`flex w-full items-center gap-2 border-t border-border px-3 py-1.5 text-left ${on ? "bg-[color:var(--uni-a10)] text-[color:var(--uni-a)]" : "text-foreground/85 hover:bg-foreground/[0.06] hover:text-foreground"}`}
                       >
                         {it ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={thumbUrl(it)} alt="" className="h-7 w-7 shrink-0 object-cover" loading="lazy" />
                         ) : (
-                          <span className="h-7 w-7 shrink-0 border border-white/30" aria-hidden="true" />
+                          <span className="h-7 w-7 shrink-0 border border-border" aria-hidden="true" />
                         )}
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[11px]">{e.title}</span>
-                          <span className="block text-[9px] uppercase tracking-[0.12em] text-white/50">
+                          <span className="block text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
                             {SOURCE_LABEL[e.source]} · {e.engagement?.reactions != null ? `${e.engagement.reactions} reactions · ` : ""}
                             {e.date.slice(0, 4)}
                           </span>
@@ -872,6 +892,9 @@ interface SceneProps {
   starTarget: { key: string; n: number } | null;
   /** Where the Topics menu covers the view (canvas pixels): pop-up cards keep out of it. */
   menuRect: React.MutableRefObject<[number, number, number, number] | null>;
+  /** Light theme: dark stars on white, normal blending (additive light vanishes on white). */
+  light: boolean;
+  accent: string;
 }
 
 /** One image card in 3D (the halo round a focus, or a pop-up beside a star). */
@@ -914,23 +937,23 @@ const Card = React.memo(function Card({
       onClick={() => onOpen(entry.key)}
       tabIndex={tabbable ? 0 : -1}
       aria-label={`${entry.title} (${formatDay(entry.date)})`}
-      className={`block overflow-hidden border bg-black text-left transition-[transform,border-color] duration-200 ${on ? "scale-110 border-[#36ffb0]" : "border-white/30 hover:scale-105 hover:border-white"}`}
+      className={`block overflow-hidden border bg-background text-left transition-[transform,border-color] duration-200 ${on ? "scale-110 border-[color:var(--uni-a)]" : "border-border hover:scale-105 hover:border-foreground"}`}
       style={{ width, animation: reduced ? undefined : `liPop 520ms cubic-bezier(.2,1.4,.4,1) ${delay}s both` }}
     >
       {it ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={thumbUrl(it)} alt="" className="block w-full object-cover" style={{ height: Math.round(width * 0.66) }} loading="lazy" />
       ) : (
-        <p className="overflow-hidden p-1.5 font-mono text-[9px] leading-snug text-white/80" style={{ height: Math.round(width * 0.66) }}>
+        <p className="overflow-hidden p-1.5 font-mono text-[9px] leading-snug text-foreground/80" style={{ height: Math.round(width * 0.66) }}>
           {entry.excerpt || entry.title}
         </p>
       )}
-      {width >= 90 && <p className="truncate px-1.5 py-1 font-mono text-[9px] text-white/80">{entry.title}</p>}
+      {width >= 90 && <p className="truncate px-1.5 py-1 font-mono text-[9px] text-foreground/80">{entry.title}</p>}
     </button>
   );
 });
 
-function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect }: SceneProps) {
+function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect, light, accent }: SceneProps) {
   const { camera, size, gl, invalidate } = useThree();
   /** The element the controls listen on (R3F's outer div): touch and wheel handling must sit there. */
   const surface = useThree((st) => st.events.connected) as HTMLElement | undefined;
@@ -981,11 +1004,22 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
           uMaxPoint: { value: 96 },
           uColor: { value: new THREE.Color("#ffffff") },
           uAccent: { value: new THREE.Color(RADIUM) },
+          uBoost: { value: 1 },
         },
       }),
     [],
   );
   React.useEffect(() => () => (geom.dispose(), mat.dispose()), [geom, mat]);
+  React.useEffect(() => {
+    mat.uniforms.uColor.value.set(light ? "#3a3a3a" : "#ffffff");
+    mat.uniforms.uAccent.value.set(accent);
+    mat.uniforms.uBoost.value = light ? 0.85 : 1;
+    mat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    mat.needsUpdate = true;
+    invalidate();
+  }, [light, accent, mat, invalidate]);
+  const ink = light ? "#141414" : "#ffffff";
+  const blend = light ? THREE.NormalBlending : THREE.AdditiveBlending;
   const matchRef = React.useRef(matching);
   matchRef.current = matching;
   React.useEffect(() => {
@@ -1206,7 +1240,7 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       }
     }
     if (core.current) core.current.scale.setScalar((reduced ? 1 : t < IGNITE_AT ? 0.4 + 0.25 * Math.sin(t * 9) : 1 + 0.12 * Math.sin(t * 2.4)) * 0.45);
-    if (lines.current) (lines.current.material as THREE.LineBasicMaterial).opacity = (reduced ? 1 : Math.min(1, Math.max(0, it - 1.4) / 1.2)) * 0.075;
+    if (lines.current) (lines.current.material as THREE.LineBasicMaterial).opacity = (reduced ? 1 : Math.min(1, Math.max(0, it - 1.4) / 1.2)) * (light ? 0.1 : 0.075);
     // The pulse runs centre > area > topic > star, again and again while a star is locked.
     if (pulse.current) {
       const i = hoverRef.current ? u.starIndex.get(hoverRef.current) : undefined;
@@ -1323,25 +1357,25 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
       <OrbitControls ref={controls} makeDefault enablePan={false} enableZoom={full} enableDamping dampingFactor={0.08} minDistance={3} maxDistance={70} autoRotate={orbit && !holdSpin} autoRotateSpeed={focus ? 0.8 : 0.35} />
       <points geometry={geom} material={mat} frustumCulled={false} />
       <lineSegments ref={lines} geometry={lineGeom} frustumCulled={false}>
-        <lineBasicMaterial color="#ffffff" transparent opacity={0.075} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <lineBasicMaterial color={ink} transparent opacity={0.075} depthWrite={false} blending={blend} />
       </lineSegments>
       {/* the core: me */}
       <mesh ref={core}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#ffffff" toneMapped={false} />
+        <meshBasicMaterial color={ink} toneMapped={false} />
       </mesh>
       <mesh ref={flash} visible={false}>
         <sphereGeometry args={[1, 24, 24]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        <meshBasicMaterial color={light ? accent : "#ffffff"} transparent opacity={0} depthWrite={false} blending={blend} toneMapped={false} />
       </mesh>
       <mesh ref={wave} visible={false} rotation={[Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.96, 1, 96]} />
-        <meshBasicMaterial color={RADIUM} transparent opacity={0} side={THREE.DoubleSide} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        <meshBasicMaterial color={accent} transparent opacity={0} side={THREE.DoubleSide} depthWrite={false} blending={blend} toneMapped={false} />
       </mesh>
-      {path && <Line points={path} color={RADIUM} lineWidth={2} transparent opacity={0.9} toneMapped={false} />}
+      {path && <Line points={path} color={accent} lineWidth={2} transparent opacity={0.9} toneMapped={false} />}
       <mesh ref={pulse} visible={false}>
         <sphereGeometry args={[0.16, 16, 16]} />
-        <meshBasicMaterial color={RADIUM} toneMapped={false} />
+        <meshBasicMaterial color={accent} toneMapped={false} />
       </mesh>
 
       {/* sector (area) names: buttons that fly there; keyed by the ignition, so a replay fades them in again */}
@@ -1353,9 +1387,9 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
             title={`${a.label}: ${a.count} posts`}
             aria-label={`${a.label}: ${a.count} posts`}
             className={`whitespace-nowrap font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-colors ${
-              activeArea === a.id ? "text-[#36ffb0]" : "text-white/80 hover:text-[#36ffb0]"
+              activeArea === a.id ? "text-[color:var(--uni-a)]" : "text-foreground/80 hover:text-[color:var(--uni-a)]"
             }`}
-            style={{ textShadow: "0 0 8px rgba(0,0,0,.9)", animation: reduced ? undefined : `liFade 600ms ${IGNITE_AT + 1.6}s both` }}
+            style={{ textShadow: "0 0 8px var(--uni-halo)", animation: reduced ? undefined : `liFade 600ms ${IGNITE_AT + 1.6}s both` }}
           >
             {SHORT[a.id] ?? a.label} · {a.count}
           </button>
@@ -1367,8 +1401,8 @@ function Scene({ u, igniteKey, reduced, matching, hover, onHover, onOpen, onPick
             <button
               type="button"
               onClick={() => onPick(t.id)}
-              className={`whitespace-nowrap font-mono text-[10px] tracking-[0.08em] ${activeTopic === t.id ? "text-[#36ffb0]" : "text-white/75 hover:text-[#36ffb0]"}`}
-              style={{ textShadow: "0 0 8px rgba(0,0,0,.95)", transform: "translateY(-14px)" }}
+              className={`whitespace-nowrap font-mono text-[10px] tracking-[0.08em] ${activeTopic === t.id ? "text-[color:var(--uni-a)]" : "text-foreground/80 hover:text-[color:var(--uni-a)]"}`}
+              style={{ textShadow: "0 0 8px var(--uni-halo)", transform: "translateY(-14px)" }}
             >
               {t.label} · {t.count}
             </button>
