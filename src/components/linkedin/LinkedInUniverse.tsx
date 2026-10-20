@@ -7,15 +7,17 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useWebGL } from "@/lib/webgl";
 import { useTheme } from "@/components/theme/ThemeProvider";
+import UniverseHelp from "./UniverseHelp";
 import { LINKEDIN_ENTRIES, SOURCE_LABEL, UNIVERSE_PATH, TOPIC_NODES, childTopics, formatDay, fullUrl, getItem, getTopic, thumbUrl, topicCounts, topicLabel, topicTrail, type LiEntry } from "@/data/linkedinArchive";
 
 /**
- * 05 Universe: the archive as a 3D space to fly through, styled as mission control.
+ * The Universe: the archive as a 3D space to fly through, styled as mission control (the archive's one view).
  *   Galaxy    it opens already formed: each area a cluster, each topic a nebula, each post a star (brighter with more
  *             reactions), with image cards popping up at once. "Ignite" replays the show on demand: a countdown, a
  *             flash, and every post bursts out of one point (me) into the galaxy
  *   Field     the cursor ripples the stars around it (the star under it stays put, so it can be locked)
- *   Lock      hovering a star fires a radium pulse centre > area > topic > star and the telemetry locks on
+ *   Lock      hovering a star or a card fires a radium pulse centre > area > topic > star (and on to its card on a
+ *             focus's globe) and the telemetry locks on
  *   Images    the posts nearest the camera pop up as image cards beside their stars, so flying in reveals them
  *   Fly       a click on an area or topic (or the sidebar, or a search) flies the camera there and opens a globe of its
  *             posts round the cluster, revolving (drag to turn it, hover a card to stop it); a click on a star or card opens the post, and the focus stays for its neighbours
@@ -36,6 +38,8 @@ interface Props {
   standalone?: boolean;
   /** Entries matching the search and filters other than the topic (null: all); the Topics menu counts within them. */
   countIn?: Set<string> | null;
+  /** Show the flying guide under the view (the hub renders its own copy in the server HTML; full screen always shows it). */
+  help?: boolean;
 }
 
 const RADIUM = "#36ffb0";
@@ -184,44 +188,169 @@ void main() {
   gl_FragColor = vec4(col, min(1.0, vAlpha * uBoost * shape));
 }`;
 
-/** A tiny synth: clicks and whooshes made on the fly (no sound files). Off until the viewer turns it on. */
+/** Major pentatonic steps (semitones): any run of these notes sounds musical, so a sweep across the stars plays a tune. */
+const PENTA = [0, 2, 4, 7, 9];
+const hz = (semitones: number, base = 220) => base * Math.pow(2, semitones / 12);
+
+/**
+ * The Universe's sound, made on the fly with Web Audio (no sound files, nothing downloaded). Off until the viewer
+ * turns it on.
+ *   Hum       a low space drone (detuned tones through a slowly breathing filter) while the view is on screen
+ *   Notes     hovering a star plays its note: each area its own note of a pentatonic scale, the topic sets the octave
+ *             and reactions brighten it, so sweeping across the stars plays a melody; a soft echo adds space
+ *   Pop       a faint glass tick when image cards pop up
+ *   Warp      flying to an area, a topic or a star: a whoosh over a rising tone
+ *   Chime     opening a post: a two-note bell
+ *   Ignition  Ignite's countdown beeps and the burst's low boom
+ */
 function makeSound() {
   let ctx: AudioContext | null = null;
-  const get = () => (ctx ??= new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)());
-  const blip = (freq: number, dur = 0.035, vol = 0.035) => {
-    const c = get(), o = c.createOscillator(), g = c.createGain();
-    o.frequency.value = freq;
-    o.type = "sine";
-    g.gain.setValueAtTime(vol, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
-    o.connect(g).connect(c.destination);
-    o.start();
-    o.stop(c.currentTime + dur);
+  let out: GainNode | null = null;
+  let echo: GainNode | null = null;
+  let hum: { stop: () => void } | null = null;
+  let lastNote = 0;
+  let lastPop = 0;
+  const get = () => {
+    if (ctx) return ctx;
+    const c = (ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)());
+    // Master through a limiter, so stacked notes never clip; a feedback delay is the echo.
+    const limit = c.createDynamicsCompressor();
+    limit.threshold.value = -18;
+    limit.ratio.value = 6;
+    out = c.createGain();
+    out.connect(limit).connect(c.destination);
+    const delay = c.createDelay(1), feedback = c.createGain(), dark = c.createBiquadFilter(), wet = c.createGain();
+    delay.delayTime.value = 0.27;
+    feedback.gain.value = 0.32;
+    dark.type = "lowpass";
+    dark.frequency.value = 2600;
+    wet.gain.value = 0.35;
+    echo = c.createGain();
+    echo.connect(delay);
+    delay.connect(dark).connect(feedback).connect(delay);
+    dark.connect(wet).connect(out);
+    return c;
   };
-  const whoosh = () => {
-    const c = get(), len = Math.floor(c.sampleRate * 0.9), buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
+  /** One tone with a quick attack and a decay, into the master and (by `wet`) the echo. */
+  const tone = (freq: number, o: { type?: OscillatorType; dur?: number; vol?: number; at?: number; wet?: number; glide?: number } = {}) => {
+    const { type = "sine", dur = 0.4, vol = 0.04, at = 0, wet = 0.5, glide } = o;
+    const c = get(), t = c.currentTime + at, osc = c.createOscillator(), g = c.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    if (glide) osc.frequency.exponentialRampToValueAtTime(glide, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g).connect(out!);
+    if (wet) {
+      const send = c.createGain();
+      send.gain.value = wet;
+      g.connect(send).connect(echo!);
+    }
+    osc.start(t);
+    osc.stop(t + dur + 0.05);
+  };
+  /** Filtered noise that fades out: whooshes and rumbles. */
+  const noise = (dur: number, from: number, to: number, vol: number, type: BiquadFilterType = "bandpass") => {
+    const c = get(), t = c.currentTime, len = Math.floor(c.sampleRate * dur), buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
     for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
     const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
     src.buffer = buf;
-    f.type = "bandpass";
-    f.frequency.setValueAtTime(300, c.currentTime);
-    f.frequency.exponentialRampToValueAtTime(2400, c.currentTime + 0.8);
-    g.gain.value = 0.05;
-    src.connect(f).connect(g).connect(c.destination);
-    src.start();
+    f.type = type;
+    f.frequency.setValueAtTime(from, t);
+    f.frequency.exponentialRampToValueAtTime(to, t + dur * 0.9);
+    g.gain.value = vol;
+    src.connect(f).connect(g).connect(out!);
+    src.start(t);
+  };
+  const humOff = () => {
+    hum?.stop();
+    hum = null;
   };
   return {
-    blip,
-    whoosh,
-    resume: () => get().resume(),
+    /** A star's note: `semis` above A3 (from its area and topic), `bright` 0 to 1 (from its reactions). */
+    note(semis: number, bright: number) {
+      const now = performance.now();
+      if (now - lastNote < 60) return;
+      lastNote = now;
+      const f = hz(semis);
+      tone(f, { type: "triangle", dur: 0.7, vol: 0.05, wet: 0.6 });
+      tone(f * 2, { dur: 0.35, vol: 0.006 + 0.016 * bright, wet: 0.6 });
+    },
+    pop() {
+      const now = performance.now();
+      if (now - lastPop < 400) return;
+      lastPop = now;
+      tone(hz(PENTA[Math.floor(Math.random() * PENTA.length)] + 36), { dur: 0.09, vol: 0.012, wet: 0.8 });
+    },
+    warp() {
+      noise(0.9, 300, 2400, 0.05);
+      tone(140, { dur: 0.7, vol: 0.03, wet: 0.3, glide: 420 });
+    },
+    chime() {
+      for (const [semis, at] of [[19, 0], [26, 0.09]] as const) {
+        tone(hz(semis), { dur: 1.1, vol: 0.045, at, wet: 0.7 });
+        tone(hz(semis) * 3.01, { dur: 0.4, vol: 0.008, at, wet: 0.7 });
+      }
+    },
+    beep(high = false) {
+      tone(high ? 1320 : 880, { type: "square", dur: 0.12, vol: 0.016, wet: 0.2 });
+    },
+    boom() {
+      tone(110, { dur: 1.6, vol: 0.12, wet: 0.2, glide: 32 });
+      noise(1.4, 900, 60, 0.09, "lowpass");
+    },
+    humOn() {
+      if (hum) return;
+      const c = get(), t = c.currentTime, g = c.createGain(), f = c.createBiquadFilter(), lfo = c.createOscillator(), depth = c.createGain();
+      f.type = "lowpass";
+      f.frequency.value = 380;
+      lfo.frequency.value = 0.07;
+      depth.gain.value = 140;
+      lfo.connect(depth).connect(f.frequency);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.03, t + 2);
+      f.connect(g).connect(out!);
+      const oscs = ([[110, "sine", 1], [110.7, "sine", 1], [164.8, "triangle", 0.5]] as const).map(([fr, type, level]) => {
+        const o = c.createOscillator(), lv = c.createGain();
+        o.type = type;
+        o.frequency.value = fr;
+        lv.gain.value = level;
+        o.connect(lv).connect(f);
+        o.start(t);
+        return o;
+      });
+      lfo.start(t);
+      hum = {
+        stop: () => {
+          const now = c.currentTime;
+          // Hold the level it has reached (mid fade-in too), then fade from there: no click.
+          if (g.gain.cancelAndHoldAtTime) g.gain.cancelAndHoldAtTime(now);
+          else {
+            g.gain.cancelScheduledValues(now);
+            g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), now);
+          }
+          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+          for (const o of [...oscs, lfo]) o.stop(now + 0.9);
+        },
+      };
+    },
+    humOff,
+    /** Wake the audio (Safari pauses it in a background tab); a refusal outside a gesture is harmless. */
+    resume: () => get().resume().catch(() => {}),
+    /** Idle the audio engine while sound is off (the echo loop stops with it). */
+    suspend: () => {
+      if (ctx?.state === "running") ctx.suspend().catch(() => {});
+    },
     close: () => {
+      humOff();
       ctx?.close().catch(() => {});
       ctx = null;
     },
   };
 }
 
-export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpenEntry, filters, standalone = false, countIn = null }: Props) {
+export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpenEntry, filters, standalone = false, countIn = null, help = true }: Props) {
   const gl = useWebGL();
   // It follows the site's theme (Auto, Light, Dark): white space and dark stars in light, black space and glowing
   // stars in dark; the accent keeps its contrast in both.
@@ -299,6 +428,33 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   React.useEffect(() => () => synth?.close(), [synth]);
   const soundRef = React.useRef(sound);
   soundRef.current = sound;
+  const visibleRef = React.useRef(visible);
+  visibleRef.current = visible;
+  // The hum plays only while sound is on and the view is on screen in a visible tab; otherwise it fades out and,
+  // once the fade is done, the audio engine idles.
+  React.useEffect(() => {
+    if (!synth) return;
+    let idle = 0;
+    const sync = () => {
+      window.clearTimeout(idle);
+      if (sound && visible && !document.hidden) {
+        synth.resume();
+        synth.humOn();
+      } else {
+        synth.humOff();
+        idle = window.setTimeout(() => synth.suspend(), 1000);
+      }
+    };
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      window.clearTimeout(idle);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [synth, sound, visible]);
+  const onPop = React.useCallback(() => {
+    if (soundRef.current) synth?.pop();
+  }, [synth]);
 
   React.useEffect(() => {
     const q = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -333,9 +489,15 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   React.useEffect(() => {
     if (reduced || !play) return setCount(null);
     const steps: [number, string | null][] = [[0, "T-3"], [0.6, "T-2"], [1.2, "T-1"], [1.8, "IGNITION"], [IGNITE_AT + 0.6, null]];
-    const timers = steps.map(([at, label]) => window.setTimeout(() => setCount(label), at * 1000));
+    const timers = steps.map(([at, label]) =>
+      window.setTimeout(() => {
+        setCount(label);
+        if (soundRef.current && visibleRef.current && label) synth?.beep(label === "IGNITION");
+      }, at * 1000),
+    );
+    timers.push(window.setTimeout(() => soundRef.current && visibleRef.current && synth?.boom(), IGNITE_AT * 1000));
     return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [igniteKey, reduced, play]);
+  }, [igniteKey, reduced, play, synth]);
 
   const logTopic = React.useCallback(
     (topicId: string | undefined) => {
@@ -373,10 +535,14 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
       setLockVia(via);
       if (key) {
         logTopic(entryByKey.get(key)?.topics[0]);
-        if (soundRef.current) synth?.blip(1500);
+        if (soundRef.current) {
+          const st = u.stars[u.starIndex.get(key) ?? -1];
+          const semis = !st || st.area < 0 ? PENTA[4] + 24 : PENTA[st.area % 5] + 12 * Math.floor(st.area / 5) + (st.topic % 2 ? 12 : 0);
+          synth?.note(semis, Math.min(1, (entryByKey.get(key)?.engagement?.reactions ?? 0) / 150));
+        }
       }
     },
-    [entryByKey, logTopic, synth],
+    [entryByKey, logTopic, synth, u],
   );
   // Resting on a post for a moment loads its full image ahead, so opening it is instant (a sweep loads nothing).
   React.useEffect(() => {
@@ -388,10 +554,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
   }, [hover, entryByKey]);
   const open = React.useCallback(
     (key: string) => {
-      if (soundRef.current) {
-        synth?.blip(880, 0.06);
-        window.setTimeout(() => synth?.blip(1320, 0.08), 70);
-      }
+      if (soundRef.current) synth?.chime();
       // Opening a post from the whole galaxy also focuses its topic, so its neighbours are there after the viewer
       // closes; inside a focus or a search, the focus (and the page's filter) stays as it is.
       const main = entryByKey.get(key)?.topics[0];
@@ -411,13 +574,13 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     (key: string) => {
       onHover(key, "pick");
       setStarTarget((t) => ({ key, n: (t?.n ?? 0) + 1 }));
-      if (soundRef.current) synth?.whoosh();
+      if (soundRef.current) synth?.warp();
     },
     [onHover, synth],
   );
   const pick = React.useCallback(
     (id: string | null) => {
-      if (soundRef.current && id) synth?.whoosh();
+      if (soundRef.current && id) synth?.warp();
       onTopic(id);
     },
     [onTopic, synth],
@@ -477,27 +640,37 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
     else wrapRef.current?.requestFullscreen?.().catch(() => {});
   };
   const hoverEntry = hover ? entryByKey.get(hover) : undefined;
-  const BTN = "font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 border border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40";
+  const BTN = "shrink-0 whitespace-nowrap focus-visible:outline-offset-[-2px] font-mono text-[10px] leading-[15px] uppercase tracking-[0.15em] px-2 py-1 border border-border bg-background/90 text-muted-foreground hover:text-foreground hover:border-foreground/40";
   const btn = BTN;
 
   if (gl.ok === false)
     return (
-      <div className="border border-border p-6 font-mono text-[12px] text-muted-foreground">
-        This browser cannot draw 3D graphics (WebGL is off), so the Universe view is not available.{" "}
+      // In the hub it keeps the size the loading placeholder held, so nothing below it moves.
+      <div className={`border border-border p-6 font-mono text-[12px] text-muted-foreground ${standalone ? "" : "mt-[33px] grid w-full aspect-[16/10] min-h-[520px] max-h-[85vh] place-items-center text-center"}`}>
+        <p>
+        This browser cannot draw 3D graphics (WebGL is off), so the Universe view (and its flying guide) is not available.{" "}
         {standalone ? (
           <a href={UNIVERSE_PATH} className="underline text-foreground">
             The full archive lists every post.
           </a>
         ) : (
-          "The other views and the cards below show everything."
+          "The topics and the cards below list every post."
         )}
+        </p>
       </div>
     );
 
   return (
-    <div ref={wrapRef} style={themeVars} className={`${onBlack ? "text-foreground" : ""} ${full ? "bg-background h-full flex flex-col p-3" : ""}`} data-testid="linkedin-universe">
+    <div
+      ref={wrapRef}
+      style={themeVars}
+      className={`${onBlack ? "text-foreground" : ""} ${full ? "bg-background h-full flex flex-col p-3" : ""}`}
+      // Safari pauses audio when the tab goes to the background; any press in the view wakes it again.
+      onPointerDown={() => soundRef.current && synth?.resume()}
+      data-testid="linkedin-universe"
+    >
       {onBlack && filters && <div className="mb-2">{filters}</div>}
-      <div className="mb-2 flex flex-wrap items-center gap-1">
+      <div className="mb-2 flex flex-nowrap items-center gap-1 overflow-x-auto [scrollbar-width:none]">
         {/* Replays the ignition show; with reduced motion there is no show, so no button */}
         {!reduced && (
           <button
@@ -513,6 +686,10 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             <span aria-hidden="true">↻ </span>Ignite
           </button>
         )}
+        {/* second, so on a phone (the row scrolls sideways) the way out of a focus is always in view */}
+        <button type="button" className={btn} onClick={leaveFocus} disabled={!activeTopic} aria-disabled={!activeTopic}>
+          ✕ All
+        </button>
         <button ref={reduced ? firstBtnRef : undefined} type="button" className={btn} onClick={() => setMenu(!(menuOpen))} aria-expanded={menuOpen} aria-controls="li-universe-topics" data-testid="linkedin-universe-topics-toggle">
           Topics {(menuOpen) ? "▴" : "▾"}
         </button>
@@ -535,9 +712,6 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             Auto-orbit {orbit ? "on" : "off"}
           </button>
         )}
-        <button type="button" className={btn} onClick={leaveFocus} disabled={!activeTopic} aria-disabled={!activeTopic}>
-          ✕ All
-        </button>
         {canFull && (
           <button type="button" className={btn} onClick={toggleFull}>
             {full ? "Exit full screen" : "Full screen"}
@@ -585,6 +759,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
               u={u}
               igniteKey={igniteKey}
               play={play}
+              onPop={onPop}
               reduced={reduced}
               matching={matching}
               hover={hover}
@@ -684,14 +859,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
           </div>
         )}
       </div>
-      <p className={`mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] ${full ? "text-muted-foreground" : "text-muted-foreground/70"}`}>
-        <span className={full ? "text-foreground" : "text-foreground"}>View 05 · Universe</span>{" "}
-        <span className="normal-case tracking-normal">
-          · every post a star around one core; the nearest posts pop up as images. Pick a level (L1 area, L2 topic, L3 subtopic, L4 post), or hover a star to
-          lock on and click a sector or a topic to fly in; click a card, a star or the locked target to open it. Esc goes back.
-          {standalone ? "" : " The cards below list everything."}
-        </span>
-      </p>
+      {(help || full) && <UniverseHelp full={full} standalone={standalone} />}
     </div>
   );
 }
@@ -898,6 +1066,8 @@ interface SceneProps {
   igniteKey: number;
   /** Play the ignition show; otherwise the galaxy starts formed. */
   play: boolean;
+  /** New image cards popped up (a sound cue). */
+  onPop: () => void;
   reduced: boolean;
   matching: Set<string> | null;
   hover: string | null;
@@ -985,7 +1155,7 @@ const Card = React.memo(function Card({
   );
 });
 
-function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect, light, accent }: SceneProps) {
+function Scene({ u, igniteKey, play, onPop, reduced, matching, hover, onHover, onOpen, onPick, activeTopic, focus, orbit, images, full, entryByKey, starTarget, menuRect, light, accent }: SceneProps) {
   const { camera, size, gl, invalidate } = useThree();
   /** The element the controls listen on (R3F's outer div): touch and wheel handling must sit there. */
   const surface = useThree((st) => st.events.connected) as HTMLElement | undefined;
@@ -1265,6 +1435,13 @@ function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, 
 
   // ---- image pop-ups: the posts nearest the camera, beside their stars ----
   const [near, setNear] = React.useState<string[]>([]);
+  // A faint tick when a wave of new cards pops up (a flight, a zoom), not for the odd card the slow orbit brings in.
+  // Sound on only; the parent checks.
+  const prevNear = React.useRef<string[]>([]);
+  React.useEffect(() => {
+    if (near.filter((k) => !prevNear.current.includes(k)).length >= 3) onPop();
+    prevNear.current = near;
+  }, [near, onPop]);
   const nearClock = React.useRef(0);
 
   // ---- per frame ----
@@ -1274,8 +1451,17 @@ function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, 
   const core = React.useRef<THREE.Mesh>(null);
   const lines = React.useRef<THREE.LineSegments>(null);
   const globeRef = React.useRef<THREE.Group>(null);
-  const pathPts = React.useMemo(() => [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()], []);
-  const segs = React.useMemo(() => [0, 0, 0], []);
+  // The locked post's path: centre > area > topic > its star and, when the post has a card on the focus's globe (which
+  // can sit far from its star), on from the star to that card, so the line always ends on the card being targeted.
+  const path = React.useMemo(() => {
+    const hi = hover ? u.stars[u.starIndex.get(hover) ?? -1] : undefined;
+    if (!hi || hi.topic < 0) return null;
+    const pts = [new THREE.Vector3(), u.areas[hi.area].pos, u.topics[hi.topic].pos, hi.pos];
+    const card = focus && globe?.pts.find((x) => x.key === hover);
+    if (card && focus) pts.push(new THREE.Vector3(...card.p).add(focus.center));
+    return pts;
+  }, [hover, u, focus, globe]);
+  const segs = React.useMemo(() => (path ? path.slice(1).map((q, k) => path[k].distanceTo(q)) : []), [path]);
   useFrame((state, dt) => {
     const t = elapsed();
     mat.uniforms.uTime.value = reduced ? 0 : t;
@@ -1312,21 +1498,14 @@ function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, 
     }
     if (core.current) core.current.scale.setScalar((reduced ? 1 : t < IGNITE_AT ? 0.4 + 0.25 * Math.sin(t * 9) : 1 + 0.12 * Math.sin(t * 2.4)) * 0.45);
     if (lines.current) (lines.current.material as THREE.LineBasicMaterial).opacity = (reduced ? 1 : Math.min(1, Math.max(0, it - 1.4) / 1.2)) * (light ? 0.13 : 0.075);
-    // The pulse runs centre > area > topic > star, again and again while a star is locked.
+    // The pulse runs along the locked post's path (centre > area > topic > star, and on to its card), again and again.
     if (pulse.current) {
-      const i = hoverRef.current ? u.starIndex.get(hoverRef.current) : undefined;
-      const s = i != null ? u.stars[i] : undefined;
-      pulse.current.visible = !!s && s.topic >= 0 && !reduced;
-      if (s && s.topic >= 0 && !reduced) {
-        pathPts[0].set(0, 0, 0);
-        pathPts[1].copy(u.areas[s.area].pos);
-        pathPts[2].copy(u.topics[s.topic].pos);
-        pathPts[3].copy(s.pos);
-        for (let k = 0; k < 3; k++) segs[k] = pathPts[k].distanceTo(pathPts[k + 1]);
-        let left = ((state.clock.elapsedTime % 1.4) / 1.4) * (segs[0] + segs[1] + segs[2]);
+      pulse.current.visible = !!path && !reduced;
+      if (path && !reduced) {
+        let left = ((state.clock.elapsedTime % 1.4) / 1.4) * segs.reduce((a, b) => a + b, 0);
         let k = 0;
-        while (k < 2 && left > segs[k]) left -= segs[k++];
-        pulse.current.position.copy(pathPts[k]).lerp(pathPts[k + 1], Math.min(1, left / (segs[k] || 1)));
+        while (k < segs.length - 1 && left > segs[k]) left -= segs[k++];
+        pulse.current.position.copy(path[k]).lerp(path[k + 1], Math.min(1, left / (segs[k] || 1)));
       }
     }
     // The globe breathes a little, and each card fades with how far round the back it is.
@@ -1410,10 +1589,6 @@ function Scene({ u, igniteKey, play, reduced, matching, hover, onHover, onOpen, 
   }, [u]);
   React.useEffect(() => () => lineGeom.dispose(), [lineGeom]);
 
-  const path = React.useMemo(() => {
-    const hi = hover ? u.stars[u.starIndex.get(hover) ?? -1] : undefined;
-    return hi && hi.topic >= 0 ? [new THREE.Vector3(), u.areas[hi.area].pos, u.topics[hi.topic].pos, hi.pos] : null;
-  }, [hover, u]);
   const hiStar = hover ? u.stars[u.starIndex.get(hover) ?? -1] : undefined;
   const activeNode = activeTopic ? getTopic(activeTopic) : undefined;
   const activeArea = activeNode ? (activeNode.level === 1 ? activeNode.id : activeNode.level === 2 ? activeNode.parent : getTopic(activeNode.parent ?? "")?.parent) : null;

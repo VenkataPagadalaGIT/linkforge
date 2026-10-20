@@ -47,7 +47,7 @@ const OUT = (name) => path.join(ROOT, `src/data/${name}${suffix}.ts`);
 // Names that describe the account itself, not a subject.
 const ENTITY_STOP = new Set(["Venkata Pagadala", "LinkedIn"]);
 const ENTITY_MIN = 3;
-/** Map view: L2 topics with at least this many entries keep their label visible. Mirrored in LinkedInGraph.tsx. */
+/** Map view: L2 topics with at least this many entries keep their label visible (the 2D views are retired; kept so the graph data stays stable). */
 const MAP_LABEL_MIN = 25;
 
 /** Site copy rule: no em dashes, ever. */

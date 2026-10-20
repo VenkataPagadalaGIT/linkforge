@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import TopicTree from "./TopicTree";
 import ArchiveFilters from "./ArchiveFilters";
+import UniverseHelp from "./UniverseHelp";
 import { KIND_FILTERS, compileQuery, entryHaystack, entryKindLabel, hasKind, mediaOf, sourceCounts, useFullText, type KindFilter, type SourceFilter } from "@/lib/linkedinSearch";
-import type { FocusRequest } from "./LinkedInGraph";
 import {
   KIND_LABEL,
   LINKEDIN_ENTRIES,
@@ -29,19 +29,31 @@ import {
 } from "@/data/linkedinArchive";
 
 /**
- * The archive hub: the topic tree as a sidebar, search and filters, the knowledge graph and every post, article and
- * standalone media item as a card, all sharing one state. Whatever you search, filter or pick in the sidebar lights
- * up in the graph, and the graph zooms to it.
+ * The archive hub: the topic tree as a sidebar, search and filters, the Universe (the archive in 3D, the one view)
+ * and every post, article and standalone media item as a card, all sharing one state. Whatever you search, filter or
+ * pick in the sidebar lights up in the Universe, and it flies there.
  *
  * Search covers each entry's title, excerpt, topics, names and media descriptions at once, and every word of every
  * post and article as soon as the full-text index arrives (it loads when the search box is first used).
  *
- * Server HTML: the sidebar, the graph and the first page of cards render with no filter applied, every card and
- * node is a plain link, and every topic row links to its page, so the archive works without JavaScript.
+ * Server HTML: the sidebar and the first page of cards render with no filter applied, every card is a plain link,
+ * and every topic row links to its page, so the archive works without JavaScript (the Universe needs it, and WebGL).
  */
 
-// The graph and its data load as their own chunk (still server-rendered), so topic pages never ship them.
-const LinkedInGraph = dynamic(() => import("./LinkedInGraph"));
+/** The Universe's size before it loads (its one-row toolbar, 25px buttons plus an 8px gap = 33px, then its box), so
+ *  mounting it never shifts the page. Keep in step with the toolbar and box in LinkedInUniverse.tsx. */
+const UNIVERSE_BOX = "w-full aspect-[16/10] min-h-[520px] max-h-[85vh]";
+// The Universe (three.js) loads as its own chunk, in the browser only; topic pages never ship it.
+const LinkedInUniverse = dynamic(() => import("./LinkedInUniverse"), {
+  ssr: false,
+  loading: () => (
+    <div className="li-js pt-[33px]" aria-hidden="true">
+      <div className={`${UNIVERSE_BOX} grid place-items-center border border-border bg-background`}>
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">Loading the Universe…</p>
+      </div>
+    </div>
+  ),
+});
 
 type SortOrder = "newest" | "engaging";
 /** The sidebar's last row: entries with no topic (one-line replies and reshares). */
@@ -49,7 +61,7 @@ const NONE = "_none";
 const PAGE = 60;
 
 interface Props {
-  /** Topic pages: only this topic's entries, without the graph or the sidebar. */
+  /** Topic pages: only this topic's entries, without the Universe or the sidebar. */
   topicId?: string;
 }
 
@@ -72,7 +84,6 @@ export default function LinkedInExplorer({ topicId }: Props) {
   const [sort, setSort] = React.useState<SortOrder>("newest");
   const [shown, setShown] = React.useState(PAGE);
   const [open, setOpen] = React.useState<{ key: string; idx?: string } | null>(null);
-  const [focus, setFocus] = React.useState<FocusRequest | null>(null);
   const [treeOpen, setTreeOpen] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
@@ -105,7 +116,7 @@ export default function LinkedInExplorer({ topicId }: Props) {
   }, [beforeTopic, topic, scoped, sort]);
   const filterActive = kind !== "all" || source !== "all" || !!year || !!matcher || (!!topic && !scoped);
   const matching = React.useMemo(() => (filterActive ? new Set(filtered.map((e) => e.key)) : null), [filterActive, filtered]);
-  // The graph (about 1,100 nodes) follows the typing at its own pace, so the search box stays responsive.
+  // The Universe (about 1,000 stars) follows the typing at its own pace, so the search box stays responsive.
   const graphMatching = React.useDeferredValue(matching);
   // The Universe's Topics menu counts within the search and filters, whatever the topic.
   const nonTopicActive = kind !== "all" || source !== "all" || !!year || !!matcher;
@@ -120,21 +131,9 @@ export default function LinkedInExplorer({ topicId }: Props) {
   }, [entries]);
   const years = React.useMemo(() => [...new Set(entries.map((e) => e.date.slice(0, 4)))].sort().reverse(), [entries]);
 
-  // New filters start the list from the top, and ask the graph to zoom to what they match.
-  const signature = `${query.trim()}|${kind}|${source}|${year}|${topic}|${query.trim() && fullText ? 1 : 0}`;
-  const firstSig = React.useRef(signature);
-  React.useEffect(() => {
-    setShown(PAGE);
-    if (scoped || signature === firstSig.current) return;
-    firstSig.current = "";
-    const onlyTopic = !!topic && topic !== NONE && !matcher && kind === "all" && !year;
-    const t = window.setTimeout(
-      () => setFocus((f) => ({ kind: onlyTopic ? "topic" : filterActive ? "matches" : "all", id: onlyTopic ? topic! : undefined, nonce: (f?.nonce ?? 0) + 1 })),
-      query.trim() ? 350 : 0,
-    );
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signature]);
+  // New filters start the list from the top (the Universe flies to what they match on its own).
+  const signature = `${query.trim()}|${kind}|${source}|${year}|${topic}`;
+  React.useEffect(() => setShown(PAGE), [signature]);
 
   // Screen readers hear the result count once typing pauses, not on every keystroke (and not on page load).
   const [announce, setAnnounce] = React.useState("");
@@ -215,19 +214,15 @@ export default function LinkedInExplorer({ topicId }: Props) {
 
           {!scoped && (
             <section className="mb-10" aria-labelledby="li-graph-h">
-              <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
-                <h2 id="li-graph-h" className="font-display text-xl font-bold text-foreground">The knowledge graph</h2>
-                <Legend />
-              </div>
-              <LinkedInGraph
-                entriesByKey={entriesByKey}
+              <h2 id="li-graph-h" className="sr-only">The Universe, in 3D</h2>
+              <LinkedInUniverse
                 matching={graphMatching}
                 activeTopic={activeNode?.id ?? null}
-                focus={focus}
                 onTopic={selectTopic}
                 onOpenEntry={openFromGraph}
                 countIn={countIn}
-                fullFilters={
+                help={false}
+                filters={
                   <ArchiveFilters
                     compact
                     query={query}
@@ -245,16 +240,11 @@ export default function LinkedInExplorer({ topicId }: Props) {
                   />
                 }
               />
-              <p className="li-js mt-3 font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
-                Five views: 01 Topics (each area a region; each topic a flower of its posts, with its subtopics around it and
-                the tree drawn as lines; drag an area or a topic, anywhere inside its circle, to move it), 02 Timeline (one lane per area; press Grow to
-                replay it), 03 Map (similar posts together, outliers at the edge), 04 Story (an animated tour: every post
-                gathers around one centre, then the top posts play as a slideshow; Reel 9:16 frames it for Instagram) and 05 Universe
-                (a 3D galaxy of every post: fly into a topic, lock on to a star, open its post). Search, or pick a topic in the sidebar,
-                and the graph lights and zooms to what matches. Hover anything to preview what it connects to; click it to pin
-                it and walk the graph from its panel. Esc, ✕ or a click on empty space unpins. Zoom with the buttons or Ctrl/⌘
-                and scroll, then drag to move.
-              </p>
+              {/* server-rendered, so the cards below sit where they will stay when the 3D view arrives */}
+              <UniverseHelp />
+              <noscript>
+                <p className="font-mono text-[11px] text-muted-foreground">The 3D Universe needs JavaScript. Every post, article and image is listed below and in the topics.</p>
+              </noscript>
             </section>
           )}
 
@@ -378,27 +368,6 @@ function ActiveTopic({ id, count, onSelect }: { id: string; count: number; onSel
         {count} shown below and lit in the graph
       </p>
     </div>
-  );
-}
-
-function Legend() {
-  const sq = "inline-block w-2.5 h-2.5 border";
-  return (
-    <ul className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-      <li className="inline-flex items-center gap-1.5"><b className="text-foreground">AREA</b></li>
-      <li className="inline-flex items-center gap-1.5"><i className="inline-block w-3 h-3 rounded-full border border-foreground" /> Topic</li>
-      <li className="inline-flex items-center gap-1.5">
-        <svg viewBox="-4 -4 8 8" className="w-2.5 h-2.5" aria-hidden="true"><path d="M -3.6 0 L -1.8 -3.1 L 1.8 -3.1 L 3.6 0 L 1.8 3.1 L -1.8 3.1 Z" className="fill-background stroke-foreground" strokeWidth={0.9} /></svg> Subtopic
-      </li>
-      <li className="inline-flex items-center gap-1.5"><i className="inline-block w-2 h-2 rotate-45 bg-sky-600 dark:bg-sky-300" /> Name (Map)</li>
-      <li className="inline-flex items-center gap-1.5">
-        <svg viewBox="-5 -6 10 12" className="w-2.5 h-3" aria-hidden="true"><path d="M -4.5 -5.5 H 2 L 4.5 -3 V 5.5 H -4.5 Z M 2 -5.5 V -3 H 4.5" className="fill-background stroke-foreground" strokeWidth={1.2} /></svg> Article
-      </li>
-      <li className="inline-flex items-center gap-1.5"><i className={`${sq} border-border bg-muted-foreground/40`} /> Post with media</li>
-      <li className="inline-flex items-center gap-1.5"><i className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground" /> Text post</li>
-      <li className="inline-flex items-center gap-1.5 text-rose-700 dark:text-rose-300"><i className={`${sq} border-rose-600 dark:border-rose-300`} /> Video</li>
-      <li className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-300"><i className={`${sq} border-amber-600 dark:border-amber-300`} /> Document</li>
-    </ul>
   );
 }
 

@@ -9,7 +9,7 @@
  * entry index (every post, article and standalone media item). Full post
  * records, article bodies, topic lists and counts live in
  * linkedinArchiveServer.ts, which only server code imports; the graph lives in
- * linkedinGraphData.ts, imported only by the graph component.
+ * linkedinGraphData.ts (the layout of the retired 2D views; the data guard still checks it, the site no longer loads it).
  * Media files are served from LINKEDIN_MEDIA_BASE (Cloudflare R2 in production,
  * a local static server in development), never from this repository.
  */
@@ -48,8 +48,6 @@ export const LINKEDIN_MEDIA_BASE = (
 
 /** 480px-wide thumbnail (every kind). */
 export const thumbUrl = (it: Pick<LiItem, "idx">) => `${LINKEDIN_MEDIA_BASE}/t/${it.idx}.webp`;
-/** 96px square used inside the graph. */
-export const nodeImageUrl = (idx: string) => `${LINKEDIN_MEDIA_BASE}/n/${idx}.webp`;
 /** The full media: large image, the video file, or the document. */
 export const fullUrl = (it: Pick<LiItem, "idx" | "kind" | "docExt">) =>
   it.kind === "video"
