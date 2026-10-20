@@ -114,6 +114,13 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Archive media (public items only, never in this repository) lives in the R2 bucket venkatapagadala-media and
+      // is served under this domain: /media/linkedin/<t|p|f|v|d>/<idx>.<ext> (src/data/linkedinArchive.ts).
+      { source: "/media/linkedin/:path*", destination: "https://pub-3f20a15a96f24a02980dfcc3fcb400a6.r2.dev/linkedin/:path*" },
+    ];
+  },
   async redirects() {
     return [
       {

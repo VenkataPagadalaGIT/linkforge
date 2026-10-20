@@ -43,7 +43,7 @@ export const LINKEDIN_ACTIVITY = `${LINKEDIN_PROFILE}/recent-activity/all/`;
 export const activityUrl = (activityId: string) => `https://www.linkedin.com/feed/update/urn:li:activity:${activityId}/`;
 
 export const LINKEDIN_MEDIA_BASE = (
-  process.env.NEXT_PUBLIC_LINKEDIN_MEDIA_BASE || "https://media.venkatapagadala.com/linkedin"
+  process.env.NEXT_PUBLIC_LINKEDIN_MEDIA_BASE || "https://venkatapagadala.com/media/linkedin"
 ).replace(/\/+$/, "");
 
 /** 480px-wide thumbnail (every kind). */
