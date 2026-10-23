@@ -1,6 +1,6 @@
 "use client";
 import { Link } from "@/lib/router-shim";
-import { ArrowDown, ArrowRight, Linkedin } from "lucide-react";
+import { ArrowDown, ArrowRight, Linkedin, Mail } from "lucide-react";
 import { linkedPapers } from "@/data/research";
 import TypewriterText from "@/components/TypewriterText";
 import SolutionsGraph from "@/components/SolutionsGraph";
@@ -13,7 +13,7 @@ import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
 import HomeUniverse from "@/components/home/HomeUniverse";
 import AboutMarquee from "@/components/home/AboutMarquee";
 import WebScene from "@/components/home/WebScene";
-import { LINKEDIN_STATS, compactStat, yearsInSearch } from "@/data/profile";
+import { LINKEDIN_STATS, PROFILE, compactStat, yearsInSearch } from "@/data/profile";
 
 /** The hero's numbers, read from the same sourced record the About page shows. */
 const stat = (prefix: string) => LINKEDIN_STATS.find((s) => s.label.startsWith(prefix))?.value ?? "";
@@ -104,14 +104,13 @@ const Home = () => {
             <Linkedin size={16} />
             Subscribe on LinkedIn
           </a>
+          {/* One button; the email sits under it as a plain link. */}
           <a
-            href="https://www.linkedin.com/in/venkata-pagadala/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 border border-foreground/30 px-8 py-3 font-mono text-xs tracking-widest uppercase text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-all group"
+            href={`mailto:${PROFILE.email}`}
+            className="inline-flex items-center gap-2 font-mono text-xs tracking-wider text-foreground/70 hover:text-foreground transition-colors"
           >
-            <Linkedin size={16} className="group-hover:text-foreground transition-all" />
-            Follow
+            <Mail size={14} aria-hidden="true" />
+            {PROFILE.email}
           </a>
           <button
             type="button"
