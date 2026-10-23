@@ -53,7 +53,7 @@ push(`Canonical: ${SITE}/guides/${guide.slug}`);
 push(`Tags: ${guide.tags.join(", ")}`);
 push();
 
-for (const block of guide.blocks as Block[]) {
+const emit = (block: Block): void => {
   switch (block.kind) {
     case "p":
       push(block.text);
@@ -132,19 +132,129 @@ for (const block of guide.blocks as Block[]) {
     case "details": {
       push(`### ${block.summary}`);
       push();
-      for (const b of block.blocks) {
-        if (b.kind === "p") {
-          push(b.text);
-          push();
-        } else if (b.kind === "list") {
-          b.items.forEach((it, i) => push(b.ordered ? `${i + 1}. ${it}` : `- ${it}`));
-          push();
-        } else {
-          unsupported.add(`details>${b.kind}`);
-        }
-      }
+      for (const b of block.blocks) emit(b);
       break;
     }
+    case "quote":
+      push(`> "${block.text}" (${block.by}${block.role ? `, ${block.role}` : ""})`);
+      push();
+      break;
+    case "highlightkey":
+      push(`*Reading key: ${block.items.map((k) => `${k.label}`).join(", ")} are set in bold in this edition.*`);
+      push();
+      break;
+    case "plain":
+      push(`> **In plain words:** ${block.text}`);
+      push();
+      break;
+    case "stats":
+      for (const it of block.items) push(`- **${it.value}** ${it.label}${it.note ? `: ${it.note}` : ""}`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "bars": {
+      if (block.title) push(`**${block.title}**`), push();
+      const two = block.items.some((it) => typeof it.compare === "number");
+      const [l1, l2] = block.legend ?? ["Value", "Compared with"];
+      push(two ? `| | ${l1} | ${l2 ?? "Compared with"} |` : `| | ${l1 ?? "Value"} |`);
+      push(two ? "| --- | --- | --- |" : "| --- | --- |");
+      for (const it of block.items) {
+        const label = it.href ? `[${it.label}](${it.href})` : it.label;
+        push(two ? `| ${label} | ${it.display ?? it.value} | ${it.compareDisplay ?? it.compare ?? ""} |` : `| ${label} | ${it.display ?? it.value} |`);
+      }
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    }
+    case "tabs":
+      for (const t of block.tabs) {
+        push(`**${t.label}**`);
+        push();
+        for (const b of t.blocks) emit(b);
+      }
+      break;
+    case "pair":
+      for (const b of block.blocks) emit(b);
+      break;
+    case "heatmap":
+      push(`| ${block.corner ?? ""} | ${block.columns.join(" | ")} |`);
+      push(`| --- | ${block.columns.map(() => "---").join(" | ")} |`);
+      for (const r of block.rows) push(`| ${r.label} | ${r.values.map((v) => `${v}${block.unit ?? ""}`).join(" | ")} |`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "cards":
+      for (const c of block.items) {
+        const title = c.href ? `[${c.title}](${c.href})` : c.title;
+        push(`- **${c.kicker ? `${c.kicker}: ` : ""}${title}**: ${c.text}${c.chips ? ` (${c.chips.join(", ")})` : ""}${c.foot ? ` ${c.foot}` : ""}`);
+      }
+      push();
+      break;
+    case "timeline":
+      for (const t of block.items) push(`- **${t.date}: ${t.title}.** ${t.text}`);
+      push();
+      break;
+    case "flow":
+      block.steps.forEach((st, i) => push(`${i + 1}. **${st.label}**${st.detail ? `: ${st.detail}` : ""}`));
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "fanout":
+      push(`**${block.root}**${block.rootNote ? ` (${block.rootNote})` : ""} fans out into:`);
+      push();
+      for (const b of block.branches) push(`- ${b}`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "iceberg":
+      push(`- **Above the waterline, ${block.tip.label}**: ${block.tip.detail}`);
+      for (const l of block.layers) push(`- **${l.label}**: ${l.detail}`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "radial":
+      push(`| ${block.hub} | Size | Topics |`);
+      push("| --- | --- | --- |");
+      for (const n of block.nodes) push(`| ${n.label} | ${n.display ?? n.value} | ${n.dots} |`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "split":
+      for (const side of [block.left, block.right]) {
+        push(`**${side.title}**`);
+        push();
+        for (const it of side.items) push(`- ${it}`);
+        push();
+      }
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "traits":
+      push(`**${block.href ? `[${block.title}](${block.href})` : block.title}**${block.subtitle ? `: ${block.subtitle}` : ""}`);
+      push();
+      push("| Trait | Value | Evidence |");
+      push("| --- | --- | --- |");
+      for (const t of block.items) push(`| ${t.label} | ${t.value} | ${t.grade} |`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "matrix": {
+      const q = block.quadrants;
+      push(`Axes: ${block.x} (left to right) and ${block.y} (bottom to top).`);
+      push();
+      for (const [where, c] of [["High " + block.y.toLowerCase() + ", low " + block.x.toLowerCase(), q.tl], ["High on both", q.tr], ["Low on both", q.bl], ["Low " + block.y.toLowerCase() + ", high " + block.x.toLowerCase(), q.br]] as const)
+        push(`- **${c.title}** (${where}): ${c.text}`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    }
+    case "slope":
+      if (block.title) push(`**${block.title}**`), push();
+      push(`| | ${block.from} | ${block.to} |`);
+      push("| --- | --- | --- |");
+      for (const se of block.series) push(`| ${se.label} | ${se.from}${block.unit ?? ""} | ${se.to}${block.unit ?? ""} |`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
     case "quantum":
       push(`*(Interactive 3D content: explore it at ${SITE}/guides/${guide.slug})*`);
       push();
@@ -251,9 +361,16 @@ for (const block of guide.blocks as Block[]) {
       unsupported.add(block.kind);
       break;
   }
-}
+};
+for (const block of guide.blocks as Block[]) emit(block);
 
-return { body: lines.join("\n").replace(/\]\(\/(?!\/)/g, `](${SITE}/`), unsupported: [...unsupported] };
+return {
+  body: lines
+    .join("\n")
+    .replace(/\[\[[ygb]:([^\]]+)\]\]/g, "**$1**")
+    .replace(/\]\(\/(?!\/)/g, `](${SITE}/`),
+  unsupported: [...unsupported],
+};
 }
 
 let stale = 0;

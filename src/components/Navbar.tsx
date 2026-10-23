@@ -96,6 +96,7 @@ const RESEARCH_MENU: MegaMenu = {
     {
       title: "Talks & workshops",
       items: [
+        { label: "User-First Intelligence", note: "the framework behind the research", to: "/guides/user-first-intelligence", badge: "NEW" },
         { label: "brightonSEO San Diego 2026", note: "industrial level classification with intent", to: "/research-and-talks#brightonseo-san-diego-2026", badge: "NEW" },
         ...TALKS.filter((t) => t.kind === "workshop").map((t) => ({ label: t.title, note: t.outlet, to: `/research-and-talks#${t.slug}` })),
       ],
@@ -136,6 +137,7 @@ const MEGA: MegaMenu[] = [
       {
         title: "SEO & AI",
         items: [
+          { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badge: "NEW" },
           { label: "What is Jev? 3D explainer", note: "TypeSafe's decision model, one ticket walked through the bench", to: "/guides/what-is-jev", badge: "NEW" },
           { label: "Screaming Frog Guide 2026", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
           { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
@@ -182,6 +184,7 @@ const MEGA: MegaMenu[] = [
       {
         title: "The tool",
         items: [
+          { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badge: "NEW" },
           { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
           { label: "Persona Builder", note: "answer the framework's questions, grade the evidence, open the journey", to: "/personas/builder", badge: "NEW" },
           { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
@@ -212,6 +215,7 @@ const MEGA: MegaMenu[] = [
 /** Plain links after the menus. The 2040 game moved into Explore in 3D, where
  *  everything 3D now lives; About Me became a link once it held one item. */
 const FLAT: { label: string; to: string; dim: boolean }[] = [
+  { label: "User First Needs", to: "/guides/user-first-intelligence", dim: false },
   { label: "About Me", to: "/about", dim: false },
 ];
 

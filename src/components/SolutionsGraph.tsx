@@ -124,16 +124,19 @@ const NeuralSolutionsCanvas = () => {
         n.vy = 0;
       }
     };
-    const onMouseDown = (e: MouseEvent) => {
+    const onMouseDown = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
+      // A fingertip is wider than a cursor, so touch gets a bigger target.
+      const pad = e.pointerType === "touch" ? 10 : 0;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        const hitR = n.isMain ? 20 : 12;
+        const hitR = (n.isMain ? 20 : 12) + pad;
         if (Math.hypot(n.x - mx, n.y - my) < hitR) {
           dragRef.current = { dragging: true, nodeIdx: i, offsetX: mx - n.x, offsetY: my - n.y };
           canvas.style.cursor = "grabbing";
+          canvas.setPointerCapture?.(e.pointerId);
           break;
         }
       }
@@ -166,11 +169,15 @@ const NeuralSolutionsCanvas = () => {
       setTooltip(null);
       canvas.style.cursor = "default";
     };
-    canvas.addEventListener("mousemove", onMouseMove);
-    canvas.addEventListener("mousedown", onMouseDown);
-    canvas.addEventListener("mouseup", onMouseUp);
+    // Pointer events cover mouse, pen and touch: one finger drags a node. touch-action pan-y keeps vertical
+    // swipes for the page, so the graph never traps a reader scrolling past it on a phone.
+    canvas.style.touchAction = "pan-y";
+    canvas.addEventListener("pointermove", onMouseMove);
+    canvas.addEventListener("pointerdown", onMouseDown);
+    canvas.addEventListener("pointerup", onMouseUp);
+    canvas.addEventListener("pointercancel", onMouseUp);
     canvas.addEventListener("click", onClick);
-    canvas.addEventListener("mouseleave", onMouseLeave);
+    canvas.addEventListener("pointerleave", onMouseLeave);
 
     const layers = services.length;
     const cw = canvas.offsetWidth;
@@ -512,11 +519,12 @@ const NeuralSolutionsCanvas = () => {
     return () => {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
-      canvas.removeEventListener("mousemove", onMouseMove);
-      canvas.removeEventListener("mousedown", onMouseDown);
-      canvas.removeEventListener("mouseup", onMouseUp);
+      canvas.removeEventListener("pointermove", onMouseMove);
+      canvas.removeEventListener("pointerdown", onMouseDown);
+      canvas.removeEventListener("pointerup", onMouseUp);
+      canvas.removeEventListener("pointercancel", onMouseUp);
       canvas.removeEventListener("click", onClick);
-      canvas.removeEventListener("mouseleave", onMouseLeave);
+      canvas.removeEventListener("pointerleave", onMouseLeave);
     };
   }, [navigate]);
 

@@ -23,7 +23,7 @@ import { LINKEDIN_ENTRIES, SOURCE_LABEL, UNIVERSE_PATH, TOPIC_NODES, childTopics
  *             posts round the cluster, revolving (drag to turn it, hover a card to stop it); a click on a star or card opens the post, and the focus stays for its neighbours
  *   Log       "explored" counts the topics visited (kept in this browser only)
  * One draw call for the stars (THREE.Points, custom shader); labels and cards are HTML in 3D. The page scrolls past it:
- * zoom is Ctrl/⌘ + scroll (any scroll in full screen), and on touch two fingers orbit. Rendering stops offscreen.
+ * zoom is Ctrl/⌘ + scroll (any scroll in full screen); on touch one finger turns it sideways and two fingers zoom. Rendering stops offscreen.
  * Reduced motion: no countdown, burst, drift, field or auto-orbit, and the camera jumps instead of flying.
  */
 
@@ -849,7 +849,7 @@ export default function LinkedInUniverse({ matching, activeTopic, onTopic, onOpe
             <div className="h-full bg-[color:var(--uni-a)] transition-[width] duration-500" style={{ width: `${Math.min(100, (explored.size / u.topics.length) * 100)}%` }} />
           </div>
           <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
-            {touch && !full ? "Two fingers to orbit and zoom · tap to open" : `Drag to orbit · ${full ? "scroll" : "Ctrl/⌘ + scroll"} to zoom · click to fly`}
+            {touch && !full ? "Swipe sideways to turn · two fingers to zoom · tap to open" : `Drag to orbit · ${full ? "scroll" : "Ctrl/⌘ + scroll"} to zoom · click to fly`}
           </p>
         </div>
 
@@ -1325,11 +1325,13 @@ function Scene({ u, igniteKey, play, onPop, reduced, matching, hover, onHover, o
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gl, camera, u, reduced, full, surface]);
-  // Touch: one finger scrolls the page, two fingers orbit and zoom (in full screen, one finger orbits).
+  // Touch: one finger turns the graph. On the page, touch-action pan-y keeps vertical swipes for scrolling, so a
+  // sideways drag turns it and an up-down swipe still scrolls past it; two fingers orbit and zoom. In full screen
+  // one finger orbits freely. (One finger used to do nothing on the page, and phone readers could not turn it.)
   React.useEffect(() => {
     const c = controls.current;
     if (!c) return;
-    c.touches = full ? { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN } : { ONE: -1 as unknown as THREE.TOUCH, TWO: THREE.TOUCH.DOLLY_ROTATE };
+    c.touches = full ? { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN } : { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
     // The browser combines touch-action down the tree, so it must be set where the controls set theirs.
     for (const el of [surface, gl.domElement]) if (el) el.style.touchAction = full ? "none" : "pan-y";
   }, [full, gl, surface]);

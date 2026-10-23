@@ -75,6 +75,9 @@ export default function Page() {
           {peerReviewed.length} peer-reviewed papers · {preprints.length} preprint · {BRIGHTONSEO_2026.event} ·{" "}
           {media.length} podcasts, interviews and talks · every item linked to its source
         </p>
+        <p className="font-mono text-xs text-muted-foreground mb-8 -mt-4">
+          The framework behind this research: <Link href="/guides/user-first-intelligence" className="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">User-First Intelligence →</Link>
+        </p>
 
         {/* Contents. Real anchors to real section ids, rendered server-side, so
             it works with scripts blocked and gives a retrieval system the page's

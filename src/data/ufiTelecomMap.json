@@ -1,0 +1,128 @@
+{
+  "_source": "Omniscite telecom taxonomy export (Telecom_classification.xlsx), aggregates only",
+  "industry": "Telecommunications",
+  "keywords": 1775234,
+  "monthlyVolume": 988794128,
+  "topics": 37712,
+  "categories": [
+    {
+      "label": "Devices & Hardware",
+      "keywords": 726304,
+      "monthlyVolume": 323379342,
+      "topics": 73,
+      "nodes": 10826
+    },
+    {
+      "label": "Mobile & Wireless Carriers",
+      "keywords": 308382,
+      "monthlyVolume": 147527414,
+      "topics": 183,
+      "nodes": 11115
+    },
+    {
+      "label": "Internet & Broadband (ISP)",
+      "keywords": 199477,
+      "monthlyVolume": 178757460,
+      "topics": 141,
+      "nodes": 2780
+    },
+    {
+      "label": "Communication Services",
+      "keywords": 142627,
+      "monthlyVolume": 147663197,
+      "topics": 40,
+      "nodes": 1021
+    },
+    {
+      "label": "TV & Streaming",
+      "keywords": 88808,
+      "monthlyVolume": 83946753,
+      "topics": 60,
+      "nodes": 1322
+    },
+    {
+      "label": "Support & Account",
+      "keywords": 86846,
+      "monthlyVolume": 33482953,
+      "topics": 32,
+      "nodes": 1083
+    },
+    {
+      "label": "Plans & Pricing",
+      "keywords": 62385,
+      "monthlyVolume": 20925369,
+      "topics": 49,
+      "nodes": 1083
+    },
+    {
+      "label": "Apps & Digital Services",
+      "keywords": 57146,
+      "monthlyVolume": 22636416,
+      "topics": 35,
+      "nodes": 1114
+    },
+    {
+      "label": "Deals & Promotions",
+      "keywords": 37504,
+      "monthlyVolume": 10070373,
+      "topics": 14,
+      "nodes": 331
+    },
+    {
+      "label": "Network & Infrastructure",
+      "keywords": 21650,
+      "monthlyVolume": 5495735,
+      "topics": 75,
+      "nodes": 1776
+    },
+    {
+      "label": "IoT & Smart Home",
+      "keywords": 17353,
+      "monthlyVolume": 8256548,
+      "topics": 32,
+      "nodes": 803
+    },
+    {
+      "label": "Business & Enterprise",
+      "keywords": 15436,
+      "monthlyVolume": 3871397,
+      "topics": 27,
+      "nodes": 913
+    },
+    {
+      "label": "Stores & Locations",
+      "keywords": 5817,
+      "monthlyVolume": 1676751,
+      "topics": 5,
+      "nodes": 29
+    },
+    {
+      "label": "Reviews & Comparisons",
+      "keywords": 4007,
+      "monthlyVolume": 432586,
+      "topics": 8,
+      "nodes": 14
+    },
+    {
+      "label": "Telecom Concepts & How-It-Works",
+      "keywords": 840,
+      "monthlyVolume": 541655,
+      "topics": 28,
+      "nodes": 899
+    },
+    {
+      "label": "Industry & Regulatory",
+      "keywords": 416,
+      "monthlyVolume": 48642,
+      "topics": 53,
+      "nodes": 1752
+    },
+    {
+      "label": "Telecom Careers, Skills & Certifications",
+      "keywords": 175,
+      "monthlyVolume": 58774,
+      "topics": 11,
+      "nodes": 833
+    }
+  ]
+}

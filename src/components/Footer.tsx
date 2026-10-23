@@ -10,6 +10,7 @@ const Footer = () => {
   if (location.pathname?.startsWith("/admin")) return null;
 
   const links = [
+    { label: "User First Needs", to: "/guides/user-first-intelligence" },
     { label: "About", to: "/about" },
     { label: "Everything in 3D", to: "/3d" },
     { label: "Research & Talks", to: "/research-and-talks" },

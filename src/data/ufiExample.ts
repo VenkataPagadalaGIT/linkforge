@@ -206,3 +206,66 @@ export const UFI_PERSONAS = {
   "frameworkFamilies": 42,
   "frameworkVersion": "23 September 2026"
 } as const;
+
+export const UFI_PERSONA_CARD = {
+  "slug": "us-dad-30-49-three-row-suv",
+  "name": "The 3-row SUV dad",
+  "segment": "US man, 30 to 49, young family, in-market for a 3-row SUV",
+  "traits": [
+    {
+      "label": "Reachable on YouTube",
+      "value": "92% of 30-49s ever use it, the second-highest of any age group",
+      "grade": "measured"
+    },
+    {
+      "label": "Facebook is not dead for this cohort",
+      "value": "80% of 30-49s use it, the HIGHEST of any age band, above 18-29s at 68%",
+      "grade": "measured"
+    },
+    {
+      "label": "Instagram reaches most of them",
+      "value": "62% of 30-49s",
+      "grade": "measured"
+    },
+    {
+      "label": "Reddit is a real channel here, TikTok bigger than assumed",
+      "value": "Reddit 35%, TikTok 44% of 30-49s",
+      "grade": "measured"
+    },
+    {
+      "label": "Wants a hybrid buying process, not a fully online one",
+      "value": "63% say omnichannel would be ideal; only 28% want all-online, and just 7% actually bought that way",
+      "grade": "measured"
+    },
+    {
+      "label": "Still ends up at the dealership",
+      "value": "53% completed every step in person",
+      "grade": "measured"
+    },
+    {
+      "label": "Attention is concentrated in video",
+      "value": "TikTok about 95 min/day, YouTube about 75, Facebook about 33",
+      "grade": "derived"
+    },
+    {
+      "label": "Open to AI in the buying process",
+      "value": "83% of recent buyers expect AI to reshape car buying within a decade",
+      "grade": "derived"
+    },
+    {
+      "label": "Trusts current owners over dealer marketing",
+      "value": "Commonly assumed, not established here",
+      "grade": "inferred"
+    },
+    {
+      "label": "Behaviour changes because he has an infant",
+      "value": "No public dataset cuts platform use by parental status or child age",
+      "grade": "inferred"
+    },
+    {
+      "label": "Avoids owner groups after purchase, uses them before",
+      "value": "No evidence either way",
+      "grade": "inferred"
+    }
+  ]
+} as const;

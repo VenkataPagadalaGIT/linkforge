@@ -139,6 +139,28 @@ const Home = () => {
       </div>
       </div>
 
+      {/* User First Needs: the framework at the center of the site and its research, one button under the banner. */}
+      <section aria-labelledby="home-ufi-h" className="relative z-10 border-y border-border bg-background">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-10 text-center md:flex-row md:justify-between md:text-left">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">The framework at the center of this site</p>
+            <h2 id="home-ufi-h" className="mt-2 font-display text-2xl font-bold text-foreground sm:text-3xl">
+              User-First Intelligence
+            </h2>
+            <p className="mt-2 font-mono text-sm leading-relaxed text-muted-foreground">
+              Understand people before algorithms: who they are, where they ask, what they need, and what to build for them.
+            </p>
+          </div>
+          <a
+            href="/guides/user-first-intelligence"
+            className="inline-flex shrink-0 items-center gap-3 border-2 border-foreground bg-foreground px-8 py-4 font-mono text-xs font-bold uppercase tracking-[0.2em] text-background transition-colors hover:bg-background hover:text-foreground"
+          >
+            User First Needs
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+
       {/* My LinkedIn as a 3D universe (loads when scrolled near) */}
       <HomeUniverse />
 

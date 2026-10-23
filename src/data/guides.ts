@@ -61,6 +61,9 @@ export interface FaqItem {
   a: string;
 }
 
+/** Accent colors for visual blocks: the brand's stage tokens (light and dark pairs), plus muted and foreground. */
+export type Tone = "sky" | "violet" | "amber" | "rose" | "emerald" | "muted" | "fg";
+
 export type Block =
   | { kind: "p"; text: string }
   /** toc: a short label for the page menu when the heading is a long question. */
@@ -109,6 +112,75 @@ export type Block =
   | { kind: "jevjourney" }
   | { kind: "jevstations" }
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
+  /** A pull quote with the author's photo. */
+  | { kind: "quote"; text: string; by: string; role?: string; photo?: string }
+  /** The key to the reading highlights used on the page. */
+  | { kind: "highlightkey"; items: { color: "y" | "g" | "b"; label: string }[] }
+  /** "In plain words": the one-paragraph version of a section, for every reader. */
+  | { kind: "plain"; text: string }
+  /** Big numbers with labels and optional notes. */
+  | { kind: "stats"; items: { value: string; label: string; note?: string; tone?: Tone }[]; caption?: string }
+  /** Horizontal bars; `compare` draws a second, thinner bar per row. */
+  | {
+      kind: "bars";
+      title?: string;
+      legend?: [string, string?];
+      max?: number;
+      items: {
+        label: string;
+        value: number;
+        display?: string;
+        compare?: number;
+        compareDisplay?: string;
+        note?: string;
+        tone?: Tone;
+        href?: string;
+      }[];
+      caption?: string;
+    }
+  /** Tabs: every panel renders on the server, stacked, and becomes a tab once scripts run. */
+  | { kind: "tabs"; tabs: { label: string; blocks: Block[] }[] }
+  /** Rows by columns, each cell shaded by its value. */
+  | { kind: "heatmap"; corner?: string; columns: string[]; rows: { label: string; values: number[] }[]; unit?: string; max?: number; caption?: string }
+  /** Cards in a grid: kicker, title, text, optional chips and a footnote. */
+  | {
+      kind: "cards";
+      columns?: 2 | 3 | 4;
+      items: { kicker?: string; title: string; text: string; chips?: string[]; foot?: string; tone?: Tone; href?: string }[];
+    }
+  /** A vertical timeline of dated items. */
+  | { kind: "timeline"; items: { date: string; title: string; text: string; tone?: Tone }[] }
+  /** Steps left to right with arrows, stacked on phones. */
+  | { kind: "flow"; steps: { label: string; detail?: string }[]; caption?: string }
+  /** One question fanning out into the sub-questions an engine searches for. */
+  | { kind: "fanout"; root: string; rootNote?: string; branches: string[]; caption?: string }
+  /** What a keyword tool can count, above the waterline, against everything people express below it. */
+  | { kind: "iceberg"; tip: { label: string; detail: string }; layers: { label: string; detail: string }[]; caption?: string }
+  /** A hub with categories around it, sized by value, each ringed by one dot per topic. */
+  | { kind: "radial"; hub: string; nodes: { label: string; short?: string; value: number; dots: number; display?: string }[]; caption?: string }
+  /** Two columns: the usual way and the user-first way. */
+  | { kind: "split"; left: { title: string; items: string[] }; right: { title: string; items: string[] }; caption?: string }
+  /** A persona card: every trait with its evidence grade. */
+  | {
+      kind: "traits";
+      title: string;
+      subtitle?: string;
+      href?: string;
+      items: { label: string; value: string; grade: "measured" | "derived" | "inferred" }[];
+      caption?: string;
+    }
+  /** A two-by-two with axis names and the four quadrants. */
+  | {
+      kind: "matrix";
+      x: string;
+      y: string;
+      quadrants: Record<"tl" | "tr" | "bl" | "br", { title: string; text: string; highlight?: boolean }>;
+      caption?: string;
+    }
+  /** Before and after, for one or more series. */
+  | { kind: "slope"; title?: string; from: string; to: string; unit?: string; series: { label: string; from: number; to: number; tone?: Tone }[]; caption?: string }
+  /** Two blocks side by side on wide screens. */
+  | { kind: "pair"; blocks: Block[] }
   /** A named framework drawn as steps in order, the map under them, a rule and a loop. */
   | {
       kind: "framework";

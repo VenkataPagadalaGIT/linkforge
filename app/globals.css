@@ -61,6 +61,12 @@
     --stage-compare: #b45309;  /* amber-700 */
     --stage-decide: #be123c;   /* rose-700 */
     --stage-own: #047857;      /* emerald-700 */
+    /* Reading highlights, like an e-reader's: yellow for the key idea, green
+       for what to do, blue for the evidence. Translucent so the text color
+       never changes; stronger on light paper, softer on dark. */
+    --hl-yellow: rgba(253, 224, 71, 0.55);
+    --hl-green: rgba(134, 239, 172, 0.55);
+    --hl-blue: rgba(147, 197, 253, 0.55);
     --scrollbar-thumb: 0 0% 65%;
   }
 
@@ -68,6 +74,9 @@
   .dark {
     --background: 0 0% 4%;
     --foreground: 0 0% 96%;
+    --hl-yellow: rgba(250, 204, 21, 0.3);
+    --hl-green: rgba(74, 222, 128, 0.26);
+    --hl-blue: rgba(96, 165, 250, 0.3);
 
     --card: 0 0% 7%;
     --card-foreground: 0 0% 96%;
@@ -429,3 +438,15 @@ a:hover .holo-interactive .holo-bracket,
   .about-marquee-track { animation: none; }
   .spider-ping { animation: none; opacity: 0; }
 }
+
+/* Reading highlights in guides: [[y:...]], [[g:...]], [[b:...]] in guide text. */
+mark.hl {
+  color: inherit;
+  padding: 0.05em 0.18em;
+  border-radius: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+mark.hl-y { background: var(--hl-yellow); }
+mark.hl-g { background: var(--hl-green); }
+mark.hl-b { background: var(--hl-blue); }

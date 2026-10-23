@@ -72,6 +72,9 @@ export default function Page() {
         <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground text-glow mb-4">
           Audience Personas
         </h1>
+        <p className="font-mono text-xs text-muted-foreground mb-4">
+          Step two of <Link href="/guides/user-first-intelligence" className="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">User-First Intelligence</Link>: personas graded by their evidence.
+        </p>
         <p className="font-mono text-[11px] text-muted-foreground/70 mb-8">
           Last updated {PERSONAS_LAST_UPDATED} · {PERSONA_COUNTS.studies()} studies ·{" "}
           {PERSONA_COUNTS.evidence()} verified evidence rows · {PERSONA_COUNTS.personas()} persona

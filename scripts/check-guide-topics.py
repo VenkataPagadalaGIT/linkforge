@@ -95,9 +95,12 @@ for slug, t in topics.items():
     check(f"hub '{slug}' links back to /guides", 'to="/guides"' in html or 'href="/guides"' in html)
     for gs in t["guides"]:
         check(f"hub '{slug}' links to guide '{gs}'", f'/guides/{gs}"' in html)
-    # every OTHER guide must be absent from this hub's guide links
+    # every OTHER guide must be absent from this hub's guide links. The site
+    # header and footer are left out: they link the flagship framework guide
+    # (User-First Intelligence) from every page on purpose.
     other = [g["slug"] for g in guide_rows if g["slug"] not in t["guides"]]
-    leaked = [gs for gs in other if re.search(rf'href="[^"]*?/guides/{re.escape(gs)}"', html)]
+    body = re.sub(r"<footer\b.*?</footer>", "", re.sub(r"<nav\b.*?</nav>", "", html, flags=re.S), flags=re.S)
+    leaked = [gs for gs in other if re.search(rf'href="[^"]*?/guides/{re.escape(gs)}"', body)]
     check(f"hub '{slug}' lists only its own guides", not leaked, str(leaked))
 
 for g in guide_rows:

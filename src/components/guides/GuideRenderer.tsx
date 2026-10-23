@@ -20,27 +20,32 @@ import NnExplorerLazy from "./NnExplorerLazy";
 import QuantumExplorerLazy from "./QuantumExplorerLazy";
 import JevExplorerLazy from "./JevExplorerLazy";
 import FrameworkDiagram from "./FrameworkDiagram";
+import { inline } from "./inline";
+import {
+  Bars,
+  Cards,
+  Fanout,
+  Flow,
+  Heatmap,
+  HighlightKey,
+  Iceberg,
+  Matrix,
+  Pair,
+  PlainWords,
+  Quote,
+  Radial,
+  Slope,
+  Split,
+  Stats,
+  Tabs,
+  Timeline,
+  Traits,
+} from "./RichBlocks";
 import { JOURNEY as JEV_JOURNEY, STATIONS as JEV_STATIONS, KINDS as JEV_KINDS } from "@/data/jev";
 import { JOURNEY, STAGES, ZONES } from "@/data/llm";
 import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "@/data/nn";
 import { QC_ACTS, QC_JOURNEY, QC_STAGES } from "@/data/quantum";
 
-// Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
-// matters: links run first so a URL containing ** or _ never gets caught by a
-// later pass. Site links ([label](/path) or [label](#id)) stay in the same tab.
-// External http(s) URLs open in a new tab and carry a noopener rel for safety
-// and SEO (so we don't pass equity to every cited paper).
-const inline = (s: string) =>
-  s
-    .replace(/\[([^\]]+)\]\(((?:\/|#)[^\s)]*)\)/g, (_m, label, url) =>
-      `<a href="${url}" class="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">${label}</a>`
-    )
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) =>
-      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">${label}</a>`
-    )
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>')
-    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em class="italic text-foreground/90">$2</em>')
-    .replace(/`([^`]+?)`/g, '<code class="font-mono text-[0.92em] text-foreground bg-foreground/5 border border-border/60 px-1 py-px rounded-sm">$1</code>');
 const bold = inline;
 
 function TermCard({ term, roleLabel = "Role for AI agents" }: { term: DefinedTerm; roleLabel?: string }) {
@@ -251,7 +256,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
         <Tag className="list-none space-y-2 my-4">
           {block.items.map((item, j) => (
             <li key={j} className="font-mono text-sm text-muted-foreground leading-relaxed flex gap-2">
-              <span className="text-foreground/40">{block.ordered ? `${j + 1}.` : "—"}</span>
+              <span className="text-foreground/40">{block.ordered ? `${j + 1}.` : "·"}</span>
               <span dangerouslySetInnerHTML={{ __html: bold(item) }} />
             </li>
           ))}
@@ -657,6 +662,59 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       );
     case "framework":
       return <FrameworkDiagram block={block} />;
+    case "plain":
+      return <PlainWords block={block} />;
+    case "quote":
+      return <Quote block={block} />;
+    case "highlightkey":
+      return <HighlightKey block={block} />;
+    case "stats":
+      return <Stats block={block} />;
+    case "bars":
+      return <Bars block={block} />;
+    case "tabs":
+      return (
+        <Tabs
+          labels={block.tabs.map((t) => t.label)}
+          panels={block.tabs.map((t, i) => (
+            <div key={i}>
+              {t.blocks.map((b, j) => (
+                <BlockView key={j} block={b} guide={guide} />
+              ))}
+            </div>
+          ))}
+        />
+      );
+    case "heatmap":
+      return <Heatmap block={block} />;
+    case "cards":
+      return <Cards block={block} />;
+    case "timeline":
+      return <Timeline block={block} />;
+    case "flow":
+      return <Flow block={block} />;
+    case "fanout":
+      return <Fanout block={block} />;
+    case "iceberg":
+      return <Iceberg block={block} />;
+    case "radial":
+      return <Radial block={block} />;
+    case "split":
+      return <Split block={block} />;
+    case "traits":
+      return <Traits block={block} />;
+    case "matrix":
+      return <Matrix block={block} />;
+    case "slope":
+      return <Slope block={block} />;
+    case "pair":
+      return (
+        <Pair>
+          {block.blocks.map((b, j) => (
+            <BlockView key={j} block={b} guide={guide} />
+          ))}
+        </Pair>
+      );
     case "faq":
       return (
         <div className="my-6 space-y-5">

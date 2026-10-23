@@ -268,6 +268,9 @@ export default function Page() {
             numbers, the names, the video and photos, and every post, linked back to where it was written.
           </p>
           <p className="font-mono text-[11px] text-muted-foreground mt-4 flex flex-wrap gap-x-4 gap-y-1">
+            <a href="/guides/user-first-intelligence" className="text-foreground underline decoration-border hover:decoration-foreground underline-offset-4">
+              The framework this talk became: User-First Intelligence
+            </a>
             <a href={`${PATH}.md`} className="text-foreground underline decoration-border hover:decoration-foreground underline-offset-4">
               Markdown edition, with the full transcript
             </a>

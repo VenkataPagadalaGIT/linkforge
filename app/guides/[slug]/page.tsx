@@ -12,6 +12,7 @@ type Params = { slug: string };
 /** Body text uses tiny markdown; structured data wants the plain words. */
 const plain = (s: string) =>
   s
+    .replace(/\[\[[ygb]:([^\]]+)\]\]/g, "$1")
     .replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1")
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, "$1$2");
