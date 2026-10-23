@@ -419,55 +419,105 @@ export const UFI_PEERS = {
       "role": "Senior Product Manager, AI @ Building seoClarity ArcAI",
       "quote": "Few months back, Venkata Pagadala showed me classification work that he did on top of all the keywords, and I was blown away.",
       "url": "https://www.linkedin.com/posts/mihir23192_few-months-back-venkata-pagadala-showed-share-7504229185645776896-F4Lf/",
-      "date": "2026-09-11"
+      "date": "2026-09-11",
+      "about": "Before the brightonSEO San Diego 2026 talk"
+    },
+    {
+      "author": "Jean-Christophe Chouinard",
+      "role": "Senior SEO Strategist, Tripadvisor",
+      "quote": "the most impressive SEO success story I've seen this year",
+      "url": "https://www.linkedin.com/posts/jeanchristophechouinard_had-a-chance-to-have-an-early-preview-of-share-7503463479006085121-NZrS",
+      "date": "2026-09-09",
+      "about": "Previewing the brightonSEO San Diego 2026 talk"
+    },
+    {
+      "author": "Anurag Singhal",
+      "role": "Founder, Quattr",
+      "quote": "This is really impressive arsenal for long tail SEO.",
+      "url": "https://www.linkedin.com/posts/venkata-pagadala_ai-automation-industrialresearch-ugcPost-7419236855944056832-PtUX",
+      "date": "2026-01-20",
+      "about": "On the industry research system for long-tail demand"
     },
     {
       "author": "Raymond Martinez",
       "role": "Vice President SEO @ Archer Education",
       "quote": "Shout out to Venkata Pagadala at brightonSEO. His work is interesting, challenging, and gets you to think deeply about search.",
       "url": "https://www.linkedin.com/posts/raymond-martinez-seo_shout-out-to-venkata-pagadala-at-brightonseo-ugcPost-7505681691353640960-GVHj/",
-      "date": "2026-09-15"
+      "date": "2026-09-15",
+      "about": "On the day of the brightonSEO San Diego 2026 talk"
     },
     {
       "author": "Harinath Babu",
       "role": "AI SEO & GEO Professional",
       "quote": "That’s one of the ideas that really stood out to me from Venkata Pagadala at brightonSEO San Diego 2026 presentation “User First, Algorithm Second.”",
       "url": "https://www.linkedin.com/posts/harinathbabu_seo-geo-aeo-share-7506548990558175232-1qcy/",
-      "date": "2026-09-17"
+      "date": "2026-09-17",
+      "about": "After the brightonSEO San Diego 2026 talk"
     },
     {
-      "author": "Jean-Christophe Chouinard",
-      "role": "Senior SEO Strategist at Tripadvisor",
-      "quote": "Had a chance to have an early preview of Venkata Pagadala's talk at BrightonSEO, and you definitely don't want to miss this.",
-      "url": "https://www.linkedin.com/posts/jeanchristophechouinard_had-a-chance-to-have-an-early-preview-of-share-7503463479006085121-NZrS/",
-      "date": "2026-09-09"
+      "author": "Andrea Volpini",
+      "role": "CEO and co-founder, WordLift",
+      "quote": "I see a strong connection with what I have been calling Agent-Oriented Ontology Engineering.",
+      "url": "https://www.linkedin.com/posts/venkata-pagadala_agenticai-aialignment-aisafety-share-7496178355352866818-Vl4l",
+      "date": "2026-08-20",
+      "about": "On the Springer Nature survey of reward hacking in agentic LLM systems"
     },
     {
       "author": "Gaurav Patil",
       "role": "B2B SaaS SEO Consultant",
       "quote": "My friend Venkata Pagadala is speaking at brightonSEO San Diego, and I liked a point he shared ahead of his talk: “Search volume is a direction, not a strategy.”",
       "url": "https://www.linkedin.com/posts/gaurav-patil-seo_how-much-of-our-seo-strategy-is-still-decided-share-7505171629438554112-NsDn/",
-      "date": "2026-09-14"
-    },
-    {
-      "author": "Sagar Kumar",
-      "role": "SEO, Blogger",
-      "quote": "Some people teach you SEO. Some people teach you how to think. For me, Venkata Pagadala has always been the second kind.",
-      "url": "https://www.linkedin.com/posts/hackit-sagar_seo-technicalseo-searchintent-share-7504401287434747904-yA82/",
-      "date": "2026-09-11"
-    },
-    {
-      "author": "Gururaj Pandurangi",
-      "quote": "Venkata Pagadala went deep on industrial-level intent classification.",
-      "url": "https://www.linkedin.com/posts/gururajp_brightonseoday1track1searchintentgeopdf-ugcPost-7506940282844762112-oI7U/",
-      "date": "2026-09-18"
+      "date": "2026-09-14",
+      "about": "Before the brightonSEO San Diego 2026 talk"
     },
     {
       "author": "Noah Learner",
       "role": "Mentor + Superconnector + Operator",
       "quote": "Sitting in the audience I could see it happening in real time while watching Natasha Post and Venkata Pagadala do their first big talks. I'm SO SO proud of you both!!!",
       "url": "https://www.linkedin.com/posts/noahlearner_brightonseo-share-7506779557631422464-ZX43/",
-      "date": "2026-09-18"
+      "date": "2026-09-18",
+      "about": "After the brightonSEO San Diego 2026 talk"
+    },
+    {
+      "author": "Sagar Kumar",
+      "role": "SEO, Blogger",
+      "quote": "Some people teach you SEO. Some people teach you how to think. For me, Venkata Pagadala has always been the second kind.",
+      "url": "https://www.linkedin.com/posts/hackit-sagar_seo-technicalseo-searchintent-share-7504401287434747904-yA82/",
+      "date": "2026-09-11",
+      "about": "Before the brightonSEO San Diego 2026 talk"
+    },
+    {
+      "author": "Gururaj Pandurangi",
+      "quote": "Venkata Pagadala went deep on industrial-level intent classification.",
+      "url": "https://www.linkedin.com/posts/gururajp_brightonseoday1track1searchintentgeopdf-ugcPost-7506940282844762112-oI7U/",
+      "date": "2026-09-18",
+      "about": "After the brightonSEO San Diego 2026 talk"
+    }
+  ]
+} as const;
+
+export const UFI_GRAPH_VOICE = {
+  "author": "Rodrigo Stockebrand",
+  "role": "AI researcher and O'Reilly author",
+  "quote": "a must follow if you're interested in knowledge graphs in AI search space",
+  "url": "https://www.linkedin.com/feed/update/urn:li:activity:7518261858701561858/",
+  "date": "2026-10-20",
+  "about": "Resharing the knowledge graph built from ten years of posts"
+} as const;
+
+export const UFI_AUTHOR = {
+  "searchSince": "2016-04-01",
+  "employer": "AT&T",
+  "peerReviewed": [
+    {
+      "venue": "Journal of Digital & Social Media Marketing",
+      "publisher": "Henry Stewart Publications",
+      "year": "2024"
+    },
+    {
+      "venue": "Discover Artificial Intelligence",
+      "publisher": "Springer Nature",
+      "year": "2026"
     }
   ]
 } as const;

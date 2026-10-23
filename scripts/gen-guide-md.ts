@@ -186,7 +186,7 @@ const emit = (block: Block): void => {
     case "voices":
       for (const v of block.items) {
         push(`> "${v.quote}"`);
-        push(`> (${v.author}${v.role ? `, ${v.role}` : ""}, [on LinkedIn](${v.url}), ${v.date})`);
+        push(`> (${v.author}${v.role ? `, ${v.role}` : ""}, [on LinkedIn](${v.url}), ${v.date}${v.about ? `; ${v.about.charAt(0).toLowerCase()}${v.about.slice(1)}` : ""})`);
         push();
       }
       if (block.caption) push(`*${block.caption}*`), push();
@@ -200,6 +200,12 @@ const emit = (block: Block): void => {
         );
       push();
       if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "bio":
+      push(`**${block.kicker}: ${block.name}.** ${block.text}`);
+      push();
+      for (const p of block.proofs) push(`- ${p.label}: [${p.text}](${p.href})`);
+      push();
       break;
     case "tools":
       for (const t of block.items) push(`- [${t.title}](${t.href}): ${t.text}`);

@@ -21,7 +21,7 @@ import QuantumExplorerLazy from "./QuantumExplorerLazy";
 import JevExplorerLazy from "./JevExplorerLazy";
 import FrameworkDiagram from "./FrameworkDiagram";
 import GuideUniverse from "./GuideUniverse";
-import { Slide, Clip, Embed, Gallery, Voices, Episodes, Tools, Papers } from "./MediaBlocks";
+import { Slide, Clip, Embed, Gallery, Voices, Episodes, Tools, Papers, Bio } from "./MediaBlocks";
 import { inline } from "./inline";
 import {
   Bars,
@@ -686,6 +686,8 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       return <Tools block={block} />;
     case "papers":
       return <Papers block={block} />;
+    case "bio":
+      return <Bio block={block} />;
     case "highlightkey":
       return <HighlightKey block={block} />;
     case "stats":

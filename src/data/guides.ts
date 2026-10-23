@@ -157,8 +157,22 @@ export type Block =
     }
   /** Photos in one sideways row. */
   | { kind: "gallery"; label: string; items: { src: string; width: number; height: number; alt: string; caption?: string }[]; caption?: string }
-  /** What other people said in public, each linked to where they said it. */
-  | { kind: "voices"; items: { quote: string; author: string; role?: string; url: string; date: string }[]; caption?: string }
+  /** What other people said in public, each linked to where they said it. `row`: one sideways row instead of a grid. */
+  | {
+      kind: "voices";
+      items: { quote: string; author: string; role?: string; url: string; date: string; about?: string }[];
+      row?: boolean;
+      caption?: string;
+    }
+  /** Who is behind the page, in thirty seconds: photo, a short paragraph and the proof, each linked to where it is shown. */
+  | {
+      kind: "bio";
+      kicker: string;
+      name: string;
+      photo: { src: string; width: number; height: number };
+      text: string;
+      proofs: { label: string; text: string; href: string }[];
+    }
   /** Recorded conversations on YouTube, each a click-to-load player. */
   | {
       kind: "episodes";

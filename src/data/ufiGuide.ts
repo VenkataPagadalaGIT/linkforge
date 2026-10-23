@@ -24,7 +24,9 @@
 
 import type { Block, ComparisonRow, DefinedTerm, FaqItem, Guide, Tone } from "./guides";
 import {
+  UFI_AUTHOR,
   UFI_EPISODES,
+  UFI_GRAPH_VOICE,
   UFI_LINKEDIN,
   UFI_PAPERS,
   UFI_PEERS,
@@ -469,6 +471,15 @@ const AI = UFI_AI_SUMMARY;
 const rating = (r: number) => `${r.toFixed(2)}★`;
 const persona = UFI_PERSONA_CARD;
 
+/* The 30-second bio. Dates, employer and journals come from the profile record and the papers list. */
+const WORDS = ["no", "one", "two", "three", "four", "five", "six"];
+const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
+const PEER_PAPERS = [...UFI_AUTHOR.peerReviewed].sort((a, b) => b.year.localeCompare(a.year));
+/** "Springer Nature's *Discover Artificial Intelligence*", "the *Journal of ...*": the profile's own phrasing. */
+const journal = (pp: { venue: string; publisher?: string }) =>
+  pp.publisher && !/s$/.test(pp.publisher) ? `${pp.publisher}'s *${pp.venue}*` : `the *${pp.venue}*`;
+const BIO_TEXT = `I have worked in search for more than ten years, since ${UFI_AUTHOR.searchSince.slice(0, 4)}: today at ${UFI_AUTHOR.employer}, before that at Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com). I have put this method to work in enterprise search, including at a Fortune 50 company. My research is published in ${WORDS[PEER_PAPERS.length]} peer-reviewed journals, ${PEER_PAPERS.map(journal).join(" and ")}, and I presented the method at ${EVENT}. A book on User-First Intelligence is in preparation. So this is not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.`;
+
 const ufiBlocks: Block[] = [
   {
     kind: "highlightkey",
@@ -477,6 +488,117 @@ const ufiBlocks: Block[] = [
       { color: "g", label: "Green: what to do" },
       { color: "b", label: "Blue: the evidence" },
     ],
+  },
+
+  /* 0. Who is behind it: the proof first, then the details */
+  { kind: "h2", id: "who", text: "Who created User-First Intelligence, and where has it been used?", toc: "Who is behind it" },
+  {
+    kind: "bio",
+    kicker: "Who is behind this, in 30 seconds",
+    name: "Venkata Pagadala",
+    photo: { src: PHOTO, width: 192, height: 192 },
+    text: BIO_TEXT,
+    proofs: [
+      { label: "Implemented", text: "My LinkedIn as a live knowledge graph", href: "#example-linkedin" },
+      { label: "Presented", text: EVENT, href: "#presented" },
+      { label: "Reviewed", text: "What people in the field said", href: "#practitioners" },
+      { label: "Published", text: `${cap(WORDS[PEER_PAPERS.length])} peer-reviewed papers`, href: "#papers" },
+    ],
+  },
+  { kind: "h3", id: "example-linkedin", text: "Implemented: my LinkedIn, mapped as a knowledge graph" },
+  {
+    kind: "plain",
+    text: "I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.",
+  },
+  {
+    kind: "universe",
+    poster: {
+      src: "/guides/user-first-intelligence/linkedin-universe.webp",
+      width: 1600,
+      height: 999,
+      alt: "The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career",
+    },
+    caption: `Live: the [Venkata Pagadala Universe](${L.source}), ${L.posts} posts and ${L.articles} articles on a designed taxonomy of ${L.areas} areas, ${L.topics} topics and ${L.subtopics} subtopics, with ${L.entities} named entities; ${L.graphNodes.toLocaleString("en-US")} nodes and ${L.graphLinks.toLocaleString("en-US")} links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.`,
+  },
+  {
+    kind: "cards",
+    columns: 2,
+    items: [
+      { kicker: "Stars", title: "Each star is one thing I shared", text: "Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.", tone: "sky" },
+      { kicker: "Clusters", title: "Each cluster is an area of the map", text: "The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.", tone: "violet" },
+      { kicker: "Try it", title: "Turn it, search it, open a post", text: "Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.", tone: "amber" },
+      { kicker: "In UFI terms", title: "Classify first, then compare", text: "[[y:The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.]] The two charts below compare what I supply with what readers answer.", tone: "emerald" },
+    ],
+  },
+  { kind: "voices", items: [{ ...UFI_GRAPH_VOICE }] },
+  {
+    kind: "pair",
+    blocks: [
+      {
+        kind: "bars",
+        title: "What I published (posts, 12 months)",
+        items: L.rows.map((r) => ({ label: r.label, value: r.posts, display: String(r.posts), href: `/venkata-pagadala-universe/topics/${r.slug}`, tone: "sky" as const })),
+      },
+      {
+        kind: "bars",
+        title: "What readers answered (median reactions)",
+        items: L.rows.map((r) => ({ label: r.label, value: r.medianReactions, display: String(r.medianReactions), tone: (r.medianReactions > L.medianReactions ? "emerald" : "rose") as Tone })),
+        caption: `Green: above my median post overall (${L.medianReactions}); red: below it.`,
+      },
+    ],
+  },
+  {
+    kind: "p",
+    text: `[[b:${linkedinReading}]] ${small.length ? `${joinAnd(small)} had fewer than ten posts each, too few to read. ` : ""}[[g:The decision is not to stop writing about AI]]; it is to write about AI the way the stronger areas work: through things I built, data I measured and lessons a reader can use. Posts published ${longDate(L.windowStart)} to ${longDate(L.reactionsAsOf)}, reactions counted on ${longDate(L.reactionsAsOf)}; a post can sit in more than one area. Descriptive, not causal.`,
+  },
+  { kind: "quote", text: "Supply is not demand, even on one profile.", ...ME },
+  { kind: "h3", id: "presented", text: `Presented: ${EVENT}` },
+  {
+    kind: "p",
+    text: `I first presented the method on ${longDate(TALK.date)}, in ${TALK.track} at ${EVENT}, under the line "${TALK.tagline}". This is the recording, with the slides and the room as they were that morning.`,
+  },
+  {
+    kind: "embed",
+    provider: "linkedin",
+    title: `Full recording: ${TALK.title}, ${EVENT}`,
+    src: TALK.video.embed,
+    href: TALK.video.post,
+    poster: {
+      src: TALK.video.poster,
+      width: 1920,
+      height: 1080,
+      alt: `${TALK.title}, ${EVENT}: the twenty demand sources slide beside Venkata Pagadala on the ${TALK.track} stage`,
+    },
+    open: `Play the full talk here (${Math.round(TALK.video.duration / 60)} min)`,
+    caption: "LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.",
+    chapters: [135, 291, 389, 464, 660, 827].map(chapter),
+  },
+  {
+    kind: "gallery",
+    label: "Photos from the talk",
+    items: UFI_PHOTOS.map((ph) => ({ ...ph })),
+    caption: `On stage in ${TALK.track}. More photos, the slides and everyone who showed up are on the [talk's recap page](${TALK.page}).`,
+  },
+  { kind: "h3", id: "practitioners", text: "Reviewed: what people in the field said" },
+  {
+    kind: "p",
+    text: "Before and after the talk, people who work in search wrote about it in public, and others have written about the research behind it. These are their own words, each linked to where it was said.",
+  },
+  {
+    kind: "stats",
+    items: [
+      { value: String(UFI_PEERS.posts), label: `public posts by ${UFI_PEERS.authors} people and pages named the talk`, tone: "sky" },
+      { value: UFI_PEERS.reactions.toLocaleString("en-US"), label: "reactions on those posts", tone: "violet" },
+      { value: String(UFI_PEERS.comments), label: "comments on those posts", tone: "amber" },
+      { value: String(UFI_PEERS.people), label: "people thanked by name on the recap page", tone: "emerald" },
+    ],
+    caption: `Counted on ${longDate(UFI_PEERS.captured)} from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.`,
+  },
+  {
+    kind: "voices",
+    row: true,
+    items: UFI_PEERS.items.map((v) => ({ ...v })),
+    caption: `Quoted as posted, one quote per person; swipe or use the arrows for more. Every brightonSEO post and every name is on the [${EVENT} thank-you page](${TALK.page}).`,
   },
 
   /* 1. What it is */
@@ -1273,54 +1395,6 @@ ans(q,e)  whether the web answers competency question q about e                 
   { kind: "timeline", items: METHOD.map((s, i) => ({ date: `Step ${i + 1}`, title: s.name, text: s.text })) },
   SAID("atScale"),
 
-  /* 14. LinkedIn example */
-  { kind: "h2", id: "example-linkedin", text: "Worked example: my LinkedIn, mapped as a knowledge graph", toc: "Example: LinkedIn graph" },
-  {
-    kind: "plain",
-    text: "I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.",
-  },
-  {
-    kind: "universe",
-    poster: {
-      src: "/guides/user-first-intelligence/linkedin-universe.webp",
-      width: 1600,
-      height: 999,
-      alt: "The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career",
-    },
-    caption: `Live: the [Venkata Pagadala Universe](${L.source}), ${L.posts} posts and ${L.articles} articles on a designed taxonomy of ${L.areas} areas, ${L.topics} topics and ${L.subtopics} subtopics, with ${L.entities} named entities; ${L.graphNodes.toLocaleString("en-US")} nodes and ${L.graphLinks.toLocaleString("en-US")} links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.`,
-  },
-  {
-    kind: "cards",
-    columns: 2,
-    items: [
-      { kicker: "Stars", title: "Each star is one thing I shared", text: "Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.", tone: "sky" },
-      { kicker: "Clusters", title: "Each cluster is an area of the map", text: "The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.", tone: "violet" },
-      { kicker: "Try it", title: "Turn it, search it, open a post", text: "Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.", tone: "amber" },
-      { kicker: "In UFI terms", title: "Classify first, then compare", text: "[[y:The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.]] The two charts below compare what I supply with what readers answer.", tone: "emerald" },
-    ],
-  },
-  {
-    kind: "pair",
-    blocks: [
-      {
-        kind: "bars",
-        title: "What I published (posts, 12 months)",
-        items: L.rows.map((r) => ({ label: r.label, value: r.posts, display: String(r.posts), href: `/venkata-pagadala-universe/topics/${r.slug}`, tone: "sky" as const })),
-      },
-      {
-        kind: "bars",
-        title: "What readers answered (median reactions)",
-        items: L.rows.map((r) => ({ label: r.label, value: r.medianReactions, display: String(r.medianReactions), tone: (r.medianReactions > L.medianReactions ? "emerald" : "rose") as Tone })),
-        caption: `Green: above my median post overall (${L.medianReactions}); red: below it.`,
-      },
-    ],
-  },
-  {
-    kind: "p",
-    text: `[[b:${linkedinReading}]] ${small.length ? `${joinAnd(small)} had fewer than ten posts each, too few to read. ` : ""}[[g:The decision is not to stop writing about AI]]; it is to write about AI the way the stronger areas work: through things I built, data I measured and lessons a reader can use. Posts published ${longDate(L.windowStart)} to ${longDate(L.reactionsAsOf)}, reactions counted on ${longDate(L.reactionsAsOf)}; a post can sit in more than one area. Descriptive, not causal.`,
-  },
-  { kind: "quote", text: "Supply is not demand, even on one profile.", ...ME },
-
   /* 15. Personas example */
   { kind: "h2", id: "example-personas", text: "Worked example: evidence-graded personas on this site", toc: "Example: graded personas" },
   {
@@ -1372,51 +1446,7 @@ ans(q,e)  whether the web answers competency question q about e                 
 
   {
     kind: "p",
-    text: `I first presented the method on ${longDate(TALK.date)}, in ${TALK.track} at ${EVENT}, under the line "${TALK.tagline}". This is the recording, with the slides and the room as they were that morning.`,
-  },
-  {
-    kind: "embed",
-    provider: "linkedin",
-    title: `Full recording: ${TALK.title}, ${EVENT}`,
-    src: TALK.video.embed,
-    href: TALK.video.post,
-    poster: {
-      src: TALK.video.poster,
-      width: 1920,
-      height: 1080,
-      alt: `${TALK.title}, ${EVENT}: the twenty demand sources slide beside Venkata Pagadala on the ${TALK.track} stage`,
-    },
-    open: `Play the full talk here (${Math.round(TALK.video.duration / 60)} min)`,
-    caption: "LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.",
-    chapters: [135, 291, 389, 464, 660, 827].map(chapter),
-  },
-  {
-    kind: "gallery",
-    label: "Photos from the talk",
-    items: UFI_PHOTOS.map((ph) => ({ ...ph })),
-    caption: `On stage in ${TALK.track}. More photos, the slides and everyone who showed up are on the [talk's recap page](${TALK.page}).`,
-  },
-
-  /* 17b. What practitioners said */
-  { kind: "h2", id: "practitioners", text: "What did practitioners say when they heard it?", toc: "What practitioners said" },
-  {
-    kind: "plain",
-    text: "Before and after the talk, people who work in search wrote about it in public. These are their own words, each linked to the post it came from.",
-  },
-  {
-    kind: "stats",
-    items: [
-      { value: String(UFI_PEERS.posts), label: `public posts by ${UFI_PEERS.authors} people and pages named the talk`, tone: "sky" },
-      { value: UFI_PEERS.reactions.toLocaleString("en-US"), label: "reactions on those posts", tone: "violet" },
-      { value: String(UFI_PEERS.comments), label: "comments on those posts", tone: "amber" },
-      { value: String(UFI_PEERS.people), label: "people thanked by name on the recap page", tone: "emerald" },
-    ],
-    caption: `Counted on ${longDate(UFI_PEERS.captured)} from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.`,
-  },
-  {
-    kind: "voices",
-    items: UFI_PEERS.items.map((v) => ({ ...v })),
-    caption: `Quoted as posted. Every post and every name is on the [${EVENT} thank-you page](${TALK.page}).`,
+    text: "The recording of that talk, photos from the room and what people in the field said about it are [at the top of this page](#presented).",
   },
 
   /* 18. Related ideas */

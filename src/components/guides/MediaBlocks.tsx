@@ -209,28 +209,81 @@ export function Gallery({ block }: { block: B<"gallery"> }) {
 
 /* ── What practitioners said in public ──────────────────────────────── */
 
+function VoiceCard({ v, wide }: { v: B<"voices">["items"][number]; wide?: boolean }) {
+  return (
+    <figure className={`flex h-full flex-col border border-border bg-card/20 p-5 ${wide ? "" : "whitespace-normal"}`}>
+      {v.about && <span className={kicker}>{v.about}</span>}
+      <span aria-hidden className="mt-2 font-display text-4xl leading-none" style={{ color: "var(--stage-discover)" }}>
+        &ldquo;
+      </span>
+      <blockquote className="mt-1 flex-1 text-[15px] leading-relaxed text-foreground">{v.quote}</blockquote>
+      <figcaption className="mt-4 border-t border-border pt-3">
+        <span className="block text-sm font-bold text-foreground">{v.author}</span>
+        {v.role && <span className="block font-mono text-[11px] text-muted-foreground">{v.role}</span>}
+        <a href={v.url} {...out} className={`${link} mt-1 inline-block`}>
+          On LinkedIn, {day(v.date)} ↗
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function Voices({ block }: { block: B<"voices"> }) {
+  if (block.row) {
+    return (
+      <div className="my-8">
+        <Slideshow label="What people in the field said" slideClassName="w-[85%] sm:w-[22rem]">
+          {block.items.map((v) => (
+            <VoiceCard key={v.url} v={v} />
+          ))}
+        </Slideshow>
+        <Caption text={block.caption} />
+      </div>
+    );
+  }
   return (
     <div className="my-8">
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className={`grid gap-4 ${block.items.length > 1 ? "sm:grid-cols-2" : ""}`}>
         {block.items.map((v) => (
-          <figure key={v.url} className="flex flex-col border border-border bg-card/20 p-5">
-            <span aria-hidden className="font-display text-4xl leading-none" style={{ color: "var(--stage-discover)" }}>
-              &ldquo;
-            </span>
-            <blockquote className="mt-1 flex-1 text-[15px] leading-relaxed text-foreground">{v.quote}</blockquote>
-            <figcaption className="mt-4 border-t border-border pt-3">
-              <span className="block text-sm font-bold text-foreground">{v.author}</span>
-              {v.role && <span className="block font-mono text-[11px] text-muted-foreground">{v.role}</span>}
-              <a href={v.url} {...out} className={`${link} mt-1 inline-block`}>
-                On LinkedIn, {day(v.date)} ↗
-              </a>
-            </figcaption>
-          </figure>
+          <VoiceCard key={v.url} v={v} wide />
         ))}
       </div>
       <Caption text={block.caption} />
     </div>
+  );
+}
+
+/* ── Who is behind it, in thirty seconds ────────────────────────────── */
+
+export function Bio({ block }: { block: B<"bio"> }) {
+  return (
+    <section aria-label={block.kicker} className="my-8 border border-foreground/25 bg-card/30 p-5 sm:p-6">
+      <div className="flex items-center gap-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={block.photo.src}
+          alt={block.name}
+          width={block.photo.width}
+          height={block.photo.height}
+          className="h-16 w-16 shrink-0 rounded-full border border-border object-cover sm:h-20 sm:w-20"
+        />
+        <div>
+          <div className={kicker}>{block.kicker}</div>
+          <p className="mt-1 font-display text-xl font-bold leading-tight text-foreground">{block.name}</p>
+        </div>
+      </div>
+      <Html text={block.text} className="mt-4 text-[15px] leading-relaxed text-foreground sm:text-base" />
+      <ol className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {block.proofs.map((p) => (
+          <li key={p.href}>
+            <a href={p.href} className="flex h-full flex-col border border-border p-3 transition-colors hover:bg-foreground/5">
+              <span className={kicker}>{p.label}</span>
+              <span className="mt-1 text-sm leading-snug text-foreground">{p.text} ↓</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 

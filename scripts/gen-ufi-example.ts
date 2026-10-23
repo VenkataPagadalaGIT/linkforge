@@ -25,7 +25,8 @@ import { BRIGHTONSEO_2026, TALKS } from "../src/data/talks";
 import { TRANSCRIPT } from "../src/data/brightonTranscript";
 import { SUPPORT_POSTS, SUPPORT_TOTALS } from "../src/data/brightonSupport";
 import { PHOTOS } from "../src/data/brightonPhotos";
-import { authorRole, linkedPapers } from "../src/data/research";
+import { authorRole, linkedPapers, researchPapers } from "../src/data/research";
+import { PEER_QUOTES, PROFILE } from "../src/data/profile";
 
 const OUT = join(__dirname, "..", "src", "data", "ufiExample.ts");
 const check = process.argv.includes("--check");
@@ -195,26 +196,51 @@ const said = (text: string) => {
 const UFI_SAID = Object.fromEntries(Object.entries(SAID_PICKS).map(([k, v]) => [k, said(v)]));
 
 /*
- * What practitioners said about it in public, from the thank-you page's
- * capture. Picked for what they say about the work itself, one post per
- * person; members-only posts carry no quote and can never be picked.
+ * What people in the field said in public, one quote per person, each linked
+ * to where it was said. Two sources, both verbatim: the brightonSEO thank-you
+ * page's capture (posts that name Venkata in the talk's context) and the peer
+ * quotes on his profile record. Members-only posts carry no quote and can
+ * never be picked; a pick that is missing fails the run.
  */
-const PEER_PICKS = [
-  "7504229185645776896", // classification work
-  "7505681691353640960", // think deeply about search
-  "7506548990558175232", // "User First, Algorithm Second"
-  "7503463479006085121", // early preview
-  "7505171629438554112", // search volume is a direction
-  "7504401287434747904", // how to think
-  "7506940282844762112", // intent classification
-  "7506779557631422464", // in the audience
-];
+type Voice = { author: string; role?: string; quote: string; url: string; date: string; about: string };
+const PHASE: Record<string, string> = {
+  before: `Before the ${T.event} talk`,
+  day: `On the day of the ${T.event} talk`,
+  after: `After the ${T.event} talk`,
+};
 const shortRole = (headline: string) => {
   const segs = headline.split(" | ").map((s) => s.replace(/…$/, "").trim()).filter(Boolean);
   let role = segs[0] ?? "";
   for (let i = 1; role.length < 12 && i < segs.length; i++) role += `, ${segs[i]}`;
   return role.replace(/\s+-\s+.*$/, "").replace(/,\s*ex\s.*$/i, "").replace(/\.\s.*$/, "") || undefined;
 };
+const fromPost = (id: string): Voice => {
+  const p = SUPPORT_POSTS.find((x) => x.id === id);
+  if (!p || !p.public || !p.quote) throw new Error(`peer pick ${id} is missing, members-only or has no quote`);
+  return { author: p.author, role: shortRole(p.headline), quote: p.quote, url: p.url, date: p.posted.slice(0, 10), about: PHASE[p.phase] };
+};
+const fromProfile = (name: string): Voice => {
+  const q = PEER_QUOTES.find((x) => x.name === name);
+  if (!q) throw new Error(`peer quote by ${name} not found on the profile record`);
+  return { author: q.name, role: q.role, quote: q.quote, url: q.url, date: q.date, about: q.about };
+};
+const VOICES: Voice[] = [
+  fromPost("7504229185645776896"), // classification work
+  fromProfile("Jean-Christophe Chouinard"), // the success story, previewing the talk
+  fromProfile("Anurag Singhal"), // the long-tail research system
+  fromPost("7505681691353640960"), // think deeply about search
+  fromPost("7506548990558175232"), // "User First, Algorithm Second"
+  fromProfile("Andrea Volpini"), // ontology engineering
+  fromPost("7505171629438554112"), // search volume is a direction
+  fromPost("7506779557631422464"), // in the audience
+  fromPost("7504401287434747904"), // how to think
+  fromPost("7506940282844762112"), // intent classification
+];
+const seen = new Set<string>();
+for (const v of VOICES) {
+  if (seen.has(v.author)) throw new Error(`two quotes from ${v.author}: one per person`);
+  seen.add(v.author);
+}
 const UFI_PEERS = {
   captured: SUPPORT_TOTALS.captured,
   posts: SUPPORT_TOTALS.posts,
@@ -222,11 +248,18 @@ const UFI_PEERS = {
   reactions: SUPPORT_TOTALS.theirReactions,
   comments: SUPPORT_TOTALS.theirComments,
   people: SUPPORT_TOTALS.people,
-  items: PEER_PICKS.map((id) => {
-    const p = SUPPORT_POSTS.find((s) => s.id === id);
-    if (!p || !p.public || !p.quote) throw new Error(`peer pick ${id} is missing, members-only or has no quote`);
-    return { author: p.author, role: shortRole(p.headline), quote: p.quote, url: p.url, date: p.posted.slice(0, 10) };
-  }),
+  items: VOICES,
+};
+/** On the knowledge graph itself, shown beside it. */
+const UFI_GRAPH_VOICE = fromProfile("Rodrigo Stockebrand");
+
+/* ── Who is behind it: the facts the 30-second bio states, from the profile and the papers ── */
+
+const peerReviewed = researchPapers.filter((p) => p.review === "peer-reviewed" && p.url);
+const UFI_AUTHOR = {
+  searchSince: PROFILE.searchSince,
+  employer: PROFILE.employer,
+  peerReviewed: peerReviewed.map((p) => ({ venue: p.venue, publisher: p.publisher, year: p.year })),
 };
 
 /* ── Stage photos: the talk only. The title-slide shot (employer logos on screen) and the expo selfie stay on the recap page. ── */
@@ -269,6 +302,10 @@ export const UFI_TALK = ${JSON.stringify(UFI_TALK, null, 2)} as const;
 export const UFI_SAID = ${JSON.stringify(UFI_SAID, null, 2)} as const;
 
 export const UFI_PEERS = ${JSON.stringify(UFI_PEERS, null, 2)} as const;
+
+export const UFI_GRAPH_VOICE = ${JSON.stringify(UFI_GRAPH_VOICE, null, 2)} as const;
+
+export const UFI_AUTHOR = ${JSON.stringify(UFI_AUTHOR, null, 2)} as const;
 
 export const UFI_PHOTOS = ${JSON.stringify(UFI_PHOTOS, null, 2)} as const;
 

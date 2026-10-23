@@ -11,6 +11,134 @@ Tags: User-First Intelligence, Personas, Search Demand, Knowledge Graphs, Ontolo
 
 *Reading key: Yellow: the key idea, Green: what to do, Blue: the evidence are set in bold in this edition.*
 
+## Who created User-First Intelligence, and where has it been used?
+
+**Who is behind this, in 30 seconds: Venkata Pagadala.** I have worked in search for more than ten years, since 2016: today at AT&T, before that at Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com). I have put this method to work in enterprise search, including at a Fortune 50 company. My research is published in two peer-reviewed journals, Springer Nature's *Discover Artificial Intelligence* and the *Journal of Digital & Social Media Marketing*, and I presented the method at brightonSEO San Diego 2026. A book on User-First Intelligence is in preparation. So this is not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.
+
+- Implemented: [My LinkedIn as a live knowledge graph](#example-linkedin)
+- Presented: [brightonSEO San Diego 2026](#presented)
+- Reviewed: [What people in the field said](#practitioners)
+- Published: [Two peer-reviewed papers](#papers)
+
+### Implemented: my LinkedIn, mapped as a knowledge graph
+
+> **In plain words:** I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.
+
+![The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career](https://venkatapagadala.com/guides/user-first-intelligence/linkedin-universe.webp)
+
+*Live: the [Venkata Pagadala Universe](https://venkatapagadala.com/venkata-pagadala-universe), 923 posts and 8 articles on a designed taxonomy of 10 areas, 45 topics and 16 subtopics, with 40 named entities; 1,094 nodes and 1,944 links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.*
+
+- **Stars: Each star is one thing I shared**: Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.
+- **Clusters: Each cluster is an area of the map**: The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.
+- **Try it: Turn it, search it, open a post**: Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.
+- **In UFI terms: Classify first, then compare**: **The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.** The two charts below compare what I supply with what readers answer.
+
+> "a must follow if you're interested in knowledge graphs in AI search space"
+> (Rodrigo Stockebrand, AI researcher and O'Reilly author, [on LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7518261858701561858/), 2026-10-20; resharing the knowledge graph built from ten years of posts)
+
+**What I published (posts, 12 months)**
+
+| | Value |
+| --- | --- |
+| [AI and LLMs](https://venkatapagadala.com/venkata-pagadala-universe/topics/ai-and-llms) | 75 |
+| [Products and building](https://venkatapagadala.com/venkata-pagadala-universe/topics/products-and-building) | 37 |
+| [SEO and search](https://venkatapagadala.com/venkata-pagadala-universe/topics/seo-and-search) | 35 |
+| [Events and speaking](https://venkatapagadala.com/venkata-pagadala-universe/topics/events-and-speaking) | 29 |
+| [AI search (GEO and AEO)](https://venkatapagadala.com/venkata-pagadala-universe/topics/ai-search) | 27 |
+| [Marketing and content](https://venkatapagadala.com/venkata-pagadala-universe/topics/marketing-and-content) | 15 |
+| [Data and automation](https://venkatapagadala.com/venkata-pagadala-universe/topics/data-and-automation) | 14 |
+| [Life and community](https://venkatapagadala.com/venkata-pagadala-universe/topics/life-and-community) | 11 |
+| [Career and learning](https://venkatapagadala.com/venkata-pagadala-universe/topics/career-and-learning) | 8 |
+| [Tech and industry news](https://venkatapagadala.com/venkata-pagadala-universe/topics/tech-and-industry-news) | 7 |
+
+**What readers answered (median reactions)**
+
+| | Value |
+| --- | --- |
+| AI and LLMs | 23 |
+| Products and building | 37 |
+| SEO and search | 33 |
+| Events and speaking | 26 |
+| AI search (GEO and AEO) | 31 |
+| Marketing and content | 34 |
+| Data and automation | 34.5 |
+| Life and community | 46 |
+| Career and learning | 64.5 |
+| Tech and industry news | 23 |
+
+*Green: above my median post overall (27); red: below it.*
+
+**AI and LLMs is what I publish most (75 posts), yet its median post drew 23 reactions, fewer than my median post overall (27). Products and building, SEO and search, AI search (GEO and AEO), Marketing and content, Data and automation and Life and community each drew more per post.** Career and learning and Tech and industry news had fewer than ten posts each, too few to read. **The decision is not to stop writing about AI**; it is to write about AI the way the stronger areas work: through things I built, data I measured and lessons a reader can use. Posts published 19 October 2025 to 19 October 2026, reactions counted on 19 October 2026; a post can sit in more than one area. Descriptive, not causal.
+
+> "Supply is not demand, even on one profile." (Venkata Pagadala, creator of User-First Intelligence)
+
+### Presented: brightonSEO San Diego 2026
+
+I first presented the method on 15 September 2026, in Track 1 at brightonSEO San Diego 2026, under the line "User First, Algorithm Second". This is the recording, with the slides and the room as they were that morning.
+
+[Full recording: Industrial Level Classification with Intent, brightonSEO San Diego 2026](https://www.linkedin.com/feed/update/urn:li:activity:7506371063925223424/)
+
+*LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.*
+
+- 2:15 [Zero volume, real demand](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-135)
+- 4:51 [The car-buying journey](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-291)
+- 6:29 [Queries become conversations](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-389)
+- 7:44 [The method](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-464)
+- 11:00 [Classify by persona](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-660)
+- 13:47 [Agent systems](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-827)
+
+![Venkata Pagadala on the Track 1 stage at brightonSEO San Diego 2026, pointing to the audience, with the agenda slide on the screen beside him](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-stage-pointing-to-audience-sm.webp?v=16929339)
+![Venkata Pagadala speaking on stage beside the Track 1 lectern at brightonSEO San Diego 2026](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-track-1-stage-sm.webp?v=7e447cf4)
+![View from the audience: Venkata Pagadala at the Track 1 lectern, the agenda slide on the big screen, and attendees photographing it with their phones](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-view-from-audience-sm.webp?v=dcafacff)
+![Venkata Pagadala mid-talk at brightonSEO San Diego 2026, clicker in hand, in front of the sponsor wall](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-clicker-in-hand-sm.webp?v=f2fbb2d0)
+![Venkata Pagadala on stage at brightonSEO San Diego 2026 beside the agenda slide: the thesis, two cases, a new dad gets a new car, four engines and one pattern, the method, and building the system](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-agenda-slide-sm.webp?v=5e7eac29)
+![Close view of Venkata Pagadala speaking at brightonSEO San Diego 2026, wearing his speaker badge](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-close-up-sm.webp?v=dce4f8e7)
+
+*On stage in Track 1. More photos, the slides and everyone who showed up are on the [talk's recap page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
+
+### Reviewed: what people in the field said
+
+Before and after the talk, people who work in search wrote about it in public, and others have written about the research behind it. These are their own words, each linked to where it was said.
+
+- **23** public posts by 22 people and pages named the talk
+- **1,124** reactions on those posts
+- **130** comments on those posts
+- **77** people thanked by name on the recap page
+
+*Counted on 25 September 2026 from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.*
+
+> "Few months back, Venkata Pagadala showed me classification work that he did on top of all the keywords, and I was blown away."
+> (Mihir Naik, Senior Product Manager, AI @ Building seoClarity ArcAI, [on LinkedIn](https://www.linkedin.com/posts/mihir23192_few-months-back-venkata-pagadala-showed-share-7504229185645776896-F4Lf/), 2026-09-11; before the brightonSEO San Diego 2026 talk)
+
+> "the most impressive SEO success story I've seen this year"
+> (Jean-Christophe Chouinard, Senior SEO Strategist, Tripadvisor, [on LinkedIn](https://www.linkedin.com/posts/jeanchristophechouinard_had-a-chance-to-have-an-early-preview-of-share-7503463479006085121-NZrS), 2026-09-09; previewing the brightonSEO San Diego 2026 talk)
+
+> "This is really impressive arsenal for long tail SEO."
+> (Anurag Singhal, Founder, Quattr, [on LinkedIn](https://www.linkedin.com/posts/venkata-pagadala_ai-automation-industrialresearch-ugcPost-7419236855944056832-PtUX), 2026-01-20; on the industry research system for long-tail demand)
+
+> "Shout out to Venkata Pagadala at brightonSEO. His work is interesting, challenging, and gets you to think deeply about search."
+> (Raymond Martinez, Vice President SEO @ Archer Education, [on LinkedIn](https://www.linkedin.com/posts/raymond-martinez-seo_shout-out-to-venkata-pagadala-at-brightonseo-ugcPost-7505681691353640960-GVHj/), 2026-09-15; on the day of the brightonSEO San Diego 2026 talk)
+
+> "That’s one of the ideas that really stood out to me from Venkata Pagadala at brightonSEO San Diego 2026 presentation “User First, Algorithm Second.”"
+> (Harinath Babu, AI SEO & GEO Professional, [on LinkedIn](https://www.linkedin.com/posts/harinathbabu_seo-geo-aeo-share-7506548990558175232-1qcy/), 2026-09-17; after the brightonSEO San Diego 2026 talk)
+
+> "I see a strong connection with what I have been calling Agent-Oriented Ontology Engineering."
+> (Andrea Volpini, CEO and co-founder, WordLift, [on LinkedIn](https://www.linkedin.com/posts/venkata-pagadala_agenticai-aialignment-aisafety-share-7496178355352866818-Vl4l), 2026-08-20; on the Springer Nature survey of reward hacking in agentic LLM systems)
+
+> "My friend Venkata Pagadala is speaking at brightonSEO San Diego, and I liked a point he shared ahead of his talk: “Search volume is a direction, not a strategy.”"
+> (Gaurav Patil, B2B SaaS SEO Consultant, [on LinkedIn](https://www.linkedin.com/posts/gaurav-patil-seo_how-much-of-our-seo-strategy-is-still-decided-share-7505171629438554112-NsDn/), 2026-09-14; before the brightonSEO San Diego 2026 talk)
+
+> "Sitting in the audience I could see it happening in real time while watching Natasha Post and Venkata Pagadala do their first big talks. I'm SO SO proud of you both!!!"
+> (Noah Learner, Mentor + Superconnector + Operator, [on LinkedIn](https://www.linkedin.com/posts/noahlearner_brightonseo-share-7506779557631422464-ZX43/), 2026-09-18; after the brightonSEO San Diego 2026 talk)
+
+> "Some people teach you SEO. Some people teach you how to think. For me, Venkata Pagadala has always been the second kind."
+> (Sagar Kumar, SEO, Blogger, [on LinkedIn](https://www.linkedin.com/posts/hackit-sagar_seo-technicalseo-searchintent-share-7504401287434747904-yA82/), 2026-09-11; before the brightonSEO San Diego 2026 talk)
+
+> "Venkata Pagadala went deep on industrial-level intent classification."
+> (Gururaj Pandurangi, [on LinkedIn](https://www.linkedin.com/posts/gururajp_brightonseoday1track1searchintentgeopdf-ugcPost-7506940282844762112-oI7U/), 2026-09-18; after the brightonSEO San Diego 2026 talk)
+
+*Quoted as posted, one quote per person; swipe or use the arrows for more. Every brightonSEO post and every name is on the [brightonSEO San Diego 2026 thank-you page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
+
 ## What is User-First Intelligence?
 
 > **In plain words:** Start with the people, not the keywords. Find out who they are, where they ask for help and what they need, put all of it on one map of your industry, and build what that map says is missing.
@@ -766,55 +894,6 @@ The whole part, in the talk: [Agent systems, at 13:47](https://venkatapagadala.c
 
 > "When you're working for an enterprise, you need to build a system at scale that can be used by multiple users." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 1:33](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-0))
 
-## Worked example: my LinkedIn, mapped as a knowledge graph
-
-> **In plain words:** I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.
-
-![The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career](https://venkatapagadala.com/guides/user-first-intelligence/linkedin-universe.webp)
-
-*Live: the [Venkata Pagadala Universe](https://venkatapagadala.com/venkata-pagadala-universe), 923 posts and 8 articles on a designed taxonomy of 10 areas, 45 topics and 16 subtopics, with 40 named entities; 1,094 nodes and 1,944 links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.*
-
-- **Stars: Each star is one thing I shared**: Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.
-- **Clusters: Each cluster is an area of the map**: The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.
-- **Try it: Turn it, search it, open a post**: Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.
-- **In UFI terms: Classify first, then compare**: **The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.** The two charts below compare what I supply with what readers answer.
-
-**What I published (posts, 12 months)**
-
-| | Value |
-| --- | --- |
-| [AI and LLMs](https://venkatapagadala.com/venkata-pagadala-universe/topics/ai-and-llms) | 75 |
-| [Products and building](https://venkatapagadala.com/venkata-pagadala-universe/topics/products-and-building) | 37 |
-| [SEO and search](https://venkatapagadala.com/venkata-pagadala-universe/topics/seo-and-search) | 35 |
-| [Events and speaking](https://venkatapagadala.com/venkata-pagadala-universe/topics/events-and-speaking) | 29 |
-| [AI search (GEO and AEO)](https://venkatapagadala.com/venkata-pagadala-universe/topics/ai-search) | 27 |
-| [Marketing and content](https://venkatapagadala.com/venkata-pagadala-universe/topics/marketing-and-content) | 15 |
-| [Data and automation](https://venkatapagadala.com/venkata-pagadala-universe/topics/data-and-automation) | 14 |
-| [Life and community](https://venkatapagadala.com/venkata-pagadala-universe/topics/life-and-community) | 11 |
-| [Career and learning](https://venkatapagadala.com/venkata-pagadala-universe/topics/career-and-learning) | 8 |
-| [Tech and industry news](https://venkatapagadala.com/venkata-pagadala-universe/topics/tech-and-industry-news) | 7 |
-
-**What readers answered (median reactions)**
-
-| | Value |
-| --- | --- |
-| AI and LLMs | 23 |
-| Products and building | 37 |
-| SEO and search | 33 |
-| Events and speaking | 26 |
-| AI search (GEO and AEO) | 31 |
-| Marketing and content | 34 |
-| Data and automation | 34.5 |
-| Life and community | 46 |
-| Career and learning | 64.5 |
-| Tech and industry news | 23 |
-
-*Green: above my median post overall (27); red: below it.*
-
-**AI and LLMs is what I publish most (75 posts), yet its median post drew 23 reactions, fewer than my median post overall (27). Products and building, SEO and search, AI search (GEO and AEO), Marketing and content, Data and automation and Life and community each drew more per post.** Career and learning and Tech and industry news had fewer than ten posts each, too few to read. **The decision is not to stop writing about AI**; it is to write about AI the way the stronger areas work: through things I built, data I measured and lessons a reader can use. Posts published 19 October 2025 to 19 October 2026, reactions counted on 19 October 2026; a post can sit in more than one area. Descriptive, not causal.
-
-> "Supply is not demand, even on one profile." (Venkata Pagadala, creator of User-First Intelligence)
-
 ## Worked example: evidence-graded personas on this site
 
 > **In plain words:** Every line on a persona says how sure we are: measured by a study, borrowed from a wider group, or just an assumption to test.
@@ -860,64 +939,7 @@ The [personas on this site](https://venkatapagadala.com/personas) are built this
 - **October 2026: User-First Intelligence, named and specified.** The framework took its name, and an open reference implementation of its Content Gap Score was published on [GitHub](https://github.com/VenkataPagadalaGIT/ufi).
 - **23 October 2026: This reference guide, version 1.0.** A research paper and a book on User-First Intelligence are in preparation. Until they are out, this page is the framework's public reference; it is versioned, and changes will be noted here. UFI is my independent work, not a product or a position of my employer.
 
-I first presented the method on 15 September 2026, in Track 1 at brightonSEO San Diego 2026, under the line "User First, Algorithm Second". This is the recording, with the slides and the room as they were that morning.
-
-[Full recording: Industrial Level Classification with Intent, brightonSEO San Diego 2026](https://www.linkedin.com/feed/update/urn:li:activity:7506371063925223424/)
-
-*LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.*
-
-- 2:15 [Zero volume, real demand](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-135)
-- 4:51 [The car-buying journey](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-291)
-- 6:29 [Queries become conversations](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-389)
-- 7:44 [The method](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-464)
-- 11:00 [Classify by persona](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-660)
-- 13:47 [Agent systems](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-827)
-
-![Venkata Pagadala on the Track 1 stage at brightonSEO San Diego 2026, pointing to the audience, with the agenda slide on the screen beside him](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-stage-pointing-to-audience-sm.webp?v=16929339)
-![Venkata Pagadala speaking on stage beside the Track 1 lectern at brightonSEO San Diego 2026](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-track-1-stage-sm.webp?v=7e447cf4)
-![View from the audience: Venkata Pagadala at the Track 1 lectern, the agenda slide on the big screen, and attendees photographing it with their phones](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-view-from-audience-sm.webp?v=dcafacff)
-![Venkata Pagadala mid-talk at brightonSEO San Diego 2026, clicker in hand, in front of the sponsor wall](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-clicker-in-hand-sm.webp?v=f2fbb2d0)
-![Venkata Pagadala on stage at brightonSEO San Diego 2026 beside the agenda slide: the thesis, two cases, a new dad gets a new car, four engines and one pattern, the method, and building the system](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-agenda-slide-sm.webp?v=5e7eac29)
-![Close view of Venkata Pagadala speaking at brightonSEO San Diego 2026, wearing his speaker badge](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-close-up-sm.webp?v=dce4f8e7)
-
-*On stage in Track 1. More photos, the slides and everyone who showed up are on the [talk's recap page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
-
-## What did practitioners say when they heard it?
-
-> **In plain words:** Before and after the talk, people who work in search wrote about it in public. These are their own words, each linked to the post it came from.
-
-- **23** public posts by 22 people and pages named the talk
-- **1,124** reactions on those posts
-- **130** comments on those posts
-- **77** people thanked by name on the recap page
-
-*Counted on 25 September 2026 from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.*
-
-> "Few months back, Venkata Pagadala showed me classification work that he did on top of all the keywords, and I was blown away."
-> (Mihir Naik, Senior Product Manager, AI @ Building seoClarity ArcAI, [on LinkedIn](https://www.linkedin.com/posts/mihir23192_few-months-back-venkata-pagadala-showed-share-7504229185645776896-F4Lf/), 2026-09-11)
-
-> "Shout out to Venkata Pagadala at brightonSEO. His work is interesting, challenging, and gets you to think deeply about search."
-> (Raymond Martinez, Vice President SEO @ Archer Education, [on LinkedIn](https://www.linkedin.com/posts/raymond-martinez-seo_shout-out-to-venkata-pagadala-at-brightonseo-ugcPost-7505681691353640960-GVHj/), 2026-09-15)
-
-> "That’s one of the ideas that really stood out to me from Venkata Pagadala at brightonSEO San Diego 2026 presentation “User First, Algorithm Second.”"
-> (Harinath Babu, AI SEO & GEO Professional, [on LinkedIn](https://www.linkedin.com/posts/harinathbabu_seo-geo-aeo-share-7506548990558175232-1qcy/), 2026-09-17)
-
-> "Had a chance to have an early preview of Venkata Pagadala's talk at BrightonSEO, and you definitely don't want to miss this."
-> (Jean-Christophe Chouinard, Senior SEO Strategist at Tripadvisor, [on LinkedIn](https://www.linkedin.com/posts/jeanchristophechouinard_had-a-chance-to-have-an-early-preview-of-share-7503463479006085121-NZrS/), 2026-09-09)
-
-> "My friend Venkata Pagadala is speaking at brightonSEO San Diego, and I liked a point he shared ahead of his talk: “Search volume is a direction, not a strategy.”"
-> (Gaurav Patil, B2B SaaS SEO Consultant, [on LinkedIn](https://www.linkedin.com/posts/gaurav-patil-seo_how-much-of-our-seo-strategy-is-still-decided-share-7505171629438554112-NsDn/), 2026-09-14)
-
-> "Some people teach you SEO. Some people teach you how to think. For me, Venkata Pagadala has always been the second kind."
-> (Sagar Kumar, SEO, Blogger, [on LinkedIn](https://www.linkedin.com/posts/hackit-sagar_seo-technicalseo-searchintent-share-7504401287434747904-yA82/), 2026-09-11)
-
-> "Venkata Pagadala went deep on industrial-level intent classification."
-> (Gururaj Pandurangi, [on LinkedIn](https://www.linkedin.com/posts/gururajp_brightonseoday1track1searchintentgeopdf-ugcPost-7506940282844762112-oI7U/), 2026-09-18)
-
-> "Sitting in the audience I could see it happening in real time while watching Natasha Post and Venkata Pagadala do their first big talks. I'm SO SO proud of you both!!!"
-> (Noah Learner, Mentor + Superconnector + Operator, [on LinkedIn](https://www.linkedin.com/posts/noahlearner_brightonseo-share-7506779557631422464-ZX43/), 2026-09-18)
-
-*Quoted as posted. Every post and every name is on the [brightonSEO San Diego 2026 thank-you page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
+The recording of that talk, photos from the room and what people in the field said about it are [at the top of this page](#presented).
 
 ## How does User-First Intelligence relate to existing ideas?
 
