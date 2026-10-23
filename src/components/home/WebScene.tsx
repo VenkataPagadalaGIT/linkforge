@@ -320,7 +320,6 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     corners: useRef<(HTMLDivElement | null)[]>([]),
   };
   const labelRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const leafRefs = useRef<(HTMLSpanElement | null)[][]>(NODES.map(() => []));
 
   const [ready, setReady] = useState(false);
   const [wide, setWide] = useState(true);
@@ -329,6 +328,9 @@ export default function WebScene({ band = 300 }: { band?: number }) {
   const [hLog, setHLog] = useState("dropping in from the menu …");
   const [aLog, setALog] = useState("warming up the index …");
   const hoverRef = useRef<number | null>(null);
+  /** The section under the pointer, for its card. The spider's errand uses hoverRef. */
+  const [hoverSec, setHoverSec] = useState<number | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const sendRef = useRef<(i: number) => void>(() => {});
 
   useEffect(() => {
@@ -375,7 +377,6 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     /* ── Crawl state ── */
     const visitedSet = new Set<number>();
     const collected = new Set<string>();
-    const fresh = new Map<string, number>(); // leaf key -> time it was pulled
     const silk: Line[] = [];
     const aiSilk: Line[] = [];
     const pings: { p: V3; t0: number }[] = [];
@@ -717,7 +718,6 @@ export default function WebScene({ band = 300 }: { band?: number }) {
             collected.add(pk.key);
             setItems(collected.size);
           }
-          fresh.set(pk.key, now);
           refs.hubInner.current?.animate([{ transform: "scale(1.3)" }, { transform: "scale(1)" }], { duration: 380, easing: "ease-out" });
         }
       }
@@ -868,24 +868,26 @@ export default function WebScene({ band = 300 }: { band?: number }) {
         a.style.transformOrigin = `${ux > 0.25 ? "left" : ux < -0.25 ? "right" : "center"} center`;
         a.style.transform = `translate(${r1(lx)}px, ${r1(ly)}px) translate(${dx}, ${dy}) scale(${r1(sc * 100) / 100})`;
         a.style.opacity = String(Math.min(1, Math.max(0.55, q.s * 1.3)));
-        n.leaves.forEach((l, j) => {
-          const s = leafRefs.current[n.i]?.[j];
-          if (!s) return;
-          const lq = P(c, l.p);
-          const t = fresh.get(`${n.i}:${j}`);
-          const age = t ? (now - t) / 2600 : 1;
-          const show = hoverRef.current === n.i ? 1 : Math.max(0, 1 - age);
-          let vx = lq.x - q.x;
-          let vy = lq.y - q.y;
-          const vl = Math.hypot(vx, vy) || 1;
-          vx /= vl;
-          vy /= vl;
-          s.style.transform = `translate(${r1(lq.x + vx * 8)}px, ${r1(lq.y + vy * 8)}px) translate(${vx > 0.25 ? "0%" : vx < -0.25 ? "-100%" : "-50%"}, ${vy > 0.6 ? "0%" : vy < -0.6 ? "-100%" : "-50%"})`;
-          s.style.opacity = String(r1(show * 100) / 100);
-        });
       });
       const hq = P(c, FH);
       if (refs.hub.current) refs.hub.current.style.transform = `translate(${r1(hq.x)}px, ${r1(hq.y)}px) translate(-50%, 45%)`;
+      // The hover card opens inward from its section, into the empty middle of
+      // the web, so it never sits on another section's label.
+      const card = cardRef.current;
+      const hi = card ? Number(card.dataset.section) : NaN;
+      if (card && !Number.isNaN(hi)) {
+        const q = P(c, NODES[hi].p);
+        let ux = q.x - hq.x;
+        let uy = q.y - hq.y;
+        const ul = Math.hypot(ux, uy) || 1;
+        ux /= ul;
+        uy /= ul;
+        const ax = q.x - ux * 18;
+        const ay = q.y - uy * 18;
+        const dx = ux > 0.25 ? "-100%" : ux < -0.25 ? "0%" : "-50%";
+        const dy = uy > 0.6 ? "-100%" : uy < -0.6 ? "0%" : "-50%";
+        card.style.transform = `translate(${r1(ax)}px, ${r1(ay)}px) translate(${dx}, ${dy})`;
+      }
       refs.corners.current.forEach((d, k) => {
         if (!d) return;
         const sx = k % 2 === 0 ? -1 : 1;
@@ -1001,29 +1003,38 @@ export default function WebScene({ band = 300 }: { band?: number }) {
           <div
             ref={refs.hub}
             aria-hidden="true"
-            className={`pointer-events-none absolute left-0 top-0 rounded-full border border-foreground/40 bg-background/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground backdrop-blur-sm ${ready ? "" : "hidden"}`}
+            className={`pointer-events-none absolute left-0 top-0 rounded-full border border-foreground/40 bg-background/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground backdrop-blur-sm transition-opacity duration-200 ${ready ? "" : "hidden"} ${hoverSec !== null ? "opacity-0" : "opacity-100"}`}
           >
             <span ref={refs.hubInner} className="inline-block">
               index {items}/{TOTAL_ITEMS}
             </span>
           </div>
 
-          {/* What each section holds: named when the AI spider pulls it in */}
-          {NODES.map((n) =>
-            n.leaves.map((l, j) => (
-              <span
-                key={`${n.id}-${j}`}
-                ref={(s) => {
-                  leafRefs.current[n.i][j] = s;
-                }}
-                aria-hidden="true"
-                className={`pointer-events-none absolute left-0 top-0 whitespace-nowrap font-mono text-[10px] text-foreground/80 transition-opacity duration-300 ${ready ? "" : "hidden"}`}
-                style={{ opacity: 0, textShadow: "0 0 6px hsl(var(--background))" }}
-              >
-                {l.label}
-              </span>
-            )),
+          {/* What a section holds, in one card while the pointer is on it */}
+          {hoverSec !== null && (
+            <div
+              ref={cardRef}
+              data-section={hoverSec}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-0 top-0 w-60 border border-foreground/30 bg-background/90 px-3.5 py-2.5 backdrop-blur-sm"
+            >
+              <p className="truncate font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                {String(hoverSec + 1).padStart(2, "0")} · {NODES[hoverSec].hint}
+              </p>
+              <p className="mt-0.5 font-display text-sm font-bold text-foreground">{NODES[hoverSec].label}</p>
+              <ul className="mt-1.5 space-y-0.5">
+                {NODES[hoverSec].leaves.slice(0, 4).map((l) => (
+                  <li key={l.label} className="truncate font-mono text-[11px] text-foreground/85">
+                    <span className="text-muted-foreground">▸</span> {l.label}
+                  </li>
+                ))}
+                {NODES[hoverSec].leaves.length > 4 && (
+                  <li className="font-mono text-[10px] text-muted-foreground">+ {NODES[hoverSec].leaves.length - 4} more on the About page</li>
+                )}
+              </ul>
+            </div>
           )}
+
         </>
       )}
 
@@ -1039,8 +1050,16 @@ export default function WebScene({ band = 300 }: { band?: number }) {
               labelRefs.current[n.i] = a;
             }}
             href={`/about#${n.id}`}
-            onMouseEnter={() => sendRef.current(n.i)}
-            onFocus={() => sendRef.current(n.i)}
+            onMouseEnter={() => {
+              setHoverSec(n.i);
+              sendRef.current(n.i);
+            }}
+            onFocus={() => {
+              setHoverSec(n.i);
+              sendRef.current(n.i);
+            }}
+            onMouseLeave={() => setHoverSec(null)}
+            onBlur={() => setHoverSec(null)}
             className={`${ready ? "absolute left-0 top-0 origin-center" : "relative"} whitespace-nowrap font-mono text-[12px] uppercase tracking-[0.14em] text-foreground/90 transition-colors hover:text-foreground focus-visible:outline focus-visible:outline-1 focus-visible:outline-foreground`}
             style={{ textShadow: "0 0 8px hsl(var(--background)), 0 0 2px hsl(var(--background))" }}
           >
