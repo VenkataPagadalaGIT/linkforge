@@ -507,7 +507,9 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     io.observe(el);
 
     const camNow = () => {
-      const o = orbit(cur.x * 9, BASE_ELEV + cur.y * 3);
+      // A gentle turn: enough for the walls to move with the pointer, small
+      // enough that the web on the floor always reads level.
+      const o = orbit(cur.x * 3.5, BASE_ELEV + cur.y * 1.5);
       return { ...o, ...F };
     };
 
@@ -840,15 +842,22 @@ export default function WebScene({ band = 300 }: { band?: number }) {
         const a = labelRefs.current[n.i];
         if (!a) return;
         const q = P(c, n.p);
-        // Labels sit outward from the hub: left of the left half, right of the right half,
-        // above the far side and below the near side, so neighbours never collide.
-        const far = n.p.z > FH.z + 20;
-        const cosA = Math.cos(n.a);
-        const sinA = Math.sin(n.a);
-        const dx = cosA > 0.15 ? "10px" : cosA < -0.15 ? "calc(-100% - 10px)" : "-50%";
-        const dy = sinA > 0.35 ? "-140%" : sinA < -0.35 ? "45%" : "-50%";
+        // Each label sits straight out from the hub, like the numbers on a
+        // clock face, so neighbouring sections can never collide.
+        const hubQ = P(c, FH);
+        let ux = q.x - hubQ.x;
+        let uy = q.y - hubQ.y;
+        const ul = Math.hypot(ux, uy) || 1;
+        ux /= ul;
+        uy /= ul;
+        const gap = 14;
+        const lx = q.x + ux * gap;
+        const ly = q.y + uy * gap;
+        const dx = ux > 0.25 ? "0%" : ux < -0.25 ? "-100%" : "-50%";
+        const dy = uy > 0.6 ? "0%" : uy < -0.6 ? "-100%" : "-50%";
         const sc = Math.min(1.15, Math.max(0.92, q.s * 1.2));
-        a.style.transform = `translate(${r1(q.x)}px, ${r1(q.y)}px) translate(${dx}, ${dy}) scale(${r1(sc * 100) / 100})`;
+        a.style.transformOrigin = `${ux > 0.25 ? "left" : ux < -0.25 ? "right" : "center"} center`;
+        a.style.transform = `translate(${r1(lx)}px, ${r1(ly)}px) translate(${dx}, ${dy}) scale(${r1(sc * 100) / 100})`;
         a.style.opacity = String(Math.min(1, Math.max(0.55, q.s * 1.3)));
         n.leaves.forEach((l, j) => {
           const s = leafRefs.current[n.i]?.[j];
@@ -857,7 +866,12 @@ export default function WebScene({ band = 300 }: { band?: number }) {
           const t = fresh.get(`${n.i}:${j}`);
           const age = t ? (now - t) / 2600 : 1;
           const show = hoverRef.current === n.i ? 1 : Math.max(0, 1 - age);
-          s.style.transform = `translate(${r1(lq.x)}px, ${r1(lq.y)}px) translate(-50%, ${far ? "-150%" : "60%"})`;
+          let vx = lq.x - q.x;
+          let vy = lq.y - q.y;
+          const vl = Math.hypot(vx, vy) || 1;
+          vx /= vl;
+          vy /= vl;
+          s.style.transform = `translate(${r1(lq.x + vx * 8)}px, ${r1(lq.y + vy * 8)}px) translate(${vx > 0.25 ? "0%" : vx < -0.25 ? "-100%" : "-50%"}, ${vy > 0.6 ? "0%" : vy < -0.6 ? "-100%" : "-50%"})`;
           s.style.opacity = String(r1(show * 100) / 100);
         });
       });

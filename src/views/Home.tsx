@@ -1,6 +1,6 @@
 "use client";
 import { Link } from "@/lib/router-shim";
-import { ArrowDown, ArrowRight, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, Linkedin, Mail } from "lucide-react";
 import { linkedPapers } from "@/data/research";
 import TypewriterText from "@/components/TypewriterText";
 import SolutionsGraph from "@/components/SolutionsGraph";
@@ -112,24 +112,6 @@ const Home = () => {
             <Mail size={14} aria-hidden="true" />
             {PROFILE.email}
           </a>
-          <button
-            type="button"
-            onClick={() => {
-              // The arrow promises "further down this page", so honour that:
-              // ride to the end of the document rather than navigating away,
-              // and respect a reduced-motion preference on the way.
-              const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-              window.scrollTo({
-                top: document.documentElement.scrollHeight,
-                behavior: reduce ? "auto" : "smooth",
-              });
-            }}
-            aria-label="Scroll to the bottom of the page"
-            className="inline-flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group mt-2 bg-transparent border-0 cursor-pointer"
-          >
-            <span className="font-mono text-xs tracking-widest uppercase">Explore</span>
-            <ArrowDown size={16} className="group-hover:translate-y-1 transition-transform" />
-          </button>
         </div>
         </div>
       </div>
