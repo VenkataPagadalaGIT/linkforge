@@ -8,27 +8,33 @@ interface TypewriterTextProps {
 
 const TypewriterText = ({ words, className = "" }: TypewriterTextProps) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentText, setCurrentText] = useState("");
+  // SSR renders the FIRST word as real text, so on networks whose proxies
+  // block our scripts (nothing hydrates) the line still says something
+  // instead of showing a lone cursor. With JS, the animation takes over.
+  const [currentText, setCurrentText] = useState(words[0] ?? "");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const word = words[currentWordIndex];
-    const speed = isDeleting ? 40 : 80;
+
+    // Fully typed (including the pre-hydrated first word): hold it on screen,
+    // then start deleting. One code path for the pause, no nested timers.
+    if (!isDeleting && currentText === word) {
+      const pause = setTimeout(() => setIsDeleting(true), 2000);
+      return () => clearTimeout(pause);
+    }
 
     const timeout = setTimeout(() => {
       if (!isDeleting) {
         setCurrentText(word.slice(0, currentText.length + 1));
-        if (currentText.length + 1 === word.length) {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
       } else {
         setCurrentText(word.slice(0, currentText.length - 1));
-        if (currentText.length === 0) {
+        if (currentText.length <= 1) {
           setIsDeleting(false);
           setCurrentWordIndex((prev) => (prev + 1) % words.length);
         }
       }
-    }, speed);
+    }, isDeleting ? 40 : 80);
 
     return () => clearTimeout(timeout);
   }, [currentText, isDeleting, currentWordIndex, words]);

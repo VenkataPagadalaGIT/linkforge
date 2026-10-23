@@ -64,7 +64,7 @@ export const conferences: Conference[] = [
     name: "SEO Week",
     edition: "2026",
     year: 2026,
-    status: "upcoming",
+    status: "attended",
     startDate: "2026-04-26",
     endDate: "2026-04-30",
     dateLabel: "Apr 26–30, 2026",

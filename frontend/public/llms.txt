@@ -42,18 +42,73 @@ The authoritative directory of 100 AI pioneers shaping the field in 2026. Explor
 - URL: https://venkatapagadala.com/notebook/ai
 
 ### AI Learning Roadmap — Zero to Hero (2026)
-A structured 18-week curriculum with 24 topics, 67+ videos, 71+ courses, 62+ repos, 43+ books, and pro tips. Your complete path from beginner to advanced.
+A structured 18-week curriculum across 28 topics with 420 curated resources: 115 videos, 121 courses, 84 books and 100 repos. 388 of the 420 are free, which is 92%; the remainder are labelled freemium or paid on the card so nobody clicks through expecting free and hits a paywall. Reviewed July 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)
-110 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide.
+123 AI concepts across 10 categories with key terms, prerequisites, difficulty levels, and curated learn-more links. The definitive AI reference guide. Reviewed July 2026.
 - URL: https://venkatapagadala.com/notebook/ai/encyclopedia
+
+### The Complete Shelf — 19 Free AI Books in 3D (2026)
+A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum from a first Python program through mathematics, classical ML, deep learning, NLP, deploying models and reinforcement learning to AI safety. Author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain only: no free trials, no sample chapters, nothing pirated. Books by a profiled author link to that contributor's page. All nineteen titles are also listed as plain links on the page for anyone without WebGL.
+- URL: https://venkatapagadala.com/notebook/ai/shelf
+
+### Open Knowledge Format bundle
+The site's knowledge packaged as an Open Knowledge Format (OKF v0.2) bundle: markdown with YAML frontmatter, one file per concept, cross-linked, with generated/verified trust metadata and per-dataset sources. Guides, 3D experiences, datasets and research, readable by humans and parseable by agents from the same files.
+- URL: https://venkatapagadala.com/okf/index.md
+
+### Everything in 3D (hub)
+Every interactive 3D experience on the site in one place: the playable 2040 city, the explorable LLM machine, the 3D HVAC system, the Complete Shelf of free books, the AI Roadmap shelf, the Top 100 glass album, the AI Economy map, and the homepage's living portrait. All generated geometry running in the browser; no downloads, no model files.
+- URL: https://venkatapagadala.com/3d
 
 ## Reference Guides
 
 ### Graph Types for AI Agents (2026)
 The definitive guide to ontology vs taxonomy vs knowledge graph vs information graph vs context graph vs vector index — defined, compared in one table, and visualized with a single dataset modeled six ways. Explains which layer matters for SEO, AEO, GEO, and AI agents, with runnable graphology code examples.
 - URL: https://venkatapagadala.com/guides/graph-types-for-ai-agents
+- Markdown edition: https://venkatapagadala.com/guides/graph-types-for-ai-agents.md
+
+### How LLMs Work: Interactive 3D Walkthrough (2026)
+Every stage a prompt passes through, modeled as an explorable 3D machine: tokenizer, embeddings, attention, MoE experts, KV cache, sampling, and the training story from pretraining through reasoning RL. 21 stages, a 15-step guided journey, full crawlable text.
+- URL: https://venkatapagadala.com/guides/how-llms-work
+- Markdown edition: https://venkatapagadala.com/guides/how-llms-work.md
+
+### 3D HVAC System Troubleshooting (2026)
+An interactive 3D home HVAC system with a fault library, guided scenarios, and symptom-based diagnosis. The same explorable-machine treatment, applied to a physical system.
+- URL: https://venkatapagadala.com/guides/hvac-system-troubleshooting
+- Markdown edition: https://venkatapagadala.com/guides/hvac-system-troubleshooting.md
+
+### Screaming Frog SEO Spider: The Complete 2026 Guide (v24)
+Every screen of Screaming Frog v24 with 76 real screenshots: crawl configuration, JavaScript rendering, content embeddings and semantic search, Google Search Console and AI integrations, scheduling, and the MCP server. Includes a recommended agency configuration profile.
+- URL: https://venkatapagadala.com/guides/screaming-frog
+- Markdown edition: https://venkatapagadala.com/guides/screaming-frog.md
+
+### 3D Game: Drive and Walk a Year-2040 City
+A playable 2040 city in the browser: walk a humanoid, greet the crew, and take the controls of any truck, robotaxi, semi or cargo barge. Every robot, vehicle and tower is generated geometry, so the whole city ships as code with nothing downloaded. Traffic follows arc-length curves and yields, collision uses oriented capsules, and the cockpit is a Formula-style rim with forward, reverse, booster and autopilot.
+- URL: https://venkatapagadala.com/3d-game
+- Markdown edition: https://venkatapagadala.com/3d-game.md
+
+## AI Updates
+
+News with primary sources attached: court documents, official filings, and original announcements linked from every article.
+- URL: https://venkatapagadala.com/ai-updates
+
+### Court Gives Final Approval to Anthropic's $1.5 Billion Author Settlement (2026-07-20)
+Final approval of the largest known U.S. copyright settlement: about $3,000 per work across roughly 500,000 books. Includes the full federal docket, Judge Alsup's fair use order, the GovInfo case archive, and the official settlement administrator, all linked.
+- URL: https://venkatapagadala.com/ai-updates/anthropic-copyright-settlement-final-approval
+
+## Published Research
+
+Peer-reviewed papers on how AI and large language models are reshaping search.
+- URL: https://venkatapagadala.com/publications
+
+### The Disruption of Search Engine Optimization by Large Language Models (2026)
+A mixed-methods analysis of the evolving search landscape. Published on SSRN.
+- Paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878
+
+### Google, SEO and Helpful Content: How AI Can Be Helpful for E-Commerce Websites (2024)
+Journal of Digital & Social Media Marketing.
+- Paper: https://www.researchgate.net/publication/386439374_Google_SEO_and_helpful_content_How_artificial_intelligence_can_be_helpful_for_e-commerce_websites
 
 ## Contact
 

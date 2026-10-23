@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GraphView, GNode } from "@/lib/graphModels";
+import Graph3DLazy from "./Graph3DLazy";
 
 /**
  * GraphFigure — renders a GraphView as a self-contained, crawlable SVG.
@@ -72,7 +73,38 @@ interface Props {
 
 const GraphFigure = ({ view, hideLegend }: Props) => {
   const [active, setActive] = useState<string | null>(null);
+  // SSR/initial render is always "2d" so crawlers + the first paint get the
+  // server-rendered SVG (no JS needed). On the client we auto-upgrade to 3D
+  // when the figure scrolls into view, and drop back to 2D when it leaves —
+  // so only ~1-2 WebGL canvases run at once and it stays fast.
+  const [mode, setMode] = useState<"2d" | "3d">("2d");
+  const figRef = useRef<HTMLElement>(null);
+  const pinnedRef = useRef(false);
   const byId = new Map<string, GNode>(view.nodes.map((n) => [n.id, n]));
+
+  useEffect(() => {
+    const el = figRef.current;
+    if (!el) return;
+    let webgl = false;
+    try {
+      const c = document.createElement("canvas");
+      webgl = !!(c.getContext("webgl2") || c.getContext("webgl"));
+    } catch {
+      webgl = false;
+    }
+    if (!webgl) return; // no WebGL → stay on the SVG
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (pinnedRef.current) return; // user made a manual choice
+          setMode(e.isIntersecting ? "3d" : "2d");
+        });
+      },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const neighbors = (id: string) => {
     const set = new Set<string>([id]);
@@ -87,8 +119,16 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
   const edgeDim = (s: string, t: string) => (lit ? !(lit.has(s) && lit.has(t)) : false);
 
   return (
-    <figure className="my-2">
-      <div className="border border-border bg-card/40">
+    <figure ref={figRef} className="my-2">
+      <div className="relative border border-border bg-card/40">
+        <button
+          type="button"
+          onClick={() => { pinnedRef.current = true; setMode((m) => (m === "2d" ? "3d" : "2d")); }}
+          className="absolute top-2 right-2 z-10 font-mono text-[10px] px-2 py-1 border border-border bg-background/70 backdrop-blur text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
+          aria-label={mode === "2d" ? "Show the interactive 3D graph" : "Show the static 2D figure"}
+        >
+          {mode === "2d" ? "Explore in 3D ⤢" : "Static 2D"}
+        </button>
         <svg
           viewBox={`0 0 ${view.width} ${view.height}`}
           className="w-full h-auto"
@@ -176,6 +216,11 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
             );
           })}
         </svg>
+        {mode === "3d" && (
+          <div className="absolute inset-0 bg-background">
+            <Graph3DLazy view={view} />
+          </div>
+        )}
       </div>
 
       {!hideLegend && (
@@ -193,6 +238,22 @@ const GraphFigure = ({ view, hideLegend }: Props) => {
           </p>
         </figcaption>
       )}
+
+      {/* Machine-readable graph data: server-rendered plain text so crawlers
+          (incl. JS-off AI bots) and screen readers get the entities AND the
+          relationships, not just disconnected SVG labels or WebGL pixels. */}
+      <details className="mt-2">
+        <summary className="font-mono text-[10px] text-muted-foreground/50 cursor-pointer hover:text-muted-foreground transition-colors">
+          Graph data (text) — {view.nodes.length} entities, {view.edges.length} relationships
+        </summary>
+        <ul className="mt-2 space-y-0.5 pl-1">
+          {view.edges.map((e, i) => (
+            <li key={i} className="font-mono text-[10px] text-muted-foreground/70 leading-relaxed">
+              {byId.get(e.source)?.label ?? e.source} —{e.label ?? "related to"}→ {byId.get(e.target)?.label ?? e.target}
+            </li>
+          ))}
+        </ul>
+      </details>
     </figure>
   );
 };

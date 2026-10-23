@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { aiContributors } from "@/data/aiContributors";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import AIUpdateDetail from "@/views/AIUpdateDetail";
 import { getUpdate, articleJsonLd, breadcrumbJsonLd, getSitemapData } from "@/lib/content-fetch";
 import { SITE_URL } from "@/lib/site";
@@ -12,8 +14,10 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const upd = await getUpdate(params.slug);
   if (!upd) {
-    const t = params.slug.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join(" ");
-    return { title: t, alternates: { canonical: `/ai-updates/${params.slug}` } };
+    // Slug did not resolve. Emit noindex and NO canonical: previously this
+    // title-cased the URL slug and self-canonicalised it, which turned every
+    // bogus URL into an indexable page with an attacker-chosen <title>.
+    return { title: "Not found", robots: { index: false, follow: false } };
   }
   return {
     title: upd.title,
@@ -33,6 +37,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function Page({ params }: { params: Params }) {
   const upd = await getUpdate(params.slug);
+  if (!upd) notFound();
   const url = `${SITE_URL}/ai-updates/${params.slug}`;
   const jsonLd = upd
     ? [
@@ -43,6 +48,10 @@ export default async function Page({ params }: { params: Params }) {
           datePublished: upd.date,
           section: upd.category,
           keywords: [upd.company, upd.category, ...(upd.takeaways || []).slice(0, 3)],
+          mentions: (upd?.contributors ?? [])
+            .map((cid: string) => aiContributors.find((c) => c.id === cid))
+            .filter(Boolean)
+            .map((c) => ({ id: c!.id, name: c!.name, affiliation: c!.affiliation, photoUrl: c!.photoUrl })),
         }),
         breadcrumbJsonLd([
           { name: "AI Updates", url: `${SITE_URL}/ai-updates` },

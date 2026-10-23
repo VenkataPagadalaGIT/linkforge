@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const c = getConferenceBySlug(params.slug);
   if (!c) return { title: "Conference not found", robots: { index: false } };
-  const title = `${c.name} ${c.edition || c.year} — Conference Notebook`;
+  const title = `${c.name} ${c.edition || c.year} · Conference Notebook`;
   const desc = c.summary;
   const url = `/notebook/conference/${c.slug}`;
   const speakerNames = listConferenceSessions(c)
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       title: `${title}`,
       description: desc,
-      siteName: "Venkata Pagadala — Mono Mind",
+      siteName: "Venkata Pagadala · Mono Mind",
     },
     twitter: {
       card: "summary_large_image",

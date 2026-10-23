@@ -14,13 +14,15 @@ from dotenv import load_dotenv
 load_dotenv()  # must be first so env vars are available to the rest of the imports
 
 import os
+import secrets
+import time
 import json
 import asyncio
 import logging
 import uuid
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 
 import bcrypt
 import jwt as pyjwt
@@ -29,6 +31,11 @@ from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depend
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+
+from clerk_auth import (ClerkKeysUnavailable, allowed_admin_emails as clerk_allowed_admins,
+                        clerk_enabled, email_from_claims as clerk_email,
+                        is_production, verify_clerk_token as clerk_verify, warm_jwks)
+from starlette.concurrency import run_in_threadpool
 
 
 ROOT_DIR = Path(__file__).parent
@@ -42,11 +49,29 @@ db = client[DB_NAME]
 
 JWT_SECRET = os.environ.get("JWT_SECRET", "change-me")
 JWT_ALGO = "HS256"
-ACCESS_TTL_MIN = 60 * 24  # 1 day — admin convenience
+ACCESS_TTL_MIN = int(os.environ.get("ACCESS_TTL_MIN", str(60 * 12)))  # 12h default
 REFRESH_TTL_DAYS = 30
 
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@monomind.com").lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "MonoMind2026!")
+
+# Is this a real deployment or a laptop? See clerk_auth.is_production: any of
+# Railway's environment variables, old or new, or ENVIRONMENT=production.
+IS_PRODUCTION = is_production()
+
+# Values that must never survive to production. If any of these is the live
+# value on a real deployment, the whole admin boundary is public knowledge,
+# because this repo is public. Boot refuses rather than serving wide open.
+_INSECURE_DEFAULTS = {
+    "JWT_SECRET": {"change-me", ""},
+    "ADMIN_PASSWORD": {"MonoMind2026!", "LocalReview2026!", ""},
+}
+
+# Login throttle: after this many failures from one IP or against one
+# account within the window, further attempts are refused for the cooldown.
+LOGIN_MAX_FAILS = int(os.environ.get("LOGIN_MAX_FAILS", "8"))
+LOGIN_WINDOW_SEC = int(os.environ.get("LOGIN_WINDOW_SEC", "900"))     # 15 min
+LOGIN_COOLDOWN_SEC = int(os.environ.get("LOGIN_COOLDOWN_SEC", "900"))  # 15 min
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
@@ -55,6 +80,14 @@ if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
 logger = logging.getLogger("mono-mind")
+
+if not RESEND_API_KEY:
+    # Said once at boot so the fault is visible before the first lead arrives,
+    # rather than discovered when an enquiry never turns up in the inbox.
+    logger.warning(
+        "RESEND_API_KEY is unset: contact submissions will be STORED but no "
+        "notification email will be sent. Set it on the backend service."
+    )
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # ----- App -----
@@ -252,6 +285,14 @@ def create_access_token(email: str) -> str:
     return pyjwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGO)
 
 
+def password_login_allowed() -> bool:
+    """The legacy password login and its HS256 sessions are allowed only
+    when Clerk is off, or off-production, or on explicit break-glass."""
+    if not (IS_PRODUCTION and clerk_enabled()):
+        return True
+    return os.environ.get("ALLOW_PASSWORD_LOGIN", "").strip().lower() == "true"
+
+
 async def get_current_admin(request: Request) -> dict:
     token = request.cookies.get("access_token")
     if not token:
@@ -260,6 +301,39 @@ async def get_current_admin(request: Request) -> dict:
             token = auth[7:]
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+
+    # ---- Path 1: Clerk (when configured). Authentication is Clerk's;
+    # authorization stays ours: only allowlisted emails are admins, because
+    # Clerk will authenticate anyone who signs up to the application.
+    # Off the event loop: verification may fetch Clerk's keys over the network.
+    try:
+        claims = await run_in_threadpool(clerk_verify, token)
+    except ClerkKeysUnavailable:
+        raise HTTPException(status_code=503, detail="Sign-in check temporarily unavailable; try again in a minute")
+    if claims is not None:
+        email = clerk_email(claims)
+        if not email:
+            raise HTTPException(status_code=401,
+                                detail="Clerk token carries no email claim; add email to the session token template")
+        if email not in clerk_allowed_admins(ADMIN_EMAIL):
+            try:
+                await db.cms_activity.insert_one({
+                    "id": secrets.token_hex(8), "ts": now_iso(),
+                    "actor": {"kind": "anon", "id": claims.get("sub"), "name": email},
+                    "action": "admin.login", "result": "refused", "target": {},
+                    "detail": "clerk-authenticated but not an allowlisted admin",
+                    "ip": request.client.host if request.client else None,
+                })
+            except Exception:
+                pass
+            raise HTTPException(status_code=403, detail="Not an authorized admin")
+        return {"email": email, "role": "admin", "auth": "clerk", "sub": claims.get("sub")}
+
+    # ---- Path 2: legacy password-session JWT (HS256, our secret). Closed in
+    # production once Clerk is on, so a stolen JWT_SECRET or an old token is
+    # worth nothing; ALLOW_PASSWORD_LOGIN=true is the deliberate break-glass.
+    if not password_login_allowed():
+        raise HTTPException(status_code=401, detail="Password sessions are disabled; sign in with Clerk")
     try:
         payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
         if payload.get("type") != "access":
@@ -306,7 +380,14 @@ async def stats():
 
 async def _send_contact_email(payload: ContactCreate, record_id: str) -> None:
     if not RESEND_API_KEY:
-        logger.info("Resend disabled (no API key); skipping notification email")
+        # WARNING, not INFO: this is an operational fault, not a routine skip.
+        # The lead is safe in Mongo and readable at /admin, but nobody is
+        # being told about it, which is exactly how a real enquiry gets lost.
+        logger.warning(
+            "CONTACT EMAIL NOT SENT: RESEND_API_KEY is unset. Submission %s is stored "
+            "in MongoDB and visible at /admin, but no notification was delivered.",
+            record_id,
+        )
         return
     subj = f"[Mono Mind] New contact: {payload.subject or payload.name}"
     html = f"""
@@ -373,12 +454,64 @@ async def subscribe_newsletter(payload: NewsletterCreate, request: Request):
 
 # ================ Auth ================
 
+# Brute-force throttle. In-process is enough for a single-instance admin;
+# a multi-instance deploy would move this to the database or a shared cache,
+# noted in the security doc. The point is that unlimited password guessing
+# against a public-repo default is not acceptable.
+_login_fails: Dict[str, list] = {}
+
+def _throttle_key(request: Request, email: str) -> list:
+    ip = request.client.host if request.client else "?"
+    return [f"ip:{ip}", f"acct:{email}"]
+
+def _login_blocked(keys: list) -> Optional[int]:
+    """Return seconds remaining in cooldown if blocked, else None."""
+    nowt = time.time()
+    for k in keys:
+        fails = [t for t in _login_fails.get(k, []) if nowt - t < LOGIN_WINDOW_SEC]
+        _login_fails[k] = fails
+        if len(fails) >= LOGIN_MAX_FAILS:
+            return int(LOGIN_COOLDOWN_SEC - (nowt - fails[-1]))
+    return None
+
+def _login_record_fail(keys: list) -> None:
+    nowt = time.time()
+    for k in keys:
+        _login_fails.setdefault(k, []).append(nowt)
+
+def _login_clear(keys: list) -> None:
+    for k in keys:
+        _login_fails.pop(k, None)
+
+
 @api.post("/auth/login", response_model=TokenResponse)
-async def login(payload: LoginRequest, response: Response):
+async def login(payload: LoginRequest, request: Request, response: Response):
+    if not password_login_allowed():
+        # With Clerk live, a password endpoint is pure attack surface.
+        # ALLOW_PASSWORD_LOGIN=true is the deliberate break-glass override.
+        raise HTTPException(status_code=403, detail="Password login is disabled; sign in with Clerk")
     email = payload.email.lower()
+    keys = _throttle_key(request, email)
+    blocked = _login_blocked(keys)
+    if blocked is not None:
+        raise HTTPException(status_code=429,
+                            detail=f"Too many failed attempts. Try again in {max(1, blocked)} seconds.")
     user = await db.admin_users.find_one({"email": email})
     if not user or not verify_password(payload.password, user.get("password_hash", "")):
+        _login_record_fail(keys)
+        # Make the brute force visible on the Agents activity log.
+        try:
+            await db.cms_activity.insert_one({
+                "id": secrets.token_hex(8), "ts": now_iso(),
+                "actor": {"kind": "anon", "id": None, "name": email or "unknown"},
+                "action": "admin.login", "result": "refused",
+                "target": {}, "detail": "invalid credentials",
+                "ip": request.client.host if request.client else None,
+            })
+        except Exception:
+            pass
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    _login_clear(keys)
     token = create_access_token(email)
     response.set_cookie(
         key="access_token",
@@ -672,23 +805,49 @@ async def content_sitemap():
     contribs = [d async for d in db.contributors.find({}, {"_id": 0, "id": 1}).limit(2000)]
     updates = [d async for d in db.ai_updates.find({}, {"_id": 0, "slug": 1, "date": 1}).limit(2000)]
     pillars = [d async for d in db.pillars.find({}, {"_id": 0, "slug": 1}).limit(500)]
-    posts = [d async for d in db.posts.find({}, {"_id": 0, "slug": 1, "pillarSlug": 1, "date": 1}).limit(5000)]
+    # Same visibility rule as the public post list: drafts and scheduled posts never reach the sitemap.
+    visible = {"$or": [{"status": "published"}, {"status": {"$exists": False}}]}
+    posts = [d async for d in db.posts.find(visible, {"_id": 0, "slug": 1, "pillarSlug": 1, "date": 1}).limit(5000)]
     return {"contributors": contribs, "updates": updates, "pillars": pillars, "posts": posts}
 
 
 # ================ Startup: seed content + admin + indexes ================
 
-async def _seed_collection(coll_name: str, docs: list, unique_keys: tuple = ("id",)) -> int:
+async def _seed_collection(
+    coll_name: str,
+    docs: list,
+    unique_keys: tuple = ("id",),
+    reconcile: bool = False,
+) -> tuple:
+    """Additive, idempotent seed. Runs on every boot; never deletes.
+
+    - Inserts any seed doc whose unique key is absent.
+    - When ``reconcile`` is set, an existing doc is also refreshed from the
+      seed, but only if the seed's ``updated_at`` is newer than or equal to
+      the stored one — so a later admin edit (which bumps ``updated_at``) is
+      never clobbered by a stale seed. Docs without ``updated_at`` on either
+      side are treated as insert-only.
+    """
     coll = db[coll_name]
-    existing = await coll.count_documents({})
-    if existing > 0:
-        return 0
     if not docs:
-        return 0
-    # Remove any MongoDB-reserved keys just in case
-    cleaned = [{k: v for k, v in d.items() if k != "_id"} for d in docs]
-    await coll.insert_many(cleaned)
-    return len(cleaned)
+        return (0, 0)
+    inserted = updated = 0
+    for d in docs:
+        cleaned = {k: v for k, v in d.items() if k != "_id"}
+        flt = {k: cleaned.get(k) for k in unique_keys}
+        existing = await coll.find_one(flt)
+        if existing is None:
+            await coll.insert_one(cleaned)
+            inserted += 1
+        elif reconcile:
+            seed_ts = str(cleaned.get("updated_at") or "")
+            cur_ts = str(existing.get("updated_at") or "")
+            if seed_ts and seed_ts >= cur_ts:
+                same = all(existing.get(k) == v for k, v in cleaned.items())
+                if not same:
+                    await coll.update_one(flt, {"$set": cleaned})
+                    updated += 1
+    return (inserted, updated)
 
 
 async def seed_content():
@@ -704,8 +863,17 @@ async def seed_content():
     c = await _seed_collection("contributors", data.get("contributors", []))
     u = await _seed_collection("ai_updates", data.get("updates", []))
     p = await _seed_collection("pillars", data.get("pillars", []))
-    po = await _seed_collection("posts", data.get("posts", []))
-    logger.info("Seed complete — contributors:%s updates:%s pillars:%s posts:%s", c, u, p, po)
+    po = await _seed_collection("posts", data.get("posts", []), unique_keys=("slug",))
+    cn = await _seed_collection(
+        "conference_notes",
+        data.get("conference_notes", []),
+        unique_keys=("session_id",),
+        reconcile=True,
+    )
+    logger.info(
+        "Seed complete — contributors:%s updates:%s pillars:%s posts:%s conference_notes:%s",
+        c, u, p, po, cn,
+    )
 
 
 async def seed_admin():
@@ -728,8 +896,51 @@ async def seed_admin():
             logger.info("Admin password updated from env")
 
 
+def _assert_secrets_safe() -> None:
+    """Fail closed in production. A default JWT secret means anyone can
+    forge an admin token; a default admin password means anyone can log in.
+    Both defaults are in this public repo, so serving them in production is
+    the same as having no admin auth at all."""
+    if not IS_PRODUCTION:
+        return
+    leaked = []
+    if JWT_SECRET in _INSECURE_DEFAULTS["JWT_SECRET"]:
+        leaked.append("JWT_SECRET")
+    if ADMIN_PASSWORD in _INSECURE_DEFAULTS["ADMIN_PASSWORD"]:
+        leaked.append("ADMIN_PASSWORD")
+    if os.environ.get("CORS_ORIGINS", "*") == "*":
+        leaked.append("CORS_ORIGINS (wildcard)")
+    if leaked:
+        raise RuntimeError(
+            "Refusing to start in production with insecure defaults: "
+            + ", ".join(leaked)
+            + ". Set these to real secrets in the environment before deploying."
+        )
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    """Baseline security headers on every API response.
+
+    The API is never framed and never sniffed; say so explicitly. HSTS only
+    in production, because localhost is not https and a cached HSTS entry
+    for localhost breaks every other local project."""
+    resp = await call_next(request)
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    if IS_PRODUCTION:
+        resp.headers.setdefault("Strict-Transport-Security",
+                                "max-age=31536000; includeSubDomains")
+    return resp
+
+
 @app.on_event("startup")
 async def on_startup():
+    _assert_secrets_safe()
+    # Load Clerk's keys in the background so the first sign-in is not slowed
+    # by the fetch. Never raises, and does not hold up boot.
+    asyncio.get_running_loop().run_in_executor(None, warm_jwks)
     try:
         # indexes
         await db.contact_submissions.create_index([("created_at", -1)])
@@ -772,5 +983,7 @@ async def root_health():
     return {"ok": True, "mongo": mongo_ok, "time": now_iso()}
 
 
-# Register router
+# Register router. The old agentic CMS routes (/api/cms/*) were removed on
+# 2026-09-26: they held no data and no live page used them. Pages, SEO fields
+# and edits are managed in the one CMS described in cms/README.md.
 app.include_router(api)

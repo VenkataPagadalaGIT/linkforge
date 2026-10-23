@@ -69,7 +69,7 @@ const FloatingBlocks = () => {
               `,
               animation: `float-block ${4 + b.depth}s ease-in-out infinite`,
               animationDelay: `${b.delay}s`,
-              background: `rgba(255,255,255,${0.02 + (i % 3) * 0.01})`,
+              background: `hsl(var(--foreground) /${0.02 + (i % 3) * 0.01})`,
             }}
           >
             {/* 3D face effect on some blocks */}
@@ -78,7 +78,7 @@ const FloatingBlocks = () => {
                 className="absolute inset-0 border-r border-b border-foreground/5"
                 style={{
                   transform: `translateZ(${4 + b.depth * 2}px)`,
-                  background: `rgba(255,255,255,0.03)`,
+                  background: `hsl(var(--foreground) /0.03)`,
                 }}
               />
             )}

@@ -56,7 +56,7 @@ const SEO = ({ title, description, canonical, ogType = "website", noindex = fals
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={OG_IMAGE} />
 
-      <link rel="alternate" type="application/rss+xml" title="Venkata Pagadala — AI Updates RSS" href="https://venkatapagadala.com/rss.xml" />
+      <link rel="alternate" type="application/rss+xml" title="Venkata Pagadala · AI Updates RSS" href="https://venkatapagadala.com/rss.xml" />
 
       {jsonLd && (
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>

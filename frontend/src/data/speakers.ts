@@ -1,7 +1,7 @@
 // Source of truth for speaker profiles. Reusable across conferences.
 // `name` MUST match the `speaker` field in conferences.ts so the join works.
 
-import { conferences, type Session, type SessionType } from "./conferences";
+import { conferences, type Session, type SessionType, getSessionUrlSlug } from "./conferences";
 
 export type DayTrack = "The Science" | "The Psychology" | "The Ecosystem" | "The Future";
 
@@ -33,6 +33,8 @@ export interface SpeakerTalk {
   description?: string;
   takeaways?: string[];
   sessionId: string;
+  /** SEO slug for /notebook/conference/{conf}/sessions/{slug} */
+  urlSlug: string;
 }
 
 export const speakers: Speaker[] = [
@@ -970,6 +972,7 @@ export function getSpeakerTalks(speakerName: string): SpeakerTalk[] {
             description: s.description,
             takeaways: s.takeaways,
             sessionId: sessionKey(d.date, s),
+            urlSlug: getSessionUrlSlug(c, d.date, s),
           });
         }
       });

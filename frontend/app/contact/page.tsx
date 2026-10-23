@@ -3,7 +3,7 @@ import Contact from "@/views/Contact";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Venkata Pagadala — engagements, collaborations, and inquiries.",
+  description: "Get in touch with Venkata Pagadala: engagements, collaborations, and inquiries.",
   alternates: { canonical: "/contact" },
   openGraph: { url: "/contact", title: "Contact · Venkata Pagadala" },
 };

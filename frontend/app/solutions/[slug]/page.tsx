@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     .join(" ");
   return {
     title,
-    description: `${title} — AI solution details, delivery model and case studies by Venkata Pagadala.`,
+    description: `${title}: AI solution details, delivery model, and case studies by Venkata Pagadala.`,
     alternates: { canonical: `/solutions/${params.slug}` },
     openGraph: { url: `/solutions/${params.slug}`, title, type: "article" },
   };

@@ -1,15 +1,21 @@
 "use client";
 import { useParams, Link } from "@/lib/router-shim";
-import { getBlogBySlug, getPillarBySlug, getBlogsByPillar } from "@/data/insights";
+import { getBlogBySlug, getPillarBySlug, getBlogsByPillar, type BlogPost } from "@/data/insights";
 import ScrollReveal from "@/components/ScrollReveal";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { useEffect } from "react";
 import SEO from "@/components/SEO";
 
-const BlogPostPage = () => {
-  // Route is /insights/[slug]/[postSlug] — `slug` here is the pillar slug.
+/** The server route resolves the post first (backend, then the static module)
+ *  and passes it down. Without this the view looked the post up in the static
+ *  file only, so anything published through the CMS rendered its own "Article
+ *  not found" screen while the page still served a correct title, canonical
+ *  and Article JSON-LD: a soft 404, visible to readers and invisible to
+ *  search engines. */
+const BlogPostPage = ({ initialPost }: { initialPost?: BlogPost | null } = {}) => {
+  // Route is /insights/[slug]/[postSlug]; `slug` here is the pillar slug.
   const { slug: pillarSlug, postSlug } = useParams<{ slug: string; postSlug: string }>();
-  const post = getBlogBySlug(postSlug || "");
+  const post = getBlogBySlug(postSlug || "") ?? initialPost ?? undefined;
   const pillar = getPillarBySlug(pillarSlug || "");
   const relatedPosts = getBlogsByPillar(pillarSlug || "").filter((p) => p.slug !== postSlug);
 
