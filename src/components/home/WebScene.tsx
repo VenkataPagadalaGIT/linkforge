@@ -15,6 +15,10 @@ import { HOME_SECTIONS } from "./aboutSections";
  *   - an AI spider crawls the small webs, and pulls each thing it finds along
  *     the silk to the hub at the centre, where the index counts it.
  *
+ * The spiders only ever walk the web's own threads. A thread lights up where
+ * a spider has walked it and fades out within about twelve seconds, so the
+ * web shows where they have just been and never clutters.
+ *
  * All of it is HTML and SVG: a small 3D projection in this file, no WebGL. The
  * section names are real links, drawn as HTML on top. Legs plant and step like
  * a real spider's: each foot stays where it is until the body has moved too
@@ -205,6 +209,99 @@ const LEG_REST = [
   { f: -1.15, s: 1.15, rf: -0.16 },
 ];
 
+/* The threads a spider may walk, by name. Spiders only ever travel along these,
+   never across the web, so what lights up is always part of the web itself:
+     r:i     hub to section i (a radial)
+     m:i     section i to section i+1 (the rim)
+     s:i:j   section i to its item j (the small web's spokes)
+     x:i:j   item j-1 to item j of section i (the small web's cross threads)
+     b       section 01 to the foot of the back wall (the bridge; 01 sits on it)
+     w       foot of the back wall up to the back web's hub */
+type Loc =
+  | { t: "hub" }
+  | { t: "node"; i: number }
+  | { t: "leaf"; i: number; j: number }
+  | { t: "seam" }
+  | { t: "bh" }
+  | { t: "air" };
+/** pace: a multiple of the spider's speed; a spider drops on its dragline faster than it walks. */
+type RouteSeg = { key: string | null; pts: V3[]; to: Loc; pace?: number };
+
+const EDGE = new Map<string, V3[]>();
+NODES.forEach((n) => EDGE.set(`r:${n.i}`, [FH, n.p]));
+for (let i = 0; i < N; i++) EDGE.set(`m:${i}`, sag(NODES[i].p, NODES[(i + 1) % N].p, FH, 0.05));
+NODES.forEach((n) =>
+  n.leaves.forEach((l, j) => {
+    EDGE.set(`s:${n.i}:${j}`, [n.p, l.p]);
+    if (j > 0) EDGE.set(`x:${n.i}:${j}`, sag(n.leaves[j - 1].p, l.p, n.p, 0.15, 3));
+  }),
+);
+EDGE.set("b", [NODES[0].p, SEAM]);
+EDGE.set("w", [SEAM, BH]);
+
+/** Where a thread arrives, walked forward or back. */
+function endOf(key: string, forward: boolean): Loc {
+  const [k, a, b] = key.split(":");
+  if (k === "r") return forward ? { t: "node", i: +a } : { t: "hub" };
+  if (k === "m") return forward ? { t: "node", i: (+a + 1) % N } : { t: "node", i: +a };
+  if (k === "s") return forward ? { t: "leaf", i: +a, j: +b } : { t: "node", i: +a };
+  if (k === "x") return { t: "leaf", i: +a, j: forward ? +b : +b - 1 };
+  if (k === "b") return forward ? { t: "seam" } : { t: "node", i: 0 };
+  return forward ? { t: "bh" } : { t: "seam" };
+}
+/** The bridge and the back wall's thread run up through the banner's text, so walking them never lights them. */
+const QUIET = new Set(["b", "w"]);
+
+const fwdSeg = (key: string): RouteSeg => ({ key, pts: EDGE.get(key) as V3[], to: endOf(key, true) });
+const revSeg = (key: string): RouteSeg => ({ key, pts: [...(EDGE.get(key) as V3[])].reverse(), to: endOf(key, false) });
+
+function toHub(from: Loc): RouteSeg[] {
+  switch (from.t) {
+    case "node":
+      return [revSeg(`r:${from.i}`)];
+    case "leaf":
+      return [revSeg(`s:${from.i}:${from.j}`), revSeg(`r:${from.i}`)];
+    case "seam":
+      return [revSeg("b"), revSeg("r:0")];
+    case "bh":
+      return [revSeg("w"), revSeg("b"), revSeg("r:0")];
+    default:
+      return [];
+  }
+}
+
+/** To a section: along the rim when it is one or two sections away, otherwise in through the hub and out. */
+function toNode(from: Loc, i: number): RouteSeg[] {
+  if (from.t === "leaf") {
+    // Back down the small web to its section first.
+    const back = revSeg(`s:${from.i}:${from.j}`);
+    return [back, ...toNode(back.to, i)];
+  }
+  if (from.t === "seam" || from.t === "bh") {
+    // Down the back wall and along the bridge to section 01, then on from there.
+    const down = from.t === "bh" ? [revSeg("w"), revSeg("b")] : [revSeg("b")];
+    return [...down, ...toNode({ t: "node", i: 0 }, i)];
+  }
+  if (from.t === "node") {
+    const j = from.i;
+    const cw = (i - j + N) % N;
+    const ccw = (j - i + N) % N;
+    if (cw <= 2) return Array.from({ length: cw }, (_, k) => fwdSeg(`m:${(j + k) % N}`));
+    if (ccw <= 2) return Array.from({ length: ccw }, (_, k) => revSeg(`m:${(j - 1 - k + N) % N}`));
+  }
+  return [...toHub(from), fwdSeg(`r:${i}`)];
+}
+
+/** To an item: along a cross thread from the item next to it, otherwise by way of its section. */
+function toLeaf(from: Loc, i: number, j: number): RouteSeg[] {
+  if (from.t === "leaf" && from.i === i) {
+    if (from.j === j) return [];
+    if (from.j === j - 1) return [fwdSeg(`x:${i}:${j}`)];
+    if (from.j === j + 1) return [revSeg(`x:${i}:${from.j}`)];
+  }
+  return [...toNode(from, i), fwdSeg(`s:${i}:${j}`)];
+}
+
 type Kind = "halloween" | "ai";
 interface Step {
   from: V3;
@@ -218,15 +315,18 @@ interface Spider {
   pos: V3;
   fwd: V3;
   nrm: V3;
-  path: V3[];
-  seg: number;
-  segT: number;
+  route: RouteSeg[];
+  ri: number;
+  pi: number;
+  t: number;
+  loc: Loc;
+  /** A section to turn toward once the thread underfoot is walked. */
+  pending: number | null;
   feet: V3[];
   steps: (Step | null)[];
   group: 0 | 1;
   restUntil: number;
   hanging: boolean;
-  laySilk: boolean;
   onArrive: (() => void) | null;
   moving: boolean;
 }
@@ -252,7 +352,7 @@ function restFoot(sp: Spider, k: number): V3 {
   return add(add(sp.pos, mul(sp.fwd, r.f * sp.L)), mul(side, legSide(k) * r.s * sp.L));
 }
 
-function makeSpider(kind: Kind, at: V3, L: number, speed: number): Spider {
+function makeSpider(kind: Kind, at: V3, loc: Loc, L: number, speed: number): Spider {
   const sp: Spider = {
     kind,
     L,
@@ -260,15 +360,17 @@ function makeSpider(kind: Kind, at: V3, L: number, speed: number): Spider {
     pos: at,
     fwd: v(0, 0, 1),
     nrm: surfaceAt(at),
-    path: [],
-    seg: 0,
-    segT: 0,
+    route: [],
+    ri: 0,
+    pi: 0,
+    t: 0,
+    loc,
+    pending: null,
     feet: [],
     steps: Array(8).fill(null),
     group: 0,
     restUntil: 0,
     hanging: false,
-    laySilk: true,
     onArrive: null,
     moving: false,
   };
@@ -279,7 +381,11 @@ function makeSpider(kind: Kind, at: V3, L: number, speed: number): Spider {
 /* ── Component ──────────────────────────────────────────────────────── */
 
 const AMBER = "#f2994a";
-const AMBER_SOFT = "rgba(242,153,74,0.55)";
+/** Walked threads stay bright this long, then fade out by LIT_LIFE. */
+const LIT_HOLD = 2500;
+const LIT_LIFE = 12000;
+/** Paths kept ready for walked threads; more than the two spiders ever light at once. */
+const LIT_POOL = 28;
 const PUMPKIN = "#ff7a18";
 
 export default function WebScene({ band = 300 }: { band?: number }) {
@@ -292,8 +398,8 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     bridge: useRef<SVGPathElement>(null),
     floor: useRef<SVGPathElement>(null),
     subs: useRef<SVGPathElement>(null),
-    silk: useRef<SVGPathElement>(null),
-    aiSilk: useRef<SVGPathElement>(null),
+    hLive: useRef<SVGPathElement>(null),
+    aLive: useRef<SVGPathElement>(null),
     drop: useRef<SVGPathElement>(null),
     beam: useRef<SVGPathElement>(null),
     hBody: useRef<SVGPathElement>(null),
@@ -320,6 +426,7 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     corners: useRef<(HTMLDivElement | null)[]>([]),
   };
   const labelRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const litPool = useRef<(SVGPathElement | null)[]>([]);
 
   const [ready, setReady] = useState(false);
   const [wide, setWide] = useState(true);
@@ -362,7 +469,6 @@ export default function WebScene({ band = 300 }: { band?: number }) {
 
     // Redraw state: the static webs redraw only when the room turns or resizes.
     let lastCamKey = "";
-    let silkDirty = true;
     const ro = new ResizeObserver(() => {
       W = el.clientWidth;
       H = el.clientHeight;
@@ -377,8 +483,6 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     /* ── Crawl state ── */
     const visitedSet = new Set<number>();
     const collected = new Set<string>();
-    const silk: Line[] = [];
-    const aiSilk: Line[] = [];
     const pings: { p: V3; t0: number }[] = [];
     type Packet = { path: V3[]; d: number; total: number; key: string };
     const packets: Packet[] = [];
@@ -386,30 +490,38 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     let aiOrder: { node: number; leaf: number }[] = NODES.flatMap((n) => n.leaves.map((_, j) => ({ node: n.i, leaf: j })));
     let aiIndex = 0;
 
-    const H_SP = makeSpider("halloween", v(260, WALL_H + 380, DEPTH), 34, 210);
+    // Threads glow where a spider has walked, then fade, so the web never clutters.
+    // Newest last: walking a thread again moves it to the end.
+    const lit = new Map<string, { t: number; kind: Kind }>();
+    const light = (key: string, kind: Kind) => {
+      lit.delete(key);
+      lit.set(key, { t: performance.now(), kind });
+    };
+
+    // The Halloween spider starts above the back web's hub and drops onto it.
+    const H_SP = makeSpider("halloween", v(BH.x, WALL_H + 380, DEPTH), { t: "air" }, 34, 230);
     H_SP.hanging = true;
     H_SP.restUntil = performance.now() + 900;
     H_SP.fwd = v(0, -1, 0);
     H_SP.nrm = WALL_N;
     H_SP.feet = Array.from({ length: 8 }, (_, k) => restFoot(H_SP, k));
-    const A_SP = makeSpider("ai", add(FH, v(-60, 0, -40)), 21, 175);
+    const A_SP = makeSpider("ai", FH, { t: "hub" }, 21, 175);
 
     const pathLen = (p: V3[]) => p.slice(1).reduce((s, q, i) => s + len(sub(q, p[i])), 0);
     let introDone = false;
 
-    function go(sp: Spider, path: V3[], onArrive: (() => void) | null, laySilk = true) {
-      sp.path = [sp.pos, ...path];
-      sp.seg = 0;
-      sp.segT = 0;
+    function go(sp: Spider, route: RouteSeg[], onArrive: (() => void) | null) {
+      sp.route = route;
+      sp.ri = 0;
+      sp.pi = 0;
+      sp.t = 0;
       sp.onArrive = onArrive;
-      sp.laySilk = laySilk;
+      if (!route.length) {
+        sp.onArrive = null;
+        onArrive?.();
+      }
     }
-
-    /** From wherever the Halloween spider is, a route to a rim section. */
-    function routeToNode(sp: Spider, i: number): V3[] {
-      const onWall = surfaceAt(sp.pos) === WALL_N || sp.hanging;
-      return onWall ? [v(sp.pos.x, 0, DEPTH), FH, NODES[i].p] : [NODES[i].p];
-    }
+    const idle = (sp: Spider) => sp.ri >= sp.route.length;
 
     function hArrive(i: number) {
       return () => {
@@ -424,44 +536,49 @@ export default function WebScene({ band = 300 }: { band?: number }) {
         setHLog(`GET /about#${n.id} → 200 · ${n.hint}${found ? ` · found: ${found}${n.leaves.length > 2 ? " …" : ""}` : ""}`);
       };
     }
+    const hoverArrive = (i: number) => () => {
+      hArrive(i)();
+      hoverRef.current = null;
+    };
 
     function hNext() {
       if (hoverRef.current !== null) return;
       if (!introDone) {
-        // Drop in on a thread from above, onto the back web.
+        // Drop in on a thread from above, onto the back web's hub.
         introDone = true;
-        go(H_SP, [v(H_SP.pos.x, 560, DEPTH)], () => {
+        go(H_SP, [{ key: null, pts: [H_SP.pos, BH], to: { t: "bh" }, pace: 2.4 }], () => {
           H_SP.restUntil = performance.now() + 700;
           setHLog("landed on the back web · heading down to the About page …");
-        }, false);
+        });
         return;
       }
       if (!lapDone) {
         const next = NODES.findIndex((n) => !visitedSet.has(n.i));
         if (next >= 0) {
           setHLog(`crawling /about#${NODES[next].id} …`);
-          go(H_SP, routeToNode(H_SP, next), () => {
-            hArrive(next)();
-          });
+          go(H_SP, toNode(H_SP.loc, next), hArrive(next));
           return;
         }
         lapDone = true;
         setHLog(`${N}/${N} sections crawled · point at a section and I will run there`);
-        go(H_SP, [add(FH, v(90, 0, 40))], () => {
+        go(H_SP, toHub(H_SP.loc), () => {
           H_SP.restUntil = performance.now() + 3500;
         });
         return;
       }
-      // Patrol: a section, or a climb up the back wall to check the web there.
-      if (Math.random() < 0.3) {
+      // Patrol: a section, or now and then a climb up the back wall.
+      const here = H_SP.loc;
+      if (here.t !== "bh" && Math.random() < 0.25) {
         setHLog("climbing the back wall to check the web …");
-        go(H_SP, [SEAM, BH, add(BH, v(120, 160, 0)), BH, SEAM, FH], () => {
-          H_SP.restUntil = performance.now() + 2500;
+        go(H_SP, [...toNode(H_SP.loc, 0), fwdSeg("b"), fwdSeg("w")], () => {
+          H_SP.restUntil = performance.now() + 2200;
+          setHLog("on the back web · all quiet up here");
         });
       } else {
-        const i = Math.floor(Math.random() * N);
+        let i = Math.floor(Math.random() * N);
+        if (here.t === "node" && here.i === i) i = (i + 1 + Math.floor(Math.random() * (N - 1))) % N;
         setHLog(`re-crawling /about#${NODES[i].id} …`);
-        go(H_SP, routeToNode(H_SP, i), () => {
+        go(H_SP, toNode(H_SP.loc, i), () => {
           hArrive(i)();
           H_SP.restUntil = performance.now() + 2600;
         });
@@ -471,12 +588,13 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     sendRef.current = (i: number) => {
       hoverRef.current = i;
       setHLog(`on my way to /about#${NODES[i].id} …`);
-      H_SP.hanging = false;
+      if (!idle(H_SP)) {
+        // Finish the thread underfoot, then turn toward the section.
+        H_SP.pending = i;
+        return;
+      }
       H_SP.restUntil = 0;
-      go(H_SP, routeToNode(H_SP, i), () => {
-        hArrive(i)();
-        hoverRef.current = null;
-      });
+      go(H_SP, toNode(H_SP.loc, i), hoverArrive(i));
     };
 
     function aNext() {
@@ -486,7 +604,7 @@ export default function WebScene({ band = 300 }: { band?: number }) {
         aiIndex = 0;
         A_SP.restUntil = performance.now() + 4000;
         setALog(`${TOTAL_ITEMS}/${TOTAL_ITEMS} items in the index · re-checking a few`);
-        go(A_SP, [FH], null, false);
+        go(A_SP, toHub(A_SP.loc), null);
         return;
       }
       const { node, leaf } = aiOrder[aiIndex++];
@@ -494,18 +612,13 @@ export default function WebScene({ band = 300 }: { band?: number }) {
       const l = n.leaves[leaf];
       const key = `${node}:${leaf}`;
       setALog(`reading ${n.label.toLowerCase()} › ${l.label} …`);
-      // Out along the section's thread, then to the item; the packet rides home on its own.
-      go(
-        A_SP,
-        [n.p, l.p],
-        () => {
-          A_SP.restUntil = performance.now() + 650;
-          const path = [l.p, n.p, FH];
-          packets.push({ path, d: 0, total: pathLen(path), key });
-          setALog(`pulled "${l.label}" → index`);
-        },
-        true,
-      );
+      go(A_SP, toLeaf(A_SP.loc, node, leaf), () => {
+        A_SP.restUntil = performance.now() + 650;
+        // The item rides home along the same threads, as a glowing packet.
+        const path = [l.p, n.p, FH];
+        packets.push({ path, d: 0, total: pathLen(path), key });
+        setALog(`pulled "${l.label}" → index`);
+      });
     }
 
     /* ── Render one frame ── */
@@ -541,17 +654,42 @@ export default function WebScene({ band = 300 }: { band?: number }) {
 
     function updateSpider(sp: Spider, dt: number, now: number) {
       sp.moving = false;
-      if (sp.path.length > 1 && now >= sp.restUntil) {
-        let budget = (sp.speed * dt) / 1000;
-        while (budget > 0 && sp.seg < sp.path.length - 1) {
-          const a = sp.path[sp.seg];
-          const b = sp.path[sp.seg + 1];
+      if (!idle(sp) && now >= sp.restUntil) {
+        let budget = dt / 1000; // seconds of walking left this frame
+        while (budget > 1e-6 && sp.ri < sp.route.length) {
+          const seg = sp.route[sp.ri];
+          if (sp.pi >= seg.pts.length - 1) {
+            // This thread is walked: it lights up, and the spider is at its end.
+            // The only thread a spider hangs from is the drop, so it is standing now.
+            sp.loc = seg.to;
+            sp.hanging = false;
+            if (seg.key && !QUIET.has(seg.key)) light(seg.key, sp.kind);
+            sp.ri += 1;
+            sp.pi = 0;
+            sp.t = 0;
+            if (sp.pending !== null) {
+              const i = sp.pending;
+              sp.pending = null;
+              sp.route = toNode(sp.loc, i);
+              sp.ri = 0;
+              sp.onArrive = hoverArrive(i);
+              if (!sp.route.length) {
+                const cb = sp.onArrive;
+                sp.onArrive = null;
+                cb?.();
+              }
+            }
+            continue;
+          }
+          const a = seg.pts[sp.pi];
+          const b = seg.pts[sp.pi + 1];
+          const speed = sp.speed * (seg.pace ?? 1);
           const segLen = len(sub(b, a)) || 0.0001;
-          const left = segLen * (1 - sp.segT);
-          const stepLen = Math.min(budget, left);
-          sp.segT += stepLen / segLen;
-          budget -= stepLen;
-          sp.pos = lerp3(a, b, Math.min(1, sp.segT));
+          const left = segLen * (1 - sp.t);
+          const stepLen = Math.min(budget * speed, left);
+          sp.t += stepLen / segLen;
+          budget -= stepLen / speed;
+          sp.pos = lerp3(a, b, Math.min(1, sp.t));
           const dir = norm(sub(b, a));
           const surf = sp.hanging ? WALL_N : surfaceAt(sp.pos);
           // Keep forward tangent to the surface.
@@ -561,19 +699,14 @@ export default function WebScene({ band = 300 }: { band?: number }) {
           }
           sp.nrm = norm(lerp3(sp.nrm, surf, Math.min(1, dt / 160)));
           sp.moving = true;
-          if (sp.segT >= 1) {
-            if (sp.laySilk && sp.kind === "halloween") silk.push([a, b]);
-            if (sp.laySilk && sp.kind === "ai") aiSilk.push([a, b]);
-            if (sp.laySilk) silkDirty = true;
-            if (silk.length > 90) silk.shift();
-            if (aiSilk.length > 90) aiSilk.shift();
-            sp.seg += 1;
-            sp.segT = 0;
+          if (sp.t >= 1) {
+            sp.pi += 1;
+            sp.t = 0;
           }
         }
-        if (sp.seg >= sp.path.length - 1) {
-          sp.path = [];
-          if (sp.hanging) sp.hanging = false;
+        if (idle(sp) && sp.route.length) {
+          sp.route = [];
+          sp.ri = 0;
           const cb = sp.onArrive;
           sp.onArrive = null;
           if (cb) cb();
@@ -703,8 +836,8 @@ export default function WebScene({ band = 300 }: { band?: number }) {
       }
 
       // Spiders think, then move.
-      if (!H_SP.path.length && now >= H_SP.restUntil) hNext();
-      if (!A_SP.path.length && now >= A_SP.restUntil) aNext();
+      if (idle(H_SP) && now >= H_SP.restUntil) hNext();
+      if (idle(A_SP) && now >= A_SP.restUntil) aNext();
       updateSpider(H_SP, dt, now);
       updateSpider(A_SP, dt, now);
 
@@ -732,29 +865,54 @@ export default function WebScene({ band = 300 }: { band?: number }) {
       // Dew drops: every section and item, lit once crawled or collected.
       {
         let dim = "";
-        let lit = "";
+        let on = "";
         const circ = (q: { x: number; y: number }, r: number) =>
           `M${r1(q.x - r)} ${r1(q.y)}a${r1(r)} ${r1(r)} 0 1 0 ${r1(r * 2)} 0a${r1(r)} ${r1(r)} 0 1 0 ${r1(-r * 2)} 0`;
         for (const n of NODES) {
           const q = P(c, n.p);
           const r = Math.max(2.2, 4.2 * q.s);
-          if (visitedSet.has(n.i) || hoverRef.current === n.i) lit += circ(q, r);
+          if (visitedSet.has(n.i) || hoverRef.current === n.i) on += circ(q, r);
           else dim += circ(q, r);
           n.leaves.forEach((l, j) => {
             const lq = P(c, l.p);
             const lr = Math.max(1.2, 2.4 * lq.s);
-            if (collected.has(`${n.i}:${j}`)) lit += circ(lq, lr);
+            if (collected.has(`${n.i}:${j}`)) on += circ(lq, lr);
             else dim += circ(lq, lr);
           });
         }
         refs.drops.current?.setAttribute("d", dim);
-        refs.dropsLit.current?.setAttribute("d", lit);
+        refs.dropsLit.current?.setAttribute("d", on);
       }
-      if (camMoved || silkDirty) {
-        refs.silk.current?.setAttribute("d", pathD(c, silk));
-        refs.aiSilk.current?.setAttribute("d", pathD(c, aiSilk));
-        silkDirty = false;
+      // Walked threads: bright for a moment, then fading out, newest first.
+      {
+        const entries = [...lit];
+        let slot = 0;
+        for (let e = entries.length - 1; e >= 0; e--) {
+          const [key, { t, kind }] = entries[e];
+          const age = now - t;
+          if (!reduce && age > LIT_LIFE) {
+            lit.delete(key);
+            continue;
+          }
+          const path = litPool.current[slot++];
+          if (!path) continue;
+          const fade = reduce ? 0.6 : age < LIT_HOLD ? 1 : 1 - (age - LIT_HOLD) / (LIT_LIFE - LIT_HOLD);
+          path.setAttribute("d", pathD(c, [EDGE.get(key) as V3[]]));
+          path.style.stroke = kind === "ai" ? AMBER : "hsl(var(--foreground))";
+          path.setAttribute("stroke-opacity", (fade * (kind === "ai" ? 0.85 : 0.7)).toFixed(2));
+          path.setAttribute("stroke-width", kind === "ai" ? "1.2" : "1.3");
+        }
+        while (slot < LIT_POOL) litPool.current[slot++]?.setAttribute("d", "");
       }
+      // The thread each spider is on right now, drawn up to where it stands.
+      const liveD = (sp: Spider) => {
+        if (idle(sp)) return "";
+        const seg = sp.route[sp.ri];
+        if (!seg.key || QUIET.has(seg.key)) return "";
+        return pathD(c, [[...seg.pts.slice(0, sp.pi + 1), sp.pos]]);
+      };
+      refs.hLive.current?.setAttribute("d", liveD(H_SP));
+      refs.aLive.current?.setAttribute("d", liveD(A_SP));
 
       // The thread the Halloween spider drops on, from above the room.
       if (H_SP.hanging) {
@@ -907,9 +1065,18 @@ export default function WebScene({ band = 300 }: { band?: number }) {
       introDone = true;
       H_SP.restUntil = Infinity;
       A_SP.restUntil = Infinity;
-      H_SP.pos = add(FH, v(60, 0, -20));
+      H_SP.pos = FH;
+      H_SP.loc = { t: "hub" };
+      H_SP.nrm = FLOOR_N;
+      H_SP.fwd = v(0, 0, 1);
       H_SP.feet = Array.from({ length: 8 }, (_, k) => restFoot(H_SP, k));
-      for (let i = 0; i < N; i++) silk.push([FH, NODES[i].p]);
+      A_SP.pos = NODES[2].p;
+      A_SP.loc = { t: "node", i: 2 };
+      A_SP.feet = Array.from({ length: 8 }, (_, k) => restFoot(A_SP, k));
+      for (let i = 0; i < N; i++) {
+        light(`r:${i}`, "halloween");
+        light(`m:${i}`, "halloween");
+      }
       requestAnimationFrame((t) => {
         inView = true;
         frame(t);
@@ -951,8 +1118,19 @@ export default function WebScene({ band = 300 }: { band?: number }) {
             <path ref={refs.bridge} className="stroke-foreground/[0.14]" fill="none" strokeWidth={0.9} />
             <path ref={refs.floor} className="stroke-foreground/[0.22]" fill="none" strokeWidth={0.9} />
             <path ref={refs.subs} className="stroke-foreground/[0.16]" fill="none" strokeWidth={0.8} />
-            <path ref={refs.silk} className="stroke-foreground/60" fill="none" strokeWidth={1.2} strokeLinecap="round" />
-            <path ref={refs.aiSilk} stroke={AMBER_SOFT} fill="none" strokeWidth={1} strokeLinecap="round" />
+            {/* Walked threads, fading out, and the thread each spider is on now */}
+            {Array.from({ length: LIT_POOL }, (_, k) => (
+              <path
+                key={k}
+                ref={(path) => {
+                  litPool.current[k] = path;
+                }}
+                fill="none"
+                strokeLinecap="round"
+              />
+            ))}
+            <path ref={refs.hLive} className="stroke-foreground/70" fill="none" strokeWidth={1.3} strokeLinecap="round" />
+            <path ref={refs.aLive} stroke={AMBER} strokeOpacity={0.85} fill="none" strokeWidth={1.2} strokeLinecap="round" />
             <path ref={refs.drop} className="stroke-foreground/50" fill="none" strokeWidth={0.8} />
             <path ref={refs.drops} className="fill-background stroke-foreground/50" strokeWidth={1} />
             <path ref={refs.dropsLit} className="fill-foreground" />
@@ -1070,7 +1248,7 @@ export default function WebScene({ band = 300 }: { band?: number }) {
 
       {/* The crawl log */}
       {wide && (
-        <div className="pointer-events-none absolute bottom-14 left-0 right-0 mx-auto flex max-w-6xl items-end justify-between gap-6 px-6">
+        <div className="pointer-events-none absolute bottom-14 left-0 right-0 mx-auto flex max-w-6xl select-none items-end justify-between gap-6 px-6">
           <div className="min-w-0 space-y-0.5 font-mono text-[11px] text-muted-foreground">
             <p className="truncate">
               <span style={{ color: PUMPKIN }}>spider</span> ▸ {hLog}
