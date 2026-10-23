@@ -29,9 +29,9 @@ const Home = () => {
       />
       <div className="relative min-h-screen flex flex-col items-center justify-center">
       {/* The room, its webs and the two spiders (replaces the old panels and blocks here only) */}
-      <WebScene band={360} />
+      <WebScene />
 
-      <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-16 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
+      <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-4 lg:pb-0 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
         {/* The portrait carries no frame, no caption, no card: the face is
             crisp at its centre and dissolves outward into drifting
             photo-coloured dust that belongs to the same quiet system as the
@@ -116,10 +116,12 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Every About section, one click from the hero. On wide screens the room
-          above draws them as a web on the floor, in this reserved band; on phones
-          they ride a slow row. The band lets the pointer through to the web. */}
-      <div className="relative z-10 w-full max-w-6xl px-6 pb-16 pointer-events-none md:h-[360px]">
+      {/* Every About section, one click from the hero. On wide screens this band
+          stretches to the bottom of the screen and the room draws the web inside
+          it, so the whole web sits in the first screen, behind and below the name
+          and photo; on phones the sections ride a slow row. The band lets the
+          pointer through to the web. */}
+      <div data-web-band className="relative z-10 w-full max-w-6xl px-6 pb-16 pointer-events-none md:min-h-[300px] md:flex-1">
         <div className="md:hidden pointer-events-auto">
           <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase text-center mb-3">
             About me · pick a section

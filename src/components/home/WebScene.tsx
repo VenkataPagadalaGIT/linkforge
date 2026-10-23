@@ -186,8 +186,8 @@ function fit(W: number, H: number, band: number): Pick<Cam, "k" | "ox" | "oy"> {
   const maxX = Math.max(...pts.map((p) => p.x));
   const minY = Math.min(...pts.map((p) => p.y));
   const maxY = Math.max(...pts.map((p) => p.y));
-  const top = H - band + 44;
-  const bottom = H - 96;
+  const top = H - band + 30;
+  const bottom = H - 92;
   const k = Math.min((W * 0.9) / (maxX - minX), (bottom - top) / (maxY - minY));
   return { k, ox: W / 2 - ((minX + maxX) / 2) * k, oy: bottom - maxY * k };
 }
@@ -283,6 +283,8 @@ const AMBER_SOFT = "rgba(242,153,74,0.55)";
 const PUMPKIN = "#ff7a18";
 
 export default function WebScene({ band = 300 }: { band?: number }) {
+  // The band is the hero's [data-web-band] element when there is one: the web
+  // fills from its top edge to the bottom of the banner. `band` is the fallback.
   const root = useRef<HTMLDivElement>(null);
   const refs = {
     room: useRef<SVGPathElement>(null),
@@ -334,10 +336,16 @@ export default function WebScene({ band = 300 }: { band?: number }) {
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const bandEl = el.parentElement?.querySelector<HTMLElement>("[data-web-band]") ?? null;
+    const measureBand = () => {
+      if (!bandEl) return band;
+      const top = bandEl.getBoundingClientRect().top - el.getBoundingClientRect().top;
+      return Math.max(240, el.clientHeight - top);
+    };
     let W = el.clientWidth;
     let H = el.clientHeight;
     let isWide = W >= 768;
-    let F = fit(W, H, isWide ? band : 0);
+    let F = fit(W, H, isWide ? measureBand() : 0);
     setWide(isWide);
     setReady(true);
 
@@ -357,11 +365,12 @@ export default function WebScene({ band = 300 }: { band?: number }) {
       W = el.clientWidth;
       H = el.clientHeight;
       isWide = W >= 768;
-      F = fit(W, H, isWide ? band : 0);
+      F = fit(W, H, isWide ? measureBand() : 0);
       setWide(isWide);
       lastCamKey = "";
     });
     ro.observe(el);
+    if (bandEl) ro.observe(bandEl);
 
     /* ── Crawl state ── */
     const visitedSet = new Set<number>();
