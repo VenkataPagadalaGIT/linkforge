@@ -99,6 +99,7 @@ export interface SiteEntry {
 const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["", "Home", "pages"],
   ["/about", "About", "pages"],
+  ["/profile", "Profile: talks, research, bios and links", "pages"],
   ["/experience", "Experience", "pages"],
   ["/projects", "Projects", "pages"],
   ["/contact", "Contact", "pages"],

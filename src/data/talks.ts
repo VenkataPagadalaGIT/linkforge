@@ -148,6 +148,55 @@ export const TALKS: TalkEntry[] = [
     },
   },
   {
+    // Checked 2026-10-22 against YouTube's own player data and Previsible's
+    // episode page. YouTube's description says "Voice of Search"; the show's
+    // artwork and site say "Voices of Search", which is the name used here.
+    slug: "previsible-voices-of-search-2026",
+    thumb: "/talks/thumbs/previsible-voices-of-search-2026.jpg",
+    kind: "podcast",
+    title: "Rethinking SEO for LLMs and Personalization",
+    outlet: "Voices of Search (Previsible)",
+    // YouTube uploadDate. Previsible's episode page is dated a day later.
+    date: "2026-10-19",
+    minutes: 44,
+    summary:
+      "With host Tyson Stockton: how enterprise search is changing with LLMs. Mining first-party data and zero-volume queries, building topic hierarchies, and getting ready for personalized search and query fan-out.",
+    links: [
+      { label: "Watch on YouTube", url: "https://www.youtube.com/watch?v=ctpzOwKYi98" },
+      {
+        label: "Episode page on Previsible",
+        url: "https://previsible.com/seo-strategy/rethinking-seo-for-llms-and-personalization/",
+      },
+    ],
+  },
+  {
+    slug: "free-coalition-ai-agents-2026",
+    thumb: "/talks/thumbs/free-coalition-ai-agents-2026.jpg",
+    kind: "talk",
+    title: "Building AI Agents for Marketing Functions with Venkata Pagadala",
+    outlet: "The Free Coalition, Expert Series",
+    // YouTube uploadDate. The live session ran the day before.
+    date: "2026-10-15",
+    minutes: 59,
+    summary:
+      "A session for marketers on building AI agents: how agents differ from scripts and workflows, when one agent is enough and when a multi-agent system makes sense, and how to test, measure and guard agents before scaling them.",
+    links: [{ label: "Watch on YouTube", url: "https://www.youtube.com/watch?v=J21YdzbNG8U" }],
+  },
+  {
+    slug: "seo-video-show-ai-search-trust-2026",
+    thumb: "/talks/thumbs/seo-video-show-ai-search-trust-2026.jpg",
+    kind: "interview",
+    // YouTube's title after the guest's name and a chart emoji, which lead it.
+    title: "How to Find What AI Search Trust",
+    outlet: "SEO Video Show",
+    date: "2026-10-10",
+    minutes: 43,
+    // The episode number and the subject are the show's own thumbnail text;
+    // the YouTube description carries only sponsor links.
+    summary: "Episode 302: the SEO data most teams are missing, and finding demand beyond Google.",
+    links: [{ label: "Watch on YouTube", url: "https://www.youtube.com/watch?v=yrPWjyu0CKk" }],
+  },
+  {
     slug: "ai-seo-show-enterprise-ai-seo",
     thumb: "/talks/thumbs/ai-seo-show-enterprise-ai-seo.jpg",
     kind: "interview",
@@ -240,6 +289,20 @@ export interface RecognitionEntry {
 
 export const RECOGNITION: RecognitionEntry[] = [
   {
+    // Verified 2026-10-22: entry 80 of 100, under "AI Search & GEO", with
+    // the description quoted below. The page's own datePublished is
+    // 14 Oct 2026, which is the date shown; Venkata thanked Ansvisor for
+    // the listing on 23 Sep 2026, so an earlier version of the list existed.
+    slug: "ansvisor-ai-search-experts-2026",
+    claim: "Listed in Ansvisor's 100 AI Search, AEO, GEO & SEO Experts to Follow",
+    source: "Cihan Geyik",
+    publishedOn: "Ansvisor",
+    date: "2026-10-14",
+    url: "https://www.ansvisor.com/blog/100-ai-search-aeo-geo-seo-experts-to-follow",
+    quote: "building systems and processes using generative AI, AI agents, and classification models",
+    thumb: "/talks/thumbs/ansvisor-ai-search-experts-2026.jpg",
+  },
+  {
     // Verified 2026-09-17 in a browser: published 24 Jul 2026, entry 33 on
     // the main list (not an honorable mention). The URL slug says 37 people;
     // the live title says 69, so the title is quoted as it reads now.
@@ -301,7 +364,7 @@ export const byDateDesc = <T extends { date: string }>(a: T, b: T) => b.date.loc
 export function linkVerb(url: string): "Watch" | "Listen" | "Read" | "Open" {
   if (/youtube\.com|youtu\.be/.test(url)) return "Watch";
   if (/spotify\.com|podcasts\.apple\.com/.test(url)) return "Listen";
-  if (/linkedin\.com|clutch\.co|plerdy\.com|ussearchawards\.com/.test(url)) return "Read";
+  if (/linkedin\.com|clutch\.co|plerdy\.com|ussearchawards\.com|ansvisor\.com|previsible\.com/.test(url)) return "Read";
   return "Open";
 }
 

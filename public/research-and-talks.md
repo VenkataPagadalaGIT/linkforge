@@ -4,12 +4,12 @@ title: Research, Talks & Interviews
 person: Venkata Pagadala
 canonical: https://venkatapagadala.com/research-and-talks
 generated_from: src/data/research.ts, src/data/talks.ts
-generated_at: 2026-09-25
+generated_at: 2026-10-23
 ---
 
 # Research, Talks & Interviews
 
-2 peer-reviewed papers, 1 preprint, brightonSEO San Diego 2026, 5 podcasts, interviews and talks. Every item links to its source, and every claim is worded as its source words it.
+2 peer-reviewed papers, 1 preprint, brightonSEO San Diego 2026, 8 podcasts, interviews and talks. Every item links to its source, and every claim is worded as its source words it.
 
 Canonical: https://venkatapagadala.com/research-and-talks
 Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
@@ -19,8 +19,8 @@ Google Scholar: https://scholar.google.com/citations?user=g6hMDGIAAAAJ&hl=en
 - [Featured talk](#featured-talk): Industrial Level Classification with Intent
 - [Research papers](#research-papers): 3
 - [Talks & workshops](#talks--workshops): 1
-- [Podcasts & interviews](#podcasts--interviews): 5
-- [Recognition](#recognition): 4
+- [Podcasts & interviews](#podcasts--interviews): 8
+- [Recognition](#recognition): 5
 - [Related](#related)
 
 ## Featured talk
@@ -120,6 +120,31 @@ The method from the talk, built as a tool: [Audience Personas](https://venkatapa
 
 ## Podcasts & interviews
 
+### Rethinking SEO for LLMs and Personalization
+
+Voices of Search (Previsible) · Oct 19, 2026 · Podcast · 44 min
+
+With host Tyson Stockton: how enterprise search is changing with LLMs. Mining first-party data and zero-volume queries, building topic hierarchies, and getting ready for personalized search and query fan-out.
+
+- [Watch on YouTube](https://www.youtube.com/watch?v=ctpzOwKYi98)
+- [Episode page on Previsible](https://previsible.com/seo-strategy/rethinking-seo-for-llms-and-personalization/)
+
+### Building AI Agents for Marketing Functions with Venkata Pagadala
+
+The Free Coalition, Expert Series · Oct 15, 2026 · Talk · 59 min
+
+A session for marketers on building AI agents: how agents differ from scripts and workflows, when one agent is enough and when a multi-agent system makes sense, and how to test, measure and guard agents before scaling them.
+
+- [Watch on YouTube](https://www.youtube.com/watch?v=J21YdzbNG8U)
+
+### How to Find What AI Search Trust
+
+SEO Video Show · Oct 10, 2026 · Interview · 43 min
+
+Episode 302: the SEO data most teams are missing, and finding demand beyond Google.
+
+- [Watch on YouTube](https://www.youtube.com/watch?v=yrPWjyu0CKk)
+
 ### SEO Bytes
 
 Botpresso · May 25, 2026 · Interview
@@ -164,6 +189,14 @@ A conversation published on Vikas Mishra's channel.
 ## Recognition
 
 Each line says what its source says, and no more.
+
+### Listed in Ansvisor's 100 AI Search, AEO, GEO & SEO Experts to Follow
+
+Cihan Geyik on Ansvisor · Oct 14, 2026
+
+> building systems and processes using generative AI, AI agents, and classification models
+
+Source: https://www.ansvisor.com/blog/100-ai-search-aeo-geo-seo-experts-to-follow
 
 ### Named in Metehan Yeşilyurt's Best GEO and AEO Experts to Follow in 2026
 

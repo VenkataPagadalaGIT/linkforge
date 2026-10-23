@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, OG_IMAGE, SITE_ROBOTS } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
+import { personJsonLd } from "@/data/profile";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -70,31 +71,9 @@ export const metadata: Metadata = {
 
 // This node is the one canonical description of the person. Pages across the
 // site reference it as { "@id": SITE_URL + "/#person" }; without the @id here
-// every one of those references dangled.
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${SITE_URL}/#person`,
-  name: "Venkata Pagadala",
-  url: SITE_URL,
-  image: OG_IMAGE,
-  jobTitle: "AI Systems Architect",
-  description: SITE_DESCRIPTION,
-  sameAs: [
-    "https://github.com/VenkataPagadalaGIT",
-    "https://linkedin.com/in/venkata-pagadala",
-    "https://scholar.google.com/citations?user=g6hMDGIAAAAJ",
-    "https://speakerdeck.com/venkatapagadala1",
-  ],
-  affiliation: { "@type": "Organization", name: "AT&T" },
-  knowsAbout: [
-    "Enterprise SEO",
-    "Answer Engine Optimization",
-    "Knowledge graphs",
-    "AI agents",
-    "Technical SEO",
-  ],
-};
+// every one of those references dangled. It is built in src/data/profile.ts,
+// which /about and /profile read too, so all three describe one person.
+const organizationJsonLd = { "@context": "https://schema.org", ...personJsonLd() };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
