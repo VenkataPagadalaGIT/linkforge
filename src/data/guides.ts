@@ -164,13 +164,15 @@ export type Block =
       row?: boolean;
       caption?: string;
     }
-  /** Who is behind the page, in thirty seconds: photo, a short paragraph and the proof, each linked to where it is shown. */
+  /** Who is behind the page, in thirty seconds: photo, a few short credentials, and the proof, each linked to where it is shown. */
   | {
       kind: "bio";
       kicker: string;
       name: string;
+      role?: string;
       photo: { src: string; width: number; height: number };
-      text: string;
+      points: { lead: string; text: string }[];
+      closing?: string;
       proofs: { label: string; text: string; href: string }[];
     }
   /** Recorded conversations on YouTube, each a click-to-load player. */

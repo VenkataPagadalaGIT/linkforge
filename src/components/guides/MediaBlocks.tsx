@@ -257,32 +257,54 @@ export function Voices({ block }: { block: B<"voices"> }) {
 
 export function Bio({ block }: { block: B<"bio"> }) {
   return (
-    <section aria-label={block.kicker} className="my-8 border border-foreground/25 bg-card/30 p-5 sm:p-6">
-      <div className="flex items-center gap-4">
+    <section aria-label={block.kicker} className="my-8 border border-border bg-card/30">
+      <div className="flex items-center gap-4 border-b border-border p-5 sm:p-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={block.photo.src}
           alt={block.name}
           width={block.photo.width}
           height={block.photo.height}
-          className="h-16 w-16 shrink-0 rounded-full border border-border object-cover sm:h-20 sm:w-20"
+          className="h-16 w-16 shrink-0 rounded-full border border-border object-cover sm:h-[72px] sm:w-[72px]"
         />
-        <div>
+        <div className="min-w-0">
           <div className={kicker}>{block.kicker}</div>
-          <p className="mt-1 font-display text-xl font-bold leading-tight text-foreground">{block.name}</p>
+          <p className="mt-1 font-display text-xl font-bold leading-tight text-foreground sm:text-2xl">{block.name}</p>
+          {block.role && <p className="mt-0.5 font-mono text-xs text-muted-foreground">{block.role}</p>}
         </div>
       </div>
-      <Html text={block.text} className="mt-4 text-[15px] leading-relaxed text-foreground sm:text-base" />
-      <ol className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {block.proofs.map((p) => (
-          <li key={p.href}>
-            <a href={p.href} className="flex h-full flex-col border border-border p-3 transition-colors hover:bg-foreground/5">
-              <span className={kicker}>{p.label}</span>
-              <span className="mt-1 text-sm leading-snug text-foreground">{p.text} ↓</span>
-            </a>
-          </li>
+      {/* One credential per row: the claim in the display face, the evidence beside it in mono. */}
+      <dl className="divide-y divide-border px-5 sm:px-6">
+        {block.points.map((p) => (
+          <div key={p.lead} className="grid gap-1 py-3 sm:grid-cols-[12.5rem_1fr] sm:items-baseline sm:gap-6">
+            <dt className="font-display text-[15px] font-semibold leading-snug text-foreground">{p.lead}</dt>
+            <dd>
+              <Html text={p.text} className="font-mono text-[13px] leading-relaxed text-muted-foreground" />
+            </dd>
+          </div>
         ))}
-      </ol>
+      </dl>
+      <div className="border-t border-border p-5 sm:p-6">
+        {block.closing && <Html text={block.closing} className="mb-3 font-mono text-xs leading-relaxed text-muted-foreground" />}
+        <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {block.proofs.map((p) => (
+            <li key={p.href}>
+              <a
+                href={p.href}
+                className="flex h-full flex-col justify-between gap-2 border border-border p-3 transition-colors hover:border-foreground/40 hover:bg-foreground/5"
+              >
+                <span className={kicker}>{p.label}</span>
+                <span className="flex items-end justify-between gap-2 font-display text-sm font-semibold leading-snug text-foreground">
+                  <span>{p.text}</span>
+                  <span aria-hidden className="shrink-0 font-mono text-muted-foreground">
+                    ↓
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

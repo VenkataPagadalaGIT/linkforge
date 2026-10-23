@@ -471,6 +471,9 @@ const AI = UFI_AI_SUMMARY;
 const rating = (r: number) => `${r.toFixed(2)}★`;
 const persona = UFI_PERSONA_CARD;
 
+/** The guide's last substantive update; dateModified and the bio's year count both read it. */
+const UPDATED = "2026-10-23";
+
 /* The 30-second bio. Dates, employer and journals come from the profile record and the papers list. */
 const WORDS = ["no", "one", "two", "three", "four", "five", "six"];
 const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
@@ -478,7 +481,15 @@ const PEER_PAPERS = [...UFI_AUTHOR.peerReviewed].sort((a, b) => b.year.localeCom
 /** "Springer Nature's *Discover Artificial Intelligence*", "the *Journal of ...*": the profile's own phrasing. */
 const journal = (pp: { venue: string; publisher?: string }) =>
   pp.publisher && !/s$/.test(pp.publisher) ? `${pp.publisher}'s *${pp.venue}*` : `the *${pp.venue}*`;
-const BIO_TEXT = `I have worked in search for more than ten years, since ${UFI_AUTHOR.searchSince.slice(0, 4)}: today at ${UFI_AUTHOR.employer}, before that at Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com). I have put this method to work in enterprise search, including at a Fortune 50 company. My research is published in ${WORDS[PEER_PAPERS.length]} peer-reviewed journals, ${PEER_PAPERS.map(journal).join(" and ")}, and I presented the method at ${EVENT}. A book on User-First Intelligence is in preparation. So this is not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.`;
+/** Whole years in search, counted to the guide's last update so the number never shifts with the build date. */
+const YEARS_IN_SEARCH = Math.floor((Date.parse(UPDATED) - Date.parse(UFI_AUTHOR.searchSince)) / (365.25 * 24 * 3600 * 1000));
+const BIO_POINTS = [
+  { lead: `${YEARS_IN_SEARCH}+ years in search`, text: `${UFI_AUTHOR.employer} today; before that Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com).` },
+  { lead: "Applied at enterprise scale", text: "Put to work in enterprise search, including at a Fortune 50 company." },
+  { lead: "Peer-reviewed research", text: `${cap(PEER_PAPERS.map(journal).join(" and "))}.` },
+  { lead: "Presented on stage", text: `*${TALK.title}*, ${EVENT}.` },
+  { lead: "Book in preparation", text: "User-First Intelligence, the framework on this page." },
+];
 
 const ufiBlocks: Block[] = [
   {
@@ -496,12 +507,14 @@ const ufiBlocks: Block[] = [
     kind: "bio",
     kicker: "Who is behind this, in 30 seconds",
     name: "Venkata Pagadala",
+    role: "Creator of User-First Intelligence",
     photo: { src: PHOTO, width: 192, height: 192 },
-    text: BIO_TEXT,
+    points: BIO_POINTS,
+    closing: "Not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.",
     proofs: [
-      { label: "Implemented", text: "My LinkedIn as a live knowledge graph", href: "#example-linkedin" },
+      { label: "Implemented", text: "Live knowledge graph", href: "#example-linkedin" },
       { label: "Presented", text: EVENT, href: "#presented" },
-      { label: "Reviewed", text: "What people in the field said", href: "#practitioners" },
+      { label: "Reviewed", text: `${UFI_PEERS.items.length} peer quotes`, href: "#practitioners" },
       { label: "Published", text: `${cap(WORDS[PEER_PAPERS.length])} peer-reviewed papers`, href: "#papers" },
     ],
   },
@@ -1625,7 +1638,7 @@ export const ufiGuide: Guide = {
     bio: "Created User-First Intelligence. Researches how people search and how AI systems answer, with papers in Springer Nature's Discover Artificial Intelligence and on SSRN; presented the method at brightonSEO San Diego 2026.",
   },
   datePublished: "2026-10-23",
-  dateModified: "2026-10-23",
+  dateModified: UPDATED,
   readingTime: "38 min read",
   tags: [
     "User-First Intelligence",

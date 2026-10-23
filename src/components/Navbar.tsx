@@ -1,8 +1,9 @@
 "use client";
 /**
- * Navbar: the owner's IA. Five doors: How, What & Why AI (Learn, SEO & AI,
- * News), Notebooks, Explore in 3D, Personas, Research & Talks; About Me as a
- * plain link and Contact as the CTA.
+ * Navbar: the owner's IA, four pillars (2026-10-23: "only maybe four tabs,
+ * four pillars"). How, What & Why AI (Learn, SEO & AI, Personas, News),
+ * Notebooks, Explore in 3D, Research & Talks; User First Needs and About Me as
+ * plain links and Contact as the CTA. Personas lives inside How, What & Why AI.
  *
  * Explore in 3D is generated from src/data/threeD.ts and is the ONE home of
  * everything 3D, the 2040 game included. It used to be hand-coded with two of
@@ -124,7 +125,7 @@ const MEGA: MegaMenu[] = [
   {
     id: "ai",
     label: "How, What & Why AI",
-    heading: "Free AI education, from zero to frontier",
+    heading: "Free AI education and audience research, from zero to frontier",
     sections: [
       {
         title: "Learn",
@@ -144,6 +145,17 @@ const MEGA: MegaMenu[] = [
         ],
       },
       {
+        // Personas moved in from its own tab: who the audience is, and where they actually are.
+        title: "Personas",
+        items: [
+          { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
+          { label: "Persona Builder", note: "answer the framework's questions, grade the evidence", to: "/personas/builder", badge: "NEW" },
+          { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
+          { label: "Global Persona Framework", note: "every dimension, with its rule and evidence", to: "/personas/framework" },
+          { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
+        ],
+      },
+      {
         title: "AI News & Updates",
         items: [
           { label: "AI Agent Statistics", note: "the numbers, updated monthly", to: "/notebook/ai/agents", badge: "NEW" },
@@ -152,9 +164,9 @@ const MEGA: MegaMenu[] = [
       },
     ],
     footnote:
-      "A complete free path into AI: the encyclopedia, the roadmap, the people and the news. The 3D machines you can fly through and train now live under Explore in 3D. Every link opened and checked.",
+      "A complete free path into AI and audiences: the encyclopedia, the roadmap, the persona tools, the people and the news. The 3D machines you can fly through and train live under Explore in 3D. Every link opened and checked.",
     seeAll: { label: "Everything in the AI Notebook", to: "/notebook/ai" },
-    active: ["/notebook/ai", "/ai-contributors", "/guides", "/ai-updates", "/insights"],
+    active: ["/notebook/ai", "/ai-contributors", "/guides", "/ai-updates", "/insights", "/personas"],
   },
   {
     id: "notebooks",
@@ -176,39 +188,6 @@ const MEGA: MegaMenu[] = [
     active: ["/notebook/conference", "/notebook/business"],
   },
   THREE_D_MENU,
-  {
-    id: "personas",
-    label: "Personas",
-    heading: "Who your audience is, and where they actually are",
-    sections: [
-      {
-        title: "The tool",
-        items: [
-          { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badge: "NEW" },
-          { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
-          { label: "Persona Builder", note: "answer the framework's questions, grade the evidence, open the journey", to: "/personas/builder", badge: "NEW" },
-          { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
-          { label: "Global Persona Framework", note: "every persona dimension, with its rule, evidence and source", to: "/personas/framework" },
-          { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
-          { label: "A Worked Persona", note: "the 3-row SUV dad, graded by evidence", to: "/personas/us-dad-30-49-three-row-suv" },
-        ],
-      },
-      {
-        title: "Popular questions",
-        items: [
-          { label: "Who Uses TikTok?", note: "by age, race, income and party", to: "/personas/who-uses-tiktok" },
-          { label: "Who Uses Snapchat?", note: "and the two numbers people mix up", to: "/personas/who-uses-snapchat" },
-          { label: "How Many People Use YouTube?", note: "and what the totals really count", to: "/personas/how-many-people-use-youtube" },
-          { label: "Who Gets News From AI Chatbots?", note: "the widest spread in the corpus", to: "/personas/who-gets-news-from-ai-chatbots" },
-          { label: "Smartphone-Only Americans", note: "no home broadband, by group", to: "/personas/smartphone-only-no-broadband" },
-        ],
-      },
-    ],
-    footnote:
-      "Built only on published research: every figure is measured or visibly estimated, and nothing a source does not measure is filled in.",
-    seeAll: { label: "Every question, answered", to: "/personas" },
-    active: ["/personas"],
-  },
   RESEARCH_MENU,
 ];
 

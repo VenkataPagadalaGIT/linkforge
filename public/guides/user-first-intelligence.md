@@ -13,11 +13,19 @@ Tags: User-First Intelligence, Personas, Search Demand, Knowledge Graphs, Ontolo
 
 ## Who created User-First Intelligence, and where has it been used?
 
-**Who is behind this, in 30 seconds: Venkata Pagadala.** I have worked in search for more than ten years, since 2016: today at AT&T, before that at Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com). I have put this method to work in enterprise search, including at a Fortune 50 company. My research is published in two peer-reviewed journals, Springer Nature's *Discover Artificial Intelligence* and the *Journal of Digital & Social Media Marketing*, and I presented the method at brightonSEO San Diego 2026. A book on User-First Intelligence is in preparation. So this is not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.
+**Who is behind this, in 30 seconds: Venkata Pagadala, creator of User-First Intelligence.**
 
-- Implemented: [My LinkedIn as a live knowledge graph](#example-linkedin)
+- **10+ years in search:** AT&T today; before that Apartments.com (CoStar Group) and American Addiction Centers (Rehabs.com).
+- **Applied at enterprise scale:** Put to work in enterprise search, including at a Fortune 50 company.
+- **Peer-reviewed research:** Springer Nature's *Discover Artificial Intelligence* and the *Journal of Digital & Social Media Marketing*.
+- **Presented on stage:** *Industrial Level Classification with Intent*, brightonSEO San Diego 2026.
+- **Book in preparation:** User-First Intelligence, the framework on this page.
+
+Not just talk: below is the method running on my own data, the talk itself, and what people in the field said about it.
+
+- Implemented: [Live knowledge graph](#example-linkedin)
 - Presented: [brightonSEO San Diego 2026](#presented)
-- Reviewed: [What people in the field said](#practitioners)
+- Reviewed: [10 peer quotes](#practitioners)
 - Published: [Two peer-reviewed papers](#papers)
 
 ### Implemented: my LinkedIn, mapped as a knowledge graph

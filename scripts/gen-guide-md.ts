@@ -202,8 +202,11 @@ const emit = (block: Block): void => {
       if (block.caption) push(`*${block.caption}*`), push();
       break;
     case "bio":
-      push(`**${block.kicker}: ${block.name}.** ${block.text}`);
+      push(`**${block.kicker}: ${block.name}${block.role ? `, ${block.role.charAt(0).toLowerCase()}${block.role.slice(1)}` : ""}.**`);
       push();
+      for (const p of block.points) push(`- **${p.lead}:** ${p.text}`);
+      push();
+      if (block.closing) push(block.closing), push();
       for (const p of block.proofs) push(`- ${p.label}: [${p.text}](${p.href})`);
       push();
       break;
