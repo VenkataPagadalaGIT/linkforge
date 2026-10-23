@@ -20,6 +20,8 @@ import NnExplorerLazy from "./NnExplorerLazy";
 import QuantumExplorerLazy from "./QuantumExplorerLazy";
 import JevExplorerLazy from "./JevExplorerLazy";
 import FrameworkDiagram from "./FrameworkDiagram";
+import GuideUniverse from "./GuideUniverse";
+import { Slide, Clip, Embed, Gallery, Voices, Episodes, Tools, Papers } from "./MediaBlocks";
 import { inline } from "./inline";
 import {
   Bars,
@@ -666,6 +668,24 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
       return <PlainWords block={block} />;
     case "quote":
       return <Quote block={block} />;
+    case "universe":
+      return <GuideUniverse block={block} />;
+    case "slide":
+      return <Slide block={block} />;
+    case "clip":
+      return <Clip block={block} />;
+    case "embed":
+      return <Embed block={block} />;
+    case "gallery":
+      return <Gallery block={block} />;
+    case "voices":
+      return <Voices block={block} />;
+    case "episodes":
+      return <Episodes block={block} />;
+    case "tools":
+      return <Tools block={block} />;
+    case "papers":
+      return <Papers block={block} />;
     case "highlightkey":
       return <HighlightKey block={block} />;
     case "stats":

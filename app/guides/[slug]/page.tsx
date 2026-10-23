@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import GuideView from "@/views/GuideView";
-import { guides, getGuideBySlug } from "@/data/guides";
+import { guides, getGuideBySlug, type Block } from "@/data/guides";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/content-fetch";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
@@ -16,6 +16,13 @@ const plain = (s: string) =>
     .replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1")
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, "$1$2");
+
+/** Every block, including the ones inside tabs, pairs and folded details. */
+const walk = (blocks: Block[]): Block[] =>
+  blocks.flatMap((b) => [
+    b,
+    ...(b.kind === "tabs" ? walk(b.tabs.flatMap((t) => t.blocks)) : b.kind === "pair" || b.kind === "details" ? walk(b.blocks) : []),
+  ]);
 
 /** The site-wide Person node app/layout.tsx emits; guides by the site's owner point to it. */
 const OWNER_NAME = "Venkata Pagadala";
@@ -103,6 +110,20 @@ export default function Page({ params }: { params: Params }) {
       url,
       inDefinedTermSet: url,
     };
+  }
+  // Self-hosted clips are part of the article: each one is a VideoObject with its own words.
+  const clips = walk(guide.blocks).filter((b): b is Extract<Block, { kind: "clip" }> => b.kind === "clip");
+  if (clips.length) {
+    articleSchema.video = clips.map((c) => ({
+      "@type": "VideoObject",
+      name: c.title,
+      description: c.transcript,
+      thumbnailUrl: `${SITE_URL}${c.poster.src}`,
+      contentUrl: `${SITE_URL}${c.src}`,
+      uploadDate: c.uploaded,
+      duration: `PT${Math.round(c.duration)}S`,
+      inLanguage: "en",
+    }));
   }
   const jsonLd: unknown[] = [
     articleSchema,

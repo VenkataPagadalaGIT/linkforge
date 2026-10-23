@@ -23,7 +23,21 @@
  */
 
 import type { Block, ComparisonRow, DefinedTerm, FaqItem, Guide, Tone } from "./guides";
-import { UFI_LINKEDIN, UFI_PERSONA_CARD, UFI_PERSONAS, UFI_PEW_AGE } from "./ufiExample";
+import {
+  UFI_EPISODES,
+  UFI_LINKEDIN,
+  UFI_PAPERS,
+  UFI_PEERS,
+  UFI_PERSONA_CARD,
+  UFI_PERSONAS,
+  UFI_PEW_AGE,
+  UFI_PHOTOS,
+  UFI_SAID,
+  UFI_TALK,
+} from "./ufiExample";
+import { UFI_CLIPS, UFI_SLIDES } from "./ufiMedia";
+import { UFI_TOOL_SHOTS } from "./ufiToolShots";
+import { PROFILE } from "./profile";
 import { UFI_AI_CITATIONS, UFI_AI_SPLIT, UFI_AI_SUMMARY, UFI_MIGRATION, UFI_REVIEWS, UFI_TELECOM, reviewShare } from "./ufiShowcase";
 
 export const UFI_GUIDE_URL = "https://venkatapagadala.com/guides/user-first-intelligence";
@@ -372,8 +386,62 @@ const METHOD = [
 
 /* ── The page ── */
 
-const PHOTO = "/venkata-pagadala.jpeg";
+const PHOTO = "/venkata-pagadala-avatar.webp";
 const ME = { by: "Venkata Pagadala", role: "creator of User-First Intelligence", photo: PHOTO };
+
+/** Where each recorded conversation meets this guide. */
+const EPISODE_LINKS: Record<string, string> = {
+  ctpzOwKYi98: "Closest to this guide's sections on [zero-volume demand](#why-now) and [personalization](#personalization).",
+  yrPWjyu0CKk: "Closest to [the twenty demand sources](#demand-sources): finding demand beyond Google.",
+  qwyIY0vWO8g: "Closest to [the industry map](#industry-map): classifying queries at enterprise scale.",
+  J21YdzbNG8U: "Closest to [the rule](#personalization) that agents gather and classify while people decide.",
+};
+
+/* The talk where the method was first presented: its slides, its clips and its words, all from generated data. */
+const TALK = UFI_TALK;
+const EVENT = TALK.event;
+/** The talk page's transcript anchor for a chapter that starts at `s` seconds. */
+const moment = (s: number) => `${TALK.page}#t-${s}`;
+const chapter = (s: number) => {
+  const c = TALK.chapters.find((x) => x.at === s);
+  if (!c) throw new Error(`no talk chapter starts at ${s} s`);
+  return { at: c.at, title: c.title, href: moment(c.at) };
+};
+/** A line I said on stage, word for word, with the moment to hear it. */
+const SAID = (key: keyof typeof UFI_SAID): Block => {
+  const s = UFI_SAID[key];
+  return { kind: "quote", text: s.text, by: ME.by, photo: PHOTO, said: { event: EVENT, at: s.at, href: moment(s.chapterAt) } };
+};
+/** A slide as presented; `listenAt` must be the start of a talk chapter. */
+const SLIDE = (key: keyof typeof UFI_SLIDES, caption?: string, listenAt?: number): Block => {
+  const s = UFI_SLIDES[key];
+  return {
+    kind: "slide",
+    n: s.n,
+    deck: TALK.deck,
+    event: EVENT,
+    image: { src: s.src, width: s.width, height: s.height },
+    alt: s.alt,
+    caption,
+    listen: listenAt === undefined ? undefined : { at: chapter(listenAt).at, href: chapter(listenAt).href },
+  };
+};
+/** A captioned stage clip, published here on 23 October 2026. */
+const CLIP = (key: keyof typeof UFI_CLIPS, caption?: string): Block => {
+  const c = UFI_CLIPS[key];
+  return {
+    kind: "clip",
+    title: c.title,
+    src: c.src,
+    poster: { ...c.poster },
+    duration: c.duration,
+    uploaded: "2026-10-23",
+    event: EVENT,
+    transcript: c.transcript,
+    chapter: chapter(c.chapter.at),
+    caption,
+  };
+};
 const compact = (n: number) =>
   n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 2).replace(/\.?0+$/, "")}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : String(n);
 const SHORT: Record<string, string> = {
@@ -495,6 +563,11 @@ const ufiBlocks: Block[] = [
     ],
     caption: "The demand iceberg: an illustration of the idea, not drawn to scale.",
   },
+  SAID("direction"),
+  CLIP(
+    "its-a-conversation",
+    "My own car question had no measurable search volume, and four AI engines answered it anyway. The slide behind me is the difference this section describes: keywords only, or keywords plus the conversations where buyers ask.",
+  ),
   { kind: "comparison" },
   {
     kind: "p",
@@ -538,7 +611,13 @@ const ufiBlocks: Block[] = [
       `**Audiences move.** [[b:Among U.S. teens, Facebook use fell from 71% in 2014-15 to 32% in 2024]] ([Pew Research Center, 2024](${SRC.pewTeens2024})). A plan built on last year's platform map is a plan for last year's audience.`,
     ],
   },
+  SLIDE(
+    "zero-volume-is-not-zero-demand",
+    "The line I opened the method with on stage. A zero in a keyword tool describes the tool, not the market.",
+    135,
+  ),
   { kind: "quote", text: "Zero volume does not mean zero demand.", ...ME },
+  SAID("oneUser"),
   {
     kind: "callout",
     title: "What User-First Intelligence is not",
@@ -631,6 +710,23 @@ const ufiBlocks: Block[] = [
     text: `I presented the twenty-source map at [brightonSEO San Diego 2026](/research-and-talks/brightonseo-san-diego-2026) and wrote it up for [Previsible](${SRC.previsible}). [[g:Follow the need across sources]]: if it appears in queries, community threads, video comments and reviews, those views should inform one decision, not four departmental reports.`,
   },
   {
+    kind: "embed",
+    provider: "speakerdeck",
+    title: `Slides: ${TALK.title}, ${EVENT}`,
+    src: `${TALK.player}?slide=${UFI_SLIDES["twenty-demand-sources"].n}`,
+    href: `${TALK.deck}?slide=${UFI_SLIDES["twenty-demand-sources"].n}`,
+    poster: {
+      src: UFI_SLIDES["twenty-demand-sources"].src,
+      width: UFI_SLIDES["twenty-demand-sources"].width,
+      height: UFI_SLIDES["twenty-demand-sources"].height,
+      alt: UFI_SLIDES["twenty-demand-sources"].alt,
+    },
+    open: "Click through the deck from here",
+    caption: "The slide as I presented it, five groups and twenty sources, with the deck behind it. Each moment below opens the talk's transcript where I walk through that part of the method.",
+    chapters: [464, 480, 512, 557, 583, 633].map(chapter),
+  },
+  SAID("sources"),
+  {
     kind: "details",
     summary: "Technical deep dive: collecting responsibly",
     blocks: [
@@ -678,6 +774,11 @@ const ufiBlocks: Block[] = [
       { kicker: "An agent buys", title: "Compare, book or buy on the person's behalf", text: "Structured, machine-readable offers (schema.org markup, feeds, clear policies and prices) so an agent can verify every fact it needs." },
     ],
   },
+  SLIDE(
+    "five-personas-five-questions",
+    "Same car, same city, five people. Each asks a different question, trusts different sources and is won by a different format. The community buyer, marked on the slide, was me.",
+  ),
+  SAID("notText"),
 
   /* 8. Industry map */
   { kind: "h2", id: "industry-map", text: "How do you build the industry map? Ontologies, knowledge graphs and intent", toc: "Ontologies and knowledge graphs" },
@@ -733,6 +834,10 @@ const ufiBlocks: Block[] = [
       },
     ],
   },
+  CLIP(
+    "classify-the-queries",
+    "The same map, presented on stage. A pile of queries proves nothing; classified onto personas and an industry map, it shows where to build. The platform on the slides is my own, shown to illustrate the method, not to sell it.",
+  ),
   { kind: "h3", id: "ontology", text: "Ontology: design the classes before the data arrives" },
   {
     kind: "p",
@@ -854,6 +959,11 @@ ORDER BY DESC(?asks)`,
     kind: "p",
     text: `Google describes its AI Mode as using a **query fan-out** technique: it breaks a question into subtopics and issues many searches at once on the person's behalf ([Google, 2025](${SRC.googleAiMode})). [[y:A brand is chosen by the sub-questions, not only the head question]], and each engine reads different kinds of sources, so [[g:map how each need fans out]] (try the [Fan-out Journey](/personas/fanout-journey)) and measure presence answer surface by answer surface.`,
   },
+  SLIDE(
+    "what-each-engine-retrieved",
+    "My own question about a car, asked of four engines in 2026. Each one went to different sources before answering: a Facebook group, Reddit threads, dealer pages. One engine's result says little about the others.",
+    421,
+  ),
   { kind: "termcard", termSlug: "answer-surface" },
   {
     kind: "details",
@@ -1016,6 +1126,12 @@ kappa = cohen_kappa(gold.labels, model.labels)   # report with n and an interval
     kind: "p",
     text: `[[b:The top complaint, ${R.complaints[0].label.toLowerCase()}, appears in ${reviewShare(R.complaints[0].mentions)}% of reviews, and those reviews average ${R.complaints[0].rating} stars; long waits appear in ${reviewShare(R.complaints[1].mentions)}% and average ${R.complaints[1].rating}.]] No blog post fixes a wait. [[g:Fix the experience first]]: digital check-in and in-app appointments, then a page that tells people what to expect and how to book. Reviews of one U.S. telecom retailer's stores; the retailer is not named, and themes were assigned by a classifier, several per review where they apply.`,
   },
+  SLIDE(
+    "pain-point-to-product",
+    "The same review themes as I presented them, with the long-wait row boxed: the pain point became two product ideas, not an article.",
+    761,
+  ),
+  SAID("painPoints"),
   {
     kind: "details",
     summary: "Technical deep dive: the Content Gap Score",
@@ -1085,6 +1201,7 @@ ans(q,e)  whether the web answers competency question q about e                 
       { kicker: "Signal", title: "Answer drift", text: "AI engines that start citing different sources for the same need." },
     ],
   },
+  SAID("movingTarget"),
   { kind: "termcard", termSlug: "audience-migration" },
 
   /* 12. Personalization */
@@ -1126,6 +1243,10 @@ ans(q,e)  whether the web answers competency question q about e                 
     ],
   },
   { kind: "quote", text: "Agents gather. People decide.", ...ME },
+  CLIP(
+    "agents-do-the-gathering",
+    "How I run it today: declared agents, each with a role, sources and checks, doing most of the gathering and classifying, and a person verifying what they produce. The percentage is my own estimate of my own work, not a benchmark.",
+  ),
   {
     kind: "details",
     summary: "Technical deep dive: measuring answers when results are personal",
@@ -1150,20 +1271,33 @@ ans(q,e)  whether the web answers competency question q about e                 
     text: "Seven steps from a business question to a decision. A small business can do it in a week with a spreadsheet; a large one runs it continuously with agents.",
   },
   { kind: "timeline", items: METHOD.map((s, i) => ({ date: `Step ${i + 1}`, title: s.name, text: s.text })) },
+  SAID("atScale"),
 
   /* 14. LinkedIn example */
   { kind: "h2", id: "example-linkedin", text: "Worked example: my LinkedIn, mapped as a knowledge graph", toc: "Example: LinkedIn graph" },
   {
     kind: "plain",
-    text: "I ran the framework on my own posts: sorted ten years of them onto a map, then compared what I write most with what my readers respond to most.",
+    text: "I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.",
   },
   {
-    kind: "image",
-    src: "/guides/user-first-intelligence/linkedin-universe.webp",
-    alt: "The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career",
-    caption: `The [Venkata Pagadala Universe](${L.source}): ${L.posts} posts and ${L.articles} articles on a designed taxonomy of ${L.areas} areas, ${L.topics} topics and ${L.subtopics} subtopics, with ${L.entities} named entities; ${L.graphNodes.toLocaleString("en-US")} nodes and ${L.graphLinks.toLocaleString("en-US")} links. Explore it live.`,
-    width: 1600,
-    height: 999,
+    kind: "universe",
+    poster: {
+      src: "/guides/user-first-intelligence/linkedin-universe.webp",
+      width: 1600,
+      height: 999,
+      alt: "The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career",
+    },
+    caption: `Live: the [Venkata Pagadala Universe](${L.source}), ${L.posts} posts and ${L.articles} articles on a designed taxonomy of ${L.areas} areas, ${L.topics} topics and ${L.subtopics} subtopics, with ${L.entities} named entities; ${L.graphNodes.toLocaleString("en-US")} nodes and ${L.graphLinks.toLocaleString("en-US")} links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.`,
+  },
+  {
+    kind: "cards",
+    columns: 2,
+    items: [
+      { kicker: "Stars", title: "Each star is one thing I shared", text: "Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.", tone: "sky" },
+      { kicker: "Clusters", title: "Each cluster is an area of the map", text: "The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.", tone: "violet" },
+      { kicker: "Try it", title: "Turn it, search it, open a post", text: "Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.", tone: "amber" },
+      { kicker: "In UFI terms", title: "Classify first, then compare", text: "[[y:The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.]] The two charts below compare what I supply with what readers answer.", tone: "emerald" },
+    ],
   },
   {
     kind: "pair",
@@ -1236,6 +1370,55 @@ ans(q,e)  whether the web answers competency question q about e                 
     ],
   },
 
+  {
+    kind: "p",
+    text: `I first presented the method on ${longDate(TALK.date)}, in ${TALK.track} at ${EVENT}, under the line "${TALK.tagline}". This is the recording, with the slides and the room as they were that morning.`,
+  },
+  {
+    kind: "embed",
+    provider: "linkedin",
+    title: `Full recording: ${TALK.title}, ${EVENT}`,
+    src: TALK.video.embed,
+    href: TALK.video.post,
+    poster: {
+      src: TALK.video.poster,
+      width: 1920,
+      height: 1080,
+      alt: `${TALK.title}, ${EVENT}: the twenty demand sources slide beside Venkata Pagadala on the ${TALK.track} stage`,
+    },
+    open: `Play the full talk here (${Math.round(TALK.video.duration / 60)} min)`,
+    caption: "LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.",
+    chapters: [135, 291, 389, 464, 660, 827].map(chapter),
+  },
+  {
+    kind: "gallery",
+    label: "Photos from the talk",
+    items: UFI_PHOTOS.map((ph) => ({ ...ph })),
+    caption: `On stage in ${TALK.track}. More photos, the slides and everyone who showed up are on the [talk's recap page](${TALK.page}).`,
+  },
+
+  /* 17b. What practitioners said */
+  { kind: "h2", id: "practitioners", text: "What did practitioners say when they heard it?", toc: "What practitioners said" },
+  {
+    kind: "plain",
+    text: "Before and after the talk, people who work in search wrote about it in public. These are their own words, each linked to the post it came from.",
+  },
+  {
+    kind: "stats",
+    items: [
+      { value: String(UFI_PEERS.posts), label: `public posts by ${UFI_PEERS.authors} people and pages named the talk`, tone: "sky" },
+      { value: UFI_PEERS.reactions.toLocaleString("en-US"), label: "reactions on those posts", tone: "violet" },
+      { value: String(UFI_PEERS.comments), label: "comments on those posts", tone: "amber" },
+      { value: String(UFI_PEERS.people), label: "people thanked by name on the recap page", tone: "emerald" },
+    ],
+    caption: `Counted on ${longDate(UFI_PEERS.captured)} from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.`,
+  },
+  {
+    kind: "voices",
+    items: UFI_PEERS.items.map((v) => ({ ...v })),
+    caption: `Quoted as posted. Every post and every name is on the [${EVENT} thank-you page](${TALK.page}).`,
+  },
+
   /* 18. Related ideas */
   { kind: "h2", id: "related-work", text: "How does User-First Intelligence relate to existing ideas?", toc: "Related ideas" },
   { kind: "plain", text: "It stands on decades of well-tested ideas and combines them into one working system." },
@@ -1256,6 +1439,72 @@ ans(q,e)  whether the web answers competency question q about e                 
   },
 
   /* 19. FAQ and citation */
+  /* 19b. Watch, read and try */
+  { kind: "h2", id: "watch-read-try", text: "Where can you watch, read and try User-First Intelligence?", toc: "Watch, read and try it" },
+  {
+    kind: "plain",
+    text: "Recorded conversations where I work through these ideas, tools on this site that run parts of the method, and the papers behind it.",
+  },
+  { kind: "h3", id: "conversations", text: "Conversations about the ideas" },
+  {
+    kind: "episodes",
+    items: UFI_EPISODES.map((e) => ({ ...e, why: EPISODE_LINKS[e.youtubeId] })),
+    caption: "Each player loads from YouTube only when you press play.",
+  },
+  { kind: "h3", id: "tools", text: "Tools you can use today" },
+  {
+    kind: "p",
+    text: "The [LinkedIn knowledge graph](#example-linkedin) above is one live tool. These four run the persona side of the method, in your browser, on public data.",
+  },
+  {
+    kind: "tools",
+    items: [
+      {
+        title: "Persona Builder",
+        text: "Answer the framework's follow-up questions and grade the evidence for each answer as you go. You get a persona brief with no invented biography.",
+        href: UFI_TOOL_SHOTS["persona-builder"].path,
+        image: { ...UFI_TOOL_SHOTS["persona-builder"] },
+        alt: "Screenshot of the Persona Builder on this site: a starter path, the framework's questions and the composite persona brief beside them",
+        cta: "Build a persona",
+      },
+      {
+        title: "Persona Fanout Journey",
+        text: "One starting query, fanned out by persona scenario and by every stage of the buyer's journey. Every question says which inputs produced it and how to check it.",
+        href: UFI_TOOL_SHOTS["fanout-journey"].path,
+        image: { ...UFI_TOOL_SHOTS["fanout-journey"] },
+        alt: "Screenshot of the Persona Fanout Journey: one query about buying a car, fanned out by buyer scenario and journey stage into specific questions",
+        cta: "Fan out a query",
+      },
+      {
+        title: "Global Persona Framework",
+        text: `The classification library behind the personas: ${UFI_PERSONAS.frameworkDimensions} dimensions in ${UFI_PERSONAS.frameworkFamilies} families, each with its definition, its follow-up question and the evidence a value needs.`,
+        href: UFI_TOOL_SHOTS["persona-framework"].path,
+        image: { ...UFI_TOOL_SHOTS["persona-framework"] },
+        alt: "Screenshot of the Global Persona Framework page: the library's rules of use and its dimensions",
+        cta: "Browse the framework",
+      },
+      {
+        title: "Audience Personas",
+        text: "Personas where every trait is graded measured, derived or inferred, and links to the study behind it. Build anyone and see where they actually are.",
+        href: UFI_TOOL_SHOTS["personas"].path,
+        image: { ...UFI_TOOL_SHOTS["personas"] },
+        alt: "Screenshot of the Audience Personas page: a persona built from published figures, with the platforms where people like them are",
+        cta: "See the personas",
+      },
+    ],
+  },
+  { kind: "h3", id: "papers", text: "Research papers" },
+  {
+    kind: "papers",
+    items: UFI_PAPERS.map((pp) => ({ ...pp })),
+    request: {
+      title: "Ask for the working paper",
+      text: "The User-First Intelligence paper and a book are in preparation. Researchers, editors and practitioners can ask me for the working paper. If you publish books on marketing, research or AI and would like to talk about the book, write to me directly.",
+      href: `mailto:${PROFILE.email}?subject=${encodeURIComponent("User-First Intelligence: working paper request")}`,
+      label: "Request the paper",
+    },
+  },
+
   { kind: "h2", id: "faq", text: "Frequently asked questions about User-First Intelligence", toc: "FAQ" },
   { kind: "faq" },
 
@@ -1347,7 +1596,7 @@ export const ufiGuide: Guide = {
   },
   datePublished: "2026-10-23",
   dateModified: "2026-10-23",
-  readingTime: "30 min read",
+  readingTime: "38 min read",
   tags: [
     "User-First Intelligence",
     "Personas",

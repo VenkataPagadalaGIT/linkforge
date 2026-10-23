@@ -27,6 +27,8 @@ if (!selected.length) {
 }
 
 const SITE = "https://venkatapagadala.com";
+/** 464 → "7:44". */
+const clock = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
 
 // Block kinds this renderer has no case for. A twin rendered while any of
 // these are present would silently drop that content, which is exactly how
@@ -135,9 +137,79 @@ const emit = (block: Block): void => {
       for (const b of block.blocks) emit(b);
       break;
     }
-    case "quote":
-      push(`> "${block.text}" (${block.by}${block.role ? `, ${block.role}` : ""})`);
+    case "universe":
+      push(`![${block.poster.alt}](${SITE}${block.poster.src})`);
       push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "quote":
+      push(
+        `> "${block.text}" (${block.by}${block.role ? `, ${block.role}` : ""}${
+          block.said ? `; said on stage, ${block.said.event}, [at ${clock(block.said.at)}](${block.said.href})` : ""
+        })`,
+      );
+      push();
+      break;
+    case "slide":
+      push(`![${block.alt}](${block.image.src})`);
+      push();
+      push(
+        `*Slide ${block.n}, ${block.event}: [open this slide in the deck](${block.deck}?slide=${block.n})${
+          block.listen ? `, or [hear it at ${clock(block.listen.at)} in the talk](${block.listen.href})` : ""
+        }.*`,
+      );
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "clip":
+      push(`Video, on stage at ${block.event} (${Math.round(block.duration)} seconds, captioned): [${block.title}](${block.src})`);
+      push();
+      push(`> "${block.transcript}"`);
+      push();
+      if (block.chapter) push(`The whole part, in the talk: [${block.chapter.title}, at ${clock(block.chapter.at)}](${block.chapter.href})`), push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "embed":
+      push(`[${block.title}](${block.href})`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      if (block.chapters?.length) {
+        for (const c of block.chapters) push(`- ${clock(c.at)} [${c.title}](${c.href})`);
+        push();
+      }
+      break;
+    case "gallery":
+      for (const it of block.items) push(`![${it.alt}](${it.src})`);
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "voices":
+      for (const v of block.items) {
+        push(`> "${v.quote}"`);
+        push(`> (${v.author}${v.role ? `, ${v.role}` : ""}, [on LinkedIn](${v.url}), ${v.date})`);
+        push();
+      }
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "episodes":
+      for (const e of block.items)
+        push(
+          `- [${e.title}](https://www.youtube.com/watch?v=${e.youtubeId}), ${e.outlet}, ${e.date}${e.minutes ? `, ${e.minutes} min` : ""}. ${e.summary}${
+            e.why ? ` ${e.why}` : ""
+          }`,
+        );
+      push();
+      if (block.caption) push(`*${block.caption}*`), push();
+      break;
+    case "tools":
+      for (const t of block.items) push(`- [${t.title}](${t.href}): ${t.text}`);
+      push();
+      break;
+    case "papers":
+      for (const p of block.items)
+        push(`- ${p.review === "peer-reviewed" ? "Peer-reviewed. " : p.review === "preprint" ? "Preprint. " : ""}[${p.title}](${p.url}). ${p.venue}, ${p.year}${p.role ? `. ${p.role}` : ""}. ${p.summary}`);
+      push();
+      if (block.request) push(`**${block.request.title}** ${block.request.text} [${block.request.label}](${block.request.href})`), push();
       break;
     case "highlightkey":
       push(`*Reading key: ${block.items.map((k) => `${k.label}`).join(", ")} are set in bold in this edition.*`);

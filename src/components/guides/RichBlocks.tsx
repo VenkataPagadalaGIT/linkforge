@@ -635,6 +635,14 @@ export function Quote({ block }: { block: B<"quote"> }) {
         <figcaption className="font-mono text-[11px] text-muted-foreground mt-2">
           {block.by}
           {block.role ? ` · ${block.role}` : ""}
+          {block.said && (
+            <>
+              {" · "}
+              <a href={block.said.href} className="underline decoration-border underline-offset-4 hover:text-foreground">
+                said on stage, {block.said.event}, at {Math.floor(block.said.at / 60)}:{String(block.said.at % 60).padStart(2, "0")} ▶
+              </a>
+            </>
+          )}
         </figcaption>
       </div>
     </figure>

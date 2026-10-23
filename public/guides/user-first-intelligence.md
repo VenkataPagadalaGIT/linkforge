@@ -4,7 +4,7 @@ Understand **people** before **algorithms**: who they are, where they ask, what 
 
 > User-First Intelligence (UFI) starts with people, not keywords. It follows the people you serve to every place they ask for help (search engines, AI assistants, video, social platforms, communities and reviews), sorts what they say onto one map of your industry, and turns the gaps into decisions about what to build, publish or fix, in the format and on the platform each audience prefers.
 
-By Venkata Pagadala, Lead Technical Product Manager, Automation, AI & SEO, AT&T · Updated 2026-10-23 · 30 min read
+By Venkata Pagadala, Lead Technical Product Manager, Automation, AI & SEO, AT&T · Updated 2026-10-23 · 38 min read
 
 Canonical: https://venkatapagadala.com/guides/user-first-intelligence
 Tags: User-First Intelligence, Personas, Search Demand, Knowledge Graphs, Ontology, Classification, Embeddings, RAG, AEO, GEO, AI Agents, Content Strategy
@@ -67,6 +67,16 @@ A keyword tool sees only the part of demand that reaches a search box in a count
 
 *The demand iceberg: an illustration of the idea, not drawn to scale.*
 
+> "I'm not saying traditional tools are bad, but they're only good for direction. The volume is not a strategy." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 5:56](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-291))
+
+Video, on stage at brightonSEO San Diego 2026 (25 seconds, captioned): [It's not a prompt. It's not a keyword. It's a conversation.](https://venkatapagadala.com/guides/user-first-intelligence/clips/venkata-pagadala-brightonseo-san-diego-2026-its-a-conversation.mp4?v=276b1078)
+
+> "People are saying, like, I want SUV with highest mileage and most relevant brand. When keywords are tracked, transforming into conversations, again, people say prompt tracking. Are we tracking a prompt? Are we tracking conversations or prompts? It's a conversation. It's not a prompt, it's not a keyword."
+
+The whole part, in the talk: [Queries become conversations, at 6:29](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-389)
+
+*My own car question had no measurable search volume, and four AI engines answered it anyway. The slide behind me is the difference this section describes: keywords only, or keywords plus the conversations where buyers ask.*
+
 | Approach | Starts from | Main data | Unit | Output | Best for | Blind spot |
 |---|---|---|---|---|---|---|
 | Keyword research | The search box | Keyword volumes, rankings, SERP features | Keyword | A keyword list and a content calendar | Sizing search demand; SEO | Needs that never reach a search box in a countable phrasing; estimates differ by tool |
@@ -104,7 +114,15 @@ A keyword tool sees only the part of demand that reaches a search box in a count
 3. **Volume is a model, not a census.** A search volume is a tool's estimate for one phrasing, one market and one period. When I was choosing a $60,000 three-row SUV for my young family, the answers I trusted came from a Facebook group of owners: which trim, which dealer, what they wished they had known. Questions like those rarely register as volume, yet AI engines answer them by reading exactly those communities.
 4. **Audiences move.** **Among U.S. teens, Facebook use fell from 71% in 2014-15 to 32% in 2024** ([Pew Research Center, 2024](https://www.pewresearch.org/internet/2024/12/12/teens-social-media-and-technology-2024/)). A plan built on last year's platform map is a plan for last year's audience.
 
+![Slide: Zero volume is not zero demand. It means the tool cannot see how people search on different platforms now. Real buyers were asking anyway, and every AI engine was already listening.](https://venkatapagadala.com/guides/user-first-intelligence/slides/venkata-pagadala-brightonseo-san-diego-2026-slide-4-zero-volume-is-not-zero-demand.webp?v=caa0bc9f)
+
+*Slide 4, brightonSEO San Diego 2026: [open this slide in the deck](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=4), or [hear it at 2:15 in the talk](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-135).*
+
+*The line I opened the method with on stage. A zero in a keyword tool describes the tool, not the market.*
+
 > "Zero volume does not mean zero demand." (Venkata Pagadala, creator of User-First Intelligence)
+
+> "I don’t care about volume. I care about, is there one user that is going to buy my product? I'm going to answer them." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 11:33](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-693))
 
 > **What User-First Intelligence is not:** It is not a tool, though tools can run it. It is not a replacement for SEO. It is not surveillance: it works from public, licensed and consented data, in aggregate, and private conversations are never a listening feed. And it is not demographic destiny: age, place and identity are starting points to test, never a verdict on what a person wants.
 
@@ -170,6 +188,19 @@ Two fields carry most of the weight. **role** stops coverage from posing as dema
 
 I presented the twenty-source map at [brightonSEO San Diego 2026](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026) and wrote it up for [Previsible](https://previsible.com/brightonseo/demand-research-beyond-keywords/). **Follow the need across sources**: if it appears in queries, community threads, video comments and reviews, those views should inform one decision, not four departmental reports.
 
+[Slides: Industrial Level Classification with Intent, brightonSEO San Diego 2026](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=22)
+
+*The slide as I presented it, five groups and twenty sources, with the deck behind it. Each moment below opens the talk's transcript where I walk through that part of the method.*
+
+- 7:44 [The method](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-464)
+- 8:00 [Reviews and pain points](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-480)
+- 8:32 [Video and social platforms](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-512)
+- 9:17 [Conference insights](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-557)
+- 9:43 [Earnings calls and jobs](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-583)
+- 10:33 [Research and regulations](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-633)
+
+> "So these four slides will be the most important slides in this entire presentation." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 7:44](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-464))
+
 ### Technical deep dive: collecting responsibly
 
 - **Public, licensed or consented only.** Respect each platform's terms and robots rules; never scrape private groups or messages.
@@ -203,6 +234,14 @@ I presented the twenty-source map at [brightonSEO San Diego 2026](https://venkat
 - **Local and now: Open now, wait times, book a visit**: Accurate local listings, a working booking flow and a page about what to expect. Content alone will not fix a broken visit.
 - **Professional buyer: Buying for a team or a committee**: Long-form guides, data and talks on LinkedIn, in newsletters and at conferences, where professionals build trust.
 - **An agent buys: Compare, book or buy on the person's behalf**: Structured, machine-readable offers (schema.org markup, feeds, clear policies and prices) so an agent can verify every fact it needs.
+
+![Slide: Five personas, five questions. Same car, same city: the value seeker, the deep researcher, the community buyer, the trend explorer and the industry expert each ask a different question, trust different sources and are won by different content. Research per persona, not per keyword.](https://venkatapagadala.com/guides/user-first-intelligence/slides/venkata-pagadala-brightonseo-san-diego-2026-slide-24-five-personas-five-questions.webp?v=5e21d9f9)
+
+*Slide 24, brightonSEO San Diego 2026: [open this slide in the deck](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=24).*
+
+*Same car, same city, five people. Each asks a different question, trusts different sources and is won by a different format. The community buyer, marked on the slide, was me.*
+
+> "And content doesn't mean that textual content. It can be video, audio, podcast, newsletters, whatever it may be." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 5:56](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-291))
 
 ## How do you build the industry map? Ontologies, knowledge graphs and intent
 
@@ -286,6 +325,14 @@ I presented the twenty-source map at [brightonSEO San Diego 2026](https://venkat
 | Industry & Regulatory | 49K / mo |
 
 *Summed estimated monthly searches per category (989M across the industry). A vendor's estimate, so read it as relative size, not a census.*
+
+Video, on stage at brightonSEO San Diego 2026 (23 seconds, captioned): [5.6 million queries. Nobody cares, until you classify them.](https://venkatapagadala.com/guides/user-first-intelligence/clips/venkata-pagadala-brightonseo-san-diego-2026-classify-the-queries.mp4?v=6b190df2)
+
+> "I analyzed 5.6 million queries. No one really cares if I say that. But if I classify that, map it personas, and build a product, the graph speaks about that. Okay, I'm a lazy guy. So, rather build one time and answer every time. I care about it. Is there one user that is going to buy my product?"
+
+The whole part, in the talk: [Classify by persona, at 11:00](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-660)
+
+*The same map, presented on stage. A pile of queries proves nothing; classified onto personas and an industry map, it shows where to build. The platform on the slides is my own, shown to illustrate the method, not to sell it.*
 
 ### Ontology: design the classes before the data arrives
 
@@ -416,6 +463,12 @@ Two rates tell you whether the map works: the share of competency questions the 
 *Query fan-out, illustrated: the kind of sub-searches an engine issues for one question. Examples, not a capture of any engine's real queries.*
 
 Google describes its AI Mode as using a **query fan-out** technique: it breaks a question into subtopics and issues many searches at once on the person's behalf ([Google, 2025](https://blog.google/products/search/google-search-ai-mode-update/)). **A brand is chosen by the sub-questions, not only the head question**, and each engine reads different kinds of sources, so **map how each need fans out** (try the [Fan-out Journey](https://venkatapagadala.com/personas/fanout-journey)) and measure presence answer surface by answer surface.
+
+![Slide: What each engine retrieved. ChatGPT mentioned a Facebook group and dealer pages and priced four dealers; Perplexity cited Reddit threads and dealer pages; Gemini cited Reddit; Google's AI Overview cited Reddit and the Facebook post. It's not about volume or platform. Follow where your users are.](https://venkatapagadala.com/guides/user-first-intelligence/slides/venkata-pagadala-brightonseo-san-diego-2026-slide-16-what-each-engine-retrieved.webp?v=1e359b35)
+
+*Slide 16, brightonSEO San Diego 2026: [open this slide in the deck](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=16), or [hear it at 7:01 in the talk](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-421).*
+
+*My own question about a car, asked of four engines in 2026. Each one went to different sources before answering: a Facebook group, Reddit threads, dealer pages. One engine's result says little about the others.*
 
 ### Answer surface
 
@@ -582,6 +635,14 @@ Gaps are an outcome of **query discovery**, the framework's first task: **find t
 
 **The top complaint, rude staff, appears in 4.4% of reviews, and those reviews average 1.91 stars; long waits appear in 2.8% and average 2.39.** No blog post fixes a wait. **Fix the experience first**: digital check-in and in-app appointments, then a page that tells people what to expect and how to book. Reviews of one U.S. telecom retailer's stores; the retailer is not named, and themes were assigned by a classifier, several per review where they apply.
 
+![Slide: Reviews are demand data too. Pain point to product beats volume: 47,485 reviews scored by theme, with long wait as the pain point. Long wait became digital check-ins and in-app virtual appointments.](https://venkatapagadala.com/guides/user-first-intelligence/slides/venkata-pagadala-brightonseo-san-diego-2026-slide-28-pain-point-to-product.webp?v=d6b1cbbc)
+
+*Slide 28, brightonSEO San Diego 2026: [open this slide in the deck](https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=28), or [hear it at 12:41 in the talk](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-761).*
+
+*The same review themes as I presented them, with the long-wait row boxed: the pain point became two product ideas, not an article.*
+
+> "None of the traditional tools tell a problem or pain points, but analyzing and classifying data tells that." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 12:41](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-761))
+
 ### Technical deep dive: the Content Gap Score
 
 The score ranks entities on the map. Every term comes from one source role, so coverage can never pose as demand, and reported search volume is not an input at all.
@@ -632,6 +693,8 @@ UFI watches the persona and platform links over time, and a short list of early 
 - **Signal: Company moves**: Earnings calls, job postings and patents that show where competitors are investing.
 - **Signal: Answer drift**: AI engines that start citing different sources for the same need.
 
+> "It's a moving target. You need to find where your users are spending the most time." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 7:38](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-421))
+
 ### Audience migration
 
 Audience migration is a lasting shift in where a group spends time, asks questions or trusts answers, from one platform or channel to another.
@@ -673,6 +736,14 @@ Here is where I think this goes. **These are predictions, not findings**:
 
 > "Agents gather. People decide." (Venkata Pagadala, creator of User-First Intelligence)
 
+Video, on stage at brightonSEO San Diego 2026 (26 seconds, captioned): [I built an AI agent that does 60 to 70% of my job.](https://venkatapagadala.com/guides/user-first-intelligence/clips/venkata-pagadala-brightonseo-san-diego-2026-agents-do-the-gathering.mp4?v=a70406b4)
+
+> "I have a great mentor who I work with, his name is Gene. He challenges me every time. Okay, this is great. How can this be used by 10,000 people at the same time? So, I created a multi-level AI agent orchestration, where they can talk to each other. I was able to build a great agent that can 60 to 70 percent do my job."
+
+The whole part, in the talk: [Agent systems, at 13:47](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-827)
+
+*How I run it today: declared agents, each with a role, sources and checks, doing most of the gathering and classifying, and a person verifying what they produce. The percentage is my own estimate of my own work, not a benchmark.*
+
 ### Technical deep dive: measuring answers when results are personal
 
 - **Build a persona panel.** For each persona and need, write prompts in that persona's own words (from the demand log, not from a keyword list), with the context they would give an assistant.
@@ -693,12 +764,20 @@ Here is where I think this goes. **These are predictions, not findings**:
 - **Step 6: Compare demand, supply and competitors to find the gaps.** For every node, compare the need with your coverage, your competitors' coverage and the quality of the best available answer, surface by surface, and rank the gaps by value and effort.
 - **Step 7: Decide, ship, measure and refresh.** Choose what to build, publish or fix, in which format and on which platform. Measure completed tasks and business outcomes, re-run the collection on a schedule and watch where people move.
 
+> "When you're working for an enterprise, you need to build a system at scale that can be used by multiple users." (Venkata Pagadala; said on stage, brightonSEO San Diego 2026, [at 1:33](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-0))
+
 ## Worked example: my LinkedIn, mapped as a knowledge graph
 
-> **In plain words:** I ran the framework on my own posts: sorted ten years of them onto a map, then compared what I write most with what my readers respond to most.
+> **In plain words:** I ran the framework on my own posts: sorted ten years of them onto a map you can explore right here, then compared what I write most with what my readers respond to most.
 
 ![The Venkata Pagadala Universe: ten years of LinkedIn posts drawn as a knowledge graph, with clusters for SEO, AI, events, building, data, AI search, marketing, news, life and career](https://venkatapagadala.com/guides/user-first-intelligence/linkedin-universe.webp)
-*The [Venkata Pagadala Universe](https://venkatapagadala.com/venkata-pagadala-universe): 923 posts and 8 articles on a designed taxonomy of 10 areas, 45 topics and 16 subtopics, with 40 named entities; 1,094 nodes and 1,944 links. Explore it live.*
+
+*Live: the [Venkata Pagadala Universe](https://venkatapagadala.com/venkata-pagadala-universe), 923 posts and 8 articles on a designed taxonomy of 10 areas, 45 topics and 16 subtopics, with 40 named entities; 1,094 nodes and 1,944 links. Drag it, or swipe sideways on a phone, to turn it; tap a star to open the post.*
+
+- **Stars: Each star is one thing I shared**: Every post and article since 2016, with the videos, images and documents inside them. Bigger and brighter means more of it.
+- **Clusters: Each cluster is an area of the map**: The ten areas of a designed taxonomy (SEO and search, AI and LLMs, events, building, data, AI search and more), each split into topics and subtopics. Lines join each post to its topics, so overlaps show.
+- **Try it: Turn it, search it, open a post**: Drag, or swipe sideways on a phone, to turn it. Search for any word, pick a topic level, or tap a star to read the post it stands for.
+- **In UFI terms: Classify first, then compare**: **The taxonomy is the industry map, every post is a record placed on it, and reactions are the audience's demand signal.** The two charts below compare what I supply with what readers answer.
 
 **What I published (posts, 12 months)**
 
@@ -781,6 +860,65 @@ The [personas on this site](https://venkatapagadala.com/personas) are built this
 - **October 2026: User-First Intelligence, named and specified.** The framework took its name, and an open reference implementation of its Content Gap Score was published on [GitHub](https://github.com/VenkataPagadalaGIT/ufi).
 - **23 October 2026: This reference guide, version 1.0.** A research paper and a book on User-First Intelligence are in preparation. Until they are out, this page is the framework's public reference; it is versioned, and changes will be noted here. UFI is my independent work, not a product or a position of my employer.
 
+I first presented the method on 15 September 2026, in Track 1 at brightonSEO San Diego 2026, under the line "User First, Algorithm Second". This is the recording, with the slides and the room as they were that morning.
+
+[Full recording: Industrial Level Classification with Intent, brightonSEO San Diego 2026](https://www.linkedin.com/feed/update/urn:li:activity:7506371063925223424/)
+
+*LinkedIn's player loads only when you open it. Each moment below opens the talk's transcript at that point.*
+
+- 2:15 [Zero volume, real demand](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-135)
+- 4:51 [The car-buying journey](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-291)
+- 6:29 [Queries become conversations](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-389)
+- 7:44 [The method](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-464)
+- 11:00 [Classify by persona](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-660)
+- 13:47 [Agent systems](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026#t-827)
+
+![Venkata Pagadala on the Track 1 stage at brightonSEO San Diego 2026, pointing to the audience, with the agenda slide on the screen beside him](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-stage-pointing-to-audience-sm.webp?v=16929339)
+![Venkata Pagadala speaking on stage beside the Track 1 lectern at brightonSEO San Diego 2026](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-track-1-stage-sm.webp?v=7e447cf4)
+![View from the audience: Venkata Pagadala at the Track 1 lectern, the agenda slide on the big screen, and attendees photographing it with their phones](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-view-from-audience-sm.webp?v=dcafacff)
+![Venkata Pagadala mid-talk at brightonSEO San Diego 2026, clicker in hand, in front of the sponsor wall](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-clicker-in-hand-sm.webp?v=f2fbb2d0)
+![Venkata Pagadala on stage at brightonSEO San Diego 2026 beside the agenda slide: the thesis, two cases, a new dad gets a new car, four engines and one pattern, the method, and building the system](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-agenda-slide-sm.webp?v=5e7eac29)
+![Close view of Venkata Pagadala speaking at brightonSEO San Diego 2026, wearing his speaker badge](https://venkatapagadala.com/talks/brightonseo-san-diego-2026/photos/venkata-pagadala-brightonseo-san-diego-2026-speaking-close-up-sm.webp?v=dce4f8e7)
+
+*On stage in Track 1. More photos, the slides and everyone who showed up are on the [talk's recap page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
+
+## What did practitioners say when they heard it?
+
+> **In plain words:** Before and after the talk, people who work in search wrote about it in public. These are their own words, each linked to the post it came from.
+
+- **23** public posts by 22 people and pages named the talk
+- **1,124** reactions on those posts
+- **130** comments on those posts
+- **77** people thanked by name on the recap page
+
+*Counted on 25 September 2026 from public LinkedIn posts that name me in the brightonSEO context. LinkedIn's counts keep moving; my own posts are not included.*
+
+> "Few months back, Venkata Pagadala showed me classification work that he did on top of all the keywords, and I was blown away."
+> (Mihir Naik, Senior Product Manager, AI @ Building seoClarity ArcAI, [on LinkedIn](https://www.linkedin.com/posts/mihir23192_few-months-back-venkata-pagadala-showed-share-7504229185645776896-F4Lf/), 2026-09-11)
+
+> "Shout out to Venkata Pagadala at brightonSEO. His work is interesting, challenging, and gets you to think deeply about search."
+> (Raymond Martinez, Vice President SEO @ Archer Education, [on LinkedIn](https://www.linkedin.com/posts/raymond-martinez-seo_shout-out-to-venkata-pagadala-at-brightonseo-ugcPost-7505681691353640960-GVHj/), 2026-09-15)
+
+> "That’s one of the ideas that really stood out to me from Venkata Pagadala at brightonSEO San Diego 2026 presentation “User First, Algorithm Second.”"
+> (Harinath Babu, AI SEO & GEO Professional, [on LinkedIn](https://www.linkedin.com/posts/harinathbabu_seo-geo-aeo-share-7506548990558175232-1qcy/), 2026-09-17)
+
+> "Had a chance to have an early preview of Venkata Pagadala's talk at BrightonSEO, and you definitely don't want to miss this."
+> (Jean-Christophe Chouinard, Senior SEO Strategist at Tripadvisor, [on LinkedIn](https://www.linkedin.com/posts/jeanchristophechouinard_had-a-chance-to-have-an-early-preview-of-share-7503463479006085121-NZrS/), 2026-09-09)
+
+> "My friend Venkata Pagadala is speaking at brightonSEO San Diego, and I liked a point he shared ahead of his talk: “Search volume is a direction, not a strategy.”"
+> (Gaurav Patil, B2B SaaS SEO Consultant, [on LinkedIn](https://www.linkedin.com/posts/gaurav-patil-seo_how-much-of-our-seo-strategy-is-still-decided-share-7505171629438554112-NsDn/), 2026-09-14)
+
+> "Some people teach you SEO. Some people teach you how to think. For me, Venkata Pagadala has always been the second kind."
+> (Sagar Kumar, SEO, Blogger, [on LinkedIn](https://www.linkedin.com/posts/hackit-sagar_seo-technicalseo-searchintent-share-7504401287434747904-yA82/), 2026-09-11)
+
+> "Venkata Pagadala went deep on industrial-level intent classification."
+> (Gururaj Pandurangi, [on LinkedIn](https://www.linkedin.com/posts/gururajp_brightonseoday1track1searchintentgeopdf-ugcPost-7506940282844762112-oI7U/), 2026-09-18)
+
+> "Sitting in the audience I could see it happening in real time while watching Natasha Post and Venkata Pagadala do their first big talks. I'm SO SO proud of you both!!!"
+> (Noah Learner, Mentor + Superconnector + Operator, [on LinkedIn](https://www.linkedin.com/posts/noahlearner_brightonseo-share-7506779557631422464-ZX43/), 2026-09-18)
+
+*Quoted as posted. Every post and every name is on the [brightonSEO San Diego 2026 thank-you page](https://venkatapagadala.com/research-and-talks/brightonseo-san-diego-2026).*
+
 ## How does User-First Intelligence relate to existing ideas?
 
 > **In plain words:** It stands on decades of well-tested ideas and combines them into one working system.
@@ -795,6 +933,36 @@ The [personas on this site](https://venkatapagadala.com/personas) are built this
 - **2019: Customer needs from user-generated content.** [Timoshenko and Hauser](https://doi.org/10.1287/mksc.2018.1123) found customer needs in user-generated content with machine learning.
 - **2024: Generative engine optimization.** [Aggarwal et al.](https://doi.org/10.1145/3637528.3671900) studied how sources gain visibility in AI-generated answers; Google's [people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) guidance points the same way.
 - **2026: User-First Intelligence.** **The combination, run as one system**: a designed industry map every demand source lands on; evidence with roles and grades; persona, platform and format decided together; agents at scale; and a loop that watches where people move.
+
+## Where can you watch, read and try User-First Intelligence?
+
+> **In plain words:** Recorded conversations where I work through these ideas, tools on this site that run parts of the method, and the papers behind it.
+
+### Conversations about the ideas
+
+- [Rethinking SEO for LLMs and Personalization](https://www.youtube.com/watch?v=ctpzOwKYi98), Voices of Search (Previsible), 2026-10-19, 44 min. With host Tyson Stockton: how enterprise search is changing with LLMs. Mining first-party data and zero-volume queries, building topic hierarchies, and getting ready for personalized search and query fan-out. Closest to this guide's sections on [zero-volume demand](#why-now) and [personalization](#personalization).
+- [How to Find What AI Search Trust](https://www.youtube.com/watch?v=yrPWjyu0CKk), SEO Video Show, 2026-10-10, 43 min. Episode 302: the SEO data most teams are missing, and finding demand beyond Google. Closest to [the twenty demand sources](#demand-sources): finding demand beyond Google.
+- [Enterprise AI SEO: Automation Pipelines, MCPs, and Future Proofing](https://www.youtube.com/watch?v=qwyIY0vWO8g), AI SEO Show, 2025-10-21, 33 min. How enterprise teams ship automation pipelines for metadata, schema and content drafts, classify queries at scale, and earn inclusion inside LLM answers. Closest to [the industry map](#industry-map): classifying queries at enterprise scale.
+- [Building AI Agents for Marketing Functions with Venkata Pagadala](https://www.youtube.com/watch?v=J21YdzbNG8U), The Free Coalition, Expert Series, 2026-10-15, 59 min. A session for marketers on building AI agents: how agents differ from scripts and workflows, when one agent is enough and when a multi-agent system makes sense, and how to test, measure and guard agents before scaling them. Closest to [the rule](#personalization) that agents gather and classify while people decide.
+
+*Each player loads from YouTube only when you press play.*
+
+### Tools you can use today
+
+The [LinkedIn knowledge graph](#example-linkedin) above is one live tool. These four run the persona side of the method, in your browser, on public data.
+
+- [Persona Builder](https://venkatapagadala.com/personas/builder): Answer the framework's follow-up questions and grade the evidence for each answer as you go. You get a persona brief with no invented biography.
+- [Persona Fanout Journey](https://venkatapagadala.com/personas/fanout-journey): One starting query, fanned out by persona scenario and by every stage of the buyer's journey. Every question says which inputs produced it and how to check it.
+- [Global Persona Framework](https://venkatapagadala.com/personas/framework): The classification library behind the personas: 463 dimensions in 42 families, each with its definition, its follow-up question and the evidence a value needs.
+- [Audience Personas](https://venkatapagadala.com/personas): Personas where every trait is graded measured, derived or inferred, and links to the study behind it. Build anyone and see where they actually are.
+
+### Research papers
+
+- Preprint. [The Disruption of Search Engine Optimization by Large Language Models: A Mixed-Methods Analysis of the Evolving Search Landscape](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512878). SSRN, 2026. Sole author. A mixed-methods study of what large language models are doing to search behavior, and what that means for how content gets found.
+- Peer-reviewed. [Google, SEO and Helpful Content: How Artificial Intelligence Can Be Helpful for E-Commerce Websites](https://hstalks.com/article/8917/google-seo-and-helpful-content-how-artificial-inte/). Journal of Digital & Social Media Marketing, 2024. Co-author, 2 of 2. How AI supports the helpful-content standard on e-commerce sites, from product data quality to editorial signals.
+- Peer-reviewed. [A survey of reward hacking in agentic large language model systems](https://link.springer.com/article/10.1007/s44163-026-01980-z). Discover Artificial Intelligence, 2026. Co-author, 4 of 5. A four-level taxonomy of how tool-using AI agents game their rewards, from verbosity and sycophancy up to modifying tests and disrupting monitors, compared across RLHF, RLAIF, RLVR and DPO, with a layered defense model for production systems.
+
+**Ask for the working paper** The User-First Intelligence paper and a book are in preparation. Researchers, editors and practitioners can ask me for the working paper. If you publish books on marketing, research or AI and would like to talk about the book, write to me directly. [Request the paper](mailto:vdepagadala@gmail.com?subject=User-First%20Intelligence%3A%20working%20paper%20request)
 
 ## Frequently asked questions about User-First Intelligence
 

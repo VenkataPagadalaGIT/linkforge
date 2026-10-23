@@ -48,9 +48,25 @@ const AuthorCard = ({ author, dateModified, readingTime }: Props) => {
         to={author.url}
         rel="author"
         aria-label={`About ${author.name}`}
-        className="shrink-0 w-12 h-12 border border-border bg-card/60 flex items-center justify-center font-mono text-sm text-foreground hover:border-foreground/60 hover:text-foreground transition-colors"
+        className={
+          author.photo
+            ? "shrink-0 block w-14 h-14 rounded-full overflow-hidden border border-border hover:border-foreground/60 transition-colors"
+            : "shrink-0 w-12 h-12 border border-border bg-card/60 flex items-center justify-center font-mono text-sm text-foreground hover:border-foreground/60 hover:text-foreground transition-colors"
+        }
       >
-        {initials}
+        {author.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={author.photo.src}
+            alt={author.name}
+            width={56}
+            height={56}
+            className="w-full h-full object-cover"
+            itemProp="image"
+          />
+        ) : (
+          initials
+        )}
       </Link>
       <div className="flex-1 min-w-0">
         <p className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1">

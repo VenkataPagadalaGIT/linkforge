@@ -112,8 +112,67 @@ export type Block =
   | { kind: "jevjourney" }
   | { kind: "jevstations" }
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
-  /** A pull quote with the author's photo. */
-  | { kind: "quote"; text: string; by: string; role?: string; photo?: string }
+  /** The author's LinkedIn knowledge graph, live: the poster renders on the server, the 3D view loads near the screen. */
+  | { kind: "universe"; poster: { src: string; width: number; height: number; alt: string }; caption?: string }
+  /** A pull quote with the author's photo. `said`: the words are verbatim from a recorded talk, with the moment to hear them. */
+  | { kind: "quote"; text: string; by: string; role?: string; photo?: string; said?: { event: string; at: number; href: string } }
+  /** One slide from a talk deck as presented, linked to that slide in the deck and, optionally, to the moment in the talk. */
+  | {
+      kind: "slide";
+      n: number;
+      deck: string;
+      event: string;
+      image: { src: string; width: number; height: number };
+      alt: string;
+      caption?: string;
+      listen?: { at: number; href: string };
+    }
+  /** A short self-hosted clip, its words written out beside it. */
+  | {
+      kind: "clip";
+      title: string;
+      src: string;
+      poster: { src: string; width: number; height: number };
+      duration: number;
+      /** ISO date the clip was first published on this site, for VideoObject. */
+      uploaded: string;
+      event: string;
+      transcript: string;
+      chapter?: { at: number; title: string; href: string };
+      caption?: string;
+    }
+  /** A third-party player behind a click: the poster and a real link render on the server, the iframe only loads once opened. */
+  | {
+      kind: "embed";
+      provider: "speakerdeck" | "linkedin";
+      title: string;
+      /** The iframe address. */
+      src: string;
+      /** The page the player belongs to, for readers who would rather open it there. */
+      href: string;
+      poster: { src: string; width: number; height: number; alt: string };
+      open: string;
+      caption?: string;
+      chapters?: { at: number; title: string; href: string }[];
+    }
+  /** Photos in one sideways row. */
+  | { kind: "gallery"; label: string; items: { src: string; width: number; height: number; alt: string; caption?: string }[]; caption?: string }
+  /** What other people said in public, each linked to where they said it. */
+  | { kind: "voices"; items: { quote: string; author: string; role?: string; url: string; date: string }[]; caption?: string }
+  /** Recorded conversations on YouTube, each a click-to-load player. */
+  | {
+      kind: "episodes";
+      items: { title: string; outlet: string; date: string; minutes?: number; summary: string; youtubeId: string; thumb: string; why?: string }[];
+      caption?: string;
+    }
+  /** Tools on this site, each with a screenshot and a link. */
+  | { kind: "tools"; items: { title: string; text: string; href: string; image: { src: string; width: number; height: number }; alt: string; cta?: string }[] }
+  /** Published papers, and how to ask for the work in preparation. */
+  | {
+      kind: "papers";
+      items: { title: string; venue: string; year: string; url: string; review?: "peer-reviewed" | "preprint"; role?: string; summary: string }[];
+      request?: { title: string; text: string; href: string; label: string };
+    }
   /** The key to the reading highlights used on the page. */
   | { kind: "highlightkey"; items: { color: "y" | "g" | "b"; label: string }[] }
   /** "In plain words": the one-paragraph version of a section, for every reader. */
@@ -202,6 +261,8 @@ export interface GuideAuthor {
   url: string;
   /** One-line credibility statement; the AEO/GEO citation hook. */
   bio: string;
+  /** A small square headshot for the byline; initials show without one. */
+  photo?: { src: string; width: number; height: number };
 }
 
 export interface Guide {
@@ -2132,7 +2193,12 @@ const qcBlocks: Block[] = [
   },
 ];
 
-export const guides: Guide[] = [
+/** The site owner's headshot (a 192px crop of /venkata-pagadala.jpeg), shown on every byline of his. */
+const OWNER_PHOTO = { src: "/venkata-pagadala-avatar.webp", width: 192, height: 192 };
+const withOwnerPhoto = (g: Guide): Guide =>
+  g.author && g.author.name === "Venkata Pagadala" && !g.author.photo ? { ...g, author: { ...g.author, photo: OWNER_PHOTO } } : g;
+
+const GUIDE_RECORDS: Guide[] = [
   ufiGuide,
   agentsGuide,
   jevGuide,
@@ -2307,6 +2373,8 @@ export const guides: Guide[] = [
     comparisonHeaders: ["Platform", "The qubit is", "Gates via", "Gate speed", "Two-qubit fidelity", "Strength", "Limit"],
   },
 ];
+
+export const guides: Guide[] = GUIDE_RECORDS.map(withOwnerPhoto);
 
 export function getGuideBySlug(slug: string): Guide | undefined {
   return guides.find((g) => g.slug === slug);
