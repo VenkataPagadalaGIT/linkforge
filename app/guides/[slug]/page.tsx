@@ -9,6 +9,16 @@ import { withSeoOverrides } from "@/lib/seo-overrides";
 
 type Params = { slug: string };
 
+/** Body text uses tiny markdown; structured data wants the plain words. */
+const plain = (s: string) =>
+  s
+    .replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, "$1$2");
+
+/** The site-wide Person node app/layout.tsx emits; guides by the site's owner point to it. */
+const OWNER_NAME = "Venkata Pagadala";
+
 // Static content — prerender every guide at build time. dynamicParams=false
 // makes unknown slugs (including /guides/<slug>.md misses) hard-404 instead of
 // soft-404ing the not-found UI at HTTP 200.
@@ -71,12 +81,26 @@ export default function Page({ params }: { params: Params }) {
   if (guide.author) {
     articleSchema.author = {
       "@type": "Person",
-      "@id": authorUrl,
+      // One entity, not two: the owner's guides point at the same @id as the
+      // Person node on every page, so engines never split him in half.
+      "@id": guide.author.name === OWNER_NAME ? `${SITE_URL}/#person` : authorUrl,
       name: guide.author.name,
       url: authorUrl,
       jobTitle: guide.author.title,
       affiliation: { "@type": "Organization", name: guide.author.org },
       description: guide.author.bio,
+    };
+  }
+  if (guide.concept) {
+    articleSchema.about = {
+      "@type": "DefinedTerm",
+      "@id": `${url}#${guide.slug}`,
+      name: guide.concept.name,
+      alternateName: guide.concept.alternateName,
+      termCode: guide.concept.termCode,
+      description: guide.concept.description,
+      url,
+      inDefinedTermSet: url,
     };
   }
   const jsonLd: unknown[] = [
@@ -90,7 +114,7 @@ export default function Page({ params }: { params: Params }) {
         "@type": "DefinedTerm",
         name: t.term,
         alternateName: t.aka,
-        description: t.oneLiner,
+        description: plain(t.oneLiner),
         inDefinedTermSet: url,
       })),
     },
@@ -100,7 +124,7 @@ export default function Page({ params }: { params: Params }) {
       mainEntity: guide.faqs.map((f) => ({
         "@type": "Question",
         name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
+        acceptedAnswer: { "@type": "Answer", text: plain(f.a) },
       })),
     },
     breadcrumbJsonLd([

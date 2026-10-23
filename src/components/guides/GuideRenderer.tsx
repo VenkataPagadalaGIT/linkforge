@@ -19,17 +19,22 @@ import LlmExplorerLazy from "./LlmExplorerLazy";
 import NnExplorerLazy from "./NnExplorerLazy";
 import QuantumExplorerLazy from "./QuantumExplorerLazy";
 import JevExplorerLazy from "./JevExplorerLazy";
+import FrameworkDiagram from "./FrameworkDiagram";
 import { JOURNEY as JEV_JOURNEY, STATIONS as JEV_STATIONS, KINDS as JEV_KINDS } from "@/data/jev";
 import { JOURNEY, STAGES, ZONES } from "@/data/llm";
 import { NN_ACTS, NN_JOURNEY, NN_STAGES } from "@/data/nn";
 import { QC_ACTS, QC_JOURNEY, QC_STAGES } from "@/data/quantum";
 
 // Tiny inline markdown: [label](url), **bold**, *italic*, and `code`. Order
-// matters — links run first so a URL containing ** or _ never gets caught by a
-// later pass. External http(s) URLs open in a new tab and carry a noopener rel
-// for safety + SEO (so we don't pass equity to every cited paper).
+// matters: links run first so a URL containing ** or _ never gets caught by a
+// later pass. Site links ([label](/path) or [label](#id)) stay in the same tab.
+// External http(s) URLs open in a new tab and carry a noopener rel for safety
+// and SEO (so we don't pass equity to every cited paper).
 const inline = (s: string) =>
   s
+    .replace(/\[([^\]]+)\]\(((?:\/|#)[^\s)]*)\)/g, (_m, label, url) =>
+      `<a href="${url}" class="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">${label}</a>`
+    )
     .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) =>
       `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-4 decoration-foreground/30 hover:decoration-foreground transition-colors">${label}</a>`
     )
@@ -235,7 +240,7 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
         <div className="my-6 border border-foreground/20 bg-foreground/[0.03] p-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">{block.title}</p>
           <p
-            className="font-mono text-sm text-foreground/90 leading-relaxed"
+            className="font-mono text-sm text-foreground/90 leading-relaxed [overflow-wrap:anywhere]"
             dangerouslySetInnerHTML={{ __html: bold(block.text) }}
           />
         </div>
@@ -650,6 +655,8 @@ function BlockView({ block, guide }: { block: Block; guide: Guide }) {
           </div>
         </div>
       );
+    case "framework":
+      return <FrameworkDiagram block={block} />;
     case "faq":
       return (
         <div className="my-6 space-y-5">

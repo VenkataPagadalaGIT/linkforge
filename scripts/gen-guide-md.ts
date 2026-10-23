@@ -212,6 +212,19 @@ for (const block of guide.blocks as Block[]) {
       push();
       break;
     }
+    case "framework": {
+      if (block.caption) {
+        push(`**${block.caption}**`);
+        push();
+      }
+      block.steps.forEach((st, i) => push(`${i + 1}. **${st.name}**: ${st.question} ${st.note}`));
+      push();
+      push(`- **The map:** ${block.map.title} (${block.map.items.join(", ")}). Every step reads and writes it.`);
+      push(`- **The rule:** ${block.rule}`);
+      push(`- **The loop:** ${block.loop}`);
+      push();
+      break;
+    }
     case "faq":
       for (const f of guide.faqs) {
         push(`### ${f.q}`);
@@ -240,7 +253,7 @@ for (const block of guide.blocks as Block[]) {
   }
 }
 
-return { body: lines.join("\n"), unsupported: [...unsupported] };
+return { body: lines.join("\n").replace(/\]\(\/(?!\/)/g, `](${SITE}/`), unsupported: [...unsupported] };
 }
 
 let stale = 0;

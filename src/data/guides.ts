@@ -29,6 +29,7 @@ import { QC_COUNTS } from "./quantum";
 import { sfGuide } from "./sfGuide";
 import { jevGuide } from "./jevGuide";
 import { agentsGuide } from "./agentsGuide";
+import { ufiGuide } from "./ufiGuide";
 
 export interface DefinedTerm {
   slug: string;
@@ -62,7 +63,8 @@ export interface FaqItem {
 
 export type Block =
   | { kind: "p"; text: string }
-  | { kind: "h2"; text: string; id: string }
+  /** toc: a short label for the page menu when the heading is a long question. */
+  | { kind: "h2"; text: string; id: string; toc?: string }
   | { kind: "h3"; text: string; id?: string }
   | { kind: "figure"; viewId: string }
   | { kind: "image"; src: string; alt: string; caption?: string; width?: number; height?: number }
@@ -107,6 +109,15 @@ export type Block =
   | { kind: "jevjourney" }
   | { kind: "jevstations" }
   | { kind: "sources"; items: { label: string; href: string; note?: string }[] }
+  /** A named framework drawn as steps in order, the map under them, a rule and a loop. */
+  | {
+      kind: "framework";
+      steps: { name: string; question: string; note: string }[];
+      map: { title: string; items: string[] };
+      rule: string;
+      loop: string;
+      caption?: string;
+    }
   | { kind: "details"; summary: string; blocks: Block[] };
 
 export interface GuideAuthor {
@@ -156,6 +167,9 @@ export interface Guide {
   image?: { src: string; width: number; height: number; alt: string };
   /** HowTo entries emitted as schema.org HowTo JSON-LD on the guide page. */
   howTos?: { name: string; description: string; steps: { name: string; text: string }[] }[];
+  /** The concept the guide defines, when it is the reference for one: emitted as the
+   *  article's `about`, a DefinedTerm with a stable @id that other pages can point to. */
+  concept?: { name: string; alternateName?: string[]; termCode?: string; description: string };
 }
 
 /* ====================================================================== *
@@ -2047,6 +2061,7 @@ const qcBlocks: Block[] = [
 ];
 
 export const guides: Guide[] = [
+  ufiGuide,
   agentsGuide,
   jevGuide,
   sfGuide,

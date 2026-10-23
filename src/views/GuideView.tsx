@@ -10,6 +10,15 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { ArrowLeft } from "lucide-react";
 import { topicsForGuide } from "@/data/guideTopics";
 
+/** A heading short enough for the page menu, cut at a word boundary, never mid-word. */
+function menuLabel(text: string, max = 36): string {
+  const t = text.replace(/^\d+\.\s*/, "");
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > 12 ? cut.slice(0, space) : cut).replace(/[\s,:;.?]+$/, "")}…`;
+}
+
 export default function GuideView({ guide }: { guide: Guide }) {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -17,7 +26,7 @@ export default function GuideView({ guide }: { guide: Guide }) {
 
   const toc = guide.blocks
     .filter((b): b is Extract<typeof b, { kind: "h2" }> => b.kind === "h2")
-    .map((b) => ({ id: b.id, label: b.text.replace(/^\d+\.\s*/, "").slice(0, 36) }));
+    .map((b) => ({ id: b.id, label: b.toc ?? menuLabel(b.text) }));
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20 px-6">

@@ -83,6 +83,11 @@ fi
 # Markdown twin gate: /research-and-talks.md is generated from the same two
 # data modules the page renders from. A stale twin tells an AI client something
 # the page no longer says, and nothing on the page would look wrong.
+if npx tsx scripts/gen-ufi-example.ts --check > /tmp/preflight-ufi-example.log 2>&1; then
+  ok "User-First Intelligence guide figures match the site's data"
+else
+  bad "src/data/ufiExample.ts is stale; run: npx tsx scripts/gen-ufi-example.ts"
+fi
 if npx tsx scripts/gen-guide-md.ts --all --check > /tmp/preflight-guide-md.log 2>&1; then
   ok "guide markdown twins match their data (public/guides/*.md)"
 else
