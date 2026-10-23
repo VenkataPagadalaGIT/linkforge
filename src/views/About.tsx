@@ -1,16 +1,22 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowUpRight, Mail, MapPin, Quote } from "lucide-react";
+import { ArrowUpRight, Download, Mail, MapPin, Quote } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PageSidebar from "@/components/PageSidebar";
 import PaperCover from "@/components/research/PaperCover";
+import AsideToc from "@/components/profile/AsideToc";
+import CopyButton from "@/components/profile/CopyButton";
+import RoleCard, { CardPhoto, gridBg } from "@/components/profile/RoleCard";
 import SocialIcon from "@/components/profile/SocialIcon";
 import { jsonLdScript } from "@/lib/jsonld";
+import { SITE_URL } from "@/lib/site";
 import { accessNote, authorRole, citationLine, GOOGLE_SCHOLAR_URL, linkedPapers } from "@/data/research";
 import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc, formatTalkDate, linkVerb } from "@/data/talks";
+import { guides } from "@/data/guides";
+import { nodes as aiSystemsMapNodes } from "@/data/aiOntology";
 import { LINKEDIN_COUNTS } from "@/data/linkedinArchiveServer";
 import { UNIVERSE_PATH } from "@/data/universe";
 import {
+  BIOS,
   COLLEAGUE_RECS,
   FOCUS_AREAS,
   GUEST_ARTICLE,
@@ -25,10 +31,21 @@ import {
   type SourcedStat,
 } from "@/data/profile";
 
+/*
+ * /about is the profile and the story in one page: a profile card that stays
+ * in view on the left (photo, every profile, contact, the page's sections),
+ * and on the right the roles, the record and the detail behind it.
+ */
+
 /* ── Derived from the data, never typed ─────────────────────────────── */
 
 const media = TALKS.filter((t) => t.kind !== "workshop").sort(byDateDesc);
-const latestMedia = media.filter((t) => t.thumb).slice(0, 4);
+/** The newest episode leads the podcast card; the speaking list starts after it, so no thumbnail shows twice. */
+const latest = media.find((t) => t.thumb && t.links.length > 0);
+const moreMedia = media.filter((t) => t.thumb && t !== latest).slice(0, 4);
+/** TALKS plus the brightonSEO talk, which is kept apart as the featured item. */
+const talksTotal = TALKS.length + 1;
+const recordedMinutes = media.reduce((sum, t) => sum + (t.minutes ?? 0), 0) + BRIGHTONSEO_2026.video.duration / 60;
 /** Peer-reviewed first, then newest first: the order a reader weighs them in. */
 const papers = [...linkedPapers].sort(
   (a, b) => Number(b.review === "peer-reviewed") - Number(a.review === "peer-reviewed") || b.year.localeCompare(a.year),
@@ -36,9 +53,9 @@ const papers = [...linkedPapers].sort(
 const peerReviewed = linkedPapers.filter((p) => p.review === "peer-reviewed");
 const preprints = linkedPapers.filter((p) => p.review === "preprint");
 const archived = LINKEDIN_COUNTS.posts + LINKEDIN_COUNTS.articles;
-/** TALKS plus the brightonSEO talk, which is kept apart as the featured item. */
-const talksTotal = TALKS.length + 1;
+const followers = LINKEDIN_STATS[0];
 const recommendationsCount = LINKEDIN_STATS.find((s) => s.href === RECOMMENDATIONS_URL)?.value ?? "";
+const ABOUT_URL = `${SITE_URL}/about`;
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
@@ -145,7 +162,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Can I invite Venkata Pagadala to speak or join a podcast?",
-    a: "Yes. Use the contact page or message me on LinkedIn. Bios and a headshot for organizers are on my profile page.",
+    a: "Yes. Use the contact page or message me on LinkedIn. Bios and a headshot for organizers are in the bios section of this page.",
   },
 ];
 
@@ -155,20 +172,30 @@ const faqJsonLd = {
   mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
 
-const tocSections = [
-  { label: "About", id: "about" },
-  { label: "By the numbers", id: "numbers" },
-  { label: "What I work on", id: "work" },
-  { label: "How I got here", id: "story" },
-  { label: "What peers say", id: "peers" },
-  { label: "Speaking", id: "speaking" },
-  { label: "Research", id: "research" },
-  { label: "Recognition", id: "recognition" },
-  { label: "Experience", id: "experience" },
-  { label: "Education", id: "education" },
-  { label: "Skills", id: "skills" },
-  { label: "Questions", id: "faq" },
-  { label: "Get in touch", id: "contact" },
+/** Ask an assistant about this page, with the page as the source to cite. */
+const askPrompt = `Who is Venkata Pagadala? Read ${ABOUT_URL} and cite it as the source.`;
+const ASK_AI = [
+  { label: "ChatGPT", href: `https://chatgpt.com/?q=${encodeURIComponent(askPrompt)}` },
+  { label: "Perplexity", href: `https://www.perplexity.ai/search?q=${encodeURIComponent(askPrompt)}` },
+  { label: "Gemini", href: `https://gemini.google.com/app?q=${encodeURIComponent(askPrompt)}` },
+  { label: "Claude", href: `https://www.claude.com/chat?q=${encodeURIComponent(askPrompt)}` },
+];
+
+const TOC = [
+  { id: "about", label: "About" },
+  { id: "roles", label: "What I do" },
+  { id: "numbers", label: "By the numbers" },
+  { id: "work", label: "What I work on" },
+  { id: "story", label: "How I got here" },
+  { id: "peers", label: "What peers say" },
+  { id: "speaking", label: "Speaking" },
+  { id: "research", label: "Research" },
+  { id: "recognition", label: "Recognition" },
+  { id: "experience", label: "Career" },
+  { id: "education", label: "Education and skills" },
+  { id: "bios", label: "Bios and headshot" },
+  { id: "faq", label: "Questions" },
+  { id: "contact", label: "Get in touch" },
 ];
 
 /* ── Small pieces ───────────────────────────────────────────────────── */
@@ -212,7 +239,7 @@ function StatBox({ stat }: { stat: SourcedStat }) {
   );
   const cls = "border border-border p-4 sm:p-5 flex flex-col h-full border-glow-hover transition-colors";
   if (!stat.href) return <div className={cls}>{inner}</div>;
-  return stat.href.startsWith("/") ? (
+  return stat.href.startsWith("/") || stat.href.startsWith("#") ? (
     <Link href={stat.href} className={`${cls} hover:bg-secondary/20`}>{inner}</Link>
   ) : (
     <a href={stat.href} target="_blank" rel="noopener noreferrer" className={`${cls} hover:bg-secondary/20`}>{inner}</a>
@@ -235,7 +262,7 @@ const About = () => {
     {
       value: String(linkedPapers.length),
       label: "Published papers",
-      source: `${peerReviewed.length} peer-reviewed, ${preprints.length} ${preprints.length === 1 ? "preprint" : "preprints"}`,
+      source: `${peerReviewed.length} peer-reviewed, ${plural(preprints.length, "preprint")}`,
       href: "#research",
     },
     { value: String(talksTotal), label: "Talks, podcasts and interviews", source: "Each linked to its recording", href: "#speaking" },
@@ -247,94 +274,310 @@ const About = () => {
     { k: "Field", v: PROFILE.field },
     { k: "Based in", v: PROFILE.location },
     { k: "In search since", v: "2016" },
-    {
-      k: "Research",
-      v: `${plural(peerReviewed.length, "peer-reviewed paper")}, ${plural(preprints.length, "preprint")}`,
-    },
+    { k: "Research", v: `${plural(peerReviewed.length, "peer-reviewed paper")}, ${plural(preprints.length, "preprint")}` },
     { k: "On stage", v: `${BRIGHTONSEO_2026.event}, plus ${plural(media.length, "podcast, interview and talk", "podcasts, interviews and talks")}` },
   ];
 
   const [featuredQuote, ...otherQuotes] = PEER_QUOTES;
 
   return (
-    <div className="min-h-screen bg-background pt-28 pb-20 px-6">
+    <div className="min-h-screen bg-background pt-28 pb-20 px-4 sm:px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(faqJsonLd) }} />
-      <div className="max-w-6xl mx-auto">
-        <div className="lg:flex lg:gap-10">
-          <PageSidebar sections={tocSections} shareTitle="About Venkata Pagadala: AI product leader and researcher" />
+      <div className="max-w-7xl mx-auto">
+        <Breadcrumbs className="mb-8" trail={[{ href: "/", label: "Home" }, { label: "About" }]} />
 
-          <div className="flex-1 min-w-0">
-            {/* ── Hero ── */}
-            <section id="about" aria-labelledby="about-h" className="scroll-mt-28 mb-20">
-              <Breadcrumbs className="mb-6" trail={[{ href: "/", label: "Home" }, { label: "About" }]} />
-              <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">{"{01}"} · About</p>
+        {/* ── Name ── */}
+        <header className="text-center mb-12">
+          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">{"{01}"} · About</p>
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground text-glow">{PROFILE.name}</h1>
+          <p className="font-display text-xl sm:text-2xl text-foreground/85 mt-4">{PROFILE.field}</p>
+          <p className="font-mono text-xs text-muted-foreground mt-3">
+            {PROFILE.role} at {PROFILE.employer} · Researcher · Speaker
+          </p>
+        </header>
 
-              <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,280px)] gap-10 items-start">
-                <div>
-                  <h1 id="about-h" className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground text-glow text-balance">
-                    About Venkata Pagadala
-                  </h1>
-                  <p className="font-display text-xl sm:text-2xl text-foreground/85 mt-4 text-balance">
-                    I build AI systems that understand search demand, and publish the research behind them.
-                  </p>
-                  <p className="font-mono text-sm leading-relaxed text-muted-foreground mt-6 max-w-2xl">
-                    I&apos;m {PROFILE.role} at {PROFILE.employer}. My field is search intelligence: how people search, how
-                    AI systems answer, and how to build the systems that serve both. I ship production systems at work,
-                    write up what they teach me in papers and talks, and share the rest in public.
-                  </p>
+        <div className="grid lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)] gap-8 lg:gap-10 items-start">
+          {/* ── Profile card: stays in view on wide screens ── */}
+          <aside
+            aria-label="Profile"
+            className="border border-border bg-card/20 p-5 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto"
+          >
+            <div className="mx-auto w-36 h-36 lg:w-28 lg:h-28 rounded-full border border-border p-1.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={PROFILE.photo.src}
+                alt="Venkata Pagadala"
+                width={PROFILE.photo.width}
+                height={PROFILE.photo.height}
+                loading="eager"
+                fetchPriority="high"
+                className="w-full h-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+            </div>
+            <p className="font-display text-lg font-bold text-foreground text-center mt-4">{PROFILE.name}</p>
+            <p className="font-mono text-[11px] text-muted-foreground text-center mt-1 leading-relaxed">
+              {PROFILE.role}, {PROFILE.employer}
+            </p>
+            <p className="flex items-center justify-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-2">
+              <MapPin size={11} aria-hidden="true" /> {PROFILE.location}
+            </p>
 
-                  <dl className="grid sm:grid-cols-2 border-t border-l border-border mt-8">
-                    {FACTS.map((f) => (
-                      <div key={f.k} className="border-b border-r border-border px-4 py-3">
-                        <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{f.k}</dt>
-                        <dd className="font-mono text-xs text-foreground mt-1 leading-relaxed">{f.v}</dd>
-                      </div>
-                    ))}
-                  </dl>
+            <ul className="flex flex-wrap justify-center gap-1.5 mt-5" aria-label="Profiles">
+              {SOCIAL_PROFILES.map((s) => (
+                <li key={s.id}>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${s.label}: ${s.handle}`}
+                    title={`${s.label}: ${s.handle}`}
+                    className="flex items-center justify-center w-9 h-9 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/40 hover:bg-foreground/5 transition-colors"
+                  >
+                    <SocialIcon id={s.id} size={16} />
+                  </a>
+                </li>
+              ))}
+            </ul>
 
-                  <div className="flex flex-wrap gap-3 mt-8">
-                    <Link href="/research-and-talks" className={btnPrimary}>
-                      Research &amp; Talks
-                    </Link>
-                    <Link href="/profile" className={btnSecondary}>
-                      Profile and bios
-                    </Link>
-                    <Link href="/contact" className={btnSecondary}>
-                      Contact
-                    </Link>
-                    <Ext href={LINKEDIN_URL} className={btnSecondary}>
-                      LinkedIn <ArrowUpRight size={12} aria-hidden="true" />
-                    </Ext>
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center font-mono text-[11px] tracking-wider uppercase px-3 py-2 bg-foreground text-background hover:opacity-90 transition-opacity"
+              >
+                Contact
+              </Link>
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className="inline-flex items-center justify-center gap-1.5 font-mono text-[11px] tracking-wider uppercase px-3 py-2 border border-border text-foreground hover:border-foreground/40 hover:bg-foreground/5 transition-colors"
+              >
+                <Mail size={11} aria-hidden="true" /> Email
+              </a>
+            </div>
+
+            <div className="hidden lg:block mt-6 pt-5 border-t border-border">
+              <AsideToc items={TOC} />
+            </div>
+          </aside>
+
+          <div className="min-w-0">
+            {/* ── Intro ── */}
+            <section id="about" aria-label="Introduction" className="scroll-mt-28 mb-20">
+              <p className="font-display text-2xl sm:text-3xl text-foreground leading-snug text-balance">
+                I build AI systems that understand search demand, and publish the research behind them.
+              </p>
+              <p className="font-mono text-sm leading-relaxed text-muted-foreground mt-5 max-w-3xl">
+                I&apos;m {PROFILE.role} at {PROFILE.employer}. My field is search intelligence: how people search, how AI
+                systems answer, and how to build the systems that serve both. I ship production systems at work, write up
+                what they teach me in papers and talks, and share the rest in public.
+              </p>
+
+              <dl className="grid sm:grid-cols-2 xl:grid-cols-3 border-t border-l border-border mt-8">
+                {FACTS.map((f) => (
+                  <div key={f.k} className="border-b border-r border-border px-4 py-3">
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{f.k}</dt>
+                    <dd className="font-mono text-xs text-foreground mt-1 leading-relaxed">{f.v}</dd>
                   </div>
-                </div>
+                ))}
+              </dl>
 
-                <figure className="m-0">
-                  <div className="aspect-square border border-border overflow-hidden bg-card">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={PROFILE.photo.src}
-                      alt="Venkata Pagadala"
-                      width={PROFILE.photo.width}
-                      height={PROFILE.photo.height}
-                      loading="eager"
-                      fetchPriority="high"
-                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                    />
-                  </div>
-                  <figcaption className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-3">
-                    <MapPin size={11} aria-hidden="true" /> {PROFILE.location}
-                  </figcaption>
-                </figure>
+              <div className="flex flex-wrap gap-3 mt-8">
+                <Link href="/research-and-talks" className={btnPrimary}>
+                  Research &amp; Talks
+                </Link>
+                <a href="#bios" className={btnSecondary}>
+                  Bios and headshot
+                </a>
+                <Link href="/contact" className={btnSecondary}>
+                  Contact
+                </Link>
+                <Ext href={LINKEDIN_URL} className={btnSecondary}>
+                  LinkedIn <ArrowUpRight size={12} aria-hidden="true" />
+                </Ext>
+              </div>
+            </section>
+
+            {/* ── Roles ── */}
+            <section id="roles" aria-labelledby="roles-h" className="mb-20 scroll-mt-28">
+              <SectionHead n="02" label="What I do" id="roles-h" title="What do I do?">
+                One field, six ways of working in it. Each card opens the detail, on this page or at the source.
+              </SectionHead>
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <RoleCard
+                  label="Speaker"
+                  title={BRIGHTONSEO_2026.event}
+                  media={
+                    <a href="#speaking" aria-label="The talk, further down this page" className="group absolute inset-0">
+                      <CardPhoto src="/talks/thumbs/brightonseo-on-stage-2026.jpg" />
+                      <span className="absolute left-3 bottom-3 bg-background/90 border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-foreground">
+                        {BRIGHTONSEO_2026.track} · {formatTalkDate(BRIGHTONSEO_2026.startDate.slice(0, 10))}
+                      </span>
+                    </a>
+                  }
+                  stats={[
+                    [String(talksTotal), "Talks and episodes"],
+                    [`${Math.round(BRIGHTONSEO_2026.video.duration / 60)} min`, "Talk, in chapters"],
+                  ]}
+                  actions={[
+                    { label: "Watch the talk", href: `/research-and-talks#${BRIGHTONSEO_2026.slug}`, primary: true },
+                    { label: "Slides", href: "https://speakerdeck.com/venkatapagadala1/industrial-context-graphs" },
+                  ]}
+                >
+                  <span className="text-foreground">{BRIGHTONSEO_2026.title}</span>: why a query with zero measured volume
+                  can still carry real demand, and how to classify that demand by persona and intent.
+                </RoleCard>
+
+                <RoleCard
+                  label="Researcher"
+                  title="Published research"
+                  media={
+                    <a href="#research" aria-label="The papers, further down this page" className="absolute inset-0 flex flex-col justify-center px-5" style={gridBg}>
+                      <ul className="space-y-2">
+                        {papers.map((p) => (
+                          <li key={p.slug} className="leading-tight min-w-0">
+                            <span className="block font-display text-base sm:text-lg font-bold text-foreground truncate">
+                              {(p.publisher ?? p.venue).replace(/ Publications$/, "")}
+                            </span>
+                            <span className="block font-mono text-[10px] text-muted-foreground truncate">
+                              {p.review === "preprint" ? "Preprint" : p.venue}, {p.year}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </a>
+                  }
+                  stats={[
+                    [String(peerReviewed.length), "Peer-reviewed"],
+                    [String(preprints.length), preprints.length === 1 ? "Preprint" : "Preprints"],
+                  ]}
+                  actions={[
+                    { label: "The papers", href: "#research", primary: true },
+                    { label: "Scholar", href: GOOGLE_SCHOLAR_URL },
+                  ]}
+                >
+                  Springer Nature&apos;s Discover Artificial Intelligence (2026), the Journal of Digital &amp; Social Media
+                  Marketing (2024), and a preprint on SSRN on how LLMs are disrupting SEO.
+                </RoleCard>
+
+                {latest && (
+                  <RoleCard
+                    label="Podcast guest"
+                    title="Podcasts and interviews"
+                    media={
+                      <a href={latest.links[0].url} target="_blank" rel="noopener noreferrer" aria-label={`Watch ${latest.title}`} className="group absolute inset-0">
+                        <CardPhoto src={latest.thumb as string} />
+                        <span className="absolute right-2 bottom-2 flex items-center gap-1.5 bg-background/90 border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-foreground">
+                          <svg width="9" height="9" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M2 1l9 5-9 5z" fill="currentColor" />
+                          </svg>
+                          Latest{latest.minutes ? ` · ${latest.minutes} min` : ""}
+                        </span>
+                      </a>
+                    }
+                    stats={[
+                      [String(media.length), "Episodes and sessions"],
+                      [`${Math.floor(recordedMinutes / 60)}+ hrs`, "On the record"],
+                    ]}
+                    actions={[
+                      { label: "All episodes", href: "/research-and-talks#media", primary: true },
+                      { label: "Latest", href: latest.links[0].url },
+                    ]}
+                  >
+                    Latest: <span className="text-foreground">{latest.title}</span> on {latest.outlet}. Also{" "}
+                    {moreMedia
+                      .slice(0, 3)
+                      .map((t) => t.outlet)
+                      .join(", ")}
+                    .
+                  </RoleCard>
+                )}
+
+                <RoleCard
+                  label="Product leader"
+                  title={PROFILE.employer}
+                  media={
+                    <a href="#experience" aria-label="The career, further down this page" className="absolute inset-0 flex flex-col justify-between p-5" style={gridBg}>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Since March 2025</span>
+                      <span className="block font-display text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+                        Automation
+                        <br />
+                        AI
+                        <br />
+                        SEO
+                      </span>
+                    </a>
+                  }
+                  stats={[
+                    [`${years}+`, "Years in search"],
+                    ["50M+", "Pages managed"],
+                  ]}
+                  actions={[
+                    { label: "Career", href: "#experience", primary: true },
+                    { label: "LinkedIn", href: LINKEDIN_URL },
+                  ]}
+                >
+                  {PROFILE.role}: AI-assisted metadata with guardrails, retrieval-based internal linking, topic clustering and
+                  structured data at enterprise scale. Before that, SEO product at Apartments.com (CoStar Group).
+                </RoleCard>
+
+                <RoleCard
+                  label="Educator and builder"
+                  title="Guides and open tools"
+                  media={
+                    <Link href="/guides/ai-agents-for-marketing" aria-label="AI Agents for Marketing, the field guide" className="group absolute inset-0">
+                      <CardPhoto src="/posters/ai-agents-for-marketing-og.jpg" position="left center" />
+                    </Link>
+                  }
+                  stats={[
+                    [String(guides.length), "Interactive guides"],
+                    [String(aiSystemsMapNodes.length), "Entities in the AI map"],
+                  ]}
+                  actions={[
+                    { label: "Guides", href: "/guides", primary: true },
+                    { label: "GitHub", href: socialUrl("github") },
+                  ]}
+                >
+                  How LLMs, neural networks and AI agents work, explained in 3D and in code: AI agents for marketing with an
+                  open-source repository, the AI Systems Map, and Audience Personas.
+                </RoleCard>
+
+                <RoleCard
+                  label="Creator"
+                  title="Ten years of posts, one graph"
+                  media={
+                    <Link href={UNIVERSE_PATH} aria-label="Open the archive of posts" className="absolute inset-0 flex flex-col justify-between p-5" style={gridBg}>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                        LinkedIn, {LINKEDIN_COUNTS.firstYear} to {LINKEDIN_COUNTS.lastYear}
+                      </span>
+                      <span>
+                        <span className="block font-display text-5xl font-bold text-foreground text-glow tabular-nums">{archived}</span>
+                        <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mt-1">
+                          posts and articles, archived and connected by topic
+                        </span>
+                      </span>
+                    </Link>
+                  }
+                  stats={[
+                    [String(archived), "Posts and articles"],
+                    [followers.value, "LinkedIn followers"],
+                  ]}
+                  actions={[
+                    { label: "Open the archive", href: UNIVERSE_PATH, primary: true },
+                    { label: "Follow", href: LINKEDIN_URL },
+                  ]}
+                >
+                  Sharing what I build on LinkedIn since 2016. Every post and article is kept on this site, searchable and
+                  linked by topic, with its media and engagement.
+                </RoleCard>
               </div>
             </section>
 
             {/* ── Numbers ── */}
             <section id="numbers" aria-labelledby="numbers-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="02" label="By the numbers" id="numbers-h" title="The record, with sources">
+              <SectionHead n="03" label="By the numbers" id="numbers-h" title="The record, with sources">
                 Every number names where it comes from. The ones about this site are counted from its own data, so they
                 change when the data does.
               </SectionHead>
-              <ul className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <ul className="grid grid-cols-2 xl:grid-cols-4 gap-4">
                 {NUMBERS.map((s) => (
                   <li key={s.label}>
                     <StatBox stat={s} />
@@ -345,7 +588,7 @@ const About = () => {
 
             {/* ── Focus areas ── */}
             <section id="work" aria-labelledby="work-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="03" label="Focus" id="work-h" title="What do I work on?">
+              <SectionHead n="04" label="Focus" id="work-h" title="What do I work on?">
                 Four threads, one question underneath: what do people actually need, and how do they find it now that AI
                 answers first?
               </SectionHead>
@@ -377,8 +620,8 @@ const About = () => {
 
             {/* ── Story ── */}
             <section id="story" aria-labelledby="story-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="04" label="Story" id="story-h" title="How did I get here?" />
-              <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,220px)] gap-10">
+              <SectionHead n="05" label="Story" id="story-h" title="How did I get here?" />
+              <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,210px)] gap-10">
                 <div className="space-y-5 font-mono text-sm leading-relaxed text-muted-foreground max-w-2xl">
                   <p>
                     I started as a software developer at Visakhapatnam Steel Plant in India, then did a master&apos;s in
@@ -424,7 +667,7 @@ const About = () => {
 
             {/* ── Peers ── */}
             <section id="peers" aria-labelledby="peers-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="05" label="In their words" id="peers-h" title="What do peers say?">
+              <SectionHead n="06" label="In their words" id="peers-h" title="What do peers say?">
                 Short quotes from public posts and comments, and from recommendations on my LinkedIn profile. Each one links
                 to where it was said.
               </SectionHead>
@@ -489,22 +732,22 @@ const About = () => {
 
             {/* ── Speaking ── */}
             <section id="speaking" aria-labelledby="speaking-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="06" label="Speaking" id="speaking-h" title="Where have I spoken?">
+              <SectionHead n="07" label="Speaking" id="speaking-h" title="Where have I spoken?">
                 Conference talks, podcasts, webinars and interviews, newest first. Every recording is linked.
               </SectionHead>
 
-              <article className="grid md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] border border-border mb-6">
+              <article className="grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] border border-border mb-6">
                 <Link
                   href={`/research-and-talks#${BRIGHTONSEO_2026.slug}`}
-                  className="group relative block aspect-video overflow-hidden bg-card border-b md:border-b-0 md:border-r border-border"
+                  className="group relative block aspect-video overflow-hidden bg-card border-b xl:border-b-0 xl:border-r border-border"
                   aria-label={`Watch ${BRIGHTONSEO_2026.title} at ${BRIGHTONSEO_2026.event}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/talks/thumbs/brightonseo-on-stage-2026.jpg"
+                    src={BRIGHTONSEO_2026.video.poster}
                     alt=""
-                    width={640}
-                    height={360}
+                    width={1920}
+                    height={1080}
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
@@ -539,7 +782,7 @@ const About = () => {
               </article>
 
               <ul className="grid sm:grid-cols-2 gap-4">
-                {latestMedia.map((t) => {
+                {moreMedia.map((t) => {
                   const primary = t.links[0];
                   const verb = primary ? linkVerb(primary.url) : "Open";
                   return (
@@ -574,7 +817,13 @@ const About = () => {
                           {t.outlet} · <time dateTime={t.date}>{formatTalkDate(t.date)}</time> · {KIND_LABEL[t.kind]}
                         </p>
                         <h3 className="font-display text-base font-semibold text-foreground leading-snug text-balance">
-                          {primary ? <Ext href={primary.url} className="hover:underline decoration-border underline-offset-4">{t.title}</Ext> : t.title}
+                          {primary ? (
+                            <Ext href={primary.url} className="hover:underline decoration-border underline-offset-4">
+                              {t.title}
+                            </Ext>
+                          ) : (
+                            t.title
+                          )}
                         </h3>
                         <p className="font-mono text-[11px] text-muted-foreground leading-relaxed mt-2">{t.summary}</p>
                       </div>
@@ -591,7 +840,7 @@ const About = () => {
 
             {/* ── Research ── */}
             <section id="research" aria-labelledby="research-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="07" label="Research" id="research-h" title="What have I published?">
+              <SectionHead n="08" label="Research" id="research-h" title="What have I published?">
                 {plural(peerReviewed.length, "peer-reviewed paper")} and {plural(preprints.length, "preprint")}, each shown
                 by its real first page and linked to the publisher.
               </SectionHead>
@@ -651,7 +900,7 @@ const About = () => {
 
             {/* ── Recognition ── */}
             <section id="recognition" aria-labelledby="recognition-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="08" label="Recognition" id="recognition-h" title="Who has named the work?">
+              <SectionHead n="09" label="Recognition" id="recognition-h" title="Who has named the work?">
                 Lists, citations and credits, each worded the way its source words it, and no stronger.
               </SectionHead>
               <ul className="border-t border-border">
@@ -681,10 +930,10 @@ const About = () => {
               </ul>
             </section>
 
-            {/* ── Experience ── */}
+            {/* ── Career ── */}
             <section id="experience" aria-labelledby="experience-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="09" label="Experience" id="experience-h" title="Career timeline" />
-              <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12" aria-label="Scale of the work">
+              <SectionHead n="10" label="Career" id="experience-h" title="Career timeline" />
+              <ul className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-12" aria-label="Scale of the work">
                 {SCALE.map((s) => (
                   <li key={s.label} className="border border-border p-5 text-center border-glow-hover">
                     <span className="block font-display text-2xl sm:text-3xl font-bold text-foreground text-glow">{s.value}</span>
@@ -730,9 +979,9 @@ const About = () => {
               </div>
             </section>
 
-            {/* ── Education ── */}
+            {/* ── Education and skills ── */}
             <section id="education" aria-labelledby="education-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="10" label="Education" id="education-h" title="Education and certificates" />
+              <SectionHead n="11" label="Education" id="education-h" title="Education and skills" />
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <h3 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">Degrees</h3>
@@ -757,11 +1006,9 @@ const About = () => {
                   </ul>
                 </div>
               </div>
-            </section>
-
-            {/* ── Skills ── */}
-            <section id="skills" aria-labelledby="skills-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="11" label="Skills" id="skills-h" title="Skills and tools" />
+              <h3 id="skills" className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mt-10 mb-3 scroll-mt-28">
+                Skills and tools
+              </h3>
               <ul className="flex flex-wrap gap-2.5">
                 {skills.map((skill) => (
                   <li
@@ -774,9 +1021,58 @@ const About = () => {
               </ul>
             </section>
 
+            {/* ── Bios and headshot ── */}
+            <section id="bios" aria-labelledby="bios-h" className="mb-20 scroll-mt-28">
+              <SectionHead n="12" label="For organizers and hosts" id="bios-h" title="Bios and headshot">
+                Use these as they are, or trim them. If a number has moved on by the time you read this, the newer number is
+                on this page.
+              </SectionHead>
+              <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,220px)] gap-4">
+                <div className="space-y-4">
+                  {(
+                    [
+                      ["Short bio", BIOS.short],
+                      ["Long bio", BIOS.long],
+                    ] as const
+                  ).map(([name, text]) => (
+                    <article key={name} className="border border-border p-5">
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                        <h3 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                          {name} · {text.split(/\s+/).length} words
+                        </h3>
+                        <CopyButton text={text} label={`Copy ${name.toLowerCase()}`} />
+                      </div>
+                      <p className="font-mono text-xs text-foreground/85 leading-relaxed">{text}</p>
+                    </article>
+                  ))}
+                </div>
+                <figure className="border border-border p-4 m-0 self-start max-w-[260px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={PROFILE.photo.src}
+                    alt="Headshot of Venkata Pagadala"
+                    width={PROFILE.photo.width}
+                    height={PROFILE.photo.height}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-auto border border-border"
+                  />
+                  <figcaption className="mt-3">
+                    <a
+                      href={PROFILE.photo.src}
+                      download="venkata-pagadala-headshot.jpg"
+                      className="flex items-center justify-center gap-1.5 w-full font-mono text-[11px] tracking-wider uppercase px-3 py-2 border border-border text-foreground hover:border-foreground/40 hover:bg-foreground/5 transition-colors"
+                    >
+                      <Download size={11} aria-hidden="true" /> Headshot, {PROFILE.photo.width} × {PROFILE.photo.height} JPG
+                    </a>
+                  </figcaption>
+                </figure>
+              </div>
+            </section>
+
             {/* ── FAQ ── */}
             <section id="faq" aria-labelledby="faq-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="12" label="Questions" id="faq-h" title="Questions people ask" />
+              <SectionHead n="13" label="Questions" id="faq-h" title="Questions people ask" />
               <dl className="border-t border-border">
                 {FAQ.map((f) => (
                   <div key={f.q} className="py-5 border-b border-border grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-x-8 gap-y-2">
@@ -790,17 +1086,12 @@ const About = () => {
             {/* ── Contact ── */}
             <section id="contact" aria-labelledby="contact-h" className="scroll-mt-28">
               <div className="border border-border p-6 sm:p-10 bg-card/20">
-                <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-3 uppercase">{"{13}"} · Contact</p>
+                <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-3 uppercase">{"{14}"} · Contact</p>
                 <h2 id="contact-h" className="font-display text-3xl sm:text-4xl font-bold text-foreground text-glow text-balance">
                   Working on search, AI visibility or agents?
                 </h2>
                 <p className="font-mono text-sm text-muted-foreground leading-relaxed mt-4 max-w-2xl">
-                  I&apos;m glad to talk about products, research, speaking and podcasts. Organizers: bios and a headshot
-                  are on{" "}
-                  <Link href="/profile#bios" className={linkCls}>
-                    my profile page
-                  </Link>
-                  .
+                  I&apos;m glad to talk about products, research, speaking and podcasts.
                 </p>
                 <div className="flex flex-wrap gap-3 mt-7">
                   <Link href="/contact" className={btnPrimary}>
@@ -809,25 +1100,38 @@ const About = () => {
                   <a href={`mailto:${PROFILE.email}`} className={btnSecondary}>
                     <Mail size={12} aria-hidden="true" /> Email
                   </a>
-                  <Ext href={socialUrl("linkedin")} className={btnSecondary}>
+                  <Ext href={LINKEDIN_URL} className={btnSecondary}>
                     LinkedIn <ArrowUpRight size={12} aria-hidden="true" />
                   </Ext>
                 </div>
-                <ul className="flex flex-wrap gap-x-5 gap-y-3 mt-8 pt-6 border-t border-border" aria-label="Elsewhere">
+
+                <h3 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mt-10 mb-3">Find me online</h3>
+                <ul className="grid sm:grid-cols-2 xl:grid-cols-3 border-t border-l border-border">
                   {SOCIAL_PROFILES.map((s) => (
-                    <li key={s.id}>
+                    <li key={s.id} className="border-b border-r border-border">
                       <a
                         href={s.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                        className="flex items-center gap-3 px-4 py-3.5 text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
                       >
-                        <SocialIcon id={s.id} size={14} />
-                        {s.label}
+                        <SocialIcon id={s.id} size={16} />
+                        <span className="font-mono text-xs text-foreground">{s.label}</span>
+                        <span className="font-mono text-[10px] text-muted-foreground truncate ml-auto">{s.handle}</span>
                       </a>
                     </li>
                   ))}
                 </ul>
+
+                <p className="font-mono text-[11px] text-muted-foreground mt-8">
+                  Ask an AI about me, with this page as the source:{" "}
+                  {ASK_AI.map((a, i) => (
+                    <span key={a.label}>
+                      {i > 0 && " · "}
+                      <Ext href={a.href}>{a.label}</Ext>
+                    </span>
+                  ))}
+                </p>
               </div>
             </section>
           </div>

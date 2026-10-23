@@ -26,17 +26,20 @@ const metadata: Metadata = {
 };
 export const generateMetadata = withSeoOverrides("/about", metadata);
 
-// An AboutPage whose main entity is the site's one Person node, embedded in
-// full (the same object the layout emits under the same @id) so this page
-// stands on its own for a parser that reads nothing else.
+// /about is the profile and the about page in one, so it is a ProfilePage, the
+// type Google reads for a page about one person. Its main entity is the site's
+// one Person node, embedded in full (the same object the layout emits under
+// the same @id) so this page stands on its own for a parser that reads
+// nothing else.
 const aboutJsonLd = {
   "@context": "https://schema.org",
-  "@type": "AboutPage",
+  "@type": "ProfilePage",
   "@id": `${SITE_URL}/about#page`,
   url: `${SITE_URL}/about`,
   name: `About ${SITE_NAME}`,
   description: DESCRIPTION,
   inLanguage: "en",
+  dateModified: "2026-10-22",
   isPartOf: { "@type": "WebSite", url: SITE_URL, name: SITE_NAME },
   mainEntity: personJsonLd(),
 };
