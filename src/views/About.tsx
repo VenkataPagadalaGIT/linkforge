@@ -26,6 +26,8 @@ import {
   PROFILE,
   RECOMMENDATIONS_URL,
   SOCIAL_PROFILES,
+  TOPIC_MAP,
+  USER_FIRST_FLOW,
   socialUrl,
   yearsInSearch,
   type SourcedStat,
@@ -149,8 +151,8 @@ const FAQ: { q: string; a: string }[] = [
     a: `I'm a product leader and researcher in search intelligence. I'm ${PROFILE.role} at ${PROFILE.employer} in Atlanta, I publish research on how AI is changing search, and I speak about it at conferences and on podcasts.`,
   },
   {
-    q: "What is search intelligence?",
-    a: "Reading demand from everywhere people express it, not only the search box, and turning it into decisions: what to build, what to publish, and how to show up when an AI system answers instead of a results page. It joins classic SEO, AI visibility, knowledge graphs and agents.",
+    q: "What is User First Intelligence?",
+    a: "My name for search intelligence that starts with the user, not the algorithm. A User First Intelligence system connects users, personas, platforms and content to business decisions: AI agents gather and classify the signals from search, AI answers, video, reviews and forums, and people decide what to build, publish or fix.",
   },
   {
     q: "What does Venkata Pagadala do at AT&T?",
@@ -183,8 +185,8 @@ const ASK_AI = [
 
 const TOC = [
   { id: "about", label: "About" },
-  { id: "roles", label: "What I do" },
   { id: "numbers", label: "By the numbers" },
+  { id: "roles", label: "What I do" },
   { id: "work", label: "What I work on" },
   { id: "story", label: "How I got here" },
   { id: "peers", label: "What peers say" },
@@ -362,14 +364,79 @@ const About = () => {
           <div className="min-w-0">
             {/* ── Intro ── */}
             <section id="about" aria-label="Introduction" className="scroll-mt-28 mb-20">
+              <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase mb-3">User First Intelligence</p>
               <p className="font-display text-2xl sm:text-3xl text-foreground leading-snug text-balance">
-                I build AI systems that understand search demand, and publish the research behind them.
+                I build User First Intelligence systems with agentic AI.
               </p>
-              <p className="font-mono text-sm leading-relaxed text-muted-foreground mt-5 max-w-3xl">
-                I&apos;m {PROFILE.role} at {PROFILE.employer}. My field is search intelligence: how people search, how AI
-                systems answer, and how to build the systems that serve both. I ship production systems at work, write up
-                what they teach me in papers and talks, and share the rest in public.
+              <p className="font-display text-lg sm:text-xl text-foreground/85 leading-snug text-balance mt-3">
+                They map where users, personas, platforms and content meet the business, so a team can see what people
+                need, where they ask for it, and what to build, publish or fix next.
               </p>
+
+              {/* The idea in one row: from the person behind a query to the decision it should change. */}
+              <ol className="grid sm:grid-cols-5 gap-2 mt-8" aria-label="How a User First Intelligence system reads demand">
+                {USER_FIRST_FLOW.map((f, i) => (
+                  <li
+                    key={f.step}
+                    className="relative border border-border bg-card/20 px-4 py-2.5 sm:py-3 flex items-baseline gap-3 sm:block"
+                  >
+                    <span className="shrink-0 font-mono text-[9px] tracking-[0.25em] text-muted-foreground sm:block">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="shrink-0 font-display text-base font-bold text-foreground sm:block sm:mt-1">{f.step}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground leading-snug sm:block sm:mt-1">{f.note}</span>
+                    {i < USER_FIRST_FLOW.length - 1 && (
+                      <span
+                        aria-hidden="true"
+                        className="hidden sm:flex absolute -right-[9px] top-1/2 -translate-y-1/2 z-10 w-4 h-4 items-center justify-center bg-background font-mono text-[10px] text-muted-foreground"
+                      >
+                        →
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <p className="font-mono text-[11px] text-muted-foreground mt-3">
+                Agents gather and classify the signals at every step. People make the calls.
+              </p>
+
+              <p className="font-mono text-sm leading-relaxed text-muted-foreground mt-8 max-w-3xl">
+                I&apos;m {PROFILE.role} at {PROFILE.employer}. The work joins two fields. In AI: agents, large language
+                models, neural networks, NLP and knowledge graphs. In search: enterprise SEO, AI search, AEO and GEO. I ship
+                production systems at work, write up what they teach me in papers and talks, and share the rest in public.
+              </p>
+
+              {/* Every topic, grouped, each linked to the page on this site that covers it. */}
+              <div className="grid md:grid-cols-3 gap-4 mt-8">
+                {TOPIC_MAP.map((g) => (
+                  <div key={g.id} className="border border-border p-4">
+                    <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground mb-3">{g.title}</h2>
+                    <ul className="flex flex-wrap gap-1.5">
+                      {g.topics.map((t) =>
+                        t.href ? (
+                          <li key={t.label}>
+                            <Link
+                              href={t.href}
+                              title={t.name}
+                              className="inline-block font-mono text-[11px] border border-border px-2 py-1 text-foreground/85 hover:text-foreground hover:border-foreground/40 hover:bg-foreground/5 transition-colors"
+                            >
+                              {t.label}
+                            </Link>
+                          </li>
+                        ) : (
+                          <li
+                            key={t.label}
+                            title={t.name}
+                            className="font-mono text-[11px] border border-border px-2 py-1 text-muted-foreground"
+                          >
+                            {t.label}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                ))}
+              </div>
 
               <dl className="grid sm:grid-cols-2 xl:grid-cols-3 border-t border-l border-border mt-8">
                 {FACTS.map((f) => (
@@ -396,9 +463,24 @@ const About = () => {
               </div>
             </section>
 
+            {/* ── Numbers ── */}
+            <section id="numbers" aria-labelledby="numbers-h" className="mb-20 scroll-mt-28">
+              <SectionHead n="02" label="By the numbers" id="numbers-h" title="The record, with sources">
+                Every number names where it comes from. The ones about this site are counted from its own data, so they
+                change when the data does.
+              </SectionHead>
+              <ul className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+                {NUMBERS.map((s) => (
+                  <li key={s.label}>
+                    <StatBox stat={s} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+
             {/* ── Roles ── */}
             <section id="roles" aria-labelledby="roles-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="02" label="What I do" id="roles-h" title="What do I do?">
+              <SectionHead n="03" label="What I do" id="roles-h" title="What do I do?">
                 One field, six ways of working in it. Each card opens the detail, on this page or at the source.
               </SectionHead>
               <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -569,21 +651,6 @@ const About = () => {
                   linked by topic, with its media and engagement.
                 </RoleCard>
               </div>
-            </section>
-
-            {/* ── Numbers ── */}
-            <section id="numbers" aria-labelledby="numbers-h" className="mb-20 scroll-mt-28">
-              <SectionHead n="03" label="By the numbers" id="numbers-h" title="The record, with sources">
-                Every number names where it comes from. The ones about this site are counted from its own data, so they
-                change when the data does.
-              </SectionHead>
-              <ul className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-                {NUMBERS.map((s) => (
-                  <li key={s.label}>
-                    <StatBox stat={s} />
-                  </li>
-                ))}
-              </ul>
             </section>
 
             {/* ── Focus areas ── */}

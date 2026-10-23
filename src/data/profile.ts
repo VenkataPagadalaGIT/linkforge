@@ -294,6 +294,89 @@ export const FOCUS_AREAS: FocusArea[] = [
 ];
 
 /**
+ * User First Intelligence, the way the /about intro draws it: five steps from
+ * the person behind a query to the decision a business makes.
+ */
+export const USER_FIRST_FLOW: { step: string; note: string }[] = [
+  { step: "Users", note: "the people behind every query" },
+  { step: "Personas", note: "who they are and what they need" },
+  { step: "Platforms", note: "where they ask: search, AI, video, reviews" },
+  { step: "Content", note: "what answers them, and what is missing" },
+  { step: "Business", note: "what to build, publish or fix" },
+];
+
+export interface TopicLink {
+  label: string;
+  /** The full name, for a tooltip and for schema.org knowsAbout. */
+  name?: string;
+  /** A page on this site about the topic. Left out where none exists yet. */
+  href?: string;
+}
+
+export interface TopicGroup {
+  id: string;
+  title: string;
+  topics: TopicLink[];
+}
+
+/**
+ * Everything he works across, grouped. Each link was opened on 2026-10-22 and
+ * lands on a page about that topic: a guide, a topic hub, an encyclopedia
+ * entry, a solution page or a paper.
+ */
+export const TOPIC_MAP: TopicGroup[] = [
+  {
+    id: "ai",
+    title: "AI and machine learning",
+    topics: [
+      { label: "Agentic AI", name: "AI agents", href: "/notebook/ai/encyclopedia/ai-agents" },
+      { label: "Multi-agent systems", href: "/notebook/ai/encyclopedia/multi-agent-orchestration" },
+      { label: "LLMs", name: "Large language models", href: "/guides/how-llms-work" },
+      { label: "Neural networks", href: "/guides/how-neural-networks-work" },
+      { label: "Deep learning", href: "/notebook/ai/encyclopedia/deep-learning" },
+      { label: "NLP", name: "Natural language processing", href: "/notebook/ai/encyclopedia/nlp" },
+      { label: "Entity recognition", name: "Named entity recognition", href: "/notebook/ai/encyclopedia/named-entity" },
+      { label: "Knowledge graphs", href: "/guides/topics/knowledge-graphs" },
+      { label: "Ontologies", href: "/guides/topics/ontology" },
+      { label: "RAG", name: "Retrieval-augmented generation", href: "/notebook/ai/encyclopedia/rag" },
+      { label: "Embeddings and vector search", href: "/notebook/ai/encyclopedia/embeddings" },
+      { label: "Classification models", href: "/notebook/ai/encyclopedia/classification-regression" },
+      { label: "MCP", name: "Model Context Protocol", href: "/notebook/ai/encyclopedia/mcp" },
+      { label: "LLM evaluation", href: "/notebook/ai/encyclopedia/llm-eval" },
+      { label: "AI alignment", href: "/notebook/ai/encyclopedia/ai-alignment" },
+    ],
+  },
+  {
+    id: "search",
+    title: "Enterprise SEO and AI search",
+    topics: [
+      { label: "Enterprise SEO" },
+      { label: "Technical SEO", href: "/solutions/technical" },
+      { label: "AI search", href: "/research-and-talks#llms-disrupting-search" },
+      { label: "AEO", name: "Answer engine optimization", href: "/solutions/aeo" },
+      { label: "GEO", name: "Generative engine optimization", href: "/guides/topics/geo" },
+      { label: "Semantic search", href: "/guides/topics/semantic-search" },
+      { label: "Programmatic SEO", href: "/solutions/programmatic" },
+      { label: "Structured data" },
+      { label: "Crawling and site migrations" },
+      { label: "SEO audits", href: "/guides/topics/seo-audit" },
+    ],
+  },
+  {
+    id: "user-first",
+    title: "User First Intelligence",
+    topics: [
+      { label: "Search demand research", href: "/research-and-talks#brightonseo-san-diego-2026" },
+      { label: "Audience personas", href: "/personas" },
+      { label: "Query fan-out", href: "/personas/fanout-journey" },
+      { label: "Intent classification" },
+      { label: "Industry maps", name: "Industry knowledge maps", href: "/notebook/ai/map" },
+      { label: "Market share analysis" },
+    ],
+  },
+];
+
+/**
  * Bios for organizers and hosts, in the third person they need. Kept free of
  * numbers that go stale within weeks, apart from the follower floor.
  */
@@ -334,16 +417,8 @@ export function personJsonLd(): Record<string, unknown> {
       "Lead Technical Product Manager for Automation, AI and SEO at AT&T. Researcher and speaker on search intelligence: how people search, how AI systems answer, and the systems that serve both.",
     knowsAbout: [
       "Search intelligence",
-      "Search engine optimization",
-      "Answer engine optimization",
-      "Generative engine optimization",
-      "Knowledge graphs",
-      "Query classification",
-      "Audience personas",
-      "AI agents",
-      "Large language models",
-      "Technical SEO",
-      "Structured data",
+      "User First Intelligence",
+      ...TOPIC_MAP.flatMap((g) => g.topics.map((t) => t.name ?? t.label)),
     ],
     sameAs: SOCIAL_PROFILES.map((p) => p.url),
   };
