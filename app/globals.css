@@ -396,3 +396,36 @@ a:hover .holo-interactive .holo-bracket,
     -1px 0 0 hsl(var(--holo-magenta) / 0.55),
     1px 0 0 hsl(var(--holo-cyan) / 0.55);
 }
+
+/* ── Home: the /about section strip (phones) and the spider web (wider) ────
+   The strip holds two identical copies of its buttons and slides one copy's
+   width, so the loop has no seam. Hover or focus pauses it. With reduced
+   motion it stops and becomes an ordinary scrollable row. */
+@keyframes about-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.about-marquee-track {
+  animation: about-marquee 70s linear infinite;
+}
+.about-marquee:hover .about-marquee-track,
+.about-marquee:focus-within .about-marquee-track {
+  animation-play-state: paused;
+}
+
+/* The spider's "fetch" ping: a ring that opens out from a section and fades. */
+@keyframes spider-ping {
+  from { transform: scale(1); opacity: 0.85; }
+  to { transform: scale(4); opacity: 0; }
+}
+.spider-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spider-ping 1.1s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-marquee { overflow-x: auto; }
+  .about-marquee-track { animation: none; }
+  .spider-ping { animation: none; opacity: 0; }
+}

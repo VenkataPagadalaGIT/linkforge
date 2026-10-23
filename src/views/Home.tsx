@@ -13,6 +13,12 @@ import SEO from "@/components/SEO";
 import SystemAssemblyNav from "@/components/SystemAssemblyNav";
 import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
 import HomeUniverse from "@/components/home/HomeUniverse";
+import AboutMarquee from "@/components/home/AboutMarquee";
+import SpiderWeb from "@/components/home/SpiderWeb";
+import { LINKEDIN_STATS, compactStat, yearsInSearch } from "@/data/profile";
+
+/** The hero's numbers, read from the same sourced record the About page shows. */
+const stat = (prefix: string) => LINKEDIN_STATS.find((s) => s.label.startsWith(prefix))?.value ?? "";
 
 const Home = () => {
 
@@ -53,32 +59,38 @@ const Home = () => {
           Venkata Pagadala
         </h1>
         <p className="font-mono text-xs sm:text-sm text-foreground/50 mb-4 tracking-wide">
-          AI Systems · Business Research · Search
+          User First Intelligence · Agentic AI · AI Search
         </p>
 
+        {/* Each number opens its source on the About page. */}
         <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 mb-6">
           {[
-            { label: "Impressions", value: "404K+" },
-            { label: "Followers", value: "18K+" },
-            { label: "Connections", value: "500+" },
-            { label: "Reach", value: "132K+" },
-          ].map((stat) => (
-            <div key={stat.label} className="flex items-center gap-1.5">
-              <span className="font-mono text-sm sm:text-base font-bold text-foreground">{stat.value}</span>
-              <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-wider">{stat.label}</span>
-            </div>
+            { label: "Impressions", value: compactStat(stat("Post impressions")) },
+            { label: "Followers", value: compactStat(stat("LinkedIn followers")) },
+            { label: "Reach", value: compactStat(stat("Members reached")) },
+            { label: "Years in search", value: `${yearsInSearch()}+` },
+          ].map((item) => (
+            <a
+              key={item.label}
+              href="/about#numbers"
+              title="Sources on the About page"
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+            >
+              <span className="font-mono text-sm sm:text-base font-bold text-foreground">{item.value}</span>
+              <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-wider">{item.label}</span>
+            </a>
           ))}
         </div>
 
         <div className="h-8 flex items-center justify-center lg:justify-start">
           <TypewriterText
             words={[
-              "AI Systems Architect",
+              "User First Intelligence",
+              "Agentic AI Systems",
               "Published Researcher",
-              "Business & Market Intelligence",
-              "AI Consultant",
-              "Forward Deployment Engineer & SEO",
-              "Building the Future of Search",
+              "AI Product Leader at AT&T",
+              "Enterprise SEO & AI Search",
+              "Speaker & Podcast Guest",
             ]}
             className="font-mono text-sm sm:text-base text-foreground/60"
           />
@@ -122,6 +134,20 @@ const Home = () => {
             <ArrowDown size={16} className="group-hover:translate-y-1 transition-transform" />
           </button>
         </div>
+        </div>
+      </div>
+
+      {/* Every About section, one click from the hero. On wide screens a small
+          spider agent crawls them and spins its web; on phones they ride a slow row. */}
+      <div className="relative z-10 w-full max-w-6xl px-6 pb-16">
+        <div className="hidden md:block">
+          <SpiderWeb />
+        </div>
+        <div className="md:hidden">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase text-center mb-3">
+            About me · pick a section
+          </p>
+          <AboutMarquee />
         </div>
       </div>
 

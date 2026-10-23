@@ -16,6 +16,7 @@ import { nodes as aiSystemsMapNodes } from "@/data/aiOntology";
 import { LINKEDIN_COUNTS } from "@/data/linkedinArchiveServer";
 import { UNIVERSE_PATH } from "@/data/universe";
 import {
+  ABOUT_SECTIONS,
   BIOS,
   COLLEAGUE_RECS,
   FOCUS_AREAS,
@@ -183,22 +184,7 @@ const ASK_AI = [
   { label: "Claude", href: `https://www.claude.com/chat?q=${encodeURIComponent(askPrompt)}` },
 ];
 
-const TOC = [
-  { id: "about", label: "About" },
-  { id: "numbers", label: "By the numbers" },
-  { id: "roles", label: "What I do" },
-  { id: "work", label: "What I work on" },
-  { id: "story", label: "How I got here" },
-  { id: "peers", label: "What peers say" },
-  { id: "speaking", label: "Speaking" },
-  { id: "research", label: "Research" },
-  { id: "recognition", label: "Recognition" },
-  { id: "experience", label: "Career" },
-  { id: "education", label: "Education and skills" },
-  { id: "bios", label: "Bios and headshot" },
-  { id: "faq", label: "Questions" },
-  { id: "contact", label: "Get in touch" },
-];
+const TOC = ABOUT_SECTIONS;
 
 /* ── Small pieces ───────────────────────────────────────────────────── */
 

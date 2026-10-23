@@ -245,6 +245,8 @@ export interface FocusLink {
 export interface FocusArea {
   id: string;
   title: string;
+  /** Two or three words, for tight places such as the home page graph. */
+  short: string;
   /** What it is and why it matters, in plain words. */
   body: string;
   links: FocusLink[];
@@ -254,6 +256,7 @@ export interface FocusArea {
 export const FOCUS_AREAS: FocusArea[] = [
   {
     id: "demand",
+    short: "Demand beyond volume",
     title: "Search demand beyond search volume",
     body: "A keyword tool reports one number from one search box. Demand also shows up in reviews, support calls, forums, video comments and earnings calls. I classify it by persona and intent, so a query with zero measured volume can still be the one worth winning.",
     links: [
@@ -264,6 +267,7 @@ export const FOCUS_AREAS: FocusArea[] = [
   },
   {
     id: "ai-visibility",
+    short: "AI visibility",
     title: "AI visibility: AEO and GEO",
     body: "Answer engines retrieve, rank and quote differently from a page of blue links. I study which sources AI answers trust and cite, and build ways to measure a brand's share of those answers.",
     links: [
@@ -273,6 +277,7 @@ export const FOCUS_AREAS: FocusArea[] = [
   },
   {
     id: "knowledge-graphs",
+    short: "Knowledge graphs",
     title: "Knowledge graphs and classification",
     body: "Classifying millions of queries into a hierarchy turns a keyword list into a map of an industry. The same graphs give AI agents facts to stand on instead of guesses.",
     links: [
@@ -283,6 +288,7 @@ export const FOCUS_AREAS: FocusArea[] = [
   },
   {
     id: "agents",
+    short: "AI agents",
     title: "AI agents and automation",
     body: "Agents that do real marketing and search work, such as research, briefs, QA and monitoring, tested and guarded before they scale. Design the system first, then the agent.",
     links: [
@@ -388,6 +394,35 @@ export const BIOS = {
   long:
     "Venkata Pagadala works on search intelligence: how people search, how AI systems answer, and how to build the systems that serve both. He is Lead Technical Product Manager for Automation, AI and SEO at AT&T in Atlanta, and before that worked on SEO product at Apartments.com (CoStar Group) and American Addiction Centers. His research appears in Springer Nature's Discover Artificial Intelligence (2026), the Journal of Digital & Social Media Marketing (2024) and on SSRN. At brightonSEO San Diego 2026 he presented a method for classifying search demand by persona and intent, and he has been a guest on Previsible's Voices of Search, the AI SEO Show and the SEO Video Show. He has shared his work on LinkedIn since 2016, where more than 20,000 people follow it.",
 };
+
+/**
+ * The sections of /about, in page order. The page's own "On this page" menu,
+ * the home page's section strip and the home page graph all read this list,
+ * so an id renamed here is renamed everywhere it is linked.
+ */
+export const ABOUT_SECTIONS: { id: string; label: string }[] = [
+  { id: "about", label: "About" },
+  { id: "numbers", label: "By the numbers" },
+  { id: "roles", label: "What I do" },
+  { id: "work", label: "What I work on" },
+  { id: "story", label: "How I got here" },
+  { id: "peers", label: "What peers say" },
+  { id: "speaking", label: "Speaking" },
+  { id: "research", label: "Research" },
+  { id: "recognition", label: "Recognition" },
+  { id: "experience", label: "Career" },
+  { id: "education", label: "Education and skills" },
+  { id: "bios", label: "Bios and headshot" },
+  { id: "faq", label: "Questions" },
+  { id: "contact", label: "Get in touch" },
+];
+
+/** "484,000+" as "484K+": the same number, short enough for a hero line. */
+export function compactStat(value: string): string {
+  const n = Number(value.replace(/[^0-9]/g, ""));
+  const plus = value.trim().endsWith("+") ? "+" : "";
+  return n >= 1000 ? `${Math.floor(n / 1000)}K${plus}` : `${n}${plus}`;
+}
 
 /** Whole years since his first search role, for "10+ years" style labels. */
 export function yearsInSearch(now = new Date()): number {
