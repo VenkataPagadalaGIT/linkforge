@@ -2,8 +2,6 @@
 import { Link } from "@/lib/router-shim";
 import { ArrowDown, ArrowRight, Linkedin } from "lucide-react";
 import { linkedPapers } from "@/data/research";
-import WireframeGrid from "@/components/WireframeGrid";
-import FloatingBlocks from "@/components/FloatingBlocks";
 import TypewriterText from "@/components/TypewriterText";
 import SolutionsGraph from "@/components/SolutionsGraph";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -14,7 +12,7 @@ import SystemAssemblyNav from "@/components/SystemAssemblyNav";
 import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
 import HomeUniverse from "@/components/home/HomeUniverse";
 import AboutMarquee from "@/components/home/AboutMarquee";
-import SpiderWeb from "@/components/home/SpiderWeb";
+import WebScene from "@/components/home/WebScene";
 import { LINKEDIN_STATS, compactStat, yearsInSearch } from "@/data/profile";
 
 /** The hero's numbers, read from the same sourced record the About page shows. */
@@ -30,8 +28,8 @@ const Home = () => {
         canonical="https://venkatapagadala.com"
       />
       <div className="relative min-h-screen flex flex-col items-center justify-center">
-      <WireframeGrid />
-      <FloatingBlocks />
+      {/* The room, its webs and the two spiders (replaces the old panels and blocks here only) */}
+      <WebScene band={360} />
 
       <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-16 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
         {/* The portrait carries no frame, no caption, no card: the face is
@@ -137,13 +135,11 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Every About section, one click from the hero. On wide screens a small
-          spider agent crawls them and spins its web; on phones they ride a slow row. */}
-      <div className="relative z-10 w-full max-w-6xl px-6 pb-16">
-        <div className="hidden md:block">
-          <SpiderWeb />
-        </div>
-        <div className="md:hidden">
+      {/* Every About section, one click from the hero. On wide screens the room
+          above draws them as a web on the floor, in this reserved band; on phones
+          they ride a slow row. The band lets the pointer through to the web. */}
+      <div className="relative z-10 w-full max-w-6xl px-6 pb-16 pointer-events-none md:h-[360px]">
+        <div className="md:hidden pointer-events-auto">
           <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase text-center mb-3">
             About me · pick a section
           </p>
