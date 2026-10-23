@@ -11,10 +11,21 @@
  * One draw call: THREE.Points with a custom shader. The image is sampled
  * once into per-particle attributes (target position, colour, delay), so no
  * texture is read at render time and the effect costs almost nothing.
+ *
+ * Today and 2040 (2026-10-23, Higgsfield clips made from the owner's own
+ * photo, approved by him): once the dust settles, the crisp layer becomes a
+ * living video (breathing, a blink, a warm smile; it starts and ends on the
+ * photo, so the swap is invisible). A click still shatters the face; it now
+ * also flips the era. Into 2040 a cyan scan line sweeps the face left to
+ * right in the video, and the dust rim recolours exactly where the line is,
+ * from a path measured frame by frame (src/data/heroPortrait.ts). The next
+ * click sweeps back to today. Reduced motion and Save-Data get the stills,
+ * never the videos, and the videos load only after the portrait assembles.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { HERO_PORTRAIT } from "@/data/heroPortrait";
 
 const PHOTO = "/venkata-pagadala.jpeg";
 /** Particles per side of the sampling grid. */
@@ -28,6 +39,8 @@ interface Sampled {
   targets: Float32Array;
   starts: Float32Array;
   colors: Float32Array;
+  /** The same grid sampled from the 2040 picture: the dust's colour after the sweep. */
+  colors2: Float32Array;
   delays: Float32Array;
   alphas: Float32Array;
   /** Pseudo-depth per tile from luminance: the lit face sits proud of the
@@ -43,7 +56,20 @@ interface Sampled {
   edgeVertexCount: number;
 }
 
-function sampleImage(img: HTMLImageElement): Sampled {
+/** One image onto the N x N grid, as RGBA bytes. */
+function gridPixels(img: HTMLImageElement): Uint8ClampedArray {
+  const c = document.createElement("canvas");
+  c.width = N;
+  c.height = N;
+  const ctx = c.getContext("2d")!;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  const s = Math.min(img.width, img.height);
+  ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, N, N);
+  return ctx.getImageData(0, 0, N, N).data;
+}
+
+function sampleImage(img: HTMLImageElement, img2040?: HTMLImageElement | null): Sampled {
   const c = document.createElement("canvas");
   c.width = N;
   c.height = N;
@@ -58,6 +84,9 @@ function sampleImage(img: HTMLImageElement): Sampled {
   const targets = new Float32Array(count * 3);
   const starts = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
+  // without the 2040 picture the dust keeps today's colours on both sides of the sweep
+  const data2 = img2040 ? gridPixels(img2040) : data;
+  const colors2 = new Float32Array(count * 3);
   const delays = new Float32Array(count);
   const alphas = new Float32Array(count);
 
@@ -81,6 +110,9 @@ function sampleImage(img: HTMLImageElement): Sampled {
       colors[i * 3] = data[px] / 255;
       colors[i * 3 + 1] = data[px + 1] / 255;
       colors[i * 3 + 2] = data[px + 2] / 255;
+      colors2[i * 3] = data2[px] / 255;
+      colors2[i * 3 + 1] = data2[px + 1] / 255;
+      colors2[i * 3 + 2] = data2[px + 2] / 255;
       // laid bottom-up, with grain so rows shimmer instead of snapping
       delays[i] = (1 - (ny + 0.5)) * 0.55 + Math.random() * 0.22;
       // No rectangle anywhere: density falls off radially, so the portrait
@@ -144,7 +176,7 @@ function sampleImage(img: HTMLImageElement): Sampled {
   }
 
   return {
-    targets, starts, colors, delays, alphas, depths, count,
+    targets, starts, colors, colors2, delays, alphas, depths, count,
     neurons, neuronCount: picked.length,
     edges: new Float32Array(segs),
     edgePhases: new Float32Array(phases),
@@ -156,9 +188,11 @@ const VERT = /* glsl */ `
 attribute vec3 aTarget;
 attribute vec3 aStart;
 attribute vec3 aColor;
+attribute vec3 aColor2;
 attribute float aDelay;
 attribute float aAlpha;
 attribute float aDepth;
+uniform float uEdge; // the scan line's x: left of it is 2040, right of it today (-1 none, 1 all)
 uniform float uT;
 uniform float uTime;
 uniform vec3 uMouse;
@@ -207,10 +241,16 @@ void main() {
   pos.z += wave * 0.03;
   vWave = wave;
 
+  // the era: dust already crossed by the scan line takes its 2040 colour,
+  // and the line itself burns cyan and lifts the pieces it passes
+  float fut = smoothstep(uEdge + 0.035, uEdge - 0.035, aTarget.x);
+  float onLine = (uEdge > -0.55 && uEdge < 0.55) ? exp(-pow((aTarget.x - uEdge) / 0.014, 2.0)) : 0.0;
+  pos.z += onLine * 0.012 * p;
+
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mv;
   gl_PointSize = uPixel / -mv.z;
-  vColor = aColor;
+  vColor = mix(aColor, aColor2, fut) + vec3(0.12, 0.85, 1.0) * onLine * 0.75;
   vAlpha = aAlpha * (0.25 + 0.75 * p);
 }
 `;
@@ -308,6 +348,31 @@ void main() {
 }
 `;
 
+type Era = "present" | "to2040" | "2040" | "toPresent";
+/** Which era the portrait shows, shared by the dust (colour edge) and the crisp layer (picture). */
+interface EraState {
+  era: Era;
+  /** Scan line x in portrait units (-0.5..0.5); -1 = all today, 1 = all 2040. */
+  edge: number;
+  /** The 2040 clip has been started for the current transition. */
+  playing: boolean;
+}
+
+/** The scan line's x at clip time t, from the measured path; -1 before it appears, 1 once it has crossed. */
+function sweepX(t: number): number {
+  const s = HERO_PORTRAIT.sweep;
+  if (!s.length || t < s[0][0]) return -1;
+  for (let i = 1; i < s.length; i++) {
+    if (t < s[i][0]) {
+      const [t0, x0] = s[i - 1];
+      const [t1, x1] = s[i];
+      const x = x0 + ((x1 - x0) * (t - t0)) / (t1 - t0);
+      return x >= 0.48 ? 1 : x;
+    }
+  }
+  return 1;
+}
+
 interface FireReq {
   x: number;
   y: number;
@@ -328,34 +393,175 @@ interface FireReq {
 function CrispPhoto({
   clockRef,
   fireRef,
+  eraRef,
 }: {
   clockRef: React.MutableRefObject<{ t: number }>;
   fireRef: React.MutableRefObject<FireReq>;
+  eraRef: React.MutableRefObject<EraState>;
 }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
-  const tex = useMemo(() => {
-    const t = new THREE.TextureLoader().load(PHOTO);
-    t.colorSpace = THREE.SRGBColorSpace;
+  const load = (src: string) => {
+    const t = new THREE.TextureLoader().load(src);
+    // Raw sRGB, not SRGBColorSpace: this shader writes what it samples, with no
+    // output conversion, so a hardware-decoded (linear) photo came out about
+    // 40% too dark beside the video frames and the dust, which are both raw.
+    t.colorSpace = THREE.NoColorSpace;
     t.anisotropy = 8;
     return t;
+  };
+  const photoTex = useMemo(() => load(PHOTO), []);
+  const futureTex = useMemo(() => load(HERO_PORTRAIT.still2040.src), []);
+  // The two clips. Created only once the dust has settled, so they never
+  // compete with the page's first paint; never created for reduced motion or
+  // Save-Data, where the stills carry both eras.
+  const media = useRef<{
+    started: boolean;
+    living?: HTMLVideoElement;
+    transform?: HTMLVideoElement;
+    livingTex?: THREE.VideoTexture;
+    transformTex?: THREE.VideoTexture;
+    livingReady: boolean;
+  }>({ started: false, livingReady: false });
+  const allowVideo = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const saveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
+    return !reduce && !saveData;
   }, []);
-  useEffect(() => () => tex.dispose(), [tex]);
+  const startMedia = () => {
+    const md = media.current;
+    if (md.started || !allowVideo) return;
+    md.started = true;
+    const vp9 = document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
+    const make = (src: { webm: string; mp4: string }, loop: boolean) => {
+      const el = document.createElement("video");
+      el.muted = true;
+      el.defaultMuted = true;
+      el.setAttribute("muted", "");
+      el.playsInline = true;
+      el.setAttribute("playsinline", "");
+      el.loop = loop;
+      el.preload = "auto";
+      el.src = vp9 ? src.webm : src.mp4;
+      return el;
+    };
+    const tex = (el: HTMLVideoElement) => {
+      const t = new THREE.VideoTexture(el);
+      t.colorSpace = THREE.NoColorSpace; // raw, like the stills and the dust
+      t.minFilter = THREE.LinearFilter;
+      t.magFilter = THREE.LinearFilter;
+      t.generateMipmaps = false;
+      return t;
+    };
+    md.living = make(HERO_PORTRAIT.living, true);
+    md.transform = make(HERO_PORTRAIT.transform, false);
+    md.livingTex = tex(md.living);
+    md.transformTex = tex(md.transform);
+    md.living.addEventListener("playing", () => (md.livingReady = true), { once: true });
+    // autoplay can be refused (iOS low-power mode): then the still stays, and nothing breaks
+    md.living.play().catch(() => {});
+    md.transform.load();
+  };
+  // pause the loop with the tab; free everything on unmount
+  useEffect(() => {
+    const onVis = () => {
+      const md = media.current;
+      if (!md.living) return;
+      if (document.hidden) md.living.pause();
+      else if (eraRef.current.era === "present") md.living.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      const md = media.current;
+      for (const el of [md.living, md.transform]) {
+        if (!el) continue;
+        el.pause();
+        el.removeAttribute("src");
+        el.load();
+      }
+      md.livingTex?.dispose();
+      md.transformTex?.dispose();
+      photoTex.dispose();
+      futureTex.dispose();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const uniforms = useMemo(
-    () => ({ uMap: { value: tex }, uOpacity: { value: 0 } }),
+    () => ({ uMap: { value: photoTex as THREE.Texture }, uOpacity: { value: 0 } }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
   useFrame((state, delta) => {
     const m = mat.current;
     if (!m) return;
+    const md = media.current;
+    const E = eraRef.current;
+    if (clockRef.current.t >= 1.28) startMedia();
     // The face stays crisp at all times: it steps aside only for the click
     // shatter, when the pieces ARE the picture. Hovering no longer dims it;
     // the dust rim carries the pointer reaction instead.
     const fireAge = state.clock.elapsedTime - fireRef.current.vec.z;
     const fireActive = fireRef.current.vec.z > 0 && fireAge < 2.0;
+
+    // Era transitions, timed from the click that started them.
+    if (E.era === "to2040") {
+      const tr = md.transform;
+      if (tr && md.transformTex) {
+        // start the clip just before the crisp layer returns, so the scan is seen from its first frame
+        if (!E.playing && fireAge >= 1.6) {
+          md.living?.pause();
+          tr.currentTime = 0;
+          tr.play().catch(() => {});
+          E.playing = true;
+        }
+        if (E.playing) {
+          E.edge = sweepX(tr.currentTime);
+          if (tr.ended) {
+            E.era = "2040";
+            E.edge = 1;
+            E.playing = false;
+          }
+        }
+      } else if (fireAge >= 1.4) {
+        // stills only: the shatter itself is the transition
+        E.era = "2040";
+        E.edge = 1;
+      }
+    } else if (E.era === "toPresent") {
+      // the dust sweeps back to today, right to left, while it is scattered
+      const k = Math.min(1, Math.max(0, fireAge / 1.4));
+      E.edge = 1 - 2 * k;
+      if (fireAge >= 1.6) {
+        E.era = "present";
+        E.edge = -1;
+        md.transform?.pause();
+        if (md.living) {
+          md.living.currentTime = 0;
+          md.living.play().catch(() => {});
+        }
+      }
+    }
+
+    // Which picture the crisp layer shows.
+    let map: THREE.Texture = photoTex;
+    if (E.era === "present" || E.era === "toPresent") map = md.livingReady && md.livingTex ? md.livingTex : photoTex;
+    else if (E.era === "to2040") map = E.playing && md.transformTex ? md.transformTex : photoTex;
+    else map = futureTex;
+    m.uniforms.uMap.value = map;
+
     const want = clockRef.current.t >= 1.28 && !fireActive ? 1 : 0;
     const cur = m.uniforms.uOpacity.value as number;
     m.uniforms.uOpacity.value = cur + (want - cur) * Math.min(1, delta * (want ? 2.2 : 8));
+    // measurement hook for the QA harness
+    (window as unknown as { __portraitEra?: unknown }).__portraitEra = {
+      era: E.era,
+      edge: +E.edge.toFixed(3),
+      map: map === photoTex ? "photo" : map === futureTex ? "still2040" : map === md.livingTex ? "living" : "transform",
+      livingT: md.living ? +md.living.currentTime.toFixed(2) : null,
+      transformT: md.transform ? +md.transform.currentTime.toFixed(2) : null,
+      video: allowVideo,
+    };
   });
   return (
     <mesh position={[0, 0, 0.006]}>
@@ -385,10 +591,12 @@ function Cloud({
   sampled,
   clockRef,
   fireRef,
+  eraRef,
 }: {
   sampled: Sampled;
   clockRef: React.MutableRefObject<{ t: number }>;
   fireRef: React.MutableRefObject<FireReq>;
+  eraRef: React.MutableRefObject<EraState>;
 }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const { viewport } = useThree();
@@ -400,6 +608,7 @@ function Cloud({
     g.setAttribute("aTarget", new THREE.BufferAttribute(sampled.targets, 3));
     g.setAttribute("aStart", new THREE.BufferAttribute(sampled.starts, 3));
     g.setAttribute("aColor", new THREE.BufferAttribute(sampled.colors, 3));
+    g.setAttribute("aColor2", new THREE.BufferAttribute(sampled.colors2, 3));
     g.setAttribute("aDelay", new THREE.BufferAttribute(sampled.delays, 1));
     g.setAttribute("aAlpha", new THREE.BufferAttribute(sampled.alphas, 1));
     g.setAttribute("aDepth", new THREE.BufferAttribute(sampled.depths, 1));
@@ -416,6 +625,7 @@ function Cloud({
       uPixel: { value: 4.0 },
       uFire: { value: fireRef.current.vec },
       uFireColor: { value: new THREE.Color(RADIUM) },
+      uEdge: { value: -1 },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -427,6 +637,7 @@ function Cloud({
     clockRef.current.t = Math.min(1.3, clockRef.current.t + delta / BUILD_S);
     m.uniforms.uT.value = clockRef.current.t;
     m.uniforms.uTime.value = state.clock.elapsedTime;
+    m.uniforms.uEdge.value = eraRef.current.edge;
     m.uniforms.uMouse.value.set(
       (state.pointer.x * viewport.width) / 2,
       (state.pointer.y * viewport.height) / 2,
@@ -577,6 +788,7 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
   const clockRef = useRef({ t: 0 });
   const fireRef = useRef<FireReq>({ x: 0, y: 0, pending: false, vec: new THREE.Vector3(0, 0, -1), hover: false });
   const pointerRef = useRef({ x: 0, y: 0 });
+  const eraRef = useRef<EraState>({ era: "present", edge: -1, playing: false });
 
   // page-level pointer, like the background: the portrait reacts wherever
   // the cursor moves, not only when it is over the frame
@@ -601,22 +813,64 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
   }, []);
 
   useEffect(() => {
-    const img = new Image();
-    img.onload = () => setSampled(sampleImage(img));
-    img.src = PHOTO;
+    // today's photo and the 2040 picture, sampled together so the dust knows
+    // both eras; if the 2040 picture is slow or missing, today's colours stand in
+    const loadImg = (src: string) =>
+      new Promise<HTMLImageElement | null>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    let alive = true;
+    const future = Promise.race([
+      loadImg(HERO_PORTRAIT.still2040.src),
+      new Promise<null>((r) => window.setTimeout(() => r(null), 1500)),
+    ]);
+    Promise.all([loadImg(PHOTO), future]).then(([img, img2040]) => {
+      if (alive && img) setSampled(sampleImage(img, img2040));
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
+
+  /** A click (or Enter) shatters the face and flips the era. */
+  const toggleEra = () => {
+    const E = eraRef.current;
+    if (E.era === "present") {
+      E.era = "to2040";
+      E.playing = false;
+    } else if (E.era === "to2040" || E.era === "2040") {
+      E.era = "toPresent";
+      E.playing = false;
+    }
+  };
 
   if (!sampled) return <div className="w-full h-full" aria-busy="true" />;
 
   return (
     <div
-      className="w-full h-full cursor-pointer"
+      className="w-full h-full cursor-pointer outline-none"
+      role="button"
+      tabIndex={0}
+      aria-label="Portrait of Venkata Pagadala. Activate to see him in 2040, and again to come back."
+      title="Click: today and 2040"
       onClick={(e) => {
         // fire the chains from exactly where the click landed
         const rect = e.currentTarget.getBoundingClientRect();
         fireRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         fireRef.current.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
         fireRef.current.pending = true;
+        toggleEra();
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        fireRef.current.x = 0;
+        fireRef.current.y = 0.1;
+        fireRef.current.pending = true;
+        toggleEra();
       }}
       onPointerEnter={() => {
         fireRef.current.hover = true;
@@ -633,8 +887,8 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
         gl={{ antialias: false, alpha: true, powerPreference: glPower }}
       >
         <TiltGroup pointerRef={pointerRef}>
-          <Cloud sampled={sampled} clockRef={clockRef} fireRef={fireRef} />
-          <CrispPhoto clockRef={clockRef} fireRef={fireRef} />
+          <Cloud sampled={sampled} clockRef={clockRef} fireRef={fireRef} eraRef={eraRef} />
+          <CrispPhoto clockRef={clockRef} fireRef={fireRef} eraRef={eraRef} />
           <Net sampled={sampled} clockRef={clockRef} fireRef={fireRef} isDark={isDark} />
         </TiltGroup>
       </Canvas>
