@@ -248,6 +248,35 @@ function StatBox({ stat }: { stat: SourcedStat }) {
   );
 }
 
+const topicsOf = (id: string) => TOPIC_MAP.find((g) => g.id === id)?.topics ?? [];
+
+/** A label as it reads mid-sentence: "Neural networks" becomes "neural networks"; NLP, LLMs and AI stay. */
+const inSentence = (label: string) => (/^[A-Z]{2}/.test(label) ? label : label.charAt(0).toLowerCase() + label.slice(1));
+
+/** Topics as one sentence fragment, "a, b and c", each linked to its page on this site where one exists. */
+function TopicList({ topics }: { topics: { label: string; name?: string; href?: string }[] }) {
+  return (
+    <>
+      {topics.map((t, i) => (
+        <span key={t.label}>
+          {i > 0 && (i === topics.length - 1 ? " and " : ", ")}
+          {t.href ? (
+            <Link
+              href={t.href}
+              title={t.name}
+              className="text-foreground/90 underline decoration-border hover:decoration-foreground underline-offset-4 transition-colors"
+            >
+              {inSentence(t.label)}
+            </Link>
+          ) : (
+            <span title={t.name}>{inSentence(t.label)}</span>
+          )}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /* ── Page ───────────────────────────────────────────────────────────── */
 
 const About = () => {
@@ -269,15 +298,6 @@ const About = () => {
     },
     { value: String(talksTotal), label: "Talks, podcasts and interviews", source: "Each linked to its recording", href: "#speaking" },
     ...LINKEDIN_STATS.filter((s) => s.href === RECOMMENDATIONS_URL),
-  ];
-
-  const FACTS: { k: string; v: ReactNode }[] = [
-    { k: "Role", v: `${PROFILE.role} at ${PROFILE.employer}` },
-    { k: "Field", v: PROFILE.field },
-    { k: "Based in", v: PROFILE.location },
-    { k: "In search since", v: "2016" },
-    { k: "Research", v: `${plural(peerReviewed.length, "peer-reviewed paper")}, ${plural(preprints.length, "preprint")}` },
-    { k: "On stage", v: `${BRIGHTONSEO_2026.event}, plus ${plural(media.length, "podcast, interview and talk", "podcasts, interviews and talks")}` },
   ];
 
   const [featuredQuote, ...otherQuotes] = PEER_QUOTES;
@@ -362,104 +382,30 @@ const About = () => {
           </aside>
 
           <div className="min-w-0">
-            {/* ── Intro ── */}
-            <section id="about" aria-label="Introduction" className="scroll-mt-28 mb-20">
+            {/* ── Intro: the description, then straight into the numbers ── */}
+            <section id="about" aria-label="Introduction" className="scroll-mt-28 mb-14">
               <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase mb-3">User First Intelligence</p>
               <p className="font-display text-2xl sm:text-3xl text-foreground leading-snug text-balance">
                 I build User First Intelligence systems with agentic AI.
               </p>
-              <p className="font-display text-lg sm:text-xl text-foreground/85 leading-snug text-balance mt-3">
-                They map where users, personas, platforms and content meet the business, so a team can see what people
-                need, where they ask for it, and what to build, publish or fix next.
+              <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-foreground/85 mt-4">
+                {USER_FIRST_FLOW.map((f) => f.step).join(" → ")}
               </p>
-
-              {/* The idea in one row: from the person behind a query to the decision it should change. */}
-              <ol className="grid sm:grid-cols-5 gap-2 mt-8" aria-label="How a User First Intelligence system reads demand">
-                {USER_FIRST_FLOW.map((f, i) => (
-                  <li
-                    key={f.step}
-                    className="relative border border-border bg-card/20 px-4 py-2.5 sm:py-3 flex items-baseline gap-3 sm:block"
-                  >
-                    <span className="shrink-0 font-mono text-[9px] tracking-[0.25em] text-muted-foreground sm:block">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="shrink-0 font-display text-base font-bold text-foreground sm:block sm:mt-1">{f.step}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground leading-snug sm:block sm:mt-1">{f.note}</span>
-                    {i < USER_FIRST_FLOW.length - 1 && (
-                      <span
-                        aria-hidden="true"
-                        className="hidden sm:flex absolute -right-[9px] top-1/2 -translate-y-1/2 z-10 w-4 h-4 items-center justify-center bg-background font-mono text-[10px] text-muted-foreground"
-                      >
-                        →
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ol>
-              <p className="font-mono text-[11px] text-muted-foreground mt-3">
-                Agents gather and classify the signals at every step. People make the calls.
-              </p>
-
-              <p className="font-mono text-sm leading-relaxed text-muted-foreground mt-8 max-w-3xl">
-                I&apos;m {PROFILE.role} at {PROFILE.employer}. The work joins two fields. In AI: agents, large language
-                models, neural networks, NLP and knowledge graphs. In search: enterprise SEO, AI search, AEO and GEO. I ship
-                production systems at work, write up what they teach me in papers and talks, and share the rest in public.
-              </p>
-
-              {/* Every topic, grouped, each linked to the page on this site that covers it. */}
-              <div className="grid md:grid-cols-3 gap-4 mt-8">
-                {TOPIC_MAP.map((g) => (
-                  <div key={g.id} className="border border-border p-4">
-                    <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground mb-3">{g.title}</h2>
-                    <ul className="flex flex-wrap gap-1.5">
-                      {g.topics.map((t) =>
-                        t.href ? (
-                          <li key={t.label}>
-                            <Link
-                              href={t.href}
-                              title={t.name}
-                              className="inline-block font-mono text-[11px] border border-border px-2 py-1 text-foreground/85 hover:text-foreground hover:border-foreground/40 hover:bg-foreground/5 transition-colors"
-                            >
-                              {t.label}
-                            </Link>
-                          </li>
-                        ) : (
-                          <li
-                            key={t.label}
-                            title={t.name}
-                            className="font-mono text-[11px] border border-border px-2 py-1 text-muted-foreground"
-                          >
-                            {t.label}
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-
-              <dl className="grid sm:grid-cols-2 xl:grid-cols-3 border-t border-l border-border mt-8">
-                {FACTS.map((f) => (
-                  <div key={f.k} className="border-b border-r border-border px-4 py-3">
-                    <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{f.k}</dt>
-                    <dd className="font-mono text-xs text-foreground mt-1 leading-relaxed">{f.v}</dd>
-                  </div>
-                ))}
-              </dl>
-
-              <div className="flex flex-wrap gap-3 mt-8">
-                <Link href="/research-and-talks" className={btnPrimary}>
-                  Research &amp; Talks
-                </Link>
-                <a href="#bios" className={btnSecondary}>
-                  Bios and headshot
-                </a>
-                <Link href="/contact" className={btnSecondary}>
-                  Contact
-                </Link>
-                <Ext href={LINKEDIN_URL} className={btnSecondary}>
-                  LinkedIn <ArrowUpRight size={12} aria-hidden="true" />
-                </Ext>
+              <div className="font-mono text-sm leading-relaxed text-muted-foreground mt-6 max-w-3xl space-y-4">
+                <p>
+                  They map where users, personas, platforms and content meet the business: who people are, what they need,
+                  where they ask for it, and what a business should build, publish or fix next. AI agents gather and classify
+                  the signals at every step, and people make the calls.
+                </p>
+                <p>
+                  In AI, the work spans <TopicList topics={topicsOf("ai")} />. In search, it spans{" "}
+                  <TopicList topics={topicsOf("search")} />. What joins the two is the user:{" "}
+                  <TopicList topics={topicsOf("user-first")} />.
+                </p>
+                <p>
+                  I&apos;m {PROFILE.role} at {PROFILE.employer}. I ship production systems at work, write up what they teach
+                  me in papers and talks, and share the rest in public.
+                </p>
               </div>
             </section>
 
