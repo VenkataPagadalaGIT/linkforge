@@ -450,3 +450,100 @@ mark.hl {
 mark.hl-y { background: var(--hl-yellow); }
 mark.hl-g { background: var(--hl-green); }
 mark.hl-b { background: var(--hl-blue); }
+
+/* ------------------------------------------------------------------------
+   The twin banner (src/components/home/TwinSeam.tsx). One seam splits the
+   home banner: the human page left of it, his AI twin right of it. Every
+   layer reads --seam (px from the banner's left edge) and the edges
+   TwinSeam measures (--col-l, --col-r, --pt-l). With no script running
+   --seam is unset, and every rule below leaves the human page untouched.
+   ------------------------------------------------------------------------ */
+:root {
+  --twin: 192 91% 30%;
+  --twin-glow: 189 94% 43%;
+}
+.dark {
+  --twin: 187 92% 69%;
+  --twin-glow: 188 94% 53%;
+}
+.twin-ink { color: hsl(var(--twin)); }
+.twin-glow { text-shadow: 0 0 18px hsl(var(--twin-glow) / 0.45), 0 0 42px hsl(var(--twin-glow) / 0.18); }
+.twin-cta {
+  color: hsl(var(--twin));
+  border-color: hsl(var(--twin) / 0.7);
+  box-shadow: 0 0 22px hsl(var(--twin-glow) / 0.25);
+}
+.twin-cta:hover { background: hsl(var(--twin-glow) / 0.12); }
+.twin-caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.9em;
+  margin-left: 0.12em;
+  vertical-align: -0.08em;
+  background: hsl(var(--twin));
+  animation: twin-caret 1.05s steps(1) infinite;
+}
+@keyframes twin-caret { 50% { opacity: 0; } }
+
+/* hidden, and out of the tab order, until the seam starts to move */
+.twin-line,
+.twin-handle,
+.twin-backdrop {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0s 0.6s;
+}
+[data-twin="on"] .twin-line,
+[data-twin="on"] .twin-handle,
+[data-twin="on"] .twin-backdrop {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease;
+}
+.twin-line {
+  top: var(--seam-top, 0px);
+  height: var(--seam-h, 100%);
+  width: 2px;
+  transform: translateX(calc(var(--seam, -10px) - 1px));
+  background: linear-gradient(to bottom, transparent, hsl(var(--twin-glow)) 10%, hsl(var(--twin-glow)) 90%, transparent);
+  box-shadow: 0 0 10px 1px hsl(var(--twin-glow) / 0.75), 0 0 34px 4px hsl(var(--twin-glow) / 0.28);
+  will-change: transform;
+}
+.twin-handle {
+  top: var(--handle-y, 50%);
+  transform: translate(calc(var(--seam, -999px) - 50%), -50%);
+  border-color: hsl(var(--twin-glow) / 0.75);
+  background: hsl(var(--background) / 0.72);
+  box-shadow: 0 0 18px hsl(var(--twin-glow) / 0.35);
+  cursor: ew-resize;
+  touch-action: none;
+  will-change: transform;
+}
+.twin-handle:focus-visible { box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--twin-glow)); }
+
+/* The plain photo (no WebGL) splits the same way: the twin's still, clipped. */
+.twin-ai-photo { clip-path: inset(0 0 0 max(0px, calc(var(--seam, 100000px) - var(--pt-l, 0px)))); }
+
+@media (min-width: 1024px) {
+  .twin-human { clip-path: inset(-64px max(-64px, calc(var(--col-r, 0px) - var(--seam, 100000px))) -64px -64px); }
+  .twin-ai { clip-path: inset(-64px -64px -64px max(-64px, calc(var(--seam, 100000px) - var(--col-l, 0px)))); }
+  .twin-backdrop {
+    clip-path: inset(0 0 0 max(0px, var(--seam, 100000px)));
+    background:
+      repeating-linear-gradient(to bottom, hsl(var(--twin-glow) / 0.07) 0 1px, transparent 1px 4px),
+      linear-gradient(90deg, hsl(var(--twin-glow) / 0.12), hsl(var(--twin-glow) / 0.05) 50%, hsl(var(--twin-glow) / 0.09));
+    /* the room's grey web strands, recoloured cyan on the twin's side */
+    -webkit-backdrop-filter: sepia(1) hue-rotate(150deg) saturate(2.4);
+    backdrop-filter: sepia(1) hue-rotate(150deg) saturate(2.4);
+    /* fades in below the fixed navbar, so the menu keeps its own ground */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 120px);
+  }
+}
+@media (max-width: 1023.98px) {
+  .twin-ai,
+  .twin-backdrop { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .twin-caret { animation: none; }
+}

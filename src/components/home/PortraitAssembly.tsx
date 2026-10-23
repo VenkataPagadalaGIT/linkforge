@@ -12,20 +12,22 @@
  * once into per-particle attributes (target position, colour, delay), so no
  * texture is read at render time and the effect costs almost nothing.
  *
- * Today and 2040 (2026-10-23, Higgsfield clips made from the owner's own
- * photo, approved by him): once the dust settles, the crisp layer becomes a
- * living video (breathing, a blink, a warm smile; it starts and ends on the
- * photo, so the swap is invisible). A click still shatters the face; it now
- * also flips the era. Into 2040 a cyan scan line sweeps the face left to
- * right in the video, and the dust rim recolours exactly where the line is,
- * from a path measured frame by frame (src/data/heroPortrait.ts). The next
- * click sweeps back to today. Reduced motion and Save-Data get the stills,
- * never the videos, and the videos load only after the portrait assembles.
+ * The twin (2026-10-23, Higgsfield clips made from the owner's own photo,
+ * approved by him): the face is split by the banner's seam (TwinSeam).
+ * Left of it he is himself, a living video (breathing, a blink, a warm
+ * smile); right of it he is his AI twin, the same frames re-rendered as an
+ * android replica. Both halves live in ONE packed video, so they can never
+ * drift apart. The seam arrives in clip space every frame; the crisp layer,
+ * the dust and the neural net all split on it, and the dust burns cyan where
+ * it passes. A click still shatters the face, and now hands the whole
+ * banner to the twin and back. Reduced motion and Save-Data get the two
+ * stills, never the video, and the video loads only after the face assembles.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { HERO_PORTRAIT } from "@/data/heroPortrait";
+import { createTwin, type Twin } from "./twin";
 
 const PHOTO = "/venkata-pagadala.jpeg";
 /** Particles per side of the sampling grid. */
@@ -34,12 +36,14 @@ const N = 256;
 const BUILD_S = 2.8;
 /** The fired chain glows radium, on either theme. */
 const RADIUM = "#36ffb0";
+/** The twin's colour: its neural net, and the seam's burn in the dust. */
+const TWIN_CYAN = "#22d3ee";
 
 interface Sampled {
   targets: Float32Array;
   starts: Float32Array;
   colors: Float32Array;
-  /** The same grid sampled from the 2040 picture: the dust's colour after the sweep. */
+  /** The same grid sampled from the AI twin's still: the dust's colour right of the seam. */
   colors2: Float32Array;
   delays: Float32Array;
   alphas: Float32Array;
@@ -69,7 +73,7 @@ function gridPixels(img: HTMLImageElement): Uint8ClampedArray {
   return ctx.getImageData(0, 0, N, N).data;
 }
 
-function sampleImage(img: HTMLImageElement, img2040?: HTMLImageElement | null): Sampled {
+function sampleImage(img: HTMLImageElement, imgTwin?: HTMLImageElement | null): Sampled {
   const c = document.createElement("canvas");
   c.width = N;
   c.height = N;
@@ -84,8 +88,8 @@ function sampleImage(img: HTMLImageElement, img2040?: HTMLImageElement | null): 
   const targets = new Float32Array(count * 3);
   const starts = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  // without the 2040 picture the dust keeps today's colours on both sides of the sweep
-  const data2 = img2040 ? gridPixels(img2040) : data;
+  // without the twin's still the dust keeps his colours on both sides of the seam
+  const data2 = imgTwin ? gridPixels(imgTwin) : data;
   const colors2 = new Float32Array(count * 3);
   const delays = new Float32Array(count);
   const alphas = new Float32Array(count);
@@ -192,7 +196,7 @@ attribute vec3 aColor2;
 attribute float aDelay;
 attribute float aAlpha;
 attribute float aDepth;
-uniform float uEdge; // the scan line's x: left of it is 2040, right of it today (-1 none, 1 all)
+uniform float uSeam; // the seam's x in clip space: right of it the dust takes the twin's colours
 uniform float uT;
 uniform float uTime;
 uniform vec3 uMouse;
@@ -241,16 +245,19 @@ void main() {
   pos.z += wave * 0.03;
   vWave = wave;
 
-  // the era: dust already crossed by the scan line takes its 2040 colour,
-  // and the line itself burns cyan and lifts the pieces it passes
-  float fut = smoothstep(uEdge + 0.035, uEdge - 0.035, aTarget.x);
-  float onLine = (uEdge > -0.55 && uEdge < 0.55) ? exp(-pow((aTarget.x - uEdge) / 0.014, 2.0)) : 0.0;
+  // the twin: measured where the piece lands on screen, so the split follows
+  // the page's seam exactly through any tilt; the seam burns cyan in the dust
+  // and lifts the pieces it crosses
+  vec4 cp = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  float sx = cp.x / cp.w;
+  float twin = smoothstep(uSeam - 0.012, uSeam + 0.012, sx);
+  float onLine = exp(-pow((sx - uSeam) / 0.022, 2.0));
   pos.z += onLine * 0.012 * p;
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mv;
   gl_PointSize = uPixel / -mv.z;
-  vColor = mix(aColor, aColor2, fut) + vec3(0.12, 0.85, 1.0) * onLine * 0.75;
+  vColor = mix(aColor, aColor2, twin) + vec3(0.13, 0.83, 0.93) * onLine * 0.7;
   vAlpha = aAlpha * (0.25 + 0.75 * p);
 }
 `;
@@ -286,13 +293,16 @@ float fireWave(vec2 at, float time) {
 const NET_VERT = /* glsl */ `
 attribute float aPhase;
 uniform float uTime;
+uniform float uSeam;
 ${FIRE_WAVE}
 varying float vPhase;
 varying float vWave;
+varying float vTwin;
 void main() {
   vPhase = aPhase;
   vWave = fireWave(position.xy, uTime);
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  vTwin = smoothstep(uSeam - 0.012, uSeam + 0.012, gl_Position.x / gl_Position.w);
 }
 `;
 
@@ -300,16 +310,18 @@ const NET_FRAG = /* glsl */ `
 uniform float uTime;
 uniform float uT;
 uniform vec3 uColor;
+uniform vec3 uTwinColor;
 uniform vec3 uFireColor;
 uniform float uOpacity;
 varying float vPhase;
 varying float vWave;
+varying float vTwin;
 void main() {
   // signals idle across the net; a click fires the chains in radium
   float on = smoothstep(0.78, 1.0, uT);
   float pulse = 0.3 + 0.7 * pow(0.5 + 0.5 * sin(uTime * 1.7 + vPhase * 6.2832), 2.0);
-  float a = uOpacity * pulse + vWave * 1.1;
-  vec3 col = mix(uColor, uFireColor, clamp(vWave * 1.6, 0.0, 1.0));
+  float a = (uOpacity + vTwin * 0.12) * pulse + vWave * 1.1;
+  vec3 col = mix(mix(uColor, uTwinColor, vTwin), uFireColor, clamp(vWave * 1.6, 0.0, 1.0));
   gl_FragColor = vec4(col, a * on);
 }
 `;
@@ -317,15 +329,18 @@ void main() {
 const NODE_VERT = /* glsl */ `
 uniform float uPixel;
 uniform float uTime;
+uniform float uSeam;
 ${FIRE_WAVE}
 varying float vSeed;
 varying float vWave;
+varying float vTwin;
 void main() {
   vWave = fireWave(position.xy, uTime);
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
   gl_Position = projectionMatrix * mv;
   gl_PointSize = (uPixel * (1.0 + vWave * 1.4)) / -mv.z;
   vSeed = position.x * 37.0 + position.y * 91.0;
+  vTwin = smoothstep(uSeam - 0.012, uSeam + 0.012, gl_Position.x / gl_Position.w);
 }
 `;
 
@@ -333,45 +348,22 @@ const NODE_FRAG = /* glsl */ `
 uniform float uTime;
 uniform float uT;
 uniform vec3 uColor;
+uniform vec3 uTwinColor;
 uniform vec3 uFireColor;
 uniform float uOpacity;
 varying float vSeed;
 varying float vWave;
+varying float vTwin;
 void main() {
   float on = smoothstep(0.78, 1.0, uT);
   float d = length(gl_PointCoord - 0.5);
   float m = smoothstep(0.5, 0.12, d);
   float pulse = 0.5 + 0.5 * sin(uTime * 2.1 + vSeed);
   float a = uOpacity * (0.4 + 0.6 * pulse) + vWave * 1.2;
-  vec3 col = mix(uColor, uFireColor, clamp(vWave * 1.6, 0.0, 1.0));
+  vec3 col = mix(mix(uColor, uTwinColor, vTwin), uFireColor, clamp(vWave * 1.6, 0.0, 1.0));
   gl_FragColor = vec4(col, m * a * on);
 }
 `;
-
-type Era = "present" | "to2040" | "2040" | "toPresent";
-/** Which era the portrait shows, shared by the dust (colour edge) and the crisp layer (picture). */
-interface EraState {
-  era: Era;
-  /** Scan line x in portrait units (-0.5..0.5); -1 = all today, 1 = all 2040. */
-  edge: number;
-  /** The 2040 clip has been started for the current transition. */
-  playing: boolean;
-}
-
-/** The scan line's x at clip time t, from the measured path; -1 before it appears, 1 once it has crossed. */
-function sweepX(t: number): number {
-  const s = HERO_PORTRAIT.sweep;
-  if (!s.length || t < s[0][0]) return -1;
-  for (let i = 1; i < s.length; i++) {
-    if (t < s[i][0]) {
-      const [t0, x0] = s[i - 1];
-      const [t1, x1] = s[i];
-      const x = x0 + ((x1 - x0) * (t - t0)) / (t1 - t0);
-      return x >= 0.48 ? 1 : x;
-    }
-  }
-  return 1;
-}
 
 interface FireReq {
   x: number;
@@ -384,20 +376,50 @@ interface FireReq {
   hover: boolean;
 }
 
+const CRISP_FRAG = /* glsl */ `
+uniform sampler2D uHuman;  // his photo
+uniform sampler2D uTwin;   // the twin's still
+uniform sampler2D uPacked; // the living video: him on the left half, the twin on the right
+uniform float uVideo;      // 0 the stills, 1 the video, crossfaded when it starts
+uniform float uSeam;       // the seam's x in clip space
+uniform vec2 uRes;         // the drawing buffer, to place this fragment in clip space
+uniform float uOpacity;
+varying vec2 vUv;
+void main() {
+  // crisp only where the face lives; the perimeter belongs to the dust, so
+  // no rectangle ever appears on the page
+  vec2 d = (vUv - vec2(0.5, 0.58)) * vec2(2.0, 1.85);
+  float a = smoothstep(0.92, 0.5, length(d)) * uOpacity;
+  float sx = gl_FragCoord.x / uRes.x * 2.0 - 1.0;
+  float twin = smoothstep(uSeam - 0.004, uSeam + 0.004, sx);
+  // each half of the packed frame, kept a texel clear of the middle so the
+  // two never bleed into each other
+  float u = clamp(vUv.x, 0.002, 0.998) * 0.5;
+  vec3 human = mix(texture2D(uHuman, vUv).rgb, texture2D(uPacked, vec2(u, vUv.y)).rgb, uVideo);
+  vec3 ai = mix(texture2D(uTwin, vUv).rgb, texture2D(uPacked, vec2(0.5 + u, vUv.y)).rgb, uVideo);
+  vec3 col = mix(human, ai, twin);
+  // light spill from the seam onto the skin either side of it
+  col += vec3(0.13, 0.83, 0.93) * exp(-pow((sx - uSeam) / 0.03, 2.0)) * 0.22;
+  gl_FragColor = vec4(col, a);
+}
+`;
+
 /**
  * The crisp photograph itself, crossfaded in whenever the portrait is at
  * rest. A mosaic can never out-resolve its source, so at rest the reader
- * sees the real pixels; touching or firing it hands the surface back to the
- * particles. Same square vignette as the tiles, so the swap is seamless.
+ * sees the real pixels; firing it hands the surface back to the particles.
+ * Same vignette as the tiles, so the swap is seamless. Split by the seam:
+ * him on the left, the twin on the right, from stills until the packed
+ * video plays, then from the video.
  */
 function CrispPhoto({
   clockRef,
   fireRef,
-  eraRef,
+  twin,
 }: {
   clockRef: React.MutableRefObject<{ t: number }>;
   fireRef: React.MutableRefObject<FireReq>;
-  eraRef: React.MutableRefObject<EraState>;
+  twin: Twin;
 }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const load = (src: string) => {
@@ -410,85 +432,88 @@ function CrispPhoto({
     return t;
   };
   const photoTex = useMemo(() => load(PHOTO), []);
-  const futureTex = useMemo(() => load(HERO_PORTRAIT.still2040.src), []);
-  // The two clips. Created only once the dust has settled, so they never
-  // compete with the page's first paint; never created for reduced motion or
-  // Save-Data, where the stills carry both eras.
-  const media = useRef<{
-    started: boolean;
-    living?: HTMLVideoElement;
-    transform?: HTMLVideoElement;
-    livingTex?: THREE.VideoTexture;
-    transformTex?: THREE.VideoTexture;
-    livingReady: boolean;
-  }>({ started: false, livingReady: false });
+  const twinTex = useMemo(() => load(HERO_PORTRAIT.aiStill.src), []);
+  // The packed video. Created only once the dust has settled, so it never
+  // competes with the page's first paint; never created for reduced motion or
+  // Save-Data, where the two stills carry the split.
+  const media = useRef<{ started: boolean; el?: HTMLVideoElement; tex?: THREE.VideoTexture; ready: boolean }>({
+    started: false,
+    ready: false,
+  });
   const allowVideo = useMemo(() => {
     if (typeof window === "undefined") return false;
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const saveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
     return !reduce && !saveData;
   }, []);
+  const { gl } = useThree();
+  const onscreen = useRef(true);
   const startMedia = () => {
     const md = media.current;
     if (md.started || !allowVideo) return;
     md.started = true;
     const vp9 = document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
-    const make = (src: { webm: string; mp4: string }, loop: boolean) => {
-      const el = document.createElement("video");
-      el.muted = true;
-      el.defaultMuted = true;
-      el.setAttribute("muted", "");
-      el.playsInline = true;
-      el.setAttribute("playsinline", "");
-      el.loop = loop;
-      el.preload = "auto";
-      el.src = vp9 ? src.webm : src.mp4;
-      return el;
-    };
-    const tex = (el: HTMLVideoElement) => {
-      const t = new THREE.VideoTexture(el);
-      t.colorSpace = THREE.NoColorSpace; // raw, like the stills and the dust
-      t.minFilter = THREE.LinearFilter;
-      t.magFilter = THREE.LinearFilter;
-      t.generateMipmaps = false;
-      return t;
-    };
-    md.living = make(HERO_PORTRAIT.living, true);
-    md.transform = make(HERO_PORTRAIT.transform, false);
-    md.livingTex = tex(md.living);
-    md.transformTex = tex(md.transform);
-    md.living.addEventListener("playing", () => (md.livingReady = true), { once: true });
-    // autoplay can be refused (iOS low-power mode): then the still stays, and nothing breaks
-    md.living.play().catch(() => {});
-    md.transform.load();
+    const el = document.createElement("video");
+    el.muted = true;
+    el.defaultMuted = true;
+    el.setAttribute("muted", "");
+    el.playsInline = true;
+    el.setAttribute("playsinline", "");
+    el.loop = true;
+    el.preload = "auto";
+    el.src = vp9 ? HERO_PORTRAIT.twin.webm : HERO_PORTRAIT.twin.mp4;
+    const tex = new THREE.VideoTexture(el);
+    tex.colorSpace = THREE.NoColorSpace; // raw, like the stills and the dust
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    md.el = el;
+    md.tex = tex;
+    el.addEventListener("playing", () => (md.ready = true), { once: true });
+    // autoplay can be refused (iOS low-power mode): then the stills stay, and nothing breaks
+    if (onscreen.current && !document.hidden) el.play().catch(() => {});
   };
-  // pause the loop with the tab; free everything on unmount
+  // the video plays only while the face is on screen and the tab is visible;
+  // everything is freed on unmount
   useEffect(() => {
-    const onVis = () => {
-      const md = media.current;
-      if (!md.living) return;
-      if (document.hidden) md.living.pause();
-      else if (eraRef.current.era === "present") md.living.play().catch(() => {});
+    const sync = () => {
+      const el = media.current.el;
+      if (!el) return;
+      if (onscreen.current && !document.hidden) el.play().catch(() => {});
+      else el.pause();
     };
-    document.addEventListener("visibilitychange", onVis);
+    const io = new IntersectionObserver(([e]) => {
+      onscreen.current = e.isIntersecting;
+      sync();
+    });
+    io.observe(gl.domElement);
+    document.addEventListener("visibilitychange", sync);
     return () => {
-      document.removeEventListener("visibilitychange", onVis);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
       const md = media.current;
-      for (const el of [md.living, md.transform]) {
-        if (!el) continue;
-        el.pause();
-        el.removeAttribute("src");
-        el.load();
+      if (md.el) {
+        md.el.pause();
+        md.el.removeAttribute("src");
+        md.el.load();
       }
-      md.livingTex?.dispose();
-      md.transformTex?.dispose();
+      md.tex?.dispose();
       photoTex.dispose();
-      futureTex.dispose();
+      twinTex.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const uniforms = useMemo(
-    () => ({ uMap: { value: photoTex as THREE.Texture }, uOpacity: { value: 0 } }),
+    () => ({
+      uHuman: { value: photoTex as THREE.Texture },
+      uTwin: { value: twinTex as THREE.Texture },
+      // a placeholder until the video exists; weighted to zero by uVideo
+      uPacked: { value: photoTex as THREE.Texture },
+      uVideo: { value: 0 },
+      uSeam: { value: 2 },
+      uRes: { value: new THREE.Vector2(1, 1) },
+      uOpacity: { value: 0 },
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -496,71 +521,27 @@ function CrispPhoto({
     const m = mat.current;
     if (!m) return;
     const md = media.current;
-    const E = eraRef.current;
     if (clockRef.current.t >= 1.28) startMedia();
     // The face stays crisp at all times: it steps aside only for the click
-    // shatter, when the pieces ARE the picture. Hovering no longer dims it;
-    // the dust rim carries the pointer reaction instead.
+    // shatter, when the pieces ARE the picture.
     const fireAge = state.clock.elapsedTime - fireRef.current.vec.z;
     const fireActive = fireRef.current.vec.z > 0 && fireAge < 2.0;
-
-    // Era transitions, timed from the click that started them.
-    if (E.era === "to2040") {
-      const tr = md.transform;
-      if (tr && md.transformTex) {
-        // start the clip just before the crisp layer returns, so the scan is seen from its first frame
-        if (!E.playing && fireAge >= 1.6) {
-          md.living?.pause();
-          tr.currentTime = 0;
-          tr.play().catch(() => {});
-          E.playing = true;
-        }
-        if (E.playing) {
-          E.edge = sweepX(tr.currentTime);
-          if (tr.ended) {
-            E.era = "2040";
-            E.edge = 1;
-            E.playing = false;
-          }
-        }
-      } else if (fireAge >= 1.4) {
-        // stills only: the shatter itself is the transition
-        E.era = "2040";
-        E.edge = 1;
-      }
-    } else if (E.era === "toPresent") {
-      // the dust sweeps back to today, right to left, while it is scattered
-      const k = Math.min(1, Math.max(0, fireAge / 1.4));
-      E.edge = 1 - 2 * k;
-      if (fireAge >= 1.6) {
-        E.era = "present";
-        E.edge = -1;
-        md.transform?.pause();
-        if (md.living) {
-          md.living.currentTime = 0;
-          md.living.play().catch(() => {});
-        }
-      }
+    if (md.ready && md.tex) {
+      m.uniforms.uPacked.value = md.tex;
+      m.uniforms.uVideo.value = Math.min(1, (m.uniforms.uVideo.value as number) + delta / 0.4);
     }
-
-    // Which picture the crisp layer shows.
-    let map: THREE.Texture = photoTex;
-    if (E.era === "present" || E.era === "toPresent") map = md.livingReady && md.livingTex ? md.livingTex : photoTex;
-    else if (E.era === "to2040") map = E.playing && md.transformTex ? md.transformTex : photoTex;
-    else map = futureTex;
-    m.uniforms.uMap.value = map;
-
+    m.uniforms.uSeam.value = twin.seamNdc;
+    (m.uniforms.uRes.value as THREE.Vector2).set(state.size.width * state.viewport.dpr, state.size.height * state.viewport.dpr);
     const want = clockRef.current.t >= 1.28 && !fireActive ? 1 : 0;
     const cur = m.uniforms.uOpacity.value as number;
     m.uniforms.uOpacity.value = cur + (want - cur) * Math.min(1, delta * (want ? 2.2 : 8));
     // measurement hook for the QA harness
-    (window as unknown as { __portraitEra?: unknown }).__portraitEra = {
-      era: E.era,
-      edge: +E.edge.toFixed(3),
-      map: map === photoTex ? "photo" : map === futureTex ? "still2040" : map === md.livingTex ? "living" : "transform",
-      livingT: md.living ? +md.living.currentTime.toFixed(2) : null,
-      transformT: md.transform ? +md.transform.currentTime.toFixed(2) : null,
+    (window as unknown as { __portraitTwin?: unknown }).__portraitTwin = {
+      seam: +twin.seamNdc.toFixed(3),
       video: allowVideo,
+      showing: (m.uniforms.uVideo.value as number) > 0.5 ? "video" : "stills",
+      videoT: md.el ? +md.el.currentTime.toFixed(2) : null,
+      opacity: +(m.uniforms.uOpacity.value as number).toFixed(2),
     };
   });
   return (
@@ -572,16 +553,7 @@ function CrispPhoto({
         depthWrite={false}
         uniforms={uniforms}
         vertexShader={`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`}
-        fragmentShader={`
-          uniform sampler2D uMap; uniform float uOpacity; varying vec2 vUv;
-          void main(){
-            // crisp only where the face lives; the perimeter belongs to the
-            // dust, so no rectangle ever appears on the page
-            vec2 d = (vUv - vec2(0.5, 0.58)) * vec2(2.0, 1.85);
-            float r = length(d);
-            float a = smoothstep(0.92, 0.5, r) * uOpacity;
-            gl_FragColor = vec4(texture2D(uMap, vUv).rgb, a);
-          }`}
+        fragmentShader={CRISP_FRAG}
       />
     </mesh>
   );
@@ -591,12 +563,12 @@ function Cloud({
   sampled,
   clockRef,
   fireRef,
-  eraRef,
+  twin,
 }: {
   sampled: Sampled;
   clockRef: React.MutableRefObject<{ t: number }>;
   fireRef: React.MutableRefObject<FireReq>;
-  eraRef: React.MutableRefObject<EraState>;
+  twin: Twin;
 }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const { viewport } = useThree();
@@ -625,7 +597,7 @@ function Cloud({
       uPixel: { value: 4.0 },
       uFire: { value: fireRef.current.vec },
       uFireColor: { value: new THREE.Color(RADIUM) },
-      uEdge: { value: -1 },
+      uSeam: { value: 2 },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -635,9 +607,11 @@ function Cloud({
     const m = mat.current;
     if (!m) return;
     clockRef.current.t = Math.min(1.3, clockRef.current.t + delta / BUILD_S);
+    // the banner's opening sweep waits for this: it needs a face to cross
+    twin.assembly = clockRef.current.t;
     m.uniforms.uT.value = clockRef.current.t;
     m.uniforms.uTime.value = state.clock.elapsedTime;
-    m.uniforms.uEdge.value = eraRef.current.edge;
+    m.uniforms.uSeam.value = twin.seamNdc;
     m.uniforms.uMouse.value.set(
       (state.pointer.x * viewport.width) / 2,
       (state.pointer.y * viewport.height) / 2,
@@ -689,11 +663,13 @@ function Net({
   clockRef,
   fireRef,
   isDark,
+  twin,
 }: {
   sampled: Sampled;
   clockRef: React.MutableRefObject<{ t: number }>;
   fireRef: React.MutableRefObject<FireReq>;
   isDark: boolean;
+  twin: Twin;
 }) {
   const lineMat = useRef<THREE.ShaderMaterial>(null);
   const nodeMat = useRef<THREE.ShaderMaterial>(null);
@@ -720,12 +696,12 @@ function Net({
   );
 
   const lineUniforms = useMemo(
-    () => ({ uTime: { value: 0 }, uT: { value: 0 }, uColor: { value: new THREE.Color("#ffffff") }, uFireColor: { value: new THREE.Color(RADIUM) }, uOpacity: { value: 0.13 }, uFire: { value: fireRef.current.vec } }),
+    () => ({ uTime: { value: 0 }, uT: { value: 0 }, uColor: { value: new THREE.Color("#ffffff") }, uTwinColor: { value: new THREE.Color(TWIN_CYAN) }, uFireColor: { value: new THREE.Color(RADIUM) }, uOpacity: { value: 0.13 }, uFire: { value: fireRef.current.vec }, uSeam: { value: 2 } }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
   const nodeUniforms = useMemo(
-    () => ({ uTime: { value: 0 }, uT: { value: 0 }, uColor: { value: new THREE.Color("#ffffff") }, uFireColor: { value: new THREE.Color(RADIUM) }, uOpacity: { value: 0.55 }, uPixel: { value: 6 }, uFire: { value: fireRef.current.vec } }),
+    () => ({ uTime: { value: 0 }, uT: { value: 0 }, uColor: { value: new THREE.Color("#ffffff") }, uTwinColor: { value: new THREE.Color(TWIN_CYAN) }, uFireColor: { value: new THREE.Color(RADIUM) }, uOpacity: { value: 0.55 }, uPixel: { value: 6 }, uFire: { value: fireRef.current.vec }, uSeam: { value: 2 } }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -733,18 +709,23 @@ function Net({
   useFrame((state) => {
     const t = clockRef.current.t;
     const time = state.clock.elapsedTime;
-    // theme-aware accent: glow on dark, ink on light
+    // theme-aware accent: glow on dark, ink on light; the twin's half runs cyan
     const color = isDark ? "#ffffff" : "#241c10";
+    const twinColor = isDark ? TWIN_CYAN : "#0e7490";
     if (lineMat.current) {
       lineMat.current.uniforms.uTime.value = time;
       lineMat.current.uniforms.uT.value = t;
+      lineMat.current.uniforms.uSeam.value = twin.seamNdc;
       (lineMat.current.uniforms.uColor.value as THREE.Color).set(color);
+      (lineMat.current.uniforms.uTwinColor.value as THREE.Color).set(twinColor);
       lineMat.current.uniforms.uOpacity.value = isDark ? 0.13 : 0.15;
     }
     if (nodeMat.current) {
       nodeMat.current.uniforms.uTime.value = time;
       nodeMat.current.uniforms.uT.value = t;
+      nodeMat.current.uniforms.uSeam.value = twin.seamNdc;
       (nodeMat.current.uniforms.uColor.value as THREE.Color).set(color);
+      (nodeMat.current.uniforms.uTwinColor.value as THREE.Color).set(twinColor);
       nodeMat.current.uniforms.uOpacity.value = isDark ? 0.55 : 0.5;
       nodeMat.current.uniforms.uPixel.value = 5.5 * state.viewport.dpr;
     }
@@ -783,12 +764,20 @@ function TiltGroup({
   return <group ref={g}>{children}</group>;
 }
 
-const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-performance" | "default" }) => {
+const PortraitAssembly = ({
+  glPower = "high-performance",
+  twin: twinProp,
+}: {
+  glPower?: "high-performance" | "default";
+  /** The banner's seam; without one the face is all him. */
+  twin?: Twin;
+}) => {
   const [sampled, setSampled] = useState<Sampled | null>(null);
   const clockRef = useRef({ t: 0 });
   const fireRef = useRef<FireReq>({ x: 0, y: 0, pending: false, vec: new THREE.Vector3(0, 0, -1), hover: false });
   const pointerRef = useRef({ x: 0, y: 0 });
-  const eraRef = useRef<EraState>({ era: "present", edge: -1, playing: false });
+  const [ownTwin] = useState(createTwin);
+  const twin = twinProp ?? ownTwin;
 
   // page-level pointer, like the background: the portrait reacts wherever
   // the cursor moves, not only when it is over the frame
@@ -813,8 +802,8 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
   }, []);
 
   useEffect(() => {
-    // today's photo and the 2040 picture, sampled together so the dust knows
-    // both eras; if the 2040 picture is slow or missing, today's colours stand in
+    // his photo and the twin's still, sampled together so the dust knows both
+    // halves; if the still is slow or missing, his colours stand in
     const loadImg = (src: string) =>
       new Promise<HTMLImageElement | null>((resolve) => {
         const img = new Image();
@@ -823,29 +812,17 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
         img.src = src;
       });
     let alive = true;
-    const future = Promise.race([
-      loadImg(HERO_PORTRAIT.still2040.src),
+    const twinStill = Promise.race([
+      loadImg(HERO_PORTRAIT.aiStill.src),
       new Promise<null>((r) => window.setTimeout(() => r(null), 1500)),
     ]);
-    Promise.all([loadImg(PHOTO), future]).then(([img, img2040]) => {
-      if (alive && img) setSampled(sampleImage(img, img2040));
+    Promise.all([loadImg(PHOTO), twinStill]).then(([img, imgTwin]) => {
+      if (alive && img) setSampled(sampleImage(img, imgTwin));
     });
     return () => {
       alive = false;
     };
   }, []);
-
-  /** A click (or Enter) shatters the face and flips the era. */
-  const toggleEra = () => {
-    const E = eraRef.current;
-    if (E.era === "present") {
-      E.era = "to2040";
-      E.playing = false;
-    } else if (E.era === "to2040" || E.era === "2040") {
-      E.era = "toPresent";
-      E.playing = false;
-    }
-  };
 
   if (!sampled) return <div className="w-full h-full" aria-busy="true" />;
 
@@ -854,15 +831,15 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
       className="w-full h-full cursor-pointer outline-none"
       role="button"
       tabIndex={0}
-      aria-label="Portrait of Venkata Pagadala. Activate to see him in 2040, and again to come back."
-      title="Click: today and 2040"
+      aria-label="Portrait of Venkata Pagadala, half him and half his AI twin. Activate to turn the whole banner into the twin, and again to bring him back."
+      title="Click: the human and the AI twin"
       onClick={(e) => {
         // fire the chains from exactly where the click landed
         const rect = e.currentTarget.getBoundingClientRect();
         fireRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         fireRef.current.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
         fireRef.current.pending = true;
-        toggleEra();
+        twin.toggle();
       }}
       onKeyDown={(e) => {
         if (e.key !== "Enter" && e.key !== " ") return;
@@ -870,7 +847,7 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
         fireRef.current.x = 0;
         fireRef.current.y = 0.1;
         fireRef.current.pending = true;
-        toggleEra();
+        twin.toggle();
       }}
       onPointerEnter={() => {
         fireRef.current.hover = true;
@@ -887,9 +864,9 @@ const PortraitAssembly = ({ glPower = "high-performance" }: { glPower?: "high-pe
         gl={{ antialias: false, alpha: true, powerPreference: glPower }}
       >
         <TiltGroup pointerRef={pointerRef}>
-          <Cloud sampled={sampled} clockRef={clockRef} fireRef={fireRef} eraRef={eraRef} />
-          <CrispPhoto clockRef={clockRef} fireRef={fireRef} eraRef={eraRef} />
-          <Net sampled={sampled} clockRef={clockRef} fireRef={fireRef} isDark={isDark} />
+          <Cloud sampled={sampled} clockRef={clockRef} fireRef={fireRef} twin={twin} />
+          <CrispPhoto clockRef={clockRef} fireRef={fireRef} twin={twin} />
+          <Net sampled={sampled} clockRef={clockRef} fireRef={fireRef} isDark={isDark} twin={twin} />
         </TiltGroup>
       </Canvas>
     </div>

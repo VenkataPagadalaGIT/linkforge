@@ -49,7 +49,7 @@ export default function HomeUniverse() {
     return () => io.disconnect();
   }, []);
   return (
-    <section className="relative z-10 border-y border-border bg-background text-foreground" aria-labelledby="home-universe-h" data-testid="home-universe">
+    <section id="linkedin-universe" className="relative z-10 scroll-mt-16 border-y border-border bg-background text-foreground" aria-labelledby="home-universe-h" data-testid="home-universe">
       <div className="mx-auto max-w-[1600px] px-4 py-16 sm:px-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>

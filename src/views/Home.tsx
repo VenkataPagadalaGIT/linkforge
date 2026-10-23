@@ -1,4 +1,5 @@
 "use client";
+import { useRef, useState } from "react";
 import { Link } from "@/lib/router-shim";
 import { ArrowRight, Linkedin, Mail } from "lucide-react";
 import { linkedPapers } from "@/data/research";
@@ -13,12 +14,20 @@ import PortraitAssemblyLazy from "@/components/home/PortraitAssemblyLazy";
 import HomeUniverse from "@/components/home/HomeUniverse";
 import AboutMarquee from "@/components/home/AboutMarquee";
 import WebScene from "@/components/home/WebScene";
+import TwinSeam from "@/components/home/TwinSeam";
+import TwinReadout from "@/components/home/TwinReadout";
+import { createTwin } from "@/components/home/twin";
 import { LINKEDIN_STATS, PROFILE, compactStat, yearsInSearch } from "@/data/profile";
 
 /** The hero's numbers, read from the same sourced record the About page shows. */
 const stat = (prefix: string) => LINKEDIN_STATS.find((s) => s.label.startsWith(prefix))?.value ?? "";
 
 const Home = () => {
+  // The banner's seam: TwinSeam moves it, the portrait and the twin's text read it.
+  const [twin] = useState(createTwin);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const colRef = useRef<HTMLDivElement>(null);
+  const portraitRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="relative min-h-screen flex flex-col bg-background overflow-hidden">
@@ -27,9 +36,13 @@ const Home = () => {
         description="Venkata Pagadala · AI Product Owner, Technical SEO Lead, and Published Researcher. Building production AI systems, knowledge graphs, and enterprise search at scale. 10+ years scaling organic search for Fortune 500 brands."
         canonical="https://venkatapagadala.com"
       />
-      <div className="relative min-h-screen flex flex-col items-center justify-center">
+      <div ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center">
       {/* The room, its webs and the two spiders (replaces the old panels and blocks here only) */}
       <WebScene />
+      {/* The twin: a seam splits the banner into him (left) and his AI twin (right).
+          The backdrop, the line and the handle; the portrait and the text column
+          read the same seam. */}
+      <TwinSeam twin={twin} rootRef={heroRef} colRef={colRef} portraitRef={portraitRef} />
 
       <div className="relative z-10 px-6 max-w-6xl w-full pt-24 pb-4 lg:pb-0 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-14">
         {/* The portrait carries no frame, no caption, no card: the face is
@@ -42,13 +55,17 @@ const Home = () => {
             nothing when clicked from the homepage itself. scroll-mt clears
             the fixed navbar so the face is not hidden under it. */}
         <div
+          ref={portraitRef}
           id="living-portrait"
-          className="shrink-0 order-first lg:order-last w-[min(38vh,300px)] h-[min(38vh,300px)] lg:w-[420px] lg:h-[420px] scroll-mt-24"
+          className="shrink-0 order-first lg:order-last w-[min(38vh,300px)] h-[min(38vh,300px)] lg:w-[420px] lg:h-[420px] scroll-mt-24 touch-pan-y"
         >
-          <PortraitAssemblyLazy />
+          <PortraitAssemblyLazy twin={twin} />
         </div>
 
-        <div className="text-center lg:text-left min-w-0">
+        {/* The human column, clipped left of the seam; the twin's readout lies over
+            it, revealed right of the seam (wide screens only). */}
+        <div ref={colRef} className="relative text-center lg:text-left min-w-0">
+        <div className="twin-human">
         <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">
           [ Portfolio ]
         </p>
@@ -113,6 +130,8 @@ const Home = () => {
             {PROFILE.email}
           </a>
         </div>
+        </div>
+        <TwinReadout />
         </div>
       </div>
 
