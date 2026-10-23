@@ -300,7 +300,7 @@ export const FOCUS_AREAS: FocusArea[] = [
 ];
 
 /**
- * User First Intelligence, the way the /about intro draws it: five steps from
+ * User-First Intelligence, the way the /about intro draws it: five steps from
  * the person behind a query to the decision a business makes.
  */
 export const USER_FIRST_FLOW: { step: string; note: string }[] = [
@@ -372,8 +372,9 @@ export const TOPIC_MAP: TopicGroup[] = [
   },
   {
     id: "user-first",
-    title: "User First Intelligence",
+    title: "User-First Intelligence",
     topics: [
+      { label: "the User-First Intelligence framework", name: "User-First Intelligence", href: "/guides/user-first-intelligence" },
       { label: "Search demand research", href: "/research-and-talks#brightonseo-san-diego-2026" },
       { label: "Audience personas", href: "/personas" },
       { label: "Query fan-out", href: "/personas/fanout-journey" },
@@ -454,7 +455,7 @@ export function personJsonLd(): Record<string, unknown> {
       "Lead Technical Product Manager for Automation, AI and SEO at AT&T. Researcher and speaker on search intelligence: how people search, how AI systems answer, and the systems that serve both.",
     knowsAbout: [
       "Search intelligence",
-      "User First Intelligence",
+      "User-First Intelligence",
       ...TOPIC_MAP.flatMap((g) => g.topics.map((t) => t.name ?? t.label)),
     ],
     sameAs: SOCIAL_PROFILES.map((p) => p.url),

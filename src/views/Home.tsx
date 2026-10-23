@@ -57,7 +57,7 @@ const Home = () => {
           Venkata Pagadala
         </h1>
         <p className="font-mono text-xs sm:text-sm text-foreground/50 mb-4 tracking-wide">
-          User First Intelligence · Agentic AI · AI Search
+          User-First Intelligence · Agentic AI · AI Search
         </p>
 
         {/* Each number opens its source on the About page. */}
@@ -83,7 +83,7 @@ const Home = () => {
         <div className="h-8 flex items-center justify-center lg:justify-start">
           <TypewriterText
             words={[
-              "User First Intelligence",
+              "User-First Intelligence",
               "Agentic AI Systems",
               "Published Researcher",
               "AI Product Leader at AT&T",

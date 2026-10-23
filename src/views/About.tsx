@@ -152,8 +152,8 @@ const FAQ: { q: string; a: string }[] = [
     a: `I'm a product leader and researcher in search intelligence. I'm ${PROFILE.role} at ${PROFILE.employer} in Atlanta, I publish research on how AI is changing search, and I speak about it at conferences and on podcasts.`,
   },
   {
-    q: "What is User First Intelligence?",
-    a: "My name for search intelligence that starts with the user, not the algorithm. A User First Intelligence system connects users, personas, platforms and content to business decisions: AI agents gather and classify the signals from search, AI answers, video, reviews and forums, and people decide what to build, publish or fix.",
+    q: "What is User-First Intelligence?",
+    a: "The framework I created for understanding demand from people outward, not from the algorithm. A User-First Intelligence system connects users, personas, platforms and content to business decisions: AI agents gather and classify the signals from search, AI answers, video, reviews and forums, and people decide what to build, publish or fix. The full framework, its principles and its method are on the User-First Intelligence guide on this site.",
   },
   {
     q: "What does Venkata Pagadala do at AT&T?",
@@ -370,9 +370,13 @@ const About = () => {
           <div className="min-w-0">
             {/* ── Intro: the description, then straight into the numbers ── */}
             <section id="about" aria-label="Introduction" className="scroll-mt-28 mb-14">
-              <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase mb-3">User First Intelligence</p>
+              <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase mb-3">
+                <Link href="/guides/user-first-intelligence" className="hover:text-foreground transition-colors">
+                  User-First Intelligence · the framework →
+                </Link>
+              </p>
               <p className="font-display text-2xl sm:text-3xl text-foreground leading-snug text-balance">
-                I build User First Intelligence systems with agentic AI.
+                I build User-First Intelligence systems with agentic AI.
               </p>
               <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-foreground/85 mt-4">
                 {USER_FIRST_FLOW.map((f) => f.step).join(" → ")}

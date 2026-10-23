@@ -30,8 +30,8 @@ const stat = (prefix: string) => LINKEDIN_STATS.find((s) => s.label.startsWith(p
 
 const DETAIL: Record<string, { hint: string; leaves: string[] }> = {
   about: {
-    hint: "User First Intelligence",
-    leaves: ["User First Intelligence", "Agentic AI", "Enterprise SEO", "AI search and AEO"],
+    hint: "User-First Intelligence",
+    leaves: ["User-First Intelligence", "Agentic AI", "Enterprise SEO", "AI search and AEO"],
   },
   numbers: {
     hint: `${compactStat(stat("Post impressions"))} impressions`,
