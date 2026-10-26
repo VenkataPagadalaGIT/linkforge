@@ -9,13 +9,14 @@ const FILE = () => JSON.parse(readFileSync(new URL("../../content/business.json"
 const blocks = (r) => r.issues.filter((i) => i.level === "block").map((i) => i.message);
 const EM_DASH = "\u2014";
 
-test("B01 the committed file passes: one article, Costco, two people, every citation and link resolving", () => {
+test("B01 the committed file passes: two articles, Costco and Anthropic, five people, every citation and link resolving", () => {
   const f = FILE();
   const r = validateBusiness(f, f);
   assert.equal(r.ok, true, blocks(r).join("; "));
   assert.deepEqual(r.changed, []);
-  assert.equal(f.articles.length, 1);
-  assert.deepEqual(f.people.map((p) => p.slug).sort(), ["gary-millerchip", "ron-vachris"]);
+  assert.deepEqual(f.articles.map((a) => a.slug), ["anthropic-s1-ai-marketing-lessons", "costco-q4-fy2026-ai-search"]);
+  assert.deepEqual(f.companies.map((c) => c.slug).sort(), ["anthropic", "costco"]);
+  assert.deepEqual(f.people.map((p) => p.slug).sort(), ["daniela-amodei", "dario-amodei", "gary-millerchip", "krishna-rao", "ron-vachris"]);
 });
 
 test("B02 structure problems block", () => {
@@ -38,7 +39,7 @@ test("B02 structure problems block", () => {
 
 test("B03 references must resolve: citations, entity links, companies and people of an article", () => {
   const cases = {
-    "citation to a missing source": (f) => { f.articles[0].sections[0].blocks[0].text += " [^9]"; return f; },
+    "citation to a missing source": (f) => { f.articles[0].sections[0].blocks[0].text += " [^99]"; return f; },
     "fact citing a missing source": (f) => { f.companies[0].facts[0].cite = 9; return f; },
     "link to a missing person": (f) => { f.articles[0].summary += " [[person:nobody]]"; return f; },
     "link to a bad page path": (f) => { f.articles[0].summary += " [[page:not-a-path|x]]"; return f; },
@@ -90,6 +91,18 @@ test("B07 the inline markup parses into highlights, citations and links; plain t
   assert.throws(() => parseInline("==open"), /not closed/);
   const names = (t, ref) => ({ person: { "gary-millerchip": "Gary Millerchip" } }[t]?.[ref]);
   assert.equal(plainText("CFO [[person:gary-millerchip]] said ==AI== grew.[^2]", names), "CFO Gary Millerchip said AI grew.");
+});
+
+test("B09 an article's people box title is optional text: a filing note says who is named, not who was on a call", () => {
+  const f = FILE();
+  assert.equal(f.articles.find((a) => a.slug === "anthropic-s1-ai-marketing-lessons").peopleTitle, "Named in the filing");
+  assert.equal(f.articles.find((a) => a.slug === "costco-q4-fy2026-ai-search").peopleTitle, undefined, "the call note keeps the default");
+  const g = FILE();
+  g.articles[0].peopleTitle = "";
+  assert.equal(validateBusiness(g, undefined, false).ok, false, "empty title blocks");
+  const h = FILE();
+  h.articles[0].peopleTitle = 7;
+  assert.equal(validateBusiness(h, undefined, false).ok, false, "non-text title blocks");
 });
 
 test("B08 changed and removed items are reported by type and slug, for the refresh message", () => {

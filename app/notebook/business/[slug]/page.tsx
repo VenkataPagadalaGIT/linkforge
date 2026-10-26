@@ -60,7 +60,7 @@ export default async function Page({ params }: { params: Params }) {
         stats={a.stats}
         video={a.video}
         related={[
-          { title: "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) },
+          { title: a.peopleTitle ?? "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) },
           ...(company ? [{ title: "Company", links: [{ href: companyHref(company.slug), label: company.name, note: company.legalName, picture: company.logo, initials: initialsOf(company.name) }] }] : []),
         ]}
         sections={a.sections}

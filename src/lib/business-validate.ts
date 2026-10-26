@@ -29,6 +29,8 @@ export type BusinessArticle = {
   slug: string; title: string; seoTitle: string; description: string; summary: string;
   date: string; eventDate: string; kind: string; company: string; people: string[];
   legend?: string; stats?: Stat[]; video?: Video; sections: Section[]; sources: Source[];
+  /** Heading over the people box; defaults to "On the call". A filing note uses "Named in the filing". */
+  peopleTitle?: string;
 };
 export type Company = {
   slug: string; name: string; legalName: string; summary: string; seoTitle: string; description: string;
@@ -199,6 +201,7 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
       if (kind === "article") {
         if (!Array.isArray(item.people) || !item.people.every(isStr)) errs.push(`${at}: "people" must be a list of person slugs`);
         else for (const p of item.people as string[]) if (!slugs.person.has(p)) errs.push(`${at}: person "${p}" is not in the file`);
+        if (item.peopleTitle !== undefined && !isStr(item.peopleTitle)) errs.push(`${at}: "peopleTitle" must be non-empty text when set`);
       }
       if (kind !== "article" && !Array.isArray(item.facts)) errs.push(`${at}: "facts" must be a list`);
       for (const f of (item.facts as Record<string, unknown>[] | undefined) ?? []) {
