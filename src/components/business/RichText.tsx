@@ -5,7 +5,8 @@ import { hrefFor, type NameMap } from "@/lib/business-paths";
 
 /**
  * Renders one Business Notebook text field: plain text, green highlights
- * (==...==), citations ([^n]) and entity links ([[person:slug]]). Everything
+ * (==...==) or reading-color highlights (==y:...==, ==g:...==, ==b:...==),
+ * citations ([^n]) and entity links ([[person:slug]]). Everything
  * is rendered as text nodes, never as HTML, so content cannot inject markup.
  * The green is the brand's emerald pair as a background tint; the words stay
  * full-strength foreground, so contrast holds in both themes.
@@ -13,15 +14,19 @@ import { hrefFor, type NameMap } from "@/lib/business-paths";
 export const HIGHLIGHT_CLASS =
   "bg-emerald-500/15 dark:bg-emerald-400/25 text-foreground rounded-sm px-0.5 ring-1 ring-emerald-700/40 dark:ring-emerald-300/40 [box-decoration-break:clone]";
 
+/** The guides' Kindle-style reading colors (app/globals.css), with full-strength text on top. */
+const TONE_CLASS = { y: "hl hl-y text-foreground", g: "hl hl-g text-foreground", b: "hl hl-b text-foreground" } as const;
+const TONE_NAME = { y: "key-idea", g: "what-to-do", b: "evidence" } as const;
+
 export default function RichText({ text, names }: { text: string; names: NameMap }) {
   const segments = parseInline(text);
-  // consecutive highlighted segments share one <mark>, so a highlight that
-  // contains a link or a citation reads as one green run
-  const runs: { highlight: boolean; items: typeof segments }[] = [];
+  // consecutive segments of one highlight share one <mark>, so a highlight
+  // that contains a link or a citation reads as one run of color
+  const runs: { highlight: boolean; tone?: "y" | "g" | "b"; items: typeof segments }[] = [];
   for (const s of segments) {
     const last = runs[runs.length - 1];
-    if (last && last.highlight === s.highlight) last.items.push(s);
-    else runs.push({ highlight: s.highlight, items: [s] });
+    if (last && last.highlight === s.highlight && last.tone === s.tone) last.items.push(s);
+    else runs.push({ highlight: s.highlight, tone: s.tone, items: [s] });
   }
   const render = (s: (typeof segments)[number], i: number) => {
     if (s.kind === "text") return <Fragment key={i}>{s.text}</Fragment>;
@@ -51,7 +56,11 @@ export default function RichText({ text, names }: { text: string; names: NameMap
   return (
     <>
       {runs.map((run, i) =>
-        run.highlight ? (
+        run.highlight && run.tone ? (
+          <mark key={i} className={TONE_CLASS[run.tone]} data-highlight={TONE_NAME[run.tone]}>
+            {run.items.map(render)}
+          </mark>
+        ) : run.highlight ? (
           <mark key={i} className={HIGHLIGHT_CLASS} data-highlight="ai">
             {run.items.map(render)}
           </mark>
