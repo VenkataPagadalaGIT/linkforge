@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import BusinessEntry from "@/views/BusinessEntry";
 import { getBusiness, namesOf } from "@/lib/business-source";
 import { BUSINESS_BASE, articleHref, companyHref, initialsOf, personHref } from "@/lib/business-paths";
-import { articleLd, breadcrumbLd, videoLd } from "@/lib/business-jsonld";
+import { articleLd, breadcrumbLd, embeddedVideosLd, videoLd } from "@/lib/business-jsonld";
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
@@ -32,9 +32,9 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
     alternates: { canonical: url },
     openGraph: {
       type: "article", url, title: a.seoTitle, description: a.description, publishedTime: a.date,
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
+      images: [a.image ? { url: a.image.src, width: a.image.width, height: a.image.height, alt: a.image.alt } : { url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     },
-    twitter: { card: "summary_large_image", title: a.seoTitle, description: a.description },
+    twitter: { card: "summary_large_image", title: a.seoTitle, description: a.description, ...(a.image ? { images: [a.image.src] } : {}) },
   };
 }
 
@@ -44,7 +44,7 @@ export default async function Page({ params }: { params: Params }) {
   if (!a) notFound();
   const company = b.companies.find((c) => c.slug === a.company);
   const people = a.people.map((s) => b.people.find((p) => p.slug === s)).filter((p) => p !== undefined);
-  const ld = [articleLd(a, company, people), videoLd(a), breadcrumbLd([{ name: a.title, path: articleHref(a.slug) }])].filter((x) => x !== null);
+  const ld = [articleLd(a, company, people), videoLd(a), ...embeddedVideosLd(a), breadcrumbLd([{ name: a.title, path: articleHref(a.slug) }])].filter((x) => x !== null);
   return (
     <>
       {ld.map((j, i) => (
@@ -57,10 +57,11 @@ export default async function Page({ params }: { params: Params }) {
         date={a.date}
         summary={a.summary}
         legend={a.legend}
+        highlightKey={a.highlightKey}
         stats={a.stats}
         video={a.video}
         related={[
-          { title: "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) },
+          { title: a.peopleTitle ?? "On the call", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) },
           ...(company ? [{ title: "Company", links: [{ href: companyHref(company.slug), label: company.name, note: company.legalName, picture: company.logo, initials: initialsOf(company.name) }] }] : []),
         ]}
         sections={a.sections}

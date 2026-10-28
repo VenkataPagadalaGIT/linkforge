@@ -4,7 +4,7 @@
  * Organization and mentions the Persons; each Person worksFor the
  * Organization; every source becomes a citation.
  */
-import type { BusinessArticle, Company, Person, Source } from "@/lib/business-validate";
+import { plainText, type BusinessArticle, type Company, type EmbedVideo, type Person, type Source } from "@/lib/business-validate";
 import { BUSINESS_BASE, articleHref, companyHref, personHref } from "@/lib/business-paths";
 import { SITE_URL } from "@/lib/site";
 
@@ -37,6 +37,7 @@ export function articleLd(a: BusinessArticle, company: Company | undefined, peop
     mainEntityOfPage: abs(articleHref(a.slug)),
     author,
     publisher: author,
+    ...(a.image ? { image: { "@type": "ImageObject", url: abs(a.image.src), width: a.image.width, height: a.image.height, caption: a.image.alt } } : {}),
     ...(company ? { about: orgRef(company) } : {}),
     mentions: people.map(personRef),
     citation: citations(a.sources),
@@ -72,6 +73,25 @@ export function personLd(p: Person, company: Company | undefined) {
 
 /** "PT5M57S" for 357 seconds. */
 const isoDuration = (sec: number) => `PT${Math.floor(sec / 60)}M${Math.round(sec % 60)}S`;
+
+/** A VideoObject for each YouTube video played on the page, credited to its publisher, not to this site. */
+export function embeddedVideosLd(a: BusinessArticle) {
+  return a.sections
+    .flatMap((s) => s.blocks)
+    .filter((b): b is EmbedVideo => b.type === "video")
+    .map((v) => ({
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      name: v.title,
+      description: v.caption ? plainText(v.caption) : v.title,
+      thumbnailUrl: v.poster.startsWith("/") ? abs(v.poster) : v.poster,
+      uploadDate: v.uploadDate,
+      duration: isoDuration(v.duration),
+      embedUrl: `https://www.youtube-nocookie.com/embed/${v.youtubeId}`,
+      url: `https://www.youtube.com/watch?v=${v.youtubeId}`,
+      publisher: { "@type": "Organization", name: v.publisher },
+    }));
+}
 
 export function videoLd(a: BusinessArticle) {
   if (!a.video) return null;

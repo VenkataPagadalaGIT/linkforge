@@ -18,8 +18,32 @@
 
 export type Source = { id: number; title: string; publisher: string; date: string; url: string; note?: string };
 export type Fact = { label: string; value: string; cite?: number };
-export type Stat = { value: string; label: string; cite?: number; highlight?: boolean };
-export type Block = { type: "p"; text: string } | { type: "list"; items: string[]; ordered?: boolean } | { type: "stats"; items: Stat[] };
+/**
+ * The site's Kindle-style reading highlights, shared with the guides
+ * (app/globals.css --hl-*): y = the key idea, g = what to do, b = the
+ * evidence. A plain == highlight keeps the notebook's original emerald.
+ */
+export type Tone = "y" | "g" | "b";
+export const TONES: readonly Tone[] = ["y", "g", "b"];
+/** highlight: true tints the tile emerald; a tone tints it in that reading color. */
+export type Stat = { value: string; label: string; cite?: number; highlight?: boolean | Tone };
+/** An image on this site (a screenshot of a filing, say), optionally linking to the original. The caption takes the inline markup. */
+export type Figure = { type: "figure"; src: string; alt: string; width: number; height: number; caption: string; href?: string };
+/** A link card with a thumbnail, for official documents and announcements. */
+export type DocCard = { title: string; publisher: string; date: string; href: string; image: { src: string; width: number; height: number; alt: string }; note?: string };
+/** A YouTube video played on the page: a poster and a real link render first, the player loads on click. */
+export type EmbedVideo = { type: "video"; youtubeId: string; title: string; publisher: string; poster: string; duration: number; uploadDate: string; caption?: string };
+export type Block =
+  | { type: "p"; text: string }
+  | { type: "list"; items: string[]; ordered?: boolean }
+  | { type: "stats"; items: Stat[] }
+  | Figure
+  | { type: "docs"; items: DocCard[] }
+  | EmbedVideo;
+/** The key at the top of a page that uses the reading highlights. */
+export type HighlightKeyItem = { color: Tone; label: string };
+/** A share image for Open Graph and the Article schema; a site path. */
+export type ShareImage = { src: string; width: number; height: number; alt: string };
 /** A photo or logo, shown with its credit. url is a site path (/logos/x.svg) or an https file on Wikimedia. */
 export type Picture = { url: string; alt: string; credit: string };
 /** A self-hosted video with its poster, captions and transcript. Paths are site paths (/videos/...). */
@@ -29,6 +53,12 @@ export type BusinessArticle = {
   slug: string; title: string; seoTitle: string; description: string; summary: string;
   date: string; eventDate: string; kind: string; company: string; people: string[];
   legend?: string; stats?: Stat[]; video?: Video; sections: Section[]; sources: Source[];
+  /** Heading over the people box; defaults to "On the call". A filing note uses "Named in the filing". */
+  peopleTitle?: string;
+  /** The reading-highlight key shown under the summary. */
+  highlightKey?: HighlightKeyItem[];
+  /** Used for og:image and the Article schema instead of the site default. */
+  image?: ShareImage;
 };
 export type Company = {
   slug: string; name: string; legalName: string; summary: string; seoTitle: string; description: string;
@@ -42,10 +72,11 @@ export type BusinessFile = { note?: string; articles: BusinessArticle[]; compani
 export type BusinessIssue = { level: "block" | "warn"; at?: string; message: string };
 export type BusinessCheck = { ok: boolean; issues: BusinessIssue[]; changed: string[]; removed: string[] };
 
+/** tone is set when a highlight opens with a reading color: ==y:...==, ==g:...==, ==b:...==. */
 export type Segment =
-  | { kind: "text"; text: string; highlight: boolean }
-  | { kind: "cite"; id: number; highlight: boolean }
-  | { kind: "link"; target: "person" | "company" | "article" | "page" | "url"; ref: string; label?: string; highlight: boolean };
+  | { kind: "text"; text: string; highlight: boolean; tone?: Tone }
+  | { kind: "cite"; id: number; highlight: boolean; tone?: Tone }
+  | { kind: "link"; target: "person" | "company" | "article" | "page" | "url"; ref: string; label?: string; highlight: boolean; tone?: Tone };
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -58,21 +89,29 @@ const EM_DASH = "\u2014";
 /** Article slugs that would collide with the notebook's own folders. */
 const RESERVED = new Set(["companies", "people"]);
 
-/** Split a text field into plain text, highlights, citations and links. Throws on an unclosed ==. */
+/**
+ * Split a text field into plain text, highlights, citations and links. Throws
+ * on an unclosed ==. A highlight that starts with y:, g: or b: takes that
+ * reading color; the prefix is not shown.
+ */
 export function parseInline(text: string): Segment[] {
   const parts = text.split("==");
   if (parts.length % 2 === 0) throw new Error("an == highlight is not closed");
   const out: Segment[] = [];
-  parts.forEach((part, i) => {
+  parts.forEach((raw, i) => {
     const highlight = i % 2 === 1;
+    const toned = highlight ? /^([ygb]):/.exec(raw) : null;
+    const tone = toned ? (toned[1] as Tone) : undefined;
+    const part = toned ? raw.slice(2) : raw;
+    const mark = tone ? { highlight, tone } : { highlight };
     let last = 0;
     for (const m of part.matchAll(TOKEN)) {
-      if (m.index! > last) out.push({ kind: "text", text: part.slice(last, m.index), highlight });
-      if (m[1]) out.push({ kind: "cite", id: Number(m[1]), highlight });
-      else out.push({ kind: "link", target: m[2] as "person", ref: m[3], label: m[4], highlight });
+      if (m.index! > last) out.push({ kind: "text", text: part.slice(last, m.index), ...mark });
+      if (m[1]) out.push({ kind: "cite", id: Number(m[1]), ...mark });
+      else out.push({ kind: "link", target: m[2] as "person", ref: m[3], label: m[4], ...mark });
       last = m.index! + m[0].length;
     }
-    if (last < part.length) out.push({ kind: "text", text: part.slice(last), highlight });
+    if (last < part.length) out.push({ kind: "text", text: part.slice(last), ...mark });
   });
   return out.filter((s) => s.kind !== "text" || s.text.length);
 }
@@ -105,9 +144,46 @@ function markedTexts(item: Record<string, unknown>): string[] {
     for (const b of s?.blocks ?? []) {
       if (b?.type === "p" && isStr(b.text)) out.push(b.text);
       if (b?.type === "list" && Array.isArray(b.items)) out.push(...b.items.filter(isStr));
+      if ((b?.type === "figure" || b?.type === "video") && isStr(b.caption)) out.push(b.caption);
+      if (b?.type === "docs" && Array.isArray(b.items)) for (const d of b.items) if (isStr(d?.note)) out.push(d.note);
     }
   }
   return out;
+}
+
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+const isSize = (v: unknown) => Number.isInteger(v) && (v as number) > 0;
+/** A YouTube poster may be the video's own thumbnail on i.ytimg.com, or a site path. */
+const isPoster = (v: unknown, id: unknown) =>
+  isStr(v) && (PAGE.test(v) || (typeof id === "string" && new RegExp(`^https://i\\.ytimg\\.com/vi/${id}/(?:hq|mq|sd|maxres)default\\.jpg$`).test(v)));
+
+/** Problems with one figure, docs or video block; empty when it is well formed. */
+function mediaProblems(b: Record<string, unknown>): string[] {
+  const errs: string[] = [];
+  if (b.type === "figure") {
+    if (!isStr(b.src) || !PAGE.test(b.src)) errs.push("a figure needs src, a site path such as /images/x.webp");
+    if (!isStr(b.alt)) errs.push("a figure needs alt text");
+    if (!isSize(b.width) || !isSize(b.height)) errs.push("a figure needs its width and height in pixels");
+    if (!isStr(b.caption)) errs.push("a figure needs a caption");
+    if (b.href !== undefined && !(isStr(b.href) && URL_REF.test(b.href))) errs.push("a figure href must be an https link");
+  } else if (b.type === "docs") {
+    if (!Array.isArray(b.items) || !b.items.length) return ["a docs block needs at least one card"];
+    for (const d of b.items as Record<string, unknown>[]) {
+      const img = isObj(d) ? d.image : undefined;
+      if (!isObj(d) || !isStr(d.title) || !isStr(d.publisher) || !isStr(d.date) || !DATE.test(d.date as string)) errs.push("each doc card needs a title, a publisher and a YYYY-MM-DD date");
+      else if (!isStr(d.href) || !URL_REF.test(d.href)) errs.push(`doc card "${d.title}" needs an https href`);
+      if (!isObj(img) || !isStr(img.src) || !PAGE.test(img.src) || !isStr(img.alt) || !isSize(img.width) || !isSize(img.height)) {
+        errs.push("each doc card needs an image: a site path, alt text, width and height");
+      }
+    }
+  } else if (b.type === "video") {
+    if (!isStr(b.youtubeId) || !YOUTUBE_ID.test(b.youtubeId)) errs.push("a video needs an 11-character youtubeId");
+    if (!isStr(b.title) || !isStr(b.publisher)) errs.push("a video needs a title and a publisher");
+    if (!isPoster(b.poster, b.youtubeId)) errs.push("a video poster must be a site path or that video's thumbnail on i.ytimg.com");
+    if (typeof b.duration !== "number" || !(b.duration > 0)) errs.push("a video duration must be a number of seconds");
+    if (!isStr(b.uploadDate) || !DATE.test(b.uploadDate)) errs.push("a video uploadDate must be YYYY-MM-DD");
+  }
+  return errs;
 }
 
 function checkSources(item: Record<string, unknown>, at: string, errs: string[]): Set<number> {
@@ -140,7 +216,11 @@ function checkSections(item: Record<string, unknown>, at: string, errs: string[]
       const okList = isObj(b) && b.type === "list" && Array.isArray(b.items) && b.items.length > 0 && b.items.every(isStr);
       const okStats = isObj(b) && b.type === "stats" && Array.isArray(b.items) && b.items.length > 0 &&
         b.items.every((x) => isObj(x) && isStr(x.value) && isStr(x.label));
-      if (!okP && !okList && !okStats) errs.push(`${at}: section "${s.id}" has a block that is not a paragraph, a list of text or a list of stats`);
+      const isMedia = isObj(b) && (b.type === "figure" || b.type === "docs" || b.type === "video");
+      if (isMedia) for (const e of mediaProblems(b)) errs.push(`${at}: section "${s.id}": ${e}`);
+      if (!okP && !okList && !okStats && !isMedia) {
+        errs.push(`${at}: section "${s.id}" has a block that is not a paragraph, a list, stats, a figure, doc cards or a video`);
+      }
     }
   }
 }
@@ -199,6 +279,19 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
       if (kind === "article") {
         if (!Array.isArray(item.people) || !item.people.every(isStr)) errs.push(`${at}: "people" must be a list of person slugs`);
         else for (const p of item.people as string[]) if (!slugs.person.has(p)) errs.push(`${at}: person "${p}" is not in the file`);
+        if (item.peopleTitle !== undefined && !isStr(item.peopleTitle)) errs.push(`${at}: "peopleTitle" must be non-empty text when set`);
+        if (item.highlightKey !== undefined) {
+          const key = item.highlightKey;
+          if (!Array.isArray(key) || !key.length || !key.every((k) => isObj(k) && TONES.includes(k.color as Tone) && isStr(k.label))) {
+            errs.push(`${at}: "highlightKey" must list colors y, g or b, each with a label`);
+          }
+        }
+        if (item.image !== undefined) {
+          const im = item.image;
+          if (!isObj(im) || !isStr(im.src) || !PAGE.test(im.src) || !isStr(im.alt) || !isSize(im.width) || !isSize(im.height)) {
+            errs.push(`${at}: "image" needs src (a site path), alt, width and height`);
+          }
+        }
       }
       if (kind !== "article" && !Array.isArray(item.facts)) errs.push(`${at}: "facts" must be a list`);
       for (const f of (item.facts as Record<string, unknown>[] | undefined) ?? []) {
@@ -206,6 +299,9 @@ export function validateBusiness(data: unknown, published?: unknown, houseRules 
       }
       for (const s of (item.stats as Record<string, unknown>[] | undefined) ?? []) {
         if (!isObj(s) || !isStr(s.value) || !isStr(s.label)) errs.push(`${at}: each stat needs a value and a label`);
+        else if (s.highlight !== undefined && typeof s.highlight !== "boolean" && !TONES.includes(s.highlight as Tone)) {
+          errs.push(`${at}: a stat highlight is true, false, or a reading color y, g or b`);
+        }
       }
       checkSections(item, at, errs);
       const sourceIds = checkSources(item, at, errs);

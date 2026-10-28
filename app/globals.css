@@ -450,6 +450,11 @@ mark.hl {
 mark.hl-y { background: var(--hl-yellow); }
 mark.hl-g { background: var(--hl-green); }
 mark.hl-b { background: var(--hl-blue); }
+/* The same reading colors as a softer tint for Business Notebook number tiles,
+   laid over the page background so the grid lines behind a tile never show through. */
+.hl-tile-y { background: linear-gradient(color-mix(in srgb, var(--hl-yellow) 55%, transparent), color-mix(in srgb, var(--hl-yellow) 55%, transparent)), hsl(var(--background)); }
+.hl-tile-g { background: linear-gradient(color-mix(in srgb, var(--hl-green) 55%, transparent), color-mix(in srgb, var(--hl-green) 55%, transparent)), hsl(var(--background)); }
+.hl-tile-b { background: linear-gradient(color-mix(in srgb, var(--hl-blue) 55%, transparent), color-mix(in srgb, var(--hl-blue) 55%, transparent)), hsl(var(--background)); }
 
 /* ------------------------------------------------------------------------
    The twin banner (src/components/home/TwinSeam.tsx). One seam splits the

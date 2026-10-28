@@ -2,9 +2,10 @@
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import RichText, { HIGHLIGHT_CLASS } from "@/components/business/RichText";
+import TalkVideo from "@/components/talks/TalkVideo";
 import { Link } from "@/lib/router-shim";
-import { ArrowLeft, BookMarked, Calendar } from "lucide-react";
-import type { Fact, Picture, Section, Source, Stat, Video } from "@/lib/business-validate";
+import { ArrowLeft, ArrowUpRight, BookMarked, Calendar } from "lucide-react";
+import type { DocCard, EmbedVideo, Fact, Figure, HighlightKeyItem, Picture, Section, Source, Stat, Video } from "@/lib/business-validate";
 import type { NameMap } from "@/lib/business-paths";
 
 /** One related group under the summary: the people on a call, a person's company, and so on. */
@@ -20,6 +21,8 @@ export type BusinessEntryProps = {
   date?: string;
   summary: string;
   legend?: string;
+  /** The reading-highlight key (yellow, green, blue), shown above the legend. */
+  highlightKey?: HighlightKeyItem[];
   stats?: Stat[];
   video?: Video;
   facts?: Fact[];
@@ -69,11 +72,25 @@ export default function BusinessEntry(p: BusinessEntryProps) {
             <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-6 border-l-2 border-foreground/20 pl-4">
               <RichText text={p.summary} names={p.names} />
             </p>
-            {p.legend && (
-              <p className="font-mono text-xs text-muted-foreground mb-8 flex items-center gap-2">
-                <span className={`${HIGHLIGHT_CLASS} inline-block w-6 h-3`} aria-hidden="true" />
-                {p.legend}
-              </p>
+            {p.highlightKey && p.highlightKey.length > 0 ? (
+              <div className="mb-8 border border-border bg-card/20 px-4 py-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">How to read this page</span>
+                  {p.highlightKey.map((k) => (
+                    <span key={k.color} className="font-mono text-[11px] text-foreground">
+                      <mark className={`hl hl-${k.color} text-foreground`}>{k.label}</mark>
+                    </span>
+                  ))}
+                </div>
+                {p.legend && <p className="font-mono text-xs text-muted-foreground mt-2 leading-relaxed">{p.legend}</p>}
+              </div>
+            ) : (
+              p.legend && (
+                <p className="font-mono text-xs text-muted-foreground mb-8 flex items-center gap-2">
+                  <span className={`${HIGHLIGHT_CLASS} inline-block w-6 h-3`} aria-hidden="true" />
+                  {p.legend}
+                </p>
+              )
             )}
           </ScrollReveal>
 
@@ -161,6 +178,12 @@ export default function BusinessEntry(p: BusinessEntryProps) {
                   {s.blocks.map((b, i) =>
                     b.type === "stats" ? (
                       <StatGrid key={i} stats={b.items} />
+                    ) : b.type === "figure" ? (
+                      <FigureBlock key={i} figure={b} names={p.names} />
+                    ) : b.type === "docs" ? (
+                      <DocCards key={i} items={b.items} names={p.names} />
+                    ) : b.type === "video" ? (
+                      <VideoBlock key={i} video={b} names={p.names} />
                     ) : b.type === "p" ? (
                       <p key={i} className="font-mono text-[13px] text-muted-foreground leading-relaxed">
                         <RichText text={b.text} names={p.names} />
@@ -209,12 +232,16 @@ export default function BusinessEntry(p: BusinessEntryProps) {
   );
 }
 
-/** A grid of numbers, each with its source; green when the number is about AI or digital. */
+/** Tile tints: true is the notebook's emerald; a reading color uses the guides' tokens (hl-tile-* in globals.css). */
+const tileTint = (h: Stat["highlight"]) =>
+  h === "y" || h === "g" || h === "b" ? `hl-tile-${h}` : h ? "bg-emerald-500/10 dark:bg-emerald-400/15" : "bg-background";
+
+/** A grid of numbers, each with its source; tinted when the number is highlighted. */
 function StatGrid({ stats }: { stats: Stat[] }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border border border-border">
       {stats.map((s) => (
-        <div key={s.label} className={`p-4 sm:p-5 ${s.highlight ? "bg-emerald-500/10 dark:bg-emerald-400/15" : "bg-background"}`}>
+        <div key={s.label} className={`p-4 sm:p-5 ${tileTint(s.highlight)}`}>
           <div className="font-display text-xl sm:text-2xl font-bold text-foreground leading-none mb-2">{s.value}</div>
           <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide leading-snug">
             {s.label}
@@ -225,6 +252,88 @@ function StatGrid({ stats }: { stats: Stat[] }) {
         </div>
       ))}
     </div>
+  );
+}
+
+const hostOf = (href: string) => new URL(href).hostname.replace(/^www\./, "");
+const shortDate = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")}`;
+
+/** A screenshot or image on a white document tile; with href, the image opens the original in a new tab. */
+function FigureBlock({ figure: f, names }: { figure: Figure; names: NameMap }) {
+  const img = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={f.src} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" className="block w-full h-auto" />
+  );
+  return (
+    <figure className="m-0">
+      {f.href ? (
+        <a href={f.href} target="_blank" rel="noopener noreferrer" className="block border border-border bg-white hover:border-foreground/40 transition-colors">
+          {img}
+        </a>
+      ) : (
+        <div className="border border-border bg-white">{img}</div>
+      )}
+      <figcaption className="font-mono text-[11px] text-muted-foreground mt-2 leading-relaxed">
+        <RichText text={f.caption} names={names} />
+        {f.href && (
+          <>
+            {" "}
+            <a href={f.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-foreground underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground">
+              Open on {hostOf(f.href)} <ArrowUpRight size={11} aria-hidden="true" />
+            </a>
+          </>
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Thumbnail cards for official documents. The image and the title link out; the note stays plain so citations never nest inside a link. */
+function DocCards({ items, names }: { items: DocCard[]; names: NameMap }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-3">
+      {items.map((d) => (
+        <div key={d.href} className="border border-border bg-card/20 flex flex-col">
+          <a href={d.href} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true" className="block aspect-[16/10] overflow-hidden border-b border-border bg-white">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={d.image.src} alt="" width={d.image.width} height={d.image.height} loading="lazy" decoding="async" className="w-full h-full object-cover object-left-top" />
+          </a>
+          <div className="p-3">
+            <a href={d.href} target="_blank" rel="noopener noreferrer" className="font-display text-sm font-bold text-foreground leading-snug underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground">
+              {d.title}
+              <ArrowUpRight size={12} className="inline ml-0.5 -mt-0.5" aria-hidden="true" />
+            </a>
+            <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground mt-1">
+              {d.publisher} · {shortDate(d.date)}
+            </p>
+            {d.note && (
+              <p className="font-mono text-[11px] text-muted-foreground mt-2 leading-relaxed">
+                <RichText text={d.note} names={names} />
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** A YouTube video that plays in place: the site's click-to-load player, so the reader stays on the page. */
+function VideoBlock({ video: v, names }: { video: EmbedVideo; names: NameMap }) {
+  return (
+    <figure className="m-0">
+      <TalkVideo video={{ poster: v.poster, youtubeId: v.youtubeId, aspect: "16:9", duration: v.duration, uploadDate: v.uploadDate }} title={v.title} />
+      <figcaption className="font-mono text-[11px] text-muted-foreground mt-2 leading-relaxed">
+        <span className="text-foreground">{v.title}</span> · {v.publisher} · {clock(v.duration)}
+        {v.caption && (
+          <>
+            {" "}· <RichText text={v.caption} names={names} />
+          </>
+        )}
+      </figcaption>
+    </figure>
   );
 }
 
