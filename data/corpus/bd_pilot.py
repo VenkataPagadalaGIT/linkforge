@@ -33,6 +33,7 @@ RATE_MARKET = 2.50 / 1000   # Marketplace datasets, per record
 RATE_SCRAPER = 1.50 / 1000  # Scraper API, per record
 LINKEDIN_DS = "gd_l1viktl72bvl7bjuj0"
 REDDIT_DS = "gd_lvz8ah06191smkebj4"
+COMPANY_DS = "gd_l1vikfnt1wgvvqz95w"
 RELATED = {"Anthropic": ["Claude"], "OpenAI": ["ChatGPT", "GPT-"], "Google DeepMind": ["Gemini"], "Mistral": ["Le Chat"]}
 spent = 0.0
 HARD_CAP = 1.00
@@ -119,8 +120,8 @@ def linkedin_pilot(entity, company, company_id, n, dry):
     global spent
     budget_check(n, RATE_MARKET, "LinkedIn filter")
     flt = {"operator": "or", "filters": [{"name": "current_company_name", "operator": "=", "value": company}]}
-    if company_id:
-        flt["filters"].append({"name": "current_company_company_id", "operator": "=", "value": company_id})
+    for cid in [c for c in (company_id or "").split(",") if c]:  # the slug and LinkedIn's numeric id both count
+        flt["filters"].append({"name": "current_company_company_id", "operator": "=", "value": cid})
     body = {"dataset_id": LINKEDIN_DS, "filter": flt, "records_limit": n}
     print(f"LinkedIn: filtering {LINKEDIN_DS} for current company {company!r} (records_limit {n}, worst case ${n * RATE_MARKET:.3f})", flush=True)
     if dry:
@@ -147,6 +148,7 @@ def linkedin_pilot(entity, company, company_id, n, dry):
     recs = data if isinstance(data, list) else data.get("records") or data.get("data") or []
     recs = [r for r in recs if isinstance(r, dict)]
     spent += len(recs) * RATE_MARKET
+    store_raw("linkedin-filter", path, recs, len(recs) * RATE_MARKET)
     print(f"LinkedIn: {len(recs)} records (${len(recs) * RATE_MARKET:.3f}); archived {os.path.basename(path)}")
     ent = f"(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
     st = []
@@ -205,6 +207,7 @@ def reddit_pilot(entity, keyword, n, dry):
     recs = json.loads(out)
     recs = [r for r in recs if isinstance(r, dict) and r.get("url")]
     spent += len(recs) * RATE_SCRAPER
+    store_raw("reddit-discover", path, recs, len(recs) * RATE_SCRAPER)
     # Keyword discovery also returns posts that only carry the word in comments; keep the ones that name the company or its product.
     rel = re.compile("|".join(re.escape(w) for w in [keyword] + RELATED.get(keyword, [])), re.I)
     kept = [r for r in recs if rel.search((r.get("title") or "") + " " + (r.get("description") or ""))]
@@ -222,6 +225,109 @@ def reddit_pilot(entity, keyword, n, dry):
     return len(recs)
 
 
+def company_record(entity, company_id, dry):
+    """The company's own LinkedIn page as one Marketplace record: followers, size bucket, locations, specialties, funding, affiliated pages."""
+    global spent
+    budget_check(1, RATE_MARKET, "LinkedIn company record")
+    # The company dataset keys pages by URL; its company_id is LinkedIn's number, not the slug.
+    body = {"dataset_id": COMPANY_DS, "filter": {"name": "url", "operator": "=", "value": f"https://www.linkedin.com/company/{company_id}"}, "records_limit": 1}
+    print(f"Company page: filtering {COMPANY_DS} for /company/{company_id} (1 record, ${RATE_MARKET:.4f})", flush=True)
+    if dry:
+        return 0
+    try:
+        _, raw = call("POST", "https://api.brightdata.com/datasets/filter", body)
+    except urllib.error.HTTPError as e:
+        print(f"Company page: HTTP {e.code}: {e.read()[:300]}")
+        return 0
+    snap = json.loads(raw).get("snapshot_id")
+    out = snapshot_wait(snap, "Company page")
+    if out is None:
+        return 0
+    path = archive("linkedin-company", out)
+    try:
+        data = json.loads(out)
+    except ValueError:
+        data = [json.loads(l) for l in out.decode("utf8", "replace").splitlines() if l.strip()]
+    recs = [r for r in (data if isinstance(data, list) else [data]) if isinstance(r, dict)]
+    spent += len(recs) * RATE_MARKET
+    store_raw("linkedin-company", path, recs, len(recs) * RATE_MARKET)
+    for r in recs:
+        keep = {k: r.get(k) for k in ("name", "followers", "employees_in_linkedin", "company_size", "headquarters", "founded", "industries", "specialties", "formatted_locations",
+                                      "country_codes_array", "affiliated", "funding", "investors", "stock_info", "alumni", "url", "website", "slogan", "organization_type", "crunchbase_url")}
+        ent = f"(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
+        sql(f"INSERT INTO ontology.fact (entity_id, key, label, value, as_of, sort_order, source_file) VALUES ({ent}, 'linkedin_page', 'LinkedIn page',"
+            f" {lit(json.dumps(keep, ensure_ascii=False))}, current_date, 90, 'brightdata:linkedin-company') ON CONFLICT (entity_id, key) DO UPDATE SET value=EXCLUDED.value, as_of=EXCLUDED.as_of;")
+        print(f"Company page: followers {r.get('followers')}, employees on LinkedIn {r.get('employees_in_linkedin')}, size {r.get('company_size')}, HQ {r.get('headquarters')}, locations {len(r.get('formatted_locations') or [])}")
+    return len(recs)
+
+
+def linkedin_detail(entity, urls, dry):
+    """Full profiles (title, experience, education) for profile URLs the filter found: Scraper API, collect by URL."""
+    global spent
+    n = len(urls)
+    budget_check(n, RATE_SCRAPER, "LinkedIn detail")
+    print(f"LinkedIn detail: scraping {n} profiles by URL (worst case ${n * RATE_SCRAPER:.3f})", flush=True)
+    if dry or not urls:
+        return 0
+    try:
+        _, raw = call("POST", f"https://api.brightdata.com/datasets/v3/trigger?dataset_id={LINKEDIN_DS}&include_errors=true&notify=false", {"input": [{"url": u} for u in urls]}, timeout=300)
+    except urllib.error.HTTPError as e:
+        print(f"LinkedIn detail: trigger HTTP {e.code}: {e.read()[:300]}")
+        return 0
+    snap = json.loads(raw).get("snapshot_id")
+    print("LinkedIn detail: snapshot", snap, flush=True)
+    for _ in range(180):
+        time.sleep(15)
+        try:
+            _, p = call("GET", f"https://api.brightdata.com/datasets/v3/progress/{snap}")
+        except urllib.error.HTTPError as e:
+            print("LinkedIn detail: progress HTTP", e.code, e.read()[:160])
+            continue
+        st = json.loads(p).get("status")
+        if st in ("ready", "done", "completed"):
+            break
+        if st in ("failed", "error"):
+            print("LinkedIn detail: run failed")
+            return 0
+    else:
+        print("LinkedIn detail: still running after 45 minutes; snapshot id kept above")
+        return 0
+    _, out = call("GET", f"https://api.brightdata.com/datasets/v3/snapshot/{snap}?format=json", timeout=600)
+    path = archive("linkedin-detail", out)
+    recs = [r for r in json.loads(out) if isinstance(r, dict)]
+    good = [r for r in recs if r.get("name") and not r.get("error")]
+    spent += len(good) * RATE_SCRAPER
+    store_raw("linkedin-detail", path, recs, len(good) * RATE_SCRAPER)
+    print(f"LinkedIn detail: {len(good)} profiles of {len(recs)} results (${len(good) * RATE_SCRAPER:.3f}); archived {os.path.basename(path)}")
+    ent = f"(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
+    st = []
+    for r in good:
+        cur = r.get("current_company") or {}
+        title = cur.get("title") or r.get("position")
+        exp = [{"company": e.get("company"), "title": e.get("title"), "start": e.get("start_date"), "end": e.get("end_date"), "location": e.get("location"),
+                "positions": [{"title": p.get("title"), "start": p.get("start_date"), "end": p.get("end_date")} for p in (e.get("positions") or [])]} for e in (r.get("experience") or [])]
+        edu = [{"school": e.get("title"), "degree": e.get("degree"), "field": e.get("field"), "start": e.get("start_year"), "end": e.get("end_year")} for e in (r.get("education") or [])]
+        detail = {"position": title, "city": r.get("city"), "country": r.get("country_code"), "current_company": cur.get("name") or r.get("current_company_name"),
+                  "company_id": r.get("current_company_company_id"), "followers": r.get("followers"), "connections": r.get("connections"), "bio_links": r.get("bio_links") or [],
+                  "experience": exp, "education": edu, "about": (r.get("about") or "")[:600], "languages": r.get("languages") or [], "tier": "stated", "detail": True}
+        st.append("INSERT INTO ontology.footprint (entity_id, source, source_id, name, headline, location, profile_url, evidence_url, is_current, detail)"
+                  f" VALUES ({ent}, 'linkedin', {lit(r.get('linkedin_id') or r.get('id') or r.get('url'))}, {lit(r.get('name'))}, {lit(title)}, {lit(r.get('location') or r.get('city'))},"
+                  f" {lit(r.get('url'))}, {lit(r.get('url'))}, true, {lit(json.dumps(detail, ensure_ascii=False))}::jsonb)"
+                  " ON CONFLICT (entity_id, source, source_id) DO UPDATE SET name=EXCLUDED.name, headline=EXCLUDED.headline, location=EXCLUDED.location, profile_url=EXCLUDED.profile_url,"
+                  " detail=EXCLUDED.detail, retrieved_at=current_date;")
+    if st:
+        sql("\n".join(st), timeout=600)
+    titled = sum(1 for r in good if (r.get("current_company") or {}).get("title") or r.get("position"))
+    withexp = sum(1 for r in good if r.get("experience"))
+    print(f"LinkedIn detail quality: {titled}/{len(good)} have a title, {withexp}/{len(good)} have an experience list")
+    return len(good)
+
+
+def store_raw(tag, path, recs, cost):
+    sql("INSERT INTO ontology.raw_capture (source, tag, path, records, cost_usd, payload)"
+        f" VALUES ('brightdata', {lit(tag)}, {lit(path)}, {len(recs)}, {cost:.4f}, {lit(json.dumps(recs, ensure_ascii=False))}::jsonb);", timeout=600)
+
+
 def main():
     global HARD_CAP
     a = sys.argv
@@ -232,8 +338,15 @@ def main():
     dry = "--dry-run" in a
     acquire_lock()
     print(f"cap ${HARD_CAP:.2f} enforced in code; lock {LOCK}; raw archive {RAW}")
+    if "--company-record" in a and company_id:
+        company_record(entity, company_id.split(",")[0], dry)
     if n_li:
         linkedin_pilot(entity, company, company_id, n_li, dry)
+    n_detail = int(g("--detail", "0"))
+    if n_detail:
+        urls = [u for (u,) in query(f"SELECT profile_url FROM ontology.footprint WHERE source='linkedin' AND profile_url IS NOT NULL AND entity_id=(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
+                                    " AND (detail->>'detail') IS NULL ORDER BY id") if u][:n_detail]
+        linkedin_detail(entity, urls, dry)
     if n_rd:
         reddit_pilot(entity, company, n_rd, dry)
     print(f"spent (from published rates): ${spent:.3f} of ${HARD_CAP:.2f}")

@@ -25,16 +25,17 @@ export interface Hiring {
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
 }
 export interface SiteHost { host: string; label: string; mode: "text" | "titles"; pages: number; withText: number; dated: number; withAuthors: number; words: number; failed: number; readOn: string | null }
-export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number; teams: { name: string; count: number }[]; topics: { name: string; count: number }[] }
 export interface Agreement { exhibit: string | null; title: string; counterparty: string | null; entity: string | null; kind: string; datedOn: string | null; url: string | null; redacted: boolean; evidence: IntelEvidence[] }
 export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
 export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
 export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
+export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[] }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
-  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
 }
 
 export const AI_360: Record<string, Entity360> = {
@@ -60,7 +61,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 41990.0,
    "yearLow": 18270.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "agc-blanks": {
   "people": [],
@@ -84,7 +86,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 8315.0,
    "yearLow": 4761.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "alchip-guc": {
   "people": [],
@@ -108,7 +111,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 5640.0,
    "yearLow": 2480.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "amazon-investor": {
   "people": [],
@@ -132,7 +136,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 287.20001220703125,
    "yearLow": 196.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "amd": {
   "people": [],
@@ -156,7 +161,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 658.52001953125,
    "yearLow": 188.22000122070312,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "amec": {
   "people": [],
@@ -180,7 +186,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 500.0,
    "yearLow": 171.95301818847656,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "amkor": {
   "people": [],
@@ -204,7 +211,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 96.68000030517578,
    "yearLow": 29.760000228881836,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "anthropic": {
   "people": [
@@ -4052,6 +4060,13 @@ export const AI_360: Record<string, Entity360> = {
       "secondary": false
      }
     ]
+   },
+   {
+    "key": "linkedin_page",
+    "label": "LinkedIn page",
+    "value": "{\"name\": \"Anthropic\", \"followers\": 5364379, \"employees_in_linkedin\": 6244, \"company_size\": \"501-1,000 employees\", \"headquarters\": null, \"founded\": null, \"industries\": \"Research Services\", \"specialties\": null, \"formatted_locations\": null, \"country_codes_array\": null, \"affiliated\": [{\"Links\": \"https://www.linkedin.com/showcase/claude/?trk=affiliated-pages\", \"location\": null, \"subtitle\": \"Technology, Information and Internet\", \"title\": \"Claude\"}, {\"Links\": \"https://www.linkedin.com/showcase/claude-for-business/?trk=affiliated-pages\", \"location\": null, \"subtitle\": \"Technology, Information and Internet\", \"title\": \"Claude for Business\"}], \"funding\": {\"last_round_date\": null, \"last_round_raised\": null, \"last_round_type\": null, \"rounds\": null}, \"stock_info\": {\"datetime\": null, \"id\": null, \"stock_exchange\": null, \"stock_price\": null, \"stock_price_change\": null, \"stock_provider\": null, \"stock_ticker\": null}, \"alumni\": null, \"url\": \"https://www.linkedin.com/company/anthropicresearch\", \"website\": \"https://www.anthropic.com/\", \"slogan\": \"Anthropic is an AI safety and research company working to build reliable, interpretable, and steerable AI systems.\", \"organization_type\": \"Privately Held\", \"crunchbase_url\": null, \"company_id\": \"74126343\"}",
+    "asOf": "2026-10-28",
+    "evidence": []
    }
   ],
   "hiring": {
@@ -4301,7 +4316,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 630,
+   "total": 2509,
    "dated": 487,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7246,11 +7261,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "alignment.anthropic.com",
      "label": "Alignment Science blog",
      "mode": "text",
-     "pages": 38,
-     "withText": 38,
-     "dated": 13,
-     "withAuthors": 1,
-     "words": 201907,
+     "pages": 64,
+     "withText": 64,
+     "dated": 23,
+     "withAuthors": 2,
+     "words": 345019,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7258,11 +7273,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "transformer-circuits.pub",
      "label": "Transformer Circuits",
      "mode": "text",
-     "pages": 3,
-     "withText": 3,
-     "dated": 1,
-     "withAuthors": 1,
-     "words": 18415,
+     "pages": 53,
+     "withText": 53,
+     "dated": 19,
+     "withAuthors": 20,
+     "words": 419619,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7270,11 +7285,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "claude.com",
      "label": "claude.com",
      "mode": "text",
-     "pages": 2,
-     "withText": 2,
-     "dated": 0,
+     "pages": 1805,
+     "withText": 476,
+     "dated": 57,
      "withAuthors": 0,
-     "words": 736,
+     "words": 394905,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7303,8 +7318,96 @@ export const AI_360: Record<string, Entity360> = {
      "readOn": null
     }
    ],
-   "words": 1354336,
-   "pagesWithText": 629
+   "words": 2292821,
+   "pagesWithText": 1179,
+   "teams": [
+    {
+     "name": "Alignment",
+     "count": 50
+    },
+    {
+     "name": "Frontier Red Team",
+     "count": 36
+    },
+    {
+     "name": "Interpretability",
+     "count": 33
+    },
+    {
+     "name": "Economics",
+     "count": 27
+    },
+    {
+     "name": "Societal Impacts",
+     "count": 24
+    }
+   ],
+   "topics": [
+    {
+     "name": "Partnerships",
+     "count": 136
+    },
+    {
+     "name": "Agents",
+     "count": 111
+    },
+    {
+     "name": "Safety evaluations",
+     "count": 83
+    },
+    {
+     "name": "Safeguards",
+     "count": 68
+    },
+    {
+     "name": "Alignment",
+     "count": 68
+    },
+    {
+     "name": "Cybersecurity",
+     "count": 64
+    },
+    {
+     "name": "Claude Code",
+     "count": 62
+    },
+    {
+     "name": "Claude for Enterprise",
+     "count": 61
+    },
+    {
+     "name": "Coding",
+     "count": 59
+    },
+    {
+     "name": "Transparency",
+     "count": 52
+    },
+    {
+     "name": "Benchmarks",
+     "count": 50
+    },
+    {
+     "name": "Access",
+     "count": 48
+    },
+    {
+     "name": "How people use AI",
+     "count": 46
+    },
+    {
+     "name": "Interpretability",
+     "count": 44
+    },
+    {
+     "name": "Global expansion",
+     "count": 42
+    },
+    {
+     "name": "Research programs",
+     "count": 42
+    }
+   ]
   },
   "attention": {
    "source": "Hacker News",
@@ -8293,152 +8396,533 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
-     "name": "Amanda Askell",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "name": "Adam Jermyn",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
-     "first": "2021-12-22",
-     "last": "2021-12-22",
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2023-10-04",
+     "last": "2026-05-04",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Adam Pearce",
+     "headline": "Named author on 8 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Adly Templeton",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Remedios",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Tamkin",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2023-10-04",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alwin Peng",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Amanda Askell",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2021-12-22",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Andrew Persic",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
      "source": "company_site",
      "name": "Andy Jones",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
      "source": "company_site",
      "name": "Anna Chen",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Anna Soligo",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Basil Hosmer",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
      "source": "company_site",
      "name": "Ben Mann",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Brayden McLean",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Brian Chen",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "C. Daniel Freeman",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Callum McDougall",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Carol Chen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Carson Denison",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
      ]
     },
     {
      "source": "company_site",
      "name": "Catherine Olsson",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-09-14",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Cem Anil",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
      ]
     },
     {
      "source": "company_site",
      "name": "Chris Olah",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 10 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2026-04-02",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Christina Lu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Christopher Olah",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/crosscoders/",
+     "first": "2022-06-27",
+     "last": "2024-10-25",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
+      "Privileged Bases in the Transformer Residual Stream"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Craig Citro",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2024-05-21",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dan Mossing",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Daniel M. Ziegler",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
      ]
     },
     {
      "source": "company_site",
      "name": "Danny Hernandez",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
      ]
     },
     {
      "source": "company_site",
      "name": "Dario Amodei",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-09-14",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "David Abrahams",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
      "source": "company_site",
      "name": "Dawn Drain",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-09-14",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
      ]
     },
     {
      "source": "company_site",
      "name": "Deep Ganguli",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Doug Finkbeiner",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
      ]
     },
     {
@@ -8458,62 +8942,436 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
-     "name": "Jack Clark",
+     "name": "Dzmitry Kishylau",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
-     "first": "2021-12-22",
-     "last": "2021-12-22",
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Edward Rees",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Eli Tran-Johnson",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Emmanuel Ameisen",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Esin Durmus",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Euan Ong",
+     "headline": "Named author on 3 pages of alignment.anthropic.com, transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Evan Hubinger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Fabien Roger",
+     "headline": "Named author on 2 pages of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents",
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Francesco Mosconi",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Harish Kamath",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Tracing Attention Computation Through Feature Interactions"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Hoagy Cunningham",
+     "headline": "Named author on 4 pages of alignment.anthropic.com, transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Isaac Kauvar",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jack Clark",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jack Lindsey",
+     "headline": "Named author on 9 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
      ]
     },
     {
      "source": "company_site",
      "name": "Jackson Kernion",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "James Chen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
      ]
     },
     {
      "source": "company_site",
      "name": "Jared Kaplan",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-09-14",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jeff Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jeffrey Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2026-08-21",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jerry Wei",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "John Hughes",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jonathan Marcus",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Josh Jacobson",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Joshua Batson",
+     "headline": "Named author on 12 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2023-10-04",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model",
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Josiah E Burke",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Julius Tarng",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-04-02",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
+      "Emotion Concepts and their Function in a Large Language Model"
      ]
     },
     {
      "source": "company_site",
      "name": "Kamal Ndousse",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Karina Nguyen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
      ]
     },
     {
@@ -8533,6 +9391,22 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Kelley Rivoire",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2025-03-27",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Kevin K. Troy",
      "headline": "Named author on 1 page of www.anthropic.com",
      "url": null,
@@ -8548,77 +9422,281 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
-     "name": "Liane Lovitt",
+     "name": "Kit Fraser-Taliente",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
-     "first": "2021-12-22",
-     "last": "2021-12-22",
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kyle Fish",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Liane Lovitt",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Linda Petrini",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Martin Wattenberg",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Mateusz Piotrowski",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Michael Sklar",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Misha Wagner",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Monte MacDiarmid",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Mrinank Sharma",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
      ]
     },
     {
      "source": "company_site",
      "name": "Neel Nanda",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
      ]
     },
     {
      "source": "company_site",
      "name": "Nelson Elhage",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2023/privileged-basis/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2023-03-16",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Privileged Bases in the Transformer Residual Stream",
+      "Superposition, Memorization, and Double Descent"
      ]
     },
     {
      "source": "company_site",
      "name": "Nicholas Joseph",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2023-10-04",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas L Turner",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2023-10-04",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Schiefer",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-09-14",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Superposition, Memorization, and Double Descent"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Sofroniew",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
      ]
     },
     {
      "source": "company_site",
      "name": "Nova DasSarma",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Paul Bogdan",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": 0,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
      ]
     },
     {
@@ -8638,92 +9716,593 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
-     "name": "Sam McCandlish",
+     "name": "Purvi Goel",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
-     "first": "2021-12-22",
-     "last": "2021-12-22",
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "R. Luger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Robert Lasenby",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-09-14",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Privileged Bases in the Transformer Residual Stream"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Rodrigo Luger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attention-qk/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Tracing Attention Computation Through Feature Interactions"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Roger Grosse",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Rowan Wang",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Runjin Chen",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sam McCandlish",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sam Zimmerman",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2025-03-27",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Samuel Marks",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Samuel Zimmerman",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sasha Hydrie",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Saurav Kadavath",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Scott Johnston",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-03-08",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Shan Carter",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-01-05",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Shauna Kravec",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-06-27",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sheer El Showk",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Simon Storf",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Stanislav Fort",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/toy-double-descent/",
+     "first": "2022-06-27",
+     "last": "2023-01-05",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Superposition, Memorization, and Double Descent",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Subhash Kantamneni",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "T. Ben Thompson",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Theodore R. Sumers",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Thomas Conerly",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-10-25",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Thomas Henighan",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tim Maxwell",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
      ]
     },
     {
      "source": "company_site",
      "name": "Tom Brown",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
      ]
     },
     {
      "source": "company_site",
      "name": "Tom Conerly",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2026-05-04",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
      ]
     },
     {
      "source": "company_site",
      "name": "Tom Henighan",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 9 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2026-04-02",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Emotion Concepts and their Function in a Large Language Model",
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Trenton Bricken",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tristan Hume",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2022-06-27",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Vladimir Mikulik",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Wes Gurnee",
+     "headline": "Named author on 6 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "William Saunders",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yang Zhang",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yifan Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
      ]
     },
     {
      "source": "company_site",
      "name": "Yuntao Bai",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-06-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
      ]
     },
     {
      "source": "company_site",
      "name": "Zac Hatfield-Dodds",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
      "first": "2021-12-22",
-     "last": "2021-12-22",
+     "last": "2022-09-14",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "A Mathematical Framework for Transformer Circuits"
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Zhenyi Qi",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -9241,7 +10820,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Benjamin Gmurczyk",
-     "headline": null,
+     "headline": "Washington",
      "url": "https://www.linkedin.com/in/bengmur",
      "evidence": "https://www.linkedin.com/in/bengmur",
      "first": null,
@@ -9254,7 +10833,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Darren Lo",
-     "headline": null,
+     "headline": "Greater Toronto Area",
      "url": "https://linkedin.com/in/darren-lo-04",
      "evidence": "https://linkedin.com/in/darren-lo-04",
      "first": null,
@@ -9267,7 +10846,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Denis macharia",
-     "headline": null,
+     "headline": "United States",
      "url": "https://linkedin.com/in/denis-macharia-529207149",
      "evidence": "https://linkedin.com/in/denis-macharia-529207149",
      "first": null,
@@ -9280,8 +10859,8 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Erik Sidbrant",
-     "headline": null,
-     "url": "https://www.linkedin.com/in/erik-sidbrant/",
+     "headline": "Dublin, Chalmers University of Technology",
+     "url": "https://mx.linkedin.com/in/erik-sidbrant",
      "evidence": "https://www.linkedin.com/in/erik-sidbrant/",
      "first": null,
      "last": null,
@@ -9293,7 +10872,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Francis Wilson",
-     "headline": null,
+     "headline": "Seattle",
      "url": "https://linkedin.com/in/francis-wilson-673502117",
      "evidence": "https://linkedin.com/in/francis-wilson-673502117",
      "first": null,
@@ -9306,7 +10885,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Frank Bach",
-     "headline": null,
+     "headline": "Los Angeles",
      "url": "https://linkedin.com/in/francoisbach",
      "evidence": "https://linkedin.com/in/francoisbach",
      "first": null,
@@ -9319,7 +10898,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Jacob Udewitz",
-     "headline": null,
+     "headline": "Brooklyn",
      "url": "https://linkedin.com/in/udewitz",
      "evidence": "https://linkedin.com/in/udewitz",
      "first": null,
@@ -9332,7 +10911,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Jeffrey Bleich",
-     "headline": null,
+     "headline": "Oakland",
      "url": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
      "evidence": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
      "first": null,
@@ -9345,8 +10924,8 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Julian Minder",
-     "headline": null,
-     "url": "https://www.linkedin.com/in/julian-minder-101238a5/",
+     "headline": "Zurich",
+     "url": "https://bh.linkedin.com/in/julian-minder-101238a5",
      "evidence": "https://www.linkedin.com/in/julian-minder-101238a5/",
      "first": null,
      "last": null,
@@ -9358,7 +10937,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Kelcey Harris",
-     "headline": null,
+     "headline": "New York",
      "url": "https://linkedin.com/in/kelcey-harris",
      "evidence": "https://linkedin.com/in/kelcey-harris",
      "first": null,
@@ -9371,7 +10950,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Kristen Swanson",
-     "headline": null,
+     "headline": "San Francisco",
      "url": "https://linkedin.com/in/kristennicoleswanson",
      "evidence": "https://linkedin.com/in/kristennicoleswanson",
      "first": null,
@@ -9384,8 +10963,8 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Lucas Manozzo Alves",
-     "headline": null,
-     "url": "https://linkedin.com/in/lucasemalves/",
+     "headline": "Dublin, FAE Centro Universitário",
+     "url": "https://ar.linkedin.com/in/lucasemalves",
      "evidence": "https://linkedin.com/in/lucasemalves/",
      "first": null,
      "last": null,
@@ -9397,7 +10976,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Malik Tucker",
-     "headline": null,
+     "headline": "New York City Metropolitan Area",
      "url": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
      "evidence": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
      "first": null,
@@ -9410,7 +10989,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Maya Nielan",
-     "headline": null,
+     "headline": "Brooklyn",
      "url": "https://linkedin.com/in/maya-nielan",
      "evidence": "https://linkedin.com/in/maya-nielan",
      "first": null,
@@ -9423,8 +11002,8 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Peter Twomey",
-     "headline": null,
-     "url": "https://www.linkedin.com/in/petertwomey/",
+     "headline": "Ireland, Trinity College, Dublin",
+     "url": "https://es.linkedin.com/in/Petertwomey",
      "evidence": "https://www.linkedin.com/in/petertwomey/",
      "first": null,
      "last": null,
@@ -9436,7 +11015,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Quinn Woodhead",
-     "headline": null,
+     "headline": "San Francisco",
      "url": "https://linkedin.com/in/quinn-woodhead-b6558817a",
      "evidence": "https://linkedin.com/in/quinn-woodhead-b6558817a",
      "first": null,
@@ -9449,7 +11028,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Swanee Golden",
-     "headline": null,
+     "headline": "New York",
      "url": "https://linkedin.com/in/swanee-golden-56140b151",
      "evidence": "https://linkedin.com/in/swanee-golden-56140b151",
      "first": null,
@@ -9462,7 +11041,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Tosia Batool",
-     "headline": null,
+     "headline": "Islamabad",
      "url": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
      "evidence": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
      "first": null,
@@ -9475,7 +11054,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "Zhichun Ning",
-     "headline": null,
+     "headline": "Mountain View",
      "url": "https://kw.linkedin.com/in/zhichun-ning",
      "evidence": "https://kw.linkedin.com/in/zhichun-ning",
      "first": null,
@@ -9488,7 +11067,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "source": "linkedin",
      "name": "abrefa francis",
-     "headline": null,
+     "headline": "San Felice sul Panaro",
      "url": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
      "evidence": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
      "first": null,
@@ -9503,7 +11082,7 @@ export const AI_360: Record<string, Entity360> = {
     "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
-    "company_site:confirmed": 29,
+    "company_site:confirmed": 124,
     "openalex:model": 282,
     "linkedin:stated": 20
    }
@@ -9804,7 +11383,114 @@ export const AI_360: Record<string, Entity360> = {
     ]
    }
   ],
-  "market": null
+  "market": null,
+  "talent": {
+   "people": 20,
+   "withTitle": 0,
+   "countries": [
+    {
+     "name": "United States",
+     "count": 13
+    },
+    {
+     "name": "Ireland",
+     "count": 3
+    },
+    {
+     "name": "Switzerland",
+     "count": 1
+    },
+    {
+     "name": "Canada",
+     "count": 1
+    },
+    {
+     "name": "Italy",
+     "count": 1
+    },
+    {
+     "name": "Pakistan",
+     "count": 1
+    }
+   ],
+   "cities": [
+    {
+     "name": "New York",
+     "count": 2
+    },
+    {
+     "name": "Brooklyn",
+     "count": 2
+    },
+    {
+     "name": "San Francisco",
+     "count": 2
+    },
+    {
+     "name": "Dublin",
+     "count": 2
+    },
+    {
+     "name": "Zurich",
+     "count": 1
+    },
+    {
+     "name": "New York City Metropolitan Area",
+     "count": 1
+    },
+    {
+     "name": "Oakland",
+     "count": 1
+    },
+    {
+     "name": "Mountain View",
+     "count": 1
+    },
+    {
+     "name": "Ireland",
+     "count": 1
+    },
+    {
+     "name": "Greater Toronto Area",
+     "count": 1
+    },
+    {
+     "name": "San Felice sul Panaro",
+     "count": 1
+    },
+    {
+     "name": "Washington",
+     "count": 1
+    }
+   ],
+   "schools": [
+    {
+     "name": "Trinity College, Dublin",
+     "count": 1
+    },
+    {
+     "name": "Chalmers University of Technology",
+     "count": 1
+    },
+    {
+     "name": "FAE Centro Universitário",
+     "count": 1
+    }
+   ],
+   "fields": [],
+   "graduation": [
+    {
+     "name": "2010s",
+     "count": 10
+    },
+    {
+     "name": "2020s",
+     "count": 4
+    }
+   ],
+   "withEducation": 4,
+   "withBioLinks": 3
+  }
  },
  "applied-materials": {
   "people": [],
@@ -9828,7 +11514,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 739.6699829101562,
    "yearLow": 203.39999389648438,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "arista": {
   "people": [],
@@ -9852,7 +11539,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 217.41000366210938,
    "yearLow": 114.5199966430664,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "arm": {
   "people": [],
@@ -9876,7 +11564,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 452.70001220703125,
    "yearLow": 100.0199966430664,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "ase": {
   "people": [],
@@ -9900,7 +11589,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 47.93000030517578,
    "yearLow": 13.350000381469727,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "asm-international": {
   "people": [],
@@ -9924,7 +11614,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 11.989999771118164,
    "yearLow": 4.050000190734863,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "asml": {
   "people": [],
@@ -9948,7 +11639,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1999.9599609375,
    "yearLow": 946.1099853515625,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "ats-substrate": {
   "people": [],
@@ -9972,7 +11664,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 242.0,
    "yearLow": 25.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "aws": {
   "people": [],
@@ -9996,7 +11689,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 287.20001220703125,
    "yearLow": 196.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "azure": {
   "people": [],
@@ -10020,7 +11714,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "besi": {
   "people": [],
@@ -10044,7 +11739,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 328.3999938964844,
    "yearLow": 120.1500015258789,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "bloom-energy": {
   "people": [],
@@ -10068,7 +11764,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 351.2799987792969,
    "yearLow": 75.69999694824219,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "broadcom": {
   "people": [],
@@ -10092,7 +11789,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 495.0,
    "yearLow": 289.9599914550781,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "cadence": {
   "people": [],
@@ -10116,7 +11814,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 416.69000244140625,
    "yearLow": 262.75,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "cambricon": {
   "people": [],
@@ -10140,7 +11839,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1620.0,
    "yearLow": 649.6644287109375,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "cisco": {
   "people": [],
@@ -10164,7 +11864,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 130.3699951171875,
    "yearLow": 70.54000091552734,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "cohere": {
   "people": [],
@@ -10419,7 +12120,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "coherent": {
   "people": [],
@@ -10443,7 +12145,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 440.0,
    "yearLow": 123.75,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "constellation-energy": {
   "people": [],
@@ -10467,7 +12170,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 406.0429992675781,
    "yearLow": 228.6300048828125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "coreweave-capital": {
   "people": [],
@@ -11112,7 +12816,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 140.3300018310547,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "coreweave-facilities": {
   "people": [],
@@ -11136,7 +12841,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 140.3300018310547,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -11369,7 +13075,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "daikin-fluoropolymer": {
   "people": [],
@@ -11393,7 +13100,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 26440.0,
    "yearLow": 17380.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "databricks": {
   "people": [],
@@ -12304,7 +14012,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "delta-electronics": {
   "people": [],
@@ -12328,7 +14037,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 2585.0,
    "yearLow": 886.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "digital-realty": {
   "people": [],
@@ -12352,7 +14062,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 208.13999938964844,
    "yearLow": 146.22999572753906,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "disco-corp": {
   "people": [],
@@ -12376,7 +14087,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 91680.0,
    "yearLow": 42370.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "ebara": {
   "people": [],
@@ -12400,7 +14112,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 6890.0,
    "yearLow": 3538.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "equinix": {
   "people": [],
@@ -12424,7 +14137,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1128.6800537109375,
    "yearLow": 720.6199951171875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "foxconn-industrial-internet": {
   "people": [],
@@ -12448,7 +14162,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 314.0,
    "yearLow": 187.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "fujimi-slurry": {
   "people": [],
@@ -12472,7 +14187,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 5090.0,
    "yearLow": 2212.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "fujitsu-fugaku": {
   "people": [],
@@ -12496,7 +14212,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 4668.0,
    "yearLow": 3016.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "ge-vernova": {
   "people": [],
@@ -12520,7 +14237,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1195.93994140625,
    "yearLow": 530.1599731445312,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "github-copilot": {
   "people": [],
@@ -12544,7 +14262,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "globalfoundries": {
   "people": [],
@@ -12568,7 +14287,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 92.55000305175781,
    "yearLow": 32.02000045776367,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "google-cloud": {
   "people": [],
@@ -12592,7 +14312,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 408.6099853515625,
    "yearLow": 267.6700134277344,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "google-deepmind": {
   "people": [],
@@ -13321,7 +15042,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "google-investor": {
   "people": [],
@@ -13345,7 +15067,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 408.6099853515625,
    "yearLow": 267.6700134277344,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "harvey-ai": {
   "people": [],
@@ -13562,7 +15285,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "hoya-mask-blanks": {
   "people": [],
@@ -13586,7 +15310,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 30400.0,
    "yearLow": 22165.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "hygon": {
   "people": [],
@@ -13610,7 +15335,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 395.1700134277344,
    "yearLow": 186.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "intel": {
   "people": [],
@@ -13634,7 +15360,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 142.35000610351562,
    "yearLow": 32.88999938964844,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "intel-foundry": {
   "people": [],
@@ -13658,7 +15385,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 142.35000610351562,
    "yearLow": 32.88999938964844,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "inventec": {
   "people": [],
@@ -13682,7 +15410,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 88.5999984741211,
    "yearLow": 38.54999923706055,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "jcet": {
   "people": [],
@@ -13706,7 +15435,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 113.87000274658203,
    "yearLow": 34.58000183105469,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "jpmorgan-ai": {
   "people": [],
@@ -13730,7 +15460,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 366.5,
    "yearLow": 279.1000061035156,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "kioxia": {
   "people": [],
@@ -13754,7 +15485,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 37566.66796875,
    "yearLow": 2784.333251953125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "kla": {
   "people": [],
@@ -13778,7 +15510,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 307.3699951171875,
    "yearLow": 107.19599914550781,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "kokusai-electric": {
   "people": [],
@@ -13802,7 +15535,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 12220.0,
    "yearLow": 3852.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "kyec": {
   "people": [],
@@ -13826,7 +15560,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 350.0,
    "yearLow": 187.14285278320312,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "lam-research": {
   "people": [],
@@ -13850,7 +15585,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 438.5,
    "yearLow": 135.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "lambda": {
   "people": [],
@@ -14076,7 +15812,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "lasertec": {
   "people": [],
@@ -14100,7 +15837,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 58580.0,
    "yearLow": 25590.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "lite-on": {
   "people": [],
@@ -14124,7 +15862,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 328.0,
    "yearLow": 139.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "lumentum": {
   "people": [],
@@ -14148,7 +15887,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1143.0,
    "yearLow": 184.1999969482422,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "marvell": {
   "people": [],
@@ -14172,7 +15912,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 329.8800048828125,
    "yearLow": 70.69000244140625,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "mediatek": {
   "people": [],
@@ -14196,7 +15937,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 5480.0,
    "yearLow": 1130.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "meta-infra": {
   "people": [],
@@ -14220,7 +15962,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 779.8200073242188,
    "yearLow": 520.260009765625,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "micron": {
   "people": [],
@@ -14244,7 +15987,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1255.0,
    "yearLow": 192.58999633789062,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "microsoft": {
   "people": [],
@@ -14268,7 +16012,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "mistral": {
   "people": [],
@@ -14549,7 +16294,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "murata": {
   "people": [],
@@ -14573,7 +16319,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 12895.0,
    "yearLow": 2821.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nan-ya-pcb": {
   "people": [],
@@ -14597,7 +16344,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 1560.0,
    "yearLow": 232.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "naura": {
   "people": [],
@@ -14621,7 +16369,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 968.0,
    "yearLow": 386.6199951171875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nebius": {
   "people": [],
@@ -14645,7 +16394,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 299.8599853515625,
    "yearLow": 73.5199966430664,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "ntt-iown": {
   "people": [],
@@ -14669,7 +16419,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 181.3000030517578,
    "yearLow": 142.60000610351562,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nuscale": {
   "people": [],
@@ -14693,7 +16444,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 45.540000915527344,
    "yearLow": 5.199999809265137,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nvidia": {
   "people": [
@@ -15427,7 +17179,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 243.3699951171875,
    "yearLow": 164.27000427246094,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nxp": {
   "people": [],
@@ -15451,7 +17204,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 339.95001220703125,
    "yearLow": 183.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "nyt-copyright-suit": {
   "people": [],
@@ -15475,7 +17229,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 87.0999984741211,
    "yearLow": 55.93000030517578,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "oklo": {
   "people": [],
@@ -15499,7 +17254,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 152.05999755859375,
    "yearLow": 25.389999389648438,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "openai": {
   "people": [],
@@ -16372,7 +18128,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "oracle-cloud": {
   "people": [],
@@ -16396,7 +18153,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 281.6199951171875,
    "yearLow": 114.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "palantir": {
   "people": [],
@@ -16420,7 +18178,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 212.94000244140625,
    "yearLow": 106.37000274658203,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "palantir-aip": {
   "people": [],
@@ -16444,7 +18203,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 212.94000244140625,
    "yearLow": 106.37000274658203,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "perplexity": {
   "people": [],
@@ -16972,7 +18732,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "psmc": {
   "people": [],
@@ -16996,7 +18757,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 94.5,
    "yearLow": 27.899999618530273,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "pti-powertech": {
   "people": [],
@@ -17020,7 +18782,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 387.0,
    "yearLow": 148.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "qualcomm-edge": {
   "people": [],
@@ -17044,7 +18807,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 259.9200134277344,
    "yearLow": 121.98999786376953,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "quanta": {
   "people": [],
@@ -17068,7 +18832,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 438.0,
    "yearLow": 260.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "reddit-data-licensing": {
   "people": [],
@@ -17092,7 +18857,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 263.5,
    "yearLow": 119.2699966430664,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "renesas": {
   "people": [],
@@ -17116,7 +18882,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 5284.0,
    "yearLow": 1753.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "resonac": {
   "people": [],
@@ -17140,7 +18907,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 20495.0,
    "yearLow": 5413.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "salesforce-agentforce": {
   "people": [],
@@ -17164,7 +18932,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 269.1099853515625,
    "yearLow": 146.32000732421875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "sambanova": {
   "people": [],
@@ -17388,7 +19157,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "samsung": {
   "people": [],
@@ -17412,7 +19182,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "samsung-foundry": {
   "people": [],
@@ -17436,7 +19207,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "sap-ai": {
   "people": [],
@@ -17460,7 +19232,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 265.8800048828125,
    "yearLow": 144.97000122070312,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "scale-ai": {
   "people": [],
@@ -17674,7 +19447,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "schneider-electric": {
   "people": [],
@@ -17698,7 +19472,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 80.25,
    "yearLow": 38.720001220703125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "screen-holdings": {
   "people": [],
@@ -17722,7 +19497,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 19770.0,
    "yearLow": 5825.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "servicenow": {
   "people": [],
@@ -17746,7 +19522,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 192.96600341796875,
    "yearLow": 81.23999786376953,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "shin-etsu": {
   "people": [],
@@ -17770,7 +19547,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 7930.0,
    "yearLow": 4366.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "siemens-eda": {
   "people": [],
@@ -17794,7 +19572,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 291.70001220703125,
    "yearLow": 198.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "siltronic": {
   "people": [],
@@ -17818,7 +19597,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 108.80000305175781,
    "yearLow": 41.720001220703125,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "sk-hynix": {
   "people": [],
@@ -17842,7 +19622,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 2987000.0,
    "yearLow": 501000.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "smic": {
   "people": [],
@@ -17866,7 +19647,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 93.0,
    "yearLow": 44.099998474121094,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "snowflake": {
   "people": [],
@@ -17890,7 +19672,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 384.55999755859375,
    "yearLow": 118.30000305175781,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "softbank": {
   "people": [],
@@ -17914,7 +19697,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 28.969999313354492,
    "yearLow": 10.550000190734863,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "softbank-arm-ai": {
   "people": [],
@@ -17938,7 +19722,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 9074.0,
    "yearLow": 3365.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "sony-image-sensor": {
   "people": [],
@@ -17962,7 +19747,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 4776.0,
    "yearLow": 3043.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "stmicro": {
   "people": [],
@@ -17986,7 +19772,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 81.41999816894531,
    "yearLow": 21.110000610351562,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "sumco": {
   "people": [],
@@ -18010,7 +19797,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 5939.0,
    "yearLow": 1131.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "synopsys": {
   "people": [],
@@ -18034,7 +19822,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 539.47998046875,
    "yearLow": 362.54998779296875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "teradyne": {
   "people": [],
@@ -18058,7 +19847,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 487.9100036621094,
    "yearLow": 151.52000427246094,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "thinking-machines": {
   "people": [],
@@ -18271,7 +20061,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  },
  "tokyo-electron": {
   "people": [],
@@ -18295,7 +20086,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 16252.0,
    "yearLow": 6012.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "tokyo-ohka": {
   "people": [],
@@ -18319,7 +20111,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 12925.0,
    "yearLow": 5343.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "tongfu": {
   "people": [],
@@ -18343,7 +20136,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 84.69999694824219,
    "yearLow": 34.650001525878906,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "toppan-photomask": {
   "people": [],
@@ -18367,7 +20161,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 2964.0,
    "yearLow": 1833.0,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "tsmc": {
   "people": [],
@@ -18391,7 +20186,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 487.4700012207031,
    "yearLow": 266.82000732421875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "umc": {
   "people": [],
@@ -18415,7 +20211,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 28.959999084472656,
    "yearLow": 6.96999979019165,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "vertiv": {
   "people": [],
@@ -18439,7 +20236,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 379.93499755859375,
    "yearLow": 147.82000732421875,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "vistra": {
   "people": [],
@@ -18463,7 +20261,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 200.72999572753906,
    "yearLow": 132.66000366210938,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "waymo-av": {
   "people": [],
@@ -18487,7 +20286,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 408.6099853515625,
    "yearLow": 267.6700134277344,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "wistron": {
   "people": [],
@@ -18511,7 +20311,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 206.0,
    "yearLow": 122.5,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "wiwynn": {
   "people": [],
@@ -18535,7 +20336,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearHigh": 2875.0,
    "yearLow": 1102.992431640625,
    "source": "yahoo"
-  }
+  },
+  "talent": null
  },
  "xai-capital": {
   "people": [],
@@ -18788,7 +20590,8 @@ export const AI_360: Record<string, Entity360> = {
   "tone": null,
   "footprint": null,
   "agreements": [],
-  "market": null
+  "market": null,
+  "talent": null
  }
 };
 

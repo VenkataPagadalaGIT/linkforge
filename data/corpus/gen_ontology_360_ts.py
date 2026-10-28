@@ -38,7 +38,7 @@ for e in ev:
     by[(e["target_kind"], e["target_id"])].append({"quote": e["quote"], "url": e["url"], "locator": e["locator"], "source": e["title"] or "",
                                                    "publisher": e["publisher"], "publishedOn": e["published_on"], "secondary": e["source_kind"] == "aggregator"})
 
-out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None})
+out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None, "talent": None})
 
 aff = collections.defaultdict(list)
 for a in rows("""SELECT a.id, a.person_id, a.org_name, o.slug AS org_entity, a.title, a.kind, a.period, a.start_year, a.end_year, a.current
@@ -180,6 +180,13 @@ for r in rows("""SELECT e.slug AS entity, sp.host, count(*) AS pages, count(*) F
                         count(*) FILTER (WHERE sp.http_status IS NOT NULL AND sp.http_status <> 200) AS failed, max(sp.retrieved_at) AS read_on
                  FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id GROUP BY 1, 2"""):
     cov[r["entity"]][r["host"]] = r
+teams_by = collections.defaultdict(collections.Counter)
+topics_by = collections.defaultdict(collections.Counter)
+for r in rows("""SELECT e.slug AS entity, sp.team, sp.topics FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id WHERE sp.team IS NOT NULL OR sp.topics IS NOT NULL"""):
+    if r["team"]:
+        teams_by[r["entity"]][r["team"]] += 1
+    for t in r["topics"] or []:
+        topics_by[r["entity"]][t] += 1
 for ent, ps in pages.items():
     main_site = next((x for x in HOSTS.get(ent, []) if x.get("sections")), {})
     timeline_hosts = {main_site.get("host")} if main_site else set()
@@ -194,6 +201,7 @@ for ent, ps in pages.items():
         "first": min(p["published_on"] for p in dated) if dated else None, "latest": max(p["published_on"] for p in dated) if dated else None,
         "items": [{"date": p["published_on"], "section": p["section"], "title": p["title"] or p["url"], "url": p["url"]} for p in dated],
         "hosts": hosts, "words": sum(h["words"] for h in hosts), "pagesWithText": sum(h["withText"] for h in hosts),
+        "teams": [{"name": k, "count": v} for k, v in teams_by[ent].most_common(12)], "topics": [{"name": k, "count": v} for k, v in topics_by[ent].most_common(16)],
     }
 for q in rows("""SELECT DISTINCT ON (e.slug) e.slug AS entity, q.symbol, q.day, q.price, q.currency, q.market_cap, q.change_1d_pct, q.year_high, q.year_low, q.source
                  FROM ontology.market_quote q JOIN ontology.entity e ON e.id = q.entity_id ORDER BY e.slug, q.day DESC"""):
@@ -226,7 +234,7 @@ def person_key(name):
     return f"{parts[0]} {parts[-1]}".lower() if len(parts) >= 2 else (name or "").lower()
 SHOWN_TIERS = {"confirmed", "likely"}
 fp = collections.defaultdict(dict)
-for r in rows("""SELECT e.slug AS entity, f.source, f.source_id, f.name, f.headline, f.profile_url, f.evidence_url, f.first_seen, f.last_seen, f.detail
+for r in rows("""SELECT e.slug AS entity, f.source, f.source_id, f.name, f.headline, f.location, f.profile_url, f.evidence_url, f.first_seen, f.last_seen, f.detail
                  FROM ontology.footprint f JOIN ontology.entity e ON e.id = f.entity_id ORDER BY e.slug, f.source, f.name, f.source_id"""):
     d = r["detail"] or {}
     if r["source"] == "openalex" and d.get("tier") not in SHOWN_TIERS:
@@ -234,6 +242,9 @@ for r in rows("""SELECT e.slug AS entity, f.source, f.source_id, f.name, f.headl
     k = (r["source"], person_key(r["name"]))
     cur = fp[r["entity"]].get(k)
     clean = re.sub(r"(\s+[A-Z]\.?)+$", "", (r["name"] or "").strip())  # "Jared Kaplan A" -> "Jared Kaplan"
+    if r["source"] == "linkedin" and not r["headline"]:
+        edu = (d.get("education") or [{}])
+        r["headline"] = ", ".join(x for x in [r["location"], (edu[0].get("school") or edu[0].get("title")) if edu else None] if x) or "Profile names the company as current employer"
     item = {"source": r["source"], "name": clean, "headline": r["headline"], "url": r["profile_url"], "evidence": r["evidence_url"],
             "first": r["first_seen"], "last": r["last_seen"], "tier": d.get("tier"), "works": d.get("works"), "matched": (d.get("matched") or [])[:2],
             "recent": [w.get("title") for w in (d.get("recent") or [])[:2]]}
@@ -249,11 +260,41 @@ counts = collections.defaultdict(lambda: collections.Counter())
 for r in rows("""SELECT e.slug AS entity, f.source, COALESCE(f.detail->>'tier', 'shown') AS tier, count(*) AS n FROM ontology.footprint f
                  JOIN ontology.entity e ON e.id = f.entity_id GROUP BY 1, 2, 3"""):
     counts[r["entity"]][f'{r["source"]}:{r["tier"]}'] = r["n"]
+# ---- Talent analytics from the LinkedIn rows: where people are, where they studied, what they studied, when they graduated ----
+COUNTRY = {"US": "United States", "GB": "United Kingdom", "IE": "Ireland", "CA": "Canada", "CH": "Switzerland", "DE": "Germany", "FR": "France", "IN": "India", "JP": "Japan", "KR": "South Korea",
+           "AU": "Australia", "SG": "Singapore", "NL": "Netherlands", "IT": "Italy", "ES": "Spain", "PK": "Pakistan", "BR": "Brazil", "IL": "Israel", "SE": "Sweden", "PL": "Poland"}
+talent = collections.defaultdict(list)
+for r in rows("""SELECT e.slug AS entity, f.detail FROM ontology.footprint f JOIN ontology.entity e ON e.id = f.entity_id WHERE f.source = 'linkedin'"""):
+    talent[r["entity"]].append(r["detail"] or {})
+def top(counter, n):
+    return [{"name": k, "count": v} for k, v in counter.most_common(n)]
+for ent, ds in talent.items():
+    countries = collections.Counter(COUNTRY.get(d.get("country") or "", d.get("country") or "Unknown") for d in ds)
+    cities = collections.Counter((d.get("city") or "Unknown").split(",")[0].strip() for d in ds)
+    schools, fields, grad = collections.Counter(), collections.Counter(), collections.Counter()
+    for d in ds:
+        seen_s = set()
+        for e in d.get("education") or []:
+            sc = (e.get("school") or e.get("title") or "").strip()
+            if sc and sc not in seen_s:
+                seen_s.add(sc); schools[sc] += 1
+            fl = (e.get("field") or "").strip()
+            if fl:
+                fields[fl] += 1
+            y = str(e.get("end") or e.get("end_year") or "")[:4]
+            if y.isdigit():
+                grad[y[:3] + "0s"] += 1
+    with_title = sum(1 for d in ds if d.get("position"))
+    out[ent]["talent"] = {"people": len(ds), "withTitle": with_title, "countries": top(countries, 12), "cities": top(cities, 12), "schools": top(schools, 15),
+                          "fields": top(fields, 12), "graduation": sorted(({"name": k, "count": v} for k, v in grad.items()), key=lambda x: x["name"]),
+                          "withEducation": sum(1 for d in ds if d.get("education")), "withBioLinks": sum(1 for d in ds if d.get("bio_links"))}
+
 for ent, people in fp.items():
     ppl = sorted(people.values(), key=lambda x: ({"confirmed": 0, "likely": 1}.get(x["tier"], 2), -(x["works"] or 0), x["name"]))
     out[ent]["footprint"] = {"people": ppl, "counts": dict(counts[ent])}
 
 for v in out.values():
+    v.setdefault("talent", None)
     v.setdefault("agreements", [])
     v.setdefault("market", None)
     v.setdefault("footprint", None)
@@ -288,16 +329,17 @@ export interface Hiring {
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
 }
 export interface SiteHost { host: string; label: string; mode: "text" | "titles"; pages: number; withText: number; dated: number; withAuthors: number; words: number; failed: number; readOn: string | null }
-export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number; teams: { name: string; count: number }[]; topics: { name: string; count: number }[] }
 export interface Agreement { exhibit: string | null; title: string; counterparty: string | null; entity: string | null; kind: string; datedOn: string | null; url: string | null; redacted: boolean; evidence: IntelEvidence[] }
 export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
 export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
 export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
+export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[] }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
-  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
 }
 
 """

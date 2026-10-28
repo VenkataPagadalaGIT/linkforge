@@ -157,15 +157,14 @@ def extract(raw):
             if re.match(rf"^({MONTHS}) \d{{1,2}},?$", l) and i + 1 < len(full) and re.match(r"^20\d\d$", full[i + 1]):
                 published = to_date(f"{l} {full[i + 1]}")
                 break
-    team, topics = None, []
-    for i, l in enumerate(full[:120]):
-        if l == "Team" and i + 1 < len(full):
-            team = full[i + 1]
-        if l == "Topics":
-            for t in full[i + 1:i + 14]:
-                if t in ("See more...", "Related articles", "Share") or t.endswith("...") or len(t) > 50:
-                    break
-                topics.append(t)
+    # anthropic.com marks the team and topics as links in the article header; read those markers straight from the HTML.
+    tm = re.search(r'href="/research/team/[^"]+"[^>]*>([^<]{1,60})<', raw)
+    team = html.unescape(tm.group(1)).strip() if tm else None
+    topics = []
+    for t in re.findall(r'href="/search\?topic=[^"]+"[^>]*>([^<]{1,60})<', raw):
+        t = html.unescape(t).strip()
+        if t and t not in topics and t.lower() not in ("view more", "see more", "see more..."):
+            topics.append(t)
     # Author lists in the page text (Transformer Circuits, Alignment Science): the lines after an "Authors" heading.
     for i, l in enumerate(full):
         if l in ("Authors", "Author", "Authors:", "Written by"):

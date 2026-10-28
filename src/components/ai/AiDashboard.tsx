@@ -29,7 +29,7 @@ import { SearchBox } from "./IntelDossier";
 import { ShareCard, isShareMetric } from "./AiShares";
 import { FollowButton, WatchlistStrip, useWatchlist } from "./Watch";
 import { AI_360 } from "@/data/ai360";
-import { Company360, FootprintSection, HiringSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
+import { Company360, FootprintSection, HiringSection, TalentSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
 import { AI_SHARES } from "@/data/aiIntel";
 
 const SHOW_DRAFTS = process.env.NEXT_PUBLIC_SHOW_DRAFTS === "1";
@@ -939,6 +939,7 @@ function PeopleTab({ ids, onPick }: { ids: string[]; onPick: (id: string) => voi
   return (
     <div className="space-y-6">
       {ids.length === 1 ? <HiringSection id={ids[0]} /> : <HiringTable ids={ids} onPick={onPick} />}
+      {ids.length === 1 && <TalentSection id={ids[0]} />}
       {with360.length > 0 && <PeopleSection ids={with360} onPick={onPick} />}
       {ids.length === 1 && <FootprintSection id={ids[0]} />}
       {posts.length > 0 && (

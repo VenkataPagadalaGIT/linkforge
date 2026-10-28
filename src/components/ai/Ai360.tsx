@@ -801,7 +801,7 @@ export function FactsSection({ id }: { id: string }) {
   if (!facts.length) return null;
   return (
     <dl className="grid gap-px border border-border bg-border sm:grid-cols-2 xl:grid-cols-4" data-testid="ai-facts">
-      {facts.map((f) => (
+      {facts.filter((f) => f.key !== "linkedin_page").map((f) => (
         <div key={f.key} className="bg-background p-3">
           <dt className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">{f.label}</dt>
           <dd className="mt-1 font-mono text-[11px] leading-snug text-foreground">{f.value}</dd>
@@ -1356,6 +1356,78 @@ export function SitesRead({ id }: { id: string }) {
         </table>
       </div>
       <p className="mt-1 font-mono text-[10px] text-muted-foreground">Every page in each site's sitemap or index, one request a second, robots.txt respected. Docs, support and marketplace pages are kept as titles. A page is re-read when it changes.</p>
+      {(site.teams?.length || site.topics?.length) ? (
+        <div className="mt-4 grid gap-6 lg:grid-cols-2">
+          {site.teams?.length > 0 && (
+            <div>
+              <H aside="research pages by the team that wrote them">Which teams publish</H>
+              <Bars rows={site.teams} total={site.teams.reduce((n, x) => n + x.count, 0)} />
+            </div>
+          )}
+          {site.topics?.length > 0 && (
+            <div>
+              <H aside="how it files its own pages">What it writes about</H>
+              <Bars rows={site.topics.slice(0, 12)} total={site.topics.reduce((n, x) => n + x.count, 0)} />
+            </div>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+
+// ---------------------------------------------------------------------------
+// Talent: who works there, from profiles that name the company as current employer
+// ---------------------------------------------------------------------------
+
+export function TalentSection({ id }: { id: string }) {
+  const t = AI_360[id]?.talent;
+  const page = AI_360[id]?.facts.find((f) => f.key === "linkedin_page");
+  if (!t && !page) return null;
+  let lp: { followers?: number; employees_in_linkedin?: number; company_size?: string; affiliated?: { title?: string; name?: string }[] } | null = null;
+  try {
+    lp = page ? JSON.parse(page.value) : null;
+  } catch {
+    lp = null;
+  }
+  const staff = AI_360[id]?.facts.find((f) => f.key === "employees");
+  return (
+    <div className="space-y-4" data-testid="ai-talent">
+      <H aside={t ? `${fmt(t.people)} profiles name it as current employer` : undefined}>Talent</H>
+      <Kpis
+        items={[
+          ["Employees, per the company", staff ? staff.value.split(" (")[0].replace(/^About /, "") : "", staff ? "its own filing" : undefined],
+          ["Profiles on LinkedIn", lp?.employees_in_linkedin != null ? fmt(lp.employees_in_linkedin) : t ? fmt(t.people) : "", lp?.company_size ? `page says ${lp.company_size}` : "current employer"],
+          ["Followers", lp?.followers != null ? fmt(lp.followers) : "", "LinkedIn page"],
+          ["Profiles collected", t ? fmt(t.people) : "0", t ? `${fmt(t.withEducation)} with education listed` : undefined],
+        ]}
+      />
+      {t && (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div>
+            <H aside="profile location">Where they are</H>
+            <Bars rows={t.countries.slice(0, 8)} total={t.people} />
+            <p className="mt-2 mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Cities</p>
+            <Bars rows={t.cities.slice(0, 8)} total={t.people} />
+          </div>
+          <div>
+            <H aside="schools named">Where they studied</H>
+            <Bars rows={t.schools.slice(0, 12)} total={t.withEducation} />
+          </div>
+          <div>
+            <H aside="fields of study">What they studied</H>
+            <Bars rows={t.fields.slice(0, 8)} total={t.withEducation} />
+            <p className="mt-2 mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Graduation decade</p>
+            <Bars rows={t.graduation} total={t.withEducation} />
+          </div>
+        </div>
+      )}
+      <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
+        Profiles come from a licensed LinkedIn dataset, filtered to people who list the company as their current employer; LinkedIn hides titles and work history from the signed-out
+        view, so roles are not available this way. Counts are of profiles, not of staff: some people have no profile and some profiles are stale.
+        {lp?.affiliated?.length ? ` Affiliated pages: ${lp.affiliated.map((a) => a.title ?? a.name).filter(Boolean).join(", ")}.` : ""}
+      </p>
     </div>
   );
 }
@@ -1374,6 +1446,7 @@ export function anglesOf(id: string): Angle[] {
   return [
     { key: "people", label: "People", count: f?.people.length ?? 0, note: f?.people.length ? "officers, board, founders, with their other roles" : "not collected yet", tab: "people" },
     { key: "hiring", label: "Hiring", count: f?.hiring?.open ?? 0, note: f?.hiring ? "open roles on its public job board" : "no public job board found yet", tab: "people" },
+    { key: "talent", label: "Talent", count: f?.talent?.people ?? 0, note: f?.talent ? "profiles naming it as current employer" : "no profiles collected yet", tab: "people" },
     { key: "investors", label: "Investors", count: f?.rounds.length ?? 0, note: f?.rounds.length ? "financings from the first round to the IPO" : "not collected yet", tab: "investors" },
     { key: "money", label: "Deals", count: intel?.deals.length ?? 0, note: "compute, supply and investment deals with their terms", tab: "money" },
     { key: "legal", label: "Legal", count: f?.legal.length ?? 0, note: f?.legal.length ? "lawsuits and government actions it discloses" : "not collected yet", tab: "legal" },
