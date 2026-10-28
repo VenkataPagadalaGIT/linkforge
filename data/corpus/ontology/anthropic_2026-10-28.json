@@ -1,5 +1,5 @@
 {
- "note": "Anthropic company file, the first vertical slice of the AI knowledge graph. Every figure and quote is verbatim from Anthropic's Form S-1 (accession 0001628280-26-067168, filed 2026-10-26), read on sec.gov in the built-in browser on 2026-10-27/28. Quotes are exact substrings of the whitespace-collapsed filing text. Forecasts and implications are drafts in the owner's voice and stay off production until approved.",
+ "note": "Anthropic company file, the first vertical slice of the AI knowledge graph. Every figure and quote is verbatim from Anthropic's Form S-1 (accession 0001628280-26-067168, filed 2026-10-26), read on sec.gov in the built-in browser on 2026-10-27/28. Quotes are exact substrings of the whitespace-collapsed filing text. Forecasts and implications are drafts in the owner's voice and stay off production until approved. People moved to anthropic_360_2026-10-28.json (with their other roles and photos) on 2026-10-28.",
  "entity": "anthropic",
  "anchors": {
   "summary": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
@@ -726,69 +726,19 @@
    "unit": "pct",
    "anchor": "business",
    "quote": "our total quarter-over-quarter revenue growth accelerated from 48% for the three months ended December 31, 2025 to 132% for the three months ended March 31, 2026."
+  },
+  {
+   "metric": "employees",
+   "label": "Employees",
+   "period": "2024-12-31",
+   "as_of": "2024-12-31",
+   "value": 940,
+   "unit": "people",
+   "anchor": "risk",
+   "quote": "the number of our employees increased from approximately 940 as of December 31, 2024 to approximately 5,300 as of September 30, 2026"
   }
  ],
- "people": [
-  {
-   "slug": "dario-amodei",
-   "name": "Dario Amodei",
-   "public_role": "Chief Executive Officer, Co-Founder and Director",
-   "site_path": "/notebook/business/people/dario-amodei",
-   "sort_order": 1,
-   "anchor": "mgmt",
-   "quote": "Executive Officers:Dario Amodei43Chief Executive Officer, Co-Founder, and DirectorClasses A and F"
-  },
-  {
-   "slug": "daniela-amodei",
-   "name": "Daniela Amodei",
-   "public_role": "President, Co-Founder, Chairperson and Director",
-   "site_path": "/notebook/business/people/daniela-amodei",
-   "sort_order": 2,
-   "anchor": "mgmt",
-   "quote": "Daniela Amodei(2)39President, Co-Founder, Chairperson, and DirectorClasses A and F"
-  },
-  {
-   "slug": "krishna-rao",
-   "name": "Krishna Rao",
-   "public_role": "Chief Financial Officer since April 2024",
-   "site_path": "/notebook/business/people/krishna-rao",
-   "sort_order": 3,
-   "anchor": "mgmt",
-   "quote": "Mr. Rao has served as our Chief Financial Officer since April 2024."
-  },
-  {
-   "slug": "reed-hastings",
-   "name": "Reed Hastings",
-   "public_role": "Non-employee director",
-   "sort_order": 4,
-   "anchor": "mgmt",
-   "quote": "Non-Employee Directors:Reed Hastings(1)(2)(6)65DirectorClass T"
-  },
-  {
-   "slug": "christopher-liddell",
-   "name": "Christopher Liddell",
-   "public_role": "Non-employee director",
-   "sort_order": 5,
-   "anchor": "mgmt",
-   "quote": "Christopher Liddell(1)(4)(5)68DirectorClass T"
-  },
-  {
-   "slug": "vas-narasimhan",
-   "name": "Vas Narasimhan",
-   "public_role": "Non-employee director",
-   "sort_order": 6,
-   "anchor": "mgmt",
-   "quote": "Vas Narasimhan(3)(4)50DirectorClass T"
-  },
-  {
-   "slug": "yasmin-razavi",
-   "name": "Yasmin Razavi",
-   "public_role": "Non-employee director",
-   "sort_order": 7,
-   "anchor": "mgmt",
-   "quote": "Yasmin Razavi(2)(3)37DirectorClasses A and F"
-  }
- ],
+ "people": [],
  "events": [
   {
    "kind": "deal",

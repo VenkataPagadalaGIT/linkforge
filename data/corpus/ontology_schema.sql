@@ -236,9 +236,8 @@ ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS site_path text;
 ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS sort_order int;
 ALTER TABLE ontology.prediction ADD COLUMN IF NOT EXISTS approved boolean NOT NULL DEFAULT false;
 ALTER TABLE ontology.prediction ADD COLUMN IF NOT EXISTS entity_id int REFERENCES ontology.entity(id) ON DELETE CASCADE;
-ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_check;
-ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check
-  CHECK (target_kind IN ('entity','relation','deal','claim','event','prediction','person','signal','implication'));
+-- Every kind of row that can carry quoted evidence. One definition, the full list: re-running this file
+-- must never narrow it below the rows already stored (the 360 tables added the last six kinds).
 
 -- What a fact means for a reader, written in the owner's voice. Drafts stay
 -- off production until approved.
@@ -375,3 +374,139 @@ CREATE TABLE IF NOT EXISTS ontology.share_segment (
   scope       text NOT NULL,
   sort_order  int
 );
+
+-- Hiring (2026-10-28): each company's public job board, and every posting seen on it. A posting that drops off
+-- the board gets closed_on; first_seen and last_seen make weekly trends possible without re-reading anything.
+CREATE TABLE IF NOT EXISTS ontology.job_board (
+  entity_id    int PRIMARY KEY REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  board        text NOT NULL UNIQUE,
+  careers_url  text
+);
+CREATE TABLE IF NOT EXISTS ontology.job_posting (
+  id               serial PRIMARY KEY,
+  entity_id        int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  board            text NOT NULL,
+  external_id      text NOT NULL,
+  title            text NOT NULL,
+  team             text,
+  location         text,
+  remote           boolean,
+  employment_type  text,
+  url              text NOT NULL,
+  published_on     date,
+  first_seen       date NOT NULL DEFAULT current_date,
+  last_seen        date NOT NULL DEFAULT current_date,
+  closed_on        date,
+  UNIQUE (board, external_id)
+);
+CREATE INDEX IF NOT EXISTS job_posting_entity_idx ON ontology.job_posting (entity_id, closed_on);
+-- Workplace as the board states it (Remote, Hybrid, OnSite); Ashby flags hybrid roles isRemote, so a boolean overstated remote work.
+ALTER TABLE ontology.job_posting ADD COLUMN IF NOT EXISTS workplace text;
+ALTER TABLE ontology.job_posting ADD COLUMN IF NOT EXISTS locations text[];
+
+-- ===== 360 company file (2026-10-28): people's other roles, legal matters, advisors, funding rounds =====
+-- People: a Wikidata id for matching, a display group, and a free-licensed photo with its credit.
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS wikidata text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS grp text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS image_path text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS image_credit text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS image_license text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS image_license_url text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS image_page text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS source_file text;
+-- Where else a person works or has worked: the links between companies that run through people.
+CREATE TABLE IF NOT EXISTS ontology.affiliation (
+  id serial PRIMARY KEY,
+  person_id int NOT NULL REFERENCES ontology.person(id) ON DELETE CASCADE,
+  org_name text NOT NULL,
+  org_entity_id int REFERENCES ontology.entity(id) ON DELETE SET NULL,
+  title text NOT NULL,
+  kind text NOT NULL CHECK (kind IN ('executive','director','founder','trustee','employee','investor','advisor','government','academic','nonprofit')),
+  period text,
+  start_year int,
+  end_year int,
+  current boolean NOT NULL DEFAULT false,
+  sort_order int,
+  source_file text NOT NULL
+);
+-- Lawsuits and government actions, as the company itself discloses them (or as court records show them).
+CREATE TABLE IF NOT EXISTS ontology.legal_case (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  slug text NOT NULL UNIQUE,
+  name text NOT NULL,
+  court text,
+  role text NOT NULL CHECK (role IN ('defendant','plaintiff','petitioner','respondent','subject')),
+  kind text NOT NULL,
+  filed text,
+  filed_on date,
+  status text NOT NULL,
+  status_on date,
+  counterparties text[],
+  amount numeric,
+  summary text NOT NULL,
+  docket_url text,
+  sort_order int,
+  source_file text NOT NULL
+);
+-- Advisors and service providers named in filings: auditors, counsel, underwriters.
+CREATE TABLE IF NOT EXISTS ontology.engagement (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  org_name text NOT NULL,
+  org_entity_id int REFERENCES ontology.entity(id) ON DELETE SET NULL,
+  role text NOT NULL,
+  since text,
+  until text,
+  current boolean NOT NULL DEFAULT true,
+  sort_order int,
+  source_file text NOT NULL
+);
+-- Every financing from the first round to the IPO, each tranche as the filing lists it.
+CREATE TABLE IF NOT EXISTS ontology.funding_round (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  slug text NOT NULL UNIQUE,
+  round text NOT NULL,
+  tranche text,
+  kind text NOT NULL CHECK (kind IN ('priced_round','note_conversion','safe_conversion','secondary_resale','convertible_note','strategic_commitment','ipo')),
+  stage text NOT NULL CHECK (stage IN ('pre_public','ipo','post_public')),
+  started text,
+  ended text,
+  announced_on date,
+  investors int,
+  price_per_share numeric,
+  shares bigint,
+  amount numeric,
+  amount_qualifier text,
+  post_money numeric,
+  voting boolean,
+  summary text NOT NULL,
+  sort_order int,
+  source_file text NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ontology.round_investor (
+  id serial PRIMARY KEY,
+  round_id int NOT NULL REFERENCES ontology.funding_round(id) ON DELETE CASCADE,
+  investor_name text NOT NULL,
+  investor_entity_id int REFERENCES ontology.entity(id) ON DELETE SET NULL,
+  investor_kind text NOT NULL,
+  role text NOT NULL CHECK (role IN ('lead','co_lead','participant')),
+  UNIQUE (round_id, investor_name)
+);
+-- Identity facts with their sentence: founding, headquarters, headcount, governance, listing.
+CREATE TABLE IF NOT EXISTS ontology.fact (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  key text NOT NULL,
+  label text NOT NULL,
+  value text NOT NULL,
+  as_of date,
+  sort_order int,
+  source_file text NOT NULL,
+  UNIQUE (entity_id, key)
+);
+ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_check;
+ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check CHECK (target_kind = ANY (ARRAY['entity','relation','deal','claim','event','prediction','person','signal','implication','affiliation','legal_case','engagement','funding_round','job_posting','fact']));
+-- A person whose only free photo is not a portrait (a holiday snapshot) shows initials instead.
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS photo_blocked boolean NOT NULL DEFAULT false;

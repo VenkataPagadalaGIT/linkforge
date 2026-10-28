@@ -18,6 +18,8 @@ import { buildNodeGraphView } from "@/lib/aiOntologyGraph";
 import { intelFor } from "@/data/aiIntel";
 import AiCompanyFile from "@/components/ai/AiCompanyFile";
 import { EntityShares, isShareMetric } from "@/components/ai/AiShares";
+import { AdvisorsSection, Company360, HiringSection, InvestorsSection, LegalSection, PeopleSection, has360 } from "@/components/ai/Ai360";
+import { AI_360 } from "@/data/ai360";
 
 const RelationList = ({ title, arrow, items, tone }: { title: string; arrow: string; items: Relation[]; tone: string }) => {
   if (!items.length) return null;
@@ -128,8 +130,34 @@ export default function AiNodeView({ id }: { id: string }) {
         {/* Market share: the segments it is in, each with its estimator and the exact sentence */}
         <EntityShares id={node.id} />
 
+        {/* 360: identity, every angle, and how it connects inside and out */}
+        {has360(node.id) && (
+          <section className="mb-14 space-y-8" aria-labelledby="file-360">
+            <div>
+              <h2 id="file-360" className="font-display text-2xl font-bold text-foreground">{node.name}, 360</h2>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">Who runs it, who paid for it, who it is fighting, who it hires. Every line has its source sentence.</p>
+            </div>
+            <Company360 id={node.id} />
+            {(AI_360[node.id]?.people.length ?? 0) > 0 && <PeopleSection ids={[node.id]} />}
+            {(AI_360[node.id]?.rounds.length ?? 0) > 0 && (
+              <div className="space-y-6">
+                <h2 className="font-display text-xl font-bold text-foreground">Investors, from the first round to the IPO</h2>
+                <InvestorsSection id={node.id} />
+                <AdvisorsSection id={node.id} />
+              </div>
+            )}
+            {(AI_360[node.id]?.legal.length ?? 0) > 0 && (
+              <div className="space-y-4">
+                <h2 className="font-display text-xl font-bold text-foreground">Legal</h2>
+                <LegalSection ids={[node.id]} />
+              </div>
+            )}
+            {AI_360[node.id]?.hiring && <HiringSection id={node.id} />}
+          </section>
+        )}
+
         {/* Company file: deals, measures, people and events from the ontology database */}
-        {intel && hasFile && <AiCompanyFile name={node.name} intel={intel} />}
+        {intel && hasFile && <AiCompanyFile name={node.name} intel={intel} hidePeople={(AI_360[node.id]?.people.length ?? 0) > 0} />}
 
         {/* Ecosystem visualization */}
         {view && (

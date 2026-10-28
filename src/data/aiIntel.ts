@@ -95,7 +95,7 @@ export const AI_DEAL_EDGES: IntelDealEdge[] = [
   "stage": "definitive",
   "amount": 110000000000.0,
   "amountHigh": null,
-  "qualifier": "at least",
+  "qualifier": null,
   "basis": "announced",
   "termStart": "2026-05-01",
   "termEnd": "2036-04-30",
@@ -223,6 +223,21 @@ export const AI_DEAL_EDGES: IntelDealEdge[] = [
   "summary": "About $6.2B of Amazon convertible notes outstanding at 30 June 2026 (2023 agreement $2,186M, 2024 agreement $4,017M). Conversion is capped at 12% of Anthropic's capitalization unless Amazon waives it. An April 2026 agreement adds potential future financing capacity."
  },
  {
+  "from": "microsoft",
+  "to": "anthropic",
+  "relation": "invests_in",
+  "instrument": "equity",
+  "stage": "funded",
+  "amount": null,
+  "amountHigh": null,
+  "qualifier": null,
+  "basis": null,
+  "termStart": null,
+  "termEnd": null,
+  "moneyDirection": "from_to",
+  "summary": "The S-1 names Microsoft, with Amazon and Google, as having made significant equity investments through affiliates. It does not state the amount."
+ },
+ {
   "from": "amazon-investor",
   "to": "openai",
   "relation": "invests_in",
@@ -251,21 +266,6 @@ export const AI_DEAL_EDGES: IntelDealEdge[] = [
   "termEnd": null,
   "moneyDirection": "from_to",
   "summary": "Nvidia is named as a strategic anchor of the $122B round (OpenAI). CNBC reports the Nvidia share as $30B; the $100B figure of September 2025 was a letter of intent that was not completed as announced."
- },
- {
-  "from": "microsoft",
-  "to": "anthropic",
-  "relation": "invests_in",
-  "instrument": "equity",
-  "stage": "funded",
-  "amount": null,
-  "amountHigh": null,
-  "qualifier": null,
-  "basis": null,
-  "termStart": null,
-  "termEnd": null,
-  "moneyDirection": "from_to",
-  "summary": "The S-1 names Microsoft, with Amazon and Google, as having made significant equity investments through affiliates. It does not state the amount."
  }
 ];
 
@@ -331,7 +331,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "amazon-investor": {
   "deals": [
    {
-    "id": 77,
+    "id": 116,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -369,7 +369,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 1,
+    "id": 119,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -434,7 +434,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "amd": {
   "deals": [
    {
-    "id": 76,
+    "id": 115,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -493,7 +493,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "anthropic": {
   "deals": [
    {
-    "id": 74,
+    "id": 113,
     "counterparty": "broadcom",
     "counterpartyName": "Broadcom",
     "side": "buys",
@@ -531,7 +531,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 69,
+    "id": 108,
     "counterparty": "google-tpu",
     "counterpartyName": "Google TPU",
     "side": "buys",
@@ -569,7 +569,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 71,
+    "id": 110,
     "counterparty": "xai-capital",
     "counterpartyName": "xAI (SpaceXAI)",
     "side": "buys",
@@ -607,7 +607,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 68,
+    "id": 107,
     "counterparty": "google-cloud",
     "counterpartyName": "Google Cloud (GCP)",
     "side": "buys",
@@ -636,7 +636,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 67,
+    "id": 122,
     "counterparty": "aws",
     "counterpartyName": "Amazon Web Services (AWS)",
     "side": "buys",
@@ -645,7 +645,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "stage": "definitive",
     "amount": 110000000000.0,
     "amountHigh": null,
-    "qualifier": "at least",
+    "qualifier": null,
     "currency": "USD",
     "basis": "announced",
     "announcedOn": "2026-04-30",
@@ -654,9 +654,9 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "summary": "Anthropic committed to spend at least $110.0B with Amazon between May 2026 and April 2036 regardless of usage, with a true-up if actual spend falls short (S-1).",
     "evidence": [
      {
-      "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage.",
-      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979",
-      "locator": "MD&A, Infrastructure Service Arrangements",
+      "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage. If our actual spend falls short, we must pay Amazon the difference as a true-up",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+      "locator": "Contractual commitments, MD&A",
       "source": "Anthropic, PBC, Form S-1 registration statement",
       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
       "publishedOn": "2026-10-26",
@@ -665,7 +665,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 70,
+    "id": 109,
     "counterparty": "azure",
     "counterpartyName": "Microsoft Azure",
     "side": "buys",
@@ -694,7 +694,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 72,
+    "id": 111,
     "counterparty": "nscale-sovereign",
     "counterpartyName": "Nscale",
     "side": "buys",
@@ -723,7 +723,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 75,
+    "id": 114,
     "counterparty": "broadcom",
     "counterpartyName": "Broadcom",
     "side": "receives",
@@ -752,7 +752,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 73,
+    "id": 112,
     "counterparty": "lambda",
     "counterpartyName": "Lambda (Lambda Labs)",
     "side": "buys",
@@ -790,7 +790,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 76,
+    "id": 115,
     "counterparty": "amd",
     "counterpartyName": "AMD",
     "side": "buys",
@@ -828,7 +828,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 79,
+    "id": 123,
     "counterparty": "google-investor",
     "counterpartyName": "Alphabet (Google)",
     "side": "receives",
@@ -847,7 +847,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "evidence": [
      {
       "quote": "In May 2026 (unaudited), Google invested $10.0 billion in the Company’s Series H redeemable convertible preferred stock financing",
-      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
       "locator": "Notes to the consolidated financial statements",
       "source": "Anthropic, PBC, Form S-1 registration statement",
       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
@@ -857,7 +857,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 77,
+    "id": 116,
     "counterparty": "amazon-investor",
     "counterpartyName": "Amazon",
     "side": "receives",
@@ -895,7 +895,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 78,
+    "id": 117,
     "counterparty": "microsoft",
     "counterpartyName": "Microsoft",
     "side": "receives",
@@ -976,7 +976,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
       "period": "2026-06",
       "asOf": "2026-06-30",
       "value": 141100000000.0,
-      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
       "quote": "raised an aggregate of $141.1 billion of capital and had cash and cash equivalents of $112.4 billion and short-term investments of $19.3 billion."
      }
     ]
@@ -1060,9 +1060,16 @@ export const AI_INTEL: Record<string, EntityIntel> = {
    },
    {
     "metric": "employees",
-    "label": "Employees (approximately)",
-    "unit": "count",
+    "label": "Employees",
+    "unit": "people",
     "points": [
+     {
+      "period": "2024-12-31",
+      "asOf": "2024-12-31",
+      "value": 940.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2972",
+      "quote": "the number of our employees increased from approximately 940 as of December 31, 2024 to approximately 5,300 as of September 30, 2026"
+     },
      {
       "period": "2026-09-30",
       "asOf": "2026-09-30",
@@ -1258,13 +1265,13 @@ export const AI_INTEL: Record<string, EntityIntel> = {
   "people": [
    {
     "name": "Dario Amodei",
-    "role": "Chief Executive Officer, Co-Founder and Director",
+    "role": "Chief Executive Officer, co-founder and director since January 2021",
     "sitePath": "/notebook/business/people/dario-amodei",
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
    {
     "name": "Daniela Amodei",
-    "role": "President, Co-Founder, Chairperson and Director",
+    "role": "President, co-founder and Chairperson of the board; chairs the nominating and governance committee",
     "sitePath": "/notebook/business/people/daniela-amodei",
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
@@ -1276,27 +1283,87 @@ export const AI_INTEL: Record<string, EntityIntel> = {
    },
    {
     "name": "Reed Hastings",
-    "role": "Non-employee director",
+    "role": "Lead independent director; on the board since May 2025",
     "sitePath": null,
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
    {
     "name": "Christopher Liddell",
-    "role": "Non-employee director",
+    "role": "Director since February 2026; chairs the audit committee",
     "sitePath": null,
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
    {
     "name": "Vas Narasimhan",
-    "role": "Non-employee director",
+    "role": "Director since April 2026; chairs the compensation committee and the safety and risk committee",
     "sitePath": null,
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
    {
     "name": "Yasmin Razavi",
-    "role": "Non-employee director",
+    "role": "Director since March 2023; joined the board with the Series C",
     "sitePath": null,
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
+   },
+   {
+    "name": "Jay Kreps",
+    "role": "Director until May 2026",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
+   },
+   {
+    "name": "Tom Brown",
+    "role": "Co-founder",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+   },
+   {
+    "name": "Jack Clark",
+    "role": "Co-founder",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+   },
+   {
+    "name": "Jared Kaplan",
+    "role": "Co-founder",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+   },
+   {
+    "name": "Sam McCandlish",
+    "role": "Co-founder",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+   },
+   {
+    "name": "Christopher Olah",
+    "role": "Co-founder",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+   },
+   {
+    "name": "Neil “Buddy” Shah",
+    "role": "Chair and Trustee of the Long-Term Benefit Trust since June 2023",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2993"
+   },
+   {
+    "name": "Richard Fontaine",
+    "role": "Trustee of the Long-Term Benefit Trust since April 2025",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2993"
+   },
+   {
+    "name": "Ben S. Bernanke",
+    "role": "Trustee of the Long-Term Benefit Trust since June 2026",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2993"
+   },
+   {
+    "name": "Christopher Stubbs",
+    "role": "Trustee of the Long-Term Benefit Trust since October 2026",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2993"
    }
   ],
   "events": [
@@ -1442,7 +1509,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
     "publishedOn": "2026-10-26",
     "secondary": false,
-    "quotes": 52
+    "quotes": 53
    },
    {
     "title": "2025: The State of Generative AI in the Enterprise",
@@ -1457,7 +1524,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "aws": {
   "deals": [
    {
-    "id": 67,
+    "id": 122,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1466,7 +1533,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "stage": "definitive",
     "amount": 110000000000.0,
     "amountHigh": null,
-    "qualifier": "at least",
+    "qualifier": null,
     "currency": "USD",
     "basis": "announced",
     "announcedOn": "2026-04-30",
@@ -1475,9 +1542,9 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "summary": "Anthropic committed to spend at least $110.0B with Amazon between May 2026 and April 2036 regardless of usage, with a true-up if actual spend falls short (S-1).",
     "evidence": [
      {
-      "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage.",
-      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979",
-      "locator": "MD&A, Infrastructure Service Arrangements",
+      "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage. If our actual spend falls short, we must pay Amazon the difference as a true-up",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+      "locator": "Contractual commitments, MD&A",
       "source": "Anthropic, PBC, Form S-1 registration statement",
       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
       "publishedOn": "2026-10-26",
@@ -1529,7 +1596,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "azure": {
   "deals": [
    {
-    "id": 70,
+    "id": 109,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1623,7 +1690,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "broadcom": {
   "deals": [
    {
-    "id": 74,
+    "id": 113,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1661,7 +1728,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 75,
+    "id": 114,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -1871,7 +1938,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-cloud": {
   "deals": [
    {
-    "id": 68,
+    "id": 107,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1985,7 +2052,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-investor": {
   "deals": [
    {
-    "id": 79,
+    "id": 123,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -2004,7 +2071,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "evidence": [
      {
       "quote": "In May 2026 (unaudited), Google invested $10.0 billion in the Company’s Series H redeemable convertible preferred stock financing",
-      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
       "locator": "Notes to the consolidated financial statements",
       "source": "Anthropic, PBC, Form S-1 registration statement",
       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
@@ -2035,7 +2102,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-tpu": {
   "deals": [
    {
-    "id": 69,
+    "id": 108,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2094,7 +2161,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "lambda": {
   "deals": [
    {
-    "id": 73,
+    "id": 112,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2188,7 +2255,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "microsoft": {
   "deals": [
    {
-    "id": 78,
+    "id": 117,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -2367,7 +2434,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "nscale-sovereign": {
   "deals": [
    {
-    "id": 72,
+    "id": 111,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2417,7 +2484,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "nvidia": {
   "deals": [
    {
-    "id": 3,
+    "id": 121,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -2455,7 +2522,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 2,
+    "id": 120,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -2788,7 +2855,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "openai": {
   "deals": [
    {
-    "id": 3,
+    "id": 121,
     "counterparty": "nvidia",
     "counterpartyName": "Nvidia",
     "side": "receives",
@@ -2826,7 +2893,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 1,
+    "id": 119,
     "counterparty": "amazon-investor",
     "counterpartyName": "Amazon",
     "side": "receives",
@@ -2855,7 +2922,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 2,
+    "id": 120,
     "counterparty": "nvidia",
     "counterpartyName": "Nvidia",
     "side": "receives",
@@ -3586,7 +3653,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "xai-capital": {
   "deals": [
    {
-    "id": 71,
+    "id": 110,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",

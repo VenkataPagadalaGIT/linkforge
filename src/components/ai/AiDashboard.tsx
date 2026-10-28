@@ -28,6 +28,8 @@ import {
 import { SearchBox } from "./IntelDossier";
 import { ShareCard, isShareMetric } from "./AiShares";
 import { FollowButton, WatchlistStrip, useWatchlist } from "./Watch";
+import { AI_360 } from "@/data/ai360";
+import { Company360, HiringSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
 import { AI_SHARES } from "@/data/aiIntel";
 
 const SHOW_DRAFTS = process.env.NEXT_PUBLIC_SHOW_DRAFTS === "1";
@@ -39,15 +41,18 @@ const PLATFORM_LABEL: Record<string, string> = { company_blog: "Blog", github: "
  * that is not collected yet says so and lists what it will cover, instead of showing anything that looks like data.
  */
 
-type Tab = "overview" | "connections" | "money" | "share" | "news" | "earnings" | "people";
+type Tab = "overview" | "f360" | "connections" | "money" | "investors" | "share" | "people" | "legal" | "news" | "earnings";
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "f360", label: "360" },
   { id: "connections", label: "Connections" },
   { id: "money", label: "Money" },
+  { id: "investors", label: "Investors" },
   { id: "share", label: "Market share" },
+  { id: "people", label: "People and hiring" },
+  { id: "legal", label: "Legal" },
   { id: "news", label: "News and events" },
   { id: "earnings", label: "Earnings calls" },
-  { id: "people", label: "People and posts" },
 ];
 
 const CHOKE = new Set(ALL_NODES.filter((n) => n.chokepoint).map((n) => n.id));
@@ -924,14 +929,17 @@ function EarningsTab({ ids, onPick }: { ids: string[]; onPick: (id: string) => v
   );
 }
 
-function PeopleTab({ ids }: { ids: string[] }) {
-  const people = ids.flatMap((id) => (AI_INTEL[id]?.people ?? []).map((p) => ({ ...p, at: getNode(id)?.name ?? id })));
+function PeopleTab({ ids, onPick }: { ids: string[]; onPick: (id: string) => void }) {
+  const with360 = ids.filter((id) => (AI_360[id]?.people.length ?? 0) > 0);
+  const people = ids.filter((id) => !with360.includes(id)).flatMap((id) => (AI_INTEL[id]?.people ?? []).map((p) => ({ ...p, at: getNode(id)?.name ?? id })));
   const posts = ids
     .flatMap((id) => (AI_INTEL[id]?.posts ?? []).map((p) => ({ ...p, at: getNode(id)?.name ?? id })))
     .sort((a, b) => (b.publishedOn ?? "").localeCompare(a.publishedOn ?? ""))
     .slice(0, 30);
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {ids.length === 1 ? <HiringSection id={ids[0]} /> : <HiringTable ids={ids} onPick={onPick} />}
+      {with360.length > 0 && <PeopleSection ids={with360} onPick={onPick} />}
       {posts.length > 0 && (
         <div>
           <H aside="official channels only · newest first">Posts and releases</H>
@@ -952,6 +960,7 @@ function PeopleTab({ ids }: { ids: string[] }) {
           </ol>
         </div>
       )}
+      {people.length > 0 && <H aside="from filings">More people in public roles</H>}
       {people.length ? (
         <ul className="divide-y divide-border border border-border">
           {people.map((p) => (
@@ -974,7 +983,7 @@ function PeopleTab({ ids }: { ids: string[] }) {
           ))}
         </ul>
       ) : (
-        <p className="font-mono text-[11px] text-muted-foreground">No people in public roles recorded here yet.</p>
+        !with360.length && <p className="font-mono text-[11px] text-muted-foreground">No people in public roles recorded here yet.</p>
       )}
       <NotCollected title={posts.length ? "More platforms: not collected yet" : "Posts across platforms: not collected yet"}>
         <p>
@@ -983,6 +992,58 @@ function PeopleTab({ ids }: { ids: string[] }) {
         </p>
       </NotCollected>
     </div>
+  );
+}
+
+/** Companies in view that have a 360 file, with what each one covers. */
+function Files360({ ids, onPick, only }: { ids: string[]; onPick: (id: string) => void; only?: "rounds" }) {
+  const files = ids.filter((id) => has360(id) && (!only || (AI_360[id]?.[only].length ?? 0) > 0));
+  return (
+    <div className="space-y-3">
+      <H aside={`${files.length} of ${fmt(ids.length)} entities`}>{only === "rounds" ? "Funding histories" : "360 company files"}</H>
+      {files.length ? (
+        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {files.map((id) => {
+            const f = AI_360[id]!;
+            const last = [...f.rounds].reverse().find((r) => r.postMoney);
+            return (
+              <li key={id}>
+                <button type="button" onClick={() => onPick(id)} className="block w-full border border-border p-3 text-left hover:border-foreground/40">
+                  <span className="font-display text-sm font-bold text-foreground">{getNode(id)?.name ?? id}</span>
+                  <span className="mt-1 block font-mono text-[10px] text-muted-foreground">
+                    {[
+                      f.people.length && `${f.people.length} people`,
+                      f.rounds.length && `${f.rounds.length} financings`,
+                      last && `${money(last.postMoney)} last valuation`,
+                      f.legal.length && `${f.legal.length} legal matters`,
+                      f.hiring && `${fmt(f.hiring.open)} open roles`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="font-mono text-[11px] text-muted-foreground">No 360 file in this segment yet.</p>
+      )}
+      <NotCollected title="How a 360 file is built">
+        <p>
+          One company at a time, from its own documents: officers, board and founders with their other roles; every financing with its investors; lawsuits it discloses;
+          auditors, counsel and underwriters; and every open role on its public job board. Each line carries the exact sentence it comes from.
+        </p>
+      </NotCollected>
+    </div>
+  );
+}
+
+function No360({ name }: { name: string }) {
+  return (
+    <NotCollected title={`${name}: 360 file not built yet`}>
+      <p>The 360 file adds people and their other roles, funding rounds, legal matters, advisors and hiring, each from the company&apos;s own documents. Anthropic&apos;s is the first; the companies with filings come next.</p>
+    </NotCollected>
   );
 }
 
@@ -1191,7 +1252,31 @@ export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScop
         {tab === "share" && <ShareTab scope={scope} onPick={pick} />}
         {tab === "news" && <NewsTab ids={ids} />}
         {tab === "earnings" && <EarningsTab ids={ids} onPick={pick} />}
-        {tab === "people" && <PeopleTab ids={ids} />}
+        {tab === "people" && <PeopleTab ids={ids} onPick={pick} />}
+        {tab === "f360" && (node ? (has360(node.id) ? <Company360 id={node.id} onPick={pick} onTab={(t) => setTab(t as Tab)} /> : <No360 name={node.name} />) : <Files360 ids={ids} onPick={pick} />)}
+        {tab === "investors" &&
+          (node ? (
+            (AI_360[node.id]?.rounds.length ?? 0) > 0 ? (
+              <div className="space-y-6">
+                <InvestorsSection id={node.id} onPick={pick} />
+                <AdvisorsSection id={node.id} />
+              </div>
+            ) : (
+              <NotCollected title={`${node.name}: funding history not collected yet`}>
+                <p>Rounds come from the company&apos;s own filings (S-1, Form D, proxy) and announcements: date, amount, price per share, valuation and who led, each with its sentence.</p>
+              </NotCollected>
+            )
+          ) : (
+            <Files360 ids={ids} onPick={pick} only="rounds" />
+          ))}
+        {tab === "legal" &&
+          (ids.some((id) => (AI_360[id]?.legal.length ?? 0) > 0) ? (
+            <LegalSection ids={ids} onPick={pick} />
+          ) : (
+            <NotCollected title="Legal: not collected yet">
+              <p>Lawsuits and government actions come from each company&apos;s own filings first, then from public court dockets, each with the sentence or docket entry behind it.</p>
+            </NotCollected>
+          ))}
       </div>
     </section>
   );

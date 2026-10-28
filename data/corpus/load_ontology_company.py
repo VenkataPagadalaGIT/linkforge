@@ -61,8 +61,10 @@ if DM:
 OWN = f"entity_id={eid(ENT)} AND (document_id IS NULL OR document_id=(SELECT id FROM document WHERE slug={lit(DOC)}))"
 st.append(f"DELETE FROM ontology.evidence WHERE target_kind='signal' AND target_id IN (SELECT id FROM ontology.signal WHERE {OWN});")
 st.append(f"DELETE FROM ontology.signal WHERE {OWN};")
-st.append(f"DELETE FROM ontology.evidence WHERE target_kind='person' AND target_id IN (SELECT id FROM ontology.person WHERE entity_id={eid(ENT)});")
-st.append(f"DELETE FROM ontology.person WHERE entity_id={eid(ENT)};")
+# Only this file's people: people loaded by a 360 file (with their other roles and photos) belong to that loader.
+PEOPLE_OWN = f"entity_id={eid(ENT)} AND (source_file IS NULL OR source_file={lit(SRC)})"
+st.append(f"DELETE FROM ontology.evidence WHERE target_kind='person' AND target_id IN (SELECT id FROM ontology.person WHERE {PEOPLE_OWN});")
+st.append(f"DELETE FROM ontology.person WHERE {PEOPLE_OWN};")
 st.append(f"DELETE FROM ontology.event WHERE source_file={lit(SRC)};")
 st.append(f"DELETE FROM ontology.prediction WHERE source_file={lit(SRC)};")
 st.append(f"DELETE FROM ontology.implication WHERE source_file={lit(SRC)};")
@@ -96,10 +98,10 @@ for s in D.get("signals", []):
 
 for p in D.get("people", []):
     url = A.get(p.get("anchor"))
-    st.append("INSERT INTO ontology.person (slug,name,public_role,entity_id,source_kind,source_url,site_path,sort_order,verification)"
-              f" VALUES ({lit(p['slug'])},{lit(p['name'])},{lit(p['public_role'])},{eid(ENT)},'filing',{lit(url)},{lit(p.get('site_path'))},{lit(p.get('sort_order'))},'verified')"
+    st.append("INSERT INTO ontology.person (slug,name,public_role,entity_id,source_kind,source_url,site_path,sort_order,verification,source_file)"
+              f" VALUES ({lit(p['slug'])},{lit(p['name'])},{lit(p['public_role'])},{eid(ENT)},'filing',{lit(url)},{lit(p.get('site_path'))},{lit(p.get('sort_order'))},'verified',{lit(SRC)})"
               " ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name, public_role=EXCLUDED.public_role, entity_id=EXCLUDED.entity_id, source_url=EXCLUDED.source_url,"
-              " site_path=EXCLUDED.site_path, sort_order=EXCLUDED.sort_order, verification='verified', updated_at=now();")
+              " site_path=EXCLUDED.site_path, sort_order=EXCLUDED.sort_order, verification='verified', source_file=EXCLUDED.source_file, updated_at=now();")
     st.append(evidence("person", f"SELECT id FROM ontology.person WHERE slug={lit(p['slug'])}", p["quote"], p.get("anchor"), "Management"))
 
 for ev in D.get("events", []):

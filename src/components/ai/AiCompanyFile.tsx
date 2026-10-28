@@ -218,7 +218,7 @@ function SeriesCard({ s }: { s: IntelSeries }) {
   );
 }
 
-export default function AiCompanyFile({ name, intel }: { name: string; intel: EntityIntel }) {
+export default function AiCompanyFile({ name, intel, hidePeople = false }: { name: string; intel: EntityIntel; hidePeople?: boolean }) {
   const primary = intel.sources.find((s) => !s.secondary) ?? intel.sources[0];
   const kpis = KPI_ORDER.map((m) => intel.series.find((s) => s.metric === m)).filter((s): s is IntelSeries => !!s);
   const buys = intel.deals.filter((d) => d.side === "buys");
@@ -241,7 +241,7 @@ export default function AiCompanyFile({ name, intel }: { name: string; intel: En
       <div className="border-t border-border pt-8 mb-8">
         <p className={LABEL}>Company file</p>
         <h2 id="company-file" className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-2">
-          {name}: money, compute and people
+          {name}: money, compute{hidePeople ? "" : " and people"}
         </h2>
         {primary && (
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-2 max-w-3xl">
@@ -353,7 +353,7 @@ export default function AiCompanyFile({ name, intel }: { name: string; intel: En
         </div>
       )}
 
-      {intel.people.length > 0 && (
+      {!hidePeople && intel.people.length > 0 && (
         <div className="mb-12">
           <h3 className="font-display text-xl font-bold text-foreground mb-4">People named in the filing</h3>
           <ul className="grid sm:grid-cols-2 gap-2">
