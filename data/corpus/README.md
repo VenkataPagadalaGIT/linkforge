@@ -56,3 +56,21 @@ revised a figure, and that belongs in the changelog, never silently in the data.
 ## Crosscheck
 
     docker exec -i vp-research-db psql -U research -d research_corpus -f /dev/stdin < coverage.sql
+
+## ontology schema (the AI Systems Map as data)
+
+The map at /notebook/ai/map used to live only in `src/data/aiOntologyData.ts`.
+Its source of truth is now the `ontology` schema in this database: entities,
+typed relations, and a `deal` row for every money figure, with `evidence`
+quotes, `event`, `claim` (forward-looking statements from earnings calls),
+`signal` (measured series) and `prediction` (our scored calls).
+
+    docker exec -i vp-research-db psql -U research -d research_corpus -v ON_ERROR_STOP=1 -q --single-transaction < ontology_schema.sql
+    python3 load_ontology_seed.py          # seeds from the July 2026 file, verification = unverified
+    python3 gen_ontology_ts.py --check     # proves the generated file equals the current one
+    python3 gen_ontology_ts.py             # writes src/data/aiOntologyData.ts
+
+Rules: nothing in `src/data/aiOntologyData.ts` is hand-edited; a relation's
+note changes only after its `deal` and `evidence` rows exist; `person` rows
+come from company sites, filings, papers and talks only (the `source_kind`
+check enforces it).
