@@ -4,7 +4,10 @@ Generate src/data/aiOntologyData.ts from ontology.entity and ontology.relation.
 
 The output keeps the exact shape and key order of the hand-generated file, so
 the first run after seeding reproduces it byte for byte (--check proves it).
-Rows added later come after the seeded ones, in slug order.
+Rows added later come after the seeded ones, in slug order. Relation types the
+site's RelationType union does not know yet (guarantees, acquired, leases_to,
+licenses, customer_of) are kept in the database and left out of the file until
+src/data/aiOntology.ts learns them.
 
 Run: python3 gen_ontology_ts.py [--check]
 """
@@ -41,6 +44,8 @@ rels = rows("""
   SELECT f.slug AS "from", t.slug AS "to", r.relation, r.note
   FROM ontology.relation r JOIN ontology.entity f ON f.id = r.from_id JOIN ontology.entity t ON t.id = r.to_id
   WHERE r.verification <> 'superseded' AND (r.valid_to IS NULL OR r.valid_to >= current_date)
+    AND r.relation IN ('depends_on','supplies','manufactures','designs','powers','hosts','invests_in','partners_with',
+                       'competes_with','restricts','uses','used_by','sources')
   ORDER BY r.seed_order NULLS LAST, f.slug, t.slug, r.relation""")
 
 
