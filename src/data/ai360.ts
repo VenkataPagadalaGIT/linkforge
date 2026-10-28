@@ -4301,7 +4301,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 579,
+   "total": 630,
    "dated": 487,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7234,11 +7234,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "www.anthropic.com",
      "label": "anthropic.com",
      "mode": "text",
-     "pages": 571,
-     "withText": 476,
-     "dated": 519,
+     "pages": 587,
+     "withText": 586,
+     "dated": 527,
      "withAuthors": 1,
-     "words": 834127,
+     "words": 1133278,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7246,11 +7246,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "alignment.anthropic.com",
      "label": "Alignment Science blog",
      "mode": "text",
-     "pages": 3,
-     "withText": 3,
-     "dated": 1,
-     "withAuthors": 0,
-     "words": 4765,
+     "pages": 38,
+     "withText": 38,
+     "dated": 13,
+     "withAuthors": 1,
+     "words": 201907,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7303,8 +7303,8 @@ export const AI_360: Record<string, Entity360> = {
      "readOn": null
     }
    ],
-   "words": 858043,
-   "pagesWithText": 484
+   "words": 1354336,
+   "pagesWithText": 629
   },
   "attention": {
    "source": "Hacker News",
@@ -8443,6 +8443,21 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Dylan Shields",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Jack Clark",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "url": null,
@@ -8499,6 +8514,36 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Keir Bradwell",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kevin K. Troy",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
      ]
     },
     {
@@ -8574,6 +8619,21 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Peter McCrory",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
      ]
     },
     {
@@ -9443,7 +9503,7 @@ export const AI_360: Record<string, Entity360> = {
     "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
-    "company_site:confirmed": 25,
+    "company_site:confirmed": 29,
     "openalex:model": 282,
     "linkedin:stated": 20
    }
