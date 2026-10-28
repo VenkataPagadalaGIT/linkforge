@@ -2538,8 +2538,225 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    }
   ],
-  "series": [],
-  "people": [],
+  "series": [
+   {
+    "metric": "data_center_revenue_quarter_usd",
+    "label": "Data Center revenue",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 89000000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Data Center revenue was $89.0 billion, up 117% from a year ago and up 18% sequentially, driven by the ramp of our Blackwell Ultra infrastructure."
+     }
+    ]
+   },
+   {
+    "metric": "gross_margin_quarter_pct",
+    "label": "Gross margin",
+    "unit": "pct",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 72.4,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Gross margin75.0 %74.9 %72.4 %0.1 pts2.6 pts"
+     },
+     {
+      "period": "Q1 FY2027",
+      "asOf": "2026-04-26",
+      "value": 74.9,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Gross margin75.0 %74.9 %72.4 %0.1 pts2.6 pts"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 75.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Gross margin75.0 %74.9 %72.4 %0.1 pts2.6 pts"
+     }
+    ]
+   },
+   {
+    "metric": "net_income_quarter_usd",
+    "label": "Quarterly net income",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 26422000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "Net income$59,688 $26,422 $118,010 $45,197"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 59688000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "Net income$59,688 $26,422 $118,010 $45,197"
+     }
+    ]
+   },
+   {
+    "metric": "revenue_china_hq_quarter_usd",
+    "label": "Revenue from customers headquartered in China (incl. Hong Kong)",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 3985000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 7880000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     }
+    ]
+   },
+   {
+    "metric": "revenue_outside_us_pct",
+    "label": "Revenue from customers headquartered outside the US",
+    "unit": "pct",
+    "points": [
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 38.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "Revenue from sales to customers headquartered outside of the United States accounted for 38% and 30% of total revenue for the second quarter and first half of fiscal year 2027, respectively"
+     }
+    ]
+   },
+   {
+    "metric": "revenue_quarter_usd",
+    "label": "Quarterly revenue",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 46743000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Revenue$96,221 $81,615 $46,743 18 %106 %"
+     },
+     {
+      "period": "Q1 FY2027",
+      "asOf": "2026-04-26",
+      "value": 81615000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Revenue$96,221 $81,615 $46,743 18 %106 %"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 96221000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "Revenue$96,221 $81,615 $46,743 18 %106 %"
+     }
+    ]
+   },
+   {
+    "metric": "revenue_taiwan_hq_quarter_usd",
+    "label": "Revenue from customers headquartered in Taiwan",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 8902000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 26985000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     }
+    ]
+   },
+   {
+    "metric": "revenue_us_hq_quarter_usd",
+    "label": "Revenue from customers headquartered in the US",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q2 FY2026",
+      "asOf": "2025-07-27",
+      "value": 32897000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 60074000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_16",
+      "quote": "United States$60,074 $32,897 $123,843 $58,582 Taiwan26,985 8,902 38,991 16,550 China (including Hong Kong)7,880 3,985 12,430 13,644"
+     }
+    ]
+   },
+   {
+    "metric": "supply_capacity_commitments_usd",
+    "label": "Supply and capacity commitments",
+    "unit": "USD",
+    "points": [
+     {
+      "period": "Q1 FY2027",
+      "asOf": "2026-04-26",
+      "value": 119000000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "We have significantly increased our supply and capacity commitments from $119 billion last quarter to $279 billion as of July 26, 2026 to meet future demand."
+     },
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 279000000000.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "We have significantly increased our supply and capacity commitments from $119 billion last quarter to $279 billion as of July 26, 2026 to meet future demand."
+     }
+    ]
+   },
+   {
+    "metric": "top_direct_customer_share_pct",
+    "label": "Largest direct customer's share of revenue",
+    "unit": "pct",
+    "points": [
+     {
+      "period": "Q2 FY2027",
+      "asOf": "2026-07-26",
+      "value": 16.0,
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193",
+      "quote": "For the second quarter of fiscal year 2027, one direct customer represented 16% of total revenue, which was primarily attributable to the Compute & Networking segment."
+     }
+    ]
+   }
+  ],
+  "people": [
+   {
+    "name": "Jensen Huang",
+    "role": "President and Chief Executive Officer",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda2027q2ex311.htm"
+   },
+   {
+    "name": "Colette M. Kress",
+    "role": "Executive Vice President and Chief Financial Officer",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_334"
+   }
+  ],
   "events": [
    {
     "date": "2026-03-31",
@@ -2547,6 +2764,34 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "kind": "press_release",
     "headline": "OpenAI closes $122B round at $852B post-money",
     "url": null
+   },
+   {
+    "date": "2026-07-26",
+    "dateLabel": "As of 26 Jul 2026",
+    "kind": "deal",
+    "headline": "Supply and capacity commitments rise to $279B, from $119B a quarter earlier",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193"
+   },
+   {
+    "date": "2026-08-26",
+    "dateLabel": "26 Aug 2026",
+    "kind": "filing",
+    "headline": "Form 10-Q for the quarter to 26 Jul 2026: revenue $96.2B, Data Center $89.0B, gross margin 75.0%",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/0001045810-26-000075-index.htm"
+   },
+   {
+    "date": "2026-08-26",
+    "dateLabel": "By 26 Aug 2026",
+    "kind": "product_launch",
+    "headline": "Vera Rubin, the next Data Center architecture, began production shipments in Q3 fiscal 2027",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193"
+   },
+   {
+    "date": "2026-08-26",
+    "dateLabel": "Reported 26 Aug 2026",
+    "kind": "policy",
+    "headline": "H200 shipments under the US licensing program: under 1% of Data Center revenue, each subject to a 25% US import tariff",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm#i8725ad8044894bb48e26a97380d776ff_193"
    }
   ],
   "forecasts": [],
@@ -2554,6 +2799,13 @@ export const AI_INTEL: Record<string, EntityIntel> = {
   "pages": [],
   "posts": [],
   "sources": [
+   {
+    "title": "NVIDIA Corporation Form 10-Q for the quarter ended July 26, 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+    "publishedOn": "2026-08-26",
+    "secondary": false,
+    "quotes": 19
+   },
    {
     "title": "NVIDIA Corporation, Form 10-Q for the quarter ended July 26, 2026",
     "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000075/nvda-20260726.htm",

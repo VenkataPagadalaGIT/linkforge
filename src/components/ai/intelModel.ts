@@ -240,14 +240,17 @@ export const periodLabel = (p: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(p) ? dayMonthYear(p) : /^\d{4}-\d{2}$/.test(p) ? monthYear(`${p}-01`) : p;
 
 /** A measured value with its unit and the filing's own qualifier: $16.3B, ~900%, 11,900+. */
-export function seriesValue(s: { metric: string; label: string; unit: string | null }, v: number) {
+export function seriesValue(s: { metric: string; label: string; unit: string | null; points?: { value: number }[] }, v: number) {
   const more = /more than/.test(s.label);
   const approx = /approximately/.test(s.label);
+  // A series keeps one precision: 75.0% beside 74.9%, as the filing prints it.
+  const frac = (x: number) => Math.abs(x - Math.round(x)) > 1e-9;
+  const oneDecimal = frac(v) || (s.points ?? []).some((p) => frac(p.value));
   const core =
     s.unit === "USD"
       ? usd(v)
       : s.unit === "pct" || /_pct$/.test(s.metric)
-        ? `${Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString("en-US") : v.toFixed(1)}%`
+        ? `${oneDecimal ? v.toFixed(1) : Math.round(v).toLocaleString("en-US")}%`
         : Math.round(v).toLocaleString("en-US");
   return `${approx ? "~" : ""}${core}${more ? "+" : ""}`;
 }
@@ -413,4 +416,28 @@ export function searchAll(q: string): SearchResults {
     .filter((n) => !shown.has(n.id))
     .slice(0, g || best ? 5 : 8);
   return { groups: groups.slice(0, 3), categories: scored.slice(0, 4).map((x) => x.hit), members, memberOf: g ? `Units of ${g.name}` : best ? `In ${best.hit.label}` : null, matches };
+}
+
+/** Which figures lead a company's file, dossier and cards, in order (any company: the first ones it has). */
+export const KPI_PRIORITY = [
+  "revenue_usd",
+  "revenue_quarter_usd",
+  "data_center_revenue_quarter_usd",
+  "gross_margin_quarter_pct",
+  "net_income_quarter_usd",
+  "customers_100k_ttm",
+  "net_revenue_retention_pct",
+  "supply_capacity_commitments_usd",
+  "top_direct_customer_share_pct",
+  "revenue_outside_us_pct",
+  "adjusted_operating_margin_pct",
+  "capital_raised_total_usd",
+  "employees",
+  "post_money_valuation_usd",
+  "funding_round_committed_capital_usd",
+];
+/** Figures in headline order: the known ones first, then the rest, market shares last. */
+export function orderSeries<T extends { metric: string }>(series: T[]): T[] {
+  const rank = (m: string) => (m.startsWith("share_") ? 2000 : KPI_PRIORITY.includes(m) ? KPI_PRIORITY.indexOf(m) : 1000);
+  return series.slice().sort((a, b) => rank(a.metric) - rank(b.metric) || a.metric.localeCompare(b.metric));
 }

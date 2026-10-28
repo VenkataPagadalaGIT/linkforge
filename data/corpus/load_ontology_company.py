@@ -49,6 +49,13 @@ def evidence(kind, target_sql, quote, anchor, locator):
 
 
 st = []
+# The document itself, when the file describes it (a filing not yet in the corpus).
+DM = D.get("document_meta")
+if DM:
+    st.append("INSERT INTO document (source_id, slug, title, url, published_on, retrieval, retrieved_at)"
+              f" SELECT s.id, {lit(DOC)}, {lit(DM['title'])}, {lit(DM['url'])}, {lit(DM.get('published_on'))}, {lit(DM.get('retrieval', 'browser'))}, now()"
+              f" FROM source s WHERE s.slug={lit(DM['source'])}"
+              " ON CONFLICT (slug) DO UPDATE SET title=EXCLUDED.title, url=EXCLUDED.url, published_on=EXCLUDED.published_on;")
 # Clear this file's previous rows for this entity, so a re-run replaces them.
 # Only this file's figures: figures from other documents (market shares, SEC history) belong to their own loaders.
 OWN = f"entity_id={eid(ENT)} AND (document_id IS NULL OR document_id=(SELECT id FROM document WHERE slug={lit(DOC)}))"

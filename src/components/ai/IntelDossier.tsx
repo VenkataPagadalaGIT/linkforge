@@ -5,7 +5,7 @@ import { getNode, groupOf, LAYER_BY_ID, LAYERS, membersOf, NODE_TYPE_META, RELAT
 import { intelFor, type IntelDeal } from "@/data/aiIntel";
 import { logoUrl } from "@/data/aiLogos";
 import { isShareMetric, pctText, sharesOf } from "./AiShares";
-import { CAT_COLOR, CATS, DEGREE, EDGES_OF, INSTRUMENT_LABEL, dealAmount, monthYear, rankedSearch, searchAll, seriesValue, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
+import { CAT_COLOR, CATS, DEGREE, EDGES_OF, INSTRUMENT_LABEL, KPI_PRIORITY, dealAmount, monthYear, orderSeries, rankedSearch, searchAll, seriesValue, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
 
 // ---------------------------------------------------------------------------
 // Search box (command-palette style)
@@ -130,7 +130,6 @@ export function SearchBox({
 // Dossier: one entity's file, numbers first
 // ---------------------------------------------------------------------------
 
-const KPI_METRICS = ["revenue_usd", "customers_100k_ttm", "net_revenue_retention_pct", "capital_raised_total_usd", "post_money_valuation_usd", "funding_round_committed_capital_usd"];
 const SIDE_LABEL: Record<IntelDeal["side"], string> = { buys: "buys from", sells: "sells to", receives: "funded by", provides: "backs" };
 
 export function Dossier({
@@ -168,7 +167,7 @@ export function Dossier({
   const rel = EDGES_OF.get(id) ?? [];
   const byCat = CATS.map((c) => ({ c, items: rel.filter((e) => e.cat === c.id) })).filter((x) => x.items.length);
   const deals = (intel?.deals ?? []).slice().sort((a, b) => (b.amountHigh ?? b.amount ?? 0) - (a.amountHigh ?? a.amount ?? 0));
-  const kpis = (intel?.series ?? []).filter((s) => KPI_METRICS.includes(s.metric)).sort((a, b) => KPI_METRICS.indexOf(a.metric) - KPI_METRICS.indexOf(b.metric)).slice(0, 4);
+  const kpis = orderSeries((intel?.series ?? []).filter((s) => KPI_PRIORITY.includes(s.metric))).slice(0, 4);
   const shares = sharesOf(id).map((g) => ({ g, r: g.rows.find((x) => x.entity === id)! }));
   const hasFile = (intel?.series ?? []).some((s) => !isShareMetric(s.metric)) || (intel?.people.length ?? 0) > 0;
 
@@ -207,7 +206,7 @@ export function Dossier({
         <div data-testid="intel-dossier-units">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Group · {units.length} {units.length === 1 ? "unit" : "units"}</p>
           <ul className="divide-y divide-border border border-border">
-            {units.map((u) => (
+            {units.slice(0, 6).map((u) => (
               <li key={u.id}>
                 <button type="button" onClick={() => onSelect(u.id)} className="flex w-full items-baseline justify-between gap-2 px-2.5 py-1.5 text-left hover:bg-foreground/[0.06]">
                   <span className="truncate font-mono text-[11px] text-foreground">{u.name}</span>
@@ -218,6 +217,7 @@ export function Dossier({
               </li>
             ))}
           </ul>
+          {units.length > 6 && <p className="mt-1 font-mono text-[10px] text-muted-foreground">+{units.length - 6} more in the dashboard below</p>}
         </div>
       )}
 

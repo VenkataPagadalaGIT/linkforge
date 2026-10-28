@@ -89,7 +89,7 @@ const CARD_W = 172;
 /** Entities that get a card: those with a site icon, a company file or a market share. */
 const CARD_IDS = new Set([...AI_LOGO_IDS, ...Object.entries(AI_INTEL).filter(([, v]) => v.series.length).map(([k]) => k)]);
 /** One figure for a card, the first that the company file has. */
-const FIGURE_ORDER = ["revenue_usd", "post_money_valuation_usd", "funding_round_committed_capital_usd", "capital_raised_total_usd", "customers_100k_ttm"];
+const FIGURE_ORDER = ["revenue_usd", "revenue_quarter_usd", "post_money_valuation_usd", "funding_round_committed_capital_usd", "capital_raised_total_usd", "customers_100k_ttm"];
 const headlineFigure = (id: string): string | null => {
   const intel = AI_INTEL[id];
   if (!intel) return null;
@@ -145,6 +145,9 @@ const shortName = (id: string) => {
 const TICKER_METRICS: [string, string][] = [
   ["revenue_usd", "revenue"],
   ["revenue_quarter_usd", "quarterly revenue"],
+  ["data_center_revenue_quarter_usd", "Data Center revenue"],
+  ["gross_margin_quarter_pct", "gross margin"],
+  ["supply_capacity_commitments_usd", "supply and capacity commitments"],
   ["net_revenue_retention_pct", "net revenue retention"],
   ["customers_100k_ttm", "customers at $100K+"],
   ["adjusted_operating_margin_pct", "adjusted operating margin"],

@@ -17,6 +17,7 @@ import {
   dealAmount,
   dealsOf,
   monthYear,
+  orderSeries,
   periodLabel,
   reach,
   seriesValue,
@@ -379,7 +380,7 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
   const all = new Set(ALL_CATS);
   const ex1 = reach(id, "exposed", 1, all).ids.size - 1, ex2 = reach(id, "exposed", 2, all).ids.size - 1;
   const dp1 = reach(id, "depends", 1, all).ids.size - 1, dp2 = reach(id, "depends", 2, all).ids.size - 1;
-  const series = intel?.series ?? [];
+  const series = orderSeries(intel?.series ?? []);
   const fileSeries = series.filter((s) => !isShareMetric(s.metric));
   return (
     <div className="space-y-6">

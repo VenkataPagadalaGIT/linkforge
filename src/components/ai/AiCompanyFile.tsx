@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { KPI_PRIORITY } from "./intelModel";
 import { Link } from "@/lib/router-shim";
 import type { EntityIntel, IntelDeal, IntelEvidence, IntelSeries } from "@/data/aiIntel";
 
@@ -19,9 +20,13 @@ function usd(v: number): string {
   return `${s}$${Math.round(a).toLocaleString("en-US")}`;
 }
 
-function fmtValue(v: number, unit: string | null): string {
+function fmtValue(v: number, unit: string | null, series?: { points: { value: number }[] }): string {
   if (unit === "USD") return usd(v);
-  if (unit === "pct") return `${v.toLocaleString("en-US")}%`;
+  if (unit === "pct") {
+    // A series keeps one precision: 75.0% beside 74.9%, as the filing prints it.
+    const frac = (x: number) => Math.abs(x - Math.round(x)) > 1e-9;
+    return `${frac(v) || (series?.points ?? []).some((p) => frac(p.value)) ? v.toFixed(1) : v.toLocaleString("en-US")}%`;
+  }
   return Math.round(v).toLocaleString("en-US");
 }
 
@@ -118,16 +123,7 @@ const Draft = () => (
   </span>
 );
 
-const KPI_ORDER = [
-  "revenue_usd",
-  "customers_100k_ttm",
-  "net_revenue_retention_pct",
-  "adjusted_operating_margin_pct",
-  "capital_raised_total_usd",
-  "employees",
-  "post_money_valuation_usd",
-  "funding_round_committed_capital_usd",
-];
+const KPI_ORDER = KPI_PRIORITY;
 
 function DealRow({ d, max, tone }: { d: IntelDeal; max: number; tone: string }) {
   const lo = d.amount ?? 0;
@@ -187,7 +183,7 @@ function FinancialsTable({ series }: { series: IntelSeries[] }) {
                 const p = r.points.find((x) => x.period === c);
                 return (
                   <td key={c} className="text-right text-foreground px-3 py-2 whitespace-nowrap">
-                    {p ? fmtValue(p.value, r.unit) : ""}
+                    {p ? fmtValue(p.value, r.unit, r) : ""}
                   </td>
                 );
               })}
@@ -213,7 +209,7 @@ function SeriesCard({ s }: { s: IntelSeries }) {
             <span className="h-1.5 bg-border" aria-hidden="true">
               <span className="block h-1.5 bg-foreground/70" style={{ width: `${max ? (Math.abs(p.value) / max) * 100 : 0}%` }} />
             </span>
-            <span className="font-mono text-xs text-foreground">{withQualifier(fmtValue(p.value, s.unit), qualifier)}</span>
+            <span className="font-mono text-xs text-foreground">{withQualifier(fmtValue(p.value, s.unit, s), qualifier)}</span>
           </li>
         ))}
       </ul>
@@ -266,7 +262,7 @@ export default function AiCompanyFile({ name, intel }: { name: string; intel: En
             return (
               <div key={s.metric} className="border border-border p-4">
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">{label}</p>
-                <p className="font-display text-2xl font-bold text-foreground">{withQualifier(fmtValue(p.value, s.unit), qualifier)}</p>
+                <p className="font-display text-2xl font-bold text-foreground">{withQualifier(fmtValue(p.value, s.unit, s), qualifier)}</p>
                 <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">
                   {periodLabel(p.period)}
                   {p.url && (
