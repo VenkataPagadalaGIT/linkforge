@@ -7,6 +7,7 @@
 import { getNode, groupOf, membersOf, LAYERS, NODE_TYPE_META, RELATION_META } from "@/data/aiOntology";
 import { intelFor } from "@/data/aiIntel";
 import { EDGES_OF, dealAmount, periodLabel, rankedSearch, seriesValue } from "@/components/ai/intelModel";
+import { entityPath } from "@/lib/graph-urls";
 
 export interface EvidenceBlock { n: number; entity: string; entityName: string; kind: string; text: string; url: string | null }
 
@@ -47,7 +48,7 @@ export function evidenceFor(ids: string[]): EvidenceBlock[] {
   for (const id of ids) {
     const n = getNode(id);
     if (!n) continue;
-    const page = `https://venkatapagadala.com/notebook/ai/map/${id}`;
+    const page = `https://venkatapagadala.com${entityPath(id)}`;
     const head = groupOf(id);
     const units = membersOf(id);
     push(

@@ -5,6 +5,7 @@
 import { getNode, newsFor, nodes } from "@/data/aiOntology";
 import { AI_INTEL } from "@/data/aiIntel";
 import { dealAmount } from "@/components/ai/intelModel";
+import { entityPath } from "@/lib/graph-urls";
 
 export interface FeedItem {
   id: string;
@@ -23,7 +24,7 @@ export function feedFor(id: string): FeedItem[] {
   const n = getNode(id);
   if (!n) return [];
   const intel = AI_INTEL[id];
-  const page = `${SITE}/notebook/ai/map/${id}`;
+  const page = `${SITE}${entityPath(id)}`;
   const out: FeedItem[] = [];
   for (const e of intel?.events ?? [])
     out.push({ id: `ev:${id}:${e.date}:${e.headline}`, entity: id, date: e.date, kind: "event", title: `${n.name}: ${e.headline}`, url: e.url ?? page, detail: e.dateLabel ?? e.date });

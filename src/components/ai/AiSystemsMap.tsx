@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { LayerLegend, ViewSwitch } from "./Views";
 import { Link } from "@/lib/router-shim";
 import {
   LAYERS,
@@ -11,6 +12,7 @@ import {
   ONTOLOGY_COUNTS,
   type AiNode,
 } from "@/data/aiOntology";
+import { entityPath } from "@/lib/graph-urls";
 
 // Precompute each node's connected neighbourhood once (upstream + downstream + context).
 function useNeighborhoods() {
@@ -87,13 +89,7 @@ export default function AiSystemsMap() {
         >
           ⬦ Chokepoints · {ONTOLOGY_COUNTS.chokepoints}
         </button>
-        <a
-          href="/notebook/ai/graph"
-          className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 border border-border text-muted-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
-          data-testid="ai-map-graphlink"
-        >
-          Graph view →
-        </a>
+        <ViewSwitch current="map" />
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
           {ONTOLOGY_COUNTS.nodes} nodes · {ONTOLOGY_COUNTS.edges} links
         </span>
@@ -107,6 +103,11 @@ export default function AiSystemsMap() {
           <button onClick={() => setFocus(null)} className="text-muted-foreground/70 hover:text-foreground underline">clear</button>
         </div>
       )}
+
+      {/* The seven layers, defined, before the bands that list them */}
+      <div className="mb-4">
+        <LayerLegend compact />
+      </div>
 
       {/* Layer bands */}
       <div className="space-y-3">
@@ -155,7 +156,7 @@ export default function AiSystemsMap() {
                     return (
                       <a
                         key={n.id}
-                        href={`/notebook/ai/map/${n.id}`}
+                        href={entityPath(n.id)}
                         onMouseEnter={() => setFocus(n.id)}
                         onMouseLeave={() => setFocus((f) => (f === n.id ? null : f))}
                         onFocus={() => setFocus(n.id)}

@@ -1,4 +1,4 @@
-// The sections of a company's 360 file that get their own indexable page under /notebook/ai/map/<id>/<section>.
+// The sections of a company's 360 file that get their own indexable page under /notebook/ai/graph/<id>/<section>.
 // Shared by the route, the site index (sitemap, HTML sitemap) and the company page's section nav, so a section
 // exists in all three places or in none.
 import { AI_360, type Entity360 } from "@/data/ai360";

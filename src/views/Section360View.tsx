@@ -4,8 +4,9 @@ import { AI_360 } from "@/data/ai360";
 import { logoUrl } from "@/data/aiLogos";
 import { AdvisorsSection, AgreementsSection, FootprintSection, HiringSection, InvestorsSection, LegalSection, PeopleSection, SitesRead, TalentSection, TimelineSection } from "@/components/ai/Ai360";
 import type { Section360, Section360Id } from "@/lib/ai360-sections";
+import { entityPath, GRAPHS, hubPath, sectionPath } from "@/lib/graph-urls";
 
-/** One section of a company's 360 file on its own page: a focused title, the section, and links to the rest of the file. */
+/** One section of a company's file on its own page: a focused title, the section, and links to the rest of the file. */
 export default function Section360View({ id, section, sections }: { id: string; section: Section360Id; sections: Section360[] }) {
   const n = getNode(id)!;
   const f = AI_360[id]!;
@@ -16,9 +17,11 @@ export default function Section360View({ id, section, sections }: { id: string; 
     <div className="min-h-screen bg-background pt-24 pb-20">
       <div className="mx-auto max-w-6xl px-6">
         <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
-          <Link to="/notebook/ai/map" className="hover:text-foreground">The AI Systems Map</Link>
+          <Link to={GRAPHS.ai.notebook} className="hover:text-foreground">{GRAPHS.ai.notebookName}</Link>
           <span aria-hidden="true">›</span>
-          <Link to={`/notebook/ai/map/${id}`} className="hover:text-foreground">{n.name}</Link>
+          <Link to={hubPath()} className="hover:text-foreground">{GRAPHS.ai.name}</Link>
+          <span aria-hidden="true">›</span>
+          <Link to={entityPath(id)} className="hover:text-foreground">{n.name}</Link>
           <span aria-hidden="true">›</span>
           <span className="text-foreground">{s.label}</span>
         </nav>
@@ -40,22 +43,19 @@ export default function Section360View({ id, section, sections }: { id: string; 
         <p className="mb-8 max-w-3xl font-mono text-sm leading-relaxed text-muted-foreground">{s.description(n.name, f)}</p>
 
         <nav aria-label="Sections of this file" className="mb-10 flex flex-wrap gap-1.5 font-mono text-[11px]">
-          <Link to={`/notebook/ai/map/${id}`} className="border border-border px-2.5 py-1 text-muted-foreground hover:border-foreground/40 hover:text-foreground">
-            Overview
+          <Link to={entityPath(id)} className="border border-border px-2.5 py-1 text-muted-foreground hover:border-foreground/40 hover:text-foreground">
+            The whole file
           </Link>
           {sections.map((x) => (
             <Link
               key={x.id}
-              to={`/notebook/ai/map/${id}/${x.id}`}
+              to={sectionPath(id, x.id)}
               aria-current={x.id === section ? "page" : undefined}
               className={`border px-2.5 py-1 ${x.id === section ? "border-foreground/60 text-foreground" : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"}`}
             >
               {x.label}
             </Link>
           ))}
-          <Link to={`/notebook/ai/graph?focus=${id}`} className="border border-border px-2.5 py-1 text-muted-foreground hover:border-foreground/40 hover:text-foreground">
-            In the graph
-          </Link>
         </nav>
 
         <div className="space-y-10">

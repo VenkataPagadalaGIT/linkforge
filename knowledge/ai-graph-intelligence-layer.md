@@ -74,15 +74,32 @@ Full-run estimate from these rates: all LinkedIn profiles naming Anthropic (abou
 
 Every raw response is kept twice: gzipped under `data/corpus/raw/` (ignored by git) and whole in `ontology.raw_capture` in Postgres, so a database backup carries it. The LinkedIn snapshot in Bright Data's email (20 records, 330.72 KB, expires 11 Nov 2026) is the same 20 records already stored here.
 
-## 8. URL structure for crawling and citation (2026-10-28)
+## 8. URL structure: one page per entity, built to scale industry by industry (2026-10-28, revised that night)
 
-- The graph page stays one URL (`/notebook/ai/graph`, canonical to itself); `?focus=` is view state, not a page.
-- Each company's canonical page is `/notebook/ai/map/<id>` (frozen slugs). Its 360 file now has one indexable page per section, server-rendered with title, description from the file's own numbers, canonical, breadcrumb and Dataset JSON-LD, and for the people page an ItemList of Person records for officers and directors only:
-  `/notebook/ai/map/<id>/people`, `/investors`, `/legal`, `/hiring`, `/timeline`.
-- Sections exist only where the file has content (`src/lib/ai360-sections.ts` decides), and the same helper feeds the sitemap, the HTML sitemap and the page nav, so a section is in all three or in none. The dashboard shows "Permanent pages" links for the entity in view.
-- The company page is the overview (highlights, facts, every angle, birth to now, inside and outside) and links to the sections; the sections hold the deep lists, so the two do not duplicate.
+The owner's rule: one page per entity, used everywhere, at a URL that extends to the next industry without a rethink. The registry is `src/lib/graph-urls.ts`; every link in the code goes through its helpers (`hubPath`, `entityPath`, `sectionPath`), so a new industry is a row in `GRAPHS`, not a search and replace.
+
+| URL | What it is | Today |
+|---|---|---|
+| `/notebook/<industry>/graph` | the hub: map, 2D, 3D and list views of one industry; `?layer=` and `?type=` scope it, `?view=` picks the rendering | `/notebook/ai/graph` |
+| `/notebook/<industry>/graph/<entity>` | the one page per entity: the graph focused on it, then its whole file (overview, 360, connections, money, financials, investors, market share, people and hiring, legal, news, earnings); `?compare=<entity>` opens a comparison | `/notebook/ai/graph/anthropic` |
+| `/notebook/<industry>/graph/<entity>/<section>` | one deep section of the file on its own page, server-rendered with title, description from the file's numbers, canonical, breadcrumb, Dataset JSON-LD (people: an ItemList of Person records for officers and directors only) | `/notebook/ai/graph/anthropic/people`, `/investors`, `/legal`, `/hiring`, `/timeline` |
+| `/notebook/<industry>/graph/layers/<layer>` | reserved: one layer of the stack | not built; `?layer=` on the hub today |
+| `/notebook/<industry>/graph/types/<type>` | reserved: one type of entity | not built; `?type=` on the hub today |
+| `/notebook/<industry>/map` | the 2D systems map of that industry (a view, kept at its old URL) | `/notebook/ai/map` |
+| `/api/<industry>/graph`, `/api/<industry>/entity/<id>` | the API mirrors the pages | `/api/ai/...` |
+
+Rules that make it scale:
+- Entity slugs are one global set: lower-case words joined by hyphens, never a bare number, never a reserved segment (`layers`, `types`, `sections`, `api`, `feed`, `search`). An entity that belongs to two industries has one slug and one canonical page in its home industry; the other industry's graph links to it. The universal graph (`/notebook/graph`, later) is a hub over all industries and links to those same pages: no entity ever gets a second page.
+- Sections exist only where the file has content (`src/lib/ai360-sections.ts` decides), and the same helper feeds the sitemap, the HTML sitemap, the file's section bar and the side panel's table of contents (`src/components/ai/entityFile.ts`), so a section is everywhere or nowhere.
+- Picking an entity in any view moves the URL to its page with `history.pushState` (the page stays mounted; back returns to the previous entity); loading that URL cold server-renders the entity's file, so crawlers and shared links get the same page people reach by clicking.
+- The side panel in the graph views does not repeat the file: it names the entity, lists the file's sections with what each holds (click scrolls there; ↗ opens the section's own page), and keeps the questions only the graph answers (who is exposed, what it depends on, how two entities connect).
 - Job listings per company are public JSON under `/ai/360/jobs/<id>.json` for the role search; the people roster stays local (section 7).
-- Open: unknown ids and sections render the not-found page with status 200 on the dev server, same as the existing entity route; confirm the deployed build answers 404 before this goes live.
+
+Moves and redirects (308, in `next.config.mjs`): `/notebook/ai/map/<id>` and `/notebook/ai/map/<id>/<section>` (455 entity URLs are in the live sitemap) and `/notebook/ai/graph?focus=<id>` all go to the new pages. The frozen-slugs rule stands; this move is the owner's explicit request of 2026-10-28, and it should be named again in the deploy conversation because Search Console will show 455 moved URLs.
+
+Real 404s: both routes are built at build time (`force-static`, `dynamicParams = false`, `generateStaticParams`: 455 entity pages and the section pages), the encyclopedia's pattern. A page rendered on demand under the root layout's Suspense boundary streams a 200 even when it calls `notFound()`, from the page or from `generateMetadata`; that is why the live `/notebook/ai/map/<unknown>` answers 200 today. The revalidate trap on `dynamicParams = false` routes is covered by `next-cache-handler.cjs`.
+
+Open: the Anthropic entity page is about 1 MB of HTML (the 360 and people sections carry most of it), so `src/data/ai360.ts` should split per entity before the next company file lands.
 
 ## 7. LinkedIn, what it can and cannot give (2026-10-28)
 

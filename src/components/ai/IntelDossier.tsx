@@ -1,12 +1,11 @@
 "use client";
 import * as React from "react";
 import { Link } from "@/lib/router-shim";
-import { getNode, groupOf, LAYER_BY_ID, LAYERS, membersOf, NODE_TYPE_META, RELATION_META, type AiNode } from "@/data/aiOntology";
-import { intelFor, type IntelDeal } from "@/data/aiIntel";
+import { getNode, groupOf, LAYER_BY_ID, NODE_TYPE_META, RELATION_META, type AiNode } from "@/data/aiOntology";
 import { logoUrl } from "@/data/aiLogos";
-import { isShareMetric, pctText, sharesOf } from "./AiShares";
 import { FollowButton } from "./Watch";
-import { CAT_COLOR, CATS, DEGREE, EDGES_OF, INSTRUMENT_LABEL, KPI_PRIORITY, dealAmount, monthYear, orderSeries, rankedSearch, searchAll, seriesValue, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
+import { DEGREE, rankedSearch, searchAll, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
+import { fileSections, scrollToSection } from "./entityFile";
 
 // ---------------------------------------------------------------------------
 // Search box (command-palette style)
@@ -128,11 +127,14 @@ export function SearchBox({
 }
 
 // ---------------------------------------------------------------------------
-// Dossier: one entity's file, numbers first
+// Dossier: who the entity is, the table of contents of its file, and the graph's questions
 // ---------------------------------------------------------------------------
 
-const SIDE_LABEL: Record<IntelDeal["side"], string> = { buys: "buys from", sells: "sells to", receives: "funded by", provides: "backs" };
-
+/**
+ * The side panel for a selected entity. Its figures live once, in the file below the stage; the panel names the entity,
+ * lists the file's sections with what each holds (click to scroll there), and keeps the questions only the graph can
+ * answer: who is exposed, what it depends on, how it connects to another entity.
+ */
 export function Dossier({
   id,
   onSelect,
@@ -158,30 +160,11 @@ export function Dossier({
 }) {
   const n = getNode(id)!;
   const layer = LAYER_BY_ID.get(n.layer)!;
-  const intel = intelFor(id);
   const headId = groupOf(id);
   const head = headId ? getNode(headId) : undefined;
-  const units = membersOf(id)
-    .map((x) => getNode(x)!)
-    .filter(Boolean)
-    .sort((a, b) => (DEGREE.get(b.id) ?? 0) - (DEGREE.get(a.id) ?? 0));
-  const rel = EDGES_OF.get(id) ?? [];
-  // One chip per counterparty in each category: two links to the same company (it supplies and it invests) are one chip, its title listing both.
-  const byCat = CATS.map((c) => {
-    const seen = new Map<string, { other: string; notes: string[]; count: number }>();
-    for (const e of rel.filter((x) => x.cat === c.id)) {
-      const other = e.from === id ? e.to : e.from;
-      const cur = seen.get(other) ?? { other, notes: [], count: 0 };
-      cur.count += 1;
-      cur.notes.push(e.note ?? RELATION_META[e.relation].label);
-      seen.set(other, cur);
-    }
-    return { c, items: [...seen.values()].sort((a, b) => (DEGREE.get(b.other) ?? 0) - (DEGREE.get(a.other) ?? 0)) };
-  }).filter((x) => x.items.length);
-  const deals = (intel?.deals ?? []).slice().sort((a, b) => (b.amountHigh ?? b.amount ?? 0) - (a.amountHigh ?? a.amount ?? 0));
-  const kpis = orderSeries((intel?.series ?? []).filter((s) => KPI_PRIORITY.includes(s.metric))).slice(0, 4);
-  const shares = sharesOf(id).map((g) => ({ g, r: g.rows.find((x) => x.entity === id)! }));
-  const hasFile = (intel?.series ?? []).some((s) => !isShareMetric(s.metric)) || (intel?.people.length ?? 0) > 0;
+  const sections = fileSections(id);
+  const filled = sections.filter((s) => !s.empty);
+  const empty = sections.filter((s) => s.empty);
 
   return (
     <div className="space-y-5">
@@ -217,98 +200,25 @@ export function Dossier({
         )}
       </div>
 
-      {units.length > 0 && (
-        <div data-testid="intel-dossier-units">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Group · {units.length} {units.length === 1 ? "unit" : "units"}</p>
-          <ul className="divide-y divide-border border border-border">
-            {units.slice(0, 6).map((u) => (
-              <li key={u.id}>
-                <button type="button" onClick={() => onSelect(u.id)} className="flex w-full items-baseline justify-between gap-2 px-2.5 py-1.5 text-left hover:bg-foreground/[0.06]">
-                  <span className="truncate font-mono text-[11px] text-foreground">{u.name}</span>
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
-                    L{u.layer} {LAYERS[u.layer].short} · {DEGREE.get(u.id) ?? 0} links
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          {units.length > 6 && <p className="mt-1 font-mono text-[10px] text-muted-foreground">+{units.length - 6} more in the dashboard below</p>}
-        </div>
-      )}
-
-      {kpis.length > 0 && (
-        <div className="grid grid-cols-2 gap-2" data-testid="intel-dossier-kpis">
-          {kpis.map((s) => {
-            const p = s.points[s.points.length - 1];
-            return (
-              <div key={s.metric} className="border border-border p-2.5">
-                <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-muted-foreground/70 leading-tight">{s.label.replace(/\s*\((more than|approximately)\)$/, "")}</p>
-                <p className="font-display text-lg font-bold text-foreground">{seriesValue(s, p.value)}</p>
-                <p className="font-mono text-[9px] text-muted-foreground/70">{p.period}</p>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {shares.length > 0 && (
-        <div data-testid="intel-dossier-shares">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Market share</p>
-          <ul className="space-y-1.5">
-            {shares.map(({ g, r }) => {
-              const rank = g.rows.findIndex((x) => x.entity === id) + 1;
-              return (
-                <li key={g.metric} className="border border-border px-2.5 py-2">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-display text-xs font-bold text-foreground">{g.label}</span>
-                    <span className="font-mono text-[13px] font-bold text-foreground">{pctText(r.value)}</span>
-                  </div>
-                  <p className="font-mono text-[10px] text-muted-foreground/70">
-                    #{rank} of {g.rows.length} listed · {g.period} · {g.estimator}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
-
-      {deals.length > 0 && (
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Money · {deals.length} {deals.length === 1 ? "deal" : "deals"} from filings</p>
-          <ul className="space-y-1.5">
-            {deals.slice(0, 10).map((d) => {
-              const ev = d.evidence[0];
-              return (
-                <li key={`${d.id}-${d.side}`} className="border border-border px-2.5 py-2">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <button onClick={() => onSelect(d.counterparty)} className="font-display text-xs font-bold text-foreground hover:underline text-left">
-                      <span className="font-mono text-[9px] font-normal uppercase tracking-[0.15em] text-muted-foreground/70 mr-1">{SIDE_LABEL[d.side]}</span>
-                      {d.counterpartyName}
-                    </button>
-                    <span className="font-mono text-[11px] text-foreground whitespace-nowrap">{dealAmount(d)}</span>
-                  </div>
-                  <p className="font-mono text-[10px] text-muted-foreground/70">
-                    {INSTRUMENT_LABEL[d.instrument] ?? d.instrument.replace(/_/g, " ")}
-                    {d.termEnd ? ` · to ${monthYear(d.termEnd)}` : ""}
-                  </p>
-                  {ev && (
-                    <details className="mt-1">
-                      <summary className="cursor-pointer font-mono text-[10px] text-muted-foreground/70 hover:text-foreground">Exact text in the source</summary>
-                      <blockquote className="mt-1 border-l-2 border-border pl-2 font-mono text-[10px] leading-relaxed text-muted-foreground">&ldquo;{ev.quote}&rdquo;</blockquote>
-                      {ev.url && (
-                        <a href={ev.url} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block font-mono text-[10px] text-muted-foreground/70 underline hover:text-foreground">
-                          {ev.source || "Source"} ↗
-                        </a>
-                      )}
-                    </details>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+      <nav aria-label="Sections of this file" data-testid="intel-dossier-toc">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">In this file</p>
+        <ol className="divide-y divide-border border border-border">
+          {filled.map((s) => (
+            <li key={s.id} className="flex items-center">
+              <button type="button" onClick={() => scrollToSection(s.id)} className="flex min-w-0 flex-1 items-baseline justify-between gap-2 px-2.5 py-1.5 text-left hover:bg-foreground/[0.06]">
+                <span className="font-mono text-[11px] text-foreground">{s.label}</span>
+                {s.count && <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{s.count}</span>}
+              </button>
+              {s.pages.map((p) => (
+                <Link key={p.href} to={p.href} title={`${p.label}: its own page`} aria-label={`${p.label}: its own page`} className="shrink-0 px-2 py-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground">
+                  ↗
+                </Link>
+              ))}
+            </li>
+          ))}
+        </ol>
+        {empty.length > 0 && <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted-foreground">Not collected yet: {empty.map((s) => s.label).join(" · ")}.</p>}
+      </nav>
 
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Ask the graph</p>
@@ -384,65 +294,6 @@ export function Dossier({
           )}
         </div>
       </div>
-
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Links · {rel.length}</p>
-        <div className="space-y-2">
-          {byCat.map(({ c, items }) => (
-            <div key={c.id}>
-              <p className="font-mono text-[10px] text-muted-foreground mb-1">
-                <i className="inline-block w-2.5 h-[2px] align-middle mr-1.5 bg-current" style={{ color: CAT_COLOR[c.id][0] }} />
-                {c.label} · {items.length}
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {items.slice(0, 12).map(({ other, notes, count }) => (
-                  <button
-                    key={other}
-                    onClick={() => onSelect(other)}
-                    title={[...new Set(notes)].join(" · ")}
-                    className="inline-flex items-center gap-1.5 border border-border px-1.5 py-0.5 font-mono text-[10px] text-foreground/90 hover:border-foreground/40"
-                  >
-                    {logoUrl(other) && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={logoUrl(other)!} alt="" width={14} height={14} className="h-3.5 w-3.5 shrink-0 bg-white object-contain" loading="lazy" />
-                    )}
-                    {getNode(other)?.name ?? other}
-                    {count > 1 && <span className="text-muted-foreground">×{count}</span>}
-                  </button>
-                ))}
-                {items.length > 12 && <span className="font-mono text-[10px] text-muted-foreground/70 px-1">+{items.length - 12}</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {intel && intel.people.length > 0 && (
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">People · {intel.people.length}</p>
-          <ul className="space-y-1">
-            {intel.people.slice(0, 5).map((p) => (
-              <li key={p.name} className="font-mono text-[11px] text-foreground">
-                {p.sitePath ? (
-                  <Link to={p.sitePath} className="font-bold hover:underline">
-                    {p.name}
-                  </Link>
-                ) : (
-                  <span className="font-bold">{p.name}</span>
-                )}
-                <span className="text-muted-foreground"> · {p.role}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <Link
-        to={`/notebook/ai/map/${id}`}
-        className="block text-center border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors"
-      >
-        Open the full {hasFile ? "company file" : "entity page"} →
-      </Link>
     </div>
   );
 }

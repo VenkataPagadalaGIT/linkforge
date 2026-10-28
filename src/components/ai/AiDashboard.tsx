@@ -29,7 +29,8 @@ import { SearchBox } from "./IntelDossier";
 import { ShareCard, isShareMetric } from "./AiShares";
 import { FollowButton, WatchlistStrip, useWatchlist } from "./Watch";
 import { AI_360 } from "@/data/ai360";
-import { sections360For } from "@/lib/ai360-sections";
+import AiCompanyFile from "./AiCompanyFile";
+import { fileSections, scrollToSection, sectionDomId, type FileSection as FileSectionMeta, type FileSectionId } from "./entityFile";
 import { Company360, FootprintSection, HiringSection, TalentSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
 import { AI_SHARES } from "@/data/aiIntel";
 
@@ -418,9 +419,6 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <FollowButton id={id} />
-          <Link to={`/notebook/ai/map/${id}`} className="border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors">
-            Open the full {fileSeries.length ? "company file" : "entity page"} →
-          </Link>
         </div>
       </div>
       <Kpis
@@ -440,7 +438,7 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
       )}
       {units.length > 0 && (
         <div data-testid="ai-dashboard-units">
-          <H aside={`${units.length} units · where each sits in the stack`}>The group</H>
+          <H aside={`${units.length} ${units.length === 1 ? "unit" : "units"} · where each sits in the stack`}>The group</H>
           <div className="overflow-x-auto border border-border">
             <table className="w-full min-w-[560px] border-collapse font-mono text-[11px]">
               <thead>
@@ -1168,6 +1166,124 @@ function AskBox({ onPick }: { onPick: (id: string) => void }) {
 // The dashboard
 // ---------------------------------------------------------------------------
 
+/** One section of an entity's file: its heading says what it holds and links its own pages; the dossier's table of contents scrolls here. */
+function FileBlock({ s, children }: { s: FileSectionMeta; children: React.ReactNode }) {
+  const hid = `${sectionDomId(s.id)}-heading`;
+  return (
+    <section id={sectionDomId(s.id)} aria-labelledby={hid} className="scroll-mt-32 border-t border-border pt-5 first:border-t-0 first:pt-0">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id={hid} className="font-display text-lg font-bold text-foreground">
+          {s.label}
+          {s.count && <span className="ml-2 font-mono text-[10px] font-normal uppercase tracking-[0.18em] text-muted-foreground">{s.count}</span>}
+        </h2>
+        {s.pages.length > 0 && (
+          <span className="flex flex-wrap gap-1 font-mono text-[10px] uppercase tracking-[0.15em]">
+            {s.pages.map((p) => (
+              <Link key={p.href} to={p.href} className="border border-border px-1.5 py-0.5 text-muted-foreground hover:border-foreground/50 hover:text-foreground">
+                {p.label} · own page
+              </Link>
+            ))}
+          </span>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * An entity's whole file on one page, section after section, with a bar that follows the scroll. A segment keeps tabs
+ * (one screen per question); an entity reads top to bottom like a dossier, so every section is in the HTML and the
+ * table of contents in the graph's side panel can scroll to any of them.
+ */
+function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiScope; onScope: (s: AiScope) => void; pick: (id: string) => void }) {
+  const id = node.id;
+  const secs = React.useMemo(() => fileSections(id), [id]);
+  const [active, setActive] = React.useState<FileSectionId>("overview");
+  React.useEffect(() => {
+    setActive("overview");
+    if (typeof IntersectionObserver === "undefined") return;
+    const els = secs.map((s) => document.getElementById(sectionDomId(s.id))).filter((x): x is HTMLElement => !!x);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (vis[0]) setActive(vis[0].target.id.slice(sectionDomId("").length) as FileSectionId);
+      },
+      { rootMargin: "-20% 0px -60% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [secs]);
+  const intel = intelFor(id);
+  const S = Object.fromEntries(secs.map((s) => [s.id, s])) as Partial<Record<FileSectionId, FileSectionMeta>>;
+  const block = (k: FileSectionId, body: React.ReactNode) => (S[k] ? <FileBlock s={S[k]!}>{body}</FileBlock> : null);
+  const rounds = (AI_360[id]?.rounds.length ?? 0) > 0;
+  const legal = (AI_360[id]?.legal.length ?? 0) > 0;
+  return (
+    <>
+      <nav aria-label="Sections of this file" className="sticky top-16 z-30 flex overflow-x-auto border-b border-border bg-background [scrollbar-width:none]" data-testid="ai-file-sections">
+        {secs.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => scrollToSection(s.id)}
+            aria-current={active === s.id ? "location" : undefined}
+            className={`shrink-0 whitespace-nowrap border-r border-border px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] ${
+              active === s.id ? "bg-foreground/[0.06] text-foreground" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {s.label}
+            {s.empty && <span className="sr-only"> (not collected yet)</span>}
+          </button>
+        ))}
+      </nav>
+      <div className="space-y-8 p-4">
+        {block(
+          "overview",
+          <div className="space-y-6">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+              <AskBox onPick={pick} />
+              <ForecastRecord ids={[id]} />
+            </div>
+            <EntityOverview id={id} onPick={pick} />
+          </div>,
+        )}
+        {block("f360", has360(id) ? <Company360 id={id} onPick={pick} onTab={(t) => scrollToSection(t)} /> : <No360 name={node.name} />)}
+        {block("connections", <EntityConnections id={id} compare={scope.compare} onPick={pick} onCompare={(x) => onScope({ ...scope, compare: x })} />)}
+        {block("money", <MoneyTab ids={[id]} onPick={pick} />)}
+        {intel && block("financials", <AiCompanyFile name={node.name} intel={intel} hidePeople hideDeals hideEvents />)}
+        {block(
+          "investors",
+          rounds ? (
+            <div className="space-y-6">
+              <InvestorsSection id={id} onPick={pick} />
+              <AdvisorsSection id={id} />
+            </div>
+          ) : (
+            <NotCollected title={`${node.name}: funding history not collected yet`}>
+              <p>Rounds come from the company&apos;s own filings (S-1, Form D, proxy) and announcements: date, amount, price per share, valuation and who led, each with its sentence.</p>
+            </NotCollected>
+          ),
+        )}
+        {block("share", <ShareTab scope={scope} onPick={pick} />)}
+        {block("people", <PeopleTab ids={[id]} onPick={pick} />)}
+        {block(
+          "legal",
+          legal ? (
+            <LegalSection ids={[id]} onPick={pick} />
+          ) : (
+            <NotCollected title="Legal: not collected yet">
+              <p>Lawsuits and government actions come from each company&apos;s own filings first, then from public court dockets, each with the sentence or docket entry behind it.</p>
+            </NotCollected>
+          ),
+        )}
+        {block("news", <NewsTab ids={[id]} />)}
+        {block("earnings", <EarningsTab ids={[id]} onPick={pick} />)}
+      </div>
+    </>
+  );
+}
+
 export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScope: (s: AiScope) => void }) {
   const [tab, setTab] = React.useState<Tab>("overview");
   const ids = React.useMemo(() => idsIn(scope), [scope]);
@@ -1183,10 +1299,12 @@ export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScop
     const n = getNode(id);
     if (n) onScope({ layer: n.layer, type: typeKey(n), entity: id, compare: null });
   };
-  // A comparison opens on the Connections tab.
+  // A comparison opens on Connections: an entity's file scrolls there, a segment switches tab.
   React.useEffect(() => {
-    if (scope.compare) setTab("connections");
-  }, [scope.compare]);
+    if (!scope.compare) return;
+    if (scope.entity) scrollToSection("connections");
+    else setTab("connections");
+  }, [scope.compare, scope.entity]);
   const crumbs: { label: string; to: AiScope | null }[] = [{ label: "All of AI", to: scope.layer != null ? { layer: null, type: null, entity: null, compare: null } : null }];
   if (scope.layer != null) crumbs.push({ label: `L${scope.layer} ${LAYERS[scope.layer].label}`, to: scope.type || scope.entity ? { layer: scope.layer, type: null, entity: null, compare: null } : null });
   if (scope.type && typeName) crumbs.push({ label: typeName, to: scope.entity ? { layer: scope.layer, type: scope.type, entity: null, compare: null } : null });
@@ -1217,83 +1335,57 @@ export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScop
         <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Follows the graph · {ids.length === 1 ? "1 entity" : `${fmt(ids.length)} entities`}</p>
       </div>
       <WatchlistStrip onPick={pick} />
-      {node && sections360For(node.id).length > 0 && (
-        <p className="flex flex-wrap items-center gap-1.5 border-b border-border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground" data-testid="ai-section-links">
-          <span>Permanent pages:</span>
-          <Link to={`/notebook/ai/map/${node.id}`} className="border border-border px-1.5 py-0.5 text-foreground hover:border-foreground/50">
-            Overview
-          </Link>
-          {sections360For(node.id).map((s) => (
-            <Link key={s.id} to={`/notebook/ai/map/${node.id}/${s.id}`} className="border border-border px-1.5 py-0.5 text-foreground hover:border-foreground/50">
-              {s.label}
-            </Link>
-          ))}
-        </p>
-      )}
-      <div role="tablist" aria-label="Dashboard sections" className="flex overflow-x-auto border-b border-border [scrollbar-width:none]">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.id}
-            aria-controls={`ai-dash-${t.id}`}
-            id={`ai-dash-tab-${t.id}`}
-            onClick={() => setTab(t.id)}
-            className={`shrink-0 whitespace-nowrap border-r border-border px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] ${
-              tab === t.id ? "bg-foreground/[0.06] text-foreground" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <div role="tabpanel" id={`ai-dash-${tab}`} aria-labelledby={`ai-dash-tab-${tab}`} className="p-4">
-        {tab === "overview" && (
-          <div className="space-y-6">
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-              <AskBox onPick={pick} />
-              <ForecastRecord ids={ids} />
-            </div>
-            {node ? <EntityOverview id={node.id} onPick={pick} /> : <SegmentOverview scope={scope} ids={ids} onScope={onScope} />}
+      {node ? (
+        <EntityFile node={node} scope={scope} onScope={onScope} pick={pick} />
+      ) : (
+        <>
+          <div role="tablist" aria-label="Dashboard sections" className="flex overflow-x-auto border-b border-border [scrollbar-width:none]">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                aria-selected={tab === t.id}
+                aria-controls={`ai-dash-${t.id}`}
+                id={`ai-dash-tab-${t.id}`}
+                onClick={() => setTab(t.id)}
+                className={`shrink-0 whitespace-nowrap border-r border-border px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] ${
+                  tab === t.id ? "bg-foreground/[0.06] text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
-        )}
-        {tab === "connections" &&
-          (node ? (
-            <EntityConnections id={node.id} compare={scope.compare} onPick={pick} onCompare={(x) => onScope({ ...scope, compare: x })} />
-          ) : (
-            <SegmentConnections ids={ids} onPick={pick} />
-          ))}
-        {tab === "money" && <MoneyTab ids={ids} onPick={pick} />}
-        {tab === "share" && <ShareTab scope={scope} onPick={pick} />}
-        {tab === "news" && <NewsTab ids={ids} />}
-        {tab === "earnings" && <EarningsTab ids={ids} onPick={pick} />}
-        {tab === "people" && <PeopleTab ids={ids} onPick={pick} />}
-        {tab === "f360" && (node ? (has360(node.id) ? <Company360 id={node.id} onPick={pick} onTab={(t) => setTab(t as Tab)} /> : <No360 name={node.name} />) : <Files360 ids={ids} onPick={pick} />)}
-        {tab === "investors" &&
-          (node ? (
-            (AI_360[node.id]?.rounds.length ?? 0) > 0 ? (
+          <div role="tabpanel" id={`ai-dash-${tab}`} aria-labelledby={`ai-dash-tab-${tab}`} className="p-4">
+            {tab === "overview" && (
               <div className="space-y-6">
-                <InvestorsSection id={node.id} onPick={pick} />
-                <AdvisorsSection id={node.id} />
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+                  <AskBox onPick={pick} />
+                  <ForecastRecord ids={ids} />
+                </div>
+                <SegmentOverview scope={scope} ids={ids} onScope={onScope} />
               </div>
-            ) : (
-              <NotCollected title={`${node.name}: funding history not collected yet`}>
-                <p>Rounds come from the company&apos;s own filings (S-1, Form D, proxy) and announcements: date, amount, price per share, valuation and who led, each with its sentence.</p>
-              </NotCollected>
-            )
-          ) : (
-            <Files360 ids={ids} onPick={pick} only="rounds" />
-          ))}
-        {tab === "legal" &&
-          (ids.some((id) => (AI_360[id]?.legal.length ?? 0) > 0) ? (
-            <LegalSection ids={ids} onPick={pick} />
-          ) : (
-            <NotCollected title="Legal: not collected yet">
-              <p>Lawsuits and government actions come from each company&apos;s own filings first, then from public court dockets, each with the sentence or docket entry behind it.</p>
-            </NotCollected>
-          ))}
-      </div>
+            )}
+            {tab === "connections" && <SegmentConnections ids={ids} onPick={pick} />}
+            {tab === "money" && <MoneyTab ids={ids} onPick={pick} />}
+            {tab === "share" && <ShareTab scope={scope} onPick={pick} />}
+            {tab === "news" && <NewsTab ids={ids} />}
+            {tab === "earnings" && <EarningsTab ids={ids} onPick={pick} />}
+            {tab === "people" && <PeopleTab ids={ids} onPick={pick} />}
+            {tab === "f360" && <Files360 ids={ids} onPick={pick} />}
+            {tab === "investors" && <Files360 ids={ids} onPick={pick} only="rounds" />}
+            {tab === "legal" &&
+              (ids.some((id) => (AI_360[id]?.legal.length ?? 0) > 0) ? (
+                <LegalSection ids={ids} onPick={pick} />
+              ) : (
+                <NotCollected title="Legal: not collected yet">
+                  <p>Lawsuits and government actions come from each company&apos;s own filings first, then from public court dockets, each with the sentence or docket entry behind it.</p>
+                </NotCollected>
+              ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

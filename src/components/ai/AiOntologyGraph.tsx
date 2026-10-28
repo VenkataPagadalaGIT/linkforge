@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { LAYERS, nodesInLayer, edges as ALL_EDGES, RELATION_META, type AiNode, type RelationType } from "@/data/aiOntology";
+import { entityPath } from "@/lib/graph-urls";
 
 // Canvas-rendered layered graph of the whole ontology — fast for hundreds of
 // nodes. Bands L0 (top) → L6 (bottom); dots coloured by layer. Hovering a node
@@ -192,7 +193,7 @@ export default function AiOntologyGraph({ query = "", chokeOnly = false }: { que
         onMouseLeave={() => setHover(null)}
         onClick={(e) => {
           const id = nodeAt(e.clientX, e.clientY);
-          if (id) router.push(`/notebook/ai/map/${id}`);
+          if (id) router.push(entityPath(id));
         }}
       />
     </div>

@@ -4,17 +4,18 @@ import AiGraphView from "@/views/AiGraphView";
 import { ONTOLOGY_COUNTS } from "@/data/aiOntology";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 
+// The hub of the graph; every entity in it has its own page one level down (app/notebook/ai/graph/[id]).
 const metadata: Metadata = {
-  title: "The AI Systems Map: Graph view",
-  description: `The entire AI value chain as one node-edge dependency graph: ${ONTOLOGY_COUNTS.nodes} entities, ${ONTOLOGY_COUNTS.edges} links, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints.`,
+  title: "The AI Intelligence Graph",
+  description: `Every company, chip, mineral, power source, fund and policy in the AI economy as one graph: ${ONTOLOGY_COUNTS.nodes} entities, ${ONTOLOGY_COUNTS.edges} typed links, ${ONTOLOGY_COUNTS.chokepoints} supply-chain chokepoints, and a sourced file for each entity.`,
   alternates: { canonical: "/notebook/ai/graph" },
-  keywords: ["AI dependency graph", "AI value chain graph", "AI ontology", "semiconductors", "GPU", "foundry"],
+  keywords: ["AI intelligence graph", "AI dependency graph", "AI value chain graph", "AI ontology", "semiconductors", "GPU", "foundry"],
   openGraph: {
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     url: "/notebook/ai/graph",
     type: "website",
-    title: "The AI Systems Map: Graph view",
-    description: "The whole AI value chain as one interactive node-edge graph.",
+    title: "The AI Intelligence Graph",
+    description: "The whole AI economy as one interactive graph, with a sourced file for every entity.",
     siteName: "Venkata Pagadala · Mono Mind",
   },
 };

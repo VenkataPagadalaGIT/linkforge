@@ -3,6 +3,7 @@ import * as React from "react";
 import { KPI_PRIORITY } from "./intelModel";
 import { Link } from "@/lib/router-shim";
 import type { EntityIntel, IntelDeal, IntelEvidence, IntelSeries } from "@/data/aiIntel";
+import { entityPath } from "@/lib/graph-urls";
 
 // Drafts (forecasts and implications in the owner's voice) render only where
 // NEXT_PUBLIC_SHOW_DRAFTS=1, i.e. on a localhost review build, never on the live site.
@@ -134,7 +135,7 @@ function DealRow({ d, max, tone }: { d: IntelDeal; max: number; tone: string }) 
   return (
     <li className="border border-border p-3">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <Link to={`/notebook/ai/map/${d.counterparty}`} className="font-display text-sm font-bold text-foreground hover:text-glow">
+        <Link to={entityPath(d.counterparty)} className="font-display text-sm font-bold text-foreground hover:text-glow">
           {d.counterpartyName}
         </Link>
         <span className="font-mono text-xs text-foreground">{amountText(d)}</span>
@@ -218,7 +219,8 @@ function SeriesCard({ s }: { s: IntelSeries }) {
   );
 }
 
-export default function AiCompanyFile({ name, intel, hidePeople = false }: { name: string; intel: EntityIntel; hidePeople?: boolean }) {
+/** hidePeople, hideDeals and hideEvents leave out what the entity's file already shows in its own sections. */
+export default function AiCompanyFile({ name, intel, hidePeople = false, hideDeals = false, hideEvents = false }: { name: string; intel: EntityIntel; hidePeople?: boolean; hideDeals?: boolean; hideEvents?: boolean }) {
   const primary = intel.sources.find((s) => !s.secondary) ?? intel.sources[0];
   const kpis = KPI_ORDER.map((m) => intel.series.find((s) => s.metric === m)).filter((s): s is IntelSeries => !!s);
   const buys = intel.deals.filter((d) => d.side === "buys");
@@ -241,7 +243,7 @@ export default function AiCompanyFile({ name, intel, hidePeople = false }: { nam
       <div className="border-t border-border pt-8 mb-8">
         <p className={LABEL}>Company file</p>
         <h2 id="company-file" className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-2">
-          {name}: money, compute{hidePeople ? "" : " and people"}
+          {hideDeals ? `${name}: figures from its filings` : `${name}: money, compute${hidePeople ? "" : " and people"}`}
         </h2>
         {primary && (
           <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-2 max-w-3xl">
@@ -280,7 +282,7 @@ export default function AiCompanyFile({ name, intel, hidePeople = false }: { nam
         </div>
       )}
 
-      {buys.length > 0 && (
+      {!hideDeals && buys.length > 0 && (
         <div className="mb-12">
           <h3 className="font-display text-xl font-bold text-foreground">Who supplies its compute</h3>
           <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mt-1 mb-4 max-w-3xl">
@@ -294,7 +296,7 @@ export default function AiCompanyFile({ name, intel, hidePeople = false }: { nam
         </div>
       )}
 
-      {(receives.length > 0 || rounds) && (
+      {!hideDeals && (receives.length > 0 || rounds) && (
         <div className="mb-12">
           <h3 className="font-display text-xl font-bold text-foreground">Who funds it</h3>
           <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed mt-1 mb-4 max-w-3xl">
@@ -319,7 +321,7 @@ export default function AiCompanyFile({ name, intel, hidePeople = false }: { nam
         </div>
       )}
 
-      {(sells.length > 0 || provides.length > 0) && (
+      {!hideDeals && (sells.length > 0 || provides.length > 0) && (
         <div className="mb-12">
           <h3 className="font-display text-xl font-bold text-foreground">Who it supplies and backs</h3>
           <ul className="space-y-2 mt-4">
@@ -378,7 +380,7 @@ export default function AiCompanyFile({ name, intel, hidePeople = false }: { nam
         </div>
       )}
 
-      {intel.events.length > 0 && (
+      {!hideEvents && intel.events.length > 0 && (
         <div className="mb-12">
           <h3 className="font-display text-xl font-bold text-foreground mb-4">Timeline</h3>
           <ol className="border-l border-border ml-1 space-y-3">

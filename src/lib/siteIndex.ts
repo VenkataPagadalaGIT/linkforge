@@ -39,6 +39,7 @@ import { BRIGHTONSEO_2026, KIND_LABEL, RECOGNITION, TALKS, byDateDesc } from "@/
 import { linkedPapers } from "@/data/research";
 import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, UNIVERSE_NAME, UNIVERSE_PATH, postPath, topicPath, topicTrail } from "@/data/linkedinArchive";
 import { LINKEDIN_ARTICLES, LINKEDIN_SOCIAL_POSTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
+import { entityPath, sectionPath } from "@/lib/graph-urls";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
@@ -124,7 +125,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/notebook/business", "Business Notebook", "business", true],
   ["/notebook/ai/encyclopedia", "AI Encyclopedia", "encyclopedia", true],
   ["/notebook/ai/map", "AI Systems Map", "map", true],
-  ["/notebook/ai/graph", "AI Systems Map: graph view", "map", true],
+  ["/notebook/ai/graph", "The AI Intelligence Graph", "map", true],
   ["/ai-contributors", "AI Contributors", "contributors", true],
   ["/ai-updates", "AI Updates", "updates", true],
   ["/insights", "Insights", "insights", true],
@@ -266,10 +267,10 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // AI Systems Map, by layer
+  // The AI Intelligence Graph: one page per entity, by layer
   for (const n of aiOntologyNodes) {
     out.push({
-      href: `/notebook/ai/map/${n.id}`, title: n.name, section: "map", group: LAYER_BY_ID.get(n.layer)?.label ?? "Other",
+      href: entityPath(n.id), title: n.name, section: "map", group: LAYER_BY_ID.get(n.layer)?.label ?? "Other",
       xml: { lastModified: now, changeFrequency: "monthly", priority: n.chokepoint ? 0.7 : 0.6 },
     });
   }
@@ -279,7 +280,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     if (!n) continue;
     for (const s of sections360For(id)) {
       out.push({
-        href: `/notebook/ai/map/${id}/${s.id}`, title: `${n.name}: ${s.label}`, section: "map", group: `${n.name} 360`,
+        href: sectionPath(id, s.id), title: `${n.name}: ${s.label}`, section: "map", group: `${n.name} 360`,
         xml: { lastModified: now, changeFrequency: s.id === "hiring" ? "daily" : "weekly", priority: 0.7 },
       });
     }

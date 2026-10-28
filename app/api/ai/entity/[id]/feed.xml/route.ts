@@ -1,5 +1,6 @@
 import { getNode, nodes } from "@/data/aiOntology";
 import { SITE_URL, feedFor, rss } from "@/lib/ai-feed";
+import { entityPath } from "@/lib/graph-urls";
 
 /**
  * GET /api/ai/entity/<id>/feed.xml: an RSS feed of what is new about one entity (filing events, deals, releases
@@ -18,7 +19,7 @@ export function GET(_req: Request, { params }: { params: { id: string } }) {
   if (!n) return new Response("No such entity", { status: 404 });
   const xml = rss(
     `AI Intelligence Graph: ${n.name}`,
-    `${SITE_URL}/notebook/ai/graph?focus=${n.id}`,
+    `${SITE_URL}${entityPath(n.id)}`,
     `Filing events, deals, releases and news for ${n.name}, each linked to its source. Not investment advice.`,
     feedFor(n.id).slice(0, 50),
   );

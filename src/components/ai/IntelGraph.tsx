@@ -2,11 +2,11 @@
 import * as React from "react";
 import Graph from "graphology";
 import forceAtlas2 from "graphology-layout-forceatlas2";
-import { useRouter } from "next/navigation";
 import { nodes as ALL_NODES, getNode, LAYERS, NODE_TYPE_META, RELATION_META } from "@/data/aiOntology";
 import { AI_DEAL_EDGES } from "@/data/aiIntel";
 import { ALL_CATS, CAT_COLOR, CATS, DEAL_NODES, DEGREE, EDGES, LAYER_LIGHT, dealAmount, reach, shortestPath, type Analysis, type Cat, type Edge } from "./intelModel";
 import { Dossier, SearchBox } from "./IntelDossier";
+import { scrollToSection } from "./entityFile";
 
 // The flat analysis view of the AI intelligence graph: a 2D network (or the
 // supply chain in layer bands, or only the money) on a canvas, with the same
@@ -88,7 +88,6 @@ const FEATURED = ["anthropic", "openai", "nvidia", "tsmc", "asml", "sk-hynix", "
 export default function IntelGraph({ selected: selectedProp, onSelect }: { selected?: string | null; onSelect?: (id: string | null) => void } = {}) {
   /** On the graph page the selection is shared with the 3D view and the dashboard (and kept in the URL there). */
   const controlled = onSelect !== undefined;
-  const router = useRouter();
   const wrapRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [size, setSize] = React.useState({ w: 800, h: 600 });
@@ -585,7 +584,10 @@ export default function IntelGraph({ selected: selectedProp, onSelect }: { selec
         onDoubleClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           const h = hitTest(e.clientX - rect.left, e.clientY - rect.top);
-          if (h) router.push(`/notebook/ai/map/${h}`);
+          if (h) {
+            select(h);
+            scrollToSection("overview");
+          }
         }}
         onPointerLeave={() => setHover(null)}
       >

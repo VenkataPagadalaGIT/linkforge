@@ -7,6 +7,7 @@ import { AI_360, type Affiliation, type Agreement, type FootprintPerson, type Fu
 import { dayMonthYear, monthYear } from "./intelModel";
 import { logoUrl } from "@/data/aiLogos";
 import { orgLogo } from "@/data/aiOrgLogos";
+import { entityPath, sectionPath } from "@/lib/graph-urls";
 
 /**
  * The 360 layer of a company file: who runs it and where else they work, who paid for it round by round,
@@ -137,7 +138,7 @@ function EntityLink({ id, onPick, className, title, children }: { id: string | n
       {children}
     </button>
   ) : (
-    <Link to={`/notebook/ai/map/${id}`} className={className} title={title}>
+    <Link to={entityPath(id)} className={className} title={title}>
       {children}
     </Link>
   );
@@ -1628,14 +1629,14 @@ export function Highlights({ id, onTab }: { id: string; onTab?: (tab: string) =>
   const val = [...f.rounds].reverse().find((r) => r.postMoney);
   const staff = f.facts.find((x) => x.key === "employees");
   const cards: { label: string; value: string; sub: string; tab: string; href: string }[] = [];
-  if (raised) cards.push({ label: "Capital raised", value: money(raised.value), sub: `to ${monthYear(raised.asOf ?? raised.period)}, per its filing`, tab: "investors", href: `/notebook/ai/map/${id}/investors` });
-  if (val?.postMoney) cards.push({ label: "Latest valuation", value: money(val.postMoney), sub: `${val.round}, post-money`, tab: "investors", href: `/notebook/ai/map/${id}/investors` });
-  if (rev) cards.push({ label: rev === last("revenue_usd") ? "Revenue" : "Quarterly revenue", value: money(rev.value), sub: rev.period, tab: "money", href: `/notebook/ai/map/${id}` });
-  if (staff) cards.push({ label: "Employees", value: staff.value.match(/^About ([\d,]+)/)?.[1] ?? staff.value.split(" ")[0], sub: "its own filing", tab: "people", href: `/notebook/ai/map/${id}/people` });
-  if (f.hiring) cards.push({ label: "Open roles", value: fmt(f.hiring.open), sub: `${fmt(f.hiring.new30)} new in 30 days`, tab: "people", href: `/notebook/ai/map/${id}/hiring` });
-  if (f.talent) cards.push({ label: "Profiles on LinkedIn", value: fmt(f.talent.people), sub: "name it as current employer", tab: "people", href: `/notebook/ai/map/${id}/people` });
-  if (f.legal.length) cards.push({ label: "Legal matters", value: fmt(f.legal.length), sub: "as it discloses them", tab: "legal", href: `/notebook/ai/map/${id}/legal` });
-  if (f.attention) cards.push({ label: "Hacker News stories", value: fmt(f.attention.total), sub: "naming it, all time", tab: "f360", href: `/notebook/ai/map/${id}/timeline` });
+  if (raised) cards.push({ label: "Capital raised", value: money(raised.value), sub: `to ${monthYear(raised.asOf ?? raised.period)}, per its filing`, tab: "investors", href: sectionPath(id, "investors") });
+  if (val?.postMoney) cards.push({ label: "Latest valuation", value: money(val.postMoney), sub: `${val.round}, post-money`, tab: "investors", href: sectionPath(id, "investors") });
+  if (rev) cards.push({ label: rev === last("revenue_usd") ? "Revenue" : "Quarterly revenue", value: money(rev.value), sub: rev.period, tab: "money", href: entityPath(id) });
+  if (staff) cards.push({ label: "Employees", value: staff.value.match(/^About ([\d,]+)/)?.[1] ?? staff.value.split(" ")[0], sub: "its own filing", tab: "people", href: sectionPath(id, "people") });
+  if (f.hiring) cards.push({ label: "Open roles", value: fmt(f.hiring.open), sub: `${fmt(f.hiring.new30)} new in 30 days`, tab: "people", href: sectionPath(id, "hiring") });
+  if (f.talent) cards.push({ label: "Profiles on LinkedIn", value: fmt(f.talent.people), sub: "name it as current employer", tab: "people", href: sectionPath(id, "people") });
+  if (f.legal.length) cards.push({ label: "Legal matters", value: fmt(f.legal.length), sub: "as it discloses them", tab: "legal", href: sectionPath(id, "legal") });
+  if (f.attention) cards.push({ label: "Hacker News stories", value: fmt(f.attention.total), sub: "naming it, all time", tab: "f360", href: sectionPath(id, "timeline") });
   if (!cards.length) return null;
   const Card = ({ c }: { c: (typeof cards)[number] }) => (
     <span className="block h-full border border-border bg-background p-3 text-left hover:border-foreground/50">

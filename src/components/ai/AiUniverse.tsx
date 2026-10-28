@@ -5,7 +5,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Html, Line, OrbitControls } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import { useRouter } from "next/navigation";
 import { useWebGL } from "@/lib/webgl";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { nodes as ALL_NODES, getNode, groupOf, LAYERS, membersOf, NODE_TYPE_META, type AiNode, type NodeType } from "@/data/aiOntology";
@@ -42,6 +41,7 @@ import {
   type Edge,
 } from "./intelModel";
 import { Dossier, SearchBox } from "./IntelDossier";
+import { scrollToSection } from "./entityFile";
 
 /**
  * The AI Universe: the AI economy as a 3D space to fly through, styled as mission control.
@@ -1515,7 +1515,6 @@ function IndexTable({
 
 export default function AiUniverse({ scope, onScope, fallback }: Props) {
   const gl = useWebGL();
-  const router = useRouter();
   // It follows the site's theme: white space and dark points in light, black space and glowing stars in dark.
   const { resolvedTheme } = useTheme();
   const light = resolvedTheme === "light";
@@ -1629,13 +1628,13 @@ export default function AiUniverse({ scope, onScope, fallback }: Props) {
     setChoke(false);
     setHover(null);
   };
+  // "Open" on a card: this page is already the entity's file, so select it and scroll down to the file (leaving fullscreen first).
   const open = React.useCallback(
     (id: string) => {
-      const go = () => router.push(`/notebook/ai/map/${id}`);
-      if (document.fullscreenElement) document.exitFullscreen().catch(() => {}).finally(go);
-      else go();
+      select(id);
+      scrollToSection("overview");
     },
-    [router],
+    [select],
   );
   // Esc steps back: the question, the comparison, the selection, the type, the layer.
   React.useEffect(() => {

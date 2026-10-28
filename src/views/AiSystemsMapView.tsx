@@ -4,6 +4,7 @@ import { Link } from "@/lib/router-shim";
 import ScrollReveal from "@/components/ScrollReveal";
 import AiSystemsMap from "@/components/ai/AiSystemsMap";
 import { LAYERS, ONTOLOGY_COUNTS, chokepoints } from "@/data/aiOntology";
+import { entityPath } from "@/lib/graph-urls";
 
 const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="border border-border p-5">
@@ -70,7 +71,7 @@ export default function AiSystemsMapView() {
               {chokes.map((n) => (
                 <Link
                   key={n.id}
-                  to={`/notebook/ai/map/${n.id}`}
+                  to={entityPath(n.id)}
                   className="group border border-amber-400/25 hover:border-amber-400/60 p-3 transition-all"
                 >
                   <div className="flex items-center gap-1.5">

@@ -131,6 +131,12 @@ const nextConfig = {
         destination: "https://venkatapagadala.com/:path*",
         permanent: true,
       },
+      // The AI graph has one page per entity, /notebook/ai/graph/<id> (its file under the graph focused on it). The
+      // entity and section pages that lived under /notebook/ai/map/<id> moved there on 2026-10-28 at the owner's
+      // request, and ?focus=<id> on the graph page was the old spelling of the same page. The map hub itself stays.
+      { source: "/notebook/ai/map/:id", destination: "/notebook/ai/graph/:id", permanent: true },
+      { source: "/notebook/ai/map/:id/:section", destination: "/notebook/ai/graph/:id/:section", permanent: true },
+      { source: "/notebook/ai/graph", has: [{ type: "query", key: "focus", value: "(?<focus>[a-z0-9-]+)" }], destination: "/notebook/ai/graph/:focus", permanent: true },
       // The archive moved from /linkedin to Venkata Pagadala - Universe (src/data/universe.ts): LinkedIn is one of
       // its sources, so its posts and articles sit under /venkata-pagadala-universe/linkedin, and topic pages (which
       // span every source) under /venkata-pagadala-universe/topics. Every old URL keeps working.
