@@ -227,3 +227,140 @@ CREATE TABLE IF NOT EXISTS ontology.person (
   created_at    timestamptz NOT NULL DEFAULT now(),
   updated_at    timestamptz NOT NULL DEFAULT now()
 );
+
+-- 2026-10-28: company-file fields for the first vertical slice (Anthropic).
+ALTER TABLE ontology.deal ADD COLUMN IF NOT EXISTS amount_high numeric(18,2);
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS as_of date;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS label text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS site_path text;
+ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS sort_order int;
+ALTER TABLE ontology.prediction ADD COLUMN IF NOT EXISTS approved boolean NOT NULL DEFAULT false;
+ALTER TABLE ontology.prediction ADD COLUMN IF NOT EXISTS entity_id int REFERENCES ontology.entity(id) ON DELETE CASCADE;
+ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_check;
+ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check
+  CHECK (target_kind IN ('entity','relation','deal','claim','event','prediction','person','signal','implication'));
+
+-- What a fact means for a reader, written in the owner's voice. Drafts stay
+-- off production until approved.
+CREATE TABLE IF NOT EXISTS ontology.implication (
+  id          serial PRIMARY KEY,
+  entity_id   int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  audience    text NOT NULL CHECK (audience IN ('marketers','seo','developers','everyone')),
+  headline    text NOT NULL,
+  body        text NOT NULL,
+  approved    boolean NOT NULL DEFAULT false,
+  sort_order  int,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+-- Links from a map entity to pages elsewhere on the site.
+CREATE TABLE IF NOT EXISTS ontology.entity_page (
+  entity_id  int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  kind       text NOT NULL CHECK (kind IN ('business_company','business_note','guide','update')),
+  path       text NOT NULL,
+  label      text NOT NULL,
+  PRIMARY KEY (entity_id, path)
+);
+ALTER TABLE ontology.event ADD COLUMN IF NOT EXISTS date_label text;
+ALTER TABLE ontology.event ADD COLUMN IF NOT EXISTS source_file text;
+ALTER TABLE ontology.prediction ADD COLUMN IF NOT EXISTS source_file text;
+ALTER TABLE ontology.implication ADD COLUMN IF NOT EXISTS source_file text;
+ALTER TABLE ontology.deal ADD COLUMN IF NOT EXISTS amount_qualifier text;
+
+-- Corporate groups (2026-10-28): a unit's head entity. Loaded from ontology/groups.json by load_ontology_groups.py.
+ALTER TABLE ontology.entity ADD COLUMN IF NOT EXISTS parent_slug text REFERENCES ontology.entity(slug) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS entity_parent_slug_idx ON ontology.entity (parent_slug);
+
+-- ---------------------------------------------------------------------------
+-- 2026-10-28: the intelligence program (history, identifiers, earnings calls,
+-- posts across platforms, watchlists, the forecast record).
+-- ---------------------------------------------------------------------------
+
+-- Identifiers: the SEC's company id, so filings attach to the right entity.
+ALTER TABLE ontology.entity ADD COLUMN IF NOT EXISTS cik text;
+CREATE INDEX IF NOT EXISTS entity_cik_idx ON ontology.entity (cik);
+
+-- History: a measured figure taken from structured filing data carries its
+-- concept, the filing and the form, not only a URL.
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS concept text;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS form text;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS accession text;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS filed_on date;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS period_start date;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS period_end date;
+ALTER TABLE ontology.signal ADD COLUMN IF NOT EXISTS retrieved_at timestamptz;
+
+-- Earnings calls and the documents around them. The text stays on disk
+-- (text_path); the row holds where it came from and when.
+CREATE TABLE IF NOT EXISTS ontology.transcript (
+  id            serial PRIMARY KEY,
+  entity_id     int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  kind          text NOT NULL CHECK (kind IN ('earnings_release','prepared_remarks','earnings_call','shareholder_letter','8k_exhibit','investor_day')),
+  period        text NOT NULL,
+  held_on       date,
+  url           text NOT NULL,
+  accession     text,
+  document_id   int REFERENCES public.document(id),
+  retrieval     text,
+  retrieved_at  timestamptz,
+  text_path     text,
+  summary       text,
+  UNIQUE (entity_id, kind, period)
+);
+
+-- Content from official channels: company blogs, release notes, talks,
+-- papers, executives' public posts. Each row names how it was collected.
+CREATE TABLE IF NOT EXISTS ontology.post (
+  id            serial PRIMARY KEY,
+  entity_id     int REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  person_id     int REFERENCES ontology.person(id) ON DELETE SET NULL,
+  platform      text NOT NULL CHECK (platform IN ('company_blog','github','youtube','substack','reddit','linkedin','x','podcast','conference','paper')),
+  url           text NOT NULL UNIQUE,
+  title         text,
+  author        text,
+  published_on  date,
+  retrieved_at  timestamptz NOT NULL DEFAULT now(),
+  retrieval     text NOT NULL,
+  summary       text,
+  raw_path      text
+);
+CREATE INDEX IF NOT EXISTS post_entity_idx ON ontology.post (entity_id, published_on DESC);
+
+-- A dated, typed statement taken from a transcript or a post (guidance,
+-- capex, supply, demand...), with its quote. Forecasts rest on these.
+CREATE TABLE IF NOT EXISTS ontology.statement (
+  id             serial PRIMARY KEY,
+  entity_id      int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  transcript_id  int REFERENCES ontology.transcript(id) ON DELETE CASCADE,
+  post_id        int REFERENCES ontology.post(id) ON DELETE CASCADE,
+  kind           text NOT NULL CHECK (kind IN ('guidance','capex','supply','demand','pricing','hiring','risk','product','partnership','regulation')),
+  said_on        date NOT NULL,
+  speaker        text,
+  quote          text NOT NULL,
+  url            text,
+  approved       boolean NOT NULL DEFAULT false,
+  created_at     timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS statement_entity_idx ON ontology.statement (entity_id, said_on DESC);
+
+-- Watchlists: an address follows an entity; a digest goes out when it has
+-- new filings, deals, statements or posts. Nothing is sent before confirmed_at.
+CREATE TABLE IF NOT EXISTS ontology.watch (
+  id            serial PRIMARY KEY,
+  email         text NOT NULL,
+  entity_id     int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  confirmed_at  timestamptz,
+  last_sent_at  timestamptz,
+  UNIQUE (email, entity_id)
+);
+
+-- The forecast record, as the site shows it: made, resolved, right.
+CREATE OR REPLACE VIEW ontology.forecast_record AS
+  SELECT count(*)                                       AS made,
+         count(*) FILTER (WHERE outcome <> 'pending')   AS resolved,
+         count(*) FILTER (WHERE outcome = 'right')      AS hits,
+         count(*) FILTER (WHERE outcome = 'partly')     AS partly,
+         count(*) FILTER (WHERE outcome = 'wrong')      AS misses
+  FROM ontology.prediction
+  WHERE approved;

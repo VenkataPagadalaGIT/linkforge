@@ -15,6 +15,8 @@ import {
   type Relation,
 } from "@/data/aiOntology";
 import { buildNodeGraphView } from "@/lib/aiOntologyGraph";
+import { intelFor } from "@/data/aiIntel";
+import AiCompanyFile from "@/components/ai/AiCompanyFile";
 
 const RelationList = ({ title, arrow, items, tone }: { title: string; arrow: string; items: Relation[]; tone: string }) => {
   if (!items.length) return null;
@@ -65,6 +67,7 @@ export default function AiNodeView({ id }: { id: string }) {
   const news = newsFor(node.id);
   const view = React.useMemo(() => buildNodeGraphView(node.id), [node.id]);
   const context = [...ctx.peers, ...ctx.capital, ...ctx.policy, ...ctx.makes];
+  const intel = intelFor(node.id);
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
@@ -119,6 +122,9 @@ export default function AiNodeView({ id }: { id: string }) {
           )}
         </ScrollReveal>
 
+        {/* Company file: deals, measures, people and events from the ontology database */}
+        {intel && <AiCompanyFile name={node.name} intel={intel} />}
+
         {/* Ecosystem visualization */}
         {view && (
           <ScrollReveal>
@@ -148,7 +154,7 @@ export default function AiNodeView({ id }: { id: string }) {
         {context.length > 0 && (
           <ScrollReveal>
             <section className="mb-14">
-              <RelationList title="Context — capital, rivals, policy" arrow="·" items={context} tone="text-fuchsia-700 dark:text-fuchsia-300" />
+              <RelationList title="Context: capital, rivals, policy" arrow="·" items={context} tone="text-fuchsia-700 dark:text-fuchsia-300" />
             </section>
           </ScrollReveal>
         )}

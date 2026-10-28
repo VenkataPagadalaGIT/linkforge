@@ -1,0 +1,28 @@
+#!/bin/zsh
+# Refresh the AI Intelligence Graph's data end to end: schema, loaders, free
+# collectors, generators, checks. Run from anywhere; nothing here spends money.
+# Paid steps (Bright Data, OpenRouter, Claude) are separate and gated.
+set -e
+cd "$(dirname "$0")"
+echo "== schema"
+docker exec -i vp-research-db psql -U research -d research_corpus -v ON_ERROR_STOP=1 -q -f - < ontology_schema.sql 2>&1 | grep -v NOTICE || true
+echo "== groups"
+python3 load_ontology_groups.py
+echo "== company files"
+for f in ontology/*_20??-??-??.json; do python3 load_ontology_company.py "$f"; done
+echo "== SEC (skipped unless SEC_USER_AGENT is set)"
+if [ -n "$SEC_USER_AGENT" ]; then python3 sec_facts.py --map && python3 sec_facts.py --facts all; fi
+echo "== GitHub release notes (free; GITHUB_TOKEN raises the hourly limit)"
+python3 collect_posts.py --github all --max-calls ${GH_MAX_CALLS:-50} || true
+echo "== feeds"
+python3 collect_posts.py --feeds || true
+echo "== icons"
+python3 fetch_logos.py | head -1
+echo "== generate"
+python3 gen_ontology_ts.py | tail -1
+python3 gen_ontology_intel_ts.py | cut -c1-120
+python3 gen_ontology_ts.py --check
+python3 gen_ontology_intel_ts.py --check
+echo "== brand"
+python3 ../../scripts/check-brand.py | tail -1
+echo "refresh done $(date '+%Y-%m-%d %H:%M')"

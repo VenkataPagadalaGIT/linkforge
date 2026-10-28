@@ -21,7 +21,8 @@ export type NodeType =
 export type RelationType =
   | "depends_on" | "supplies" | "manufactures" | "designs" | "powers"
   | "hosts" | "invests_in" | "partners_with" | "competes_with"
-  | "restricts" | "uses" | "used_by" | "sources";
+  | "restricts" | "uses" | "used_by" | "sources"
+  | "guarantees" | "leases_to" | "acquired" | "licenses" | "customer_of";
 
 export interface AiFact {
   label: string;
@@ -40,6 +41,10 @@ export interface AiNode {
   website?: string;
   github?: string;
   chokepoint?: boolean;
+  /** The head entity of its corporate group (Google Cloud > Alphabet). */
+  group?: string;
+  /** Other names people search with (a group head: "google", "alphabet"). */
+  aliases?: string[];
   keyFacts?: AiFact[];
   /** AIUpdate ids explicitly linked to this node (optional; newsFor also fuzzy-matches). */
   relatedUpdateIds?: string[];
@@ -125,6 +130,11 @@ export const RELATION_META: Record<RelationType, { label: string; dir: Dir }> = 
   partners_with: { label: "partners with", dir: "peer" },
   competes_with: { label: "competes with", dir: "peer" },
   restricts: { label: "restricts", dir: "policy" },
+  guarantees: { label: "guarantees", dir: "capital" },
+  leases_to: { label: "leases to", dir: "down" },
+  acquired: { label: "acquired", dir: "capital" },
+  licenses: { label: "licenses", dir: "down" },
+  customer_of: { label: "customer of", dir: "up" },
 };
 
 // ===== Data + indexes =====
@@ -147,6 +157,16 @@ export const allNodeIds = (): string[] => nodes.map((n) => n.id);
 export const nodesInLayer = (layer: LayerId): AiNode[] =>
   nodes.filter((n) => n.layer === layer).sort((a, b) => a.name.localeCompare(b.name));
 export const chokepoints = (): AiNode[] => nodes.filter((n) => n.chokepoint);
+
+// ===== Corporate groups =====
+
+/** Head entity id > its units (Alphabet > DeepMind, Gemini, Google Cloud, the TPU, Waymo). */
+export const GROUP_MEMBERS = new Map<string, string[]>();
+for (const n of nodes) if (n.group) (GROUP_MEMBERS.get(n.group) ?? GROUP_MEMBERS.set(n.group, []).get(n.group)!).push(n.id);
+/** The head of the group an entity belongs to, or null. */
+export const groupOf = (id: string): string | null => byId.get(id)?.group ?? null;
+/** The units of a group head (empty for anything else). */
+export const membersOf = (id: string): string[] => GROUP_MEMBERS.get(id) ?? [];
 
 export interface Relation {
   node: AiNode;
@@ -223,12 +243,12 @@ const norm = (s: string) => s.toLowerCase();
 export function newsFor(id: string): AIUpdate[] {
   const node = byId.get(id);
   if (!node) return [];
-  const name = norm(node.name.split(" (")[0]);
+  const names = [norm(node.name.split(" (")[0]), ...(node.aliases ?? []).map(norm)].filter((x) => x.length > 3);
   const explicit = new Set(node.relatedUpdateIds ?? []);
   return aiUpdates.filter((u) => {
     if (explicit.has(u.id)) return true;
     const hay = norm(`${u.company} ${u.title} ${(u.tags || []).join(" ")}`);
-    return name.length > 3 && hay.includes(name);
+    return names.some((name) => hay.includes(name));
   });
 }
 

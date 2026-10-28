@@ -4,10 +4,7 @@ Generate src/data/aiOntologyData.ts from ontology.entity and ontology.relation.
 
 The output keeps the exact shape and key order of the hand-generated file, so
 the first run after seeding reproduces it byte for byte (--check proves it).
-Rows added later come after the seeded ones, in slug order. Relation types the
-site's RelationType union does not know yet (guarantees, acquired, leases_to,
-licenses, customer_of) are kept in the database and left out of the file until
-src/data/aiOntology.ts learns them.
+Rows added later come after the seeded ones, in slug order.
 
 Run: python3 gen_ontology_ts.py [--check]
 """
@@ -36,16 +33,15 @@ def rows(q):
 
 
 ents = rows("""
-  SELECT slug, name, type, layer, tagline, story, hq, ticker, website, github, chokepoint, key_facts, related_update_ids
-  FROM ontology.entity
+  SELECT slug, name, type, layer, tagline, story, hq, ticker, website, github, chokepoint, key_facts, related_update_ids,
+         parent_slug, (SELECT array_agg(a.alias ORDER BY a.alias) FROM ontology.entity_alias a WHERE a.entity_id = e.id) AS aliases
+  FROM ontology.entity e
   WHERE lifecycle <> 'defunct'
   ORDER BY seed_order NULLS LAST, slug""")
 rels = rows("""
   SELECT f.slug AS "from", t.slug AS "to", r.relation, r.note
   FROM ontology.relation r JOIN ontology.entity f ON f.id = r.from_id JOIN ontology.entity t ON t.id = r.to_id
   WHERE r.verification <> 'superseded' AND (r.valid_to IS NULL OR r.valid_to >= current_date)
-    AND r.relation IN ('depends_on','supplies','manufactures','designs','powers','hosts','invests_in','partners_with',
-                       'competes_with','restricts','uses','used_by','sources')
   ORDER BY r.seed_order NULLS LAST, f.slug, t.slug, r.relation""")
 
 
@@ -54,6 +50,10 @@ def node(e):
     for k in ("hq", "ticker", "website", "github"):
         if e.get(k) is not None:
             o[k] = e[k]
+    if e.get("parent_slug"):
+        o["group"] = e["parent_slug"]
+    if e.get("aliases"):
+        o["aliases"] = e["aliases"]
     if e.get("chokepoint"):
         o["chokepoint"] = True
     if e.get("key_facts") is not None:

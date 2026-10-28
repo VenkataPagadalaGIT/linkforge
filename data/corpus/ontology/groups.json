@@ -1,0 +1,17 @@
+{
+ "note": "Corporate groups: one head entity per company, its units beneath it. A unit keeps its own layer and links (the cloud sits in L1, the chip in L2); the head carries the group's name and the words people search with. Topic nodes (capital stacks, policy items, industry trends) are not units.",
+ "groups": [
+  {"head": "google-investor", "name": "Alphabet (Google)", "tagline": "Google's parent: DeepMind and Gemini, Google Cloud, the TPU, Waymo, and a $10B Series H stake in Anthropic", "aliases": ["google", "alphabet", "googl"], "members": ["google-deepmind", "gemini-model", "google-cloud", "google-tpu", "waymo-av"]},
+  {"head": "amazon-investor", "name": "Amazon", "tagline": "AWS, the Trainium and Inferentia chips, the Nova models, and about $6.2B of convertible notes in Anthropic", "aliases": ["amazon", "amzn"], "members": ["aws", "aws-trainium", "amazon-nova"]},
+  {"head": "microsoft", "aliases": ["microsoft", "msft"], "members": ["azure", "microsoft-ai", "microsoft-maia", "github-copilot"]},
+  {"head": "nvidia", "aliases": ["nvidia", "nvda"], "members": ["nvidia-gpu", "nvidia-cuda", "vera-rubin", "nvidia-h20", "nvidia-nccl", "tensorrt-llm", "nvidia-nemo-nim", "nvidia-spectrumx", "infiniband", "nvidia-research"]},
+  {"head": "meta-ai", "name": "Meta (Meta AI / FAIR)", "aliases": ["meta", "facebook", "llama"], "members": ["llama-model", "meta-infra", "meta-mtia"]},
+  {"head": "tsmc", "aliases": ["tsmc", "tsm", "taiwan semiconductor"], "members": ["cowos", "soic", "tsmc-3dfabric", "tsmc-2nm", "tsmc-3nm", "tsmc-arizona", "tsmc-japan-jasm", "tsmc-fab25", "tsmc-cowos-fabs"]},
+  {"head": "openai", "aliases": ["openai", "chatgpt"], "members": ["openai-consumer", "triton"]},
+  {"head": "anthropic", "aliases": ["anthropic", "claude"], "members": ["claude-model"]},
+  {"head": "samsung", "name": "Samsung Electronics", "aliases": ["samsung"], "members": ["samsung-foundry"]},
+  {"head": "intel", "aliases": ["intel", "intc"], "members": ["intel-foundry"]},
+  {"head": "arm", "aliases": ["arm"], "members": ["arm-flexible-access"]},
+  {"head": "softbank", "aliases": ["softbank"], "members": ["softbank-arm-ai"]}
+ ]
+}

@@ -1,0 +1,967 @@
+{
+ "note": "Anthropic company file, the first vertical slice of the AI knowledge graph. Every figure and quote is verbatim from Anthropic's Form S-1 (accession 0001628280-26-067168, filed 2026-10-26), read on sec.gov in the built-in browser on 2026-10-27/28. Quotes are exact substrings of the whitespace-collapsed filing text. Forecasts and implications are drafts in the owner's voice and stay off production until approved.",
+ "entity": "anthropic",
+ "anchors": {
+  "summary": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
+  "risk": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2972",
+  "mdna": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979",
+  "business": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986",
+  "mgmt": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+  "related": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#i327e322beb6149b192f29ac26250121c_27054",
+  "index": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html"
+ },
+ "document": "anthropic-s1-2026-10-26",
+ "pages": [
+  {
+   "kind": "business_company",
+   "path": "/notebook/business/companies/anthropic",
+   "label": "Company profile in the Business Notebook"
+  },
+  {
+   "kind": "business_note",
+   "path": "/notebook/business/anthropic-s1-ai-marketing-lessons",
+   "label": "Anthropic's S-1: what its IPO filing teaches marketing, SEO and AI search teams"
+  }
+ ],
+ "relations": [
+  {
+   "from": "anthropic",
+   "to": "aws",
+   "relation": "depends_on",
+   "note": "AWS is Anthropic's primary cloud; trains on Trainium",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 110000000000,
+     "qualifier": "at least",
+     "currency": "USD",
+     "amount_basis": "announced",
+     "announced_on": "2026-04-30",
+     "term_start": "2026-05-01",
+     "term_end": "2036-04-30",
+     "money_direction": "from_to",
+     "summary": "Anthropic committed to spend at least $110.0B with Amazon between May 2026 and April 2036 regardless of usage, with a true-up if actual spend falls short (S-1).",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "google-cloud",
+   "relation": "depends_on",
+   "note": "Anthropic also uses Google Cloud TPUs at large scale",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 114500000000,
+     "currency": "USD",
+     "amount_basis": "announced",
+     "announced_on": "2026-03-01",
+     "term_start": "2026-04-01",
+     "term_end": "2033-07-31",
+     "money_direction": "from_to",
+     "summary": "At least about $114.5B with Google, April 2026 to July 2033, regardless of usage, with a true-up if spend falls short. Agreed March 2026, amended May to August 2026.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "In March 2026, we entered into an agreement with Google, which was subsequently amended between May and August 2026, and pursuant to which we committed to spend at least approximately $114.5 billion between April 2026 and July 2033, regardless of actual usage.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "at least about"
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "google-tpu",
+   "relation": "depends_on",
+   "note": "Additional TPU compute 2028 to 2031 from TPU providers including Google; Anthropic estimates $125.0B to $150.0B (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 125000000000,
+     "amount_high": 150000000000,
+     "currency": "USD",
+     "amount_basis": "estimate",
+     "term_start": "2028-01-01",
+     "term_end": "2031-12-31",
+     "money_direction": "from_to",
+     "summary": "Additional TPU compute from TPU providers including Google, delivered 2028 to 2031. Anthropic estimates the payments at about $125.0B to $150.0B, outside the commitments table.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "In addition, we also committed to procure additional TPU compute from TPU providers, including Google, to be delivered between 2028 and 2031.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "We estimate the aggregate future payments for such additional compute to be approximately $125.0 billion to $150.0 billion, which are not included in the contractual commitments table above.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "between"
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "azure",
+   "relation": "depends_on",
+   "note": "Committed to spend at least $44.9B with Microsoft, November 2026 to May 2033 (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 44900000000,
+     "currency": "USD",
+     "amount_basis": "announced",
+     "announced_on": "2025-11-01",
+     "term_start": "2026-11-01",
+     "term_end": "2033-05-31",
+     "money_direction": "from_to",
+     "summary": "At least $44.9B with Microsoft, November 2026 to May 2033, regardless of usage. Agreed November 2025, amended February and October 2026.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "In November 2025, we entered into an agreement with Microsoft, which was subsequently amended in February and October 2026, pursuant to which we committed to spend an aggregate of at least $44.9 billion between November 2026 and May 2033, regardless of actual usage.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "at least"
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "xai-capital",
+   "relation": "depends_on",
+   "note": "Up to $120.5B for Nvidia GPU compute from SpaceXAI (formerly X.AI LLC), terms into 2029 (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 120500000000,
+     "currency": "USD",
+     "amount_basis": "cap",
+     "announced_on": "2026-05-01",
+     "term_end": "2029-12-31",
+     "money_direction": "from_to",
+     "summary": "Up to $120.5B for compute powered by Nvidia GPUs from SpaceX.AI LLC (formerly X.AI LLC, a SpaceX subsidiary), about $3.1B a month once all capacity is delivered (expected December 2026). Cancellable on 90 days' notice after the initial periods end in January and March 2027.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Between May and October 2026, we entered into and amended several agreements with SpaceX.AI LLC (formerly known as X.AI LLC) (“SpaceXAI”), a wholly owned subsidiary of Space Exploration Technologies Corp. (collectively, the “SpaceXAI Arrangements”), to access compute powered by NVIDIA GPUs.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "Under the SpaceXAI Arrangements, we agreed to spend an aggregate of up to $120.5 billion over terms extending into 2029, consisting of approximately $3.1 billion in the aggregate per month once all capacity has been delivered, which we expect in December 2026, with different fees during capacity ramping periods.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "up to"
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "nscale-sovereign",
+   "relation": "depends_on",
+   "note": "Up to about $44.6B for Nvidia GPU compute from Nscale, terms into 2033 (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 44600000000,
+     "currency": "USD",
+     "amount_basis": "cap",
+     "announced_on": "2026-08-01",
+     "term_end": "2033-12-31",
+     "money_direction": "from_to",
+     "summary": "Up to about $44.6B for Nvidia GPU compute from Nscale, terms into 2033, fees only as capacity is delivered and accepted. Nscale must use best efforts to finance the GPUs and data centers.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Under the Nscale Services Agreements, we agreed to spend an aggregate of up to approximately $44.6 billion over terms extending into 2033, with fees accruing only as capacity is delivered to and accepted by us.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "up to about"
+    }
+   ]
+  },
+  {
+   "from": "anthropic",
+   "to": "lambda",
+   "relation": "depends_on",
+   "note": "About $41.3B for Nvidia GPU compute from Lambda, terms into 2034 (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "compute_commitment",
+     "stage": "definitive",
+     "amount": 41300000000,
+     "currency": "USD",
+     "amount_basis": "announced",
+     "announced_on": "2026-05-01",
+     "term_end": "2034-12-31",
+     "money_direction": "from_to",
+     "summary": "About $41.3B for Nvidia GPU compute from Lambda, terms into 2034. The August 2026 agreement (about $34.9B of it) can be ended if Lambda does not secure the facility lease in time.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Under the Lambda Agreements, we agreed to spend an aggregate of approximately $41.3 billion over terms extending into 2034, with fees accruing only as capacity is delivered to and accepted by us.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "Under our August 2026 agreement, which represents approximately $34.9 billion of the aggregate commitment, either party may terminate if Lambda does not timely secure the facility lease.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "about"
+    }
+   ]
+  },
+  {
+   "from": "broadcom",
+   "to": "anthropic",
+   "relation": "leases_to",
+   "note": "Five-year master equipment leases for TPU-based compute; rent about $161.2B excluding interest (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "lease",
+     "stage": "definitive",
+     "amount": 161200000000,
+     "currency": "USD",
+     "amount_basis": "announced",
+     "announced_on": "2026-03-01",
+     "money_direction": "to_from",
+     "summary": "Five-year master equipment leases with Broadcom giving Anthropic TPU-based compute in data centers others operate. Rent about $161.2B excluding interest; part came online in 2026, more from 2027.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Our rent payments over the life of these leases are equal to an aggregate of approximately $161.2 billion excluding interest, with rent payable in quarterly installments and payment obligations typically commencing upon AI infrastructure equipment becoming “ready for service” at the applicable data center facility.",
+       "locator": "MD&A, Infrastructure Equipment Leases"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "The Lease Arrangements provide us with access to TPU-based compute capacity, a portion of which began to come online in 2026, with additional capacity expected to come online starting in 2027.",
+       "locator": "MD&A, Infrastructure Equipment Leases"
+      }
+     ],
+     "qualifier": "about"
+    },
+    {
+     "instrument": "convertible_note",
+     "stage": "definitive",
+     "amount": 42000000000,
+     "currency": "USD",
+     "amount_basis": "cap",
+     "announced_on": "2026-03-01",
+     "money_direction": "from_to",
+     "summary": "Anthropic may issue up to $42.0B of convertible notes to Broadcom or a designated financial partner, if needed, to finance the 2026 lease.",
+     "evidence": [
+      {
+       "anchor": "risk",
+       "quote": "In addition, we have the ability to issue, if needed, up to $42.0 billion in aggregate principal amount of convertible promissory notes to Broadcom or, subject to our consent (not to be unreasonably withheld), a designated financial partner pursuant to a note purchase agreement that we entered into with Broadcom in March 2026 (the “Infrastructure Partner 2026 NPA”) to finance obligations under the 2026 Lease Arrangement.",
+       "locator": "Risk Factors"
+      }
+     ],
+     "qualifier": "up to"
+    }
+   ]
+  },
+  {
+   "from": "amd",
+   "to": "anthropic",
+   "relation": "supplies",
+   "note": "Hardware Supply Agreement: AMD Helios rack-scale systems from 2027; expected spend above $20.0B for the initial capacity (S-1)",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "supply_agreement",
+     "stage": "definitive",
+     "amount": 20000000000,
+     "currency": "USD",
+     "amount_basis": "estimate",
+     "term_start": "2027-01-01",
+     "money_direction": "to_from",
+     "summary": "Initial tranche of compute in 2027 on AMD Helios rack-scale systems. No fixed dollar amount; Anthropic expects more than $20.0B if it takes the full initial capacity, with an option on about as much again.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Under the Hardware Supply Agreement with AMD, we committed to obtain an initial tranche of compute capacity in calendar year 2027 by purchasing AMD-based Helios rack-scale systems from approved manufacturers or by accessing such systems through third-party service providers, provided certain conditions related to deployment proposals are met.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "If we procure the full amount of this initial committed capacity, we expect aggregate expenditures to exceed $20.0 billion over the term of the agreement, which are not included in the contractual commitments table above.",
+       "locator": "MD&A, Infrastructure Service Arrangements"
+      }
+     ],
+     "qualifier": "more than"
+    }
+   ]
+  },
+  {
+   "from": "amazon-investor",
+   "to": "anthropic",
+   "relation": "invests_in",
+   "note": "$8B invested; primary compute partner",
+   "verification": "stale",
+   "deals": [
+    {
+     "instrument": "convertible_note",
+     "stage": "funded",
+     "amount": 6203000000,
+     "currency": "USD",
+     "amount_basis": "funded",
+     "money_direction": "from_to",
+     "summary": "About $6.2B of Amazon convertible notes outstanding at 30 June 2026 (2023 agreement $2,186M, 2024 agreement $4,017M). Conversion is capped at 12% of Anthropic's capitalization unless Amazon waives it. An April 2026 agreement adds potential future financing capacity.",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "Our NPAs with Amazon consist of the Amazon 2023 NPA and the Amazon 2024 NPA, pursuant to which we previously issued convertible promissory notes, approximately $6.2 billion aggregate principal amount of which remains outstanding",
+       "locator": "MD&A, note purchase agreements"
+      },
+      {
+       "anchor": "mdna",
+       "quote": "unless Amazon elects in its sole discretion to waive the limitation, no portion of a note converts to the extent that, immediately following the conversion, Amazon would hold more than 12% of our capitalization",
+       "locator": "MD&A, Outstanding Notes"
+      }
+     ],
+     "qualifier": "about"
+    }
+   ]
+  },
+  {
+   "from": "microsoft",
+   "to": "anthropic",
+   "relation": "invests_in",
+   "note": "Equity investor through affiliates (S-1); amount not stated in the filing",
+   "verification": "verified",
+   "deals": [
+    {
+     "instrument": "equity",
+     "stage": "funded",
+     "amount": null,
+     "currency": "USD",
+     "amount_basis": null,
+     "money_direction": "from_to",
+     "summary": "The S-1 names Microsoft, with Amazon and Google, as having made significant equity investments through affiliates. It does not state the amount.",
+     "evidence": [
+      {
+       "anchor": "risk",
+       "quote": "Amazon, Google, and Microsoft, through their respective affiliates, have made significant equity investments in our company.",
+       "locator": "Risk Factors"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "from": "google-investor",
+   "to": "anthropic",
+   "relation": "invests_in",
+   "note": "$3B+, ~14% stake, while competing via Gemini",
+   "verification": "stale",
+   "deals": [
+    {
+     "instrument": "equity",
+     "stage": "funded",
+     "amount": 10000000000,
+     "currency": "USD",
+     "amount_basis": "funded",
+     "announced_on": "2026-05-31",
+     "money_direction": "from_to",
+     "summary": "Google invested $10.0B in Anthropic's Series H redeemable convertible preferred financing in May 2026 (S-1, unaudited).",
+     "evidence": [
+      {
+       "anchor": "mdna",
+       "quote": "In May 2026 (unaudited), Google invested $10.0 billion in the Company’s Series H redeemable convertible preferred stock financing",
+       "locator": "Notes to the consolidated financial statements"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "signals": [
+  {
+   "metric": "revenue_usd",
+   "label": "Revenue",
+   "period": "2023",
+   "as_of": "2023-12-31",
+   "value": 41000000,
+   "unit": "USD",
+   "anchor": "risk",
+   "quote": "In 2023, 2024, and 2025, our revenue was $41 million, $386 million, and $4.6 billion, respectively, representing year-over-year growth rates of 841% and 1,088%, respectively."
+  },
+  {
+   "metric": "revenue_usd",
+   "label": "Revenue",
+   "period": "2024",
+   "as_of": "2024-12-31",
+   "value": 386000000,
+   "unit": "USD",
+   "anchor": "risk",
+   "quote": "In 2023, 2024, and 2025, our revenue was $41 million, $386 million, and $4.6 billion, respectively, representing year-over-year growth rates of 841% and 1,088%, respectively."
+  },
+  {
+   "metric": "revenue_usd",
+   "label": "Revenue",
+   "period": "2025",
+   "as_of": "2025-12-31",
+   "value": 4585000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Revenue$41$386$4,585$1,163$16,286",
+   "locator": "Summary consolidated financial data, in millions: 2023, 2024, 2025, H1 2025, H1 2026"
+  },
+  {
+   "metric": "revenue_usd",
+   "label": "Revenue",
+   "period": "H1 2025",
+   "as_of": "2025-06-30",
+   "value": 1163000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Revenue$41$386$4,585$1,163$16,286",
+   "locator": "Summary consolidated financial data, in millions: 2023, 2024, 2025, H1 2025, H1 2026"
+  },
+  {
+   "metric": "revenue_usd",
+   "label": "Revenue",
+   "period": "H1 2026",
+   "as_of": "2026-06-30",
+   "value": 16286000000,
+   "unit": "USD",
+   "anchor": "risk",
+   "quote": "In the six months ended June 30, 2026, our revenue was $16.3 billion, representing a year-over-year growth rate of 1,300%."
+  },
+  {
+   "metric": "revenue_quarter_usd",
+   "label": "Quarterly revenue",
+   "period": "Q1 2025",
+   "as_of": "2025-03-31",
+   "value": 376000000,
+   "unit": "USD",
+   "anchor": "mdna",
+   "quote": "Revenue increased sequentially in each of the quarters presented, from $376 million for the three months ended March 31, 2025 to $11.6 billion for the three months ended June 30, 2026."
+  },
+  {
+   "metric": "revenue_quarter_usd",
+   "label": "Quarterly revenue",
+   "period": "Q2 2026",
+   "as_of": "2026-06-30",
+   "value": 11600000000,
+   "unit": "USD",
+   "anchor": "mdna",
+   "quote": "Revenue increased sequentially in each of the quarters presented, from $376 million for the three months ended March 31, 2025 to $11.6 billion for the three months ended June 30, 2026."
+  },
+  {
+   "metric": "compute_infrastructure_usd",
+   "label": "Compute and infrastructure expense",
+   "period": "2023",
+   "as_of": "2023-12-31",
+   "value": 433000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Compute and infrastructure 4332,5227,3262,3348,945",
+   "locator": "Summary consolidated financial data, in millions"
+  },
+  {
+   "metric": "compute_infrastructure_usd",
+   "label": "Compute and infrastructure expense",
+   "period": "2024",
+   "as_of": "2024-12-31",
+   "value": 2522000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Compute and infrastructure 4332,5227,3262,3348,945",
+   "locator": "Summary consolidated financial data, in millions"
+  },
+  {
+   "metric": "compute_infrastructure_usd",
+   "label": "Compute and infrastructure expense",
+   "period": "2025",
+   "as_of": "2025-12-31",
+   "value": 7326000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Compute and infrastructure 4332,5227,3262,3348,945",
+   "locator": "Summary consolidated financial data, in millions"
+  },
+  {
+   "metric": "compute_infrastructure_usd",
+   "label": "Compute and infrastructure expense",
+   "period": "H1 2025",
+   "as_of": "2025-06-30",
+   "value": 2334000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Compute and infrastructure 4332,5227,3262,3348,945",
+   "locator": "Summary consolidated financial data, in millions"
+  },
+  {
+   "metric": "compute_infrastructure_usd",
+   "label": "Compute and infrastructure expense",
+   "period": "H1 2026",
+   "as_of": "2026-06-30",
+   "value": 8945000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "Compute and infrastructure 4332,5227,3262,3348,945",
+   "locator": "Summary consolidated financial data, in millions"
+  },
+  {
+   "metric": "adjusted_operating_margin_pct",
+   "label": "Adjusted Operating Margin",
+   "period": "2023",
+   "as_of": "2023-12-31",
+   "value": -1273,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "Adjusted Operating Margin(1,273)%(722)%(106)%(159)%10%",
+   "locator": "Summary consolidated financial data, key metrics"
+  },
+  {
+   "metric": "adjusted_operating_margin_pct",
+   "label": "Adjusted Operating Margin",
+   "period": "2024",
+   "as_of": "2024-12-31",
+   "value": -722,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "Adjusted Operating Margin(1,273)%(722)%(106)%(159)%10%",
+   "locator": "Summary consolidated financial data, key metrics"
+  },
+  {
+   "metric": "adjusted_operating_margin_pct",
+   "label": "Adjusted Operating Margin",
+   "period": "2025",
+   "as_of": "2025-12-31",
+   "value": -106,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "Adjusted Operating Margin(1,273)%(722)%(106)%(159)%10%",
+   "locator": "Summary consolidated financial data, key metrics"
+  },
+  {
+   "metric": "adjusted_operating_margin_pct",
+   "label": "Adjusted Operating Margin",
+   "period": "H1 2025",
+   "as_of": "2025-06-30",
+   "value": -159,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "Adjusted Operating Margin(1,273)%(722)%(106)%(159)%10%",
+   "locator": "Summary consolidated financial data, key metrics"
+  },
+  {
+   "metric": "adjusted_operating_margin_pct",
+   "label": "Adjusted Operating Margin",
+   "period": "H1 2026",
+   "as_of": "2026-06-30",
+   "value": 10,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "Adjusted Operating Margin(1,273)%(722)%(106)%(159)%10%",
+   "locator": "Summary consolidated financial data, key metrics"
+  },
+  {
+   "metric": "customers_100k_ttm",
+   "label": "Customers with $100,000+ of trailing 12-month revenue (more than)",
+   "period": "2025-09-30",
+   "as_of": "2025-09-30",
+   "value": 950,
+   "unit": "count",
+   "anchor": "business",
+   "quote": "From September 30, 2025 to September 30, 2026, we have grown customers with $100,000 or more of revenue on a TTM basis from more than 950 to more than 11,900."
+  },
+  {
+   "metric": "customers_100k_ttm",
+   "label": "Customers with $100,000+ of trailing 12-month revenue (more than)",
+   "period": "2026-09-30",
+   "as_of": "2026-09-30",
+   "value": 11900,
+   "unit": "count",
+   "anchor": "business",
+   "quote": "From September 30, 2025 to September 30, 2026, we have grown customers with $100,000 or more of revenue on a TTM basis from more than 950 to more than 11,900."
+  },
+  {
+   "metric": "net_revenue_retention_pct",
+   "label": "Net Revenue Retention (approximately)",
+   "period": "2026-09-30",
+   "as_of": "2026-09-30",
+   "value": 900,
+   "unit": "pct",
+   "anchor": "summary",
+   "quote": "as demonstrated by our Net Revenue Retention of approximately 900% as of September 30, 2026."
+  },
+  {
+   "metric": "marketplace_revenue_share_pct",
+   "label": "Share of revenue through cloud marketplaces (approximately)",
+   "period": "2023",
+   "as_of": "2023-12-31",
+   "value": 11,
+   "unit": "pct",
+   "anchor": "risk",
+   "quote": "sales to customers through CSP marketplaces represented approximately 11%, 32%, 47%, and 48%, respectively, of total revenue."
+  },
+  {
+   "metric": "marketplace_revenue_share_pct",
+   "label": "Share of revenue through cloud marketplaces (approximately)",
+   "period": "2024",
+   "as_of": "2024-12-31",
+   "value": 32,
+   "unit": "pct",
+   "anchor": "risk",
+   "quote": "sales to customers through CSP marketplaces represented approximately 11%, 32%, 47%, and 48%, respectively, of total revenue."
+  },
+  {
+   "metric": "marketplace_revenue_share_pct",
+   "label": "Share of revenue through cloud marketplaces (approximately)",
+   "period": "2025",
+   "as_of": "2025-12-31",
+   "value": 47,
+   "unit": "pct",
+   "anchor": "risk",
+   "quote": "sales to customers through CSP marketplaces represented approximately 11%, 32%, 47%, and 48%, respectively, of total revenue."
+  },
+  {
+   "metric": "marketplace_revenue_share_pct",
+   "label": "Share of revenue through cloud marketplaces (approximately)",
+   "period": "H1 2026",
+   "as_of": "2026-06-30",
+   "value": 48,
+   "unit": "pct",
+   "anchor": "risk",
+   "quote": "sales to customers through CSP marketplaces represented approximately 11%, 32%, 47%, and 48%, respectively, of total revenue."
+  },
+  {
+   "metric": "employees",
+   "label": "Employees (approximately)",
+   "period": "2026-09-30",
+   "as_of": "2026-09-30",
+   "value": 5300,
+   "unit": "count",
+   "anchor": "business",
+   "quote": "As of September 30, 2026, with approximately 5,300 employees, our TTM revenue per employee was over $6.6 million"
+  },
+  {
+   "metric": "capital_raised_total_usd",
+   "label": "Capital raised in total",
+   "period": "2026-06",
+   "as_of": "2026-06-30",
+   "value": 141100000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "raised an aggregate of $141.1 billion of capital and had cash and cash equivalents of $112.4 billion and short-term investments of $19.3 billion."
+  },
+  {
+   "metric": "cash_and_equivalents_usd",
+   "label": "Cash and cash equivalents",
+   "period": "2026-06-30",
+   "as_of": "2026-06-30",
+   "value": 112400000000,
+   "unit": "USD",
+   "anchor": "summary",
+   "quote": "raised an aggregate of $141.1 billion of capital and had cash and cash equivalents of $112.4 billion and short-term investments of $19.3 billion."
+  },
+  {
+   "metric": "equity_round_usd",
+   "label": "Series G-1 preferred stock sold, January to February 2026",
+   "period": "Series G-1",
+   "as_of": "2026-02-28",
+   "value": 23454545698,
+   "unit": "USD",
+   "anchor": "related",
+   "quote": "From January 2026 to February 2026, we sold an aggregate of 90,510,425 shares of our Series G-1 redeemable convertible preferred stock at a purchase price of $259.1364 per share, for an aggregate purchase price of $23,454,545,698."
+  },
+  {
+   "metric": "equity_round_usd",
+   "label": "Series H-1 preferred stock sold, May to June 2026",
+   "period": "Series H-1",
+   "as_of": "2026-06-30",
+   "value": 45729447703,
+   "unit": "USD",
+   "anchor": "related",
+   "quote": "From May 2026 to June 2026, we sold an aggregate of 77,637,878 shares of our Series H-1 redeemable convertible preferred stock at a purchase price of $589.0095 per share, for an aggregate purchase price of $45,729,447,703."
+  },
+  {
+   "metric": "qoq_revenue_growth_pct",
+   "label": "Quarter-over-quarter revenue growth",
+   "period": "Q4 2025",
+   "as_of": "2025-12-31",
+   "value": 48,
+   "unit": "pct",
+   "anchor": "business",
+   "quote": "our total quarter-over-quarter revenue growth accelerated from 48% for the three months ended December 31, 2025 to 132% for the three months ended March 31, 2026."
+  },
+  {
+   "metric": "qoq_revenue_growth_pct",
+   "label": "Quarter-over-quarter revenue growth",
+   "period": "Q1 2026",
+   "as_of": "2026-03-31",
+   "value": 132,
+   "unit": "pct",
+   "anchor": "business",
+   "quote": "our total quarter-over-quarter revenue growth accelerated from 48% for the three months ended December 31, 2025 to 132% for the three months ended March 31, 2026."
+  }
+ ],
+ "people": [
+  {
+   "slug": "dario-amodei",
+   "name": "Dario Amodei",
+   "public_role": "Chief Executive Officer, Co-Founder and Director",
+   "site_path": "/notebook/business/people/dario-amodei",
+   "sort_order": 1,
+   "anchor": "mgmt",
+   "quote": "Executive Officers:Dario Amodei43Chief Executive Officer, Co-Founder, and DirectorClasses A and F"
+  },
+  {
+   "slug": "daniela-amodei",
+   "name": "Daniela Amodei",
+   "public_role": "President, Co-Founder, Chairperson and Director",
+   "site_path": "/notebook/business/people/daniela-amodei",
+   "sort_order": 2,
+   "anchor": "mgmt",
+   "quote": "Daniela Amodei(2)39President, Co-Founder, Chairperson, and DirectorClasses A and F"
+  },
+  {
+   "slug": "krishna-rao",
+   "name": "Krishna Rao",
+   "public_role": "Chief Financial Officer since April 2024",
+   "site_path": "/notebook/business/people/krishna-rao",
+   "sort_order": 3,
+   "anchor": "mgmt",
+   "quote": "Mr. Rao has served as our Chief Financial Officer since April 2024."
+  },
+  {
+   "slug": "reed-hastings",
+   "name": "Reed Hastings",
+   "public_role": "Non-employee director",
+   "sort_order": 4,
+   "anchor": "mgmt",
+   "quote": "Non-Employee Directors:Reed Hastings(1)(2)(6)65DirectorClass T"
+  },
+  {
+   "slug": "christopher-liddell",
+   "name": "Christopher Liddell",
+   "public_role": "Non-employee director",
+   "sort_order": 5,
+   "anchor": "mgmt",
+   "quote": "Christopher Liddell(1)(4)(5)68DirectorClass T"
+  },
+  {
+   "slug": "vas-narasimhan",
+   "name": "Vas Narasimhan",
+   "public_role": "Non-employee director",
+   "sort_order": 6,
+   "anchor": "mgmt",
+   "quote": "Vas Narasimhan(3)(4)50DirectorClass T"
+  },
+  {
+   "slug": "yasmin-razavi",
+   "name": "Yasmin Razavi",
+   "public_role": "Non-employee director",
+   "sort_order": 7,
+   "anchor": "mgmt",
+   "quote": "Yasmin Razavi(2)(3)37DirectorClasses A and F"
+  }
+ ],
+ "events": [
+  {
+   "kind": "deal",
+   "occurred_on": "2025-11-01",
+   "date_label": "Nov 2025",
+   "headline": "Compute agreement with Microsoft: at least $44.9B, November 2026 to May 2033",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "product_launch",
+   "occurred_on": "2025-11-01",
+   "date_label": "Nov 2025",
+   "headline": "Opus 4.5 launches with more capability and a lower price per task; quarter-over-quarter revenue growth then rises from 48% to 132%",
+   "anchor": "business"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-01-01",
+   "date_label": "Jan to Feb 2026",
+   "headline": "Series G-1 preferred stock: $23.5B at $259.14 a share",
+   "anchor": "related"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-03-01",
+   "date_label": "Mar 2026",
+   "headline": "Compute agreement with Google: at least about $114.5B, April 2026 to July 2033",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-03-01",
+   "date_label": "Mar 2026",
+   "headline": "Broadcom equipment lease for TPU-based compute, with up to $42.0B of convertible notes available to finance it",
+   "anchor": "risk"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-04-01",
+   "date_label": "Apr 2026",
+   "headline": "Compute agreement with Amazon: at least $110.0B, May 2026 to April 2036",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-05-01",
+   "date_label": "May to Jun 2026",
+   "headline": "Series H-1 preferred stock: $45.7B at $589.01 a share, including $10.0B from Google",
+   "anchor": "related"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-05-01",
+   "date_label": "May to Oct 2026",
+   "headline": "SpaceXAI agreements for Nvidia GPU compute: up to $120.5B, terms into 2029",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-05-01",
+   "date_label": "May to Aug 2026",
+   "headline": "Lambda agreements for Nvidia GPU compute: about $41.3B, terms into 2034",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "deal",
+   "occurred_on": "2026-08-01",
+   "date_label": "Aug 2026",
+   "headline": "Nscale agreements for Nvidia GPU compute: up to about $44.6B, terms into 2033",
+   "anchor": "mdna"
+  },
+  {
+   "kind": "product_launch",
+   "occurred_on": "2026-09-01",
+   "date_label": "Sep 2026",
+   "headline": "Claude Cowork and Claude.ai begin merging into one application",
+   "anchor": "business"
+  },
+  {
+   "kind": "filing",
+   "occurred_on": "2026-10-26",
+   "date_label": "26 Oct 2026",
+   "headline": "Form S-1 filed to list Class A stock on the Nasdaq Global Select Market as ANT",
+   "anchor": "index"
+  }
+ ],
+ "predictions": [
+  {
+   "statement": "Cloud marketplaces will account for more than half of Anthropic's revenue for full-year 2026.",
+   "basis": "The marketplace share rose from about 11% (2023) to 32% (2024), 47% (2025) and 48% (first half of 2026), per the S-1.",
+   "made_on": "2026-10-28",
+   "resolves_on": "2027-04-30",
+   "approved": false
+  },
+  {
+   "statement": "Anthropic will report a positive Adjusted Operating Margin for full-year 2026.",
+   "basis": "Adjusted Operating Margin moved from minus 159% in the first half of 2025 to plus 10% in the first half of 2026, and to 19% in the second quarter of 2026, per the S-1.",
+   "made_on": "2026-10-28",
+   "resolves_on": "2027-04-30",
+   "approved": false
+  }
+ ],
+ "implications": [
+  {
+   "audience": "marketers",
+   "headline": "Distribution beat advertising",
+   "sort_order": 1,
+   "approved": false,
+   "body": "In the first half of 2026, fees to channel partners rose by $2.7B against $273M more for marketing and advertising, and about 48% of revenue came through cloud marketplaces. For an AI product, the marketplace listing and the integrator network are primary channels."
+  },
+  {
+   "audience": "developers",
+   "headline": "Cheaper intelligence grew usage",
+   "sort_order": 2,
+   "approved": false,
+   "body": "Opus 4.5 launched with a lower price per task than Opus 4.1, and quarter-over-quarter revenue growth went from 48% to 132%. Build so you can switch models as price per task falls."
+  },
+  {
+   "audience": "everyone",
+   "headline": "Compute is the constraint, contracted for a decade",
+   "sort_order": 3,
+   "approved": false,
+   "body": "The S-1 lists compute arrangements with Google, Amazon, Microsoft, Broadcom, SpaceXAI, Nscale, Lambda and AMD, with terms running to 2036. Whoever supplies compute shapes which models get built and what they cost."
+  }
+ ],
+ "entity_update": {
+  "tagline": "Maker of Claude; filed to list on Nasdaq as ANT on 26 Oct 2026",
+  "story": "Anthropic builds the Claude family of models and sells them through its own apps, its API and all three major clouds. It filed its Form S-1 on 26 October 2026 to list on the Nasdaq Global Select Market as ANT. Revenue was $4.6 billion in 2025 and $16.3 billion in the first half of 2026. Claude is trained and served on four chip families (AWS Trainium, Google TPUs, NVIDIA GPUs and AMD GPUs), and the S-1 lists compute arrangements with Google, Amazon, Microsoft, Broadcom, SpaceXAI, Nscale, Lambda and AMD on terms running to 2036.",
+  "keyFacts": [
+   {
+    "label": "Flagship model",
+    "value": "Claude"
+   },
+   {
+    "label": "Chips",
+    "value": "Trainium, TPU, NVIDIA GPU, AMD GPU"
+   },
+   {
+    "label": "Listing",
+    "value": "Nasdaq: ANT (S-1 filed 26 Oct 2026)"
+   },
+   {
+    "label": "Structure",
+    "value": "Delaware public benefit corporation"
+   }
+  ],
+  "ticker": "ANT (proposed)",
+  "verification": "verified",
+  "evidence": [
+   {
+    "anchor": "business",
+    "quote": "our multi-chip compute architecture across AWS Trainium, Google TPUs, NVIDIA GPUs, and AMD GPUs",
+    "locator": "Business"
+   },
+   {
+    "anchor": "summary",
+    "quote": "Prior to this offering, there has been no public market for our Class A common stock.",
+    "locator": "Prospectus cover"
+   }
+  ]
+ },
+ "counterparty_updates": [
+  {
+   "slug": "xai-capital",
+   "name": "xAI (SpaceXAI)",
+   "tagline": "Now SpaceX.AI LLC, a wholly owned SpaceX subsidiary; sells Nvidia-GPU compute to Anthropic",
+   "evidence": [
+    {
+     "quote": "Between May and October 2026, we entered into and amended several agreements with SpaceX.AI LLC (formerly known as X.AI LLC) (“SpaceXAI”), a wholly owned subsidiary of Space Exploration Technologies Corp. (collectively, the “SpaceXAI Arrangements”), to access compute powered by NVIDIA GPUs.",
+     "anchor": "mdna",
+     "locator": "MD&A, Infrastructure Service Arrangements"
+    }
+   ]
+  }
+ ]
+}
