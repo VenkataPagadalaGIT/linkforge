@@ -4328,7 +4328,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 3627,
+   "total": 4555,
    "dated": 487,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7309,9 +7309,9 @@ export const AI_360: Record<string, Entity360> = {
      "host": "platform.claude.com",
      "label": "Developer docs",
      "mode": "titles",
-     "pages": 273,
+     "pages": 821,
      "withText": 0,
-     "dated": 1,
+     "dated": 31,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
@@ -7321,13 +7321,13 @@ export const AI_360: Record<string, Entity360> = {
      "host": "support.claude.com",
      "label": "Support center",
      "mode": "titles",
-     "pages": 0,
+     "pages": 380,
      "withText": 0,
-     "dated": 0,
+     "dated": 37,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
-     "readOn": null
+     "readOn": "2026-10-28"
     }
    ],
    "words": 2907530,
@@ -7352,6 +7352,10 @@ export const AI_360: Record<string, Entity360> = {
     {
      "name": "Societal Impacts",
      "count": 24
+    },
+    {
+     "name": "Enterprise",
+     "count": 3
     },
     {
      "name": "Claude Code for every seat, with self-serve seat management and up to $500 per month in pooled API credits.",
@@ -7831,7 +7835,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "HeadVis: An Interactive Tool For Investigating Attention Heads",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -7854,20 +7858,55 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Adam Ward",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-an-anthropic-field-marketer-uses-claude-code-to-send-weekly-personalized-updates-to-every-sales-rep",
+     "first": "2026-08-24",
+     "last": "2026-08-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How an Anthropic field marketer uses Claude Code to send weekly personalized updates to every sales rep"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Adly Templeton",
      "headline": "Named author on 5 pages of transformer-circuits.pub",
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2023-10-04",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Aleksandra Todorova",
+     "headline": "Named author on 3 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
+     "first": "2026-08-20",
+     "last": "2026-09-29",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Agents you can coach: how Asana builds human-agent teams with Claude",
+      "How Anthropic employees use Claude Tag"
      ]
     },
     {
@@ -7924,6 +7963,23 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Ali Shazal",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/the-anatomy-of-effective-commerce-agents",
+     "first": "2026-09-02",
+     "last": "2026-09-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A guide to the anatomy of effective commerce agents"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Alwin Peng",
      "headline": "Named author on 1 page of alignment.anthropic.com",
      "hasTitle": false,
@@ -7964,15 +8020,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2025-03-27",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -7982,15 +8038,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2021-12-22",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -8030,20 +8086,37 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Araba Koomson",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-healthcare-organizations-use-claude-tag",
+     "first": "2026-09-14",
+     "last": "2026-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How healthcare organizations use Claude Tag"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Basil Hosmer",
      "headline": "Named author on 2 pages of transformer-circuits.pub",
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2025-03-27",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -8088,15 +8161,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2023-10-04",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -8123,15 +8196,49 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2024-05-21",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Camy Pearson",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-healthcare-organizations-use-claude-tag",
+     "first": "2026-09-14",
+     "last": "2026-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How healthcare organizations use Claude Tag"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Carl Johnson",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropics-sales-team-rebuilt-inbound-with-claude-managed-agents",
+     "first": "2026-09-30",
+     "last": "2026-09-30",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic's sales team rebuilt inbound with Claude Managed Agents"
      ]
     },
     {
@@ -8166,6 +8273,23 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Cat Wu",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/product-management-on-the-ai-exponential",
+     "first": "2026-03-19",
+     "last": "2026-03-19",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Product management on the AI exponential"
      ]
     },
     {
@@ -8205,6 +8329,23 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Chen Chang",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropic-enables-self-service-data-analytics-with-claude",
+     "first": "2026-06-03",
+     "last": "2026-06-03",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic enables self-service data analytics with Claude"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Chris Olah",
      "headline": "Named author on 10 pages of transformer-circuits.pub",
      "hasTitle": false,
@@ -8218,7 +8359,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -8258,6 +8399,24 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Clement Peng",
+     "headline": "Named author on 2 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
+     "first": "2026-06-03",
+     "last": "2026-08-13",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Self-service data analytics in Slack: how Anthropic deploys Claude Tag for ad-hoc questions",
+      "How Anthropic enables self-service data analytics with Claude"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Craig Citro",
      "headline": "Named author on 4 pages of transformer-circuits.pub",
      "hasTitle": false,
@@ -8271,7 +8430,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -8359,7 +8518,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Verbalizable Representations Form a Global Workspace in Language Models",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -8396,6 +8555,41 @@ export const AI_360: Record<string, Entity360> = {
      "recent": [
       "Softmax Linear Units",
       "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Delba de Oliveira",
+     "headline": "Named author on 2 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/building-verification-loops-in-claude-code-with-skills",
+     "first": "2026-06-30",
+     "last": "2026-07-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Building verification loops in Claude Code with skills",
+      "Loop engineering: Getting started with loops"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Diane Sarkis",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Building agents: When to fold subagents into your main agent loop"
      ]
     },
     {
@@ -8613,15 +8807,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2024-05-21",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -8733,6 +8927,24 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Jason Clinton",
+     "headline": "Named author on 2 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle",
+     "first": "2026-07-17",
+     "last": "2026-07-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic secures its AI-native software development lifecycle",
+      "CISO's guide to agentic AI"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Jeff Wu",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "hasTitle": false,
@@ -8784,6 +8996,40 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Johanne Jiao",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropic-enables-self-service-data-analytics-with-claude",
+     "first": "2026-06-03",
+     "last": "2026-06-03",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic enables self-service data analytics with Claude"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "John Albert",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropics-business-development-team-uses-claude-to-run-inbound-and-outbound-at-scale",
+     "first": "2026-08-07",
+     "last": "2026-08-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic's business development team uses Claude to run inbound and outbound at scale"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "John Hughes",
      "headline": "Named author on 1 page of alignment.anthropic.com",
      "hasTitle": false,
@@ -8801,20 +9047,54 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Jonah Ezekiel",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects",
+     "first": "2026-09-23",
+     "last": "2026-09-23",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How to prepare for AI-driven code modernization projects"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Jonathan Marcus",
      "headline": "Named author on 4 pages of transformer-circuits.pub",
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2024-05-21",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Josh Cherry",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropic-enables-self-service-data-analytics-with-claude",
+     "first": "2026-06-03",
+     "last": "2026-06-03",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic enables self-service data analytics with Claude"
      ]
     },
     {
@@ -8889,6 +9169,23 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Justin Leder",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-anthropic-enables-self-service-data-analytics-with-claude",
+     "first": "2026-06-03",
+     "last": "2026-06-03",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How Anthropic enables self-service data analytics with Claude"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Kamal Ndousse",
      "headline": "Named author on 4 pages of transformer-circuits.pub",
      "hasTitle": false,
@@ -8954,7 +9251,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -8993,6 +9290,23 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Kristen Swanson",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/agents-you-can-coach-how-asana-builds-human-agent-teams-with-claude",
+     "first": "2026-09-29",
+     "last": "2026-09-29",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Agents you can coach: how Asana builds human-agent teams with Claude"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Kyle Fish",
      "headline": "Named author on 1 page of transformer-circuits.pub",
      "hasTitle": false,
@@ -9006,6 +9320,40 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Lance Martin",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/reducing-cost-and-improving-performance-with-claude-platform",
+     "first": "2026-09-08",
+     "last": "2026-09-08",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Reducing cost and improving performance with Claude Platform"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Lexie Tonelli",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-to-prepare-for-ai-driven-code-modernization-projects",
+     "first": "2026-09-23",
+     "last": "2026-09-23",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How to prepare for AI-driven code modernization projects"
      ]
     },
     {
@@ -9028,6 +9376,40 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Lily Zhao",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
+     "first": "2026-08-13",
+     "last": "2026-08-13",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Self-service data analytics in Slack: how Anthropic deploys Claude Tag for ad-hoc questions"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Lina Ochman",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/what-1-000-small-business-owners-taught-us-about-ai",
+     "first": "2026-09-10",
+     "last": "2026-09-10",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "What 1,000 small business owners taught us about AI"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Linda Petrini",
      "headline": "Named author on 1 page of alignment.anthropic.com",
      "hasTitle": false,
@@ -9041,6 +9423,58 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Louis Claxton",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/the-ai-native-sdlc-playbook",
+     "first": "2026-08-21",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "The AI-native SDLC playbook"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Lydia Hallie",
+     "headline": "Named author on 2 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/maximizing-the-value-of-your-claude-code-sessions",
+     "first": "2026-07-07",
+     "last": "2026-08-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Maximizing the value of your Claude Code sessions",
+      "Claude Code effort level and model selection"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Maria Howe",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-healthcare-organizations-use-claude-tag",
+     "first": "2026-09-14",
+     "last": "2026-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How healthcare organizations use Claude Tag"
      ]
     },
     {
@@ -9079,20 +9513,55 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Matthew Koen",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/the-anatomy-of-effective-commerce-agents",
+     "first": "2026-09-02",
+     "last": "2026-09-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A guide to the anatomy of effective commerce agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Michael Segner",
+     "headline": "Named author on 8 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/claude-opus-5-5-built-for-coding-sessions-that-use-more-context",
+     "first": "2026-06-30",
+     "last": "2026-09-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Coding sessions are longer and use more context. Claude Opus 5.5 is built with that in mind.",
+      "Claude for Small Business launches new workflows, integrations, and training programs"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Michael Sklar",
      "headline": "Named author on 2 pages of transformer-circuits.pub",
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2025-03-27",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -9110,6 +9579,23 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Molly Vorwerck",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/auto-mode-in-production",
+     "first": "2026-08-07",
+     "last": "2026-08-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Running auto mode in production"
      ]
     },
     {
@@ -9215,7 +9701,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Characterizing interference weights in a tiny language model",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -9429,6 +9915,24 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Sachin Malhotra",
+     "headline": "Named author on 2 pages of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/agentic-coding-is-straining-ci-heres-how-we-scaled-test-impact-analysis-at-anthropic",
+     "first": "2026-08-18",
+     "last": "2026-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Agentic coding is straining CI. Here’s how we scaled test impact analysis at Anthropic",
+      "How Claude Tag serves as Anthropic’s first responder for CI/CD failures"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Sam McCandlish",
      "headline": "Named author on 5 pages of transformer-circuits.pub",
      "hasTitle": false,
@@ -9551,20 +10055,37 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "company_site",
+     "name": "Shahboz Ibragimov",
+     "headline": "Named author on 1 page of claude.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://claude.com/resources/articles/how-an-anthropic-japan-business-development-representative-runs-his-day",
+     "first": "2026-10-16",
+     "last": "2026-10-16",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "How an Anthropic Japan BDR runs his day with a fleet of Claude agents"
+     ]
+    },
+    {
+     "source": "company_site",
      "name": "Shan Carter",
      "headline": "Named author on 5 pages of transformer-circuits.pub",
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2023-01-05",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -9670,7 +10191,7 @@ export const AI_360: Record<string, Entity360> = {
      "matched": [],
      "recent": [
       "Verbalizable Representations Form a Global Workspace in Language Models",
-      "On the Biology of a Large Language Model"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
      ]
     },
     {
@@ -9697,15 +10218,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2024-10-25",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -9715,15 +10236,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2025-03-27",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -9804,15 +10325,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2023-10-04",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -9962,15 +10483,15 @@ export const AI_360: Record<string, Entity360> = {
      "hasTitle": false,
      "flag": null,
      "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/methods.html",
      "first": "2025-03-27",
      "last": "2025-03-27",
      "tier": "confirmed",
      "works": null,
      "matched": [],
      "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+      "Circuit Tracing: Revealing Computational Graphs in Language Models",
+      "On the Biology of a Large Language Model"
      ]
     },
     {
@@ -11220,13 +11741,13 @@ export const AI_360: Record<string, Entity360> = {
      ]
     }
    ],
-   "total": 5226,
+   "total": 5256,
    "rosterUrl": "/api/ai/entity/anthropic/people",
    "counts": {
     "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
-    "company_site:confirmed": 124,
+    "company_site:confirmed": 154,
     "linkedin:stated": 5072,
     "openalex:model": 282
    }
