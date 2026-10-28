@@ -27,6 +27,7 @@ import {
 } from "./intelModel";
 import { SearchBox } from "./IntelDossier";
 import { ShareCard, isShareMetric } from "./AiShares";
+import { FollowButton, WatchlistStrip, useWatchlist } from "./Watch";
 import { AI_SHARES } from "@/data/aiIntel";
 
 const SHOW_DRAFTS = process.env.NEXT_PUBLIC_SHOW_DRAFTS === "1";
@@ -409,9 +410,12 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
             </p>
           )}
         </div>
-        <Link to={`/notebook/ai/map/${id}`} className="border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors">
-          Open the full {fileSeries.length ? "company file" : "entity page"} →
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <FollowButton id={id} />
+          <Link to={`/notebook/ai/map/${id}`} className="border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors">
+            Open the full {fileSeries.length ? "company file" : "entity page"} →
+          </Link>
+        </div>
       </div>
       <Kpis
         items={[
@@ -1103,6 +1107,12 @@ function AskBox({ onPick }: { onPick: (id: string) => void }) {
 export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScope: (s: AiScope) => void }) {
   const [tab, setTab] = React.useState<Tab>("overview");
   const ids = React.useMemo(() => idsIn(scope), [scope]);
+  // Opening a followed entity marks what it had so far as seen.
+  const watch = useWatchlist();
+  const { markSeen } = watch;
+  React.useEffect(() => {
+    if (scope.entity) markSeen(scope.entity);
+  }, [scope.entity, markSeen]);
   const node = scope.entity ? getNode(scope.entity) : undefined;
   const typeName = scope.type ? NODE_TYPE_META[scope.type.split(":")[1] as AiNode["type"]]?.label : null;
   const pick = (id: string) => {
@@ -1142,6 +1152,7 @@ export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScop
         </nav>
         <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Follows the graph · {ids.length === 1 ? "1 entity" : `${fmt(ids.length)} entities`}</p>
       </div>
+      <WatchlistStrip onPick={pick} />
       <div role="tablist" aria-label="Dashboard sections" className="flex overflow-x-auto border-b border-border [scrollbar-width:none]">
         {TABS.map((t) => (
           <button

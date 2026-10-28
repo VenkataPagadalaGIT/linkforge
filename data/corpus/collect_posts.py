@@ -25,6 +25,7 @@ from db import sql, query
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = os.path.join(HERE, "ontology", "post_sources.json")
 GH_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
+PRE = re.compile(r"[-.](rc|alpha|beta|dev|pre)[.\-]?[0-9]", re.I)
 calls = 0
 MAX_CALLS = int(sys.argv[sys.argv.index("--max-calls") + 1]) if "--max-calls" in sys.argv else 40
 
@@ -68,7 +69,8 @@ def github(slugs, dry):
             repos = [repo] if repo else [r["name"] for r in get_json(f"https://api.github.com/orgs/{org}/repos?sort=pushed&per_page=4&type=public", headers)]
             for r in repos:
                 for rel in get_json(f"https://api.github.com/repos/{org}/{r}/releases?per_page=5", headers):
-                    if rel.get("draft"):
+                    # Drafts and pre-releases (rc, alpha, beta, dev builds) are noise for an intelligence feed.
+                    if rel.get("draft") or rel.get("prerelease") or PRE.search(rel.get("tag_name") or ""):
                         continue
                     title = f"{r} {rel.get('tag_name') or ''}: {rel.get('name') or ''}".strip(": ")
                     st.append(post_row(slug, "github", rel["html_url"], title[:200], (rel.get("author") or {}).get("login"), (rel.get("published_at") or "")[:10] or None,

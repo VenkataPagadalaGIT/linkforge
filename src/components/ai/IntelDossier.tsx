@@ -5,6 +5,7 @@ import { getNode, groupOf, LAYER_BY_ID, LAYERS, membersOf, NODE_TYPE_META, RELAT
 import { intelFor, type IntelDeal } from "@/data/aiIntel";
 import { logoUrl } from "@/data/aiLogos";
 import { isShareMetric, pctText, sharesOf } from "./AiShares";
+import { FollowButton } from "./Watch";
 import { CAT_COLOR, CATS, DEGREE, EDGES_OF, INSTRUMENT_LABEL, KPI_PRIORITY, dealAmount, monthYear, orderSeries, rankedSearch, searchAll, seriesValue, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
 
 // ---------------------------------------------------------------------------
@@ -189,6 +190,9 @@ export function Dossier({
           <h2 className="font-display text-2xl font-bold text-foreground leading-tight">{n.name}</h2>
         </div>
         <p className="font-mono text-xs text-muted-foreground leading-relaxed mt-1">{n.tagline}</p>
+        <div className="mt-2">
+          <FollowButton id={id} />
+        </div>
         <p className="font-mono text-[10px] text-muted-foreground/70 mt-1">
           {[n.hq, n.ticker && n.ticker !== "private" ? n.ticker : null].filter(Boolean).join(" · ")}
         </p>

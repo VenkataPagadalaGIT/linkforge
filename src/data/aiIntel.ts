@@ -1822,51 +1822,6 @@ export const AI_INTEL: Record<string, EntityIntel> = {
   "posts": [
    {
     "platform": "github",
-    "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-rc.4",
-    "title": "deepseek-harness dsh-v0.2.1-rc.4: v0.2.1-rc.4",
-    "author": "imccyu",
-    "publishedOn": "2026-10-28",
-    "retrieval": "github-api",
-    "summary": "中文 | English <h3 id=\"cn-v0.2.1-rc.4-community\" 问题修复</h3 - 修复 ACP 模式下诊断输出混入 stdout 的问题。 @LegGasai, @tianyicui <h3 id=\"en-v0.2.1-rc.4-community\" Bug Fixes</h3 - Fix diagnostics leaking into stdout in ACP mode. by @LegGasai, @tianyicui Full Ch"
-   },
-   {
-    "platform": "github",
-    "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-alpha.2",
-    "title": "deepseek-harness dsh-v0.2.2-alpha.2: v0.2.2-alpha.2",
-    "author": "imccyu",
-    "publishedOn": "2026-10-28",
-    "retrieval": "github-api",
-    "summary": "中文 | English <h3 id=\"cn-v0.2.2-alpha.2-community\" 新增功能</h3 - 插件管理页支持展示富文本详情，并改善页面布局和导航行为。 @turtle1999, @turtle2099 - 插件管理支持更新第三方插件包；热更新失败时会尝试恢复旧版本。 @turtle1999, @turtle2099 - 支持将聊天文本作为引用插入输入框，并在发送后显示紧凑预览。 @lsdsjy, @imccyu - 支持将完整历史交会话复制为 Ma"
-   },
-   {
-    "platform": "github",
-    "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-rc.3",
-    "title": "deepseek-harness dsh-v0.2.1-rc.3: v0.2.1-rc.3",
-    "author": "imccyu",
-    "publishedOn": "2026-10-23",
-    "retrieval": "github-api",
-    "summary": "中文 | English <h3 id=\"cn-v0.2.1-rc.3-community\" 体验优化</h3 - 新增左侧栏、会话视图和右侧栏的「更多」菜单，方便浏览和创建插件。 @Yifffan, @imccyu - 修复切换会话后，点击「新会话」找不回未发送草稿的问题。 @imccyu 其他变更 - DeepSeek API Key 适配器的模型列表更新方式与账号登录模式保持一致。 @LegGasai <h3 id=\"en-v0.2.1-rc.3-community\" "
-   },
-   {
-    "platform": "github",
-    "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-rc.1",
-    "title": "deepseek-harness dsh-v0.2.1-rc.1: v0.2.1-rc.1",
-    "author": "imccyu",
-    "publishedOn": "2026-10-17",
-    "retrieval": "github-api",
-    "summary": "中文 | English 作为 0.2.1 系列的首个候选版本，本版本汇总了自 v0.2.0-rc.2 以来的主要用户和开发者相关变更。 <h3 id=\"cn-v0.2.1-rc.1-community\" 新增功能</h3 - 允许用户从“自定义插件索引源”中发现和安装插件。 @turtle1999 - 插件管理页新增「让 Agent 创建插件」入口，可保留草稿进入创造模式；发送需求后才开始执行。 @ZiyaZhang - 支持插件启用、停用、卸载及更新后的依赖同步；启用热重"
-   },
-   {
-    "platform": "github",
-    "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-rc.2",
-    "title": "deepseek-harness dsh-v0.2.1-rc.2: v0.2.1-rc.2",
-    "author": "imccyu",
-    "publishedOn": "2026-10-17",
-    "retrieval": "github-api",
-    "summary": "中文 | English <h3 id=\"cn-v0.2.1-rc.2-community\" 新增功能</h3 - 适配 DeepSeek-V4.1-Flash-1017 上线 @LegGasai - 适配 DeepSeek Search 与 Fetch API，可在网页搜索设置中开启 @yudshj, @LegGasai <h3 id=\"en-v0.2.1-rc.2-community\" New Features</h3 - Add support for DeepSeek"
-   },
-   {
-    "platform": "github",
     "url": "https://github.com/deepseek-ai/DeepEP/releases/tag/v1.2.1",
     "title": "DeepEP v1.2.1: Stable release v1.2.1",
     "author": "LyricZhao",
