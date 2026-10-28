@@ -73,3 +73,13 @@ Full-run estimate from these rates: all LinkedIn profiles naming Anthropic (abou
 | Rule | Pilot, cap in code, lockfile, raw archive, owner's yes per run | Same | Same; no paid SEO API without a yes |
 
 Every raw response is kept twice: gzipped under `data/corpus/raw/` (ignored by git) and whole in `ontology.raw_capture` in Postgres, so a database backup carries it. The LinkedIn snapshot in Bright Data's email (20 records, 330.72 KB, expires 11 Nov 2026) is the same 20 records already stored here.
+
+## 7. LinkedIn, what it can and cannot give (2026-10-28)
+
+- The company page record (one Marketplace row, $0.0025): 5,364,379 followers, 6,244 profiles list Anthropic as employer, size bucket "501-1,000 employees" (LinkedIn's own, stale against the filing's 5,300), affiliated pages "Claude" and "Claude for Business", 10 recent posts. The dataset keys pages by URL; its `company_id` is LinkedIn's number (74126343), not the slug.
+- People profiles filtered to current employer Anthropic: name, city, country, education, about, bio links, followers. No job title and no work history: LinkedIn hides those from the signed-out view, and the per-profile scrape ($1.50 per 1,000) returns the same, so it was dropped. One in five profiles is private or hidden.
+- So the talent view is by location, school, field of study and graduation decade; roles come from the company's own pages, papers and filings instead.
+- The full pull was approved by the owner on 2026-10-28 ("we need to have everything"): people filter by name or numeric id with `records_limit` 9,000 ($22.50 at most) and 2,000 Reddit posts ($3 at most), under a $40 cap in code.
+- Result: 5,072 profiles for $12.68 (5,057 name Anthropic exactly, 411 show a title, 3,001 list education, 702 carry a bio link); 114 titles name another employer and are flagged as probably stale. Reddit keyword discovery returned 49 posts for $0.07 (the scraper caps a keyword run near 50), 29 relevant; depth needs subreddit runs (r/Anthropic, r/ClaudeAI) and date windows. Total paid on 2026-10-28: $12.83.
+- Talent aggregates (profiles, not staff): United States 3,667, United Kingdom 283, India 242, Ireland 121; San Francisco 1,323, New York 426, Seattle 215, London 162; Stanford 119, Berkeley 90, MIT 74, Carnegie Mellon 69, Harvard 44; of the 411 titles, 61 product and engineering, 61 sales and customers, 37 finance, legal, people and ops, 30 research.
+- The roster itself (names, locations, links) lives only in `data/corpus/raw/people/anthropic-people.json` and `ontology.footprint`, both local; the site's data file carries aggregates and public-role people, and the page loads the roster from a local-only API route that answers 404 on a deployed build.

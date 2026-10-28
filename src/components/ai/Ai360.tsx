@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link } from "@/lib/router-shim";
 import { getNode } from "@/data/aiOntology";
 import { AI_INTEL, type IntelEvidence } from "@/data/aiIntel";
-import { AI_360, type Affiliation, type Agreement, type FundingRound, type Hiring, type InvestorKind, type LegalCase, type Person360, type PersonGroup } from "@/data/ai360";
+import { AI_360, type Affiliation, type Agreement, type FootprintPerson, type FundingRound, type Hiring, type InvestorKind, type LegalCase, type Person360, type PersonGroup } from "@/data/ai360";
 import { dayMonthYear, monthYear } from "./intelModel";
 
 /**
@@ -1177,13 +1177,31 @@ export function FootprintSection({ id }: { id: string }) {
   const f = AI_360[id]?.footprint;
   const [src, setSrc] = React.useState<string | null>(null);
   const [q, setQ] = React.useState("");
+  const [all, setAll] = React.useState<FootprintPerson[] | null>(null);
+  const [loading, setLoading] = React.useState(false);
   if (!f) return null;
   const c = f.counts;
-  const shown = f.people.filter((p) => (!src || p.source === src) && (!q || p.name.toLowerCase().includes(q.toLowerCase())));
-  const n = (k: string) => f.people.filter((p) => p.source === k).length;
+  const people = all ?? f.people;
+  const shown = people.filter((p) => (!src || p.source === src) && (!q || p.name.toLowerCase().includes(q.toLowerCase())));
+  const bySource = (k: string) => (k === "linkedin" ? (c["linkedin:stated"] ?? 0) : k === "company_site" ? (c["company_site:confirmed"] ?? 0) : k === "openalex" ? (c["openalex:confirmed"] ?? 0) + (c["openalex:likely"] ?? 0) : people.filter((p) => p.source === k).length);
+  const n = bySource;
+  const loadAll = async () => {
+    if (all || loading) return;
+    setLoading(true);
+    try {
+      const r = await fetch(f.rosterUrl);
+      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json();
+      setAll(j.people as FootprintPerson[]);
+    } catch {
+      setAll(null);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="space-y-3" data-testid="ai-footprint">
-      <H aside={`${fmt(f.people.length)} people shown`}>Everyone with a public footprint</H>
+      <H aside={`${fmt(f.total)} people · ${fmt(shown.length)} shown`}>Everyone with a public footprint</H>
       <ul className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-5">
         {FOOTPRINT_SOURCES.map((s) => (
           <li key={s.key} className="border-b border-r border-border">
@@ -1204,8 +1222,13 @@ export function FootprintSection({ id }: { id: string }) {
             aria-label="Find a name"
             className="w-full max-w-xs border border-border bg-transparent px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-foreground/40"
           />
+          {f.total > f.people.length && !all && (
+            <button type="button" onClick={loadAll} className="border border-foreground/60 px-3 py-1.5 font-mono text-xs text-foreground hover:bg-foreground hover:text-background">
+              {loading ? "Loading" : `Load all ${fmt(f.total)} people`}
+            </button>
+          )}
           <ol className="max-h-[28rem] divide-y divide-border overflow-y-auto border border-border">
-            {shown.map((p) => (
+            {shown.slice(0, 600).map((p) => (
               <li key={`${p.source}-${p.name}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-3">
                 <span className="min-w-0">
                   {p.url ? (
@@ -1221,6 +1244,7 @@ export function FootprintSection({ id }: { id: string }) {
                     </span>
                   )}
                   <span className="ml-1.5 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{FOOTPRINT_SOURCES.find((x) => x.key === p.source)?.label ?? p.source}</span>
+                  {p.flag && <span className="ml-1.5 border border-amber-400/40 px-1 text-[8px] uppercase tracking-[0.15em] text-amber-700 dark:text-amber-300">{p.flag}</span>}
                 </span>
                 <span className="min-w-0 text-foreground/85">
                   {p.headline}
@@ -1237,7 +1261,7 @@ export function FootprintSection({ id }: { id: string }) {
         </>
       )}
       <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
-        Its own sites: {c["company_site:confirmed"] ?? 0} people named as authors. Research: {c["openalex:confirmed"] ?? 0} confirmed (a paper matches a research page on the company&apos;s own site) and {c["openalex:likely"] ?? 0} likely (two or more papers with the
+        LinkedIn: {fmt(c["linkedin:stated"] ?? 0)} profiles naming the company as current employer (licensed dataset; {all ? "all loaded" : `the first ${f.people.length} are inline, the rest load on request`}). Its own sites: {c["company_site:confirmed"] ?? 0} people named as authors. Research: {c["openalex:confirmed"] ?? 0} confirmed (a paper matches a research page on the company&apos;s own site) and {c["openalex:likely"] ?? 0} likely (two or more papers with the
         affiliation). Left out: {c["openalex:model"] ?? 0} records where the AI model itself is listed as the author, and {c["openalex:unverified"] ?? 0} authors with one paper or only
         self-published ones. A paper shows where someone published, not that they still work there.
       </p>
@@ -1420,6 +1444,18 @@ export function TalentSection({ id }: { id: string }) {
             <Bars rows={t.fields.slice(0, 8)} total={t.withEducation} />
             <p className="mt-2 mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Graduation decade</p>
             <Bars rows={t.graduation} total={t.withEducation} />
+          </div>
+        </div>
+      )}
+      {t && t.withTitle > 0 && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div>
+            <H aside={`from the ${fmt(t.withTitle)} profiles that show a title`}>What they do</H>
+            <Bars rows={t.functions} total={t.withTitle} />
+          </div>
+          <div>
+            <H aside="title words">Seniority</H>
+            <Bars rows={t.seniority} total={t.withTitle} />
           </div>
         </div>
       )}

@@ -245,7 +245,10 @@ for r in rows("""SELECT e.slug AS entity, f.source, f.source_id, f.name, f.headl
     if r["source"] == "linkedin" and not r["headline"]:
         edu = (d.get("education") or [{}])
         r["headline"] = ", ".join(x for x in [r["location"], (edu[0].get("school") or edu[0].get("title")) if edu else None] if x) or "Profile names the company as current employer"
-    item = {"source": r["source"], "name": clean, "headline": r["headline"], "url": r["profile_url"], "evidence": r["evidence_url"],
+    # A title that names a different employer ("Engineer at Amazon") on a profile filed under this company is probably stale.
+    m = re.search(r"\bat ([A-Z][\w&.' -]{1,40})$", (r["headline"] or "").strip())
+    flag = "title names another employer" if (r["source"] == "linkedin" and m and r["entity"] not in re.sub(r"[^a-z]", "", m.group(1).lower())) else None
+    item = {"source": r["source"], "name": clean, "headline": r["headline"], "hasTitle": bool(d.get("position")), "flag": flag, "url": r["profile_url"], "evidence": r["evidence_url"],
             "first": r["first_seen"], "last": r["last_seen"], "tier": d.get("tier"), "works": d.get("works"), "matched": (d.get("matched") or [])[:2],
             "recent": [w.get("title") for w in (d.get("recent") or [])[:2]]}
     if cur:  # merge two records of one person: keep the stronger tier, add the papers, widen the years
@@ -270,7 +273,14 @@ def top(counter, n):
     return [{"name": k, "count": v} for k, v in counter.most_common(n)]
 for ent, ds in talent.items():
     countries = collections.Counter(COUNTRY.get(d.get("country") or "", d.get("country") or "Unknown") for d in ds)
-    cities = collections.Counter((d.get("city") or "Unknown").split(",")[0].strip() for d in ds)
+    def city_of(d):
+        c = (d.get("city") or "").split(",")[0].strip()
+        c = re.sub(r"^Greater ", "", c)
+        c = re.sub(r" (Bay|Metropolitan|Metro) Area$| Area$", "", c)
+        if not c or c in COUNTRY.values() or c in ("United States", "United Kingdom", "Unknown"):
+            return None
+        return c
+    cities = collections.Counter(c for c in (city_of(d) for d in ds) if c)
     schools, fields, grad = collections.Counter(), collections.Counter(), collections.Counter()
     for d in ds:
         seen_s = set()
@@ -284,14 +294,29 @@ for ent, ds in talent.items():
             y = str(e.get("end") or e.get("end_year") or "")[:4]
             if y.isdigit():
                 grad[y[:3] + "0s"] += 1
-    with_title = sum(1 for d in ds if d.get("position"))
-    out[ent]["talent"] = {"people": len(ds), "withTitle": with_title, "countries": top(countries, 12), "cities": top(cities, 12), "schools": top(schools, 15),
+    titles = [d.get("position") for d in ds if d.get("position")]
+    functions = collections.Counter(LABEL[theme(t)] for t in titles)
+    SENIOR = [("Founder or chief", r"founder|\bceo\b|\bcto\b|\bcfo\b|\bcoo\b|chief"), ("VP or head", r"\bvp\b|vice president|\bhead\b|president"), ("Director", r"director"),
+              ("Manager or lead", r"manager|\blead\b|principal|staff"), ("Senior", r"senior|\bsr\.?\b"), ("Intern or fellow", r"intern|fellow|resident|student"), ("Individual contributor", r".")]
+    seniority = collections.Counter(next(lbl for lbl, rx in SENIOR if re.search(rx, t, re.I)) for t in titles)
+    out[ent]["talent"] = {"people": len(ds), "withTitle": len(titles), "countries": top(countries, 12), "cities": top(cities, 12), "schools": top(schools, 15),
                           "fields": top(fields, 12), "graduation": sorted(({"name": k, "count": v} for k, v in grad.items()), key=lambda x: x["name"]),
+                          "functions": top(functions, 10), "seniority": [{"name": k, "count": v} for k, v in seniority.most_common()],
                           "withEducation": sum(1 for d in ds if d.get("education")), "withBioLinks": sum(1 for d in ds if d.get("bio_links"))}
 
+# The site's data file carries only people from public-role sources (papers, the company's own pages). Rows from licensed
+# datasets (LinkedIn) stay out of the repo and out of anything served: the full roster is written under data/corpus/raw/
+# (ignored by git) and a local-only API route serves it on request.
+ROSTER_DIR = os.path.join(HERE, "raw", "people")
+os.makedirs(ROSTER_DIR, exist_ok=True)
 for ent, people in fp.items():
-    ppl = sorted(people.values(), key=lambda x: ({"confirmed": 0, "likely": 1}.get(x["tier"], 2), -(x["works"] or 0), x["name"]))
-    out[ent]["footprint"] = {"people": ppl, "counts": dict(counts[ent])}
+    def rank(x):
+        src = {"company_site": 0, "openalex": 1, "x": 2, "substack": 2, "linkedin": 3}.get(x["source"], 4)
+        return (src, {"confirmed": 0, "likely": 1}.get(x["tier"], 2), 0 if x.get("hasTitle") else 1, -(x["works"] or 0), x["name"])
+    ppl = sorted(people.values(), key=rank)
+    json.dump({"entity": ent, "people": ppl}, open(os.path.join(ROSTER_DIR, f"{ent}-people.json"), "w", encoding="utf8"), ensure_ascii=False, separators=(",", ":"))
+    public = [p for p in ppl if p["source"] in ("company_site", "openalex")]
+    out[ent]["footprint"] = {"people": public, "total": len(ppl), "rosterUrl": f"/api/ai/entity/{ent}/people", "counts": dict(counts[ent])}
 
 for v in out.values():
     v.setdefault("talent", None)
@@ -334,9 +359,10 @@ export interface Agreement { exhibit: string | null; title: string; counterparty
 export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
-export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
-export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
-export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[] }
+export interface FootprintPerson { source: string; name: string; headline: string | null; hasTitle: boolean; flag: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
+/** people: public-role sources only; the full roster (licensed sources included) is served locally from rosterUrl. */
+export interface Footprint { people: FootprintPerson[]; total: number; rosterUrl: string; counts: Record<string, number> }
+export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[]; functions: { name: string; count: number }[]; seniority: { name: string; count: number }[] }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;

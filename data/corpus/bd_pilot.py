@@ -116,6 +116,39 @@ def snapshot_wait(snap, what):
     return None
 
 
+def profile_row(ent, r, detail_flag):
+    cur = r.get("current_company") or {}
+    title = cur.get("title") or r.get("position")
+    edu = [{"school": e.get("title"), "degree": e.get("degree"), "field": e.get("field"), "start": e.get("start_year"), "end": e.get("end_year")} for e in (r.get("education") or []) if isinstance(e, dict)]
+    exp = [{"company": e.get("company"), "title": e.get("title"), "start": e.get("start_date"), "end": e.get("end_date")} for e in (r.get("experience") or []) if isinstance(e, dict)]
+    detail = {"position": title, "city": r.get("city"), "country": r.get("country_code"), "current_company": cur.get("name") or r.get("current_company_name"),
+              "company_id": r.get("current_company_company_id"), "followers": r.get("followers"), "connections": r.get("connections"), "bio_links": r.get("bio_links") or [],
+              "education": edu, "educations_details": r.get("educations_details"), "experience": exp, "about": (r.get("about") or "")[:600], "languages": r.get("languages") or [],
+              "tier": "stated", "detail": detail_flag}
+    return ("INSERT INTO ontology.footprint (entity_id, source, source_id, name, headline, location, profile_url, evidence_url, is_current, detail)"
+            f" VALUES ({ent}, 'linkedin', {lit(r.get('linkedin_id') or r.get('id') or r.get('url'))}, {lit(r.get('name'))}, {lit(title)}, {lit(r.get('location') or r.get('city'))},"
+            f" {lit(r.get('url'))}, {lit(r.get('url'))}, true, {lit(json.dumps(detail, ensure_ascii=False))}::jsonb)"
+            " ON CONFLICT (entity_id, source, source_id) DO UPDATE SET name=EXCLUDED.name, headline=EXCLUDED.headline, location=EXCLUDED.location, profile_url=EXCLUDED.profile_url,"
+            " detail=EXCLUDED.detail, retrieved_at=current_date;")
+
+
+def reload_linkedin(entity):
+    """Re-read the newest LinkedIn filter archive into footprint rows: no call, no cost."""
+    import glob
+    f = sorted(glob.glob(os.path.join(RAW, "*linkedin-filter.json.gz")))[-1]
+    raw = gzip.open(f, "rt", encoding="utf8").read()
+    try:
+        data = json.loads(raw)
+    except ValueError:
+        data = [json.loads(l) for l in raw.splitlines() if l.strip()]
+    recs = [r for r in (data if isinstance(data, list) else data.get("records") or data.get("data") or []) if isinstance(r, dict)]
+    ent = f"(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
+    st = [profile_row(ent, r, False) for r in recs]
+    for i in range(0, len(st), 500):
+        sql("\n".join(st[i:i + 500]), timeout=600)
+    print(f"reloaded {len(recs)} profiles from {os.path.basename(f)}; with education: {sum(1 for r in recs if r.get('education'))}")
+
+
 def linkedin_pilot(entity, company, company_id, n, dry):
     global spent
     budget_check(n, RATE_MARKET, "LinkedIn filter")
@@ -151,19 +184,9 @@ def linkedin_pilot(entity, company, company_id, n, dry):
     store_raw("linkedin-filter", path, recs, len(recs) * RATE_MARKET)
     print(f"LinkedIn: {len(recs)} records (${len(recs) * RATE_MARKET:.3f}); archived {os.path.basename(path)}")
     ent = f"(SELECT id FROM ontology.entity WHERE slug={lit(entity)})"
-    st = []
-    for r in recs:
-        cur = r.get("current_company") or {}
-        title = cur.get("title") or r.get("position")  # the current role sits on the current_company object
-        detail = {"position": title, "city": r.get("city"), "country": r.get("country_code"), "current_company": cur.get("name") or r.get("current_company_name"),
-                  "company_id": r.get("current_company_company_id"), "followers": r.get("followers"), "connections": r.get("connections"),
-                  "bio_links": r.get("bio_links") or [], "experience_count": len(r.get("experience") or []), "tier": "stated"}
-        st.append("INSERT INTO ontology.footprint (entity_id, source, source_id, name, headline, location, profile_url, evidence_url, is_current, detail)"
-                  f" VALUES ({ent}, 'linkedin', {lit(r.get('linkedin_id') or r.get('id') or r.get('url'))}, {lit(r.get('name'))}, {lit(title)}, {lit(r.get('location') or r.get('city'))},"
-                  f" {lit(r.get('url'))}, {lit(r.get('url'))}, true, {lit(json.dumps(detail, ensure_ascii=False))}::jsonb)"
-                  " ON CONFLICT (entity_id, source, source_id) DO UPDATE SET name=EXCLUDED.name, headline=EXCLUDED.headline, location=EXCLUDED.location, detail=EXCLUDED.detail, retrieved_at=current_date;")
-    if st:
-        sql("\n".join(st))
+    st = [profile_row(ent, r, False) for r in recs]
+    for i in range(0, len(st), 500):
+        sql("\n".join(st[i:i + 500]), timeout=600)
     named = sum(1 for r in recs if (r.get("current_company_name") or (r.get("current_company") or {}).get("name") or "").strip().lower() == company.lower())
     titles = [((r.get("current_company") or {}).get("title") or r.get("position") or "") for r in recs]
     titled = sum(1 for t in titles if t)
@@ -336,6 +359,8 @@ def main():
     n_li, n_rd = int(g("--linkedin", "0")), int(g("--reddit", "0"))
     HARD_CAP = float(g("--cap", "1.00"))
     dry = "--dry-run" in a
+    if "--reload-linkedin" in a:  # reads the local archive only: no call, no cost, no lock needed
+        return reload_linkedin(entity)
     acquire_lock()
     print(f"cap ${HARD_CAP:.2f} enforced in code; lock {LOCK}; raw archive {RAW}")
     if "--company-record" in a and company_id:

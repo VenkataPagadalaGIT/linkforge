@@ -30,9 +30,10 @@ export interface Agreement { exhibit: string | null; title: string; counterparty
 export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
-export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
-export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
-export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[] }
+export interface FootprintPerson { source: string; name: string; headline: string | null; hasTitle: boolean; flag: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
+/** people: public-role sources only; the full roster (licensed sources included) is served locally from rosterUrl. */
+export interface Footprint { people: FootprintPerson[]; total: number; rosterUrl: string; counts: Record<string, number> }
+export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[]; functions: { name: string; count: number }[]; seniority: { name: string; count: number }[] }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
@@ -4316,7 +4317,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 2509,
+   "total": 2889,
    "dated": 487,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7285,11 +7286,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "claude.com",
      "label": "claude.com",
      "mode": "text",
-     "pages": 1805,
-     "withText": 476,
-     "dated": 57,
-     "withAuthors": 0,
-     "words": 394905,
+     "pages": 2185,
+     "withText": 603,
+     "dated": 160,
+     "withAuthors": 12,
+     "words": 589181,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7318,8 +7319,8 @@ export const AI_360: Record<string, Entity360> = {
      "readOn": null
     }
    ],
-   "words": 2292821,
-   "pagesWithText": 1179,
+   "words": 2487097,
+   "pagesWithText": 1306,
    "teams": [
     {
      "name": "Alignment",
@@ -7340,6 +7341,14 @@ export const AI_360: Record<string, Entity360> = {
     {
      "name": "Societal Impacts",
      "count": 24
+    },
+    {
+     "name": "Claude Code for every seat, with self-serve seat management and up to $500 per month in pooled API credits.",
+     "count": 1
+    },
+    {
+     "name": "Claude Code is included with Team plan. Includes self-serve seat management and additional usage at standard API rates.",
+     "count": 1
     }
    ],
    "topics": [
@@ -7793,9 +7802,2168 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": {
    "people": [
     {
+     "source": "company_site",
+     "name": "Adam Jermyn",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2023-10-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Adam Pearce",
+     "headline": "Named author on 8 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Adly Templeton",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Remedios",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Tamkin",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2023-10-04",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alex Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Alwin Peng",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Amanda Askell",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2021-12-22",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Andrew Persic",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Andy Jones",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2021-12-22",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Anna Chen",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Anna Soligo",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Basil Hosmer",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Ben Mann",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Brayden McLean",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Brian Chen",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "C. Daniel Freeman",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Callum McDougall",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Carol Chen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Carson Denison",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Catherine Olsson",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Cem Anil",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Chris Olah",
+     "headline": "Named author on 10 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2021-12-22",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Christina Lu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Christopher Olah",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/crosscoders/",
+     "first": "2022-06-27",
+     "last": "2024-10-25",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
+      "Privileged Bases in the Transformer Residual Stream"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Craig Citro",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2024-05-21",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dan Mossing",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Daniel M. Ziegler",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Danny Hernandez",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dario Amodei",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "David Abrahams",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dawn Drain",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Deep Ganguli",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Doug Finkbeiner",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dylan Shields",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dzmitry Kishylau",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Edward Rees",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Eli Tran-Johnson",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Emmanuel Ameisen",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Esin Durmus",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Euan Ong",
+     "headline": "Named author on 3 pages of alignment.anthropic.com, transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Evan Hubinger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Fabien Roger",
+     "headline": "Named author on 2 pages of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents",
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Francesco Mosconi",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Harish Kamath",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Tracing Attention Computation Through Feature Interactions"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Hoagy Cunningham",
+     "headline": "Named author on 4 pages of alignment.anthropic.com, transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Isaac Kauvar",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jack Clark",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jack Lindsey",
+     "headline": "Named author on 9 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2024-05-21",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jackson Kernion",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "James Chen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jared Kaplan",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jeff Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jeffrey Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2026-08-21",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jerry Wei",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "John Hughes",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jonathan Marcus",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-05-21",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Josh Jacobson",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Joshua Batson",
+     "headline": "Named author on 12 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2023-10-04",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model",
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Josiah E Burke",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Julius Tarng",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-04-02",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kamal Ndousse",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Karina Nguyen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Keir Bradwell",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kelley Rivoire",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2025-03-27",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kevin K. Troy",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kit Fraser-Taliente",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kyle Fish",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Liane Lovitt",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Linda Petrini",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Martin Wattenberg",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Mateusz Piotrowski",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Michael Sklar",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Misha Wagner",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Monte MacDiarmid",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Mrinank Sharma",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Neel Nanda",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nelson Elhage",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/privileged-basis/",
+     "first": "2021-12-22",
+     "last": "2023-03-16",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Privileged Bases in the Transformer Residual Stream",
+      "Superposition, Memorization, and Double Descent"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Joseph",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2021-12-22",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas L Turner",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
+     "first": "2023-10-04",
+     "last": "2026-08-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Characterizing interference weights in a tiny language model",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Schiefer",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-09-14",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Superposition, Memorization, and Double Descent"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Sofroniew",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nova DasSarma",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Paul Bogdan",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": 0,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Peter McCrory",
+     "headline": "Named author on 1 page of www.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://www.anthropic.com/features/project-deal",
+     "first": "2026-04-24",
+     "last": "2026-04-24",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Project Deal: our Claude-run marketplace experiment"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Purvi Goel",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "R. Luger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2026-05-04",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Robert Lasenby",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-09-14",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Privileged Bases in the Transformer Residual Stream"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Rodrigo Luger",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attention-qk/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Tracing Attention Computation Through Feature Interactions"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Roger Grosse",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2022-09-14",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Rowan Wang",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-07-06",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Runjin Chen",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-04-02",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sam McCandlish",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sam Zimmerman",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2025-03-27",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Samuel Marks",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Samuel Zimmerman",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sasha Hydrie",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Saurav Kadavath",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Scott Johnston",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-03-08",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Shan Carter",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-01-05",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Shauna Kravec",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2022-06-27",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sheer El Showk",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2022-06-27",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Simon Storf",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
+     "first": "2026-10-22",
+     "last": "2026-10-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Stanislav Fort",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/toy-double-descent/",
+     "first": "2022-06-27",
+     "last": "2023-01-05",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Superposition, Memorization, and Double Descent",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Subhash Kantamneni",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2026-05-07",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "T. Ben Thompson",
+     "headline": "Named author on 3 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "On the Biology of a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Theodore R. Sumers",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2024-05-21",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Thomas Conerly",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2024-10-25",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Thomas Henighan",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tim Maxwell",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Brown",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Conerly",
+     "headline": "Named author on 7 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/headvis/",
+     "first": "2021-12-22",
+     "last": "2026-05-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "HeadVis: An Interactive Tool For Investigating Attention Heads",
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Henighan",
+     "headline": "Named author on 9 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2021-12-22",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model",
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Trenton Bricken",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2023-10-04",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tristan Hume",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
+     "first": "2022-06-27",
+     "last": "2024-05-21",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Vladimir Mikulik",
+     "headline": "Named author on 1 page of alignment.anthropic.com",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
+     "first": null,
+     "last": null,
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Cost-Effective Constitutional Classifiers via Representation Re-use"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Wes Gurnee",
+     "headline": "Named author on 6 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/workspace/",
+     "first": "2025-03-27",
+     "last": "2026-07-06",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Verbalizable Representations Form a Global Workspace in Language Models",
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "William Saunders",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/emotions/",
+     "first": "2026-04-02",
+     "last": "2026-04-02",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Emotion Concepts and their Function in a Large Language Model"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yang Zhang",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2026/nla/",
+     "first": "2026-05-07",
+     "last": "2026-05-07",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yifan Wu",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
+     "first": "2023-10-04",
+     "last": "2023-10-04",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yuntao Bai",
+     "headline": "Named author on 4 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/solu/",
+     "first": "2021-12-22",
+     "last": "2022-06-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Softmax Linear Units",
+      "In-context Learning and Induction Heads"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Zac Hatfield-Dodds",
+     "headline": "Named author on 5 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
+     "first": "2021-12-22",
+     "last": "2022-09-14",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "Toy Models of Superposition",
+      "Softmax Linear Units"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Zhenyi Qi",
+     "headline": "Named author on 2 pages of transformer-circuits.pub",
+     "hasTitle": false,
+     "flag": null,
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+     "first": "2025-03-27",
+     "last": "2025-03-27",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "On the Biology of a Large Language Model",
+      "Circuit Tracing: Revealing Computational Graphs in Language Models"
+     ]
+    },
+    {
      "source": "openalex",
      "name": "Deep Ganguli",
      "headline": "7 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5006294201",
      "evidence": "https://doi.org/10.1038/s41562-025-02309-z",
      "first": "2022-06-20",
@@ -7814,6 +9982,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jared Kaplan",
      "headline": "5 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5053213601",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2021-07-07",
@@ -7833,6 +10003,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Dario Amodei",
      "headline": "4 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5066197394",
      "evidence": "https://doi.org/10.70777/si.v2i1.10695",
      "first": "2021-07-07",
@@ -7852,6 +10024,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Dawn Drain",
      "headline": "4 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5059021264",
      "evidence": "https://doi.org/10.1145/3540250.3558959",
      "first": "2022-05-17",
@@ -7871,6 +10045,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Amanda Askell",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5030305998",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2022-06-20",
@@ -7889,6 +10065,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Catherine Olsson",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5108225540",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2022-06-20",
@@ -7908,6 +10086,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Kamal Ndousse",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5028970835",
      "evidence": "https://doi.org/10.48550/arxiv.2610.04364",
      "first": "2022-06-20",
@@ -7926,6 +10106,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Liane Lovitt",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5047846683",
      "evidence": "https://doi.org/10.1145/3630106.3658979",
      "first": "2022-06-20",
@@ -7944,6 +10126,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nicholas Schiefer",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5050348824",
      "evidence": "https://doi.org/10.1145/3586183.3606801",
      "first": "2022-09-21",
@@ -7962,6 +10146,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Sam McCandlish",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5054887773",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2021-07-07",
@@ -7981,6 +10167,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Shauna Kravec",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5009112681",
      "evidence": "https://doi.org/10.48550/arxiv.2312.03689",
      "first": "2022-06-20",
@@ -8000,6 +10188,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Christopher Olah",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5027253674",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-06-20",
@@ -8019,6 +10209,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nicholas Joseph",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5063374092",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2021-07-07",
@@ -8037,6 +10229,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Tom Henighan",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5110225167",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-06-20",
@@ -8056,6 +10250,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Zac Hatfield-Dodds",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5070402589",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-06-20",
@@ -8075,6 +10271,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Andy Jones",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5011636042",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8092,6 +10290,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Ben Mann",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5110949689",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8109,6 +10309,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Carol Chen",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5019382510",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-09-21",
@@ -8126,6 +10328,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Daniela Amodei",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5086110112",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8143,6 +10347,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Danny Hernandez",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5030442997",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8160,6 +10366,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jack Clark",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5031107879",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8177,6 +10385,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jackson Kernian",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5063790015",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8194,6 +10404,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "MARTIN P. WATTENBERG",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5039276358",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-09-21",
@@ -8211,6 +10423,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Neel Nanda",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5044489746",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8228,6 +10442,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nelson Elhage",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5020683620",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8245,6 +10461,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nova DasSarma",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5072660054",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8262,6 +10480,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Robert Lasenby",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5026561317",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-09-21",
@@ -8279,6 +10499,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Roger Grosse",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5067036768",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-09-21",
@@ -8296,6 +10518,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Sheer El-Showk",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5049068767",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8313,6 +10537,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Stanislav Fort",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5082696325",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8330,6 +10556,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Tom Conerly",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5059073226",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8347,6 +10575,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Tom P Brown",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5074565235",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8364,6 +10594,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Tristan Hume",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5026832201",
      "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
      "first": "2022-09-21",
@@ -8381,6 +10613,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Yuntao Bai",
      "headline": "1 paper with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5091860006",
      "evidence": "https://doi.org/10.1145/3531146.3533229",
      "first": "2022-06-20",
@@ -8395,1920 +10629,11 @@ export const AI_360: Record<string, Entity360> = {
      ]
     },
     {
-     "source": "company_site",
-     "name": "Adam Jermyn",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2023-10-04",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Adam Pearce",
-     "headline": "Named author on 8 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2024-05-21",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Adly Templeton",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2023-10-04",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Alex Remedios",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
-     "first": "2026-10-22",
-     "last": "2026-10-22",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Alex Tamkin",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2023-10-04",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Alex Wu",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Alwin Peng",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Amanda Askell",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2021-12-22",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Andrew Persic",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2025-03-27",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Andy Jones",
-     "headline": "Named author on 7 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2021-12-22",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Anna Chen",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Anna Soligo",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-07-06",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Basil Hosmer",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2025-03-27",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Ben Mann",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Brayden McLean",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Brian Chen",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2023-10-04",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "C. Daniel Freeman",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Callum McDougall",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2024-05-21",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Carol Chen",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2022-09-14",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Carson Denison",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Catherine Olsson",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Cem Anil",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Chris Olah",
-     "headline": "Named author on 10 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2021-12-22",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Christina Lu",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Christopher Olah",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/crosscoders/",
-     "first": "2022-06-27",
-     "last": "2024-10-25",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Sparse Crosscoders for Cross-Layer Features and Model Diffing",
-      "Privileged Bases in the Transformer Residual Stream"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Craig Citro",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2024-05-21",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Dan Mossing",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Daniel M. Ziegler",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Danny Hernandez",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Dario Amodei",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "David Abrahams",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2025-03-27",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Dawn Drain",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Deep Ganguli",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Doug Finkbeiner",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2026-05-04",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Dylan Shields",
-     "headline": "Named author on 1 page of www.anthropic.com",
-     "url": null,
-     "evidence": "https://www.anthropic.com/features/project-deal",
-     "first": "2026-04-24",
-     "last": "2026-04-24",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Project Deal: our Claude-run marketplace experiment"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Dzmitry Kishylau",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Edward Rees",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Eli Tran-Johnson",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2022-06-27",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Emmanuel Ameisen",
-     "headline": "Named author on 7 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2024-05-21",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Esin Durmus",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Euan Ong",
-     "headline": "Named author on 3 pages of alignment.anthropic.com, transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-05-07",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Evan Hubinger",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Fabien Roger",
-     "headline": "Named author on 2 pages of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
-     "first": "2026-10-22",
-     "last": "2026-10-22",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents",
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Francesco Mosconi",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Harish Kamath",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2026-05-04",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads",
-      "Tracing Attention Computation Through Feature Interactions"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Hoagy Cunningham",
-     "headline": "Named author on 4 pages of alignment.anthropic.com, transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2024-05-21",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Isaac Kauvar",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-04-02",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jack Clark",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jack Lindsey",
-     "headline": "Named author on 9 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2024-05-21",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jackson Kernion",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "James Chen",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jared Kaplan",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jeff Wu",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jeffrey Wu",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
-     "first": "2026-08-21",
-     "last": "2026-08-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Characterizing interference weights in a tiny language model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jerry Wei",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "John Hughes",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
-     "first": "2026-10-22",
-     "last": "2026-10-22",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Jonathan Marcus",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2024-05-21",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Josh Jacobson",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2022-06-27",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Joshua Batson",
-     "headline": "Named author on 12 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
-     "first": "2023-10-04",
-     "last": "2026-08-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Characterizing interference weights in a tiny language model",
-      "Verbalizable Representations Form a Global Workspace in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Josiah E Burke",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Julius Tarng",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-04-02",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Kamal Ndousse",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Karina Nguyen",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Keir Bradwell",
-     "headline": "Named author on 1 page of www.anthropic.com",
-     "url": null,
-     "evidence": "https://www.anthropic.com/features/project-deal",
-     "first": "2026-04-24",
-     "last": "2026-04-24",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Project Deal: our Claude-run marketplace experiment"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Kelley Rivoire",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2025-03-27",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Kevin K. Troy",
-     "headline": "Named author on 1 page of www.anthropic.com",
-     "url": null,
-     "evidence": "https://www.anthropic.com/features/project-deal",
-     "first": "2026-04-24",
-     "last": "2026-04-24",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Project Deal: our Claude-run marketplace experiment"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Kit Fraser-Taliente",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Kyle Fish",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2026-04-02",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Liane Lovitt",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Linda Petrini",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Martin Wattenberg",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2022-09-14",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Mateusz Piotrowski",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-07-06",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Michael Sklar",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2025-03-27",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Misha Wagner",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Monte MacDiarmid",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Mrinank Sharma",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Neel Nanda",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nelson Elhage",
-     "headline": "Named author on 7 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/privileged-basis/",
-     "first": "2021-12-22",
-     "last": "2023-03-16",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Privileged Bases in the Transformer Residual Stream",
-      "Superposition, Memorization, and Double Descent"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nicholas Joseph",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2021-12-22",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nicholas L Turner",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/interference_effectiveness_helpfulness/",
-     "first": "2023-10-04",
-     "last": "2026-08-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Characterizing interference weights in a tiny language model",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nicholas Schiefer",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2022-09-14",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
-      "Superposition, Memorization, and Double Descent"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nicholas Sofroniew",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-04-02",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Nova DasSarma",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Paul Bogdan",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-05-07",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": 0,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Peter McCrory",
-     "headline": "Named author on 1 page of www.anthropic.com",
-     "url": null,
-     "evidence": "https://www.anthropic.com/features/project-deal",
-     "first": "2026-04-24",
-     "last": "2026-04-24",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Project Deal: our Claude-run marketplace experiment"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Purvi Goel",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2026-05-04",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "R. Luger",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2026-05-04",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Robert Lasenby",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2022-09-14",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
-      "Privileged Bases in the Transformer Residual Stream"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Rodrigo Luger",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attention-qk/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Tracing Attention Computation Through Feature Interactions"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Roger Grosse",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2022-09-14",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Rowan Wang",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-07-06",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Runjin Chen",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-04-02",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Sam McCandlish",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Sam Zimmerman",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2025-03-27",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Samuel Marks",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Samuel Zimmerman",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Sasha Hydrie",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2026-04-02",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Saurav Kadavath",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2022-06-27",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Scott Johnston",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2022-03-08",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Shan Carter",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2023-01-05",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Shauna Kravec",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2022-06-27",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
-      "Toy Models of Superposition"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Sheer El Showk",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2022-06-27",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Simon Storf",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2026/red-teaming-auto-mode/",
-     "first": "2026-10-22",
-     "last": "2026-10-22",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Red-Teaming Auto Mode: Improving Blocking Classifiers Against Malign Coding Agents"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Stanislav Fort",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/toy-double-descent/",
-     "first": "2022-06-27",
-     "last": "2023-01-05",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Superposition, Memorization, and Double Descent",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Subhash Kantamneni",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2026-05-07",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "T. Ben Thompson",
-     "headline": "Named author on 3 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2025-03-27",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "On the Biology of a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Theodore R. Sumers",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2024-05-21",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Thomas Conerly",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2024-10-25",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Thomas Henighan",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2025-03-27",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Tim Maxwell",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Tom Brown",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Tom Conerly",
-     "headline": "Named author on 7 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/headvis/",
-     "first": "2021-12-22",
-     "last": "2026-05-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "HeadVis: An Interactive Tool For Investigating Attention Heads",
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Tom Henighan",
-     "headline": "Named author on 9 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2021-12-22",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model",
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Trenton Bricken",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2023-10-04",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Tristan Hume",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2024/scaling-monosemanticity/",
-     "first": "2022-06-27",
-     "last": "2024-05-21",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet",
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Vladimir Mikulik",
-     "headline": "Named author on 1 page of alignment.anthropic.com",
-     "url": null,
-     "evidence": "https://alignment.anthropic.com/2025/cheap-monitors/",
-     "first": null,
-     "last": null,
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Cost-Effective Constitutional Classifiers via Representation Re-use"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Wes Gurnee",
-     "headline": "Named author on 6 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/workspace/",
-     "first": "2025-03-27",
-     "last": "2026-07-06",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Verbalizable Representations Form a Global Workspace in Language Models",
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "William Saunders",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/emotions/",
-     "first": "2026-04-02",
-     "last": "2026-04-02",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Emotion Concepts and their Function in a Large Language Model"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Yang Zhang",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2026/nla/",
-     "first": "2026-05-07",
-     "last": "2026-05-07",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Natural Language Autoencoders Produce Unsupervised Explanations of LLM Activations"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Yifan Wu",
-     "headline": "Named author on 1 page of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2023/monosemantic-features/",
-     "first": "2023-10-04",
-     "last": "2023-10-04",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Yuntao Bai",
-     "headline": "Named author on 4 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/solu/",
-     "first": "2021-12-22",
-     "last": "2022-06-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Softmax Linear Units",
-      "In-context Learning and Induction Heads"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Zac Hatfield-Dodds",
-     "headline": "Named author on 5 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2022/toy_model/",
-     "first": "2021-12-22",
-     "last": "2022-09-14",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "Toy Models of Superposition",
-      "Softmax Linear Units"
-     ]
-    },
-    {
-     "source": "company_site",
-     "name": "Zhenyi Qi",
-     "headline": "Named author on 2 pages of transformer-circuits.pub",
-     "url": null,
-     "evidence": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
-     "first": "2025-03-27",
-     "last": "2025-03-27",
-     "tier": "confirmed",
-     "works": null,
-     "matched": [],
-     "recent": [
-      "On the Biology of a Large Language Model",
-      "Circuit Tracing: Revealing Computational Graphs in Language Models"
-     ]
-    },
-    {
      "source": "openalex",
      "name": "Ethan Perez",
      "headline": "11 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5091112967",
      "evidence": "https://doi.org/10.48550/arxiv.2601.23045",
      "first": "2023-01-01",
@@ -10325,6 +10650,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Samuel R. Bowman",
      "headline": "7 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5112713734",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2023-01-01",
@@ -10341,6 +10668,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Esin Durmus",
      "headline": "6 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5001994692",
      "evidence": "https://doi.org/10.1145/3800687",
      "first": "2023-06-20",
@@ -10357,6 +10686,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jack Lindsey",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5137019053",
      "evidence": "https://doi.org/10.48550/arxiv.2608.10218",
      "first": "2025-01-01",
@@ -10373,6 +10704,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Fabien Roger",
      "headline": "5 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5028042353",
      "evidence": "https://doi.org/10.48550/arxiv.2605.16626",
      "first": "2025-01-01",
@@ -10389,6 +10722,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nicholas Carlini",
      "headline": "5 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5034257647",
      "evidence": "https://doi.org/10.48550/arxiv.2605.11086",
      "first": "2025-05-12",
@@ -10405,6 +10740,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Joe Benton",
      "headline": "4 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5056010406",
      "evidence": "https://doi.org/10.48550/arxiv.2606.08892",
      "first": "2025-01-31",
@@ -10421,6 +10758,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Matthew Jagielski",
      "headline": "4 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5054655342",
      "evidence": "https://doi.org/10.1109/eurosp68448.2026.00047",
      "first": "2025-01-01",
@@ -10437,6 +10776,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Simon Kornblith",
      "headline": "4 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5042760897",
      "evidence": "https://doi.org/10.1038/s44271-026-00502-y",
      "first": "2024-09-15",
@@ -10453,6 +10794,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Akbir Khan",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5084386381",
      "evidence": "https://doi.org/10.48550/arxiv.2411.17693",
      "first": "2024-09-19",
@@ -10469,6 +10812,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Evan Hubinger",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5025461840",
      "evidence": "https://doi.org/10.48550/arxiv.2609.33220",
      "first": "2025-03-05",
@@ -10485,6 +10830,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "John Hughes",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5033583291",
      "evidence": "https://doi.org/10.48550/arxiv.2610.30582",
      "first": "2025-01-01",
@@ -10501,6 +10848,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Juhan Bae",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5078051293",
      "evidence": "https://doi.org/10.52202/085713-4883",
      "first": "2025-01-01",
@@ -10517,6 +10866,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Theodore R. Sumers",
      "headline": "3 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5047918106",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2024-10-07",
@@ -10533,6 +10884,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Alex Cloud",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5021811140",
      "evidence": "https://doi.org/10.1038/s41586-026-10319-8",
      "first": "2025-01-01",
@@ -10549,6 +10902,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Alex Tamkin",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5081558429",
      "evidence": "https://doi.org/10.1145/3630106.3658979",
      "first": "2023-12-06",
@@ -10565,6 +10920,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Andrew K. Lampinen",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5030015839",
      "evidence": "https://doi.org/10.48550/arxiv.2609.33220",
      "first": "2026-08-14",
@@ -10581,6 +10938,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Arushi Somani",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5120336210",
      "evidence": "https://doi.org/10.52202/085713-2453",
      "first": "2025-01-01",
@@ -10597,6 +10956,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Emmanuel Ameisen",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5133647610",
      "evidence": "https://doi.org/10.64898/2026.10.05.755809",
      "first": "2025-01-01",
@@ -10613,6 +10974,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Hailey Joren",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5114065500",
      "evidence": "https://doi.org/10.48550/arxiv.2601.04728",
      "first": "2025-01-01",
@@ -10629,6 +10992,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Ivan Vendrov",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5008265316",
      "evidence": "https://doi.org/10.1145/3658675",
      "first": "2023-06-20",
@@ -10645,6 +11010,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jan Leike",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5090592321",
      "evidence": "https://doi.org/10.48550/arxiv.2601.04728",
      "first": "2025-01-31",
@@ -10661,6 +11028,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Jascha Sohl‐Dickstein",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5064986566",
      "evidence": "https://doi.org/10.48550/arxiv.2601.23045",
      "first": "2026-01-30",
@@ -10677,6 +11046,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Keri Warr",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5120791032",
      "evidence": "https://doi.org/10.48550/arxiv.2604.02343",
      "first": "2025-11-04",
@@ -10693,6 +11064,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Kyle Fish",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5123209938",
      "evidence": "https://doi.org/10.48550/arxiv.2601.10387",
      "first": "2025-05-20",
@@ -10709,6 +11082,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Linda Petrini",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5027936662",
      "evidence": "https://doi.org/10.48550/arxiv.2610.04364",
      "first": "2025-01-31",
@@ -10725,6 +11100,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Marina Favaro",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5069116837",
      "evidence": "https://doi.org/10.48550/arxiv.2308.00862",
      "first": "2023-01-02",
@@ -10741,6 +11118,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Mrinank Sharma",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5003223014",
      "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
      "first": "2024-11-26",
@@ -10757,6 +11136,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Nina Panickssery",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5114449312",
      "evidence": "https://doi.org/10.48448/6qvg-y653",
      "first": "2026-01-01",
@@ -10773,6 +11154,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Peter Hase",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5013096489",
      "evidence": "https://doi.org/10.18653/v1/2025.naacl-long.412",
      "first": "2024-10-18",
@@ -10789,6 +11172,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Saffron Huang",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5040949100",
      "evidence": "https://doi.org/10.1093/pnasnexus/pgag305",
      "first": "2025-10-01",
@@ -10805,6 +11190,8 @@ export const AI_360: Record<string, Entity360> = {
      "source": "openalex",
      "name": "Suchin Gururangan",
      "headline": "2 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
      "url": "https://openalex.org/A5075783850",
      "evidence": "https://doi.org/10.48550/arxiv.2510.01123",
      "first": "2025-09-17",
@@ -10816,275 +11203,17 @@ export const AI_360: Record<string, Entity360> = {
       "Rethinking Thinking Tokens: LLMs as Improvement Operators",
       "Compute as Teacher: Turning Inference Compute Into Reference-Free Supervision"
      ]
-    },
-    {
-     "source": "linkedin",
-     "name": "Benjamin Gmurczyk",
-     "headline": "Washington",
-     "url": "https://www.linkedin.com/in/bengmur",
-     "evidence": "https://www.linkedin.com/in/bengmur",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Darren Lo",
-     "headline": "Greater Toronto Area",
-     "url": "https://linkedin.com/in/darren-lo-04",
-     "evidence": "https://linkedin.com/in/darren-lo-04",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Denis macharia",
-     "headline": "United States",
-     "url": "https://linkedin.com/in/denis-macharia-529207149",
-     "evidence": "https://linkedin.com/in/denis-macharia-529207149",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Erik Sidbrant",
-     "headline": "Dublin, Chalmers University of Technology",
-     "url": "https://mx.linkedin.com/in/erik-sidbrant",
-     "evidence": "https://www.linkedin.com/in/erik-sidbrant/",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Francis Wilson",
-     "headline": "Seattle",
-     "url": "https://linkedin.com/in/francis-wilson-673502117",
-     "evidence": "https://linkedin.com/in/francis-wilson-673502117",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Frank Bach",
-     "headline": "Los Angeles",
-     "url": "https://linkedin.com/in/francoisbach",
-     "evidence": "https://linkedin.com/in/francoisbach",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Jacob Udewitz",
-     "headline": "Brooklyn",
-     "url": "https://linkedin.com/in/udewitz",
-     "evidence": "https://linkedin.com/in/udewitz",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Jeffrey Bleich",
-     "headline": "Oakland",
-     "url": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
-     "evidence": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Julian Minder",
-     "headline": "Zurich",
-     "url": "https://bh.linkedin.com/in/julian-minder-101238a5",
-     "evidence": "https://www.linkedin.com/in/julian-minder-101238a5/",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Kelcey Harris",
-     "headline": "New York",
-     "url": "https://linkedin.com/in/kelcey-harris",
-     "evidence": "https://linkedin.com/in/kelcey-harris",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Kristen Swanson",
-     "headline": "San Francisco",
-     "url": "https://linkedin.com/in/kristennicoleswanson",
-     "evidence": "https://linkedin.com/in/kristennicoleswanson",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Lucas Manozzo Alves",
-     "headline": "Dublin, FAE Centro Universitário",
-     "url": "https://ar.linkedin.com/in/lucasemalves",
-     "evidence": "https://linkedin.com/in/lucasemalves/",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Malik Tucker",
-     "headline": "New York City Metropolitan Area",
-     "url": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
-     "evidence": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Maya Nielan",
-     "headline": "Brooklyn",
-     "url": "https://linkedin.com/in/maya-nielan",
-     "evidence": "https://linkedin.com/in/maya-nielan",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Peter Twomey",
-     "headline": "Ireland, Trinity College, Dublin",
-     "url": "https://es.linkedin.com/in/Petertwomey",
-     "evidence": "https://www.linkedin.com/in/petertwomey/",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Quinn Woodhead",
-     "headline": "San Francisco",
-     "url": "https://linkedin.com/in/quinn-woodhead-b6558817a",
-     "evidence": "https://linkedin.com/in/quinn-woodhead-b6558817a",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Swanee Golden",
-     "headline": "New York",
-     "url": "https://linkedin.com/in/swanee-golden-56140b151",
-     "evidence": "https://linkedin.com/in/swanee-golden-56140b151",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Tosia Batool",
-     "headline": "Islamabad",
-     "url": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
-     "evidence": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "Zhichun Ning",
-     "headline": "Mountain View",
-     "url": "https://kw.linkedin.com/in/zhichun-ning",
-     "evidence": "https://kw.linkedin.com/in/zhichun-ning",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
-    },
-    {
-     "source": "linkedin",
-     "name": "abrefa francis",
-     "headline": "San Felice sul Panaro",
-     "url": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
-     "evidence": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
-     "first": null,
-     "last": null,
-     "tier": "stated",
-     "works": null,
-     "matched": [],
-     "recent": []
     }
    ],
+   "total": 5226,
+   "rosterUrl": "/api/ai/entity/anthropic/people",
    "counts": {
-    "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
+    "linkedin:stated": 5072,
+    "openalex:confirmed": 34,
     "company_site:confirmed": 124,
-    "openalex:model": 282,
-    "linkedin:stated": 20
+    "openalex:model": 282
    }
   },
   "agreements": [
@@ -11385,111 +11514,316 @@ export const AI_360: Record<string, Entity360> = {
   ],
   "market": null,
   "talent": {
-   "people": 20,
-   "withTitle": 0,
+   "people": 5072,
+   "withTitle": 411,
    "countries": [
     {
      "name": "United States",
-     "count": 13
+     "count": 3667
+    },
+    {
+     "name": "United Kingdom",
+     "count": 283
+    },
+    {
+     "name": "India",
+     "count": 242
     },
     {
      "name": "Ireland",
-     "count": 3
-    },
-    {
-     "name": "Switzerland",
-     "count": 1
+     "count": 121
     },
     {
      "name": "Canada",
-     "count": 1
+     "count": 66
     },
     {
-     "name": "Italy",
-     "count": 1
+     "name": "Japan",
+     "count": 41
+    },
+    {
+     "name": "France",
+     "count": 40
+    },
+    {
+     "name": "Australia",
+     "count": 34
     },
     {
      "name": "Pakistan",
-     "count": 1
+     "count": 34
+    },
+    {
+     "name": "Germany",
+     "count": 33
+    },
+    {
+     "name": "KE",
+     "count": 32
+    },
+    {
+     "name": "EG",
+     "count": 32
     }
    ],
    "cities": [
     {
+     "name": "San Francisco",
+     "count": 1323
+    },
+    {
      "name": "New York",
-     "count": 2
+     "count": 426
+    },
+    {
+     "name": "Seattle",
+     "count": 215
+    },
+    {
+     "name": "London",
+     "count": 162
+    },
+    {
+     "name": "New York City",
+     "count": 135
     },
     {
      "name": "Brooklyn",
-     "count": 2
-    },
-    {
-     "name": "San Francisco",
-     "count": 2
+     "count": 83
     },
     {
      "name": "Dublin",
-     "count": 2
+     "count": 83
     },
     {
-     "name": "Zurich",
-     "count": 1
-    },
-    {
-     "name": "New York City Metropolitan Area",
-     "count": 1
-    },
-    {
-     "name": "Oakland",
-     "count": 1
-    },
-    {
-     "name": "Mountain View",
-     "count": 1
-    },
-    {
-     "name": "Ireland",
-     "count": 1
-    },
-    {
-     "name": "Greater Toronto Area",
-     "count": 1
-    },
-    {
-     "name": "San Felice sul Panaro",
-     "count": 1
+     "name": "Los Angeles",
+     "count": 74
     },
     {
      "name": "Washington",
-     "count": 1
+     "count": 54
+    },
+    {
+     "name": "Boston",
+     "count": 44
+    },
+    {
+     "name": "Washington DC-Baltimore",
+     "count": 36
+    },
+    {
+     "name": "Austin",
+     "count": 35
     }
    ],
    "schools": [
     {
-     "name": "Trinity College, Dublin",
-     "count": 1
+     "name": "Stanford University",
+     "count": 119
     },
     {
-     "name": "Chalmers University of Technology",
-     "count": 1
+     "name": "University of California, Berkeley",
+     "count": 90
     },
     {
-     "name": "FAE Centro Universitário",
-     "count": 1
+     "name": "Massachusetts Institute of Technology",
+     "count": 74
+    },
+    {
+     "name": "Carnegie Mellon University",
+     "count": 69
+    },
+    {
+     "name": "Harvard University",
+     "count": 44
+    },
+    {
+     "name": "University of Washington",
+     "count": 42
+    },
+    {
+     "name": "University of Southern California",
+     "count": 41
+    },
+    {
+     "name": "University of Cambridge",
+     "count": 36
+    },
+    {
+     "name": "University of Oxford",
+     "count": 35
+    },
+    {
+     "name": "Georgia Institute of Technology",
+     "count": 33
+    },
+    {
+     "name": "New York University",
+     "count": 30
+    },
+    {
+     "name": "Yale University",
+     "count": 30
+    },
+    {
+     "name": "Princeton University",
+     "count": 29
+    },
+    {
+     "name": "University of Waterloo",
+     "count": 28
+    },
+    {
+     "name": "University of California, Los Angeles",
+     "count": 28
     }
    ],
-   "fields": [],
+   "fields": [
+    {
+     "name": "Computer Science",
+     "count": 30
+    },
+    {
+     "name": "Economics",
+     "count": 5
+    },
+    {
+     "name": "Business Administration",
+     "count": 4
+    },
+    {
+     "name": "Business Administration and Management, General",
+     "count": 4
+    },
+    {
+     "name": "Artificial Intelligence",
+     "count": 3
+    },
+    {
+     "name": "Physics",
+     "count": 3
+    },
+    {
+     "name": "Computer Engineering",
+     "count": 3
+    },
+    {
+     "name": "Information Technology",
+     "count": 2
+    },
+    {
+     "name": "Finance",
+     "count": 2
+    },
+    {
+     "name": "Industrial Engineering",
+     "count": 2
+    },
+    {
+     "name": "Accounting and Finance",
+     "count": 2
+    },
+    {
+     "name": "International/Global Studies",
+     "count": 2
+    }
+   ],
    "graduation": [
     {
+     "name": "1970s",
+     "count": 1
+    },
+    {
+     "name": "1980s",
+     "count": 16
+    },
+    {
+     "name": "1990s",
+     "count": 151
+    },
+    {
+     "name": "2000s",
+     "count": 1116
+    },
+    {
      "name": "2010s",
-     "count": 10
+     "count": 3331
     },
     {
      "name": "2020s",
-     "count": 4
+     "count": 1392
+    },
+    {
+     "name": "2030s",
+     "count": 12
     }
    ],
-   "withEducation": 4,
-   "withBioLinks": 3
+   "functions": [
+    {
+     "name": "Other",
+     "count": 198
+    },
+    {
+     "name": "Sales and customers",
+     "count": 61
+    },
+    {
+     "name": "Product and engineering",
+     "count": 61
+    },
+    {
+     "name": "Finance, legal, people, ops",
+     "count": 37
+    },
+    {
+     "name": "Research",
+     "count": 30
+    },
+    {
+     "name": "Safety, security, policy",
+     "count": 17
+    },
+    {
+     "name": "Data centers and compute",
+     "count": 6
+    },
+    {
+     "name": "Training data and tutors",
+     "count": 1
+    }
+   ],
+   "seniority": [
+    {
+     "name": "Individual contributor",
+     "count": 277
+    },
+    {
+     "name": "Manager or lead",
+     "count": 76
+    },
+    {
+     "name": "Senior",
+     "count": 23
+    },
+    {
+     "name": "Intern or fellow",
+     "count": 11
+    },
+    {
+     "name": "Director",
+     "count": 10
+    },
+    {
+     "name": "VP or head",
+     "count": 9
+    },
+    {
+     "name": "Founder or chief",
+     "count": 5
+    }
+   ],
+   "withEducation": 3001,
+   "withBioLinks": 702
   }
  },
  "applied-materials": {
