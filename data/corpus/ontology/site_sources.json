@@ -1,0 +1,6 @@
+{
+ "note": "Company websites read for the birth-to-now timeline: each sitemap, the sections followed, and how a page states its publish date. Only sections whose pages carry a publish date are followed. robots.txt checked 2026-10-28 (Anthropic: Allow /).",
+ "sites": [
+  {"entity": "anthropic", "sitemap": "https://www.anthropic.com/sitemap.xml", "sections": ["news", "research"]}
+ ]
+}

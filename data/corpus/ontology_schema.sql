@@ -313,7 +313,7 @@ CREATE TABLE IF NOT EXISTS ontology.post (
   id            serial PRIMARY KEY,
   entity_id     int REFERENCES ontology.entity(id) ON DELETE CASCADE,
   person_id     int REFERENCES ontology.person(id) ON DELETE SET NULL,
-  platform      text NOT NULL CHECK (platform IN ('company_blog','github','youtube','substack','reddit','linkedin','x','podcast','conference','paper')),
+  platform      text NOT NULL CHECK (platform IN ('company_blog','github','youtube','substack','reddit','linkedin','x','podcast','conference','paper','hackernews')),
   url           text NOT NULL UNIQUE,
   title         text,
   author        text,
@@ -510,3 +510,40 @@ ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_che
 ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check CHECK (target_kind = ANY (ARRAY['entity','relation','deal','claim','event','prediction','person','signal','implication','affiliation','legal_case','engagement','funding_round','job_posting','fact']));
 -- A person whose only free photo is not a portrait (a holiday snapshot) shows initials instead.
 ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS photo_blocked boolean NOT NULL DEFAULT false;
+
+-- ===== Birth to now (2026-10-28): the company's own website, public attention, news tone =====
+-- Every dated page in the sections of a company's sitemap we follow (newsroom, research): its own record of what it did when.
+CREATE TABLE IF NOT EXISTS ontology.site_page (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  url text NOT NULL UNIQUE,
+  section text NOT NULL,
+  title text,
+  published_on date,
+  retrieved_at date NOT NULL DEFAULT current_date
+);
+CREATE INDEX IF NOT EXISTS site_page_entity_idx ON ontology.site_page (entity_id, published_on);
+-- Public attention: how many stories a forum's public search finds naming the company, month by month.
+CREATE TABLE IF NOT EXISTS ontology.attention (
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  source text NOT NULL,
+  month date NOT NULL,
+  items int NOT NULL,
+  query text NOT NULL,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  PRIMARY KEY (entity_id, source, month)
+);
+-- News tone: GDELT's average tone of online news that names the company, day by day, with article volume.
+CREATE TABLE IF NOT EXISTS ontology.tone (
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  source text NOT NULL,
+  day date NOT NULL,
+  tone numeric,
+  volume numeric,
+  query text NOT NULL,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  PRIMARY KEY (entity_id, source, day)
+);
+-- Hacker News threads join the official-channel posts (public discussion; usernames are not stored).
+ALTER TABLE ontology.post DROP CONSTRAINT IF EXISTS post_platform_check;
+ALTER TABLE ontology.post ADD CONSTRAINT post_platform_check CHECK (platform IN ('company_blog','github','youtube','substack','reddit','linkedin','x','podcast','conference','paper','hackernews'));

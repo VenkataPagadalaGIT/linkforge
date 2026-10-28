@@ -84,6 +84,7 @@ pages = rows("""
 posts = rows("""
   SELECT n.slug AS entity, p.platform, p.url, p.title, p.author, p.published_on, p.retrieval, p.summary
   FROM ontology.post p JOIN ontology.entity n ON n.id = p.entity_id
+  WHERE p.platform <> 'hackernews'  -- public discussion lives in the 360 file, not with official channels
   ORDER BY n.slug, p.published_on DESC NULLS LAST, p.id DESC""")
 
 intel = {}

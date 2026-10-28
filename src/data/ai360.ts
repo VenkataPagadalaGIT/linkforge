@@ -24,7 +24,13 @@ export interface Hiring {
   themes: { key: string; label: string; count: number; examples: string[] }[];
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
 }
-export interface Entity360 { people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[] }
+export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
+export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
+export interface Entity360 {
+  people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null;
+}
 
 export const AI_360: Record<string, Entity360> = {
  "anthropic": {
@@ -4094,7 +4100,3263 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-27"
     }
    ]
-  }
+  },
+  "site": {
+   "sitemap": "https://www.anthropic.com/sitemap.xml",
+   "sections": [
+    "news",
+    "research"
+   ],
+   "total": 486,
+   "dated": 477,
+   "first": "2021-05-28",
+   "latest": "2026-10-27",
+   "items": [
+    {
+     "date": "2026-10-27",
+     "section": "news",
+     "title": "Expanding our partnership with GSA to bring Claude to all levels of government",
+     "url": "https://www.anthropic.com/news/expanding-partnership-gsa"
+    },
+    {
+     "date": "2026-10-27",
+     "section": "research",
+     "title": "How AI agents shape experts’ judgment calls",
+     "url": "https://www.anthropic.com/research/agents-judgment-calls"
+    },
+    {
+     "date": "2026-10-27",
+     "section": "research",
+     "title": "Discovering and exploiting vulnerabilities in critical, real-world software with Claude",
+     "url": "https://www.anthropic.com/research/discovering-vulnerabilities-with-claude"
+    },
+    {
+     "date": "2026-10-27",
+     "section": "research",
+     "title": "Early progress on accelerating drug development with Claude",
+     "url": "https://www.anthropic.com/research/early-progress-drug-development"
+    },
+    {
+     "date": "2026-10-26",
+     "section": "news",
+     "title": "Anthropic files S-1 with the SEC for proposed initial public offering",
+     "url": "https://www.anthropic.com/news/s1-sec"
+    },
+    {
+     "date": "2026-10-23",
+     "section": "research",
+     "title": "An alignment assessment of the UK AISI cybertesting incident",
+     "url": "https://www.anthropic.com/research/alignment-assessment-ukaisi"
+    },
+    {
+     "date": "2026-10-22",
+     "section": "news",
+     "title": "Donating Agent Skills to the Agentic AI Foundation",
+     "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation"
+    },
+    {
+     "date": "2026-10-22",
+     "section": "news",
+     "title": "Open call for guest investigators in the life sciences",
+     "url": "https://www.anthropic.com/news/open-call-guest-investigators-life-sciences"
+    },
+    {
+     "date": "2026-10-22",
+     "section": "research",
+     "title": "LLMs are making formal software verification feasible at a much larger scale",
+     "url": "https://www.anthropic.com/research/formal-verification"
+    },
+    {
+     "date": "2026-10-21",
+     "section": "news",
+     "title": "Physicist Christopher Stubbs joins Anthropic's Long-Term Benefit Trust",
+     "url": "https://www.anthropic.com/news/christopher-stubbs-joins-long-term-benefit-trust"
+    },
+    {
+     "date": "2026-10-20",
+     "section": "research",
+     "title": "Using Claude to reduce the attack surface of code",
+     "url": "https://www.anthropic.com/research/attack-surface-reduction"
+    },
+    {
+     "date": "2026-10-20",
+     "section": "research",
+     "title": "How Claude designed protein binders against scorpion neurotoxins",
+     "url": "https://www.anthropic.com/research/claude-scorpion-toxin-binder-design"
+    },
+    {
+     "date": "2026-10-18",
+     "section": "news",
+     "title": "Investing in the public benefit",
+     "url": "https://www.anthropic.com/news/public-benefit-fund"
+    },
+    {
+     "date": "2026-10-16",
+     "section": "research",
+     "title": "The AI expectations gap",
+     "url": "https://www.anthropic.com/research/ai-expectations-gap"
+    },
+    {
+     "date": "2026-10-16",
+     "section": "research",
+     "title": "Designing more efficient quantum circuits with Claude",
+     "url": "https://www.anthropic.com/research/designing-efficient-quantum-circuits"
+    },
+    {
+     "date": "2026-10-16",
+     "section": "research",
+     "title": "Claude reveals ECDSA curve origins",
+     "url": "https://www.anthropic.com/research/ecdsa-curve-origins"
+    },
+    {
+     "date": "2026-10-16",
+     "section": "research",
+     "title": "How employment is changing at Anthropic",
+     "url": "https://www.anthropic.com/research/employment-at-anthropic"
+    },
+    {
+     "date": "2026-10-16",
+     "section": "research",
+     "title": "Working at the frontier shapes expectations for the future",
+     "url": "https://www.anthropic.com/research/expectations-for-the-future"
+    },
+    {
+     "date": "2026-10-15",
+     "section": "news",
+     "title": "Anthropic update on independent evaluators",
+     "url": "https://www.anthropic.com/news/an-update-on-independent-evaluators"
+    },
+    {
+     "date": "2026-10-14",
+     "section": "news",
+     "title": "Preparing for the 2026 US midterms",
+     "url": "https://www.anthropic.com/news/2026-us-midterms"
+    },
+    {
+     "date": "2026-10-14",
+     "section": "news",
+     "title": "Singapore office and government MOU | Anthropic",
+     "url": "https://www.anthropic.com/news/singapore-office-opening"
+    },
+    {
+     "date": "2026-10-13",
+     "section": "research",
+     "title": "Redesigning source control at Anthropic",
+     "url": "https://www.anthropic.com/research/redesigning-source-control"
+    },
+    {
+     "date": "2026-10-12",
+     "section": "news",
+     "title": "Strengthening our defenses against distillation attacks",
+     "url": "https://www.anthropic.com/news/distillation-defenses"
+    },
+    {
+     "date": "2026-10-12",
+     "section": "research",
+     "title": "AI models may be capable of self-replicating without access to a datacenter",
+     "url": "https://www.anthropic.com/research/self-replicating-ai"
+    },
+    {
+     "date": "2026-10-09",
+     "section": "research",
+     "title": "Investigating unintended model actions in our evaluations and internal use",
+     "url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
+    },
+    {
+     "date": "2026-10-08",
+     "section": "news",
+     "title": "2026 Usage Policy update",
+     "url": "https://www.anthropic.com/news/2026-usage-policy-update"
+    },
+    {
+     "date": "2026-10-08",
+     "section": "news",
+     "title": "Introducing the Anthropic Cyber Mission",
+     "url": "https://www.anthropic.com/news/anthropic-cyber-mission"
+    },
+    {
+     "date": "2026-10-08",
+     "section": "news",
+     "title": "Building on our commitment to American scientific discovery",
+     "url": "https://www.anthropic.com/news/genesis-mission-commitment"
+    },
+    {
+     "date": "2026-10-08",
+     "section": "research",
+     "title": "An opt-in vulnerability-finding service for open-source software",
+     "url": "https://www.anthropic.com/research/launching-opt-in-vuln-finding-service-for-open-source"
+    },
+    {
+     "date": "2026-10-08",
+     "section": "research",
+     "title": "Using Claude Science to produce the first complete map of the sky in UV light",
+     "url": "https://www.anthropic.com/research/the-missing-map-of-the-sky"
+    },
+    {
+     "date": "2026-10-06",
+     "section": "news",
+     "title": "Expanding the Cyber Verification Program",
+     "url": "https://www.anthropic.com/news/cyber-verification-program"
+    },
+    {
+     "date": "2026-10-02",
+     "section": "news",
+     "title": "Claude Frontier Academy: $100M to train 10,000 engineers",
+     "url": "https://www.anthropic.com/news/claude-frontier-academy"
+    },
+    {
+     "date": "2026-10-01",
+     "section": "news",
+     "title": "Barclays scales Claude to upgrade operations and improve client experience",
+     "url": "https://www.anthropic.com/news/barclays-scales-claude"
+    },
+    {
+     "date": "2026-10-01",
+     "section": "research",
+     "title": "Claude-shaped science",
+     "url": "https://www.anthropic.com/research/claude-shaped-science"
+    },
+    {
+     "date": "2026-09-30",
+     "section": "research",
+     "title": "Can we predict the jobs robots will do?",
+     "url": "https://www.anthropic.com/research/what-work-can-robots-do"
+    },
+    {
+     "date": "2026-09-29",
+     "section": "research",
+     "title": "GLM-5.3 and the spread of advanced cyber capabilities",
+     "url": "https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities"
+    },
+    {
+     "date": "2026-09-29",
+     "section": "research",
+     "title": "What do you want from AI?",
+     "url": "https://www.anthropic.com/research/your-thoughts-on-ai"
+    },
+    {
+     "date": "2026-09-25",
+     "section": "research",
+     "title": "Claude computes a nine-loop amplitude in N=4 super-Yang-Mills",
+     "url": "https://www.anthropic.com/research/yes-claude-can-do-nine-loops"
+    },
+    {
+     "date": "2026-09-24",
+     "section": "research",
+     "title": "Project Swap: What happens when agents trade for us?",
+     "url": "https://www.anthropic.com/research/project-swap"
+    },
+    {
+     "date": "2026-09-23",
+     "section": "research",
+     "title": "Claude discovers a novel enzyme system",
+     "url": "https://www.anthropic.com/research/claude-discovers-novel-enzyme-system"
+    },
+    {
+     "date": "2026-09-18",
+     "section": "news",
+     "title": "Partnering with Accenture on embedded evaluation",
+     "url": "https://www.anthropic.com/news/accenture-embedded-evaluation"
+    },
+    {
+     "date": "2026-09-17",
+     "section": "news",
+     "title": "Introducing the Life Sciences Verification Program",
+     "url": "https://www.anthropic.com/news/life-sciences-verification-program"
+    },
+    {
+     "date": "2026-09-17",
+     "section": "research",
+     "title": "How Claude is uplifting biomolecular modeling",
+     "url": "https://www.anthropic.com/research/claude-uplifts-biomolecular-modeling"
+    },
+    {
+     "date": "2026-09-10",
+     "section": "research",
+     "title": "Measuring AI capabilities in intelligence targeting and conventional weapons",
+     "url": "https://www.anthropic.com/research/intelligence-targeting-conventional-weapons-capabilities"
+    },
+    {
+     "date": "2026-09-09",
+     "section": "research",
+     "title": "An alignment assessment of recent cybersecurity incidents",
+     "url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents"
+    },
+    {
+     "date": "2026-09-04",
+     "section": "research",
+     "title": "Formalizing Fermat's Last Theorem",
+     "url": "https://www.anthropic.com/research/formalizing-fermats-last-theorem"
+    },
+    {
+     "date": "2026-09-01",
+     "section": "news",
+     "title": "Developing Enterprise Frontier Safeguards with our customers",
+     "url": "https://www.anthropic.com/news/enterprise-frontier-safeguards"
+    },
+    {
+     "date": "2026-08-31",
+     "section": "news",
+     "title": "Improving our alignment and security practices",
+     "url": "https://www.anthropic.com/news/improving-alignment-security-efforts"
+    },
+    {
+     "date": "2026-08-28",
+     "section": "research",
+     "title": "Automated researchers can reliably mitigate alignment failures",
+     "url": "https://www.anthropic.com/research/automated-researchers-mitigate-alignment-failures"
+    },
+    {
+     "date": "2026-08-27",
+     "section": "news",
+     "title": "Expanding our support for scientists",
+     "url": "https://www.anthropic.com/news/expanding-support-for-scientists"
+    },
+    {
+     "date": "2026-08-27",
+     "section": "news",
+     "title": "Previewing the Model Hardware Standard",
+     "url": "https://www.anthropic.com/news/model-hardware-standard-research-preview"
+    },
+    {
+     "date": "2026-08-26",
+     "section": "research",
+     "title": "Enabling independent research on how people use Claude",
+     "url": "https://www.anthropic.com/research/enabling-independent-research"
+    },
+    {
+     "date": "2026-08-25",
+     "section": "news",
+     "title": "Funding better evaluations of AI’s impact on wellbeing",
+     "url": "https://www.anthropic.com/news/wellbeing-research-grants"
+    },
+    {
+     "date": "2026-08-18",
+     "section": "research",
+     "title": "Claude accelerates protein design and analytical chemistry",
+     "url": "https://www.anthropic.com/research/Claude-accelerates-protein-design"
+    },
+    {
+     "date": "2026-08-14",
+     "section": "news",
+     "title": "How Claude's text watermarking works",
+     "url": "https://www.anthropic.com/news/claude-text-watermark"
+    },
+    {
+     "date": "2026-08-13",
+     "section": "research",
+     "title": "Patterns and problems in multiagent systems",
+     "url": "https://www.anthropic.com/research/multiagent-systems"
+    },
+    {
+     "date": "2026-08-12",
+     "section": "research",
+     "title": "How well do job retraining programs work?",
+     "url": "https://www.anthropic.com/research/reviewing-the-evidence-on-worker-retraining-programs"
+    },
+    {
+     "date": "2026-08-10",
+     "section": "research",
+     "title": "Claude has improved on a longstanding lower bound for the fraction of zeros of the Riemann zeta function that satisfy the Riemann hypothesis",
+     "url": "https://www.anthropic.com/research/riemann-zeta"
+    },
+    {
+     "date": "2026-08-07",
+     "section": "news",
+     "title": "Improving Fable 5's safeguards",
+     "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards"
+    },
+    {
+     "date": "2026-08-04",
+     "section": "news",
+     "title": "Tino Cuéllar joins as Chief Global Affairs Officer",
+     "url": "https://www.anthropic.com/news/tino-cuellar"
+    },
+    {
+     "date": "2026-07-30",
+     "section": "news",
+     "title": "Investigating three incidents in our cybersecurity evaluations",
+     "url": "https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals"
+    },
+    {
+     "date": "2026-07-28",
+     "section": "research",
+     "title": "Discovering cryptographic weaknesses with Claude",
+     "url": "https://www.anthropic.com/research/discovering-cryptographic-weaknesses"
+    },
+    {
+     "date": "2026-07-27",
+     "section": "news",
+     "title": "Expanding our partnership with Cognizant",
+     "url": "https://www.anthropic.com/news/cognizant-anthropic"
+    },
+    {
+     "date": "2026-07-27",
+     "section": "news",
+     "title": "Our position on open-weights models",
+     "url": "https://www.anthropic.com/news/position-open-weights-models"
+    },
+    {
+     "date": "2026-07-24",
+     "section": "news",
+     "title": "Introducing Claude Opus 5",
+     "url": "https://www.anthropic.com/news/claude-opus-5"
+    },
+    {
+     "date": "2026-07-24",
+     "section": "research",
+     "title": "Project Pilot: Can AI models fly drones?",
+     "url": "https://www.anthropic.com/research/project-pilot"
+    },
+    {
+     "date": "2026-07-22",
+     "section": "news",
+     "title": "The Anthropic Economic Index connector",
+     "url": "https://www.anthropic.com/news/anthropic-economic-index-connector"
+    },
+    {
+     "date": "2026-07-22",
+     "section": "news",
+     "title": "Economic Futures Research Fund agenda",
+     "url": "https://www.anthropic.com/news/economic-futures-research-fund-agenda"
+    },
+    {
+     "date": "2026-07-21",
+     "section": "news",
+     "title": "Donating another $20 million to Public First Action",
+     "url": "https://www.anthropic.com/news/donation-public-first-action"
+    },
+    {
+     "date": "2026-07-20",
+     "section": "news",
+     "title": "AI for Science rare disease research grants",
+     "url": "https://www.anthropic.com/news/rare-disease-research-grants"
+    },
+    {
+     "date": "2026-07-14",
+     "section": "news",
+     "title": "Anthropic commits $10 million to Canadian AI research",
+     "url": "https://www.anthropic.com/news/canadian-ai-research"
+    },
+    {
+     "date": "2026-07-14",
+     "section": "news",
+     "title": "Introducing Claude for Teachers",
+     "url": "https://www.anthropic.com/news/claude-for-teachers"
+    },
+    {
+     "date": "2026-07-14",
+     "section": "research",
+     "title": "How Canada uses Claude",
+     "url": "https://www.anthropic.com/research/how-canada-uses-claude"
+    },
+    {
+     "date": "2026-07-13",
+     "section": "research",
+     "title": "How Claude's values vary by model and language",
+     "url": "https://www.anthropic.com/research/claude-values-models-languages"
+    },
+    {
+     "date": "2026-07-09",
+     "section": "news",
+     "title": "Ben Bernanke joins the Long-Term Benefit Trust",
+     "url": "https://www.anthropic.com/news/ben-bernanke"
+    },
+    {
+     "date": "2026-07-09",
+     "section": "news",
+     "title": "Inviting hard questions",
+     "url": "https://www.anthropic.com/news/hard-questions"
+    },
+    {
+     "date": "2026-07-09",
+     "section": "news",
+     "title": "A new way to reflect on how you use Claude",
+     "url": "https://www.anthropic.com/news/reflect-with-claude"
+    },
+    {
+     "date": "2026-07-09",
+     "section": "news",
+     "title": "UST is bringing Claude to physical AI",
+     "url": "https://www.anthropic.com/news/ust-claude"
+    },
+    {
+     "date": "2026-07-09",
+     "section": "research",
+     "title": "How Claude performs on robotics tasks",
+     "url": "https://www.anthropic.com/research/claude-plays-robotics"
+    },
+    {
+     "date": "2026-07-08",
+     "section": "research",
+     "title": "An off switch for dual-use knowledge",
+     "url": "https://www.anthropic.com/research/off-switch-dual-use"
+    },
+    {
+     "date": "2026-07-06",
+     "section": "news",
+     "title": "Alberta uses Claude to find and fix security vulnerabilities",
+     "url": "https://www.anthropic.com/news/alberta-government-claude-cybersecurity"
+    },
+    {
+     "date": "2026-07-06",
+     "section": "research",
+     "title": "A global workspace in language models",
+     "url": "https://www.anthropic.com/research/global-workspace"
+    },
+    {
+     "date": "2026-07-02",
+     "section": "news",
+     "title": "Fable 5's cyber safeguards and our jailbreak framework",
+     "url": "https://www.anthropic.com/news/fable-safeguards-jailbreak-framework"
+    },
+    {
+     "date": "2026-06-30",
+     "section": "news",
+     "title": "Claude Science, an AI workbench for scientists",
+     "url": "https://www.anthropic.com/news/claude-science-ai-workbench"
+    },
+    {
+     "date": "2026-06-30",
+     "section": "news",
+     "title": "Introducing Claude Sonnet 5",
+     "url": "https://www.anthropic.com/news/claude-sonnet-5"
+    },
+    {
+     "date": "2026-06-30",
+     "section": "news",
+     "title": "Redeploying Claude Fable 5",
+     "url": "https://www.anthropic.com/news/redeploying-fable-5"
+    },
+    {
+     "date": "2026-06-26",
+     "section": "research",
+     "title": "Anthropic Economic Index report: Cadences",
+     "url": "https://www.anthropic.com/research/economic-index-june-2026-report"
+    },
+    {
+     "date": "2026-06-23",
+     "section": "news",
+     "title": "Introducing Claude Tag",
+     "url": "https://www.anthropic.com/news/introducing-claude-tag"
+    },
+    {
+     "date": "2026-06-18",
+     "section": "research",
+     "title": "Project Fetch: Phase two",
+     "url": "https://www.anthropic.com/research/project-fetch-phase-two"
+    },
+    {
+     "date": "2026-06-17",
+     "section": "news",
+     "title": "Anthropic opens Seoul office",
+     "url": "https://www.anthropic.com/news/seoul-office-partnerships-korean-ai-ecosystem"
+    },
+    {
+     "date": "2026-06-16",
+     "section": "research",
+     "title": "How Claude Code is used in practice",
+     "url": "https://www.anthropic.com/research/claude-code-expertise"
+    },
+    {
+     "date": "2026-06-12",
+     "section": "news",
+     "title": "Statement on the directive to suspend Fable 5 access",
+     "url": "https://www.anthropic.com/news/fable-mythos-access"
+    },
+    {
+     "date": "2026-06-12",
+     "section": "news",
+     "title": "TCS brings Claude to regulated industries",
+     "url": "https://www.anthropic.com/news/tcs-anthropic-partnership"
+    },
+    {
+     "date": "2026-06-12",
+     "section": "research",
+     "title": "Results from first Anthropic Public Record",
+     "url": "https://www.anthropic.com/research/anthropic-public-record"
+    },
+    {
+     "date": "2026-06-11",
+     "section": "news",
+     "title": "Introducing Claude Corps",
+     "url": "https://www.anthropic.com/news/claude-corps"
+    },
+    {
+     "date": "2026-06-11",
+     "section": "news",
+     "title": "DXC integrates Claude for regulated industries",
+     "url": "https://www.anthropic.com/news/dxc-anthropic-alliance"
+    },
+    {
+     "date": "2026-06-09",
+     "section": "news",
+     "title": "Claude Fable 5 and Claude Mythos 5",
+     "url": "https://www.anthropic.com/news/claude-fable-5-mythos-5"
+    },
+    {
+     "date": "2026-06-08",
+     "section": "research",
+     "title": "Paving the way for AI agents in biology",
+     "url": "https://www.anthropic.com/research/agents-in-biology"
+    },
+    {
+     "date": "2026-06-08",
+     "section": "research",
+     "title": "Measuring LLMs' impact on N-day exploits",
+     "url": "https://www.anthropic.com/research/n-days"
+    },
+    {
+     "date": "2026-06-05",
+     "section": "research",
+     "title": "Making Claude a chemist",
+     "url": "https://www.anthropic.com/research/making-claude-a-chemist"
+    },
+    {
+     "date": "2026-06-03",
+     "section": "news",
+     "title": "Mapping AI-enabled cyber threats",
+     "url": "https://www.anthropic.com/news/AI-enabled-cyber-threats-mitre-attack"
+    },
+    {
+     "date": "2026-06-03",
+     "section": "news",
+     "title": "Claude Partner Network Services Track and Partner Hub",
+     "url": "https://www.anthropic.com/news/services-track-partner-hub"
+    },
+    {
+     "date": "2026-06-03",
+     "section": "research",
+     "title": "Mapping AI-enabled cyber threats",
+     "url": "https://www.anthropic.com/research/attack-navigator"
+    },
+    {
+     "date": "2026-06-02",
+     "section": "news",
+     "title": "Expanding Project Glasswing",
+     "url": "https://www.anthropic.com/news/expanding-project-glasswing"
+    },
+    {
+     "date": "2026-06-01",
+     "section": "news",
+     "title": "Anthropic confidentially submits draft S-1",
+     "url": "https://www.anthropic.com/news/confidential-draft-s1-sec"
+    },
+    {
+     "date": "2026-05-28",
+     "section": "news",
+     "title": "Introducing Claude Opus 4.8",
+     "url": "https://www.anthropic.com/news/claude-opus-4-8"
+    },
+    {
+     "date": "2026-05-28",
+     "section": "news",
+     "title": "Anthropic raises $65B Series H at $965B valuation",
+     "url": "https://www.anthropic.com/news/series-h"
+    },
+    {
+     "date": "2026-05-27",
+     "section": "news",
+     "title": "Anthropic opens Milan office",
+     "url": "https://www.anthropic.com/news/milan-office-opening"
+    },
+    {
+     "date": "2026-05-27",
+     "section": "research",
+     "title": "Coding agents in the social sciences",
+     "url": "https://www.anthropic.com/research/coding-agents-social-sciences"
+    },
+    {
+     "date": "2026-05-26",
+     "section": "news",
+     "title": "KiYoung Choi named Representative Director of Korea",
+     "url": "https://www.anthropic.com/news/kiyoung-choi-representative-director-anthropic-korea"
+    },
+    {
+     "date": "2026-05-25",
+     "section": "news",
+     "title": "Chris Olah's remarks on Pope Leo XIV's encyclical",
+     "url": "https://www.anthropic.com/news/chris-olah-pope-leo-encyclical"
+    },
+    {
+     "date": "2026-05-25",
+     "section": "research",
+     "title": "How we contain Claude across products",
+     "url": "https://www.anthropic.com/research/how-we-contain-claude"
+    },
+    {
+     "date": "2026-05-22",
+     "section": "news",
+     "title": "Project Glasswing: An initial update",
+     "url": "https://www.anthropic.com/news/glasswing-initial-update"
+    },
+    {
+     "date": "2026-05-22",
+     "section": "research",
+     "title": "Measuring LLMs’ ability to develop exploits",
+     "url": "https://www.anthropic.com/research/exploit-evals"
+    },
+    {
+     "date": "2026-05-19",
+     "section": "news",
+     "title": "KPMG integrates Claude across its workforce",
+     "url": "https://www.anthropic.com/news/anthropic-kpmg"
+    },
+    {
+     "date": "2026-05-19",
+     "section": "news",
+     "title": "Widening the conversation on frontier AI",
+     "url": "https://www.anthropic.com/news/widening-conversation-ai"
+    },
+    {
+     "date": "2026-05-18",
+     "section": "news",
+     "title": "Anthropic acquires Stainless",
+     "url": "https://www.anthropic.com/news/anthropic-acquires-stainless"
+    },
+    {
+     "date": "2026-05-14",
+     "section": "news",
+     "title": "2028: Two scenarios for global AI leadership",
+     "url": "https://www.anthropic.com/news/2028-ai-leadership"
+    },
+    {
+     "date": "2026-05-14",
+     "section": "news",
+     "title": "Anthropic partners with the Gates Foundation",
+     "url": "https://www.anthropic.com/news/gates-foundation-partnership"
+    },
+    {
+     "date": "2026-05-14",
+     "section": "news",
+     "title": "PwC deploys Claude across its business",
+     "url": "https://www.anthropic.com/news/pwc-expanded-partnership"
+    },
+    {
+     "date": "2026-05-13",
+     "section": "news",
+     "title": "Introducing Claude for Small Business",
+     "url": "https://www.anthropic.com/news/claude-for-small-business"
+    },
+    {
+     "date": "2026-05-08",
+     "section": "research",
+     "title": "Teaching Claude why",
+     "url": "https://www.anthropic.com/research/teaching-claude-why"
+    },
+    {
+     "date": "2026-05-07",
+     "section": "news",
+     "title": "Focus areas for The Anthropic Institute",
+     "url": "https://www.anthropic.com/news/anthropic-institute-agenda"
+    },
+    {
+     "date": "2026-05-07",
+     "section": "research",
+     "title": "Donating our open-source alignment tool",
+     "url": "https://www.anthropic.com/research/donating-open-source-petri"
+    },
+    {
+     "date": "2026-05-07",
+     "section": "research",
+     "title": "Natural Language Autoencoders",
+     "url": "https://www.anthropic.com/research/natural-language-autoencoders"
+    },
+    {
+     "date": "2026-05-06",
+     "section": "news",
+     "title": "Higher usage limits and a SpaceX compute deal",
+     "url": "https://www.anthropic.com/news/higher-limits-spacex"
+    },
+    {
+     "date": "2026-05-05",
+     "section": "news",
+     "title": "Agents for financial services",
+     "url": "https://www.anthropic.com/news/finance-agents"
+    },
+    {
+     "date": "2026-05-04",
+     "section": "news",
+     "title": "Building a new enterprise AI services company",
+     "url": "https://www.anthropic.com/news/enterprise-ai-services-company"
+    },
+    {
+     "date": "2026-04-30",
+     "section": "research",
+     "title": "How people ask Claude for personal guidance",
+     "url": "https://www.anthropic.com/research/claude-personal-guidance"
+    },
+    {
+     "date": "2026-04-29",
+     "section": "research",
+     "title": "Evaluating Claude with BioMysteryBench",
+     "url": "https://www.anthropic.com/research/Evaluating-Claude-For-Bioinformatics-With-BioMysteryBench"
+    },
+    {
+     "date": "2026-04-28",
+     "section": "news",
+     "title": "Claude for Creative Work",
+     "url": "https://www.anthropic.com/news/claude-for-creative-work"
+    },
+    {
+     "date": "2026-04-27",
+     "section": "news",
+     "title": "Anthropic opens Sydney office, names ANZ GM",
+     "url": "https://www.anthropic.com/news/theo-hourmouzis-general-manager-australia-new-zealand"
+    },
+    {
+     "date": "2026-04-24",
+     "section": "news",
+     "title": "Anthropic and NEC build AI engineering in Japan",
+     "url": "https://www.anthropic.com/news/anthropic-nec"
+    },
+    {
+     "date": "2026-04-24",
+     "section": "news",
+     "title": "An update on our election safeguards",
+     "url": "https://www.anthropic.com/news/election-safeguards-update"
+    },
+    {
+     "date": "2026-04-23",
+     "section": "research",
+     "title": "An update on Claude Code quality reports",
+     "url": "https://www.anthropic.com/research/april-23-postmortem"
+    },
+    {
+     "date": "2026-04-22",
+     "section": "research",
+     "title": "What 81,000 people told us about AI economics",
+     "url": "https://www.anthropic.com/research/81k-economics"
+    },
+    {
+     "date": "2026-04-22",
+     "section": "research",
+     "title": "Announcing the Anthropic Economic Index Survey",
+     "url": "https://www.anthropic.com/research/economic-index-survey-announcement"
+    },
+    {
+     "date": "2026-04-20",
+     "section": "news",
+     "title": "Anthropic and Amazon expand compute collaboration",
+     "url": "https://www.anthropic.com/news/anthropic-amazon-compute"
+    },
+    {
+     "date": "2026-04-17",
+     "section": "news",
+     "title": "Introducing Claude Design by Anthropic Labs",
+     "url": "https://www.anthropic.com/news/claude-design-anthropic-labs"
+    },
+    {
+     "date": "2026-04-16",
+     "section": "news",
+     "title": "Introducing Claude Opus 4.7",
+     "url": "https://www.anthropic.com/news/claude-opus-4-7"
+    },
+    {
+     "date": "2026-04-14",
+     "section": "news",
+     "title": "Vas Narasimhan appointed to Board of Directors",
+     "url": "https://www.anthropic.com/news/narasimhan-board"
+    },
+    {
+     "date": "2026-04-14",
+     "section": "research",
+     "title": "Automated Alignment Researchers",
+     "url": "https://www.anthropic.com/research/automated-alignment-researchers"
+    },
+    {
+     "date": "2026-04-09",
+     "section": "research",
+     "title": "Trustworthy agents in practice",
+     "url": "https://www.anthropic.com/research/trustworthy-agents"
+    },
+    {
+     "date": "2026-04-08",
+     "section": "research",
+     "title": "Scaling Managed Agents with stable interfaces",
+     "url": "https://www.anthropic.com/research/managed-agents"
+    },
+    {
+     "date": "2026-04-07",
+     "section": "research",
+     "title": "Claude Mythos Preview's cybersecurity capabilities",
+     "url": "https://www.anthropic.com/research/mythos-preview"
+    },
+    {
+     "date": "2026-04-06",
+     "section": "news",
+     "title": "Anthropic expands Google and Broadcom compute deal",
+     "url": "https://www.anthropic.com/news/google-broadcom-partnership-compute"
+    },
+    {
+     "date": "2026-04-02",
+     "section": "research",
+     "title": "Emotion concepts in a large language model",
+     "url": "https://www.anthropic.com/research/emotion-concepts-function"
+    },
+    {
+     "date": "2026-03-31",
+     "section": "news",
+     "title": "Australia and Anthropic sign AI safety MOU",
+     "url": "https://www.anthropic.com/news/australia-MOU"
+    },
+    {
+     "date": "2026-03-31",
+     "section": "research",
+     "title": "How Australia uses Claude",
+     "url": "https://www.anthropic.com/research/how-australia-uses-claude"
+    },
+    {
+     "date": "2026-03-25",
+     "section": "research",
+     "title": "How we built Claude Code auto mode",
+     "url": "https://www.anthropic.com/research/claude-code-auto-mode"
+    },
+    {
+     "date": "2026-03-24",
+     "section": "research",
+     "title": "Anthropic Economic Index report: Learning curves",
+     "url": "https://www.anthropic.com/research/economic-index-march-2026-report"
+    },
+    {
+     "date": "2026-03-24",
+     "section": "research",
+     "title": "Harness design for long-running apps",
+     "url": "https://www.anthropic.com/research/harness-design-long-running-apps"
+    },
+    {
+     "date": "2026-03-23",
+     "section": "research",
+     "title": "Introducing our Science Blog",
+     "url": "https://www.anthropic.com/research/introducing-anthropic-science"
+    },
+    {
+     "date": "2026-03-23",
+     "section": "research",
+     "title": "Long-running Claude for scientific computing",
+     "url": "https://www.anthropic.com/research/long-running-claude"
+    },
+    {
+     "date": "2026-03-23",
+     "section": "research",
+     "title": "Vibe physics: The AI grad student",
+     "url": "https://www.anthropic.com/research/vibe-physics"
+    },
+    {
+     "date": "2026-03-13",
+     "section": "research",
+     "title": "A \"diff\" tool for AI models",
+     "url": "https://www.anthropic.com/research/diff-tool"
+    },
+    {
+     "date": "2026-03-12",
+     "section": "news",
+     "title": "$100 million for the Claude Partner Network",
+     "url": "https://www.anthropic.com/news/claude-partner-network"
+    },
+    {
+     "date": "2026-03-11",
+     "section": "news",
+     "title": "Introducing The Anthropic Institute",
+     "url": "https://www.anthropic.com/news/the-anthropic-institute"
+    },
+    {
+     "date": "2026-03-10",
+     "section": "news",
+     "title": "Sydney becomes Anthropic's fourth APAC office",
+     "url": "https://www.anthropic.com/news/sydney-fourth-office-asia-pacific"
+    },
+    {
+     "date": "2026-03-06",
+     "section": "news",
+     "title": "Partnering with Mozilla on Firefox security",
+     "url": "https://www.anthropic.com/news/mozilla-firefox-security"
+    },
+    {
+     "date": "2026-03-06",
+     "section": "research",
+     "title": "Eval awareness in Opus 4.6 on BrowseComp",
+     "url": "https://www.anthropic.com/research/eval-awareness-browsecomp"
+    },
+    {
+     "date": "2026-03-06",
+     "section": "research",
+     "title": "Reverse engineering Claude's CVE-2026-2796 exploit",
+     "url": "https://www.anthropic.com/research/exploit"
+    },
+    {
+     "date": "2026-03-05",
+     "section": "news",
+     "title": "Where things stand with the Department of War",
+     "url": "https://www.anthropic.com/news/where-stand-department-war"
+    },
+    {
+     "date": "2026-03-05",
+     "section": "research",
+     "title": "Labor market impacts of AI: A new measure",
+     "url": "https://www.anthropic.com/research/labor-market-impacts"
+    },
+    {
+     "date": "2026-02-27",
+     "section": "news",
+     "title": "Statement on the comments from Secretary of War Pete Hegseth",
+     "url": "https://www.anthropic.com/news/statement-comments-secretary-war"
+    },
+    {
+     "date": "2026-02-26",
+     "section": "news",
+     "title": "Dario Amodei on the Department of War discussions",
+     "url": "https://www.anthropic.com/news/statement-department-of-war"
+    },
+    {
+     "date": "2026-02-25",
+     "section": "news",
+     "title": "Anthropic acquires Vercept",
+     "url": "https://www.anthropic.com/news/acquires-vercept"
+    },
+    {
+     "date": "2026-02-25",
+     "section": "news",
+     "title": "Model deprecation update for Claude Opus 3",
+     "url": "https://www.anthropic.com/news/deprecation-updates-opus-3"
+    },
+    {
+     "date": "2026-02-24",
+     "section": "news",
+     "title": "Responsible Scaling Policy Version 3.0",
+     "url": "https://www.anthropic.com/news/responsible-scaling-policy-v3"
+    },
+    {
+     "date": "2026-02-23",
+     "section": "news",
+     "title": "Detecting and preventing distillation attacks",
+     "url": "https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks"
+    },
+    {
+     "date": "2026-02-23",
+     "section": "research",
+     "title": "The persona selection model",
+     "url": "https://www.anthropic.com/research/persona-selection-model"
+    },
+    {
+     "date": "2026-02-20",
+     "section": "news",
+     "title": "Making frontier cybersecurity capabilities available to defenders",
+     "url": "https://www.anthropic.com/news/claude-code-security"
+    },
+    {
+     "date": "2026-02-18",
+     "section": "research",
+     "title": "Measuring AI agent autonomy in practice",
+     "url": "https://www.anthropic.com/research/measuring-agent-autonomy"
+    },
+    {
+     "date": "2026-02-17",
+     "section": "news",
+     "title": "Anthropic and Infosys build AI agents",
+     "url": "https://www.anthropic.com/news/anthropic-infosys"
+    },
+    {
+     "date": "2026-02-17",
+     "section": "news",
+     "title": "Rwanda and Anthropic sign MOU for health and education",
+     "url": "https://www.anthropic.com/news/anthropic-rwanda-mou"
+    },
+    {
+     "date": "2026-02-17",
+     "section": "news",
+     "title": "Introducing Sonnet 4.6",
+     "url": "https://www.anthropic.com/news/claude-sonnet-4-6"
+    },
+    {
+     "date": "2026-02-16",
+     "section": "news",
+     "title": "Anthropic opens Bengaluru office",
+     "url": "https://www.anthropic.com/news/bengaluru-office-partnerships-across-india"
+    },
+    {
+     "date": "2026-02-16",
+     "section": "research",
+     "title": "India Country Brief: Anthropic Economic Index",
+     "url": "https://www.anthropic.com/research/india-brief-economic-index"
+    },
+    {
+     "date": "2026-02-13",
+     "section": "news",
+     "title": "Anthropic partners with CodePath",
+     "url": "https://www.anthropic.com/news/anthropic-codepath-partnership"
+    },
+    {
+     "date": "2026-02-13",
+     "section": "news",
+     "title": "Chris Liddell appointed to Anthropic's board",
+     "url": "https://www.anthropic.com/news/chris-liddell-appointed-anthropic-board"
+    },
+    {
+     "date": "2026-02-12",
+     "section": "news",
+     "title": "Anthropic raises $30B Series G at $380B valuation",
+     "url": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+     "date": "2026-02-12",
+     "section": "news",
+     "title": "Anthropic is donating $20 million to Public First Action",
+     "url": "https://www.anthropic.com/news/donate-public-first-action"
+    },
+    {
+     "date": "2026-02-11",
+     "section": "news",
+     "title": "Covering electricity price increases",
+     "url": "https://www.anthropic.com/news/covering-electricity-price-increases"
+    },
+    {
+     "date": "2026-02-05",
+     "section": "news",
+     "title": "Claude Opus 4.6",
+     "url": "https://www.anthropic.com/news/claude-opus-4-6"
+    },
+    {
+     "date": "2026-02-05",
+     "section": "research",
+     "title": "Building a C compiler with parallel Claudes",
+     "url": "https://www.anthropic.com/research/building-c-compiler"
+    },
+    {
+     "date": "2026-02-05",
+     "section": "research",
+     "title": "Infrastructure noise in agentic coding evals",
+     "url": "https://www.anthropic.com/research/infrastructure-noise"
+    },
+    {
+     "date": "2026-02-05",
+     "section": "research",
+     "title": "LLM-discovered 0 days",
+     "url": "https://www.anthropic.com/research/zero-days"
+    },
+    {
+     "date": "2026-02-04",
+     "section": "news",
+     "title": "Claude is a space to think",
+     "url": "https://www.anthropic.com/news/claude-is-a-space-to-think"
+    },
+    {
+     "date": "2026-02-03",
+     "section": "news",
+     "title": "Apple’s Xcode now supports the Claude Agent SDK",
+     "url": "https://www.anthropic.com/news/apple-xcode-claude-agent-sdk"
+    },
+    {
+     "date": "2026-02-02",
+     "section": "news",
+     "title": "Anthropic partners with Allen Institute and HHMI",
+     "url": "https://www.anthropic.com/news/anthropic-partners-with-allen-institute-and-howard-hughes-medical-institute"
+    },
+    {
+     "date": "2026-01-29",
+     "section": "research",
+     "title": "How AI assistance impacts the formation of coding skills",
+     "url": "https://www.anthropic.com/research/AI-assistance-coding-skills"
+    },
+    {
+     "date": "2026-01-28",
+     "section": "news",
+     "title": "ServiceNow chooses Claude",
+     "url": "https://www.anthropic.com/news/servicenow-anthropic-claude"
+    },
+    {
+     "date": "2026-01-28",
+     "section": "research",
+     "title": "Disempowerment patterns in real-world AI usage",
+     "url": "https://www.anthropic.com/research/disempowerment-patterns"
+    },
+    {
+     "date": "2026-01-27",
+     "section": "news",
+     "title": "Anthropic partners with the UK Government on GOV.UK",
+     "url": "https://www.anthropic.com/news/gov-UK-partnership"
+    },
+    {
+     "date": "2026-01-22",
+     "section": "news",
+     "title": "Claude's new constitution",
+     "url": "https://www.anthropic.com/news/claude-new-constitution"
+    },
+    {
+     "date": "2026-01-21",
+     "section": "news",
+     "title": "Anthropic and Teach For All train educators on AI",
+     "url": "https://www.anthropic.com/news/anthropic-teach-for-all"
+    },
+    {
+     "date": "2026-01-21",
+     "section": "news",
+     "title": "Mariano-Florentino Cuéllar appointed to Long-Term Benefit Trust",
+     "url": "https://www.anthropic.com/news/mariano-florentino-long-term-benefit-trust"
+    },
+    {
+     "date": "2026-01-21",
+     "section": "research",
+     "title": "Designing AI resistant technical evaluations",
+     "url": "https://www.anthropic.com/research/AI-resistant-technical-evaluations"
+    },
+    {
+     "date": "2026-01-19",
+     "section": "research",
+     "title": "The assistant axis",
+     "url": "https://www.anthropic.com/research/assistant-axis"
+    },
+    {
+     "date": "2026-01-16",
+     "section": "news",
+     "title": "Irina Ghose named Managing Director of India",
+     "url": "https://www.anthropic.com/news/anthropic-appoints-irina-ghose-as-managing-director-of-india"
+    },
+    {
+     "date": "2026-01-16",
+     "section": "research",
+     "title": "AI models on realistic cyber ranges",
+     "url": "https://www.anthropic.com/research/cyber-toolkits-update"
+    },
+    {
+     "date": "2026-01-15",
+     "section": "research",
+     "title": "How scientists use Claude to accelerate research",
+     "url": "https://www.anthropic.com/research/accelerating-scientific-research"
+    },
+    {
+     "date": "2026-01-15",
+     "section": "research",
+     "title": "Economic Index report: Economic primitives",
+     "url": "https://www.anthropic.com/research/anthropic-economic-index-january-2026-report"
+    },
+    {
+     "date": "2026-01-15",
+     "section": "research",
+     "title": "Economic Index: New building blocks for AI use",
+     "url": "https://www.anthropic.com/research/economic-index-primitives"
+    },
+    {
+     "date": "2026-01-14",
+     "section": "research",
+     "title": "Finding bugs with Claude and property-based testing",
+     "url": "https://www.anthropic.com/research/property-based-testing"
+    },
+    {
+     "date": "2026-01-13",
+     "section": "news",
+     "title": "Introducing Labs",
+     "url": "https://www.anthropic.com/news/introducing-anthropic-labs"
+    },
+    {
+     "date": "2026-01-11",
+     "section": "news",
+     "title": "Advancing Claude in healthcare and the life sciences",
+     "url": "https://www.anthropic.com/news/healthcare-life-sciences"
+    },
+    {
+     "date": "2026-01-09",
+     "section": "research",
+     "title": "Demystifying evals for AI agents",
+     "url": "https://www.anthropic.com/research/demystifying-evals-for-ai-agents"
+    },
+    {
+     "date": "2026-01-09",
+     "section": "research",
+     "title": "Next-generation Constitutional Classifiers",
+     "url": "https://www.anthropic.com/research/next-generation-constitutional-classifiers"
+    },
+    {
+     "date": "2026-01-08",
+     "section": "research",
+     "title": "AI to defend critical infrastructure",
+     "url": "https://www.anthropic.com/research/critical-infrastructure-defense"
+    },
+    {
+     "date": "2025-12-19",
+     "section": "news",
+     "title": "Our compliance framework for California's SB 53",
+     "url": "https://www.anthropic.com/news/compliance-framework-SB53"
+    },
+    {
+     "date": "2025-12-19",
+     "section": "research",
+     "title": "Introducing Bloom: Automated behavioral evals",
+     "url": "https://www.anthropic.com/research/bloom"
+    },
+    {
+     "date": "2025-12-18",
+     "section": "news",
+     "title": "Working with the US Department of Energy",
+     "url": "https://www.anthropic.com/news/genesis-mission-partnership"
+    },
+    {
+     "date": "2025-12-18",
+     "section": "news",
+     "title": "Protecting the wellbeing of our users",
+     "url": "https://www.anthropic.com/news/protecting-well-being-of-users"
+    },
+    {
+     "date": "2025-12-18",
+     "section": "research",
+     "title": "Project Vend: Phase two",
+     "url": "https://www.anthropic.com/research/project-vend-2"
+    },
+    {
+     "date": "2025-12-09",
+     "section": "news",
+     "title": "Accenture and Anthropic launch partnership",
+     "url": "https://www.anthropic.com/news/anthropic-accenture-partnership"
+    },
+    {
+     "date": "2025-12-09",
+     "section": "news",
+     "title": "Donating MCP to the Agentic AI Foundation",
+     "url": "https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation"
+    },
+    {
+     "date": "2025-12-04",
+     "section": "research",
+     "title": "Introducing Anthropic Interviewer",
+     "url": "https://www.anthropic.com/research/anthropic-interviewer"
+    },
+    {
+     "date": "2025-12-03",
+     "section": "news",
+     "title": "Anthropic acquires Bun as Claude Code hits $1B",
+     "url": "https://www.anthropic.com/news/anthropic-acquires-bun-as-claude-code-reaches-usd1b-milestone"
+    },
+    {
+     "date": "2025-12-03",
+     "section": "news",
+     "title": "Snowflake and Anthropic announce $200M partnership",
+     "url": "https://www.anthropic.com/news/snowflake-anthropic-expanded-partnership"
+    },
+    {
+     "date": "2025-12-02",
+     "section": "news",
+     "title": "Introducing Claude for Nonprofits",
+     "url": "https://www.anthropic.com/news/claude-for-nonprofits"
+    },
+    {
+     "date": "2025-12-02",
+     "section": "research",
+     "title": "How AI is transforming work at Anthropic",
+     "url": "https://www.anthropic.com/research/how-ai-is-transforming-work-at-anthropic"
+    },
+    {
+     "date": "2025-12-01",
+     "section": "research",
+     "title": "AI agents find smart contract exploits",
+     "url": "https://www.anthropic.com/research/smart-contracts"
+    },
+    {
+     "date": "2025-11-26",
+     "section": "research",
+     "title": "Effective harnesses for long-running agents",
+     "url": "https://www.anthropic.com/research/effective-harnesses-for-long-running-agents"
+    },
+    {
+     "date": "2025-11-25",
+     "section": "research",
+     "title": "Estimating AI productivity gains",
+     "url": "https://www.anthropic.com/research/estimating-productivity-gains"
+    },
+    {
+     "date": "2025-11-24",
+     "section": "news",
+     "title": "Introducing Claude Opus 4.5",
+     "url": "https://www.anthropic.com/news/claude-opus-4-5"
+    },
+    {
+     "date": "2025-11-24",
+     "section": "research",
+     "title": "Introducing advanced tool use for Claude",
+     "url": "https://www.anthropic.com/research/advanced-tool-use"
+    },
+    {
+     "date": "2025-11-24",
+     "section": "research",
+     "title": "Mitigating prompt injections in browser use",
+     "url": "https://www.anthropic.com/research/prompt-injection-defenses"
+    },
+    {
+     "date": "2025-11-21",
+     "section": "research",
+     "title": "Natural emergent misalignment from reward hacking",
+     "url": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking"
+    },
+    {
+     "date": "2025-11-18",
+     "section": "news",
+     "title": "Claude in Microsoft Foundry and 365 Copilot",
+     "url": "https://www.anthropic.com/news/claude-in-microsoft-foundry"
+    },
+    {
+     "date": "2025-11-18",
+     "section": "news",
+     "title": "Microsoft, NVIDIA, and Anthropic partnerships",
+     "url": "https://www.anthropic.com/news/microsoft-nvidia-anthropic-announce-strategic-partnerships"
+    },
+    {
+     "date": "2025-11-18",
+     "section": "news",
+     "title": "Anthropic brings AI education to Africa with Rwanda and ALX",
+     "url": "https://www.anthropic.com/news/rwandan-government-partnership-ai-education"
+    },
+    {
+     "date": "2025-11-13",
+     "section": "news",
+     "title": "Disrupting an AI-orchestrated cyber espionage campaign",
+     "url": "https://www.anthropic.com/news/disrupting-AI-espionage"
+    },
+    {
+     "date": "2025-11-13",
+     "section": "news",
+     "title": "Maryland partners with Anthropic to serve residents",
+     "url": "https://www.anthropic.com/news/maryland-partnership"
+    },
+    {
+     "date": "2025-11-13",
+     "section": "research",
+     "title": "Measuring political bias in Claude",
+     "url": "https://www.anthropic.com/research/political-even-handedness"
+    },
+    {
+     "date": "2025-11-12",
+     "section": "news",
+     "title": "Anthropic invests $50 billion in American AI infrastructure",
+     "url": "https://www.anthropic.com/news/anthropic-invests-50-billion-in-american-ai-infrastructure"
+    },
+    {
+     "date": "2025-11-12",
+     "section": "research",
+     "title": "Project Fetch: Can Claude train a robot dog?",
+     "url": "https://www.anthropic.com/research/project-fetch-robot-dog"
+    },
+    {
+     "date": "2025-11-07",
+     "section": "news",
+     "title": "New offices in Paris and Munich",
+     "url": "https://www.anthropic.com/news/new-offices-in-paris-and-munich-expand-european-presence"
+    },
+    {
+     "date": "2025-11-05",
+     "section": "news",
+     "title": "Economic Futures Programme in the UK and Europe",
+     "url": "https://www.anthropic.com/news/economic-futures-uk-europe"
+    },
+    {
+     "date": "2025-11-04",
+     "section": "news",
+     "title": "Iceland launches a national AI education pilot",
+     "url": "https://www.anthropic.com/news/anthropic-and-iceland-announce-one-of-the-world-s-first-national-ai-education-pilots"
+    },
+    {
+     "date": "2025-11-04",
+     "section": "news",
+     "title": "Cognizant brings Claude to 350,000 employees",
+     "url": "https://www.anthropic.com/news/cognizant-partnership"
+    },
+    {
+     "date": "2025-11-04",
+     "section": "news",
+     "title": "Commitments on model deprecation and preservation",
+     "url": "https://www.anthropic.com/news/deprecation-commitments"
+    },
+    {
+     "date": "2025-11-04",
+     "section": "research",
+     "title": "Code execution with MCP for efficient agents",
+     "url": "https://www.anthropic.com/research/code-execution-with-mcp"
+    },
+    {
+     "date": "2025-10-29",
+     "section": "news",
+     "title": "Anthropic opens Tokyo office",
+     "url": "https://www.anthropic.com/news/opening-our-tokyo-office"
+    },
+    {
+     "date": "2025-10-29",
+     "section": "research",
+     "title": "Emergent introspective awareness in LLMs",
+     "url": "https://www.anthropic.com/research/introspection"
+    },
+    {
+     "date": "2025-10-27",
+     "section": "news",
+     "title": "Advancing Claude for Financial Services",
+     "url": "https://www.anthropic.com/news/advancing-claude-for-financial-services"
+    },
+    {
+     "date": "2025-10-23",
+     "section": "news",
+     "title": "Expanding our use of Google Cloud TPUs",
+     "url": "https://www.anthropic.com/news/expanding-our-use-of-google-cloud-tpus-and-services"
+    },
+    {
+     "date": "2025-10-23",
+     "section": "news",
+     "title": "Seoul becomes Anthropic's third APAC office",
+     "url": "https://www.anthropic.com/news/seoul-becomes-third-anthropic-office-in-asia-pacific"
+    },
+    {
+     "date": "2025-10-21",
+     "section": "news",
+     "title": "Dario Amodei on American AI leadership",
+     "url": "https://www.anthropic.com/news/statement-dario-amodei-american-ai-leadership"
+    },
+    {
+     "date": "2025-10-20",
+     "section": "news",
+     "title": "Claude for Life Sciences",
+     "url": "https://www.anthropic.com/news/claude-for-life-sciences"
+    },
+    {
+     "date": "2025-10-20",
+     "section": "research",
+     "title": "Making Claude Code safer with sandboxing",
+     "url": "https://www.anthropic.com/research/claude-code-sandboxing"
+    },
+    {
+     "date": "2025-10-16",
+     "section": "news",
+     "title": "Introducing Agent Skills",
+     "url": "https://www.anthropic.com/news/skills"
+    },
+    {
+     "date": "2025-10-16",
+     "section": "research",
+     "title": "Equipping agents with Agent Skills",
+     "url": "https://www.anthropic.com/research/equipping-agents-for-the-real-world-with-agent-skills"
+    },
+    {
+     "date": "2025-10-15",
+     "section": "news",
+     "title": "Introducing Claude Haiku 4.5",
+     "url": "https://www.anthropic.com/news/claude-haiku-4-5"
+    },
+    {
+     "date": "2025-10-14",
+     "section": "news",
+     "title": "Salesforce and Anthropic expand partnership",
+     "url": "https://www.anthropic.com/news/salesforce-anthropic-expanded-partnership"
+    },
+    {
+     "date": "2025-10-14",
+     "section": "research",
+     "title": "Preparing for AI's economic impact",
+     "url": "https://www.anthropic.com/research/economic-policy-responses"
+    },
+    {
+     "date": "2025-10-09",
+     "section": "research",
+     "title": "A small number of samples can poison LLMs",
+     "url": "https://www.anthropic.com/research/small-samples-poison"
+    },
+    {
+     "date": "2025-10-07",
+     "section": "news",
+     "title": "Anthropic expands to India with Bengaluru office",
+     "url": "https://www.anthropic.com/news/expanding-global-operations-to-india"
+    },
+    {
+     "date": "2025-10-07",
+     "section": "news",
+     "title": "Rahul Patil joins as Chief Technology Officer",
+     "url": "https://www.anthropic.com/news/rahul-patil-joins-anthropic"
+    },
+    {
+     "date": "2025-10-06",
+     "section": "news",
+     "title": "Deloitte brings Claude to 470,000 people",
+     "url": "https://www.anthropic.com/news/deloitte-anthropic-partnership"
+    },
+    {
+     "date": "2025-10-06",
+     "section": "research",
+     "title": "Petri: An open-source AI auditing tool",
+     "url": "https://www.anthropic.com/research/petri-open-source-auditing"
+    },
+    {
+     "date": "2025-09-29",
+     "section": "news",
+     "title": "Introducing Claude Sonnet 4.5",
+     "url": "https://www.anthropic.com/news/claude-sonnet-4-5"
+    },
+    {
+     "date": "2025-09-29",
+     "section": "news",
+     "title": "Enabling Claude Code to work more autonomously",
+     "url": "https://www.anthropic.com/news/enabling-claude-code-to-work-more-autonomously"
+    },
+    {
+     "date": "2025-09-29",
+     "section": "research",
+     "title": "Building AI for cyber defenders",
+     "url": "https://www.anthropic.com/research/building-ai-cyber-defenders"
+    },
+    {
+     "date": "2025-09-29",
+     "section": "research",
+     "title": "Effective context engineering for AI agents",
+     "url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents"
+    },
+    {
+     "date": "2025-09-26",
+     "section": "news",
+     "title": "Chris Ciauri named Managing Director of International",
+     "url": "https://www.anthropic.com/news/anthropic-expands-global-leadership-in-enterprise-ai-naming-chris-ciauri-as-managing-director-of"
+    },
+    {
+     "date": "2025-09-17",
+     "section": "research",
+     "title": "A postmortem of three recent issues",
+     "url": "https://www.anthropic.com/research/a-postmortem-of-three-recent-issues"
+    },
+    {
+     "date": "2025-09-15",
+     "section": "news",
+     "title": "Claude is now generally available in Xcode",
+     "url": "https://www.anthropic.com/news/claude-in-xcode"
+    },
+    {
+     "date": "2025-09-15",
+     "section": "research",
+     "title": "Economic Index: Uneven AI adoption",
+     "url": "https://www.anthropic.com/research/anthropic-economic-index-september-2025-report"
+    },
+    {
+     "date": "2025-09-15",
+     "section": "research",
+     "title": "Economic Index: AI's role in the US and global economy",
+     "url": "https://www.anthropic.com/research/economic-index-geography"
+    },
+    {
+     "date": "2025-09-12",
+     "section": "news",
+     "title": "Strengthening safeguards with US CAISI and UK AISI",
+     "url": "https://www.anthropic.com/news/strengthening-our-safeguards-through-collaboration-with-us-caisi-and-uk-aisi"
+    },
+    {
+     "date": "2025-09-11",
+     "section": "research",
+     "title": "Writing effective tools for AI agents",
+     "url": "https://www.anthropic.com/research/writing-tools-for-agents"
+    },
+    {
+     "date": "2025-09-08",
+     "section": "news",
+     "title": "Anthropic is endorsing SB 53",
+     "url": "https://www.anthropic.com/news/anthropic-is-endorsing-sb-53"
+    },
+    {
+     "date": "2025-09-05",
+     "section": "research",
+     "title": "LLMs and biorisk",
+     "url": "https://www.anthropic.com/research/biorisk"
+    },
+    {
+     "date": "2025-09-04",
+     "section": "news",
+     "title": "Anthropic joins White House AI education pledge",
+     "url": "https://www.anthropic.com/news/anthropic-signs-pledge-to-americas-youth-investing-in-ai-education"
+    },
+    {
+     "date": "2025-09-04",
+     "section": "news",
+     "title": "Updating sales restrictions for unsupported regions",
+     "url": "https://www.anthropic.com/news/updating-restrictions-of-sales-to-unsupported-regions"
+    },
+    {
+     "date": "2025-09-02",
+     "section": "news",
+     "title": "Anthropic raises $13B Series F at $183B valuation",
+     "url": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation"
+    },
+    {
+     "date": "2025-08-28",
+     "section": "news",
+     "title": "Updates to Consumer Terms and Privacy Policy",
+     "url": "https://www.anthropic.com/news/updates-to-our-consumer-terms"
+    },
+    {
+     "date": "2025-08-27",
+     "section": "news",
+     "title": "Detecting and countering misuse of AI: August 2025",
+     "url": "https://www.anthropic.com/news/detecting-countering-misuse-aug-2025"
+    },
+    {
+     "date": "2025-08-27",
+     "section": "news",
+     "title": "National Security and Public Sector Advisory Council",
+     "url": "https://www.anthropic.com/news/introducing-the-anthropic-national-security-and-public-sector-advisory-council"
+    },
+    {
+     "date": "2025-08-27",
+     "section": "research",
+     "title": "Education Report: How educators use Claude",
+     "url": "https://www.anthropic.com/research/anthropic-education-report-how-educators-use-claude"
+    },
+    {
+     "date": "2025-08-21",
+     "section": "news",
+     "title": "Higher education advisory board and AI Fluency courses",
+     "url": "https://www.anthropic.com/news/anthropic-higher-education-initiatives"
+    },
+    {
+     "date": "2025-08-21",
+     "section": "news",
+     "title": "Developing nuclear safeguards for AI through public-private partnership",
+     "url": "https://www.anthropic.com/news/developing-nuclear-safeguards-for-ai-through-public-private-partnership"
+    },
+    {
+     "date": "2025-08-21",
+     "section": "research",
+     "title": "Developing nuclear safeguards for AI",
+     "url": "https://www.anthropic.com/research/nuclear-safeguards-for-ai"
+    },
+    {
+     "date": "2025-08-20",
+     "section": "news",
+     "title": "Claude Code and admin controls for business plans",
+     "url": "https://www.anthropic.com/news/claude-code-on-team-and-enterprise"
+    },
+    {
+     "date": "2025-08-15",
+     "section": "news",
+     "title": "Usage Policy update",
+     "url": "https://www.anthropic.com/news/usage-policy-update"
+    },
+    {
+     "date": "2025-08-15",
+     "section": "research",
+     "title": "Claude Opus 4 and 4.1 can end certain conversations",
+     "url": "https://www.anthropic.com/research/end-subset-conversations"
+    },
+    {
+     "date": "2025-08-12",
+     "section": "news",
+     "title": "Building safeguards for Claude",
+     "url": "https://www.anthropic.com/news/building-safeguards-for-claude"
+    },
+    {
+     "date": "2025-08-12",
+     "section": "news",
+     "title": "Expanded Claude access across the US government",
+     "url": "https://www.anthropic.com/news/offering-expanded-claude-access-across-all-three-branches-of-government"
+    },
+    {
+     "date": "2025-08-09",
+     "section": "research",
+     "title": "Claude does cyber competitions",
+     "url": "https://www.anthropic.com/research/cyber-competitions"
+    },
+    {
+     "date": "2025-08-06",
+     "section": "news",
+     "title": "Hidetoshi Tojo appointed Head of Japan",
+     "url": "https://www.anthropic.com/news/head-of-japan-hiring-plans"
+    },
+    {
+     "date": "2025-08-05",
+     "section": "news",
+     "title": "Claude Opus 4.1",
+     "url": "https://www.anthropic.com/news/claude-opus-4-1"
+    },
+    {
+     "date": "2025-08-05",
+     "section": "news",
+     "title": "Federal agencies can purchase Claude via GSA",
+     "url": "https://www.anthropic.com/news/federal-government-departments-and-agencies-can-now-purchase-claude-through-the-gsa-schedule"
+    },
+    {
+     "date": "2025-08-04",
+     "section": "news",
+     "title": "Our framework for safe and trustworthy agents",
+     "url": "https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents"
+    },
+    {
+     "date": "2025-08-01",
+     "section": "research",
+     "title": "Persona vectors: Controlling character traits",
+     "url": "https://www.anthropic.com/research/persona-vectors"
+    },
+    {
+     "date": "2025-07-30",
+     "section": "news",
+     "title": "Anthropic signs CMS health tech pledge",
+     "url": "https://www.anthropic.com/news/anthropic-signs-cms-health-tech-ecosystem-pledge-to-advance-healthcare-interoperability"
+    },
+    {
+     "date": "2025-07-23",
+     "section": "news",
+     "title": "Anthropic partners with UChicago's Becker Friedman Institute",
+     "url": "https://www.anthropic.com/news/anthropic-partners-with-the-university-of-chicago-s-becker-friedman-institute-on-ai-economic"
+    },
+    {
+     "date": "2025-07-23",
+     "section": "news",
+     "title": "Thoughts on America’s AI Action Plan",
+     "url": "https://www.anthropic.com/news/thoughts-on-america-s-ai-action-plan"
+    },
+    {
+     "date": "2025-07-21",
+     "section": "news",
+     "title": "Build AI in America: Anthropic Energy Report",
+     "url": "https://www.anthropic.com/news/build-ai-in-america"
+    },
+    {
+     "date": "2025-07-21",
+     "section": "news",
+     "title": "Anthropic to sign the EU Code of Practice",
+     "url": "https://www.anthropic.com/news/eu-code-practice"
+    },
+    {
+     "date": "2025-07-15",
+     "section": "news",
+     "title": "Claude for Financial Services",
+     "url": "https://www.anthropic.com/news/claude-for-financial-services"
+    },
+    {
+     "date": "2025-07-15",
+     "section": "news",
+     "title": "Investing in energy to secure America's AI future",
+     "url": "https://www.anthropic.com/news/investing-in-energy-to-secure-america-s-ai-future"
+    },
+    {
+     "date": "2025-07-15",
+     "section": "news",
+     "title": "Paul Smith to join as Chief Commercial Officer",
+     "url": "https://www.anthropic.com/news/paul-smith-to-join-anthropic"
+    },
+    {
+     "date": "2025-07-15",
+     "section": "research",
+     "title": "Cyber evaluations of Claude 4",
+     "url": "https://www.anthropic.com/research/claude-4-cyber"
+    },
+    {
+     "date": "2025-07-14",
+     "section": "news",
+     "title": "Anthropic awarded $200M DOD agreement",
+     "url": "https://www.anthropic.com/news/anthropic-and-the-department-of-defense-to-advance-responsible-ai-in-defense-operations"
+    },
+    {
+     "date": "2025-07-09",
+     "section": "news",
+     "title": "Advancing Claude for Education",
+     "url": "https://www.anthropic.com/news/advancing-claude-for-education"
+    },
+    {
+     "date": "2025-07-09",
+     "section": "news",
+     "title": "Claude for Enterprise powers LLNL research",
+     "url": "https://www.anthropic.com/news/lawrence-livermore-national-laboratory-expands-claude-for-enterprise-to-empower-scientists-and"
+    },
+    {
+     "date": "2025-07-07",
+     "section": "news",
+     "title": "A framework for AI development transparency",
+     "url": "https://www.anthropic.com/news/the-need-for-transparency-in-frontier-ai"
+    },
+    {
+     "date": "2025-06-27",
+     "section": "news",
+     "title": "Anthropic Economic Futures Program Launch",
+     "url": "https://www.anthropic.com/news/introducing-the-anthropic-economic-futures-program"
+    },
+    {
+     "date": "2025-06-27",
+     "section": "research",
+     "title": "How people use Claude for support and advice",
+     "url": "https://www.anthropic.com/research/how-people-use-claude-for-support-advice-and-companionship"
+    },
+    {
+     "date": "2025-06-27",
+     "section": "research",
+     "title": "Project Vend: Can Claude run a small shop?",
+     "url": "https://www.anthropic.com/research/project-vend-1"
+    },
+    {
+     "date": "2025-06-26",
+     "section": "research",
+     "title": "Desktop Extensions: One-click MCP installs",
+     "url": "https://www.anthropic.com/research/desktop-extensions"
+    },
+    {
+     "date": "2025-06-20",
+     "section": "research",
+     "title": "Agentic misalignment: LLMs as insider threats",
+     "url": "https://www.anthropic.com/research/agentic-misalignment"
+    },
+    {
+     "date": "2025-06-18",
+     "section": "research",
+     "title": "Confidential Inference via trusted VMs",
+     "url": "https://www.anthropic.com/research/confidential-inference-trusted-vms"
+    },
+    {
+     "date": "2025-06-16",
+     "section": "research",
+     "title": "SHADE-Arena: Evaluating sabotage in LLM agents",
+     "url": "https://www.anthropic.com/research/shade-arena-sabotage-monitoring"
+    },
+    {
+     "date": "2025-06-13",
+     "section": "research",
+     "title": "Cyber toolkits for LLMs",
+     "url": "https://www.anthropic.com/research/cyber-toolkits"
+    },
+    {
+     "date": "2025-06-13",
+     "section": "research",
+     "title": "How we built our multi-agent research system",
+     "url": "https://www.anthropic.com/research/multi-agent-research-system"
+    },
+    {
+     "date": "2025-06-11",
+     "section": "news",
+     "title": "Claude in Amazon Bedrock: FedRAMP High and DoD IL4/5",
+     "url": "https://www.anthropic.com/news/claude-in-amazon-bedrock-fedramp-high"
+    },
+    {
+     "date": "2025-06-07",
+     "section": "news",
+     "title": "Richard Fontaine joins the Long-Term Benefit Trust",
+     "url": "https://www.anthropic.com/news/national-security-expert-richard-fontaine-appointed-to-anthropic-s-long-term-benefit-trust"
+    },
+    {
+     "date": "2025-06-06",
+     "section": "news",
+     "title": "Claude Gov models for US national security",
+     "url": "https://www.anthropic.com/news/claude-gov-models-for-u-s-national-security-customers"
+    },
+    {
+     "date": "2025-05-29",
+     "section": "research",
+     "title": "Open-sourcing circuit-tracing tools",
+     "url": "https://www.anthropic.com/research/open-source-circuit-tracing"
+    },
+    {
+     "date": "2025-05-28",
+     "section": "news",
+     "title": "Reed Hastings appointed to Anthropic's board",
+     "url": "https://www.anthropic.com/news/reed-hastings"
+    },
+    {
+     "date": "2025-05-22",
+     "section": "news",
+     "title": "Activating AI Safety Level 3 protections",
+     "url": "https://www.anthropic.com/news/activating-asl3-protections"
+    },
+    {
+     "date": "2025-05-22",
+     "section": "news",
+     "title": "Introducing Claude 4",
+     "url": "https://www.anthropic.com/news/claude-4"
+    },
+    {
+     "date": "2025-05-14",
+     "section": "news",
+     "title": "Testing safety defenses with a bug bounty",
+     "url": "https://www.anthropic.com/news/testing-our-safety-defenses-with-a-new-bug-bounty-program"
+    },
+    {
+     "date": "2025-05-05",
+     "section": "news",
+     "title": "Introducing Anthropic's AI for Science Program",
+     "url": "https://www.anthropic.com/news/ai-for-science-program"
+    },
+    {
+     "date": "2025-04-30",
+     "section": "news",
+     "title": "Anthropic's position on the diffusion rule",
+     "url": "https://www.anthropic.com/news/securing-america-s-compute-advantage-anthropic-s-position-on-the-diffusion-rule"
+    },
+    {
+     "date": "2025-04-28",
+     "section": "news",
+     "title": "Introducing the Anthropic Economic Advisory Council",
+     "url": "https://www.anthropic.com/news/introducing-the-anthropic-economic-advisory-council"
+    },
+    {
+     "date": "2025-04-28",
+     "section": "research",
+     "title": "Economic Index: AI's impact on software development",
+     "url": "https://www.anthropic.com/research/impact-software-development"
+    },
+    {
+     "date": "2025-04-24",
+     "section": "research",
+     "title": "Exploring model welfare",
+     "url": "https://www.anthropic.com/research/exploring-model-welfare"
+    },
+    {
+     "date": "2025-04-23",
+     "section": "news",
+     "title": "Detecting and countering malicious uses of Claude",
+     "url": "https://www.anthropic.com/news/detecting-and-countering-malicious-uses-of-claude-march-2025"
+    },
+    {
+     "date": "2025-04-21",
+     "section": "news",
+     "title": "Understanding and addressing AI harms",
+     "url": "https://www.anthropic.com/news/our-approach-to-understanding-and-addressing-ai-harms"
+    },
+    {
+     "date": "2025-04-21",
+     "section": "research",
+     "title": "Values in the wild",
+     "url": "https://www.anthropic.com/research/values-wild"
+    },
+    {
+     "date": "2025-04-18",
+     "section": "research",
+     "title": "Claude Code Best Practices",
+     "url": "https://www.anthropic.com/research/claude-code-best-practices"
+    },
+    {
+     "date": "2025-04-08",
+     "section": "news",
+     "title": "Guillaume Princen appointed Head of EMEA",
+     "url": "https://www.anthropic.com/news/head-of-EMEA-new-roles"
+    },
+    {
+     "date": "2025-04-08",
+     "section": "research",
+     "title": "Anthropic Education Report: How University Students Use Claude",
+     "url": "https://www.anthropic.com/research/anthropic-education-report-how-university-students-use-claude"
+    },
+    {
+     "date": "2025-04-03",
+     "section": "news",
+     "title": "Code with Claude: Anthropic's first developer conference",
+     "url": "https://www.anthropic.com/news/Introducing-code-with-claude"
+    },
+    {
+     "date": "2025-04-03",
+     "section": "research",
+     "title": "Reasoning models don't always say what they think",
+     "url": "https://www.anthropic.com/research/reasoning-models-dont-say-think"
+    },
+    {
+     "date": "2025-04-02",
+     "section": "news",
+     "title": "Introducing Claude for education",
+     "url": "https://www.anthropic.com/news/introducing-claude-for-education"
+    },
+    {
+     "date": "2025-03-27",
+     "section": "research",
+     "title": "Economic Index: Insights from Claude 3.7 Sonnet",
+     "url": "https://www.anthropic.com/research/anthropic-economic-index-insights-from-claude-sonnet-3-7"
+    },
+    {
+     "date": "2025-03-27",
+     "section": "research",
+     "title": "Tracing the thoughts of a large language model",
+     "url": "https://www.anthropic.com/research/tracing-thoughts-language-model"
+    },
+    {
+     "date": "2025-03-20",
+     "section": "research",
+     "title": "The \"think\" tool for complex tool use",
+     "url": "https://www.anthropic.com/research/claude-think-tool"
+    },
+    {
+     "date": "2025-03-19",
+     "section": "news",
+     "title": "Response to Governor Newsom's AI working grou",
+     "url": "https://www.anthropic.com/news/anthropic-s-response-to-governor-newsom-s-ai-working-group-draft-report"
+    },
+    {
+     "date": "2025-03-19",
+     "section": "research",
+     "title": "Progress from our Frontier Red Team",
+     "url": "https://www.anthropic.com/research/strategic-warning-for-ai-risk-progress-and-insights-from-our-frontier-red-team"
+    },
+    {
+     "date": "2025-03-13",
+     "section": "research",
+     "title": "Auditing language models for hidden objectives",
+     "url": "https://www.anthropic.com/research/auditing-hidden-objectives"
+    },
+    {
+     "date": "2025-03-06",
+     "section": "news",
+     "title": "Recommendations to OSTP for the US AI Action Plan",
+     "url": "https://www.anthropic.com/news/anthropic-s-recommendations-ostp-u-s-ai-action-plan"
+    },
+    {
+     "date": "2025-03-03",
+     "section": "news",
+     "title": "Anthropic raises Series E at $61.5B valuation",
+     "url": "https://www.anthropic.com/news/anthropic-raises-series-e-at-usd61-5b-post-money-valuation"
+    },
+    {
+     "date": "2025-02-28",
+     "section": "news",
+     "title": "Anthropic joins the 1,000 Scientist AI Jam",
+     "url": "https://www.anthropic.com/news/anthropic-partners-with-u-s-national-labs-for-first-1-000-scientist-ai-jam"
+    },
+    {
+     "date": "2025-02-27",
+     "section": "news",
+     "title": "Introducing Anthropic's Transparency Hub",
+     "url": "https://www.anthropic.com/news/introducing-anthropic-transparency-hub"
+    },
+    {
+     "date": "2025-02-26",
+     "section": "news",
+     "title": "Claude and Alexa+",
+     "url": "https://www.anthropic.com/news/claude-and-alexa-plus"
+    },
+    {
+     "date": "2025-02-25",
+     "section": "research",
+     "title": "Forecasting rare language model behaviors",
+     "url": "https://www.anthropic.com/research/forecasting-rare-behaviors"
+    },
+    {
+     "date": "2025-02-24",
+     "section": "news",
+     "title": "Claude 3.7 Sonnet and Claude Code",
+     "url": "https://www.anthropic.com/news/claude-3-7-sonnet"
+    },
+    {
+     "date": "2025-02-24",
+     "section": "news",
+     "title": "Claude's extended thinking",
+     "url": "https://www.anthropic.com/news/visible-extended-thinking"
+    },
+    {
+     "date": "2025-02-20",
+     "section": "research",
+     "title": "Insights on crosscoder model diffing",
+     "url": "https://www.anthropic.com/research/crosscoder-model-diffing"
+    },
+    {
+     "date": "2025-02-14",
+     "section": "news",
+     "title": "Anthropic signs MOU with the UK Government",
+     "url": "https://www.anthropic.com/news/mou-uk-government"
+    },
+    {
+     "date": "2025-02-11",
+     "section": "news",
+     "title": "Dario Amodei on the Paris AI Action Summit",
+     "url": "https://www.anthropic.com/news/paris-ai-summit"
+    },
+    {
+     "date": "2025-02-10",
+     "section": "research",
+     "title": "Introducing the Anthropic Economic Index",
+     "url": "https://www.anthropic.com/research/the-anthropic-economic-index"
+    },
+    {
+     "date": "2025-02-06",
+     "section": "news",
+     "title": "Lyft brings Claude to 40 million riders",
+     "url": "https://www.anthropic.com/news/lyft-announcement"
+    },
+    {
+     "date": "2025-02-03",
+     "section": "research",
+     "title": "Constitutional Classifiers",
+     "url": "https://www.anthropic.com/research/constitutional-classifiers"
+    },
+    {
+     "date": "2025-01-13",
+     "section": "news",
+     "title": "Anthropic achieves ISO 42001 certification",
+     "url": "https://www.anthropic.com/news/anthropic-achieves-iso-42001-certification-for-responsible-ai"
+    },
+    {
+     "date": "2025-01-06",
+     "section": "research",
+     "title": "Claude SWE-Bench performance",
+     "url": "https://www.anthropic.com/research/swe-bench-sonnet"
+    },
+    {
+     "date": "2024-12-19",
+     "section": "research",
+     "title": "Building effective AI agents",
+     "url": "https://www.anthropic.com/research/building-effective-agents"
+    },
+    {
+     "date": "2024-12-18",
+     "section": "research",
+     "title": "Alignment faking in large language models",
+     "url": "https://www.anthropic.com/research/alignment-faking"
+    },
+    {
+     "date": "2024-12-12",
+     "section": "news",
+     "title": "Elections and AI in 2024: Observations",
+     "url": "https://www.anthropic.com/news/elections-ai-2024"
+    },
+    {
+     "date": "2024-12-12",
+     "section": "research",
+     "title": "Clio: Privacy-preserving insights into AI use",
+     "url": "https://www.anthropic.com/research/clio"
+    },
+    {
+     "date": "2024-11-25",
+     "section": "news",
+     "title": "Introducing the Model Context Protocol",
+     "url": "https://www.anthropic.com/news/model-context-protocol"
+    },
+    {
+     "date": "2024-11-22",
+     "section": "news",
+     "title": "Powering AI development with AWS",
+     "url": "https://www.anthropic.com/news/anthropic-amazon-trainium"
+    },
+    {
+     "date": "2024-11-19",
+     "section": "research",
+     "title": "A statistical approach to model evaluations",
+     "url": "https://www.anthropic.com/research/statistical-approach-to-model-evals"
+    },
+    {
+     "date": "2024-10-31",
+     "section": "news",
+     "title": "The case for targeted regulation",
+     "url": "https://www.anthropic.com/news/the-case-for-targeted-regulation"
+    },
+    {
+     "date": "2024-10-29",
+     "section": "news",
+     "title": "Claude 3.5 Sonnet on GitHub Copilot",
+     "url": "https://www.anthropic.com/news/github-copilot"
+    },
+    {
+     "date": "2024-10-25",
+     "section": "research",
+     "title": "Evaluating feature steering",
+     "url": "https://www.anthropic.com/research/evaluating-feature-steering"
+    },
+    {
+     "date": "2024-10-22",
+     "section": "news",
+     "title": "Computer use, Claude 3.5 Sonnet, and Claude 3.5 Haiku",
+     "url": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+    },
+    {
+     "date": "2024-10-22",
+     "section": "news",
+     "title": "Developing a computer use model",
+     "url": "https://www.anthropic.com/news/developing-computer-use"
+    },
+    {
+     "date": "2024-10-18",
+     "section": "research",
+     "title": "Sabotage evaluations for frontier models",
+     "url": "https://www.anthropic.com/research/sabotage-evaluations"
+    },
+    {
+     "date": "2024-10-16",
+     "section": "research",
+     "title": "Dictionary learning features as classifiers",
+     "url": "https://www.anthropic.com/research/features-as-classifiers"
+    },
+    {
+     "date": "2024-10-15",
+     "section": "news",
+     "title": "Our updated Responsible Scaling Policy",
+     "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy"
+    },
+    {
+     "date": "2024-10-08",
+     "section": "news",
+     "title": "U.S. elections readiness",
+     "url": "https://www.anthropic.com/news/us-elections-readiness"
+    },
+    {
+     "date": "2024-10-01",
+     "section": "research",
+     "title": "Circuits Updates – September 2024",
+     "url": "https://www.anthropic.com/research/circuits-updates-sept-2024"
+    },
+    {
+     "date": "2024-09-19",
+     "section": "research",
+     "title": "Contextual retrieval in AI systems",
+     "url": "https://www.anthropic.com/research/contextual-retrieval"
+    },
+    {
+     "date": "2024-09-06",
+     "section": "research",
+     "title": "Circuits Updates – August 2024",
+     "url": "https://www.anthropic.com/research/circuits-updates-august-2024"
+    },
+    {
+     "date": "2024-09-03",
+     "section": "news",
+     "title": "Salesforce enhances Einstein with Claude",
+     "url": "https://www.anthropic.com/news/salesforce-partnership"
+    },
+    {
+     "date": "2024-08-08",
+     "section": "news",
+     "title": "Expanding our model safety bug bounty program",
+     "url": "https://www.anthropic.com/news/model-safety-bug-bounty"
+    },
+    {
+     "date": "2024-08-01",
+     "section": "news",
+     "title": "Claude is now available in Brazil",
+     "url": "https://www.anthropic.com/news/claude-brazil"
+    },
+    {
+     "date": "2024-07-31",
+     "section": "research",
+     "title": "Circuits Updates – July 2024",
+     "url": "https://www.anthropic.com/research/circuits-updates-july-2024"
+    },
+    {
+     "date": "2024-07-17",
+     "section": "news",
+     "title": "Anthropic and Menlo Ventures launch Anthology Fund",
+     "url": "https://www.anthropic.com/news/anthropic-partners-with-menlo-ventures-to-launch-anthology-fund"
+    },
+    {
+     "date": "2024-07-10",
+     "section": "news",
+     "title": "Fine-tune Claude 3 Haiku in Amazon Bedrock",
+     "url": "https://www.anthropic.com/news/fine-tune-claude-3-haiku"
+    },
+    {
+     "date": "2024-07-01",
+     "section": "news",
+     "title": "Funding third-party model evaluations",
+     "url": "https://www.anthropic.com/news/a-new-initiative-for-developing-third-party-model-evaluations"
+    },
+    {
+     "date": "2024-06-28",
+     "section": "research",
+     "title": "Circuits Updates – June 2024",
+     "url": "https://www.anthropic.com/research/circuits-updates-june-2024"
+    },
+    {
+     "date": "2024-06-26",
+     "section": "news",
+     "title": "Expanding access to Claude for government",
+     "url": "https://www.anthropic.com/news/expanding-access-to-claude-for-government"
+    },
+    {
+     "date": "2024-06-25",
+     "section": "news",
+     "title": "Collaborate with Claude on Projects",
+     "url": "https://www.anthropic.com/news/projects"
+    },
+    {
+     "date": "2024-06-21",
+     "section": "news",
+     "title": "Introducing Claude 3.5 Sonnet",
+     "url": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+     "date": "2024-06-17",
+     "section": "research",
+     "title": "Investigating reward tampering in language models",
+     "url": "https://www.anthropic.com/research/reward-tampering"
+    },
+    {
+     "date": "2024-06-13",
+     "section": "research",
+     "title": "The engineering challenges of scaling interpretability",
+     "url": "https://www.anthropic.com/research/engineering-challenges-interpretability"
+    },
+    {
+     "date": "2024-06-12",
+     "section": "news",
+     "title": "Challenges in red teaming AI systems",
+     "url": "https://www.anthropic.com/news/challenges-in-red-teaming-ai-systems"
+    },
+    {
+     "date": "2024-06-08",
+     "section": "research",
+     "title": "Claude's character",
+     "url": "https://www.anthropic.com/research/claude-character"
+    },
+    {
+     "date": "2024-06-06",
+     "section": "news",
+     "title": "Testing and mitigating elections-related risks",
+     "url": "https://www.anthropic.com/news/testing-and-mitigating-elections-related-risks"
+    },
+    {
+     "date": "2024-06-05",
+     "section": "news",
+     "title": "Introducing Claude to Canada",
+     "url": "https://www.anthropic.com/news/introducing-claude-to-canada"
+    },
+    {
+     "date": "2024-05-29",
+     "section": "news",
+     "title": "Jay Kreps appointed to Anthropic's board",
+     "url": "https://www.anthropic.com/news/jay-kreps-appointed-to-board-of-directors"
+    },
+    {
+     "date": "2024-05-23",
+     "section": "research",
+     "title": "Golden Gate Claude",
+     "url": "https://www.anthropic.com/research/golden-gate-claude"
+    },
+    {
+     "date": "2024-05-21",
+     "section": "news",
+     "title": "Krishna Rao joins as Chief Financial Officer",
+     "url": "https://www.anthropic.com/news/krishna-rao-joins-anthropic"
+    },
+    {
+     "date": "2024-05-21",
+     "section": "research",
+     "title": "Mapping the mind of a large language model",
+     "url": "https://www.anthropic.com/research/mapping-mind-language-model"
+    },
+    {
+     "date": "2024-05-20",
+     "section": "news",
+     "title": "Reflections on our Responsible Scaling Policy",
+     "url": "https://www.anthropic.com/news/reflections-on-our-responsible-scaling-policy"
+    },
+    {
+     "date": "2024-05-15",
+     "section": "news",
+     "title": "Mike Krieger joins as Chief Product Officer",
+     "url": "https://www.anthropic.com/news/mike-krieger-joins-anthropic"
+    },
+    {
+     "date": "2024-05-14",
+     "section": "news",
+     "title": "Claude is now available in the EU",
+     "url": "https://www.anthropic.com/news/claude-europe"
+    },
+    {
+     "date": "2024-05-10",
+     "section": "news",
+     "title": "Updating our Usage Policy",
+     "url": "https://www.anthropic.com/news/updating-our-usage-policy"
+    },
+    {
+     "date": "2024-04-26",
+     "section": "research",
+     "title": "Circuits Updates – April 2024",
+     "url": "https://www.anthropic.com/research/circuits-updates-april-2024"
+    },
+    {
+     "date": "2024-04-23",
+     "section": "news",
+     "title": "Aligning on child safety principles",
+     "url": "https://www.anthropic.com/news/child-safety-principles"
+    },
+    {
+     "date": "2024-04-23",
+     "section": "research",
+     "title": "Simple probes can catch sleeper agents",
+     "url": "https://www.anthropic.com/research/probes-catch-sleeper-agents"
+    },
+    {
+     "date": "2024-04-09",
+     "section": "research",
+     "title": "Measuring the persuasiveness of language models",
+     "url": "https://www.anthropic.com/research/measuring-model-persuasiveness"
+    },
+    {
+     "date": "2024-04-02",
+     "section": "research",
+     "title": "Many-shot jailbreaking",
+     "url": "https://www.anthropic.com/research/many-shot-jailbreaking"
+    },
+    {
+     "date": "2024-03-25",
+     "section": "news",
+     "title": "Third-party testing in AI policy",
+     "url": "https://www.anthropic.com/news/third-party-testing"
+    },
+    {
+     "date": "2024-03-20",
+     "section": "news",
+     "title": "Accenture, AWS, and Anthropic collaboration",
+     "url": "https://www.anthropic.com/news/accenture-aws-anthropic"
+    },
+    {
+     "date": "2024-03-19",
+     "section": "news",
+     "title": "Claude 3 models on Vertex AI",
+     "url": "https://www.anthropic.com/news/google-vertex-general-availability"
+    },
+    {
+     "date": "2024-03-13",
+     "section": "news",
+     "title": "Claude 3 Haiku: our fastest model yet",
+     "url": "https://www.anthropic.com/news/claude-3-haiku"
+    },
+    {
+     "date": "2024-03-08",
+     "section": "research",
+     "title": "Reflections on qualitative research",
+     "url": "https://www.anthropic.com/research/transformer-circuits"
+    },
+    {
+     "date": "2024-03-04",
+     "section": "news",
+     "title": "Introducing the next generation of Claude",
+     "url": "https://www.anthropic.com/news/claude-3-family"
+    },
+    {
+     "date": "2024-02-29",
+     "section": "news",
+     "title": "Prompt engineering for business performance",
+     "url": "https://www.anthropic.com/news/prompt-engineering-for-business-performance"
+    },
+    {
+     "date": "2024-02-16",
+     "section": "news",
+     "title": "Preparing for global elections in 2024",
+     "url": "https://www.anthropic.com/news/preparing-for-global-elections-in-2024"
+    },
+    {
+     "date": "2024-01-14",
+     "section": "research",
+     "title": "Deceptive LLMs that persist through safety training",
+     "url": "https://www.anthropic.com/research/sleeper-agents-training-deceptive-llms-that-persist-through-safety-training"
+    },
+    {
+     "date": "2023-12-19",
+     "section": "news",
+     "title": "Expanded legal protections and API improvements",
+     "url": "https://www.anthropic.com/news/expanded-legal-protections-api-improvements"
+    },
+    {
+     "date": "2023-12-07",
+     "section": "research",
+     "title": "Evaluating discrimination in language model decisions",
+     "url": "https://www.anthropic.com/research/evaluating-and-mitigating-discrimination-in-language-model-decisions"
+    },
+    {
+     "date": "2023-11-21",
+     "section": "news",
+     "title": "Introducing Claude 2.1",
+     "url": "https://www.anthropic.com/news/claude-2-1"
+    },
+    {
+     "date": "2023-11-05",
+     "section": "news",
+     "title": "US Executive Order, G7 Code, and Bletchley Park",
+     "url": "https://www.anthropic.com/news/policy-recap-q4-2023"
+    },
+    {
+     "date": "2023-11-01",
+     "section": "news",
+     "title": "Dario Amodei's remarks at the AI Safety Summit",
+     "url": "https://www.anthropic.com/news/uk-ai-safety-summit"
+    },
+    {
+     "date": "2023-10-24",
+     "section": "research",
+     "title": "Specific versus general principles for Constitutional AI",
+     "url": "https://www.anthropic.com/research/specific-versus-general-principles-for-constitutional-ai"
+    },
+    {
+     "date": "2023-10-23",
+     "section": "research",
+     "title": "Towards understanding sycophancy in language models",
+     "url": "https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models"
+    },
+    {
+     "date": "2023-10-17",
+     "section": "research",
+     "title": "Collective Constitutional AI",
+     "url": "https://www.anthropic.com/research/collective-constitutional-ai-aligning-a-language-model-with-public-input"
+    },
+    {
+     "date": "2023-10-05",
+     "section": "research",
+     "title": "Decomposing language models into components",
+     "url": "https://www.anthropic.com/research/decomposing-language-models-into-understandable-components"
+    },
+    {
+     "date": "2023-10-05",
+     "section": "research",
+     "title": "Towards monosemanticity",
+     "url": "https://www.anthropic.com/research/towards-monosemanticity-decomposing-language-models-with-dictionary-learning"
+    },
+    {
+     "date": "2023-10-04",
+     "section": "research",
+     "title": "Challenges in evaluating AI systems",
+     "url": "https://www.anthropic.com/research/evaluating-ai-systems"
+    },
+    {
+     "date": "2023-09-25",
+     "section": "news",
+     "title": "Expanding access to safer AI with Amazon",
+     "url": "https://www.anthropic.com/news/anthropic-amazon"
+    },
+    {
+     "date": "2023-09-23",
+     "section": "news",
+     "title": "Prompting Claude's long context window",
+     "url": "https://www.anthropic.com/news/prompting-long-context"
+    },
+    {
+     "date": "2023-09-19",
+     "section": "news",
+     "title": "Introducing Anthropic's Responsible Scaling Policy",
+     "url": "https://www.anthropic.com/news/anthropics-responsible-scaling-policy"
+    },
+    {
+     "date": "2023-09-19",
+     "section": "news",
+     "title": "The Long-Term Benefit Trust",
+     "url": "https://www.anthropic.com/news/the-long-term-benefit-trust"
+    },
+    {
+     "date": "2023-09-14",
+     "section": "news",
+     "title": "Anthropic partners with BCG",
+     "url": "https://www.anthropic.com/news/anthropic-bcg"
+    },
+    {
+     "date": "2023-09-07",
+     "section": "news",
+     "title": "Introducing Claude Pro",
+     "url": "https://www.anthropic.com/news/claude-pro"
+    },
+    {
+     "date": "2023-08-15",
+     "section": "news",
+     "title": "SKT partnership announcement",
+     "url": "https://www.anthropic.com/news/skt-partnership-announcement"
+    },
+    {
+     "date": "2023-08-09",
+     "section": "news",
+     "title": "Releasing Claude Instant 1.2",
+     "url": "https://www.anthropic.com/news/releasing-claude-instant-1-2"
+    },
+    {
+     "date": "2023-08-08",
+     "section": "research",
+     "title": "Tracing model outputs to the training data",
+     "url": "https://www.anthropic.com/research/influence-functions"
+    },
+    {
+     "date": "2023-08-08",
+     "section": "research",
+     "title": "LLM generalization with influence functions",
+     "url": "https://www.anthropic.com/research/studying-large-language-model-generalization-with-influence-functions"
+    },
+    {
+     "date": "2023-07-26",
+     "section": "news",
+     "title": "Frontier threats red teaming for AI safety",
+     "url": "https://www.anthropic.com/news/frontier-threats-red-teaming-for-ai-safety"
+    },
+    {
+     "date": "2023-07-25",
+     "section": "news",
+     "title": "Frontier model security",
+     "url": "https://www.anthropic.com/news/frontier-model-security"
+    },
+    {
+     "date": "2023-07-18",
+     "section": "research",
+     "title": "Measuring faithfulness in Chain-of-Thought reasoning",
+     "url": "https://www.anthropic.com/research/measuring-faithfulness-in-chain-of-thought-reasoning"
+    },
+    {
+     "date": "2023-07-18",
+     "section": "research",
+     "title": "Question decomposition improves reasoning faithfulness",
+     "url": "https://www.anthropic.com/research/question-decomposition-improves-the-faithfulness-of-model-generated-reasoning"
+    },
+    {
+     "date": "2023-07-11",
+     "section": "news",
+     "title": "Claude 2",
+     "url": "https://www.anthropic.com/news/claude-2"
+    },
+    {
+     "date": "2023-06-29",
+     "section": "research",
+     "title": "Measuring subjective global opinions in LLMs",
+     "url": "https://www.anthropic.com/research/towards-measuring-the-representation-of-subjective-global-opinions-in-language-models"
+    },
+    {
+     "date": "2023-06-13",
+     "section": "news",
+     "title": "Charting a path to AI accountability",
+     "url": "https://www.anthropic.com/news/charting-a-path-to-ai-accountability"
+    },
+    {
+     "date": "2023-05-24",
+     "section": "research",
+     "title": "Circuits Updates — May 2023",
+     "url": "https://www.anthropic.com/research/circuits-updates-may-2023"
+    },
+    {
+     "date": "2023-05-24",
+     "section": "research",
+     "title": "Interpretability dreams",
+     "url": "https://www.anthropic.com/research/interpretability-dreams"
+    },
+    {
+     "date": "2023-05-23",
+     "section": "news",
+     "title": "Anthropic raises $450 million in Series C",
+     "url": "https://www.anthropic.com/news/anthropic-series-c"
+    },
+    {
+     "date": "2023-05-16",
+     "section": "news",
+     "title": "Zoom partnership and investment in Anthropic",
+     "url": "https://www.anthropic.com/news/zoom-partnership-and-investment"
+    },
+    {
+     "date": "2023-05-11",
+     "section": "news",
+     "title": "Introducing 100K context windows",
+     "url": "https://www.anthropic.com/news/100k-context-windows"
+    },
+    {
+     "date": "2023-05-09",
+     "section": "news",
+     "title": "Claude's constitution",
+     "url": "https://www.anthropic.com/news/claudes-constitution"
+    },
+    {
+     "date": "2023-05-04",
+     "section": "research",
+     "title": "Distributed representations: Composition and superposition",
+     "url": "https://www.anthropic.com/research/distributed-representations-composition-superposition"
+    },
+    {
+     "date": "2023-04-26",
+     "section": "news",
+     "title": "Partnering with Scale to bring generative AI to enterprises",
+     "url": "https://www.anthropic.com/news/partnering-with-scale"
+    },
+    {
+     "date": "2023-04-20",
+     "section": "news",
+     "title": "An AI policy tool for today: Invest in NIST",
+     "url": "https://www.anthropic.com/news/an-ai-policy-tool-for-today-ambitiously-invest-in-nist"
+    },
+    {
+     "date": "2023-03-16",
+     "section": "research",
+     "title": "Privileged bases in the transformer residual stream",
+     "url": "https://www.anthropic.com/research/privileged-bases-in-the-transformer-residual-stream"
+    },
+    {
+     "date": "2023-03-14",
+     "section": "news",
+     "title": "Introducing Claude",
+     "url": "https://www.anthropic.com/news/introducing-claude"
+    },
+    {
+     "date": "2023-03-08",
+     "section": "news",
+     "title": "Anthropic's core views on AI safety",
+     "url": "https://www.anthropic.com/news/core-views-on-ai-safety"
+    },
+    {
+     "date": "2023-02-15",
+     "section": "research",
+     "title": "Moral self-correction in large language models",
+     "url": "https://www.anthropic.com/research/the-capacity-for-moral-self-correction-in-large-language-models"
+    },
+    {
+     "date": "2023-02-03",
+     "section": "news",
+     "title": "Anthropic partners with Google Cloud",
+     "url": "https://www.anthropic.com/news/anthropic-partners-with-google-cloud"
+    },
+    {
+     "date": "2023-01-05",
+     "section": "research",
+     "title": "Superposition, memorization, and double descent",
+     "url": "https://www.anthropic.com/research/superposition-memorization-and-double-descent"
+    },
+    {
+     "date": "2022-12-19",
+     "section": "research",
+     "title": "Discovering behaviors with model-written evaluations",
+     "url": "https://www.anthropic.com/research/discovering-language-model-behaviors-with-model-written-evaluations"
+    },
+    {
+     "date": "2022-12-15",
+     "section": "research",
+     "title": "Constitutional AI: Harmlessness from AI feedback",
+     "url": "https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback"
+    },
+    {
+     "date": "2022-11-04",
+     "section": "research",
+     "title": "Measuring progress on scalable oversight",
+     "url": "https://www.anthropic.com/research/measuring-progress-on-scalable-oversight-for-large-language-models"
+    },
+    {
+     "date": "2022-09-14",
+     "section": "research",
+     "title": "Toy models of superposition",
+     "url": "https://www.anthropic.com/research/toy-models-of-superposition"
+    },
+    {
+     "date": "2022-08-22",
+     "section": "research",
+     "title": "Red teaming language models to reduce harms",
+     "url": "https://www.anthropic.com/research/red-teaming-language-models-to-reduce-harms-methods-scaling-behaviors-and-lessons-learned"
+    },
+    {
+     "date": "2022-07-11",
+     "section": "research",
+     "title": "Language models (mostly) know what they know",
+     "url": "https://www.anthropic.com/research/language-models-mostly-know-what-they-know"
+    },
+    {
+     "date": "2022-06-17",
+     "section": "research",
+     "title": "Softmax linear units",
+     "url": "https://www.anthropic.com/research/softmax-linear-units"
+    },
+    {
+     "date": "2022-05-21",
+     "section": "research",
+     "title": "Scaling laws of learning from repeated data",
+     "url": "https://www.anthropic.com/research/scaling-laws-and-interpretability-of-learning-from-repeated-data"
+    },
+    {
+     "date": "2022-04-29",
+     "section": "news",
+     "title": "Anthropic raises Series B to build robust AI",
+     "url": "https://www.anthropic.com/news/anthropic-raises-series-b-to-build-safe-reliable-ai"
+    },
+    {
+     "date": "2022-04-12",
+     "section": "research",
+     "title": "Training a helpful and harmless assistant with RLHF",
+     "url": "https://www.anthropic.com/research/training-a-helpful-and-harmless-assistant-with-reinforcement-learning-from-human-feedback"
+    },
+    {
+     "date": "2022-03-08",
+     "section": "research",
+     "title": "In-context learning and induction heads",
+     "url": "https://www.anthropic.com/research/in-context-learning-and-induction-heads"
+    },
+    {
+     "date": "2022-02-15",
+     "section": "research",
+     "title": "Predictability and surprise in large generative models",
+     "url": "https://www.anthropic.com/research/predictability-and-surprise-in-large-generative-models"
+    },
+    {
+     "date": "2021-12-22",
+     "section": "research",
+     "title": "A mathematical framework for Transformer Circuits",
+     "url": "https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits"
+    },
+    {
+     "date": "2021-12-01",
+     "section": "research",
+     "title": "A general language assistant as a lab for alignment",
+     "url": "https://www.anthropic.com/research/a-general-language-assistant-as-a-laboratory-for-alignment"
+    },
+    {
+     "date": "2021-05-28",
+     "section": "news",
+     "title": "Anthropic raises $124 million Series A",
+     "url": "https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems"
+    }
+   ]
+  },
+  "attention": {
+   "source": "Hacker News",
+   "query": "Anthropic -principle",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2021-01",
+     0
+    ],
+    [
+     "2021-02",
+     1
+    ],
+    [
+     "2021-03",
+     0
+    ],
+    [
+     "2021-04",
+     0
+    ],
+    [
+     "2021-05",
+     2
+    ],
+    [
+     "2021-06",
+     1
+    ],
+    [
+     "2021-07",
+     0
+    ],
+    [
+     "2021-08",
+     2
+    ],
+    [
+     "2021-09",
+     0
+    ],
+    [
+     "2021-10",
+     0
+    ],
+    [
+     "2021-11",
+     0
+    ],
+    [
+     "2021-12",
+     0
+    ],
+    [
+     "2022-01",
+     0
+    ],
+    [
+     "2022-02",
+     0
+    ],
+    [
+     "2022-03",
+     0
+    ],
+    [
+     "2022-04",
+     2
+    ],
+    [
+     "2022-05",
+     1
+    ],
+    [
+     "2022-06",
+     0
+    ],
+    [
+     "2022-07",
+     0
+    ],
+    [
+     "2022-08",
+     1
+    ],
+    [
+     "2022-09",
+     0
+    ],
+    [
+     "2022-10",
+     0
+    ],
+    [
+     "2022-11",
+     0
+    ],
+    [
+     "2022-12",
+     1
+    ],
+    [
+     "2023-01",
+     5
+    ],
+    [
+     "2023-02",
+     12
+    ],
+    [
+     "2023-03",
+     7
+    ],
+    [
+     "2023-04",
+     6
+    ],
+    [
+     "2023-05",
+     13
+    ],
+    [
+     "2023-06",
+     9
+    ],
+    [
+     "2023-07",
+     13
+    ],
+    [
+     "2023-08",
+     6
+    ],
+    [
+     "2023-09",
+     24
+    ],
+    [
+     "2023-10",
+     18
+    ],
+    [
+     "2023-11",
+     20
+    ],
+    [
+     "2023-12",
+     14
+    ],
+    [
+     "2024-01",
+     13
+    ],
+    [
+     "2024-02",
+     6
+    ],
+    [
+     "2024-03",
+     35
+    ],
+    [
+     "2024-04",
+     10
+    ],
+    [
+     "2024-05",
+     27
+    ],
+    [
+     "2024-06",
+     26
+    ],
+    [
+     "2024-07",
+     30
+    ],
+    [
+     "2024-08",
+     36
+    ],
+    [
+     "2024-09",
+     16
+    ],
+    [
+     "2024-10",
+     31
+    ],
+    [
+     "2024-11",
+     39
+    ],
+    [
+     "2024-12",
+     21
+    ],
+    [
+     "2025-01",
+     33
+    ],
+    [
+     "2025-02",
+     32
+    ],
+    [
+     "2025-03",
+     47
+    ],
+    [
+     "2025-04",
+     41
+    ],
+    [
+     "2025-05",
+     68
+    ],
+    [
+     "2025-06",
+     81
+    ],
+    [
+     "2025-07",
+     70
+    ],
+    [
+     "2025-08",
+     64
+    ],
+    [
+     "2025-09",
+     77
+    ],
+    [
+     "2025-10",
+     52
+    ],
+    [
+     "2025-11",
+     58
+    ],
+    [
+     "2025-12",
+     61
+    ],
+    [
+     "2026-01",
+     105
+    ],
+    [
+     "2026-02",
+     310
+    ],
+    [
+     "2026-03",
+     281
+    ],
+    [
+     "2026-04",
+     335
+    ],
+    [
+     "2026-05",
+     221
+    ],
+    [
+     "2026-06",
+     333
+    ],
+    [
+     "2026-07",
+     227
+    ],
+    [
+     "2026-08",
+     211
+    ],
+    [
+     "2026-09",
+     301
+    ],
+    [
+     "2026-10",
+     271
+    ]
+   ],
+   "total": 3727,
+   "top": [
+    {
+     "title": "Anthropic S-1",
+     "url": "https://news.ycombinator.com/item?id=50242939",
+     "date": "2026-10-26",
+     "summary": "1,700 points · 1,671 comments · links to sec.gov"
+    },
+    {
+     "title": "Redesigning source control at Anthropic",
+     "url": "https://news.ycombinator.com/item?id=50073633",
+     "date": "2026-10-13",
+     "summary": "900 points · 1,014 comments · links to anthropic.com"
+    },
+    {
+     "title": "Anthropic reported diary entry to police, woman faces felony charge",
+     "url": "https://news.ycombinator.com/item?id=49961057",
+     "date": "2026-10-05",
+     "summary": "840 points · 680 comments · links to techspot.com"
+    },
+    {
+     "title": "Anthropic's ‘watermark’ text adulteration in Claude is a perversion of writing",
+     "url": "https://news.ycombinator.com/item?id=49324087",
+     "date": "2026-08-16",
+     "summary": "825 points · 731 comments · links to daringfireball.net"
+    },
+    {
+     "title": "Zig Creator Calls Spade a Spade, Anthropic Blows Smoke",
+     "url": "https://news.ycombinator.com/item?id=48889637",
+     "date": "2026-07-13",
+     "summary": "1,554 points · 785 comments · links to raymyers.org"
+    },
+    {
+     "title": "S&P 500 rejects SpaceX, also blocking entry for OpenAI and Anthropic",
+     "url": "https://news.ycombinator.com/item?id=48421442",
+     "date": "2026-06-06",
+     "summary": "1,484 points · 502 comments · links to arstechnica.com"
+    },
+    {
+     "title": "I think Anthropic and OpenAI have found product-market fit",
+     "url": "https://news.ycombinator.com/item?id=48296794",
+     "date": "2026-05-27",
+     "summary": "1,094 points · 1,245 comments · links to simonwillison.net"
+    },
+    {
+     "title": "I’ve joined Anthropic",
+     "url": "https://news.ycombinator.com/item?id=48194352",
+     "date": "2026-05-19",
+     "summary": "1,431 points · 618 comments · links to twitter.com"
+    },
+    {
+     "title": "Tell HN: Anthropic no longer allowing Claude Code subscriptions to use OpenClaw",
+     "url": "https://news.ycombinator.com/item?id=47633396",
+     "date": "2026-04-03",
+     "summary": "1,099 points · 827 comments"
+    },
+    {
+     "title": "We do not think Anthropic should be designated as a supply chain risk",
+     "url": "https://news.ycombinator.com/item?id=47200420",
+     "date": "2026-02-28",
+     "summary": "832 points · 448 comments · links to twitter.com"
+    },
+    {
+     "title": "I am directing the Department of War to designate Anthropic a supply-chain risk",
+     "url": "https://news.ycombinator.com/item?id=47186677",
+     "date": "2026-02-27",
+     "summary": "1,362 points · 1,085 comments · links to twitter.com"
+    },
+    {
+     "title": "Anthropic acquires Bun",
+     "url": "https://news.ycombinator.com/item?id=46124267",
+     "date": "2025-12-02",
+     "summary": "2,192 points · 1,072 comments · links to bun.com"
+    },
+    {
+     "title": "Anthropic’s paper smells like bullshit",
+     "url": "https://news.ycombinator.com/item?id=45944296",
+     "date": "2025-11-16",
+     "summary": "1,160 points · 322 comments · links to djnn.sh"
+    },
+    {
+     "title": "Anthropic agrees to pay $1.5B to settle lawsuit with book authors",
+     "url": "https://news.ycombinator.com/item?id=45142885",
+     "date": "2025-09-05",
+     "summary": "989 points · 737 comments · links to nytimes.com"
+    },
+    {
+     "title": "GitHub cuts AI deals with Google, Anthropic",
+     "url": "https://news.ycombinator.com/item?id=41985915",
+     "date": "2024-10-29",
+     "summary": "897 points · 702 comments · links to bloomberg.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "cohere": {
   "people": [],
@@ -4343,7 +7605,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-23"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "coreweave-capital": {
   "people": [],
@@ -4581,7 +7846,401 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-21"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "CoreWeave",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2019-01",
+     0
+    ],
+    [
+     "2019-02",
+     0
+    ],
+    [
+     "2019-03",
+     0
+    ],
+    [
+     "2019-04",
+     0
+    ],
+    [
+     "2019-05",
+     0
+    ],
+    [
+     "2019-06",
+     0
+    ],
+    [
+     "2019-07",
+     0
+    ],
+    [
+     "2019-08",
+     0
+    ],
+    [
+     "2019-09",
+     0
+    ],
+    [
+     "2019-10",
+     0
+    ],
+    [
+     "2019-11",
+     0
+    ],
+    [
+     "2019-12",
+     0
+    ],
+    [
+     "2020-01",
+     0
+    ],
+    [
+     "2020-02",
+     0
+    ],
+    [
+     "2020-03",
+     0
+    ],
+    [
+     "2020-04",
+     0
+    ],
+    [
+     "2020-05",
+     0
+    ],
+    [
+     "2020-06",
+     0
+    ],
+    [
+     "2020-07",
+     0
+    ],
+    [
+     "2020-08",
+     0
+    ],
+    [
+     "2020-09",
+     0
+    ],
+    [
+     "2020-10",
+     0
+    ],
+    [
+     "2020-11",
+     0
+    ],
+    [
+     "2020-12",
+     0
+    ],
+    [
+     "2021-01",
+     0
+    ],
+    [
+     "2021-02",
+     0
+    ],
+    [
+     "2021-03",
+     0
+    ],
+    [
+     "2021-04",
+     0
+    ],
+    [
+     "2021-05",
+     0
+    ],
+    [
+     "2021-06",
+     0
+    ],
+    [
+     "2021-07",
+     0
+    ],
+    [
+     "2021-08",
+     0
+    ],
+    [
+     "2021-09",
+     0
+    ],
+    [
+     "2021-10",
+     0
+    ],
+    [
+     "2021-11",
+     0
+    ],
+    [
+     "2021-12",
+     0
+    ],
+    [
+     "2022-01",
+     0
+    ],
+    [
+     "2022-02",
+     0
+    ],
+    [
+     "2022-03",
+     0
+    ],
+    [
+     "2022-04",
+     0
+    ],
+    [
+     "2022-05",
+     0
+    ],
+    [
+     "2022-06",
+     0
+    ],
+    [
+     "2022-07",
+     0
+    ],
+    [
+     "2022-08",
+     0
+    ],
+    [
+     "2022-09",
+     0
+    ],
+    [
+     "2022-10",
+     0
+    ],
+    [
+     "2022-11",
+     0
+    ],
+    [
+     "2022-12",
+     0
+    ],
+    [
+     "2023-01",
+     0
+    ],
+    [
+     "2023-02",
+     0
+    ],
+    [
+     "2023-03",
+     0
+    ],
+    [
+     "2023-04",
+     1
+    ],
+    [
+     "2023-05",
+     1
+    ],
+    [
+     "2023-06",
+     1
+    ],
+    [
+     "2023-07",
+     0
+    ],
+    [
+     "2023-08",
+     5
+    ],
+    [
+     "2023-09",
+     2
+    ],
+    [
+     "2023-10",
+     0
+    ],
+    [
+     "2023-11",
+     1
+    ],
+    [
+     "2023-12",
+     1
+    ],
+    [
+     "2024-01",
+     0
+    ],
+    [
+     "2024-02",
+     0
+    ],
+    [
+     "2024-03",
+     1
+    ],
+    [
+     "2024-04",
+     1
+    ],
+    [
+     "2024-05",
+     4
+    ],
+    [
+     "2024-06",
+     4
+    ],
+    [
+     "2024-07",
+     1
+    ],
+    [
+     "2024-08",
+     0
+    ],
+    [
+     "2024-09",
+     0
+    ],
+    [
+     "2024-10",
+     2
+    ],
+    [
+     "2024-11",
+     1
+    ],
+    [
+     "2024-12",
+     0
+    ],
+    [
+     "2025-01",
+     0
+    ],
+    [
+     "2025-02",
+     1
+    ],
+    [
+     "2025-03",
+     23
+    ],
+    [
+     "2025-04",
+     2
+    ],
+    [
+     "2025-05",
+     3
+    ],
+    [
+     "2025-06",
+     1
+    ],
+    [
+     "2025-07",
+     2
+    ],
+    [
+     "2025-08",
+     1
+    ],
+    [
+     "2025-09",
+     4
+    ],
+    [
+     "2025-10",
+     2
+    ],
+    [
+     "2025-11",
+     9
+    ],
+    [
+     "2025-12",
+     5
+    ],
+    [
+     "2026-01",
+     7
+    ],
+    [
+     "2026-02",
+     6
+    ],
+    [
+     "2026-03",
+     0
+    ],
+    [
+     "2026-04",
+     7
+    ],
+    [
+     "2026-05",
+     1
+    ],
+    [
+     "2026-06",
+     3
+    ],
+    [
+     "2026-07",
+     7
+    ],
+    [
+     "2026-08",
+     1
+    ],
+    [
+     "2026-09",
+     1
+    ],
+    [
+     "2026-10",
+     7
+    ]
+   ],
+   "total": 119,
+   "top": [
+    {
+     "title": "Nvidia, CoreWeave, and Nebius: Inside the Circular Financing of the GPU Boom",
+     "url": "https://news.ycombinator.com/item?id=48873836",
+     "date": "2026-07-11",
+     "summary": "370 points · 182 comments · links to io-fund.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -4808,7 +8467,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-20"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "databricks": {
   "people": [],
@@ -5046,7 +8708,1403 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-27"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "Databricks",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2015-01",
+     0
+    ],
+    [
+     "2015-02",
+     2
+    ],
+    [
+     "2015-03",
+     1
+    ],
+    [
+     "2015-04",
+     0
+    ],
+    [
+     "2015-05",
+     0
+    ],
+    [
+     "2015-06",
+     0
+    ],
+    [
+     "2015-07",
+     0
+    ],
+    [
+     "2015-08",
+     0
+    ],
+    [
+     "2015-09",
+     0
+    ],
+    [
+     "2015-10",
+     0
+    ],
+    [
+     "2015-11",
+     0
+    ],
+    [
+     "2015-12",
+     1
+    ],
+    [
+     "2016-01",
+     1
+    ],
+    [
+     "2016-02",
+     3
+    ],
+    [
+     "2016-03",
+     1
+    ],
+    [
+     "2016-04",
+     0
+    ],
+    [
+     "2016-05",
+     1
+    ],
+    [
+     "2016-06",
+     2
+    ],
+    [
+     "2016-07",
+     1
+    ],
+    [
+     "2016-08",
+     0
+    ],
+    [
+     "2016-09",
+     0
+    ],
+    [
+     "2016-10",
+     1
+    ],
+    [
+     "2016-11",
+     1
+    ],
+    [
+     "2016-12",
+     2
+    ],
+    [
+     "2017-01",
+     1
+    ],
+    [
+     "2017-02",
+     0
+    ],
+    [
+     "2017-03",
+     1
+    ],
+    [
+     "2017-04",
+     1
+    ],
+    [
+     "2017-05",
+     1
+    ],
+    [
+     "2017-06",
+     2
+    ],
+    [
+     "2017-07",
+     0
+    ],
+    [
+     "2017-08",
+     5
+    ],
+    [
+     "2017-09",
+     0
+    ],
+    [
+     "2017-10",
+     3
+    ],
+    [
+     "2017-11",
+     6
+    ],
+    [
+     "2017-12",
+     2
+    ],
+    [
+     "2018-01",
+     1
+    ],
+    [
+     "2018-02",
+     0
+    ],
+    [
+     "2018-03",
+     2
+    ],
+    [
+     "2018-04",
+     0
+    ],
+    [
+     "2018-05",
+     0
+    ],
+    [
+     "2018-06",
+     0
+    ],
+    [
+     "2018-07",
+     4
+    ],
+    [
+     "2018-08",
+     2
+    ],
+    [
+     "2018-09",
+     2
+    ],
+    [
+     "2018-10",
+     1
+    ],
+    [
+     "2018-11",
+     1
+    ],
+    [
+     "2018-12",
+     0
+    ],
+    [
+     "2019-01",
+     2
+    ],
+    [
+     "2019-02",
+     5
+    ],
+    [
+     "2019-03",
+     3
+    ],
+    [
+     "2019-04",
+     2
+    ],
+    [
+     "2019-05",
+     2
+    ],
+    [
+     "2019-06",
+     2
+    ],
+    [
+     "2019-07",
+     4
+    ],
+    [
+     "2019-08",
+     3
+    ],
+    [
+     "2019-09",
+     0
+    ],
+    [
+     "2019-10",
+     5
+    ],
+    [
+     "2019-11",
+     1
+    ],
+    [
+     "2019-12",
+     0
+    ],
+    [
+     "2020-01",
+     2
+    ],
+    [
+     "2020-02",
+     0
+    ],
+    [
+     "2020-03",
+     1
+    ],
+    [
+     "2020-04",
+     1
+    ],
+    [
+     "2020-05",
+     3
+    ],
+    [
+     "2020-06",
+     5
+    ],
+    [
+     "2020-07",
+     2
+    ],
+    [
+     "2020-08",
+     0
+    ],
+    [
+     "2020-09",
+     0
+    ],
+    [
+     "2020-10",
+     1
+    ],
+    [
+     "2020-11",
+     1
+    ],
+    [
+     "2020-12",
+     1
+    ],
+    [
+     "2021-01",
+     1
+    ],
+    [
+     "2021-02",
+     9
+    ],
+    [
+     "2021-03",
+     2
+    ],
+    [
+     "2021-04",
+     0
+    ],
+    [
+     "2021-05",
+     3
+    ],
+    [
+     "2021-06",
+     0
+    ],
+    [
+     "2021-07",
+     0
+    ],
+    [
+     "2021-08",
+     8
+    ],
+    [
+     "2021-09",
+     3
+    ],
+    [
+     "2021-10",
+     10
+    ],
+    [
+     "2021-11",
+     9
+    ],
+    [
+     "2021-12",
+     8
+    ],
+    [
+     "2022-01",
+     1
+    ],
+    [
+     "2022-02",
+     0
+    ],
+    [
+     "2022-03",
+     1
+    ],
+    [
+     "2022-04",
+     4
+    ],
+    [
+     "2022-05",
+     1
+    ],
+    [
+     "2022-06",
+     5
+    ],
+    [
+     "2022-07",
+     2
+    ],
+    [
+     "2022-08",
+     3
+    ],
+    [
+     "2022-09",
+     1
+    ],
+    [
+     "2022-10",
+     1
+    ],
+    [
+     "2022-11",
+     2
+    ],
+    [
+     "2022-12",
+     3
+    ],
+    [
+     "2023-01",
+     2
+    ],
+    [
+     "2023-02",
+     3
+    ],
+    [
+     "2023-03",
+     10
+    ],
+    [
+     "2023-04",
+     4
+    ],
+    [
+     "2023-05",
+     3
+    ],
+    [
+     "2023-06",
+     19
+    ],
+    [
+     "2023-07",
+     4
+    ],
+    [
+     "2023-08",
+     4
+    ],
+    [
+     "2023-09",
+     6
+    ],
+    [
+     "2023-10",
+     3
+    ],
+    [
+     "2023-11",
+     2
+    ],
+    [
+     "2023-12",
+     1
+    ],
+    [
+     "2024-01",
+     4
+    ],
+    [
+     "2024-02",
+     2
+    ],
+    [
+     "2024-03",
+     8
+    ],
+    [
+     "2024-04",
+     5
+    ],
+    [
+     "2024-05",
+     1
+    ],
+    [
+     "2024-06",
+     14
+    ],
+    [
+     "2024-07",
+     6
+    ],
+    [
+     "2024-08",
+     7
+    ],
+    [
+     "2024-09",
+     2
+    ],
+    [
+     "2024-10",
+     2
+    ],
+    [
+     "2024-11",
+     2
+    ],
+    [
+     "2024-12",
+     10
+    ],
+    [
+     "2025-01",
+     3
+    ],
+    [
+     "2025-02",
+     6
+    ],
+    [
+     "2025-03",
+     4
+    ],
+    [
+     "2025-04",
+     1
+    ],
+    [
+     "2025-05",
+     11
+    ],
+    [
+     "2025-06",
+     8
+    ],
+    [
+     "2025-07",
+     3
+    ],
+    [
+     "2025-08",
+     7
+    ],
+    [
+     "2025-09",
+     7
+    ],
+    [
+     "2025-10",
+     7
+    ],
+    [
+     "2025-11",
+     3
+    ],
+    [
+     "2025-12",
+     14
+    ],
+    [
+     "2026-01",
+     4
+    ],
+    [
+     "2026-02",
+     3
+    ],
+    [
+     "2026-03",
+     4
+    ],
+    [
+     "2026-04",
+     4
+    ],
+    [
+     "2026-05",
+     5
+    ],
+    [
+     "2026-06",
+     7
+    ],
+    [
+     "2026-07",
+     15
+    ],
+    [
+     "2026-08",
+     19
+    ],
+    [
+     "2026-09",
+     4
+    ],
+    [
+     "2026-10",
+     15
+    ]
+   ],
+   "total": 453,
+   "top": [
+    {
+     "title": "Benchmarking coding agents on Databricks' multi-million line codebase",
+     "url": "https://news.ycombinator.com/item?id=48837696",
+     "date": "2026-07-08",
+     "summary": "161 points · 69 comments · links to databricks.com"
+    },
+    {
+     "title": "Databricks is raising a Series K Investment at >$100B valuation",
+     "url": "https://news.ycombinator.com/item?id=44959092",
+     "date": "2025-08-20",
+     "summary": "182 points · 205 comments · links to databricks.com"
+    },
+    {
+     "title": "Databricks acquires Neon",
+     "url": "https://news.ycombinator.com/item?id=43982777",
+     "date": "2025-05-14",
+     "summary": "389 points · 226 comments · links to databricks.com"
+    },
+    {
+     "title": "Databricks in talks to acquire startup Neon for about $1B",
+     "url": "https://news.ycombinator.com/item?id=43899016",
+     "date": "2025-05-05",
+     "summary": "205 points · 173 comments · links to upstartsmedia.com"
+    },
+    {
+     "title": "Most companies do not need Snowflake or Databricks",
+     "url": "https://news.ycombinator.com/item?id=37207329",
+     "date": "2023-08-21",
+     "summary": "179 points · 133 comments · links to kjhealey.medium.com"
+    },
+    {
+     "title": "Databricks Strikes $1.3B Deal for Generative AI Startup MosaicML",
+     "url": "https://news.ycombinator.com/item?id=36478734",
+     "date": "2023-06-26",
+     "summary": "188 points · 110 comments · links to wsj.com"
+    },
+    {
+     "title": "Databricks acquires serverless Postgres vendor bit.io",
+     "url": "https://news.ycombinator.com/item?id=36127230",
+     "date": "2023-05-30",
+     "summary": "220 points · 117 comments · links to databricks.com"
+    },
+    {
+     "title": "Databricks Releases 15K Record Training Corpus for Instruction Tuning LLMs",
+     "url": "https://news.ycombinator.com/item?id=35541861",
+     "date": "2023-04-12",
+     "summary": "347 points · 89 comments · links to github.com"
+    },
+    {
+     "title": "Databricks counts being laid off as “red flag”",
+     "url": "https://news.ycombinator.com/item?id=34875353",
+     "date": "2023-02-21",
+     "summary": "309 points · 194 comments · links to teamblind.com"
+    },
+    {
+     "title": "Scala at scale at Databricks",
+     "url": "https://news.ycombinator.com/item?id=29505512",
+     "date": "2021-12-10",
+     "summary": "251 points · 166 comments · links to databricks.com"
+    },
+    {
+     "title": "Databricks response to Snowflake's accusation of lacking integrity",
+     "url": "https://news.ycombinator.com/item?id=29232346",
+     "date": "2021-11-15",
+     "summary": "217 points · 156 comments · links to databricks.com"
+    },
+    {
+     "title": "Reflecting on Four Years at Databricks",
+     "url": "https://news.ycombinator.com/item?id=28818648",
+     "date": "2021-10-10",
+     "summary": "158 points · 35 comments · links to lihaoyi.com"
+    },
+    {
+     "title": "Show HN: Arc, an open-source Databricks alternative",
+     "url": "https://news.ycombinator.com/item?id=26573930",
+     "date": "2021-03-24",
+     "summary": "175 points · 36 comments · links to arc.tripl.ai"
+    },
+    {
+     "title": "Databricks is an RDBMS",
+     "url": "https://news.ycombinator.com/item?id=25992464",
+     "date": "2021-02-01",
+     "summary": "148 points · 89 comments · links to fivetran.com"
+    },
+    {
+     "title": "Databricks open-sources Delta Lake to make data lakes more reliable",
+     "url": "https://news.ycombinator.com/item?id=19740768",
+     "date": "2019-04-24",
+     "summary": "142 points · 54 comments · links to techcrunch.com"
+    }
+   ]
+  },
+  "tone": null
+ },
+ "google-deepmind": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "DeepMind",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2014-01",
+     9
+    ],
+    [
+     "2014-02",
+     1
+    ],
+    [
+     "2014-03",
+     0
+    ],
+    [
+     "2014-04",
+     0
+    ],
+    [
+     "2014-05",
+     0
+    ],
+    [
+     "2014-06",
+     0
+    ],
+    [
+     "2014-07",
+     0
+    ],
+    [
+     "2014-08",
+     0
+    ],
+    [
+     "2014-09",
+     1
+    ],
+    [
+     "2014-10",
+     9
+    ],
+    [
+     "2014-11",
+     3
+    ],
+    [
+     "2014-12",
+     1
+    ],
+    [
+     "2015-01",
+     2
+    ],
+    [
+     "2015-02",
+     9
+    ],
+    [
+     "2015-03",
+     2
+    ],
+    [
+     "2015-04",
+     0
+    ],
+    [
+     "2015-05",
+     2
+    ],
+    [
+     "2015-06",
+     7
+    ],
+    [
+     "2015-07",
+     2
+    ],
+    [
+     "2015-08",
+     3
+    ],
+    [
+     "2015-09",
+     2
+    ],
+    [
+     "2015-10",
+     2
+    ],
+    [
+     "2015-11",
+     2
+    ],
+    [
+     "2015-12",
+     1
+    ],
+    [
+     "2016-01",
+     10
+    ],
+    [
+     "2016-02",
+     21
+    ],
+    [
+     "2016-03",
+     43
+    ],
+    [
+     "2016-04",
+     8
+    ],
+    [
+     "2016-05",
+     3
+    ],
+    [
+     "2016-06",
+     12
+    ],
+    [
+     "2016-07",
+     17
+    ],
+    [
+     "2016-08",
+     4
+    ],
+    [
+     "2016-09",
+     14
+    ],
+    [
+     "2016-10",
+     5
+    ],
+    [
+     "2016-11",
+     17
+    ],
+    [
+     "2016-12",
+     13
+    ],
+    [
+     "2017-01",
+     9
+    ],
+    [
+     "2017-02",
+     12
+    ],
+    [
+     "2017-03",
+     40
+    ],
+    [
+     "2017-04",
+     12
+    ],
+    [
+     "2017-05",
+     7
+    ],
+    [
+     "2017-06",
+     17
+    ],
+    [
+     "2017-07",
+     39
+    ],
+    [
+     "2017-08",
+     13
+    ],
+    [
+     "2017-09",
+     3
+    ],
+    [
+     "2017-10",
+     14
+    ],
+    [
+     "2017-11",
+     6
+    ],
+    [
+     "2017-12",
+     17
+    ],
+    [
+     "2018-01",
+     5
+    ],
+    [
+     "2018-02",
+     5
+    ],
+    [
+     "2018-03",
+     11
+    ],
+    [
+     "2018-04",
+     8
+    ],
+    [
+     "2018-05",
+     10
+    ],
+    [
+     "2018-06",
+     10
+    ],
+    [
+     "2018-07",
+     19
+    ],
+    [
+     "2018-08",
+     20
+    ],
+    [
+     "2018-09",
+     10
+    ],
+    [
+     "2018-10",
+     5
+    ],
+    [
+     "2018-11",
+     11
+    ],
+    [
+     "2018-12",
+     21
+    ],
+    [
+     "2019-01",
+     23
+    ],
+    [
+     "2019-02",
+     15
+    ],
+    [
+     "2019-03",
+     13
+    ],
+    [
+     "2019-04",
+     7
+    ],
+    [
+     "2019-05",
+     7
+    ],
+    [
+     "2019-06",
+     11
+    ],
+    [
+     "2019-07",
+     13
+    ],
+    [
+     "2019-08",
+     30
+    ],
+    [
+     "2019-09",
+     12
+    ],
+    [
+     "2019-10",
+     12
+    ],
+    [
+     "2019-11",
+     11
+    ],
+    [
+     "2019-12",
+     14
+    ],
+    [
+     "2020-01",
+     12
+    ],
+    [
+     "2020-02",
+     2
+    ],
+    [
+     "2020-03",
+     5
+    ],
+    [
+     "2020-04",
+     8
+    ],
+    [
+     "2020-05",
+     8
+    ],
+    [
+     "2020-06",
+     10
+    ],
+    [
+     "2020-07",
+     10
+    ],
+    [
+     "2020-08",
+     5
+    ],
+    [
+     "2020-09",
+     3
+    ],
+    [
+     "2020-10",
+     6
+    ],
+    [
+     "2020-11",
+     12
+    ],
+    [
+     "2020-12",
+     35
+    ],
+    [
+     "2021-01",
+     3
+    ],
+    [
+     "2021-02",
+     2
+    ],
+    [
+     "2021-03",
+     3
+    ],
+    [
+     "2021-04",
+     2
+    ],
+    [
+     "2021-05",
+     10
+    ],
+    [
+     "2021-06",
+     11
+    ],
+    [
+     "2021-07",
+     17
+    ],
+    [
+     "2021-08",
+     11
+    ],
+    [
+     "2021-09",
+     10
+    ],
+    [
+     "2021-10",
+     19
+    ],
+    [
+     "2021-11",
+     3
+    ],
+    [
+     "2021-12",
+     17
+    ],
+    [
+     "2022-01",
+     5
+    ],
+    [
+     "2022-02",
+     22
+    ],
+    [
+     "2022-03",
+     21
+    ],
+    [
+     "2022-04",
+     4
+    ],
+    [
+     "2022-05",
+     26
+    ],
+    [
+     "2022-06",
+     2
+    ],
+    [
+     "2022-07",
+     22
+    ],
+    [
+     "2022-08",
+     5
+    ],
+    [
+     "2022-09",
+     15
+    ],
+    [
+     "2022-10",
+     15
+    ],
+    [
+     "2022-11",
+     1
+    ],
+    [
+     "2022-12",
+     17
+    ],
+    [
+     "2023-01",
+     18
+    ],
+    [
+     "2023-02",
+     9
+    ],
+    [
+     "2023-03",
+     2
+    ],
+    [
+     "2023-04",
+     16
+    ],
+    [
+     "2023-05",
+     9
+    ],
+    [
+     "2023-06",
+     27
+    ],
+    [
+     "2023-07",
+     8
+    ],
+    [
+     "2023-08",
+     6
+    ],
+    [
+     "2023-09",
+     15
+    ],
+    [
+     "2023-10",
+     11
+    ],
+    [
+     "2023-11",
+     23
+    ],
+    [
+     "2023-12",
+     18
+    ],
+    [
+     "2024-01",
+     16
+    ],
+    [
+     "2024-02",
+     9
+    ],
+    [
+     "2024-03",
+     16
+    ],
+    [
+     "2024-04",
+     10
+    ],
+    [
+     "2024-05",
+     17
+    ],
+    [
+     "2024-06",
+     9
+    ],
+    [
+     "2024-07",
+     8
+    ],
+    [
+     "2024-08",
+     9
+    ],
+    [
+     "2024-09",
+     3
+    ],
+    [
+     "2024-10",
+     9
+    ],
+    [
+     "2024-11",
+     7
+    ],
+    [
+     "2024-12",
+     10
+    ],
+    [
+     "2025-01",
+     10
+    ],
+    [
+     "2025-02",
+     8
+    ],
+    [
+     "2025-03",
+     4
+    ],
+    [
+     "2025-04",
+     21
+    ],
+    [
+     "2025-05",
+     13
+    ],
+    [
+     "2025-06",
+     10
+    ],
+    [
+     "2025-07",
+     17
+    ],
+    [
+     "2025-08",
+     6
+    ],
+    [
+     "2025-09",
+     15
+    ],
+    [
+     "2025-10",
+     11
+    ],
+    [
+     "2025-11",
+     17
+    ],
+    [
+     "2025-12",
+     15
+    ],
+    [
+     "2026-01",
+     15
+    ],
+    [
+     "2026-02",
+     11
+    ],
+    [
+     "2026-03",
+     13
+    ],
+    [
+     "2026-04",
+     13
+    ],
+    [
+     "2026-05",
+     20
+    ],
+    [
+     "2026-06",
+     11
+    ],
+    [
+     "2026-07",
+     12
+    ],
+    [
+     "2026-08",
+     27
+    ],
+    [
+     "2026-09",
+     14
+    ],
+    [
+     "2026-10",
+     9
+    ]
+   ],
+   "total": 1673,
+   "top": [
+    {
+     "title": "DeepMind's WeatherNext model achieves breakthrough forecasting cyclones",
+     "url": "https://news.ycombinator.com/item?id=49220126",
+     "date": "2026-08-08",
+     "summary": "449 points · 128 comments · links to deepmind.google"
+    },
+    {
+     "title": "Changes at Google DeepMind: Demis Hassabis from CEO to Chair, Jeff Dean departs",
+     "url": "https://news.ycombinator.com/item?id=49184755",
+     "date": "2026-08-05",
+     "summary": "867 points · 933 comments · links to blog.google"
+    },
+    {
+     "title": "Demis Hassabis is moving from CEO to Chairman at Google DeepMind",
+     "url": "https://news.ycombinator.com/item?id=49184757",
+     "date": "2026-08-05",
+     "summary": "371 points · 1 comments · links to axios.com"
+    },
+    {
+     "title": "Why I Left Google DeepMind",
+     "url": "https://news.ycombinator.com/item?id=48925271",
+     "date": "2026-07-15",
+     "summary": "390 points · 170 comments · links to turntrout.com"
+    },
+    {
+     "title": "Google has sent internet into 'spiral of decline', claims DeepMind co-founder",
+     "url": "https://news.ycombinator.com/item?id=37887562",
+     "date": "2023-10-15",
+     "summary": "390 points · 379 comments · links to telegraph.co.uk"
+    },
+    {
+     "title": "Deepmind Alphadev: Faster sorting algorithms discovered using deep RL",
+     "url": "https://news.ycombinator.com/item?id=36228125",
+     "date": "2023-06-07",
+     "summary": "783 points · 318 comments · links to nature.com"
+    },
+    {
+     "title": "Google DeepMind",
+     "url": "https://news.ycombinator.com/item?id=35643049",
+     "date": "2023-04-20",
+     "summary": "689 points · 626 comments · links to deepmind.com"
+    },
+    {
+     "title": "DeepMind: A Generalist Agent",
+     "url": "https://news.ycombinator.com/item?id=31355657",
+     "date": "2022-05-12",
+     "summary": "502 points · 337 comments · links to deepmind.com"
+    },
+    {
+     "title": "After DeepMind’s cofounder was placed on leave for bullying, Google promoted him",
+     "url": "https://news.ycombinator.com/item?id=28101135",
+     "date": "2021-08-07",
+     "summary": "402 points · 324 comments · links to morningbrew.com"
+    },
+    {
+     "title": "No, DeepMind has not solved protein folding",
+     "url": "https://news.ycombinator.com/item?id=25306088",
+     "date": "2020-12-04",
+     "summary": "369 points · 154 comments · links to occamstypewriter.org"
+    },
+    {
+     "title": "Google Cloud Text-To-Speech Powered by DeepMind WaveNet Technology",
+     "url": "https://news.ycombinator.com/item?id=16691203",
+     "date": "2018-03-27",
+     "summary": "412 points · 118 comments · links to cloudplatform.googleblog.com"
+    },
+    {
+     "title": "DeepMind and Blizzard Open StarCraft II as an AI Research Environment",
+     "url": "https://news.ycombinator.com/item?id=14971326",
+     "date": "2017-08-09",
+     "summary": "603 points · 270 comments · links to deepmind.com"
+    },
+    {
+     "title": "Open-sourcing DeepMind Lab",
+     "url": "https://news.ycombinator.com/item?id=13104277",
+     "date": "2016-12-05",
+     "summary": "362 points · 29 comments · links to deepmind.com"
+    },
+    {
+     "title": "DeepMind and Blizzard to release StarCraft II as an AI research environment",
+     "url": "https://news.ycombinator.com/item?id=12874798",
+     "date": "2016-11-04",
+     "summary": "917 points · 329 comments · links to deepmind.com"
+    },
+    {
+     "title": "DeepMind moves to TensorFlow",
+     "url": "https://news.ycombinator.com/item?id=11596574",
+     "date": "2016-04-29",
+     "summary": "420 points · 79 comments · links to googleresearch.blogspot.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "harvey-ai": {
   "people": [],
@@ -5257,7 +10315,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-27"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "lambda": {
   "people": [],
@@ -5477,7 +10538,288 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-21"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
+ },
+ "mistral": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "Mistral -wind",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2023-05",
+     0
+    ],
+    [
+     "2023-06",
+     7
+    ],
+    [
+     "2023-07",
+     0
+    ],
+    [
+     "2023-08",
+     0
+    ],
+    [
+     "2023-09",
+     14
+    ],
+    [
+     "2023-10",
+     24
+    ],
+    [
+     "2023-11",
+     16
+    ],
+    [
+     "2023-12",
+     59
+    ],
+    [
+     "2024-01",
+     23
+    ],
+    [
+     "2024-02",
+     40
+    ],
+    [
+     "2024-03",
+     24
+    ],
+    [
+     "2024-04",
+     15
+    ],
+    [
+     "2024-05",
+     15
+    ],
+    [
+     "2024-06",
+     14
+    ],
+    [
+     "2024-07",
+     14
+    ],
+    [
+     "2024-08",
+     9
+    ],
+    [
+     "2024-09",
+     6
+    ],
+    [
+     "2024-10",
+     5
+    ],
+    [
+     "2024-11",
+     13
+    ],
+    [
+     "2024-12",
+     1
+    ],
+    [
+     "2025-01",
+     11
+    ],
+    [
+     "2025-02",
+     12
+    ],
+    [
+     "2025-03",
+     17
+    ],
+    [
+     "2025-04",
+     4
+    ],
+    [
+     "2025-05",
+     7
+    ],
+    [
+     "2025-06",
+     9
+    ],
+    [
+     "2025-07",
+     15
+    ],
+    [
+     "2025-08",
+     5
+    ],
+    [
+     "2025-09",
+     13
+    ],
+    [
+     "2025-10",
+     2
+    ],
+    [
+     "2025-11",
+     1
+    ],
+    [
+     "2025-12",
+     12
+    ],
+    [
+     "2026-01",
+     10
+    ],
+    [
+     "2026-02",
+     14
+    ],
+    [
+     "2026-03",
+     20
+    ],
+    [
+     "2026-04",
+     12
+    ],
+    [
+     "2026-05",
+     24
+    ],
+    [
+     "2026-06",
+     9
+    ],
+    [
+     "2026-07",
+     10
+    ],
+    [
+     "2026-08",
+     10
+    ],
+    [
+     "2026-09",
+     15
+    ],
+    [
+     "2026-10",
+     27
+    ]
+   ],
+   "total": 558,
+   "top": [
+    {
+     "title": "Timestral: Mistral's time-series foundation models",
+     "url": "https://news.ycombinator.com/item?id=50150434",
+     "date": "2026-10-19",
+     "summary": "622 points · 127 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral Large 4",
+     "url": "https://news.ycombinator.com/item?id=49977979",
+     "date": "2026-10-06",
+     "summary": "2,044 points · 1,216 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral X Mozilla: Private, Multilingual AI Browsing",
+     "url": "https://news.ycombinator.com/item?id=49723408",
+     "date": "2026-09-16",
+     "summary": "591 points · 207 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral raises €3B",
+     "url": "https://news.ycombinator.com/item?id=49605767",
+     "date": "2026-09-08",
+     "summary": "850 points · 603 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral AI Releases Forge",
+     "url": "https://news.ycombinator.com/item?id=47418295",
+     "date": "2026-03-17",
+     "summary": "733 points · 193 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral OCR 3",
+     "url": "https://news.ycombinator.com/item?id=46313390",
+     "date": "2025-12-18",
+     "summary": "694 points · 130 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral releases Devstral2 and Mistral Vibe CLI",
+     "url": "https://news.ycombinator.com/item?id=46205437",
+     "date": "2025-12-09",
+     "summary": "745 points · 349 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral 3 family of models released",
+     "url": "https://news.ycombinator.com/item?id=46121889",
+     "date": "2025-12-02",
+     "summary": "826 points · 236 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral raises 1.7B€, partners with ASML",
+     "url": "https://news.ycombinator.com/item?id=45178041",
+     "date": "2025-09-09",
+     "summary": "802 points · 424 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral Releases Deep Research, Voice, Projects in Le Chat",
+     "url": "https://news.ycombinator.com/item?id=44594156",
+     "date": "2025-07-17",
+     "summary": "664 points · 147 comments · links to mistral.ai"
+    },
+    {
+     "title": "Magistral — the first reasoning model by Mistral AI",
+     "url": "https://news.ycombinator.com/item?id=44236997",
+     "date": "2025-06-10",
+     "summary": "941 points · 424 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral OCR",
+     "url": "https://news.ycombinator.com/item?id=43282905",
+     "date": "2025-03-06",
+     "summary": "1,756 points · 417 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral Small 3",
+     "url": "https://news.ycombinator.com/item?id=42877860",
+     "date": "2025-01-30",
+     "summary": "620 points · 194 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral Large",
+     "url": "https://news.ycombinator.com/item?id=39511477",
+     "date": "2024-02-26",
+     "summary": "599 points · 267 comments · links to mistral.ai"
+    },
+    {
+     "title": "Mistral 7B",
+     "url": "https://news.ycombinator.com/item?id=37675496",
+     "date": "2023-09-27",
+     "summary": "884 points · 618 comments · links to mistral.ai"
+    }
+   ]
+  },
+  "tone": null
  },
  "nvidia": {
   "people": [
@@ -5528,7 +10870,677 @@ export const AI_360: Record<string, Entity360> = {
   "legal": [],
   "advisors": [],
   "facts": [],
-  "hiring": null
+  "hiring": null,
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "Nvidia",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2015-01",
+     13
+    ],
+    [
+     "2015-02",
+     4
+    ],
+    [
+     "2015-03",
+     19
+    ],
+    [
+     "2015-04",
+     5
+    ],
+    [
+     "2015-05",
+     12
+    ],
+    [
+     "2015-06",
+     7
+    ],
+    [
+     "2015-07",
+     6
+    ],
+    [
+     "2015-08",
+     10
+    ],
+    [
+     "2015-09",
+     9
+    ],
+    [
+     "2015-10",
+     8
+    ],
+    [
+     "2015-11",
+     31
+    ],
+    [
+     "2015-12",
+     9
+    ],
+    [
+     "2016-01",
+     21
+    ],
+    [
+     "2016-02",
+     16
+    ],
+    [
+     "2016-03",
+     13
+    ],
+    [
+     "2016-04",
+     39
+    ],
+    [
+     "2016-05",
+     31
+    ],
+    [
+     "2016-06",
+     17
+    ],
+    [
+     "2016-07",
+     32
+    ],
+    [
+     "2016-08",
+     24
+    ],
+    [
+     "2016-09",
+     26
+    ],
+    [
+     "2016-10",
+     16
+    ],
+    [
+     "2016-11",
+     17
+    ],
+    [
+     "2016-12",
+     16
+    ],
+    [
+     "2017-01",
+     14
+    ],
+    [
+     "2017-02",
+     20
+    ],
+    [
+     "2017-03",
+     26
+    ],
+    [
+     "2017-04",
+     36
+    ],
+    [
+     "2017-05",
+     47
+    ],
+    [
+     "2017-06",
+     28
+    ],
+    [
+     "2017-07",
+     15
+    ],
+    [
+     "2017-08",
+     20
+    ],
+    [
+     "2017-09",
+     18
+    ],
+    [
+     "2017-10",
+     44
+    ],
+    [
+     "2017-11",
+     25
+    ],
+    [
+     "2017-12",
+     37
+    ],
+    [
+     "2018-01",
+     44
+    ],
+    [
+     "2018-02",
+     18
+    ],
+    [
+     "2018-03",
+     66
+    ],
+    [
+     "2018-04",
+     25
+    ],
+    [
+     "2018-05",
+     22
+    ],
+    [
+     "2018-06",
+     43
+    ],
+    [
+     "2018-07",
+     22
+    ],
+    [
+     "2018-08",
+     56
+    ],
+    [
+     "2018-09",
+     40
+    ],
+    [
+     "2018-10",
+     32
+    ],
+    [
+     "2018-11",
+     31
+    ],
+    [
+     "2018-12",
+     49
+    ],
+    [
+     "2019-01",
+     36
+    ],
+    [
+     "2019-02",
+     21
+    ],
+    [
+     "2019-03",
+     55
+    ],
+    [
+     "2019-04",
+     19
+    ],
+    [
+     "2019-05",
+     20
+    ],
+    [
+     "2019-06",
+     36
+    ],
+    [
+     "2019-07",
+     20
+    ],
+    [
+     "2019-08",
+     37
+    ],
+    [
+     "2019-09",
+     17
+    ],
+    [
+     "2019-10",
+     18
+    ],
+    [
+     "2019-11",
+     27
+    ],
+    [
+     "2019-12",
+     14
+    ],
+    [
+     "2020-01",
+     12
+    ],
+    [
+     "2020-02",
+     30
+    ],
+    [
+     "2020-03",
+     22
+    ],
+    [
+     "2020-04",
+     38
+    ],
+    [
+     "2020-05",
+     68
+    ],
+    [
+     "2020-06",
+     26
+    ],
+    [
+     "2020-07",
+     40
+    ],
+    [
+     "2020-08",
+     38
+    ],
+    [
+     "2020-09",
+     115
+    ],
+    [
+     "2020-10",
+     76
+    ],
+    [
+     "2020-11",
+     31
+    ],
+    [
+     "2020-12",
+     35
+    ],
+    [
+     "2021-01",
+     23
+    ],
+    [
+     "2021-02",
+     48
+    ],
+    [
+     "2021-03",
+     46
+    ],
+    [
+     "2021-04",
+     62
+    ],
+    [
+     "2021-05",
+     24
+    ],
+    [
+     "2021-06",
+     34
+    ],
+    [
+     "2021-07",
+     31
+    ],
+    [
+     "2021-08",
+     41
+    ],
+    [
+     "2021-09",
+     21
+    ],
+    [
+     "2021-10",
+     33
+    ],
+    [
+     "2021-11",
+     57
+    ],
+    [
+     "2021-12",
+     35
+    ],
+    [
+     "2022-01",
+     44
+    ],
+    [
+     "2022-02",
+     51
+    ],
+    [
+     "2022-03",
+     81
+    ],
+    [
+     "2022-04",
+     27
+    ],
+    [
+     "2022-05",
+     70
+    ],
+    [
+     "2022-06",
+     17
+    ],
+    [
+     "2022-07",
+     20
+    ],
+    [
+     "2022-08",
+     37
+    ],
+    [
+     "2022-09",
+     68
+    ],
+    [
+     "2022-10",
+     45
+    ],
+    [
+     "2022-11",
+     48
+    ],
+    [
+     "2022-12",
+     26
+    ],
+    [
+     "2023-01",
+     34
+    ],
+    [
+     "2023-02",
+     27
+    ],
+    [
+     "2023-03",
+     69
+    ],
+    [
+     "2023-04",
+     35
+    ],
+    [
+     "2023-05",
+     116
+    ],
+    [
+     "2023-06",
+     76
+    ],
+    [
+     "2023-07",
+     37
+    ],
+    [
+     "2023-08",
+     113
+    ],
+    [
+     "2023-09",
+     69
+    ],
+    [
+     "2023-10",
+     95
+    ],
+    [
+     "2023-11",
+     109
+    ],
+    [
+     "2023-12",
+     69
+    ],
+    [
+     "2024-01",
+     60
+    ],
+    [
+     "2024-02",
+     144
+    ],
+    [
+     "2024-03",
+     169
+    ],
+    [
+     "2024-04",
+     65
+    ],
+    [
+     "2024-05",
+     86
+    ],
+    [
+     "2024-06",
+     142
+    ],
+    [
+     "2024-07",
+     91
+    ],
+    [
+     "2024-08",
+     103
+    ],
+    [
+     "2024-09",
+     67
+    ],
+    [
+     "2024-10",
+     88
+    ],
+    [
+     "2024-11",
+     101
+    ],
+    [
+     "2024-12",
+     95
+    ],
+    [
+     "2025-01",
+     157
+    ],
+    [
+     "2025-02",
+     82
+    ],
+    [
+     "2025-03",
+     143
+    ],
+    [
+     "2025-04",
+     109
+    ],
+    [
+     "2025-05",
+     90
+    ],
+    [
+     "2025-06",
+     70
+    ],
+    [
+     "2025-07",
+     98
+    ],
+    [
+     "2025-08",
+     154
+    ],
+    [
+     "2025-09",
+     120
+    ],
+    [
+     "2025-10",
+     151
+    ],
+    [
+     "2025-11",
+     130
+    ],
+    [
+     "2025-12",
+     160
+    ],
+    [
+     "2026-01",
+     155
+    ],
+    [
+     "2026-02",
+     81
+    ],
+    [
+     "2026-03",
+     157
+    ],
+    [
+     "2026-04",
+     83
+    ],
+    [
+     "2026-05",
+     89
+    ],
+    [
+     "2026-06",
+     105
+    ],
+    [
+     "2026-07",
+     112
+    ],
+    [
+     "2026-08",
+     168
+    ],
+    [
+     "2026-09",
+     144
+    ],
+    [
+     "2026-10",
+     148
+    ]
+   ],
+   "total": 7785,
+   "top": [
+    {
+     "title": "Owed a billion dollars in Nvidia stock",
+     "url": "https://news.ycombinator.com/item?id=49872723",
+     "date": "2026-09-28",
+     "summary": "1,092 points · 459 comments · links to colo.to"
+    },
+    {
+     "title": "Nvidia announces native GPU programming in Rust",
+     "url": "https://news.ycombinator.com/item?id=49724881",
+     "date": "2026-09-16",
+     "summary": "970 points · 404 comments · links to developer.nvidia.com"
+    },
+    {
+     "title": "Nvidia agrees to acquire Hugging Face for $13B",
+     "url": "https://news.ycombinator.com/item?id=49458161",
+     "date": "2026-08-27",
+     "summary": "1,988 points · 924 comments · links to businessinsider.com"
+    },
+    {
+     "title": "Apple is fighting for TSMC capacity as Nvidia takes center stage",
+     "url": "https://news.ycombinator.com/item?id=46633488",
+     "date": "2026-01-15",
+     "summary": "773 points · 478 comments · links to culpium.com"
+    },
+    {
+     "title": "Nvidia buys $5B in Intel",
+     "url": "https://news.ycombinator.com/item?id=45288161",
+     "date": "2025-09-18",
+     "summary": "1,018 points · 611 comments · links to tomshardware.com"
+    },
+    {
+     "title": "Nvidia won, we all lost",
+     "url": "https://news.ycombinator.com/item?id=44468175",
+     "date": "2025-07-04",
+     "summary": "995 points · 571 comments · links to blog.sebin-nyshkim.net"
+    },
+    {
+     "title": "NVIDIA Transitions Fully Towards Open-Source Linux GPU Kernel Modules",
+     "url": "https://news.ycombinator.com/item?id=40988954",
+     "date": "2024-07-17",
+     "summary": "881 points · 254 comments · links to developer.nvidia.com"
+    },
+    {
+     "title": "Hacked Nvidia 4090 GPU driver to enable P2P",
+     "url": "https://news.ycombinator.com/item?id=40010819",
+     "date": "2024-04-12",
+     "summary": "829 points · 336 comments · links to github.com"
+    },
+    {
+     "title": "EVGA terminates Nvidia partnership [video]",
+     "url": "https://news.ycombinator.com/item?id=32870677",
+     "date": "2022-09-16",
+     "summary": "742 points · 479 comments · links to youtube.com"
+    },
+    {
+     "title": "“Amateur” programmer fought cancer with 50 Nvidia Geforce 1080Ti",
+     "url": "https://news.ycombinator.com/item?id=31449147",
+     "date": "2022-05-20",
+     "summary": "1,143 points · 329 comments · links to howardchen.substack.com"
+    },
+    {
+     "title": "Nvidia releases open-source GPU kernel modules",
+     "url": "https://news.ycombinator.com/item?id=31344981",
+     "date": "2022-05-11",
+     "summary": "2,410 points · 392 comments · links to developer.nvidia.com"
+    },
+    {
+     "title": "Nvidia prepares to abandon $40B Arm bid",
+     "url": "https://news.ycombinator.com/item?id=30070425",
+     "date": "2022-01-25",
+     "summary": "784 points · 454 comments · links to bloomberg.com"
+    },
+    {
+     "title": "Nvidia to Acquire Arm for $40B",
+     "url": "https://news.ycombinator.com/item?id=24464807",
+     "date": "2020-09-13",
+     "summary": "2,122 points · 752 comments · links to nvidianews.nvidia.com"
+    },
+    {
+     "title": "Nvidia Unveils GeForce RTX 30 Series GPUs",
+     "url": "https://news.ycombinator.com/item?id=24343672",
+     "date": "2020-09-01",
+     "summary": "856 points · 927 comments · links to blogs.nvidia.com"
+    },
+    {
+     "title": "Nvidia is reportedly in ‘advanced talks’ to buy ARM for more than $32B",
+     "url": "https://news.ycombinator.com/item?id=24009177",
+     "date": "2020-07-31",
+     "summary": "1,106 points · 674 comments · links to bloomberg.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "openai": {
   "people": [],
@@ -5778,7 +11790,627 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-28"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "OpenAI",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2015-12",
+     11
+    ],
+    [
+     "2016-01",
+     4
+    ],
+    [
+     "2016-02",
+     1
+    ],
+    [
+     "2016-03",
+     1
+    ],
+    [
+     "2016-04",
+     10
+    ],
+    [
+     "2016-05",
+     5
+    ],
+    [
+     "2016-06",
+     10
+    ],
+    [
+     "2016-07",
+     1
+    ],
+    [
+     "2016-08",
+     6
+    ],
+    [
+     "2016-09",
+     1
+    ],
+    [
+     "2016-10",
+     2
+    ],
+    [
+     "2016-11",
+     6
+    ],
+    [
+     "2016-12",
+     8
+    ],
+    [
+     "2017-01",
+     9
+    ],
+    [
+     "2017-02",
+     3
+    ],
+    [
+     "2017-03",
+     4
+    ],
+    [
+     "2017-04",
+     7
+    ],
+    [
+     "2017-05",
+     5
+    ],
+    [
+     "2017-06",
+     3
+    ],
+    [
+     "2017-07",
+     5
+    ],
+    [
+     "2017-08",
+     10
+    ],
+    [
+     "2017-09",
+     3
+    ],
+    [
+     "2017-10",
+     2
+    ],
+    [
+     "2017-11",
+     2
+    ],
+    [
+     "2017-12",
+     1
+    ],
+    [
+     "2018-01",
+     4
+    ],
+    [
+     "2018-02",
+     11
+    ],
+    [
+     "2018-03",
+     5
+    ],
+    [
+     "2018-04",
+     8
+    ],
+    [
+     "2018-05",
+     4
+    ],
+    [
+     "2018-06",
+     14
+    ],
+    [
+     "2018-07",
+     7
+    ],
+    [
+     "2018-08",
+     24
+    ],
+    [
+     "2018-09",
+     5
+    ],
+    [
+     "2018-10",
+     3
+    ],
+    [
+     "2018-11",
+     6
+    ],
+    [
+     "2018-12",
+     3
+    ],
+    [
+     "2019-01",
+     2
+    ],
+    [
+     "2019-02",
+     37
+    ],
+    [
+     "2019-03",
+     28
+    ],
+    [
+     "2019-04",
+     34
+    ],
+    [
+     "2019-05",
+     12
+    ],
+    [
+     "2019-06",
+     8
+    ],
+    [
+     "2019-07",
+     12
+    ],
+    [
+     "2019-08",
+     13
+    ],
+    [
+     "2019-09",
+     6
+    ],
+    [
+     "2019-10",
+     15
+    ],
+    [
+     "2019-11",
+     13
+    ],
+    [
+     "2019-12",
+     7
+    ],
+    [
+     "2020-01",
+     7
+    ],
+    [
+     "2020-02",
+     5
+    ],
+    [
+     "2020-03",
+     1
+    ],
+    [
+     "2020-04",
+     9
+    ],
+    [
+     "2020-05",
+     18
+    ],
+    [
+     "2020-06",
+     23
+    ],
+    [
+     "2020-07",
+     36
+    ],
+    [
+     "2020-08",
+     19
+    ],
+    [
+     "2020-09",
+     27
+    ],
+    [
+     "2020-10",
+     13
+    ],
+    [
+     "2020-11",
+     3
+    ],
+    [
+     "2020-12",
+     8
+    ],
+    [
+     "2021-01",
+     18
+    ],
+    [
+     "2021-02",
+     13
+    ],
+    [
+     "2021-03",
+     10
+    ],
+    [
+     "2021-04",
+     8
+    ],
+    [
+     "2021-05",
+     9
+    ],
+    [
+     "2021-06",
+     7
+    ],
+    [
+     "2021-07",
+     15
+    ],
+    [
+     "2021-08",
+     41
+    ],
+    [
+     "2021-09",
+     23
+    ],
+    [
+     "2021-10",
+     7
+    ],
+    [
+     "2021-11",
+     12
+    ],
+    [
+     "2021-12",
+     4
+    ],
+    [
+     "2022-01",
+     10
+    ],
+    [
+     "2022-02",
+     14
+    ],
+    [
+     "2022-03",
+     12
+    ],
+    [
+     "2022-04",
+     18
+    ],
+    [
+     "2022-05",
+     15
+    ],
+    [
+     "2022-06",
+     13
+    ],
+    [
+     "2022-07",
+     17
+    ],
+    [
+     "2022-08",
+     11
+    ],
+    [
+     "2022-09",
+     31
+    ],
+    [
+     "2022-10",
+     32
+    ],
+    [
+     "2022-11",
+     32
+    ],
+    [
+     "2022-12",
+     135
+    ],
+    [
+     "2023-01",
+     168
+    ],
+    [
+     "2023-02",
+     132
+    ],
+    [
+     "2023-03",
+     262
+    ],
+    [
+     "2023-04",
+     172
+    ],
+    [
+     "2023-05",
+     203
+    ],
+    [
+     "2023-06",
+     211
+    ],
+    [
+     "2023-07",
+     154
+    ],
+    [
+     "2023-08",
+     141
+    ],
+    [
+     "2023-09",
+     150
+    ],
+    [
+     "2023-10",
+     126
+    ],
+    [
+     "2023-11",
+     666
+    ],
+    [
+     "2023-12",
+     217
+    ],
+    [
+     "2024-01",
+     162
+    ],
+    [
+     "2024-02",
+     172
+    ],
+    [
+     "2024-03",
+     225
+    ],
+    [
+     "2024-04",
+     152
+    ],
+    [
+     "2024-05",
+     373
+    ],
+    [
+     "2024-06",
+     190
+    ],
+    [
+     "2024-07",
+     155
+    ],
+    [
+     "2024-08",
+     141
+    ],
+    [
+     "2024-09",
+     237
+    ],
+    [
+     "2024-10",
+     200
+    ],
+    [
+     "2024-11",
+     162
+    ],
+    [
+     "2024-12",
+     203
+    ],
+    [
+     "2025-01",
+     220
+    ],
+    [
+     "2025-02",
+     219
+    ],
+    [
+     "2025-03",
+     176
+    ],
+    [
+     "2025-04",
+     200
+    ],
+    [
+     "2025-05",
+     164
+    ],
+    [
+     "2025-06",
+     187
+    ],
+    [
+     "2025-07",
+     176
+    ],
+    [
+     "2025-08",
+     231
+    ],
+    [
+     "2025-09",
+     195
+    ],
+    [
+     "2025-10",
+     345
+    ],
+    [
+     "2025-11",
+     192
+    ],
+    [
+     "2025-12",
+     183
+    ],
+    [
+     "2026-01",
+     194
+    ],
+    [
+     "2026-02",
+     259
+    ],
+    [
+     "2026-03",
+     267
+    ],
+    [
+     "2026-04",
+     283
+    ],
+    [
+     "2026-05",
+     267
+    ],
+    [
+     "2026-06",
+     244
+    ],
+    [
+     "2026-07",
+     347
+    ],
+    [
+     "2026-08",
+     326
+    ],
+    [
+     "2026-09",
+     525
+    ],
+    [
+     "2026-10",
+     308
+    ]
+   ],
+   "total": 11559,
+   "top": [
+    {
+     "title": "Discovery of a new OpenAI agent message board",
+     "url": "https://news.ycombinator.com/item?id=49563355",
+     "date": "2026-09-04",
+     "summary": "2,301 points · 1,603 comments · links to collusion.wiki"
+    },
+    {
+     "title": "OpenAI and Hugging Face address security incident during model evaluation",
+     "url": "https://news.ycombinator.com/item?id=48997548",
+     "date": "2026-07-21",
+     "summary": "1,632 points · 1,157 comments · links to openai.com"
+    },
+    {
+     "title": "Apple sues OpenAI, accuses ex-employees of stealing trade secrets",
+     "url": "https://news.ycombinator.com/item?id=48865019",
+     "date": "2026-07-10",
+     "summary": "1,660 points · 966 comments · links to 9to5mac.com"
+    },
+    {
+     "title": "Astral to Join OpenAI",
+     "url": "https://news.ycombinator.com/item?id=47438723",
+     "date": "2026-03-19",
+     "summary": "1,489 points · 901 comments · links to astral.sh"
+    },
+    {
+     "title": "OpenAI – How to delete your account",
+     "url": "https://news.ycombinator.com/item?id=47193478",
+     "date": "2026-02-28",
+     "summary": "1,929 points · 362 comments · links to help.openai.com"
+    },
+    {
+     "title": "Open models by OpenAI",
+     "url": "https://news.ycombinator.com/item?id=44800746",
+     "date": "2025-08-05",
+     "summary": "2,124 points · 876 comments · links to openai.com"
+    },
+    {
+     "title": "OpenAI O3 breakthrough high score on ARC-AGI-PUB",
+     "url": "https://news.ycombinator.com/item?id=42473321",
+     "date": "2024-12-20",
+     "summary": "1,724 points · 1,755 comments · links to arcprize.org"
+    },
+    {
+     "title": "Leaked OpenAI documents reveal aggressive tactics toward former employees",
+     "url": "https://news.ycombinator.com/item?id=40447431",
+     "date": "2024-05-22",
+     "summary": "1,791 points · 534 comments · links to vox.com"
+    },
+    {
+     "title": "Statement from Scarlett Johansson on the OpenAI \"Sky\" voice",
+     "url": "https://news.ycombinator.com/item?id=40421225",
+     "date": "2024-05-20",
+     "summary": "1,528 points · 1,000 comments · links to twitter.com"
+    },
+    {
+     "title": "We have reached an agreement in principle for Sam to return to OpenAI as CEO",
+     "url": "https://news.ycombinator.com/item?id=38375239",
+     "date": "2023-11-22",
+     "summary": "1,980 points · 1,950 comments · links to twitter.com"
+    },
+    {
+     "title": "OpenAI's board has fired Sam Altman",
+     "url": "https://news.ycombinator.com/item?id=38309611",
+     "date": "2023-11-17",
+     "summary": "5,710 points · 2,530 comments · links to openai.com"
+    },
+    {
+     "title": "Google “We have no moat, and neither does OpenAI”",
+     "url": "https://news.ycombinator.com/item?id=35813322",
+     "date": "2023-05-04",
+     "summary": "2,455 points · 1,039 comments · links to semianalysis.com"
+    },
+    {
+     "title": "OpenAI is now everything it promised not to be: closed-source and for-profit",
+     "url": "https://news.ycombinator.com/item?id=34979981",
+     "date": "2023-03-01",
+     "summary": "1,623 points · 567 comments · links to vice.com"
+    },
+    {
+     "title": "Whisper – open source speech recognition by OpenAI",
+     "url": "https://news.ycombinator.com/item?id=32927360",
+     "date": "2022-09-21",
+     "summary": "1,705 points · 481 comments · links to openai.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "perplexity": {
   "people": [],
@@ -6013,7 +12645,297 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-23"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": {
+   "source": "Hacker News",
+   "query": "Perplexity",
+   "asOf": "2026-10-28",
+   "months": [
+    [
+     "2022-12",
+     1
+    ],
+    [
+     "2023-01",
+     2
+    ],
+    [
+     "2023-02",
+     1
+    ],
+    [
+     "2023-03",
+     1
+    ],
+    [
+     "2023-04",
+     1
+    ],
+    [
+     "2023-05",
+     1
+    ],
+    [
+     "2023-06",
+     2
+    ],
+    [
+     "2023-07",
+     4
+    ],
+    [
+     "2023-08",
+     3
+    ],
+    [
+     "2023-09",
+     1
+    ],
+    [
+     "2023-10",
+     1
+    ],
+    [
+     "2023-11",
+     1
+    ],
+    [
+     "2023-12",
+     3
+    ],
+    [
+     "2024-01",
+     16
+    ],
+    [
+     "2024-02",
+     7
+    ],
+    [
+     "2024-03",
+     6
+    ],
+    [
+     "2024-04",
+     19
+    ],
+    [
+     "2024-05",
+     22
+    ],
+    [
+     "2024-06",
+     35
+    ],
+    [
+     "2024-07",
+     17
+    ],
+    [
+     "2024-08",
+     14
+    ],
+    [
+     "2024-09",
+     6
+    ],
+    [
+     "2024-10",
+     23
+    ],
+    [
+     "2024-11",
+     28
+    ],
+    [
+     "2024-12",
+     12
+    ],
+    [
+     "2025-01",
+     25
+    ],
+    [
+     "2025-02",
+     20
+    ],
+    [
+     "2025-03",
+     11
+    ],
+    [
+     "2025-04",
+     16
+    ],
+    [
+     "2025-05",
+     21
+    ],
+    [
+     "2025-06",
+     19
+    ],
+    [
+     "2025-07",
+     28
+    ],
+    [
+     "2025-08",
+     67
+    ],
+    [
+     "2025-09",
+     23
+    ],
+    [
+     "2025-10",
+     37
+    ],
+    [
+     "2025-11",
+     22
+    ],
+    [
+     "2025-12",
+     9
+    ],
+    [
+     "2026-01",
+     9
+    ],
+    [
+     "2026-02",
+     24
+    ],
+    [
+     "2026-03",
+     22
+    ],
+    [
+     "2026-04",
+     24
+    ],
+    [
+     "2026-05",
+     15
+    ],
+    [
+     "2026-06",
+     10
+    ],
+    [
+     "2026-07",
+     9
+    ],
+    [
+     "2026-08",
+     15
+    ],
+    [
+     "2026-09",
+     17
+    ],
+    [
+     "2026-10",
+     12
+    ]
+   ],
+   "total": 682,
+   "top": [
+    {
+     "title": "Amazon vs. Perplexity – U.S. Court of Appeals for the Ninth Circuit",
+     "url": "https://news.ycombinator.com/item?id=49704008",
+     "date": "2026-09-14",
+     "summary": "219 points · 217 comments · links to law.justia.com"
+    },
+    {
+     "title": "Three sites made 215,128 “best software” pages for AI. Perplexity cites them",
+     "url": "https://news.ycombinator.com/item?id=49536375",
+     "date": "2026-09-02",
+     "summary": "519 points · 251 comments · links to trellner.com"
+    },
+    {
+     "title": "Personal Computer by Perplexity",
+     "url": "https://news.ycombinator.com/item?id=47339223",
+     "date": "2026-03-11",
+     "summary": "223 points · 173 comments · links to perplexity.ai"
+    },
+    {
+     "title": "Japan's largest paper, Yomiuri Shimbun, sues Perplexity for copyright violations",
+     "url": "https://news.ycombinator.com/item?id=44870895",
+     "date": "2025-08-12",
+     "summary": "199 points · 93 comments · links to niemanlab.org"
+    },
+    {
+     "title": "Perplexity Makes Longshot $34.5B Offer for Chrome",
+     "url": "https://news.ycombinator.com/item?id=44877656",
+     "date": "2025-08-12",
+     "summary": "192 points · 119 comments · links to wsj.com"
+    },
+    {
+     "title": "Perplexity is using stealth, undeclared crawlers to evade no-crawl directives",
+     "url": "https://news.ycombinator.com/item?id=44785636",
+     "date": "2025-08-04",
+     "summary": "1,315 points · 748 comments · links to blog.cloudflare.com"
+    },
+    {
+     "title": "Show HN: Open source alternative to Perplexity Comet",
+     "url": "https://news.ycombinator.com/item?id=44523409",
+     "date": "2025-07-10",
+     "summary": "291 points · 122 comments · links to browseros.com"
+    },
+    {
+     "title": "Google contract prevented Motorola from setting Perplexity as default assistant",
+     "url": "https://news.ycombinator.com/item?id=43776512",
+     "date": "2025-04-23",
+     "summary": "255 points · 196 comments · links to bloomberg.com"
+    },
+    {
+     "title": "Perplexity Deep Research",
+     "url": "https://news.ycombinator.com/item?id=43061827",
+     "date": "2025-02-15",
+     "summary": "368 points · 168 comments · links to perplexity.ai"
+    },
+    {
+     "title": "Perplexity got ads",
+     "url": "https://news.ycombinator.com/item?id=42589863",
+     "date": "2025-01-03",
+     "summary": "237 points · 361 comments · links to twitter.com"
+    },
+    {
+     "title": "Perplexity AI is lying about their user agent",
+     "url": "https://news.ycombinator.com/item?id=40690898",
+     "date": "2024-06-15",
+     "summary": "626 points · 533 comments · links to rknight.me"
+    },
+    {
+     "title": "Perplexica: Open-source Perplexity alternative",
+     "url": "https://news.ycombinator.com/item?id=40462369",
+     "date": "2024-05-24",
+     "summary": "378 points · 83 comments · links to github.com"
+    },
+    {
+     "title": "Show HN: I've built a locally running Perplexity clone",
+     "url": "https://news.ycombinator.com/item?id=39923404",
+     "date": "2024-04-03",
+     "summary": "669 points · 133 comments · links to github.com"
+    },
+    {
+     "title": "Perplexity Labs Playground",
+     "url": "https://news.ycombinator.com/item?id=38698782",
+     "date": "2023-12-19",
+     "summary": "295 points · 183 comments · links to labs.perplexity.ai"
+    },
+    {
+     "title": "Perplexity.ai prompt leakage",
+     "url": "https://news.ycombinator.com/item?id=34482318",
+     "date": "2023-01-22",
+     "summary": "332 points · 155 comments · links to twitter.com"
+    }
+   ]
+  },
+  "tone": null
  },
  "sambanova": {
   "people": [],
@@ -6231,7 +13153,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-27"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "scale-ai": {
   "people": [],
@@ -6439,7 +13364,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-19"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "thinking-machines": {
   "people": [],
@@ -6646,7 +13574,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-14"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  },
  "xai-capital": {
   "people": [],
@@ -6893,7 +13824,10 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-26"
     }
    ]
-  }
+  },
+  "site": null,
+  "attention": null,
+  "tone": null
  }
 };
 

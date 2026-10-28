@@ -1,0 +1,45 @@
+{
+ "note": "Public attention on Hacker News: stories whose title names the company, month by month, from the Algolia HN Search API (free and public). Each query is a name that means only this company in a story title since the 'since' month; ambiguous names (Lambda, Cursor, Scale, Cohere) are left out until a better query exists. A leading minus excludes a word: 'Anthropic -principle' drops stories about the anthropic principle.",
+ "queries": [
+  {
+   "entity": "anthropic",
+   "query": "Anthropic -principle",
+   "since": "2021-01"
+  },
+  {
+   "entity": "openai",
+   "query": "OpenAI",
+   "since": "2015-12"
+  },
+  {
+   "entity": "nvidia",
+   "query": "Nvidia",
+   "since": "2015-01"
+  },
+  {
+   "entity": "google-deepmind",
+   "query": "DeepMind",
+   "since": "2014-01"
+  },
+  {
+   "entity": "mistral",
+   "query": "Mistral -wind",
+   "since": "2023-05"
+  },
+  {
+   "entity": "perplexity",
+   "query": "Perplexity",
+   "since": "2022-12"
+  },
+  {
+   "entity": "databricks",
+   "query": "Databricks",
+   "since": "2015-01"
+  },
+  {
+   "entity": "coreweave-capital",
+   "query": "CoreWeave",
+   "since": "2019-01"
+  }
+ ]
+}

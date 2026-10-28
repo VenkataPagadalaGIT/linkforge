@@ -18,7 +18,7 @@ import { dayMonthYear, monthYear } from "./intelModel";
 
 export const has360 = (id: string) => {
   const f = AI_360[id];
-  return !!f && (f.people.length > 0 || f.rounds.length > 0 || f.legal.length > 0 || f.facts.length > 0 || !!f.hiring);
+  return !!f && (f.people.length > 0 || f.rounds.length > 0 || f.legal.length > 0 || f.facts.length > 0 || !!f.hiring || !!f.site || !!f.attention);
 };
 
 /** Money in short form: $124M, $3.5B, $13B, $1.2T. */
@@ -984,6 +984,180 @@ export function InsideOutMap({ id, onPick }: { id: string; onPick?: (id: string)
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// Birth to now: its own pages, public attention and its milestones on one time axis
+// ---------------------------------------------------------------------------
+
+const monthKey = (d: string) => d.slice(0, 7);
+function monthsBetween(a: string, b: string): string[] {
+  const out: string[] = [];
+  let [y, m] = a.split("-").map(Number);
+  const [y2, m2] = b.split("-").map(Number);
+  while (y < y2 || (y === y2 && m <= m2)) {
+    out.push(`${y}-${String(m).padStart(2, "0")}`);
+    m === 12 ? ((y += 1), (m = 1)) : (m += 1);
+  }
+  return out;
+}
+
+export function TimelineSection({ id }: { id: string }) {
+  const f = AI_360[id];
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [W, setW] = React.useState(900);
+  const [year, setYear] = React.useState<string | null>(null);
+  const [section, setSection] = React.useState<string | null>(null);
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setW(Math.max(300, Math.round(el.clientWidth))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  if (!f || (!f.site && !f.attention)) return null;
+  const inc = f.facts.find((x) => x.key === "incorporated");
+  const start =
+    (inc && /(\w+) (\d{4})/.test(inc.value) ? `${inc.value.match(/(\d{4})/)![1]}-${String(["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"].indexOf(inc.value.split(" ")[0].toLowerCase()) + 1).padStart(2, "0")}` : null) ??
+    [f.site?.first, f.attention?.months[0]?.[0], f.rounds[0]?.started].filter(Boolean).map((x) => monthKey(x!)).sort()[0]!;
+  const end = [f.site?.latest, f.attention?.months.at(-1)?.[0], f.attention?.asOf].filter(Boolean).map((x) => monthKey(x!)).sort().at(-1)!;
+  const months = monthsBetween(start, end);
+  const att = new Map((f.attention?.months ?? []).map(([m, n]) => [m, n]));
+  const own = new Map<string, number>();
+  for (const it of f.site?.items ?? []) own.set(monthKey(it.date), (own.get(monthKey(it.date)) ?? 0) + 1);
+  const maxA = Math.max(1, ...months.map((m) => att.get(m) ?? 0));
+  const maxO = Math.max(1, ...months.map((m) => own.get(m) ?? 0));
+  const L = 8, R = 8, bw = (W - L - R) / months.length;
+  const x = (m: string) => L + months.indexOf(m) * bw + bw / 2;
+  const rowA = { top: 22, h: f.attention ? 90 : 0 };
+  const rowO = { top: rowA.top + rowA.h + (f.site ? 28 : 0), h: f.site ? 46 : 0 };
+  const rowE = { top: rowO.top + rowO.h + 28 };
+  const compact = W < 560;
+  const CH = rowE.top + 48;
+  const marks: { m: string; label: string; kind: "round" | "legal" | "ipo"; title: string }[] = [];
+  for (const r of f.rounds)
+    if (r.started && months.includes(monthKey(r.started)) && (r.kind === "priced_round" || r.kind === "ipo") && r.voting)
+      marks.push({ m: monthKey(r.started), label: r.kind === "ipo" ? "S-1" : shortRound(r), kind: r.kind === "ipo" ? "ipo" : "round", title: `${r.round}${r.amount ? `, ${money(r.amount)}` : ""}` });
+  for (const c of f.legal) if (c.filed && /^\d{4}-\d{2}$/.test(c.filed) && months.includes(c.filed)) marks.push({ m: c.filed, label: "", kind: "legal", title: `Filed: ${c.name}` });
+  const years = [...new Set(months.map((m) => m.slice(0, 4)))];
+  const items = (f.site?.items ?? []).filter((it) => (!year || it.date.startsWith(year)) && (!section || it.section === section));
+  const sections = [...new Set((f.site?.items ?? []).map((i) => i.section))];
+  const top = f.attention?.top.slice(0, 8) ?? [];
+  return (
+    <div className="space-y-4" data-testid="ai-timeline">
+      <H aside={`${ym(start)} to ${ym(end)}`}>Birth to now</H>
+      <figure className="border border-border p-3">
+        <div ref={ref} className="w-full">
+          <svg width={W} height={CH} viewBox={`0 0 ${W} ${CH}`} className="block" role="img" aria-label={`Month by month from ${ym(start)} to ${ym(end)}: Hacker News stories naming the company, the company's own dated pages, funding rounds and lawsuits.`}>
+            <text x={L} y={12} className="fill-muted-foreground font-mono" fontSize={9} letterSpacing="0.12em">
+              {f.attention ? (compact ? `HACKER NEWS STORIES A MONTH, PEAK ${fmt(maxA)}` : `PUBLIC ATTENTION: HACKER NEWS STORIES NAMING IT, A MONTH (PEAK ${fmt(maxA)})`) : ""}
+            </text>
+            {f.attention &&
+              months.map((m) => {
+                const n = att.get(m) ?? 0;
+                const h = (n / maxA) * rowA.h;
+                return n ? <rect key={`a${m}`} x={x(m) - bw * 0.4} y={rowA.top + rowA.h - h} width={Math.max(1, bw * 0.8)} height={h} fill="currentColor" className="text-foreground/40"><title>{`${ym(m)}: ${n} stories`}</title></rect> : null;
+              })}
+            <text x={L} y={rowO.top - 8} className="fill-muted-foreground font-mono" fontSize={9} letterSpacing="0.12em">
+              {f.site ? (compact ? `ITS OWN PAGES A MONTH, PEAK ${fmt(maxO)}` : `ITS OWN PAGES: ${f.site.sections.join(" AND ").toUpperCase()}, A MONTH (PEAK ${fmt(maxO)})`) : ""}
+            </text>
+            {f.site &&
+              months.map((m) => {
+                const n = own.get(m) ?? 0;
+                const h = (n / maxO) * rowO.h;
+                return n ? <rect key={`o${m}`} x={x(m) - bw * 0.4} y={rowO.top + rowO.h - h} width={Math.max(1, bw * 0.8)} height={h} fill="#10b981"><title>{`${ym(m)}: ${n} pages`}</title></rect> : null;
+              })}
+            {marks.length > 0 && <line x1={L} x2={W - R} y1={rowE.top} y2={rowE.top} stroke="currentColor" strokeOpacity={0.2} />}
+            {marks.map((k, i) => (
+              <g key={i}>
+                {k.kind === "legal" ? (
+                  <path d={`M${x(k.m)},${rowE.top - 5} l5,9 h-10 z`} fill="#f59e0b"><title>{k.title}</title></path>
+                ) : (
+                  <path d={`M${x(k.m)},${rowE.top - 7} l7,7 l-7,7 l-7,-7 z`} fill={k.kind === "ipo" ? "#ef4444" : "#ec4899"}><title>{k.title}</title></path>
+                )}
+                {k.label && (
+                  <text x={x(k.m)} y={rowE.top + 22} textAnchor="middle" className="fill-foreground font-mono" fontSize={9} fontWeight={700}>
+                    {k.label}
+                  </text>
+                )}
+              </g>
+            ))}
+            {years.map((yr) => {
+              // A partial first year gets a label only when it has room before the next January.
+              const m = months.find((mm) => mm.startsWith(yr) && mm.endsWith("-01")) ?? (yr === years[0] && months.filter((mm) => mm.startsWith(yr)).length >= 4 ? months[0] : null);
+              return m ? (
+                <g key={yr}>
+                  <line x1={x(m) - bw / 2} x2={x(m) - bw / 2} y1={rowA.top} y2={rowE.top + 8} stroke="currentColor" strokeOpacity={0.08} />
+                  <text x={x(m) - bw / 2 + 2} y={CH - 6} className="fill-muted-foreground font-mono" fontSize={9}>
+                    {yr}
+                  </text>
+                </g>
+              ) : null;
+            })}
+          </svg>
+        </div>
+        <figcaption className="mt-1 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] text-muted-foreground">
+          {marks.some((k) => k.kind === "round") && <span><span className="mr-1 inline-block h-2 w-2" style={{ background: "#ec4899" }} aria-hidden="true" />Funding round</span>}
+          {marks.some((k) => k.kind === "ipo") && <span><span className="mr-1 inline-block h-2 w-2" style={{ background: "#ef4444" }} aria-hidden="true" />IPO filing</span>}
+          {marks.some((k) => k.kind === "legal") && <span><span className="mr-1 inline-block h-2 w-2" style={{ background: "#f59e0b" }} aria-hidden="true" />Lawsuit filed</span>}
+          {f.attention && <span>Attention counts stories whose title names it on Hacker News (query: {f.attention.query}); a few early ones may use the word another way.</span>}
+        </figcaption>
+      </figure>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+        {f.site && (
+          <div>
+            <H aside={`${fmt(f.site.dated)} dated pages · ${ym(f.site.first)} to ${ym(f.site.latest)}`}>Its own record</H>
+            <div className="mb-2 flex flex-wrap gap-1 font-mono text-[10px]">
+              {[null, ...years].map((yr) => (
+                <button key={yr ?? "all"} type="button" onClick={() => setYear(yr)} className={`border px-1.5 py-0.5 ${year === yr ? "border-foreground/60 text-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                  {yr ?? "All years"}
+                </button>
+              ))}
+              <span className="mx-1 text-muted-foreground">·</span>
+              {[null, ...sections].map((sec) => (
+                <button key={sec ?? "all"} type="button" onClick={() => setSection(sec)} className={`border px-1.5 py-0.5 capitalize ${section === sec ? "border-foreground/60 text-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                  {sec ?? "everything"}
+                </button>
+              ))}
+            </div>
+            <ol className="max-h-[26rem] divide-y divide-border overflow-y-auto border border-border">
+              {items.map((it) => (
+                <li key={it.url} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 px-3 py-1.5 font-mono text-[11px]">
+                  <span className="tabular-nums text-muted-foreground">{dayMonthYear(it.date)}</span>
+                  <a href={it.url} target="_blank" rel="noopener noreferrer" className="min-w-0 text-foreground hover:underline">
+                    {it.title} ↗<span className="ml-2 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{it.section}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+              {items.length} shown. Every dated page in these sections of its sitemap, with the publish date the page states.
+            </p>
+          </div>
+        )}
+        {top.length > 0 && (
+          <div>
+            <H aside="most discussed">On Hacker News</H>
+            <ol className="divide-y divide-border border border-border">
+              {top.map((t) => (
+                <li key={t.url} className="px-3 py-1.5 font-mono text-[11px]">
+                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">
+                    {t.title} ↗
+                  </a>
+                  <span className="block text-[10px] text-muted-foreground">
+                    {t.date ? `${dayMonthYear(t.date)} · ` : ""}
+                    {t.summary}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-1 font-mono text-[10px] text-muted-foreground">Public discussion, not the company&apos;s words; threads with the most points that name it in the title.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // The 360 summary: every angle, what is collected, where it comes from
 // ---------------------------------------------------------------------------
@@ -1004,8 +1178,11 @@ export function anglesOf(id: string): Angle[] {
     { key: "advisors", label: "Advisors", count: f?.advisors.length ?? 0, note: f?.advisors.length ? "auditor, counsel, underwriters" : "not collected yet", tab: "investors" },
     { key: "news", label: "News and events", count: (intel?.events.length ?? 0), note: "dated events from filings and this site's news", tab: "news" },
     { key: "posts", label: "Posts", count: intel?.posts.length ?? 0, note: "release notes and posts from official channels", tab: "people" },
+    { key: "website", label: "Its website", count: f?.site?.dated ?? 0, note: f?.site ? `dated pages, ${ym(f.site.first)} to now` : "not read yet", tab: "f360" },
+    { key: "attention", label: "Public attention", count: f?.attention?.total ?? 0, note: f?.attention ? "Hacker News stories naming it, by month" : "no clear query yet", tab: "f360" },
+    { key: "tone", label: "News tone", count: f?.tone?.days.length ?? null, note: f?.tone ? "days of GDELT news tone" : "GDELT news tone: next refresh", tab: "f360" },
+    { key: "reddit", label: "Reddit", count: null, note: "pending a licensed source", tab: "f360" },
     { key: "earnings", label: "Earnings calls", count: null, note: listed ? "next, from SEC filings and investor pages" : "none until it is listed", tab: "earnings" },
-    { key: "sentiment", label: "Sentiment", count: null, note: "news tone and public discussion: next", tab: "news" },
   ];
 }
 
@@ -1016,9 +1193,9 @@ export function Company360({ id, onPick, onTab }: { id: string; onPick?: (id: st
       <FactsSection id={id} />
       <div>
         <H aside="what this file covers, and what is next">Every angle</H>
-        <ul className="grid grid-cols-2 gap-px border border-border bg-border lg:grid-cols-5">
+        <ul className="grid grid-cols-2 border-l border-t border-border sm:grid-cols-3 lg:grid-cols-6">
           {angles.map((a) => (
-            <li key={a.key} className="bg-background">
+            <li key={a.key} className="border-b border-r border-border bg-background">
               <button type="button" onClick={() => a.tab && onTab?.(a.tab)} className="block h-full w-full p-3 text-left hover:bg-foreground/[0.04]" disabled={!onTab}>
                 <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">{a.label}</span>
                 <span className={`mt-1 block font-display text-xl font-bold tabular-nums ${a.count ? "text-foreground" : "text-muted-foreground"}`}>{a.count == null ? "next" : fmt(a.count)}</span>
@@ -1028,6 +1205,7 @@ export function Company360({ id, onPick, onTab }: { id: string; onPick?: (id: st
           ))}
         </ul>
       </div>
+      <TimelineSection id={id} />
       <InsideOutMap id={id} onPick={onPick} />
     </div>
   );

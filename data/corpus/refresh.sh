@@ -24,6 +24,12 @@ echo "== feeds"
 python3 collect_posts.py --feeds || true
 echo "== hiring (every open role on public job boards; free)"
 python3 collect_jobs.py | tail -1 || true
+echo "== company websites (dated newsroom and research pages; one request a second)"
+python3 collect_site.py | tail -2 || true
+echo "== public attention (Hacker News titles by month; free)"
+python3 collect_attention.py | tail -8 || true
+echo "== news tone (GDELT; one request every 6 seconds, stops if refused)"
+python3 collect_tone.py | tail -8 || true
 echo "== people photos (Wikimedia Commons, free licenses only; new people only)"
 python3 fetch_people_photos.py | tail -1 || true
 echo "== icons"
