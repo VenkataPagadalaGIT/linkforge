@@ -627,3 +627,15 @@ CREATE TABLE IF NOT EXISTS ontology.pipeline_run (
   note text
 );
 CREATE INDEX IF NOT EXISTS pipeline_run_idx ON ontology.pipeline_run (pipeline, started_at DESC);
+
+-- Every raw paid-API response, kept whole in the database as well as on disk, so a backup carries it.
+CREATE TABLE IF NOT EXISTS ontology.raw_capture (
+  id serial PRIMARY KEY,
+  source text NOT NULL,
+  tag text NOT NULL,
+  captured_at timestamptz NOT NULL DEFAULT now(),
+  path text,
+  records int,
+  cost_usd numeric,
+  payload jsonb NOT NULL
+);
