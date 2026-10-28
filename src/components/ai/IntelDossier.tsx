@@ -166,7 +166,18 @@ export function Dossier({
     .filter(Boolean)
     .sort((a, b) => (DEGREE.get(b.id) ?? 0) - (DEGREE.get(a.id) ?? 0));
   const rel = EDGES_OF.get(id) ?? [];
-  const byCat = CATS.map((c) => ({ c, items: rel.filter((e) => e.cat === c.id) })).filter((x) => x.items.length);
+  // One chip per counterparty in each category: two links to the same company (it supplies and it invests) are one chip, its title listing both.
+  const byCat = CATS.map((c) => {
+    const seen = new Map<string, { other: string; notes: string[]; count: number }>();
+    for (const e of rel.filter((x) => x.cat === c.id)) {
+      const other = e.from === id ? e.to : e.from;
+      const cur = seen.get(other) ?? { other, notes: [], count: 0 };
+      cur.count += 1;
+      cur.notes.push(e.note ?? RELATION_META[e.relation].label);
+      seen.set(other, cur);
+    }
+    return { c, items: [...seen.values()].sort((a, b) => (DEGREE.get(b.other) ?? 0) - (DEGREE.get(a.other) ?? 0)) };
+  }).filter((x) => x.items.length);
   const deals = (intel?.deals ?? []).slice().sort((a, b) => (b.amountHigh ?? b.amount ?? 0) - (a.amountHigh ?? a.amount ?? 0));
   const kpis = orderSeries((intel?.series ?? []).filter((s) => KPI_PRIORITY.includes(s.metric))).slice(0, 4);
   const shares = sharesOf(id).map((g) => ({ g, r: g.rows.find((x) => x.entity === id)! }));
@@ -384,19 +395,21 @@ export function Dossier({
                 {c.label} · {items.length}
               </p>
               <div className="flex flex-wrap gap-1">
-                {items.slice(0, 12).map((e, k) => {
-                  const other = e.from === id ? e.to : e.from;
-                  return (
-                    <button
-                      key={`${other}-${k}`}
-                      onClick={() => onSelect(other)}
-                      title={e.note ?? RELATION_META[e.relation].label}
-                      className="border border-border px-1.5 py-0.5 font-mono text-[10px] text-foreground/90 hover:border-foreground/40"
-                    >
-                      {getNode(other)?.name ?? other}
-                    </button>
-                  );
-                })}
+                {items.slice(0, 12).map(({ other, notes, count }) => (
+                  <button
+                    key={other}
+                    onClick={() => onSelect(other)}
+                    title={[...new Set(notes)].join(" · ")}
+                    className="inline-flex items-center gap-1.5 border border-border px-1.5 py-0.5 font-mono text-[10px] text-foreground/90 hover:border-foreground/40"
+                  >
+                    {logoUrl(other) && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={logoUrl(other)!} alt="" width={14} height={14} className="h-3.5 w-3.5 shrink-0 bg-white object-contain" loading="lazy" />
+                    )}
+                    {getNode(other)?.name ?? other}
+                    {count > 1 && <span className="text-muted-foreground">×{count}</span>}
+                  </button>
+                ))}
                 {items.length > 12 && <span className="font-mono text-[10px] text-muted-foreground/70 px-1">+{items.length - 12}</span>}
               </div>
             </div>

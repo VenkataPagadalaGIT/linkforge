@@ -29,6 +29,7 @@ import { SearchBox } from "./IntelDossier";
 import { ShareCard, isShareMetric } from "./AiShares";
 import { FollowButton, WatchlistStrip, useWatchlist } from "./Watch";
 import { AI_360 } from "@/data/ai360";
+import { sections360For } from "@/lib/ai360-sections";
 import { Company360, FootprintSection, HiringSection, TalentSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
 import { AI_SHARES } from "@/data/aiIntel";
 
@@ -1216,6 +1217,19 @@ export default function AiDashboard({ scope, onScope }: { scope: AiScope; onScop
         <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Follows the graph · {ids.length === 1 ? "1 entity" : `${fmt(ids.length)} entities`}</p>
       </div>
       <WatchlistStrip onPick={pick} />
+      {node && sections360For(node.id).length > 0 && (
+        <p className="flex flex-wrap items-center gap-1.5 border-b border-border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground" data-testid="ai-section-links">
+          <span>Permanent pages:</span>
+          <Link to={`/notebook/ai/map/${node.id}`} className="border border-border px-1.5 py-0.5 text-foreground hover:border-foreground/50">
+            Overview
+          </Link>
+          {sections360For(node.id).map((s) => (
+            <Link key={s.id} to={`/notebook/ai/map/${node.id}/${s.id}`} className="border border-border px-1.5 py-0.5 text-foreground hover:border-foreground/50">
+              {s.label}
+            </Link>
+          ))}
+        </p>
+      )}
       <div role="tablist" aria-label="Dashboard sections" className="flex overflow-x-auto border-b border-border [scrollbar-width:none]">
         {TABS.map((t) => (
           <button

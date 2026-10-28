@@ -20,6 +20,7 @@ export interface Advisor { org: string; entity: string | null; role: string; sin
 export interface Fact { key: string; label: string; value: string; asOf: string | null; evidence: IntelEvidence[] }
 export interface Hiring {
   board: string | null; careersUrl: string | null; asOf: string; trackedSince: string; open: number; new30: number; closed30: number | null;
+  rolesUrl?: string; companyId?: string | null;
   workplace: Record<string, number>; teams: { name: string; count: number }[]; teamCount: number; cities: { name: string; count: number }[];
   themes: { key: string; label: string; count: number; examples: string[] }[];
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
@@ -37,6 +38,7 @@ export interface Talent { people: number; withTitle: number; withEducation: numb
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
+  reddit: { posts: number; top: { title: string; url: string; date: string | null; summary: string }[] } | null;
 }
 
 export const AI_360: Record<string, Entity360> = {
@@ -63,7 +65,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 18270.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "agc-blanks": {
   "people": [],
@@ -88,7 +91,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 4761.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "alchip-guc": {
   "people": [],
@@ -113,7 +117,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 2480.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "amazon-investor": {
   "people": [],
@@ -138,7 +143,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 196.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "amd": {
   "people": [],
@@ -163,7 +169,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 188.22000122070312,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "amec": {
   "people": [],
@@ -188,7 +195,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 171.95301818847656,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "amkor": {
   "people": [],
@@ -213,7 +221,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 29.760000228881836,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "anthropic": {
   "people": [
@@ -4309,7 +4318,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://job-boards.greenhouse.io/anthropic/jobs/5453569008",
      "published": "2026-10-27"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/anthropic.json",
+   "companyId": "74126343"
   },
   "site": {
    "sitemap": "https://www.anthropic.com/sitemap.xml",
@@ -4317,7 +4328,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 2889,
+   "total": 3627,
    "dated": 487,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7286,11 +7297,11 @@ export const AI_360: Record<string, Entity360> = {
      "host": "claude.com",
      "label": "claude.com",
      "mode": "text",
-     "pages": 2185,
-     "withText": 603,
-     "dated": 160,
-     "withAuthors": 12,
-     "words": 589181,
+     "pages": 2650,
+     "withText": 1068,
+     "dated": 338,
+     "withAuthors": 33,
+     "words": 1009614,
      "failed": 0,
      "readOn": "2026-10-28"
     },
@@ -7298,13 +7309,13 @@ export const AI_360: Record<string, Entity360> = {
      "host": "platform.claude.com",
      "label": "Developer docs",
      "mode": "titles",
-     "pages": 0,
+     "pages": 273,
      "withText": 0,
-     "dated": 0,
+     "dated": 1,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
-     "readOn": null
+     "readOn": "2026-10-28"
     },
     {
      "host": "support.claude.com",
@@ -7319,8 +7330,8 @@ export const AI_360: Record<string, Entity360> = {
      "readOn": null
     }
    ],
-   "words": 2487097,
-   "pagesWithText": 1306,
+   "words": 2907530,
+   "pagesWithText": 1771,
    "teams": [
     {
      "name": "Alignment",
@@ -7348,6 +7359,10 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Claude Code is included with Team plan. Includes self-serve seat management and additional usage at standard API rates.",
+     "count": 1
+    },
+    {
+     "name": "For organizations purchasing 2-150 seats",
      "count": 1
     }
    ],
@@ -11208,11 +11223,11 @@ export const AI_360: Record<string, Entity360> = {
    "total": 5226,
    "rosterUrl": "/api/ai/entity/anthropic/people",
    "counts": {
+    "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
-    "linkedin:stated": 5072,
-    "openalex:confirmed": 34,
     "company_site:confirmed": 124,
+    "linkedin:stated": 5072,
     "openalex:model": 282
    }
   },
@@ -11824,6 +11839,83 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "withEducation": 3001,
    "withBioLinks": 702
+  },
+  "reddit": {
+   "posts": 34,
+   "top": [
+    {
+     "title": "AI startup hacks Anthropic in 12 hours, gains access to employee details and internal messages",
+     "url": "https://www.reddit.com/r/technology/comments/1xh1fih/ai_startup_hacks_anthropic_in_12_hours_gains/",
+     "date": "2026-10-27",
+     "summary": "r/technology · 14437 upvotes · 400 comments"
+    },
+    {
+     "title": "Anthropic posts staggering $80.7 billion net loss in first half of 2026 as IPO approaches",
+     "url": "https://www.reddit.com/r/technology/comments/1xbjr1n/anthropic_posts_staggering_807_billion_net_loss/",
+     "date": "2026-10-21",
+     "summary": "r/technology · 18003 upvotes · 1680 comments"
+    },
+    {
+     "title": "Anthropic logged net loss of over $80 billion in first half of 2026",
+     "url": "https://www.reddit.com/r/technology/comments/1xb7op7/anthropic_logged_net_loss_of_over_80_billion_in/",
+     "date": "2026-10-20",
+     "summary": "r/technology · 29014 upvotes · 2612 comments"
+    },
+    {
+     "title": "Anthropic plans to give each kid in America a portion of its $80B in losses.",
+     "url": "https://www.reddit.com/r/wallstreetbets/comments/1xb73hx/anthropic_plans_to_give_each_kid_in_america_a/",
+     "date": "2026-10-20",
+     "summary": "r/wallstreetbets · 27943 upvotes · 448 comments"
+    },
+    {
+     "title": "Top executives at Anthropic, OpenAI and other AI companies are privately gaming out scenarios for a public and political revolt after a catastrophic AI event.",
+     "url": "https://www.reddit.com/r/technology/comments/1x1i81q/top_executives_at_anthropic_openai_and_other_ai/",
+     "date": "2026-10-09",
+     "summary": "r/technology · 12887 upvotes · 1504 comments"
+    },
+    {
+     "title": "Florida woman used Claude as a diary, then Anthropic reported an entry to police",
+     "url": "https://www.reddit.com/r/technology/comments/1wxgn8c/florida_woman_used_claude_as_a_diary_then/",
+     "date": "2026-10-04",
+     "summary": "r/technology · 18825 upvotes · 1650 comments"
+    },
+    {
+     "title": "Michael Burry says it would be for the 'good of humanity' if a market crash stops OpenAI and Anthropic from going public",
+     "url": "https://www.reddit.com/r/technology/comments/1wujpgm/michael_burry_says_it_would_be_for_the_good_of/",
+     "date": "2026-09-30",
+     "summary": "r/technology · 21748 upvotes · 623 comments"
+    },
+    {
+     "title": "Anthropic IPO leak is insane",
+     "url": "https://www.reddit.com/r/stocks/comments/1wtdg4w/anthropic_ipo_leak_is_insane/",
+     "date": "2026-09-29",
+     "summary": "r/stocks · 14987 upvotes · 1140 comments"
+    },
+    {
+     "title": "AOC: \"We must make it clear now that should the AI bubble pop, Congress should not bail out Big Tech...Silicon Valley billionaires want us to believe that AI robots will destroy humanity. But the bigg",
+     "url": "https://www.reddit.com/r/MurderedByAOC/comments/1wkv0b7/aoc_we_must_make_it_clear_now_that_should_the_ai/",
+     "date": "2026-09-19",
+     "summary": "r/MurderedByAOC · 17932 upvotes · 265 comments"
+    },
+    {
+     "title": "An Anthropic researcher just quit, saying OpenAI and Anthropic are 'gambling with our lives'",
+     "url": "https://www.reddit.com/r/technology/comments/1wbgwa6/an_anthropic_researcher_just_quit_saying_openai/",
+     "date": "2026-09-09",
+     "summary": "r/technology · 15235 upvotes · 1455 comments"
+    },
+    {
+     "title": "Sony, Warner sue Anthropic, alleging \"blatant theft\" of intellectual property",
+     "url": "https://www.reddit.com/r/technology/comments/1w1xxoy/sony_warner_sue_anthropic_alleging_blatant_theft/",
+     "date": "2026-08-29",
+     "summary": "r/technology · 12556 upvotes · 311 comments"
+    },
+    {
+     "title": "Anthropic CEO Dario Amodei says the way for AI to win over the public is to 'actually' cure cancer",
+     "url": "https://www.reddit.com/r/technology/comments/1vq3dh3/anthropic_ceo_dario_amodei_says_the_way_for_ai_to/",
+     "date": "2026-08-16",
+     "summary": "r/technology · 12477 upvotes · 2332 comments"
+    }
+   ]
   }
  },
  "applied-materials": {
@@ -11849,7 +11941,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 203.39999389648438,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "arista": {
   "people": [],
@@ -11874,7 +11967,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 114.5199966430664,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "arm": {
   "people": [],
@@ -11899,7 +11993,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 100.0199966430664,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "ase": {
   "people": [],
@@ -11924,7 +12019,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 13.350000381469727,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "asm-international": {
   "people": [],
@@ -11949,7 +12045,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 4.050000190734863,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "asml": {
   "people": [],
@@ -11974,7 +12071,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 946.1099853515625,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "ats-substrate": {
   "people": [],
@@ -11999,7 +12097,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 25.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "aws": {
   "people": [],
@@ -12024,7 +12123,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 196.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "azure": {
   "people": [],
@@ -12049,7 +12149,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 349.20001220703125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "besi": {
   "people": [],
@@ -12074,7 +12175,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 120.1500015258789,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "bloom-energy": {
   "people": [],
@@ -12099,7 +12201,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 75.69999694824219,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "broadcom": {
   "people": [],
@@ -12124,7 +12227,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 289.9599914550781,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "cadence": {
   "people": [],
@@ -12149,7 +12253,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 262.75,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "cambricon": {
   "people": [],
@@ -12174,7 +12279,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 649.6644287109375,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "cisco": {
   "people": [],
@@ -12199,7 +12305,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 70.54000091552734,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "cohere": {
   "people": [],
@@ -12447,7 +12554,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/cohere/dca93d1a-9ab8-442b-aa76-950595e8b9c3",
      "published": "2026-10-23"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/cohere.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -12455,7 +12564,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "coherent": {
   "people": [],
@@ -12480,7 +12590,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 123.75,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "constellation-energy": {
   "people": [],
@@ -12505,7 +12616,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 228.6300048828125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "coreweave-capital": {
   "people": [],
@@ -12742,7 +12854,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://coreweave.com/careers/job?4723545006&board=coreweave&gh_jid=4723545006",
      "published": "2026-10-21"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/coreweave-capital.json",
+   "companyId": null
   },
   "site": null,
   "attention": {
@@ -13151,7 +13265,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 51.2400016784668,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "coreweave-facilities": {
   "people": [],
@@ -13176,7 +13291,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 51.2400016784668,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -13402,7 +13518,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/cursor/1a584899-847d-4e5b-8181-fb889fe4e06e",
      "published": "2026-10-20"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/cursor-anysphere.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -13410,7 +13528,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "daikin-fluoropolymer": {
   "people": [],
@@ -13435,7 +13554,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 17380.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "databricks": {
   "people": [],
@@ -13672,7 +13792,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8870720002",
      "published": "2026-10-27"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/databricks.json",
+   "companyId": null
   },
   "site": null,
   "attention": {
@@ -14347,7 +14469,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "delta-electronics": {
   "people": [],
@@ -14372,7 +14495,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 886.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "digital-realty": {
   "people": [],
@@ -14397,7 +14521,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 146.22999572753906,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "disco-corp": {
   "people": [],
@@ -14422,7 +14547,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 42370.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "ebara": {
   "people": [],
@@ -14447,7 +14573,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 3538.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "equinix": {
   "people": [],
@@ -14472,7 +14599,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 720.6199951171875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "foxconn-industrial-internet": {
   "people": [],
@@ -14497,7 +14625,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 187.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "fujimi-slurry": {
   "people": [],
@@ -14522,7 +14651,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 2212.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "fujitsu-fugaku": {
   "people": [],
@@ -14547,7 +14677,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 3016.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "ge-vernova": {
   "people": [],
@@ -14572,7 +14703,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 530.1599731445312,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "github-copilot": {
   "people": [],
@@ -14597,7 +14729,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 349.20001220703125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "globalfoundries": {
   "people": [],
@@ -14622,7 +14755,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 32.02000045776367,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "google-cloud": {
   "people": [],
@@ -14647,7 +14781,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 267.6700134277344,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "google-deepmind": {
   "people": [],
@@ -15377,7 +15512,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "google-investor": {
   "people": [],
@@ -15402,7 +15538,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 267.6700134277344,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "harvey-ai": {
   "people": [],
@@ -15612,7 +15749,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/harvey/bbf25f2b-0652-4a14-aab2-5205aba53d30",
      "published": "2026-10-27"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/harvey-ai.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -15620,7 +15759,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "hoya-mask-blanks": {
   "people": [],
@@ -15645,7 +15785,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 22165.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "hygon": {
   "people": [],
@@ -15670,7 +15811,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 186.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "intel": {
   "people": [],
@@ -15695,7 +15837,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 32.88999938964844,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "intel-foundry": {
   "people": [],
@@ -15720,7 +15863,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 32.88999938964844,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "inventec": {
   "people": [],
@@ -15745,7 +15889,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 38.54999923706055,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "jcet": {
   "people": [],
@@ -15770,7 +15915,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 34.58000183105469,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "jpmorgan-ai": {
   "people": [],
@@ -15795,7 +15941,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 279.1000061035156,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "kioxia": {
   "people": [],
@@ -15820,7 +15967,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 2784.333251953125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "kla": {
   "people": [],
@@ -15845,7 +15993,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 107.19599914550781,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "kokusai-electric": {
   "people": [],
@@ -15870,7 +16019,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 3852.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "kyec": {
   "people": [],
@@ -15895,7 +16045,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 187.14285278320312,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "lam-research": {
   "people": [],
@@ -15920,7 +16071,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 135.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "lambda": {
   "people": [],
@@ -16139,7 +16291,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/lambda/af2fb9b0-157d-4f79-a667-d30d0107387b",
      "published": "2026-10-21"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/lambda.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -16147,7 +16301,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "lasertec": {
   "people": [],
@@ -16172,7 +16327,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 25590.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "lite-on": {
   "people": [],
@@ -16197,7 +16353,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 139.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "lumentum": {
   "people": [],
@@ -16222,7 +16379,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 184.1999969482422,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "marvell": {
   "people": [],
@@ -16247,7 +16405,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 70.69000244140625,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "mediatek": {
   "people": [],
@@ -16272,7 +16431,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 1130.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "meta-infra": {
   "people": [],
@@ -16297,7 +16457,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 520.260009765625,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "micron": {
   "people": [],
@@ -16322,7 +16483,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 192.58999633789062,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "microsoft": {
   "people": [],
@@ -16347,7 +16509,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 349.20001220703125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "mistral": {
   "people": [],
@@ -16629,7 +16792,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "murata": {
   "people": [],
@@ -16654,7 +16818,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 2821.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nan-ya-pcb": {
   "people": [],
@@ -16679,7 +16844,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 232.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "naura": {
   "people": [],
@@ -16704,7 +16870,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 386.6199951171875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nebius": {
   "people": [],
@@ -16729,7 +16896,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 73.5199966430664,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "ntt-iown": {
   "people": [],
@@ -16754,7 +16922,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 142.60000610351562,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nuscale": {
   "people": [],
@@ -16779,7 +16948,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 5.199999809265137,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nvidia": {
   "people": [
@@ -17514,7 +17684,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 164.27000427246094,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nxp": {
   "people": [],
@@ -17539,7 +17710,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 183.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "nyt-copyright-suit": {
   "people": [],
@@ -17564,7 +17736,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 55.93000030517578,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "oklo": {
   "people": [],
@@ -17589,7 +17762,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 25.389999389648438,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "openai": {
   "people": [],
@@ -17838,7 +18012,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/openai/1eb6ef0f-0e51-46d3-b888-c1a4c22c190a",
      "published": "2026-10-28"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/openai.json",
+   "companyId": null
   },
   "site": null,
   "attention": {
@@ -18463,7 +18639,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "oracle-cloud": {
   "people": [],
@@ -18488,7 +18665,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 114.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "palantir": {
   "people": [],
@@ -18513,7 +18691,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 106.37000274658203,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "palantir-aip": {
   "people": [],
@@ -18538,7 +18717,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 106.37000274658203,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "perplexity": {
   "people": [],
@@ -18772,7 +18952,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/perplexity/3938a587-e8ba-4cdf-a811-1f58072b51e3",
      "published": "2026-10-23"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/perplexity.json",
+   "companyId": null
   },
   "site": null,
   "attention": {
@@ -19067,7 +19249,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "psmc": {
   "people": [],
@@ -19092,7 +19275,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 27.899999618530273,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "pti-powertech": {
   "people": [],
@@ -19117,7 +19301,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 148.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "qualcomm-edge": {
   "people": [],
@@ -19142,7 +19327,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 121.98999786376953,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "quanta": {
   "people": [],
@@ -19167,7 +19353,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 260.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "reddit-data-licensing": {
   "people": [],
@@ -19192,7 +19379,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 119.2699966430664,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "renesas": {
   "people": [],
@@ -19217,7 +19405,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 1753.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "resonac": {
   "people": [],
@@ -19242,7 +19431,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 5413.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "salesforce-agentforce": {
   "people": [],
@@ -19267,7 +19457,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 146.32000732421875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "sambanova": {
   "people": [],
@@ -19484,7 +19675,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6224835004",
      "published": "2026-10-27"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/sambanova.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -19492,7 +19685,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "samsung": {
   "people": [],
@@ -19517,7 +19711,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 94500.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "samsung-foundry": {
   "people": [],
@@ -19542,7 +19737,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 94500.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "sap-ai": {
   "people": [],
@@ -19567,7 +19763,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 144.97000122070312,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "scale-ai": {
   "people": [],
@@ -19774,7 +19971,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://job-boards.greenhouse.io/scaleai/jobs/4735665005",
      "published": "2026-10-19"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/scale-ai.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -19782,7 +19981,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "schneider-electric": {
   "people": [],
@@ -19807,7 +20007,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 38.720001220703125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "screen-holdings": {
   "people": [],
@@ -19832,7 +20033,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 5825.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "servicenow": {
   "people": [],
@@ -19857,7 +20059,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 81.23999786376953,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "shin-etsu": {
   "people": [],
@@ -19882,7 +20085,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 4366.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "siemens-eda": {
   "people": [],
@@ -19907,7 +20111,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 198.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "siltronic": {
   "people": [],
@@ -19932,7 +20137,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 41.720001220703125,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "sk-hynix": {
   "people": [],
@@ -19957,7 +20163,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 501000.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "smic": {
   "people": [],
@@ -19982,7 +20189,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 44.099998474121094,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "snowflake": {
   "people": [],
@@ -20007,7 +20215,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 118.30000305175781,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "softbank": {
   "people": [],
@@ -20032,7 +20241,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 10.550000190734863,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "softbank-arm-ai": {
   "people": [],
@@ -20057,7 +20267,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 3365.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "sony-image-sensor": {
   "people": [],
@@ -20082,7 +20293,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 3043.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "stmicro": {
   "people": [],
@@ -20107,7 +20319,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 21.110000610351562,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "sumco": {
   "people": [],
@@ -20132,7 +20345,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 1131.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "synopsys": {
   "people": [],
@@ -20157,7 +20371,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 362.54998779296875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "teradyne": {
   "people": [],
@@ -20182,7 +20397,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 151.52000427246094,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "thinking-machines": {
   "people": [],
@@ -20388,7 +20604,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://jobs.ashbyhq.com/thinkingmachines/c190a799-fa73-4f38-b44a-85871968c094",
      "published": "2026-10-14"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/thinking-machines.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -20396,7 +20614,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "tokyo-electron": {
   "people": [],
@@ -20421,7 +20640,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 6012.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "tokyo-ohka": {
   "people": [],
@@ -20446,7 +20666,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 5343.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "tongfu": {
   "people": [],
@@ -20471,7 +20692,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 34.650001525878906,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "toppan-photomask": {
   "people": [],
@@ -20496,7 +20718,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 1833.0,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "tsmc": {
   "people": [],
@@ -20521,7 +20744,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 266.82000732421875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "umc": {
   "people": [],
@@ -20546,7 +20770,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 6.96999979019165,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "vertiv": {
   "people": [],
@@ -20571,7 +20796,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 147.82000732421875,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "vistra": {
   "people": [],
@@ -20596,7 +20822,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 132.66000366210938,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "waymo-av": {
   "people": [],
@@ -20621,7 +20848,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 267.6700134277344,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "wistron": {
   "people": [],
@@ -20646,7 +20874,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 122.5,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "wiwynn": {
   "people": [],
@@ -20671,7 +20900,8 @@ export const AI_360: Record<string, Entity360> = {
    "yearLow": 1102.992431640625,
    "source": "yahoo"
   },
-  "talent": null
+  "talent": null,
+  "reddit": null
  },
  "xai-capital": {
   "people": [],
@@ -20917,7 +21147,9 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://job-boards.greenhouse.io/xai/jobs/5270904007",
      "published": "2026-10-26"
     }
-   ]
+   ],
+   "rolesUrl": "/ai/360/jobs/xai-capital.json",
+   "companyId": null
   },
   "site": null,
   "attention": null,
@@ -20925,7 +21157,8 @@ export const AI_360: Record<string, Entity360> = {
   "footprint": null,
   "agreements": [],
   "market": null,
-  "talent": null
+  "talent": null,
+  "reddit": null
  }
 };
 

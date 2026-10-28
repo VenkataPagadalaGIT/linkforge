@@ -30,6 +30,7 @@ import { guides } from "@/data/guides";
 import { GUIDE_TOPICS } from "@/data/guideTopics";
 import { refConcepts, REF_BASE } from "@/data/learnReference";
 import { nodes as aiOntologyNodes, LAYER_BY_ID } from "@/data/aiOntology";
+import { entitiesWith360, sections360For } from "@/lib/ai360-sections";
 import { conferences, isLogisticsSession, listConferenceSessions } from "@/data/conferences";
 import { speakers } from "@/data/speakers";
 import { aiContributors } from "@/data/aiContributors";
@@ -271,6 +272,17 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
       href: `/notebook/ai/map/${n.id}`, title: n.name, section: "map", group: LAYER_BY_ID.get(n.layer)?.label ?? "Other",
       xml: { lastModified: now, changeFrequency: "monthly", priority: n.chokepoint ? 0.7 : 0.6 },
     });
+  }
+  // The 360 company files: one page per section (people, investors, legal, hiring, birth to now) for each company that has one.
+  for (const id of entitiesWith360()) {
+    const n = aiOntologyNodes.find((x) => x.id === id);
+    if (!n) continue;
+    for (const s of sections360For(id)) {
+      out.push({
+        href: `/notebook/ai/map/${id}/${s.id}`, title: `${n.name}: ${s.label}`, section: "map", group: `${n.name} 360`,
+        xml: { lastModified: now, changeFrequency: s.id === "hiring" ? "daily" : "weekly", priority: 0.7 },
+      });
+    }
   }
 
   // Venkata Pagadala - Universe: the hub, then LinkedIn (its articles, each in full, and its posts) and one page per node of the topic tree

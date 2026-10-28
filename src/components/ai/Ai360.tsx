@@ -5,6 +5,8 @@ import { getNode } from "@/data/aiOntology";
 import { AI_INTEL, type IntelEvidence } from "@/data/aiIntel";
 import { AI_360, type Affiliation, type Agreement, type FootprintPerson, type FundingRound, type Hiring, type InvestorKind, type LegalCase, type Person360, type PersonGroup } from "@/data/ai360";
 import { dayMonthYear, monthYear } from "./intelModel";
+import { logoUrl } from "@/data/aiLogos";
+import { orgLogo } from "@/data/aiOrgLogos";
 
 /**
  * The 360 layer of a company file: who runs it and where else they work, who paid for it round by round,
@@ -141,9 +143,18 @@ function EntityLink({ id, onPick, className, title, children }: { id: string | n
   );
 }
 
+/** A brand mark for an entity id or an organization name: the graph's icon, else the verified organization icon, else nothing. */
+export function Mark({ id, name, size = 14, className = "" }: { id?: string | null; name?: string | null; size?: number; className?: string }) {
+  const src = (id && logoUrl(id)) || orgLogo(name) || null;
+  if (!src) return null;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} alt="" width={size} height={size} loading="lazy" className={`inline-block shrink-0 bg-white object-contain align-[-2px] ${className}`} style={{ width: size, height: size }} />;
+}
+
 function OrgName({ a, onPick }: { a: Pick<Affiliation, "org" | "entity">; onPick?: (id: string) => void }) {
   return (
     <EntityLink id={a.entity} onPick={onPick} className="font-bold text-foreground underline decoration-dotted underline-offset-2 hover:decoration-solid">
+      <Mark id={a.entity} name={a.org} className="mr-1" />
       {a.org}
     </EntityLink>
   );
@@ -316,6 +327,7 @@ export function HiringSection({ id }: { id: string }) {
           <Bars rows={h.cities} total={h.open} />
         </div>
       </div>
+      <RoleSearch id={id} />
       <div>
         <H aside="newest first">Latest roles</H>
         <ol className="divide-y divide-border border border-border">
@@ -345,6 +357,109 @@ export function HiringSection({ id }: { id: string }) {
         . Roles, not people. Themes are matched from words in role titles, so they are approximate. Roles that come off the board are tracked from {dayMonthYear(h.trackedSince)}
         {h.closed30 != null ? `; ${fmt(h.closed30)} closed in the last 30 days.` : ", so closed-role counts appear after a month of history."}
       </p>
+    </div>
+  );
+}
+
+
+// ---------------------------------------------------------------------------
+// Role search: type a role, see every matching open role we hold, similar roles, and the same search on LinkedIn
+// ---------------------------------------------------------------------------
+
+interface RoleRow { t: string; team: string | null; loc: string | null; url: string; pub: string | null; wp: string | null }
+const STOP = new Set(["and", "of", "the", "for", "to", "in", "on", "at", "a", "an", "with", "senior", "sr", "staff", "lead", "principal", "manager", "head", "director", "intern", "junior", "associate", "ii", "iii", "iv"]);
+const words = (t: string) => t.toLowerCase().replace(/[^a-z0-9+#]+/g, " ").split(" ").filter((w) => w && !STOP.has(w));
+
+export function RoleSearch({ id }: { id: string }) {
+  const h = AI_360[id]?.hiring;
+  const [q, setQ] = React.useState("");
+  const [rows, setRows] = React.useState<RoleRow[] | null>(null);
+  const [state, setState] = React.useState<"idle" | "loading" | "failed">("idle");
+  React.useEffect(() => {
+    if (!h?.rolesUrl || rows || state !== "idle" || !q.trim()) return;
+    setState("loading");
+    fetch(h.rolesUrl)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j) => {
+        setRows(j.roles as RoleRow[]);
+        setState("idle");
+      })
+      .catch(() => setState("failed"));
+  }, [q, h?.rolesUrl, rows, state]);
+  if (!h) return null;
+  const qw = words(q);
+  const scored = qw.length && rows ? rows.map((r) => {
+    const tw = new Set(words(r.t));
+    const hit = qw.filter((w) => tw.has(w) || [...tw].some((x) => x.startsWith(w) || w.startsWith(x))).length;
+    const exact = r.t.toLowerCase().includes(q.trim().toLowerCase()) ? 2 : 0;
+    return { r, score: hit + exact };
+  }).filter((x) => x.score > 0).sort((a, b) => b.score - a.score || (b.r.pub ?? "").localeCompare(a.r.pub ?? "")) : [];
+  const exact = scored.filter((x) => x.score >= 2);
+  const similar = scored.filter((x) => x.score < 2).slice(0, 12);
+  const name = getNode(id)?.name ?? id;
+  const li = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(q.trim() || name)}${h.companyId ? `&f_C=${h.companyId}` : ""}`;
+  const google = `https://www.google.com/search?q=${encodeURIComponent(`${q.trim()} ${name} jobs`)}`;
+  return (
+    <div className="border border-border p-3" data-testid="ai-role-search">
+      <H aside={`${fmt(h.open)} open roles to search`}>Find a role</H>
+      <form onSubmit={(e) => e.preventDefault()} className="flex flex-wrap gap-1.5">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Research engineer, solutions architect, policy..."
+          aria-label="Search open roles"
+          className="min-w-0 flex-1 border border-border bg-transparent px-3 py-2 font-mono text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-foreground/40"
+        />
+        <a href={li} target="_blank" rel="noopener noreferrer" className="border border-border px-3 py-2 font-mono text-xs text-foreground hover:border-foreground/50">
+          Same search on LinkedIn ↗
+        </a>
+        <a href={google} target="_blank" rel="noopener noreferrer" className="border border-border px-3 py-2 font-mono text-xs text-foreground hover:border-foreground/50">
+          On Google ↗
+        </a>
+      </form>
+      {q.trim() && (
+        <div className="mt-3 space-y-3">
+          {state === "loading" && <p className="font-mono text-[11px] text-muted-foreground">Loading the roles</p>}
+          {state === "failed" && <p className="font-mono text-[11px] text-muted-foreground">The role list could not be loaded.</p>}
+          {rows && (
+            <>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                {exact.length} matching {exact.length === 1 ? "role" : "roles"} at {name}
+                {similar.length ? ` · ${similar.length} similar` : ""}
+              </p>
+              {exact.length > 0 && (
+                <ol className="divide-y divide-border border border-border">
+                  {exact.slice(0, 30).map(({ r }) => (
+                    <li key={r.url} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-1.5 font-mono text-[11px] sm:grid-cols-[6.5rem_minmax(0,1fr)_minmax(0,14rem)] sm:gap-3">
+                      <span className="tabular-nums text-muted-foreground">{r.pub ? dayMonthYear(r.pub) : ""}</span>
+                      <a href={r.url} target="_blank" rel="noopener noreferrer" className="min-w-0 text-foreground hover:underline">
+                        {r.t} ↗
+                      </a>
+                      <span className="truncate text-muted-foreground">{[r.team, r.loc, r.wp].filter(Boolean).join(" · ")}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {similar.length > 0 && (
+                <div>
+                  <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Similar roles</p>
+                  <ul className="flex flex-wrap gap-1">
+                    {similar.map(({ r }) => (
+                      <li key={r.url}>
+                        <a href={r.url} target="_blank" rel="noopener noreferrer" className="block border border-border px-1.5 py-0.5 font-mono text-[10px] text-foreground/85 hover:border-foreground/50">
+                          {r.t}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {!exact.length && !similar.length && <p className="font-mono text-[11px] text-muted-foreground">No open role matches. Try the LinkedIn search for the wider market.</p>}
+            </>
+          )}
+        </div>
+      )}
+      <p className="mt-2 font-mono text-[10px] text-muted-foreground">Every open role from the public job board as of {dayMonthYear(h.asOf)}; each link opens the posting. The LinkedIn search runs the same words against the company&apos;s page there.</p>
     </div>
   );
 }
@@ -383,6 +498,7 @@ export function HiringTable({ ids, onPick }: { ids: string[]; onPick: (id: strin
               <tr key={r.id}>
                 <td className="px-3 py-1.5">
                   <button type="button" onClick={() => onPick(r.id)} className="font-bold text-foreground hover:underline">
+                    <Mark id={r.id} className="mr-1.5" />
                     {getNode(r.id)?.name ?? r.id}
                   </button>
                 </td>
@@ -531,6 +647,7 @@ function RoundRow({ r, onPick }: { r: FundingRound; onPick?: (id: string) => voi
             <React.Fragment key={w.name}>
               {i > 0 && ", "}
               <EntityLink id={w.entity} onPick={onPick} className="text-foreground underline decoration-dotted hover:decoration-solid">
+                <Mark id={w.entity} name={w.name} size={12} className="mr-1" />
                 {w.name}
               </EntityLink>
               {w.role === "co_lead" && <span> (co-lead)</span>}
@@ -775,7 +892,10 @@ export function AdvisorsSection({ id }: { id: string }) {
       <ul className="divide-y divide-border border border-border">
         {named.map((a) => (
           <li key={a.org + a.role} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] sm:gap-3">
-            <span className={`font-bold ${a.current ? "text-foreground" : "text-muted-foreground line-through decoration-foreground/30"}`}>{a.org}</span>
+            <span className={`font-bold ${a.current ? "text-foreground" : "text-muted-foreground line-through decoration-foreground/30"}`}>
+              <Mark id={a.entity} name={a.org} className="mr-1.5" />
+              {a.org}
+            </span>
             <span className="text-foreground/85">
               {a.role}
               {a.since ? ` · since ${a.since}` : ""}
@@ -967,10 +1087,12 @@ export function InsideOutMap({ id, onPick }: { id: string; onPick?: (id: string)
                   <li key={it.name} data-k={`o:${g.key}:${it.name}`} onMouseEnter={() => setHot(`o:${g.key}:${it.name}`)} className={`transition-opacity ${lit(`o:${g.key}:${it.name}`) ? "opacity-100" : "opacity-30"}`}>
                     {it.entity && getNode(it.entity) ? (
                       <EntityLink id={it.entity} onPick={onPick} title={it.note} className="block border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] leading-snug text-foreground underline decoration-dotted underline-offset-2 hover:border-foreground/50">
+                        <Mark id={it.entity} name={it.name} size={12} className="mr-1" />
                         {it.name}
                       </EntityLink>
                     ) : (
                       <span title={it.note ?? (it.people.length ? `${it.people.length} of its people` : undefined)} className="block border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] leading-snug text-foreground/85">
+                        <Mark name={it.name} size={12} className="mr-1" />
                         {it.name}
                       </span>
                     )}
@@ -1106,7 +1228,7 @@ export function TimelineSection({ id }: { id: string }) {
       </figure>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         {f.site && (
-          <div>
+          <div className="lg:row-span-2">
             <H aside={`${fmt(f.site.dated)} dated pages · ${ym(f.site.first)} to ${ym(f.site.latest)}`}>Its own record</H>
             <div className="mb-2 flex flex-wrap gap-1 font-mono text-[10px]">
               {[null, ...years].map((yr) => (
@@ -1134,6 +1256,25 @@ export function TimelineSection({ id }: { id: string }) {
             <p className="mt-1 font-mono text-[10px] text-muted-foreground">
               {items.length} shown. Every dated page in these sections of its sitemap, with the publish date the page states.
             </p>
+          </div>
+        )}
+        {(f.reddit?.posts ?? 0) > 0 && (
+          <div>
+            <H aside={`${fmt(f.reddit!.posts)} posts held`}>On Reddit</H>
+            <ol className="divide-y divide-border border border-border">
+              {f.reddit!.top.slice(0, 8).map((t) => (
+                <li key={t.url} className="px-3 py-1.5 font-mono text-[11px]">
+                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">
+                    {t.title} ↗
+                  </a>
+                  <span className="block text-[10px] text-muted-foreground">
+                    {t.date ? `${dayMonthYear(t.date)} · ` : ""}
+                    {t.summary}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-1 font-mono text-[10px] text-muted-foreground">Posts that name the company or its product in the title or body, from a licensed pull; keyword discovery caps near 50 a run, so this is a sample, not the whole of Reddit.</p>
           </div>
         )}
         {top.length > 0 && (
@@ -1227,10 +1368,11 @@ export function FootprintSection({ id }: { id: string }) {
               {loading ? "Loading" : `Load all ${fmt(f.total)} people`}
             </button>
           )}
-          <ol className="max-h-[28rem] divide-y divide-border overflow-y-auto border border-border">
+          <ol className="grid max-h-[34rem] gap-2 overflow-y-auto border border-border p-2 sm:grid-cols-2 xl:grid-cols-3">
             {shown.slice(0, 600).map((p) => (
-              <li key={`${p.source}-${p.name}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-3">
-                <span className="min-w-0">
+              <li key={`${p.source}-${p.name}`} className="flex gap-2.5 border border-border p-2.5 font-mono text-[11px]">
+                <Avatar p={{ name: p.name, photo: null }} size={34} />
+                <span className="min-w-0 flex-1">
                   {p.url ? (
                     <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground hover:underline">
                       {p.name} ↗
@@ -1245,8 +1387,7 @@ export function FootprintSection({ id }: { id: string }) {
                   )}
                   <span className="ml-1.5 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{FOOTPRINT_SOURCES.find((x) => x.key === p.source)?.label ?? p.source}</span>
                   {p.flag && <span className="ml-1.5 border border-amber-400/40 px-1 text-[8px] uppercase tracking-[0.15em] text-amber-700 dark:text-amber-300">{p.flag}</span>}
-                </span>
-                <span className="min-w-0 text-foreground/85">
+                  <span className="mt-0.5 block text-foreground/85">
                   {p.headline}
                   {p.first && p.last ? ` · ${p.first.slice(0, 4) === p.last.slice(0, 4) ? p.first.slice(0, 4) : `${p.first.slice(0, 4)} to ${p.last.slice(0, 4)}`}` : ""}
                   {(p.matched[0] || p.recent[0]) && (
@@ -1254,6 +1395,7 @@ export function FootprintSection({ id }: { id: string }) {
                       {p.matched[0] ? `On ${getNode(id)?.name ?? "the company"}'s own site: ${p.matched[0]}` : `Latest: ${p.recent[0]}`}
                     </span>
                   )}
+                  </span>
                 </span>
               </li>
             ))}
@@ -1295,6 +1437,7 @@ export function AgreementsSection({ id, onPick }: { id: string; onPick?: (id: st
                 </span>
                 <span className="min-w-0">
                   <EntityLink id={a.entity} onPick={onPick} className="font-bold text-foreground underline decoration-dotted underline-offset-2 hover:decoration-solid">
+                    <Mark id={a.entity} name={a.counterparty} className="mr-1" />
                     {a.counterparty ?? "Unnamed"}
                   </EntityLink>
                   {a.datedOn && <span className="block text-[10px] text-muted-foreground">{dayMonthYear(a.datedOn)}</span>}
@@ -1364,6 +1507,7 @@ export function SitesRead({ id }: { id: string }) {
               <tr key={h.host}>
                 <td className="px-3 py-1.5">
                   <a href={`https://${h.host}/`} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground hover:underline">
+                    <Mark name={h.host} className="mr-1.5" />
                     {h.label}
                   </a>
                   <span className="ml-1.5 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{h.mode === "titles" ? "titles only" : "full text"}</span>
@@ -1468,6 +1612,63 @@ export function TalentSection({ id }: { id: string }) {
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// Highlights: the file's biggest numbers as cards, each opening the section it comes from
+// ---------------------------------------------------------------------------
+
+export function Highlights({ id, onTab }: { id: string; onTab?: (tab: string) => void }) {
+  const f = AI_360[id];
+  const intel = AI_INTEL[id];
+  const node = getNode(id);
+  if (!f || !node) return null;
+  const last = (m: string) => intel?.series.find((s) => s.metric === m)?.points.slice(-1)[0];
+  const raised = last("capital_raised_total_usd");
+  const rev = last("revenue_usd") ?? last("revenue_quarter_usd");
+  const val = [...f.rounds].reverse().find((r) => r.postMoney);
+  const staff = f.facts.find((x) => x.key === "employees");
+  const cards: { label: string; value: string; sub: string; tab: string; href: string }[] = [];
+  if (raised) cards.push({ label: "Capital raised", value: money(raised.value), sub: `to ${monthYear(raised.asOf ?? raised.period)}, per its filing`, tab: "investors", href: `/notebook/ai/map/${id}/investors` });
+  if (val?.postMoney) cards.push({ label: "Latest valuation", value: money(val.postMoney), sub: `${val.round}, post-money`, tab: "investors", href: `/notebook/ai/map/${id}/investors` });
+  if (rev) cards.push({ label: rev === last("revenue_usd") ? "Revenue" : "Quarterly revenue", value: money(rev.value), sub: rev.period, tab: "money", href: `/notebook/ai/map/${id}` });
+  if (staff) cards.push({ label: "Employees", value: staff.value.match(/^About ([\d,]+)/)?.[1] ?? staff.value.split(" ")[0], sub: "its own filing", tab: "people", href: `/notebook/ai/map/${id}/people` });
+  if (f.hiring) cards.push({ label: "Open roles", value: fmt(f.hiring.open), sub: `${fmt(f.hiring.new30)} new in 30 days`, tab: "people", href: `/notebook/ai/map/${id}/hiring` });
+  if (f.talent) cards.push({ label: "Profiles on LinkedIn", value: fmt(f.talent.people), sub: "name it as current employer", tab: "people", href: `/notebook/ai/map/${id}/people` });
+  if (f.legal.length) cards.push({ label: "Legal matters", value: fmt(f.legal.length), sub: "as it discloses them", tab: "legal", href: `/notebook/ai/map/${id}/legal` });
+  if (f.attention) cards.push({ label: "Hacker News stories", value: fmt(f.attention.total), sub: "naming it, all time", tab: "f360", href: `/notebook/ai/map/${id}/timeline` });
+  if (!cards.length) return null;
+  const Card = ({ c }: { c: (typeof cards)[number] }) => (
+    <span className="block h-full border border-border bg-background p-3 text-left hover:border-foreground/50">
+      <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+        <Mark id={id} size={14} />
+        {c.label}
+      </span>
+      <span className="mt-1 block font-display text-2xl font-bold tabular-nums text-foreground">{c.value}</span>
+      <span className="block font-mono text-[10px] text-muted-foreground">{c.sub}</span>
+    </span>
+  );
+  return (
+    <div data-testid="ai-highlights">
+      <H aside="each card opens where the number comes from">{node.name} at a glance</H>
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-8">
+        {cards.slice(0, 8).map((c) => (
+          <li key={c.label}>
+            {onTab ? (
+              <button type="button" onClick={() => onTab(c.tab)} className="block h-full w-full">
+                <Card c={c} />
+              </button>
+            ) : (
+              <Link to={c.href} className="block h-full">
+                <Card c={c} />
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // The 360 summary: every angle, what is collected, where it comes from
 // ---------------------------------------------------------------------------
@@ -1494,7 +1695,7 @@ export function anglesOf(id: string): Angle[] {
     { key: "market", label: "Market", count: f?.market ? 1 : null, note: f?.market ? `${f.market.symbol} quote, daily` : "not listed", tab: "f360" },
     { key: "attention", label: "Public attention", count: f?.attention?.total ?? 0, note: f?.attention ? "Hacker News stories naming it, by month" : "no clear query yet", tab: "f360" },
     { key: "tone", label: "News tone", count: f?.tone?.days.length ?? null, note: f?.tone ? "days of GDELT news tone" : "GDELT news tone: next refresh", tab: "f360" },
-    { key: "reddit", label: "Reddit", count: null, note: "pending a licensed source", tab: "f360" },
+    { key: "reddit", label: "Reddit", count: f?.reddit?.posts ?? null, note: f?.reddit ? "posts naming it, from a licensed pull" : "pending a licensed source", tab: "f360" },
     { key: "earnings", label: "Earnings calls", count: null, note: listed ? "next, from SEC filings and investor pages" : "none until it is listed", tab: "earnings" },
   ];
 }
@@ -1503,6 +1704,7 @@ export function Company360({ id, onPick, onTab }: { id: string; onPick?: (id: st
   const angles = anglesOf(id);
   return (
     <div className="space-y-6" data-testid="ai-360">
+      <Highlights id={id} onTab={onTab} />
       <FactsSection id={id} />
       <div>
         <H aside="what this file covers, and what is next">Every angle</H>

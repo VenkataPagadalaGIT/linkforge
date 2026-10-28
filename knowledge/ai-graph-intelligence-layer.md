@@ -74,6 +74,16 @@ Full-run estimate from these rates: all LinkedIn profiles naming Anthropic (abou
 
 Every raw response is kept twice: gzipped under `data/corpus/raw/` (ignored by git) and whole in `ontology.raw_capture` in Postgres, so a database backup carries it. The LinkedIn snapshot in Bright Data's email (20 records, 330.72 KB, expires 11 Nov 2026) is the same 20 records already stored here.
 
+## 8. URL structure for crawling and citation (2026-10-28)
+
+- The graph page stays one URL (`/notebook/ai/graph`, canonical to itself); `?focus=` is view state, not a page.
+- Each company's canonical page is `/notebook/ai/map/<id>` (frozen slugs). Its 360 file now has one indexable page per section, server-rendered with title, description from the file's own numbers, canonical, breadcrumb and Dataset JSON-LD, and for the people page an ItemList of Person records for officers and directors only:
+  `/notebook/ai/map/<id>/people`, `/investors`, `/legal`, `/hiring`, `/timeline`.
+- Sections exist only where the file has content (`src/lib/ai360-sections.ts` decides), and the same helper feeds the sitemap, the HTML sitemap and the page nav, so a section is in all three or in none. The dashboard shows "Permanent pages" links for the entity in view.
+- The company page is the overview (highlights, facts, every angle, birth to now, inside and outside) and links to the sections; the sections hold the deep lists, so the two do not duplicate.
+- Job listings per company are public JSON under `/ai/360/jobs/<id>.json` for the role search; the people roster stays local (section 7).
+- Open: unknown ids and sections render the not-found page with status 200 on the dev server, same as the existing entity route; confirm the deployed build answers 404 before this goes live.
+
 ## 7. LinkedIn, what it can and cannot give (2026-10-28)
 
 - The company page record (one Marketplace row, $0.0025): 5,364,379 followers, 6,244 profiles list Anthropic as employer, size bucket "501-1,000 employees" (LinkedIn's own, stale against the filing's 5,300), affiliated pages "Claude" and "Claude for Business", 10 recent posts. The dataset keys pages by URL; its `company_id` is LinkedIn's number (74126343), not the slug.

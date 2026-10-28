@@ -12,6 +12,7 @@ import { nodes as ALL_NODES, getNode, groupOf, LAYERS, membersOf, NODE_TYPE_META
 import { AI_DEAL_EDGES, AI_INTEL, type IntelDealEdge } from "@/data/aiIntel";
 import { AI_LOGO_IDS, logoUrl } from "@/data/aiLogos";
 import { AI_SHARES } from "@/data/aiIntel";
+import { AI_360 } from "@/data/ai360";
 import { pctText } from "./AiShares";
 import {
   ALL_CATS,
@@ -410,6 +411,102 @@ function glowTexture() {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
+}
+
+/** Headline figures for the first view, each computed from the sourced data behind the graph. */
+const HEADLINES: { value: string; label: string }[] = (() => {
+  const amounts = AI_DEAL_EDGES.map((d) => d.amountHigh ?? d.amount ?? 0).filter((v) => v > 0);
+  const total = amounts.reduce((a, b) => a + b, 0);
+  const biggest = AI_DEAL_EDGES.slice().sort((a, b) => (b.amountHigh ?? b.amount ?? 0) - (a.amountHigh ?? a.amount ?? 0))[0];
+  const files = Object.keys(AI_INTEL).filter((id) => (AI_INTEL[id].series ?? []).some((s) => !s.metric.startsWith("share_")) || AI_INTEL[id].deals.length > 0).length;
+  const hiring = Object.values(AI_360).filter((f) => f.hiring);
+  const roles = hiring.reduce((n, f) => n + (f.hiring?.open ?? 0), 0);
+  const fmt = (v: number) => (v >= 1e12 ? `$${(v / 1e12).toFixed(2)}T` : `$${Math.round(v / 1e9)}B`);
+  const out: { value: string; label: string }[] = [];
+  if (total) out.push({ value: fmt(total), label: `in ${AI_DEAL_EDGES.length} deals, from filings` });
+  if (biggest?.amountHigh ?? biggest?.amount) out.push({ value: fmt(biggest.amountHigh ?? biggest.amount ?? 0), label: `largest: ${getNode(biggest.from)?.name ?? biggest.from} and ${getNode(biggest.to)?.name ?? biggest.to}` });
+  if (roles) out.push({ value: roles.toLocaleString("en-US"), label: `open roles across ${hiring.length} labs` });
+  if (files) out.push({ value: String(files), label: "company files with sourced figures" });
+  return out.slice(0, 4);
+})();
+
+/** A white disc with a soft edge: the plate behind a brand mark, so dark icons read on black space. */
+function discTexture() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d")!;
+  g.fillStyle = "rgba(255,255,255,1)";
+  g.beginPath();
+  g.arc(64, 64, 58, 0, Math.PI * 2);
+  g.fill();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/**
+ * Brand marks on the best-connected stars: each company's icon on a small plate, floating over its point, so the
+ * first view reads as the companies people know and not as anonymous dots. They fade in once the stars have landed.
+ */
+function LogoStars({ u, ids, hot, calm, play, reduced }: { u: Uni; ids: string[]; hot: Set<string>; calm: boolean; play: boolean; reduced: boolean }) {
+  const [tex, setTex] = React.useState<Map<string, THREE.Texture>>(new Map());
+  const [shown, setShown] = React.useState(!play || reduced);
+  React.useEffect(() => {
+    if (!play || reduced) return setShown(true);
+    setShown(false);
+    const t = setTimeout(() => setShown(true), (SETTLED + 0.3) * 1000);
+    return () => clearTimeout(t);
+  }, [play, reduced]);
+  React.useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    const next = new Map<string, THREE.Texture>();
+    let alive = true;
+    for (const id of ids) {
+      const url = logoUrl(id);
+      if (!url) continue;
+      loader.load(
+        url,
+        (t) => {
+          t.colorSpace = THREE.SRGBColorSpace;
+          t.minFilter = THREE.LinearFilter;
+          next.set(id, t);
+          if (alive) setTex(new Map(next));
+        },
+        undefined,
+        () => {},
+      );
+    }
+    return () => {
+      alive = false;
+      for (const t of next.values()) t.dispose();
+    };
+  }, [ids]);
+  const disc = React.useMemo(() => discTexture(), []);
+  React.useEffect(() => () => disc.dispose(), [disc]);
+  if (!shown) return null;
+  return (
+    <>
+      {ids.map((id) => {
+        const t = tex.get(id);
+        const i = u.starIndex.get(id);
+        if (!t || i == null) return null;
+        const s = u.stars[i];
+        const on = hot.has(id);
+        const scale = (0.34 + ((s.size - 6) / 30) * 0.42) * (on ? 1.35 : 1);
+        const fade = calm && !on ? 0.3 : 1;
+        return (
+          <group key={id} position={s.pos}>
+            <sprite scale={[scale * 1.22, scale * 1.22, 1]} renderOrder={10}>
+              <spriteMaterial map={disc} color="#ffffff" transparent opacity={0.96 * fade} depthTest={false} depthWrite={false} toneMapped={false} />
+            </sprite>
+            <sprite scale={[scale * 0.78, scale * 0.78, 1]} renderOrder={11}>
+              <spriteMaterial map={t} transparent opacity={fade} depthTest={false} depthWrite={false} toneMapped={false} />
+            </sprite>
+          </group>
+        );
+      })}
+    </>
+  );
 }
 
 /** A money arc: a curve that bows away from the centre, so arcs between near neighbours still read. */
@@ -1130,6 +1227,16 @@ function Scene({
   const labelStyle = { textShadow: "0 0 8px var(--uni-halo), 0 0 2px var(--uni-halo)" };
   const typeLabels = hot.length ? [] : u.types.filter((t) => (focusType ? t.key === focusType : focusArea != null && t.area === focusArea));
   const hotSet = new Set(hot);
+  // Brand marks: the biggest stars that have an icon, plus whatever is lit; phones get fewer so the view stays legible.
+  const logoIds = React.useMemo(() => {
+    const biggest = u.stars
+      .slice()
+      .sort((a, b) => b.size - a.size)
+      .map((s) => s.id)
+      .filter((id) => logoUrl(id))
+      .slice(0, size.width < 640 ? 14 : 44);
+    return [...new Set([...biggest, ...hot.filter((id) => logoUrl(id))])];
+  }, [u, hot, size.width]);
 
   return (
     <>
@@ -1146,6 +1253,7 @@ function Scene({
           </sprite>
         ))}
       <points geometry={geom} material={mat} frustumCulled={false} />
+      <LogoStars u={u} ids={logoIds} hot={hotSet} calm={calm} play={play} reduced={reduced} />
       <lineSegments ref={lines} geometry={lineGeom} frustumCulled={false}>
         <lineBasicMaterial color={ink} transparent opacity={0.06} depthWrite={false} blending={blend} toneMapped={false} />
       </lineSegments>
@@ -1436,7 +1544,8 @@ export default function AiUniverse({ scope, onScope, fallback }: Props) {
   const [analysis, setAnalysis] = React.useState<Analysis>("none");
   const [hops, setHops] = React.useState(1);
   const [pathTo, setPathTo] = React.useState<string | null>(null);
-  const [money, setMoney] = React.useState(false);
+  // Money arcs show from the first frame: the deals are the graph's most striking fact, and the dots run with the money.
+  const [money, setMoney] = React.useState(true);
   const [choke, setChoke] = React.useState(false);
   const [labelsOn, setLabelsOn] = React.useState(true);
   const [cards, setCards] = React.useState(true);
@@ -1891,6 +2000,16 @@ export default function AiUniverse({ scope, onScope, fallback }: Props) {
               {EDGES.length.toLocaleString("en-US")} links · {AI_DEAL_EDGES.length} deals
             </p>
             {AS_OF && <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Sources to {dayMonthYear(AS_OF)}</p>}
+            {boxW >= 640 && !selected && analysis === "none" && (
+              <ul className="mt-2 flex flex-wrap gap-1" data-testid="ai-universe-headlines" aria-label="Headline figures">
+                {HEADLINES.map((h) => (
+                  <li key={h.label} className="border border-border bg-background/70 px-2 py-1">
+                    <span className="block font-display text-sm font-bold leading-none text-foreground">{h.value}</span>
+                    <span className="block text-[9px] uppercase tracking-[0.15em] text-muted-foreground">{h.label}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             {chip && (
               <p className="mt-2 inline-block max-w-full truncate border border-[color:var(--uni-a50)] bg-background/70 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[color:var(--uni-a)]" data-testid="ai-universe-focus">
                 {chip}
