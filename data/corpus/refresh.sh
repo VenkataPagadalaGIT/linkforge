@@ -9,7 +9,9 @@ docker exec -i vp-research-db psql -U research -d research_corpus -v ON_ERROR_ST
 echo "== groups"
 python3 load_ontology_groups.py
 echo "== company files"
-for f in ontology/*_20??-??-??.json; do python3 load_ontology_company.py "$f"; done
+for f in ontology/*_20??-??-??.json; do case "$f" in *market_share_*) ;; *) python3 load_ontology_company.py "$f";; esac; done
+echo "== market shares"
+for f in ontology/market_share_*.json; do python3 load_ontology_shares.py "$f"; done
 echo "== SEC (skipped unless SEC_USER_AGENT is set)"
 if [ -n "$SEC_USER_AGENT" ]; then python3 sec_facts.py --map && python3 sec_facts.py --facts all; fi
 echo "== GitHub release notes (free; GITHUB_TOKEN raises the hourly limit)"

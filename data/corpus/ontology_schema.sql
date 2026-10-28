@@ -364,3 +364,14 @@ CREATE OR REPLACE VIEW ontology.forecast_record AS
          count(*) FILTER (WHERE outcome = 'wrong')      AS misses
   FROM ontology.prediction
   WHERE approved;
+
+-- Market share segments (2026-10-28): what a share series measures, who estimated it, and where it sits in the
+-- stack. The figures themselves are ontology.signal rows whose metric names the segment (share_*_pct).
+CREATE TABLE IF NOT EXISTS ontology.share_segment (
+  metric      text PRIMARY KEY,
+  label       text NOT NULL,
+  measure     text NOT NULL,
+  estimator   text NOT NULL,
+  scope       text NOT NULL,
+  sort_order  int
+);

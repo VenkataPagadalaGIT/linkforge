@@ -244,7 +244,11 @@ export function seriesValue(s: { metric: string; label: string; unit: string | n
   const more = /more than/.test(s.label);
   const approx = /approximately/.test(s.label);
   const core =
-    s.unit === "USD" ? usd(v) : s.unit === "pct" || /_pct$/.test(s.metric) ? `${Math.round(v).toLocaleString("en-US")}%` : Math.round(v).toLocaleString("en-US");
+    s.unit === "USD"
+      ? usd(v)
+      : s.unit === "pct" || /_pct$/.test(s.metric)
+        ? `${Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString("en-US") : v.toFixed(1)}%`
+        : Math.round(v).toLocaleString("en-US");
   return `${approx ? "~" : ""}${core}${more ? "+" : ""}`;
 }
 

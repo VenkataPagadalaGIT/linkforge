@@ -17,6 +17,7 @@ import {
 import { buildNodeGraphView } from "@/lib/aiOntologyGraph";
 import { intelFor } from "@/data/aiIntel";
 import AiCompanyFile from "@/components/ai/AiCompanyFile";
+import { EntityShares, isShareMetric } from "@/components/ai/AiShares";
 
 const RelationList = ({ title, arrow, items, tone }: { title: string; arrow: string; items: Relation[]; tone: string }) => {
   if (!items.length) return null;
@@ -68,6 +69,8 @@ export default function AiNodeView({ id }: { id: string }) {
   const view = React.useMemo(() => buildNodeGraphView(node.id), [node.id]);
   const context = [...ctx.peers, ...ctx.capital, ...ctx.policy, ...ctx.makes];
   const intel = intelFor(node.id);
+  // A company file needs the company's own figures, deals, people or events; a market-share estimate alone is not one.
+  const hasFile = !!intel && (intel.series.some((s) => !isShareMetric(s.metric)) || intel.deals.length > 0 || intel.people.length > 0 || intel.events.length > 0);
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
@@ -122,8 +125,11 @@ export default function AiNodeView({ id }: { id: string }) {
           )}
         </ScrollReveal>
 
+        {/* Market share: the segments it is in, each with its estimator and the exact sentence */}
+        <EntityShares id={node.id} />
+
         {/* Company file: deals, measures, people and events from the ontology database */}
-        {intel && <AiCompanyFile name={node.name} intel={intel} />}
+        {intel && hasFile && <AiCompanyFile name={node.name} intel={intel} />}
 
         {/* Ecosystem visualization */}
         {view && (

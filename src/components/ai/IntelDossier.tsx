@@ -4,6 +4,7 @@ import { Link } from "@/lib/router-shim";
 import { getNode, groupOf, LAYER_BY_ID, LAYERS, membersOf, NODE_TYPE_META, RELATION_META, type AiNode } from "@/data/aiOntology";
 import { intelFor, type IntelDeal } from "@/data/aiIntel";
 import { logoUrl } from "@/data/aiLogos";
+import { isShareMetric, pctText, sharesOf } from "./AiShares";
 import { CAT_COLOR, CATS, DEGREE, EDGES_OF, INSTRUMENT_LABEL, dealAmount, monthYear, rankedSearch, searchAll, seriesValue, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
 
 // ---------------------------------------------------------------------------
@@ -168,6 +169,8 @@ export function Dossier({
   const byCat = CATS.map((c) => ({ c, items: rel.filter((e) => e.cat === c.id) })).filter((x) => x.items.length);
   const deals = (intel?.deals ?? []).slice().sort((a, b) => (b.amountHigh ?? b.amount ?? 0) - (a.amountHigh ?? a.amount ?? 0));
   const kpis = (intel?.series ?? []).filter((s) => KPI_METRICS.includes(s.metric)).sort((a, b) => KPI_METRICS.indexOf(a.metric) - KPI_METRICS.indexOf(b.metric)).slice(0, 4);
+  const shares = sharesOf(id).map((g) => ({ g, r: g.rows.find((x) => x.entity === id)! }));
+  const hasFile = (intel?.series ?? []).some((s) => !isShareMetric(s.metric)) || (intel?.people.length ?? 0) > 0;
 
   return (
     <div className="space-y-5">
@@ -230,6 +233,28 @@ export function Dossier({
               </div>
             );
           })}
+        </div>
+      )}
+
+      {shares.length > 0 && (
+        <div data-testid="intel-dossier-shares">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">Market share</p>
+          <ul className="space-y-1.5">
+            {shares.map(({ g, r }) => {
+              const rank = g.rows.findIndex((x) => x.entity === id) + 1;
+              return (
+                <li key={g.metric} className="border border-border px-2.5 py-2">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-display text-xs font-bold text-foreground">{g.label}</span>
+                    <span className="font-mono text-[13px] font-bold text-foreground">{pctText(r.value)}</span>
+                  </div>
+                  <p className="font-mono text-[10px] text-muted-foreground/70">
+                    #{rank} of {g.rows.length} listed · {g.period} · {g.estimator}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
 
@@ -399,7 +424,7 @@ export function Dossier({
         to={`/notebook/ai/map/${id}`}
         className="block text-center border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors"
       >
-        Open the full {intel?.series.length ? "company file" : "entity page"} →
+        Open the full {hasFile ? "company file" : "entity page"} →
       </Link>
     </div>
   );

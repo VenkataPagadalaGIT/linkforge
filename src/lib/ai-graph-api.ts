@@ -39,7 +39,7 @@ export function graphPayload() {
     terms: API_TERMS,
     home: API_HOME,
     sourcesTo: asOf ?? null,
-    counts: { ...ONTOLOGY_COUNTS, deals: AI_DEAL_EDGES.length, companyFiles: Object.values(AI_INTEL).filter((x) => x.series.length).length },
+    counts: { ...ONTOLOGY_COUNTS, deals: AI_DEAL_EDGES.length, companyFiles: Object.values(AI_INTEL).filter((x) => x.series.some((s) => !s.metric.startsWith("share_"))).length },
     layers: LAYERS.map((L) => ({ id: L.id, label: L.label, short: L.short, blurb: L.blurb })),
     relations: Object.entries(RELATION_META).map(([id, m]) => ({ id, label: m.label, direction: m.dir })),
     nodes: nodes.map(slim),

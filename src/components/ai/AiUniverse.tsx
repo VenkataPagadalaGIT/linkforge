@@ -11,6 +11,8 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 import { nodes as ALL_NODES, getNode, groupOf, LAYERS, membersOf, NODE_TYPE_META, type AiNode, type NodeType } from "@/data/aiOntology";
 import { AI_DEAL_EDGES, AI_INTEL, type IntelDealEdge } from "@/data/aiIntel";
 import { AI_LOGO_IDS, logoUrl } from "@/data/aiLogos";
+import { AI_SHARES } from "@/data/aiIntel";
+import { pctText } from "./AiShares";
 import {
   ALL_CATS,
   CAT_COLOR,
@@ -84,7 +86,7 @@ const FLOW_PER = 3;
 /** Cards: at most this many at once, the entities nearest the camera. */
 const NEAR_CARDS = 18;
 const CARD_W = 172;
-/** Entities that get a card: those with a site icon or a company file. */
+/** Entities that get a card: those with a site icon, a company file or a market share. */
 const CARD_IDS = new Set([...AI_LOGO_IDS, ...Object.entries(AI_INTEL).filter(([, v]) => v.series.length).map(([k]) => k)]);
 /** One figure for a card, the first that the company file has. */
 const FIGURE_ORDER = ["revenue_usd", "post_money_valuation_usd", "funding_round_committed_capital_usd", "capital_raised_total_usd", "customers_100k_ttm"];
@@ -96,7 +98,9 @@ const headlineFigure = (id: string): string | null => {
     const p = s?.points[s.points.length - 1];
     if (s && p) return `${s.label.replace(/\s*\((more than|approximately)\)$/, "").replace(/^Customers with.*$/, "Customers at $100K+")} ${seriesValue(s, p.value)} · ${periodLabel(p.period)}`;
   }
-  return null;
+  // No company figure: its biggest market share, if one is sourced.
+  const best = AI_SHARES.flatMap((g) => g.rows.filter((r) => r.entity === id).map((r) => ({ g, r }))).sort((a, b) => b.r.value - a.r.value)[0];
+  return best ? `${best.g.label} share ${pctText(best.r.value)} · ${best.g.period}` : null;
 };
 const initials = (name: string) =>
   name
@@ -149,6 +153,10 @@ const TICKER_METRICS: [string, string][] = [
   ["capital_raised_total_usd", "capital raised to date"],
   ["cash_and_equivalents_usd", "cash"],
 ];
+/** Market shares in the ticker: every company in each segment, with the estimator. */
+const TICKER_SHARES: TickerItem[] = AI_SHARES.flatMap((g) =>
+  g.rows.map((r) => ({ id: r.entity, name: getNode(r.entity)?.name ?? r.name, what: `${g.label} share · ${g.period} · ${g.estimator.split(",")[0]}`, value: pctText(r.value), deal: false })),
+);
 interface TickerItem { id: string; name: string; what: string; value: string; deal: boolean }
 const TICKER: TickerItem[] = (() => {
   const nm = (id: string) => getNode(id)?.name ?? id;
@@ -164,7 +172,14 @@ const TICKER: TickerItem[] = (() => {
     const id = AI_INTEL[d.from]?.series.length ? d.from : AI_INTEL[d.to]?.series.length ? d.to : d.from;
     items.push({ id, name: `${nm(d.from)} → ${nm(d.to)}`, what: INSTRUMENT_LABEL[d.instrument] ?? d.instrument.replace(/_/g, " "), value: dealShort(d), deal: true });
   }
-  return items;
+  // Interleave the shares through the figures and deals, so the strip mixes them.
+  const shares = TICKER_SHARES.slice();
+  const out: TickerItem[] = [];
+  items.forEach((it, i) => {
+    out.push(it);
+    if (i % 2 === 1 && shares.length) out.push(shares.shift()!);
+  });
+  return [...out, ...shares];
 })();
 
 function Ticker({ onPick, reduced }: { onPick: (id: string) => void; reduced: boolean }) {
@@ -194,7 +209,10 @@ function Ticker({ onPick, reduced }: { onPick: (id: string) => void; reduced: bo
       aria-label="Headline figures and the largest deals from filings"
       role="region"
     >
-      <div className={`flex w-max ${reduced ? "" : "animate-[aiTicker_90s_linear_infinite] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"}`}>
+      <div
+        className={`flex w-max ${reduced ? "" : "animate-[aiTicker_linear_infinite] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"}`}
+        style={reduced ? undefined : { animationDuration: `${Math.max(60, TICKER.length * 4)}s` }}
+      >
         {row(0)}
         {!reduced && row(1)}
       </div>
@@ -1736,7 +1754,7 @@ export default function AiUniverse({ scope, onScope, fallback }: Props) {
 
   return (
     <div ref={wrapRef} style={themeVars} className={full ? "bg-background h-full flex flex-col overflow-auto p-3" : ""} data-testid="ai-universe">
-      <style>{`@keyframes aiTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
+      <style>{`@keyframes aiTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}.animate-\\[aiTicker_linear_infinite\\]{animation-name:aiTicker;animation-timing-function:linear;animation-iteration-count:infinite}`}</style>
       <Ticker onPick={(id) => select(id)} reduced={reduced} />
       <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="shrink-0 sm:w-64">

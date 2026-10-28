@@ -217,7 +217,7 @@ function SeriesCard({ s }: { s: IntelSeries }) {
           </li>
         ))}
       </ul>
-      {first?.quote && <Receipts evidence={[{ quote: first.quote, url: first.url, locator: null, source: "Read in the filing", publishedOn: null, secondary: false }]} />}
+      {first?.quote && <Receipts evidence={[{ quote: first.quote, url: first.url, locator: null, source: "Read in the filing", publisher: null, publishedOn: null, secondary: false }]} />}
     </div>
   );
 }
@@ -234,7 +234,8 @@ export default function AiCompanyFile({ name, intel }: { name: string; intel: En
   const tableMetrics = new Set(["revenue_usd", "compute_infrastructure_usd", "adjusted_operating_margin_pct"]);
   const financial = intel.series.filter((s) => tableMetrics.has(s.metric));
   const shownElsewhere = new Set([...tableMetrics, "equity_round_usd", "capital_raised_total_usd", "cash_and_equivalents_usd", "funding_round_committed_capital_usd", "post_money_valuation_usd"]);
-  const other = intel.series.filter((s) => !shownElsewhere.has(s.metric) && s.points.length > 1);
+  // Market shares have their own section on the page (EntityShares), with their estimator.
+  const other = intel.series.filter((s) => !shownElsewhere.has(s.metric) && !s.metric.startsWith("share_") && s.points.length > 1);
   const forecasts = intel.forecasts.filter((f) => f.approved || SHOW_DRAFTS);
   const implications = intel.implications.filter((i) => i.approved || SHOW_DRAFTS);
   const AUD: Record<string, string> = { marketers: "Marketers", seo: "SEO and AI search", developers: "Developers", everyone: "Everyone" };
@@ -309,7 +310,7 @@ export default function AiCompanyFile({ name, intel }: { name: string; intel: En
                 <li key={p.period} className="border border-border p-4">
                   <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-1">{p.period}</p>
                   <p className="font-display text-xl font-bold text-foreground">{usd(p.value)}</p>
-                  {p.quote && <Receipts evidence={[{ quote: p.quote, url: p.url, locator: null, source: "Read in the filing", publishedOn: null, secondary: false }]} />}
+                  {p.quote && <Receipts evidence={[{ quote: p.quote, url: p.url, locator: null, source: "Read in the filing", publisher: null, publishedOn: null, secondary: false }]} />}
                 </li>
               ))}
             </ul>

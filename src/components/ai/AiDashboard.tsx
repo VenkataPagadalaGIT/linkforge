@@ -25,6 +25,8 @@ import {
   type Edge,
 } from "./intelModel";
 import { SearchBox } from "./IntelDossier";
+import { ShareCard, isShareMetric } from "./AiShares";
+import { AI_SHARES } from "@/data/aiIntel";
 
 const SHOW_DRAFTS = process.env.NEXT_PUBLIC_SHOW_DRAFTS === "1";
 const PLATFORM_LABEL: Record<string, string> = { company_blog: "Blog", github: "GitHub release", youtube: "YouTube", substack: "Substack", reddit: "Reddit", linkedin: "LinkedIn", x: "X", podcast: "Podcast", conference: "Talk", paper: "Paper" };
@@ -67,16 +69,15 @@ const MATRIX = (() => {
   return m;
 })();
 
-/** Segments whose market shares are to be sourced next: the segment and the players the graph already holds. */
-const SHARE_PLAN: { scope: string; segment: string; players: string[] }[] = [
-  { scope: "0", segment: "Enterprise model APIs", players: ["openai", "anthropic", "google-deepmind"] },
-  { scope: "1", segment: "Cloud infrastructure", players: ["aws", "azure", "google-cloud"] },
-  { scope: "2", segment: "Data-center AI accelerators", players: ["nvidia", "amd", "broadcom", "google-tpu"] },
-  { scope: "3", segment: "Leading-edge foundry", players: ["tsmc", "samsung-foundry", "intel-foundry"] },
-  { scope: "3:packaging", segment: "Advanced packaging", players: ["cowos"] },
-  { scope: "4:memory", segment: "High-bandwidth memory", players: ["sk-hynix", "samsung-memory", "micron"] },
-  { scope: "4:equipment", segment: "Lithography", players: ["asml"] },
-];
+/** Segments whose market shares are still to be sourced: the segment and the players the graph already holds. */
+const SHARE_PLAN: { scope: string; segment: string; players: string[]; metric: string }[] = [
+  { scope: "2", segment: "Data-center AI accelerators", players: ["nvidia", "amd", "broadcom", "google-tpu"], metric: "share_ai_accelerator_revenue_pct" },
+  { scope: "3:packaging", segment: "Advanced packaging", players: ["cowos", "ase", "amkor"], metric: "share_advanced_packaging_pct" },
+  { scope: "4:equipment", segment: "Lithography", players: ["asml"], metric: "share_lithography_pct" },
+  { scope: "0", segment: "Consumer AI assistants", players: ["openai-consumer", "gemini-model", "claude-model"], metric: "share_consumer_assistant_pct" },
+].filter((p) => !AI_SHARES.some((g) => g.metric === p.metric));
+/** A company file means figures from the company's own documents, not only a market-share estimate. */
+const hasFile = (id: string) => (AI_INTEL[id]?.series ?? []).some((s) => !isShareMetric(s.metric)) || (AI_INTEL[id]?.people.length ?? 0) > 0;
 
 function idsIn(scope: AiScope): string[] {
   if (scope.entity) return [scope.entity];
@@ -100,7 +101,7 @@ function statsOf(ids: string[]) {
     deals: AI_DEAL_EDGES.filter((d) => S.has(d.from) || S.has(d.to)).length,
     choke: ids.filter((id) => CHOKE.has(id)).length,
     publicCos: ids.filter((id) => isPublic(getNode(id)!)).length,
-    files: ids.filter((id) => (AI_INTEL[id]?.series.length ?? 0) > 0).length,
+    files: ids.filter(hasFile).length,
     dependsOut,
     suppliesOut,
   };
@@ -379,6 +380,7 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
   const ex1 = reach(id, "exposed", 1, all).ids.size - 1, ex2 = reach(id, "exposed", 2, all).ids.size - 1;
   const dp1 = reach(id, "depends", 1, all).ids.size - 1, dp2 = reach(id, "depends", 2, all).ids.size - 1;
   const series = intel?.series ?? [];
+  const fileSeries = series.filter((s) => !isShareMetric(s.metric));
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -407,7 +409,7 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
           )}
         </div>
         <Link to={`/notebook/ai/map/${id}`} className="border border-foreground/60 px-3 py-2 font-mono text-xs text-foreground hover:bg-foreground hover:text-background transition-colors">
-          Open the full {series.length ? "company file" : "entity page"} →
+          Open the full {fileSeries.length ? "company file" : "entity page"} →
         </Link>
       </div>
       <Kpis
@@ -422,7 +424,7 @@ function EntityOverview({ id, onPick }: { id: string; onPick: (id: string) => vo
           }),
         ]}
       />
-      {!series.length && (
+      {!fileSeries.length && (
         <p className="font-mono text-[11px] text-muted-foreground">No company file yet: revenue, customers and other figures appear here once they are taken from its filings.</p>
       )}
       {units.length > 0 && (
@@ -767,15 +769,35 @@ function MoneyTab({ ids, onPick }: { ids: string[]; onPick: (id: string) => void
 function ShareTab({ scope, onPick }: { scope: AiScope; onPick: (id: string) => void }) {
   const node = scope.entity ? getNode(scope.entity) : undefined;
   const keys = node ? [String(node.layer), typeKey(node)] : scope.type ? [scope.type, String(scope.layer)] : scope.layer != null ? [String(scope.layer)] : null;
-  const plan = SHARE_PLAN.filter((p) => !keys || keys.some((k) => p.scope === k || p.scope.startsWith(`${k}:`)));
+  const fits = (segScope: string) => !keys || keys.some((k) => segScope === k || segScope.startsWith(`${k}:`) || k.startsWith(`${segScope}:`));
+  const segs = AI_SHARES.filter((g) => (node ? g.rows.some((r) => r.entity === node.id) || fits(g.scope) : fits(g.scope)));
+  const others = AI_SHARES.filter((g) => !segs.includes(g));
+  const plan = SHARE_PLAN.filter((p) => fits(p.scope));
   return (
-    <div className="space-y-4">
-      <NotCollected title="No sourced market share yet">
-        <p>
-          Shares go in only with a source, the period they cover and the exact quote, like the deals above, and each one keeps its history so the dashboard can show
-          who is gaining. Until then this panel stays empty rather than showing an estimate.
+    <div className="space-y-6">
+      {segs.length > 0 ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {segs.map((g) => (
+            <ShareCard key={g.metric} seg={g} highlight={node?.id} onPick={onPick} />
+          ))}
+        </div>
+      ) : (
+        <NotCollected title="No sourced market share for this segment yet">
+          <p>Shares go in only with the estimator, the period and the exact sentence they come from. Until then this panel stays empty rather than showing a guess.</p>
+        </NotCollected>
+      )}
+      {others.length > 0 && (
+        <p className="font-mono text-[10px] text-muted-foreground">
+          Other segments with sourced shares:{" "}
+          {others.map((g, i) => (
+            <React.Fragment key={g.metric}>
+              {i ? " · " : ""}
+              {g.label} ({g.period})
+            </React.Fragment>
+          ))}
+          . Open All of AI to see every segment.
         </p>
-      </NotCollected>
+      )}
       {plan.length > 0 && (
         <div>
           <H aside="segment · players already in the graph">To source next</H>
@@ -795,6 +817,10 @@ function ShareTab({ scope, onPick }: { scope: AiScope; onPick: (id: string) => v
           </ul>
         </div>
       )}
+      <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
+        Shares are estimates by the firm named on each card, for the period shown, unless a company&apos;s own filing states them. Different firms measure differently, so shares
+        from different cards are not compared or added. &ldquo;Others&rdquo; is 100 minus the shares listed.
+      </p>
     </div>
   );
 }

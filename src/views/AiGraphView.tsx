@@ -76,7 +76,7 @@ export default function AiGraphView() {
     window.history.replaceState(window.history.state, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
   }, [scope, view, ready]);
 
-  const companyFiles = Object.values(AI_INTEL).filter((x) => x.series.length || x.people.length).length;
+  const companyFiles = Object.values(AI_INTEL).filter((x) => x.series.some((s) => !s.metric.startsWith("share_")) || x.people.length).length;
   const asOf = Object.values(AI_INTEL)
     .map((x) => x.asOf)
     .filter((x): x is string => !!x)

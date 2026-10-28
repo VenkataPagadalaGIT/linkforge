@@ -50,8 +50,10 @@ def evidence(kind, target_sql, quote, anchor, locator):
 
 st = []
 # Clear this file's previous rows for this entity, so a re-run replaces them.
-st.append(f"DELETE FROM ontology.evidence WHERE target_kind='signal' AND target_id IN (SELECT id FROM ontology.signal WHERE entity_id={eid(ENT)});")
-st.append(f"DELETE FROM ontology.signal WHERE entity_id={eid(ENT)};")
+# Only this file's figures: figures from other documents (market shares, SEC history) belong to their own loaders.
+OWN = f"entity_id={eid(ENT)} AND (document_id IS NULL OR document_id=(SELECT id FROM document WHERE slug={lit(DOC)}))"
+st.append(f"DELETE FROM ontology.evidence WHERE target_kind='signal' AND target_id IN (SELECT id FROM ontology.signal WHERE {OWN});")
+st.append(f"DELETE FROM ontology.signal WHERE {OWN};")
 st.append(f"DELETE FROM ontology.evidence WHERE target_kind='person' AND target_id IN (SELECT id FROM ontology.person WHERE entity_id={eid(ENT)});")
 st.append(f"DELETE FROM ontology.person WHERE entity_id={eid(ENT)};")
 st.append(f"DELETE FROM ontology.event WHERE source_file={lit(SRC)};")

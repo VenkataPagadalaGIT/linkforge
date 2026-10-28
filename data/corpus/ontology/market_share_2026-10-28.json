@@ -1,0 +1,275 @@
+{
+ "note": "Market shares, each with its estimator, period and the exact sentence it comes from. Every quote was checked as an exact substring of the page (whitespace collapsed, curly apostrophes straightened) on 2026-10-28; SK hynix's HBM figure was read from its SEC prospectus in a browser. Shares are estimates by the named firm, not filings, except where a company's own filing states it.",
+ "sources": [
+  {
+   "slug": "trendforce",
+   "name": "TrendForce",
+   "homepage": "https://www.trendforce.com",
+   "kind": "vendor"
+  },
+  {
+   "slug": "synergy-research",
+   "name": "Synergy Research Group",
+   "homepage": "https://www.srgresearch.com",
+   "kind": "vendor"
+  },
+  {
+   "slug": "menlo-ventures",
+   "name": "Menlo Ventures",
+   "homepage": "https://menlovc.com",
+   "kind": "survey"
+  },
+  {
+   "slug": "sec-edgar",
+   "name": "SEC EDGAR",
+   "homepage": "https://www.sec.gov/edgar",
+   "kind": "government"
+  }
+ ],
+ "documents": [
+  {
+   "slug": "trendforce-foundry-2q26",
+   "source": "trendforce",
+   "title": "Global Foundry Revenue Approaches US$53.49 Billion in 2Q26 as SMIC Narrows Market Share Gap with Samsung, Says TrendForce",
+   "url": "https://www.trendforce.com/presscenter/news/20260909-13225.html",
+   "published_on": "2026-09-09"
+  },
+  {
+   "slug": "trendforce-dram-2q26",
+   "source": "trendforce",
+   "title": "DRAM Industry Revenue Rises 59.5% QoQ in 2Q26 as Supply Expansion Continues to Lag Demand Growth, Says TrendForce",
+   "url": "https://www.trendforce.com/presscenter/news/20260907-13219.html",
+   "published_on": "2026-09-07"
+  },
+  {
+   "slug": "synergy-cloud-q2-2026",
+   "source": "synergy-research",
+   "title": "Q2 Cloud Market Passes $143 Billion; Highest Growth Rate in Eight Years",
+   "url": "https://www.srgresearch.com/articles/q2-cloud-market-passes-143-billion-highest-growth-rate-in-eight-years",
+   "published_on": "2026-07-30"
+  },
+  {
+   "slug": "menlo-genai-enterprise-2025",
+   "source": "menlo-ventures",
+   "title": "2025: The State of Generative AI in the Enterprise",
+   "url": "https://menlovc.com/perspective/2025-the-state-of-generative-ai-in-the-enterprise/",
+   "published_on": "2025-12-09"
+  },
+  {
+   "slug": "skhynix-424b4-2026",
+   "source": "sec-edgar",
+   "title": "SK hynix Inc. prospectus (Form 424B4)",
+   "url": "https://www.sec.gov/Archives/edgar/data/0002120882/000119312526299963/d32785d424b4.htm",
+   "published_on": "2026-07-10"
+  }
+ ],
+ "segments": [
+  {
+   "metric": "share_foundry_revenue_pct",
+   "label": "Foundry",
+   "measure": "Share of global foundry revenue",
+   "estimator": "TrendForce",
+   "scope": "3",
+   "sort_order": 1,
+   "doc": "trendforce-foundry-2q26",
+   "rows": [
+    {
+     "entity": "tsmc",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 72.5,
+     "locator": "TSMC paragraph",
+     "quote": "TSMC maintained its lead with 2Q26 revenue nearing $40.2 billion, a 12.1% increase QoQ, capturing a 72.5% market share."
+    },
+    {
+     "entity": "samsung-foundry",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 5.9,
+     "locator": "Samsung paragraph",
+     "quote": "Samsung's market share declined to 5.9% as competitors grew at a faster pace."
+    },
+    {
+     "entity": "smic",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 5.4,
+     "locator": "SMIC paragraph",
+     "quote": "SMIC ranked third, with revenue surging 20% QoQ to more than $3 billion. Its market share edged up to 5.4%, narrowing the gap with Samsung."
+    },
+    {
+     "entity": "umc",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 3.9,
+     "locator": "UMC paragraph",
+     "quote": "UMC maintained fourth place with a 3.9% market share."
+    },
+    {
+     "entity": "globalfoundries",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 3.2,
+     "locator": "GlobalFoundries paragraph (\"GlobalFoundries ranked fifth\")",
+     "quote": "Its market share stood at 3.2%."
+    }
+   ]
+  },
+  {
+   "metric": "share_dram_revenue_pct",
+   "label": "DRAM",
+   "measure": "Share of global DRAM revenue",
+   "estimator": "TrendForce",
+   "scope": "4:memory",
+   "sort_order": 2,
+   "doc": "trendforce-dram-2q26",
+   "rows": [
+    {
+     "entity": "samsung",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 39.4,
+     "locator": "Samsung paragraph",
+     "quote": "The company ranked first with a market share of 39.4%."
+    },
+    {
+     "entity": "sk-hynix",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 24.9,
+     "locator": "SK hynix paragraph",
+     "quote": "Its 2Q26 revenue increased 37.9% QoQ to $38.59 billion, while market share edged down to 24.9%."
+    },
+    {
+     "entity": "micron",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 23.3,
+     "locator": "Micron paragraph",
+     "quote": "Micron continued to prioritize higher-priced server DRAM in its product mix amid capacity constraints. Revenue rose 65.5% QoQ to $36.0 billion in 2Q26, lifting its market share slightly to 23.3%."
+    }
+   ]
+  },
+  {
+   "metric": "share_hbm_revenue_pct",
+   "label": "HBM",
+   "measure": "Share of HBM revenue",
+   "estimator": "IDC, as stated in SK hynix's SEC prospectus",
+   "scope": "4:memory",
+   "sort_order": 3,
+   "doc": "skhynix-424b4-2026",
+   "rows": [
+    {
+     "entity": "sk-hynix",
+     "period": "Q1 2026",
+     "as_of": "2026-03-31",
+     "value": 56.4,
+     "locator": "Prospectus summary",
+     "quote": "In the HBM market, we were ranked first globally based on revenue with a market share of 56.4% in the first quarter of 2026, according to IDC."
+    }
+   ]
+  },
+  {
+   "metric": "share_cloud_infrastructure_pct",
+   "label": "Cloud infrastructure",
+   "measure": "Share of worldwide cloud infrastructure services revenue (IaaS, PaaS, hosted private cloud)",
+   "estimator": "Synergy Research Group",
+   "scope": "1",
+   "sort_order": 4,
+   "doc": "synergy-cloud-q2-2026",
+   "rows": [
+    {
+     "entity": "aws",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 28,
+     "locator": "Amazon, Microsoft and Google, in that order (previous sentence)",
+     "quote": "Among the major cloud providers, Amazon maintains a strong lead in the market, though Microsoft and Google continue to achieve substantially higher growth rates. Q2's worldwide market share was 28%, 20%, and 15%, respectively."
+    },
+    {
+     "entity": "azure",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 20,
+     "locator": "Amazon, Microsoft and Google, in that order (previous sentence)",
+     "quote": "Among the major cloud providers, Amazon maintains a strong lead in the market, though Microsoft and Google continue to achieve substantially higher growth rates. Q2's worldwide market share was 28%, 20%, and 15%, respectively."
+    },
+    {
+     "entity": "google-cloud",
+     "period": "Q2 2026",
+     "as_of": "2026-06-30",
+     "value": 15,
+     "locator": "Amazon, Microsoft and Google, in that order (previous sentence)",
+     "quote": "Among the major cloud providers, Amazon maintains a strong lead in the market, though Microsoft and Google continue to achieve substantially higher growth rates. Q2's worldwide market share was 28%, 20%, and 15%, respectively."
+    }
+   ]
+  },
+  {
+   "metric": "share_enterprise_llm_api_spend_pct",
+   "label": "Enterprise LLM APIs",
+   "measure": "Share of enterprise LLM API spend",
+   "estimator": "Menlo Ventures",
+   "scope": "0",
+   "sort_order": 5,
+   "doc": "menlo-genai-enterprise-2025",
+   "rows": [
+    {
+     "entity": "anthropic",
+     "period": "2025",
+     "as_of": "2025-12-31",
+     "value": 40,
+     "locator": "Key findings",
+     "quote": "We estimate Anthropic now earns 40% of enterprise LLM spend"
+    },
+    {
+     "entity": "anthropic",
+     "period": "2024",
+     "as_of": "2024-12-31",
+     "value": 24,
+     "locator": "Key findings",
+     "quote": "up from 24% last year and 12% in 2023."
+    },
+    {
+     "entity": "anthropic",
+     "period": "2023",
+     "as_of": "2023-12-31",
+     "value": 12,
+     "locator": "Key findings",
+     "quote": "up from 24% last year and 12% in 2023."
+    },
+    {
+     "entity": "openai",
+     "period": "2025",
+     "as_of": "2025-12-31",
+     "value": 27,
+     "locator": "Key findings",
+     "quote": "Over the same period, OpenAI lost nearly half of its enterprise share, falling to 27% from 50% in 2023."
+    },
+    {
+     "entity": "openai",
+     "period": "2023",
+     "as_of": "2023-12-31",
+     "value": 50,
+     "locator": "Key findings",
+     "quote": "Over the same period, OpenAI lost nearly half of its enterprise share, falling to 27% from 50% in 2023."
+    },
+    {
+     "entity": "google-deepmind",
+     "period": "2025",
+     "as_of": "2025-12-31",
+     "value": 21,
+     "locator": "Key findings",
+     "quote": "Google also saw significant gains, increasing its enterprise share from 7% in 2023 to 21% in 2025."
+    },
+    {
+     "entity": "google-deepmind",
+     "period": "2023",
+     "as_of": "2023-12-31",
+     "value": 7,
+     "locator": "Key findings",
+     "quote": "Google also saw significant gains, increasing its enterprise share from 7% in 2023 to 21% in 2025."
+    }
+   ]
+  }
+ ]
+}
