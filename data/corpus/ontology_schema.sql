@@ -506,8 +506,6 @@ CREATE TABLE IF NOT EXISTS ontology.fact (
   source_file text NOT NULL,
   UNIQUE (entity_id, key)
 );
-ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_check;
-ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check CHECK (target_kind = ANY (ARRAY['entity','relation','deal','claim','event','prediction','person','signal','implication','affiliation','legal_case','engagement','funding_round','job_posting','fact']));
 -- A person whose only free photo is not a portrait (a holiday snapshot) shows initials instead.
 ALTER TABLE ontology.person ADD COLUMN IF NOT EXISTS photo_blocked boolean NOT NULL DEFAULT false;
 
@@ -569,3 +567,63 @@ CREATE TABLE IF NOT EXISTS ontology.footprint (
   UNIQUE (entity_id, source, source_id)
 );
 CREATE INDEX IF NOT EXISTS footprint_entity_idx ON ontology.footprint (entity_id, source);
+
+-- ===== Market data (2026-10-28): daily quotes for listed companies, from a free unofficial feed on localhost =====
+CREATE TABLE IF NOT EXISTS ontology.market_quote (
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  symbol text NOT NULL,
+  day date NOT NULL,
+  price numeric,
+  currency text,
+  market_cap numeric,
+  change_1d_pct numeric,
+  year_high numeric,
+  year_low numeric,
+  source text NOT NULL DEFAULT 'yahoo',
+  retrieved_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (entity_id, symbol, day)
+);
+
+-- Whole-site reading (2026-10-28): every page of the company's sites, with text, team, topics and authors.
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS host text;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS kind text NOT NULL DEFAULT 'page';
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS description text;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS modified_on date;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS content text;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS word_count int;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS team text;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS topics text[];
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS authors jsonb NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE ontology.site_page ADD COLUMN IF NOT EXISTS http_status int;
+UPDATE ontology.site_page SET host = split_part(split_part(url, '://', 2), '/', 1) WHERE host IS NULL;
+CREATE INDEX IF NOT EXISTS site_page_host_idx ON ontology.site_page (host, kind);
+
+-- Material agreements a filing lists (the S-1 exhibit index): who the company signed what with, and when.
+CREATE TABLE IF NOT EXISTS ontology.agreement (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  exhibit text,
+  title text NOT NULL,
+  counterparty text,
+  counterparty_entity_id int REFERENCES ontology.entity(id) ON DELETE SET NULL,
+  kind text NOT NULL,
+  dated_on date,
+  url text,
+  redacted boolean NOT NULL DEFAULT false,
+  sort_order int,
+  source_file text NOT NULL
+);
+ALTER TABLE ontology.evidence DROP CONSTRAINT IF EXISTS evidence_target_kind_check;
+ALTER TABLE ontology.evidence ADD CONSTRAINT evidence_target_kind_check CHECK (target_kind = ANY (ARRAY['entity','relation','deal','claim','event','prediction','person','signal','implication','affiliation','legal_case','engagement','funding_round','job_posting','fact','agreement']));
+-- Pipeline runs: what ran, when, how it went, so freshness is a fact and not a memory.
+CREATE TABLE IF NOT EXISTS ontology.pipeline_run (
+  id serial PRIMARY KEY,
+  pipeline text NOT NULL,
+  started_at timestamptz NOT NULL DEFAULT now(),
+  finished_at timestamptz,
+  status text NOT NULL DEFAULT 'running' CHECK (status IN ('running','ok','failed','skipped')),
+  rows_written int,
+  spend_usd numeric NOT NULL DEFAULT 0,
+  note text
+);
+CREATE INDEX IF NOT EXISTS pipeline_run_idx ON ontology.pipeline_run (pipeline, started_at DESC);

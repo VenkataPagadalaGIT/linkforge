@@ -32,13 +32,13 @@ def rows(q):
 ev = rows("""
   SELECT e.target_kind, e.target_id, e.quote, e.url, e.locator, d.title, d.published_on, s.kind AS source_kind, s.name AS publisher
   FROM ontology.evidence e LEFT JOIN document d ON d.id = e.document_id LEFT JOIN source s ON s.id = d.source_id
-  WHERE e.target_kind IN ('person','affiliation','legal_case','engagement','funding_round','fact') ORDER BY e.id""")
+  WHERE e.target_kind IN ('person','affiliation','legal_case','engagement','funding_round','fact','agreement') ORDER BY e.id""")
 by = collections.defaultdict(list)
 for e in ev:
     by[(e["target_kind"], e["target_id"])].append({"quote": e["quote"], "url": e["url"], "locator": e["locator"], "source": e["title"] or "",
                                                    "publisher": e["publisher"], "publishedOn": e["published_on"], "secondary": e["source_kind"] == "aggregator"})
 
-out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None})
+out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None})
 
 aff = collections.defaultdict(list)
 for a in rows("""SELECT a.id, a.person_id, a.org_name, o.slug AS org_entity, a.title, a.kind, a.period, a.start_year, a.end_year, a.current
@@ -80,6 +80,11 @@ for g in rows("""SELECT g.*, e.slug AS entity, o.slug AS org_entity FROM ontolog
                  LEFT JOIN ontology.entity o ON o.id = g.org_entity_id ORDER BY e.slug, g.sort_order"""):
     out[g["entity"]]["advisors"].append({"org": g["org_name"], "entity": g["org_entity"], "role": g["role"], "since": g["since"], "until": g["until"],
                                          "current": g["current"], "evidence": by[("engagement", g["id"])]})
+
+for g in rows("""SELECT g.*, e.slug AS entity, o.slug AS counterparty_entity FROM ontology.agreement g JOIN ontology.entity e ON e.id = g.entity_id
+                 LEFT JOIN ontology.entity o ON o.id = g.counterparty_entity_id ORDER BY e.slug, g.sort_order"""):
+    out[g["entity"]]["agreements"].append({"exhibit": g["exhibit"], "title": g["title"], "counterparty": g["counterparty"], "entity": g["counterparty_entity"], "kind": g["kind"],
+                                           "datedOn": g["dated_on"], "url": g["url"], "redacted": g["redacted"], "evidence": by[("agreement", g["id"])]})
 
 for f in rows("""SELECT f.*, e.slug AS entity FROM ontology.fact f JOIN ontology.entity e ON e.id = f.entity_id ORDER BY e.slug, f.sort_order"""):
     out[f["entity"]]["facts"].append({"key": f["key"], "label": f["label"], "value": f["value"], "asOf": f["as_of"], "evidence": by[("fact", f["id"])]})
@@ -163,16 +168,38 @@ for ent, ps in by_ent.items():
 # ---- Birth to now: the company's own dated pages, public attention by month, news tone ----
 SITES = {x["entity"]: x for x in json.load(open(os.path.join(HERE, "ontology", "site_sources.json"), encoding="utf8"))["sites"]}
 pages = collections.defaultdict(list)
-for sp in rows("""SELECT e.slug AS entity, sp.url, sp.section, sp.title, sp.published_on FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id
-                  ORDER BY e.slug, sp.published_on DESC NULLS LAST, sp.url"""):
+for sp in rows("""SELECT e.slug AS entity, sp.url, sp.host, sp.section, sp.title, sp.published_on FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id
+                  WHERE sp.http_status = 200 OR sp.http_status IS NULL ORDER BY e.slug, sp.published_on DESC NULLS LAST, sp.url"""):
     pages[sp["entity"]].append(sp)
+HOSTS = collections.defaultdict(list)
+for x in json.load(open(os.path.join(HERE, "ontology", "site_sources.json"), encoding="utf8"))["sites"]:
+    HOSTS[x["entity"]].append(x)
+cov = collections.defaultdict(dict)
+for r in rows("""SELECT e.slug AS entity, sp.host, count(*) AS pages, count(*) FILTER (WHERE sp.content IS NOT NULL) AS with_text, count(sp.published_on) AS dated,
+                        count(*) FILTER (WHERE jsonb_array_length(sp.authors) > 0) AS with_authors, COALESCE(sum(sp.word_count), 0) AS words,
+                        count(*) FILTER (WHERE sp.http_status IS NOT NULL AND sp.http_status <> 200) AS failed, max(sp.retrieved_at) AS read_on
+                 FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id GROUP BY 1, 2"""):
+    cov[r["entity"]][r["host"]] = r
 for ent, ps in pages.items():
-    dated = [p for p in ps if p["published_on"]]
+    main_site = next((x for x in HOSTS.get(ent, []) if x.get("sections")), {})
+    timeline_hosts = {main_site.get("host")} if main_site else set()
+    dated = [p for p in ps if p["published_on"] and (not timeline_hosts or p.get("host") in timeline_hosts) and p["section"] in set(main_site.get("sections", []))]
+    hosts = []
+    for x in HOSTS.get(ent, []):
+        c = cov[ent].get(x["host"], {})
+        hosts.append({"host": x["host"], "label": x.get("label", x["host"]), "mode": "titles" if x.get("content") == "titles" else "text", "pages": c.get("pages", 0),
+                      "withText": c.get("with_text", 0), "dated": c.get("dated", 0), "withAuthors": c.get("with_authors", 0), "words": int(c.get("words", 0)), "failed": c.get("failed", 0), "readOn": c.get("read_on")})
     out[ent]["site"] = {
-        "sitemap": SITES.get(ent, {}).get("sitemap"), "sections": SITES.get(ent, {}).get("sections", []), "total": len(ps), "dated": len(dated),
+        "sitemap": main_site.get("sitemap"), "sections": main_site.get("sections", []), "total": len(ps), "dated": len(dated),
         "first": min(p["published_on"] for p in dated) if dated else None, "latest": max(p["published_on"] for p in dated) if dated else None,
         "items": [{"date": p["published_on"], "section": p["section"], "title": p["title"] or p["url"], "url": p["url"]} for p in dated],
+        "hosts": hosts, "words": sum(h["words"] for h in hosts), "pagesWithText": sum(h["withText"] for h in hosts),
     }
+for q in rows("""SELECT DISTINCT ON (e.slug) e.slug AS entity, q.symbol, q.day, q.price, q.currency, q.market_cap, q.change_1d_pct, q.year_high, q.year_low, q.source
+                 FROM ontology.market_quote q JOIN ontology.entity e ON e.id = q.entity_id ORDER BY e.slug, q.day DESC"""):
+    out[q["entity"]]["market"] = {"symbol": q["symbol"], "day": q["day"], "price": float(q["price"]) if q["price"] is not None else None, "currency": q["currency"],
+                                  "marketCap": float(q["market_cap"]) if q["market_cap"] is not None else None, "change1d": float(q["change_1d_pct"]) if q["change_1d_pct"] is not None else None,
+                                  "yearHigh": float(q["year_high"]) if q["year_high"] is not None else None, "yearLow": float(q["year_low"]) if q["year_low"] is not None else None, "source": q["source"]}
 QUERIES = {x["entity"]: x for x in json.load(open(os.path.join(HERE, "ontology", "attention_queries.json"), encoding="utf8"))["queries"]}
 att = collections.defaultdict(list)
 for a in rows("""SELECT e.slug AS entity, to_char(a.month, 'YYYY-MM') AS m, a.items, a.retrieved_at FROM ontology.attention a JOIN ontology.entity e ON e.id = a.entity_id
@@ -227,11 +254,13 @@ for ent, people in fp.items():
     out[ent]["footprint"] = {"people": ppl, "counts": dict(counts[ent])}
 
 for v in out.values():
+    v.setdefault("agreements", [])
+    v.setdefault("market", None)
     v.setdefault("footprint", None)
     v.setdefault("site", None)
     v.setdefault("attention", None)
     v.setdefault("tone", None)
-data = {k: v for k, v in sorted(out.items()) if v["people"] or v["rounds"] or v["legal"] or v["facts"] or v["hiring"] or v["site"] or v["attention"] or v["tone"] or v["footprint"]}
+data = {k: v for k, v in sorted(out.items()) if v["people"] or v["rounds"] or v["legal"] or v["facts"] or v["hiring"] or v["site"] or v["attention"] or v["tone"] or v["footprint"] or v["agreements"] or v["market"]}
 HEADER = """// AUTO-GENERATED by data/corpus/gen_ontology_360_ts.py from the ontology schema in research_corpus.
 // The 360 layer of each company file: people and their other roles, funding rounds and investors,
 // legal matters, advisors, identity facts and hiring. Do not edit by hand.
@@ -258,14 +287,17 @@ export interface Hiring {
   themes: { key: string; label: string; count: number; examples: string[] }[];
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
 }
-export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[] }
+export interface SiteHost { host: string; label: string; mode: "text" | "titles"; pages: number; withText: number; dated: number; withAuthors: number; words: number; failed: number; readOn: string | null }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number }
+export interface Agreement { exhibit: string | null; title: string; counterparty: string | null; entity: string | null; kind: string; datedOn: string | null; url: string | null; redacted: boolean; evidence: IntelEvidence[] }
+export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
 export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
 export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
-  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null;
 }
 
 """

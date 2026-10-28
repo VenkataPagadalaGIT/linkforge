@@ -24,17 +24,188 @@ export interface Hiring {
   themes: { key: string; label: string; count: number; examples: string[] }[];
   latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
 }
-export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[] }
+export interface SiteHost { host: string; label: string; mode: "text" | "titles"; pages: number; withText: number; dated: number; withAuthors: number; words: number; failed: number; readOn: string | null }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number }
+export interface Agreement { exhibit: string | null; title: string; counterparty: string | null; entity: string | null; kind: string; datedOn: string | null; url: string | null; redacted: boolean; evidence: IntelEvidence[] }
+export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
 export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
 export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
-  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null;
 }
 
 export const AI_360: Record<string, Entity360> = {
+ "advantest": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6857.T",
+   "day": "2026-10-28",
+   "price": 34930.0,
+   "currency": "JPY",
+   "marketCap": 25217814971650.0,
+   "change1d": 2.615,
+   "yearHigh": 41990.0,
+   "yearLow": 18270.0,
+   "source": "yahoo"
+  }
+ },
+ "agc-blanks": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "5201.T",
+   "day": "2026-10-28",
+   "price": 5478.0,
+   "currency": "JPY",
+   "marketCap": 1163493198054.0,
+   "change1d": 0.22,
+   "yearHigh": 8315.0,
+   "yearLow": 4761.0,
+   "source": "yahoo"
+  }
+ },
+ "alchip-guc": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "3661.TW",
+   "day": "2026-10-28",
+   "price": 3800.0,
+   "currency": "TWD",
+   "marketCap": 327959433200.0,
+   "change1d": 8.727,
+   "yearHigh": 5640.0,
+   "yearLow": 2480.0,
+   "source": "yahoo"
+  }
+ },
+ "amazon-investor": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AMZN",
+   "day": "2026-10-28",
+   "price": 254.6,
+   "currency": "USD",
+   "marketCap": 2746195501265.6333,
+   "change1d": 0.333,
+   "yearHigh": 287.20001220703125,
+   "yearLow": 196.0,
+   "source": "yahoo"
+  }
+ },
+ "amd": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AMD",
+   "day": "2026-10-28",
+   "price": 578.44,
+   "currency": "USD",
+   "marketCap": 944288867280.0148,
+   "change1d": 2.578,
+   "yearHigh": 658.52001953125,
+   "yearLow": 188.22000122070312,
+   "source": "yahoo"
+  }
+ },
+ "amec": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "688012.SS",
+   "day": "2026-10-28",
+   "price": 240.0,
+   "currency": "CNY",
+   "marketCap": 229882163520.0,
+   "change1d": 1.437,
+   "yearHigh": 500.0,
+   "yearLow": 171.95301818847656,
+   "source": "yahoo"
+  }
+ },
+ "amkor": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AMKR",
+   "day": "2026-10-28",
+   "price": 42.21,
+   "currency": "USD",
+   "marketCap": 10487178615.654968,
+   "change1d": 5.413,
+   "yearHigh": 96.68000030517578,
+   "yearLow": 29.760000228881836,
+   "source": "yahoo"
+  }
+ },
  "anthropic": {
   "people": [
    {
@@ -306,6 +477,27 @@ export const AI_360: Record<string, Entity360> = {
       ]
      }
     ]
+   },
+   {
+    "slug": "effendi-ng",
+    "name": "Effendi Ng",
+    "role": "Chief Accounting Officer (principal accounting officer)",
+    "group": "officer",
+    "sitePath": null,
+    "wikidata": null,
+    "photo": null,
+    "evidence": [
+     {
+      "quote": "/s/ Effendi Ng Chief Accounting Officer October 26, 2026 Effendi Ng (Principal Accounting Officer)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_3917",
+      "locator": "Signatures",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ],
+    "affiliations": []
    },
    {
     "slug": "reed-hastings",
@@ -4109,16 +4301,34 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 486,
-   "dated": 477,
+   "total": 579,
+   "dated": 487,
    "first": "2021-05-28",
-   "latest": "2026-10-27",
+   "latest": "2026-10-28",
    "items": [
+    {
+     "date": "2026-10-28",
+     "section": "news",
+     "title": "Newsroom",
+     "url": "https://www.anthropic.com/news"
+    },
+    {
+     "date": "2026-10-28",
+     "section": "news",
+     "title": "Announcements",
+     "url": "https://www.anthropic.com/news/announcements"
+    },
     {
      "date": "2026-10-27",
      "section": "news",
      "title": "Expanding our partnership with GSA to bring Claude to all levels of government",
      "url": "https://www.anthropic.com/news/expanding-partnership-gsa"
+    },
+    {
+     "date": "2026-10-27",
+     "section": "news",
+     "title": "Partnerships",
+     "url": "https://www.anthropic.com/news/partnerships"
     },
     {
      "date": "2026-10-27",
@@ -4161,6 +4371,12 @@ export const AI_360: Record<string, Entity360> = {
      "section": "news",
      "title": "Open call for guest investigators in the life sciences",
      "url": "https://www.anthropic.com/news/open-call-guest-investigators-life-sciences"
+    },
+    {
+     "date": "2026-10-22",
+     "section": "news",
+     "title": "Product",
+     "url": "https://www.anthropic.com/news/product"
     },
     {
      "date": "2026-10-22",
@@ -4229,6 +4445,12 @@ export const AI_360: Record<string, Entity360> = {
      "url": "https://www.anthropic.com/news/an-update-on-independent-evaluators"
     },
     {
+     "date": "2026-10-15",
+     "section": "news",
+     "title": "Policy",
+     "url": "https://www.anthropic.com/news/policy"
+    },
+    {
      "date": "2026-10-14",
      "section": "news",
      "title": "Preparing for the 2026 US midterms",
@@ -4237,7 +4459,13 @@ export const AI_360: Record<string, Entity360> = {
     {
      "date": "2026-10-14",
      "section": "news",
-     "title": "Singapore office and government MOU | Anthropic",
+     "title": "Safeguards",
+     "url": "https://www.anthropic.com/news/safeguards"
+    },
+    {
+     "date": "2026-10-14",
+     "section": "news",
+     "title": "Singapore office and government MOU",
      "url": "https://www.anthropic.com/news/singapore-office-opening"
     },
     {
@@ -4284,6 +4512,12 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "date": "2026-10-08",
+     "section": "news",
+     "title": "Security",
+     "url": "https://www.anthropic.com/news/security"
+    },
+    {
+     "date": "2026-10-08",
      "section": "research",
      "title": "An opt-in vulnerability-finding service for open-source software",
      "url": "https://www.anthropic.com/research/launching-opt-in-vuln-finding-service-for-open-source"
@@ -4293,6 +4527,12 @@ export const AI_360: Record<string, Entity360> = {
      "section": "research",
      "title": "Using Claude Science to produce the first complete map of the sky in UV light",
      "url": "https://www.anthropic.com/research/the-missing-map-of-the-sky"
+    },
+    {
+     "date": "2026-10-07",
+     "section": "news",
+     "title": "Models",
+     "url": "https://www.anthropic.com/news/models"
     },
     {
      "date": "2026-10-06",
@@ -4353,6 +4593,12 @@ export const AI_360: Record<string, Entity360> = {
      "section": "research",
      "title": "Claude discovers a novel enzyme system",
      "url": "https://www.anthropic.com/research/claude-discovers-novel-enzyme-system"
+    },
+    {
+     "date": "2026-09-21",
+     "section": "news",
+     "title": "Features",
+     "url": "https://www.anthropic.com/news/features"
     },
     {
      "date": "2026-09-18",
@@ -5133,6 +5379,12 @@ export const AI_360: Record<string, Entity360> = {
      "section": "news",
      "title": "Detecting and preventing distillation attacks",
      "url": "https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks"
+    },
+    {
+     "date": "2026-02-23",
+     "section": "research",
+     "title": "Anthropic Education Report: The AI Fluency Index · Claude Academy",
+     "url": "https://www.anthropic.com/research/AI-fluency-index"
     },
     {
      "date": "2026-02-23",
@@ -6976,7 +7228,83 @@ export const AI_360: Record<string, Entity360> = {
      "title": "Anthropic raises $124 million Series A",
      "url": "https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems"
     }
-   ]
+   ],
+   "hosts": [
+    {
+     "host": "www.anthropic.com",
+     "label": "anthropic.com",
+     "mode": "text",
+     "pages": 571,
+     "withText": 476,
+     "dated": 519,
+     "withAuthors": 1,
+     "words": 834127,
+     "failed": 0,
+     "readOn": "2026-10-28"
+    },
+    {
+     "host": "alignment.anthropic.com",
+     "label": "Alignment Science blog",
+     "mode": "text",
+     "pages": 3,
+     "withText": 3,
+     "dated": 1,
+     "withAuthors": 0,
+     "words": 4765,
+     "failed": 0,
+     "readOn": "2026-10-28"
+    },
+    {
+     "host": "transformer-circuits.pub",
+     "label": "Transformer Circuits",
+     "mode": "text",
+     "pages": 3,
+     "withText": 3,
+     "dated": 1,
+     "withAuthors": 1,
+     "words": 18415,
+     "failed": 0,
+     "readOn": "2026-10-28"
+    },
+    {
+     "host": "claude.com",
+     "label": "claude.com",
+     "mode": "text",
+     "pages": 2,
+     "withText": 2,
+     "dated": 0,
+     "withAuthors": 0,
+     "words": 736,
+     "failed": 0,
+     "readOn": "2026-10-28"
+    },
+    {
+     "host": "platform.claude.com",
+     "label": "Developer docs",
+     "mode": "titles",
+     "pages": 0,
+     "withText": 0,
+     "dated": 0,
+     "withAuthors": 0,
+     "words": 0,
+     "failed": 0,
+     "readOn": null
+    },
+    {
+     "host": "support.claude.com",
+     "label": "Support center",
+     "mode": "titles",
+     "pages": 0,
+     "withText": 0,
+     "dated": 0,
+     "withAuthors": 0,
+     "words": 0,
+     "failed": 0,
+     "readOn": null
+    }
+   ],
+   "words": 858043,
+   "pagesWithText": 484
   },
   "attention": {
    "source": "Hacker News",
@@ -7964,6 +8292,381 @@ export const AI_360: Record<string, Entity360> = {
      ]
     },
     {
+     "source": "company_site",
+     "name": "Amanda Askell",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Andy Jones",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Anna Chen",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Ben Mann",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Catherine Olsson",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Chris Olah",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Danny Hernandez",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dario Amodei",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Dawn Drain",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Deep Ganguli",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jack Clark",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jackson Kernion",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Jared Kaplan",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Kamal Ndousse",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Liane Lovitt",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Neel Nanda",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nelson Elhage",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nicholas Joseph",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Nova DasSarma",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Sam McCandlish",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Brown",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Conerly",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Tom Henighan",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Yuntao Bai",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
+     "source": "company_site",
+     "name": "Zac Hatfield-Dodds",
+     "headline": "Named author on 1 page of transformer-circuits.pub",
+     "url": null,
+     "evidence": "https://transformer-circuits.pub/2021/framework/",
+     "first": "2021-12-22",
+     "last": "2021-12-22",
+     "tier": "confirmed",
+     "works": null,
+     "matched": [],
+     "recent": [
+      "A Mathematical Framework for Transformer Circuits"
+     ]
+    },
+    {
      "source": "openalex",
      "name": "Ethan Perez",
      "headline": "11 papers with this affiliation",
@@ -8474,14 +9177,933 @@ export const AI_360: Record<string, Entity360> = {
       "Rethinking Thinking Tokens: LLMs as Improvement Operators",
       "Compute as Teacher: Turning Inference Compute Into Reference-Free Supervision"
      ]
+    },
+    {
+     "source": "linkedin",
+     "name": "Benjamin Gmurczyk",
+     "headline": null,
+     "url": "https://www.linkedin.com/in/bengmur",
+     "evidence": "https://www.linkedin.com/in/bengmur",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Darren Lo",
+     "headline": null,
+     "url": "https://linkedin.com/in/darren-lo-04",
+     "evidence": "https://linkedin.com/in/darren-lo-04",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Denis macharia",
+     "headline": null,
+     "url": "https://linkedin.com/in/denis-macharia-529207149",
+     "evidence": "https://linkedin.com/in/denis-macharia-529207149",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Erik Sidbrant",
+     "headline": null,
+     "url": "https://www.linkedin.com/in/erik-sidbrant/",
+     "evidence": "https://www.linkedin.com/in/erik-sidbrant/",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Francis Wilson",
+     "headline": null,
+     "url": "https://linkedin.com/in/francis-wilson-673502117",
+     "evidence": "https://linkedin.com/in/francis-wilson-673502117",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Frank Bach",
+     "headline": null,
+     "url": "https://linkedin.com/in/francoisbach",
+     "evidence": "https://linkedin.com/in/francoisbach",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Jacob Udewitz",
+     "headline": null,
+     "url": "https://linkedin.com/in/udewitz",
+     "evidence": "https://linkedin.com/in/udewitz",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Jeffrey Bleich",
+     "headline": null,
+     "url": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
+     "evidence": "https://www.linkedin.com/in/jeffrey-bleich-4036354",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Julian Minder",
+     "headline": null,
+     "url": "https://www.linkedin.com/in/julian-minder-101238a5/",
+     "evidence": "https://www.linkedin.com/in/julian-minder-101238a5/",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Kelcey Harris",
+     "headline": null,
+     "url": "https://linkedin.com/in/kelcey-harris",
+     "evidence": "https://linkedin.com/in/kelcey-harris",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Kristen Swanson",
+     "headline": null,
+     "url": "https://linkedin.com/in/kristennicoleswanson",
+     "evidence": "https://linkedin.com/in/kristennicoleswanson",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Lucas Manozzo Alves",
+     "headline": null,
+     "url": "https://linkedin.com/in/lucasemalves/",
+     "evidence": "https://linkedin.com/in/lucasemalves/",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Malik Tucker",
+     "headline": null,
+     "url": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
+     "evidence": "https://ch.linkedin.com/in/malik-tucker-4b2732117",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Maya Nielan",
+     "headline": null,
+     "url": "https://linkedin.com/in/maya-nielan",
+     "evidence": "https://linkedin.com/in/maya-nielan",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Peter Twomey",
+     "headline": null,
+     "url": "https://www.linkedin.com/in/petertwomey/",
+     "evidence": "https://www.linkedin.com/in/petertwomey/",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Quinn Woodhead",
+     "headline": null,
+     "url": "https://linkedin.com/in/quinn-woodhead-b6558817a",
+     "evidence": "https://linkedin.com/in/quinn-woodhead-b6558817a",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Swanee Golden",
+     "headline": null,
+     "url": "https://linkedin.com/in/swanee-golden-56140b151",
+     "evidence": "https://linkedin.com/in/swanee-golden-56140b151",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Tosia Batool",
+     "headline": null,
+     "url": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
+     "evidence": "https://hu.linkedin.com/in/tosia-batool-2a0b3a334",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "Zhichun Ning",
+     "headline": null,
+     "url": "https://kw.linkedin.com/in/zhichun-ning",
+     "evidence": "https://kw.linkedin.com/in/zhichun-ning",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
+    },
+    {
+     "source": "linkedin",
+     "name": "abrefa francis",
+     "headline": null,
+     "url": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
+     "evidence": "https://fi.linkedin.com/in/abrefa-francis-95b99240b",
+     "first": null,
+     "last": null,
+     "tier": "stated",
+     "works": null,
+     "matched": [],
+     "recent": []
     }
    ],
    "counts": {
     "openalex:confirmed": 34,
     "openalex:likely": 33,
     "openalex:unverified": 142,
-    "openalex:model": 282
+    "company_site:confirmed": 25,
+    "openalex:model": 282,
+    "linkedin:stated": 20
    }
+  },
+  "agreements": [
+   {
+    "exhibit": "4.3",
+    "title": "2026 Stock Purchase and Convertible Note Facility Agreement",
+    "counterparty": "Amazon Web Services, Inc.",
+    "entity": "aws",
+    "kind": "financing",
+    "datedOn": "2026-04-20",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit43-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "2026 Stock Purchase and Convertible Note Facility Agreement between the registrant and Amazon Web Services, Inc., dated as of April 20, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "4.4",
+    "title": "Note Purchase Agreement",
+    "counterparty": "Broadcom Inc.",
+    "entity": "broadcom",
+    "kind": "financing",
+    "datedOn": "2026-03-31",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit44-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Note Purchase Agreement between the registrant and Broadcom Inc., dated as of March 31, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "4.5",
+    "title": "Note Purchase Agreement",
+    "counterparty": "Google LLC",
+    "entity": "google-investor",
+    "kind": "financing",
+    "datedOn": "2026-03-31",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit45-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Note Purchase Agreement between the registrant and Google LLC, dated as of March 31, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "4.6",
+    "title": "Registration Rights Agreement",
+    "counterparty": "Broadcom Inc.",
+    "entity": "broadcom",
+    "kind": "financing",
+    "datedOn": "2026-06-08",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit46-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Registration Rights Agreement between the registrant and Broadcom Inc., dated as of June 8, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "4.7",
+    "title": "Registration Rights Agreement",
+    "counterparty": "Google LLC",
+    "entity": "google-investor",
+    "kind": "financing",
+    "datedOn": "2026-05-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit47-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Registration Rights Agreement between the registrant and Google LLC, dated as of May 4, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "4.2",
+    "title": "Amended and Restated Investors' Rights Agreement",
+    "counterparty": "Holders of its capital stock",
+    "entity": null,
+    "kind": "financing",
+    "datedOn": "2026-05-28",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit42-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Amended and Restated Investors’ Rights Agreement among the registrant and certain holders of its capital stock, dated as of May 28, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.10",
+    "title": "Amended and Restated Credit Agreement",
+    "counterparty": "Morgan Stanley Senior Funding, Inc. and lenders",
+    "entity": null,
+    "kind": "credit",
+    "datedOn": "2026-09-04",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1010-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Amended and Restated Credit Agreement between the registrant, the several lenders from time to time party thereto, and Morgan Stanley Senior Funding, Inc., dated as of September 4, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.11",
+    "title": "Master Equipment Lease Agreement (via AI Infrastructure OpCo II, LLC)",
+    "counterparty": "Broadcom Inc.",
+    "entity": "broadcom",
+    "kind": "equipment",
+    "datedOn": "2026-03-31",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1011-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Master Equipment Lease Agreement between AI Infrastructure OpCo II, LLC, a wholly owned subsidiary of the registrant, and Broadcom Inc., dated as of March 31, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.8",
+    "title": "Sublease Agreement",
+    "counterparty": "Salesforce, Inc.",
+    "entity": null,
+    "kind": "real_estate",
+    "datedOn": "2023-09-22",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit108-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Sublease Agreement between the registrant and Salesforce, Inc., dated as of September 22, 2023.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.9",
+    "title": "Office Lease",
+    "counterparty": "300 Howard Owner, LLC",
+    "entity": null,
+    "kind": "real_estate",
+    "datedOn": "2026-01-29",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit109-sx1.htm",
+    "redacted": true,
+    "evidence": [
+     {
+      "quote": "Office Lease between the registrant and 300 Howard Owner, LLC, dated as of January 29, 2026.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.12",
+    "title": "Irrevocable Proxy Agreement",
+    "counterparty": "Daffy Charitable Fund",
+    "entity": null,
+    "kind": "governance",
+    "datedOn": "2025-10-06",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1012-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Irrevocable Proxy Agreement between the registrant, Daffy Charitable Fund, and the registrant’s Chief Executive Officer, dated as of October 6, 2025.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "10.13",
+    "title": "Irrevocable Proxy Agreement",
+    "counterparty": "Dechomai Asset Trust",
+    "entity": null,
+    "kind": "governance",
+    "datedOn": "2024-12-20",
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1013-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Irrevocable Proxy Agreement between the registrant, Dechomai Asset Trust, and the registrant’s Chief Executive Officer, dated as of December 20, 2024.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "99.1",
+    "title": "Amended and Restated Trust Agreement (form)",
+    "counterparty": "Long-Term Benefit Trust",
+    "entity": null,
+    "kind": "governance",
+    "datedOn": null,
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit991-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Form of Amended and Restated Trust Agreement.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   },
+   {
+    "exhibit": "99.2",
+    "title": "Limited Liability Company Agreement of Anthropic Founders, LLC (form)",
+    "counterparty": "Anthropic Founders, LLC",
+    "entity": null,
+    "kind": "governance",
+    "datedOn": null,
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit992-sx1.htm",
+    "redacted": false,
+    "evidence": [
+     {
+      "quote": "Form of Limited Liability Company Agreement of Anthropic Founders, LLC.",
+      "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+      "locator": "Part II, Exhibit Index",
+      "source": "Anthropic, PBC, Form S-1 registration statement",
+      "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+      "publishedOn": "2026-10-26",
+      "secondary": false
+     }
+    ]
+   }
+  ],
+  "market": null
+ },
+ "applied-materials": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AMAT",
+   "day": "2026-10-28",
+   "price": 416.0,
+   "currency": "USD",
+   "marketCap": 330136536288.0,
+   "change1d": 4.37,
+   "yearHigh": 739.6699829101562,
+   "yearLow": 203.39999389648438,
+   "source": "yahoo"
+  }
+ },
+ "arista": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ANET",
+   "day": "2026-10-28",
+   "price": 186.72,
+   "currency": "USD",
+   "marketCap": 235495867814.14087,
+   "change1d": -0.416,
+   "yearHigh": 217.41000366210938,
+   "yearLow": 114.5199966430664,
+   "source": "yahoo"
+  }
+ },
+ "arm": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ARM",
+   "day": "2026-10-28",
+   "price": 235.9,
+   "currency": "USD",
+   "marketCap": 251940855908.55405,
+   "change1d": 3.898,
+   "yearHigh": 452.70001220703125,
+   "yearLow": 100.0199966430664,
+   "source": "yahoo"
+  }
+ },
+ "ase": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ASX",
+   "day": "2026-10-28",
+   "price": 43.92,
+   "currency": "USD",
+   "marketCap": 96956640284.29152,
+   "change1d": 4.051,
+   "yearHigh": 47.93000030517578,
+   "yearLow": 13.350000381469727,
+   "source": "yahoo"
+  }
+ },
+ "asm-international": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ASM",
+   "day": "2026-10-28",
+   "price": 4.79,
+   "currency": "USD",
+   "marketCap": 813606741.6105356,
+   "change1d": -1.033,
+   "yearHigh": 11.989999771118164,
+   "yearLow": 4.050000190734863,
+   "source": "yahoo"
+  }
+ },
+ "asml": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ASML",
+   "day": "2026-10-28",
+   "price": 1662.85,
+   "currency": "USD",
+   "marketCap": 640891882875.0872,
+   "change1d": 1.47,
+   "yearHigh": 1999.9599609375,
+   "yearLow": 946.1099853515625,
+   "source": "yahoo"
+  }
+ },
+ "ats-substrate": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ATS.VI",
+   "day": "2026-10-28",
+   "price": 155.0,
+   "currency": "EUR",
+   "marketCap": 6021750000.0,
+   "change1d": -0.257,
+   "yearHigh": 242.0,
+   "yearLow": 25.0,
+   "source": "yahoo"
+  }
+ },
+ "aws": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AMZN",
+   "day": "2026-10-28",
+   "price": 254.6,
+   "currency": "USD",
+   "marketCap": 2746195501265.6333,
+   "change1d": 0.333,
+   "yearHigh": 287.20001220703125,
+   "yearLow": 196.0,
+   "source": "yahoo"
+  }
+ },
+ "azure": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "MSFT",
+   "day": "2026-10-28",
+   "price": 531.01,
+   "currency": "USD",
+   "marketCap": 3943038983691.003,
+   "change1d": -0.307,
+   "yearHigh": 551.1500244140625,
+   "yearLow": 349.20001220703125,
+   "source": "yahoo"
+  }
+ },
+ "besi": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "BESI.AS",
+   "day": "2026-10-28",
+   "price": 161.55,
+   "currency": "EUR",
+   "marketCap": 12780815245.435791,
+   "change1d": -0.92,
+   "yearHigh": 328.3999938964844,
+   "yearLow": 120.1500015258789,
+   "source": "yahoo"
+  }
+ },
+ "bloom-energy": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "BE",
+   "day": "2026-10-28",
+   "price": 228.08,
+   "currency": "USD",
+   "marketCap": 67406128994.50481,
+   "change1d": 4.141,
+   "yearHigh": 351.2799987792969,
+   "yearLow": 75.69999694824219,
+   "source": "yahoo"
+  }
+ },
+ "broadcom": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "AVGO",
+   "day": "2026-10-28",
+   "price": 351.81,
+   "currency": "USD",
+   "marketCap": 1679410711151.2803,
+   "change1d": 2.563,
+   "yearHigh": 495.0,
+   "yearLow": 289.9599914550781,
+   "source": "yahoo"
+  }
+ },
+ "cadence": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CDNS",
+   "day": "2026-10-28",
+   "price": 342.46,
+   "currency": "USD",
+   "marketCap": 94311084426.78833,
+   "change1d": -0.157,
+   "yearHigh": 416.69000244140625,
+   "yearLow": 262.75,
+   "source": "yahoo"
+  }
+ },
+ "cambricon": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "688256.SS",
+   "day": "2026-10-28",
+   "price": 958.0,
+   "currency": "CNY",
+   "marketCap": 602442139664.0,
+   "change1d": 4.931,
+   "yearHigh": 1620.0,
+   "yearLow": 649.6644287109375,
+   "source": "yahoo"
+  }
+ },
+ "cisco": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CSCO",
+   "day": "2026-10-28",
+   "price": 110.29,
+   "currency": "USD",
+   "marketCap": 434827909832.71606,
+   "change1d": -1.393,
+   "yearHigh": 130.3699951171875,
+   "yearLow": 70.54000091552734,
+   "source": "yahoo"
   }
  },
  "cohere": {
@@ -8735,7 +10357,57 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "coherent": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "COHR",
+   "day": "2026-10-28",
+   "price": 239.59,
+   "currency": "USD",
+   "marketCap": 47182737340.75653,
+   "change1d": 1.314,
+   "yearHigh": 440.0,
+   "yearLow": 123.75,
+   "source": "yahoo"
+  }
+ },
+ "constellation-energy": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CEG",
+   "day": "2026-10-28",
+   "price": 258.08,
+   "currency": "USD",
+   "marketCap": 91439643614.77463,
+   "change1d": -0.547,
+   "yearHigh": 406.0429992675781,
+   "yearLow": 228.6300048828125,
+   "source": "yahoo"
+  }
  },
  "coreweave-capital": {
   "people": [],
@@ -9368,7 +11040,43 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CRWV",
+   "day": "2026-10-28",
+   "price": 63.93,
+   "currency": "USD",
+   "marketCap": 35259735134.17561,
+   "change1d": 6.745,
+   "yearHigh": 140.3300018310547,
+   "yearLow": 51.2400016784668,
+   "source": "yahoo"
+  }
+ },
+ "coreweave-facilities": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CRWV",
+   "day": "2026-10-28",
+   "price": 63.93,
+   "currency": "USD",
+   "marketCap": 35259735134.17561,
+   "change1d": 6.745,
+   "yearHigh": 140.3300018310547,
+   "yearLow": 51.2400016784668,
+   "source": "yahoo"
+  }
  },
  "cursor-anysphere": {
   "people": [],
@@ -9599,7 +11307,33 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "daikin-fluoropolymer": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6367.T",
+   "day": "2026-10-28",
+   "price": 21535.0,
+   "currency": "JPY",
+   "marketCap": 5993968344200.0,
+   "change1d": 0.279,
+   "yearHigh": 26440.0,
+   "yearLow": 17380.0,
+   "source": "yahoo"
+  }
  },
  "databricks": {
   "people": [],
@@ -10508,7 +12242,297 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "delta-electronics": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2308.TW",
+   "day": "2026-10-28",
+   "price": 1550.0,
+   "currency": "TWD",
+   "marketCap": 4026192159950.0,
+   "change1d": 2.649,
+   "yearHigh": 2585.0,
+   "yearLow": 886.0,
+   "source": "yahoo"
+  }
+ },
+ "digital-realty": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "DLR",
+   "day": "2026-10-28",
+   "price": 179.77,
+   "currency": "USD",
+   "marketCap": 66694442737.86757,
+   "change1d": 0.425,
+   "yearHigh": 208.13999938964844,
+   "yearLow": 146.22999572753906,
+   "source": "yahoo"
+  }
+ },
+ "disco-corp": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6146.T",
+   "day": "2026-10-28",
+   "price": 52360.0,
+   "currency": "JPY",
+   "marketCap": 5679370081000.0,
+   "change1d": 5.077,
+   "yearHigh": 91680.0,
+   "yearLow": 42370.0,
+   "source": "yahoo"
+  }
+ },
+ "ebara": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6361.T",
+   "day": "2026-10-28",
+   "price": 3930.0,
+   "currency": "JPY",
+   "marketCap": 1789712253600.0,
+   "change1d": 2.477,
+   "yearHigh": 6890.0,
+   "yearLow": 3538.0,
+   "source": "yahoo"
+  }
+ },
+ "equinix": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "EQIX",
+   "day": "2026-10-28",
+   "price": 1007.66,
+   "currency": "USD",
+   "marketCap": 99427508464.88562,
+   "change1d": 2.187,
+   "yearHigh": 1128.6800537109375,
+   "yearLow": 720.6199951171875,
+   "source": "yahoo"
+  }
+ },
+ "foxconn-industrial-internet": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2317.TW",
+   "day": "2026-10-28",
+   "price": 251.5,
+   "currency": "TWD",
+   "marketCap": 3539677249878.5,
+   "change1d": 1.616,
+   "yearHigh": 314.0,
+   "yearLow": 187.5,
+   "source": "yahoo"
+  }
+ },
+ "fujimi-slurry": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "5384.T",
+   "day": "2026-10-28",
+   "price": 3270.0,
+   "currency": "JPY",
+   "marketCap": 242579247120.0,
+   "change1d": 4.306,
+   "yearHigh": 5090.0,
+   "yearLow": 2212.0,
+   "source": "yahoo"
+  }
+ },
+ "fujitsu-fugaku": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6702.T",
+   "day": "2026-10-28",
+   "price": 4450.0,
+   "currency": "JPY",
+   "marketCap": 7683450589500.0,
+   "change1d": -0.581,
+   "yearHigh": 4668.0,
+   "yearLow": 3016.0,
+   "source": "yahoo"
+  }
+ },
+ "ge-vernova": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "GEV",
+   "day": "2026-10-28",
+   "price": 878.03,
+   "currency": "USD",
+   "marketCap": 233848881928.17163,
+   "change1d": -2.528,
+   "yearHigh": 1195.93994140625,
+   "yearLow": 530.1599731445312,
+   "source": "yahoo"
+  }
+ },
+ "github-copilot": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "MSFT",
+   "day": "2026-10-28",
+   "price": 531.01,
+   "currency": "USD",
+   "marketCap": 3943038983691.003,
+   "change1d": -0.307,
+   "yearHigh": 551.1500244140625,
+   "yearLow": 349.20001220703125,
+   "source": "yahoo"
+  }
+ },
+ "globalfoundries": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "GFS",
+   "day": "2026-10-28",
+   "price": 46.11,
+   "currency": "USD",
+   "marketCap": 25702572124.551315,
+   "change1d": -0.839,
+   "yearHigh": 92.55000305175781,
+   "yearLow": 32.02000045776367,
+   "source": "yahoo"
+  }
+ },
+ "google-cloud": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "GOOGL",
+   "day": "2026-10-28",
+   "price": 324.89,
+   "currency": "USD",
+   "marketCap": 3973383706393.026,
+   "change1d": 0.408,
+   "yearHigh": 408.6099853515625,
+   "yearLow": 267.6700134277344,
+   "source": "yahoo"
+  }
  },
  "google-deepmind": {
   "people": [],
@@ -11235,7 +13259,33 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "google-investor": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "GOOGL",
+   "day": "2026-10-28",
+   "price": 324.89,
+   "currency": "USD",
+   "marketCap": 3973383706393.026,
+   "change1d": 0.408,
+   "yearHigh": 408.6099853515625,
+   "yearLow": 267.6700134277344,
+   "source": "yahoo"
+  }
  },
  "harvey-ai": {
   "people": [],
@@ -11450,7 +13500,297 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "hoya-mask-blanks": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "7741.T",
+   "day": "2026-10-28",
+   "price": 26415.0,
+   "currency": "JPY",
+   "marketCap": 8784071545185.0,
+   "change1d": 0.038,
+   "yearHigh": 30400.0,
+   "yearLow": 22165.0,
+   "source": "yahoo"
+  }
+ },
+ "hygon": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "688041.SS",
+   "day": "2026-10-28",
+   "price": 192.7,
+   "currency": "CNY",
+   "marketCap": 447899943042.38306,
+   "change1d": 3.059,
+   "yearHigh": 395.1700134277344,
+   "yearLow": 186.0,
+   "source": "yahoo"
+  }
+ },
+ "intel": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "INTC",
+   "day": "2026-10-28",
+   "price": 95.53,
+   "currency": "USD",
+   "marketCap": 501964892457.7333,
+   "change1d": 1.478,
+   "yearHigh": 142.35000610351562,
+   "yearLow": 32.88999938964844,
+   "source": "yahoo"
+  }
+ },
+ "intel-foundry": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "INTC",
+   "day": "2026-10-28",
+   "price": 95.53,
+   "currency": "USD",
+   "marketCap": 501964892457.7333,
+   "change1d": 1.478,
+   "yearHigh": 142.35000610351562,
+   "yearLow": 32.88999938964844,
+   "source": "yahoo"
+  }
+ },
+ "inventec": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2356.TW",
+   "day": "2026-10-28",
+   "price": 63.8,
+   "currency": "TWD",
+   "marketCap": 228880906473.77374,
+   "change1d": 1.27,
+   "yearHigh": 88.5999984741211,
+   "yearLow": 38.54999923706055,
+   "source": "yahoo"
+  }
+ },
+ "jcet": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "600584.SS",
+   "day": "2026-10-28",
+   "price": 55.41,
+   "currency": "CNY",
+   "marketCap": 99151461050.65701,
+   "change1d": 3.978,
+   "yearHigh": 113.87000274658203,
+   "yearLow": 34.58000183105469,
+   "source": "yahoo"
+  }
+ },
+ "jpmorgan-ai": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "JPM",
+   "day": "2026-10-28",
+   "price": 339.3,
+   "currency": "USD",
+   "marketCap": 901045047583.0078,
+   "change1d": 1.045,
+   "yearHigh": 366.5,
+   "yearLow": 279.1000061035156,
+   "source": "yahoo"
+  }
+ },
+ "kioxia": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "285A.T",
+   "day": "2026-10-28",
+   "price": 14340.0,
+   "currency": "JPY",
+   "marketCap": 22913965357560.0,
+   "change1d": 14.172,
+   "yearHigh": 37566.66796875,
+   "yearLow": 2784.333251953125,
+   "source": "yahoo"
+  }
+ },
+ "kla": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "KLAC",
+   "day": "2026-10-28",
+   "price": 158.77,
+   "currency": "USD",
+   "marketCap": 207195886310.42926,
+   "change1d": 2.837,
+   "yearHigh": 307.3699951171875,
+   "yearLow": 107.19599914550781,
+   "source": "yahoo"
+  }
+ },
+ "kokusai-electric": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6525.T",
+   "day": "2026-10-28",
+   "price": 7265.0,
+   "currency": "JPY",
+   "marketCap": 1695533641190.0,
+   "change1d": 7.312,
+   "yearHigh": 12220.0,
+   "yearLow": 3852.0,
+   "source": "yahoo"
+  }
+ },
+ "kyec": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2449.TW",
+   "day": "2026-10-28",
+   "price": 277.5,
+   "currency": "TWD",
+   "marketCap": 356277324375.0,
+   "change1d": 2.778,
+   "yearHigh": 350.0,
+   "yearLow": 187.14285278320312,
+   "source": "yahoo"
+  }
+ },
+ "lam-research": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "LRCX",
+   "day": "2026-10-28",
+   "price": 253.82,
+   "currency": "USD",
+   "marketCap": 317636540728.5458,
+   "change1d": 5.044,
+   "yearHigh": 438.5,
+   "yearLow": 135.5,
+   "source": "yahoo"
+  }
  },
  "lambda": {
   "people": [],
@@ -11674,7 +14014,201 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "lasertec": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6920.T",
+   "day": "2026-10-28",
+   "price": 41590.0,
+   "currency": "JPY",
+   "marketCap": 3730898117850.0,
+   "change1d": 5.291,
+   "yearHigh": 58580.0,
+   "yearLow": 25590.0,
+   "source": "yahoo"
+  }
+ },
+ "lite-on": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2301.TW",
+   "day": "2026-10-28",
+   "price": 261.5,
+   "currency": "TWD",
+   "marketCap": 593370576233.0,
+   "change1d": 4.183,
+   "yearHigh": 328.0,
+   "yearLow": 139.5,
+   "source": "yahoo"
+  }
+ },
+ "lumentum": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "LITE",
+   "day": "2026-10-28",
+   "price": 913.95,
+   "currency": "USD",
+   "marketCap": 82788202346.94775,
+   "change1d": 5.089,
+   "yearHigh": 1143.0,
+   "yearLow": 184.1999969482422,
+   "source": "yahoo"
+  }
+ },
+ "marvell": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "MRVL",
+   "day": "2026-10-28",
+   "price": 251.65,
+   "currency": "USD",
+   "marketCap": 226159010376.19235,
+   "change1d": 2.903,
+   "yearHigh": 329.8800048828125,
+   "yearLow": 70.69000244140625,
+   "source": "yahoo"
+  }
+ },
+ "mediatek": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2454.TW",
+   "day": "2026-10-28",
+   "price": 4235.0,
+   "currency": "TWD",
+   "marketCap": 6763966366080.0,
+   "change1d": 6.008,
+   "yearHigh": 5480.0,
+   "yearLow": 1130.0,
+   "source": "yahoo"
+  }
+ },
+ "meta-infra": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "META",
+   "day": "2026-10-28",
+   "price": 612.49,
+   "currency": "USD",
+   "marketCap": 1566034640025.5874,
+   "change1d": -1.116,
+   "yearHigh": 779.8200073242188,
+   "yearLow": 520.260009765625,
+   "source": "yahoo"
+  }
+ },
+ "micron": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "MU",
+   "day": "2026-10-28",
+   "price": 983.23,
+   "currency": "USD",
+   "marketCap": 1112449222636.6504,
+   "change1d": 4.377,
+   "yearHigh": 1255.0,
+   "yearLow": 192.58999633789062,
+   "source": "yahoo"
+  }
+ },
+ "microsoft": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "MSFT",
+   "day": "2026-10-28",
+   "price": 531.01,
+   "currency": "USD",
+   "marketCap": 3943038983691.003,
+   "change1d": -0.307,
+   "yearHigh": 551.1500244140625,
+   "yearLow": 349.20001220703125,
+   "source": "yahoo"
+  }
  },
  "mistral": {
   "people": [],
@@ -11953,7 +14487,153 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "murata": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6981.T",
+   "day": "2026-10-28",
+   "price": 6701.0,
+   "currency": "JPY",
+   "marketCap": 12128202581154.0,
+   "change1d": 4.442,
+   "yearHigh": 12895.0,
+   "yearLow": 2821.5,
+   "source": "yahoo"
+  }
+ },
+ "nan-ya-pcb": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "8046.TW",
+   "day": "2026-10-28",
+   "price": 1300.0,
+   "currency": "TWD",
+   "marketCap": 840015133100.0,
+   "change1d": 3.175,
+   "yearHigh": 1560.0,
+   "yearLow": 232.0,
+   "source": "yahoo"
+  }
+ },
+ "naura": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "002371.SZ",
+   "day": "2026-10-28",
+   "price": 511.68,
+   "currency": "CNY",
+   "marketCap": 372479394540.62714,
+   "change1d": 4.82,
+   "yearHigh": 968.0,
+   "yearLow": 386.6199951171875,
+   "source": "yahoo"
+  }
+ },
+ "nebius": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "NBIS",
+   "day": "2026-10-28",
+   "price": 182.34,
+   "currency": "USD",
+   "marketCap": 49570079454.55646,
+   "change1d": 5.661,
+   "yearHigh": 299.8599853515625,
+   "yearLow": 73.5199966430664,
+   "source": "yahoo"
+  }
+ },
+ "ntt-iown": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "9432.T",
+   "day": "2026-10-28",
+   "price": 171.9,
+   "currency": "JPY",
+   "marketCap": 13912384150900.701,
+   "change1d": -1.15,
+   "yearHigh": 181.3000030517578,
+   "yearLow": 142.60000610351562,
+   "source": "yahoo"
+  }
+ },
+ "nuscale": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SMR",
+   "day": "2026-10-28",
+   "price": 5.67,
+   "currency": "USD",
+   "marketCap": 2326908621.0502357,
+   "change1d": -1.22,
+   "yearHigh": 45.540000915527344,
+   "yearLow": 5.199999809265137,
+   "source": "yahoo"
+  }
  },
  "nvidia": {
   "people": [
@@ -12675,7 +15355,91 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "NVDA",
+   "day": "2026-10-28",
+   "price": 215.38,
+   "currency": "USD",
+   "marketCap": 5200780977905.273,
+   "change1d": -1.261,
+   "yearHigh": 243.3699951171875,
+   "yearLow": 164.27000427246094,
+   "source": "yahoo"
+  }
+ },
+ "nxp": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "NXPI",
+   "day": "2026-10-28",
+   "price": 251.69,
+   "currency": "USD",
+   "marketCap": 63467201569.69519,
+   "change1d": 7.111,
+   "yearHigh": 339.95001220703125,
+   "yearLow": 183.0,
+   "source": "yahoo"
+  }
+ },
+ "nyt-copyright-suit": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "NYT",
+   "day": "2026-10-28",
+   "price": 69.18,
+   "currency": "USD",
+   "marketCap": 11157598528.699844,
+   "change1d": -0.902,
+   "yearHigh": 87.0999984741211,
+   "yearLow": 55.93000030517578,
+   "source": "yahoo"
+  }
+ },
+ "oklo": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "OKLO",
+   "day": "2026-10-28",
+   "price": 27.12,
+   "currency": "USD",
+   "marketCap": 5044798824.112225,
+   "change1d": -0.544,
+   "yearHigh": 152.05999755859375,
+   "yearLow": 25.389999389648438,
+   "source": "yahoo"
+  }
  },
  "openai": {
   "people": [],
@@ -13546,7 +16310,81 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "oracle-cloud": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "ORCL",
+   "day": "2026-10-28",
+   "price": 144.54,
+   "currency": "USD",
+   "marketCap": 438173155723.3639,
+   "change1d": 9.866,
+   "yearHigh": 281.6199951171875,
+   "yearLow": 114.5,
+   "source": "yahoo"
+  }
+ },
+ "palantir": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "PLTR",
+   "day": "2026-10-28",
+   "price": 196.81,
+   "currency": "USD",
+   "marketCap": 472945933581.958,
+   "change1d": -1.101,
+   "yearHigh": 212.94000244140625,
+   "yearLow": 106.37000274658203,
+   "source": "yahoo"
+  }
+ },
+ "palantir-aip": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "PLTR",
+   "day": "2026-10-28",
+   "price": 196.81,
+   "currency": "USD",
+   "marketCap": 472945933581.958,
+   "change1d": -1.101,
+   "yearHigh": 212.94000244140625,
+   "yearLow": 106.37000274658203,
+   "source": "yahoo"
+  }
  },
  "perplexity": {
   "people": [],
@@ -14072,7 +16910,201 @@ export const AI_360: Record<string, Entity360> = {
    ]
   },
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "psmc": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6770.TW",
+   "day": "2026-10-28",
+   "price": 71.3,
+   "currency": "TWD",
+   "marketCap": 339390662679.7805,
+   "change1d": 2.443,
+   "yearHigh": 94.5,
+   "yearLow": 27.899999618530273,
+   "source": "yahoo"
+  }
+ },
+ "pti-powertech": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6239.TW",
+   "day": "2026-10-28",
+   "price": 272.5,
+   "currency": "TWD",
+   "marketCap": 198597182500.0,
+   "change1d": 6.654,
+   "yearHigh": 387.0,
+   "yearLow": 148.0,
+   "source": "yahoo"
+  }
+ },
+ "qualcomm-edge": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "QCOM",
+   "day": "2026-10-28",
+   "price": 182.97,
+   "currency": "USD",
+   "marketCap": 195382595899.30502,
+   "change1d": -1.044,
+   "yearHigh": 259.9200134277344,
+   "yearLow": 121.98999786376953,
+   "source": "yahoo"
+  }
+ },
+ "quanta": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "2382.TW",
+   "day": "2026-10-28",
+   "price": 330.0,
+   "currency": "TWD",
+   "marketCap": 1352841072000.0,
+   "change1d": 0.763,
+   "yearHigh": 438.0,
+   "yearLow": 260.0,
+   "source": "yahoo"
+  }
+ },
+ "reddit-data-licensing": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "RDDT",
+   "day": "2026-10-28",
+   "price": 134.7,
+   "currency": "USD",
+   "marketCap": 25915809309.852448,
+   "change1d": -1.965,
+   "yearHigh": 263.5,
+   "yearLow": 119.2699966430664,
+   "source": "yahoo"
+  }
+ },
+ "renesas": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6723.T",
+   "day": "2026-10-28",
+   "price": 3100.0,
+   "currency": "JPY",
+   "marketCap": 5665216640900.0,
+   "change1d": 7.732,
+   "yearHigh": 5284.0,
+   "yearLow": 1753.0,
+   "source": "yahoo"
+  }
+ },
+ "resonac": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "4004.T",
+   "day": "2026-10-28",
+   "price": 13535.0,
+   "currency": "JPY",
+   "marketCap": 2567684109650.0,
+   "change1d": 5.045,
+   "yearHigh": 20495.0,
+   "yearLow": 5413.0,
+   "source": "yahoo"
+  }
+ },
+ "salesforce-agentforce": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "CRM",
+   "day": "2026-10-28",
+   "price": 242.11,
+   "currency": "USD",
+   "marketCap": 199256530502.31934,
+   "change1d": 1.09,
+   "yearHigh": 269.1099853515625,
+   "yearLow": 146.32000732421875,
+   "source": "yahoo"
+  }
  },
  "sambanova": {
   "people": [],
@@ -14294,7 +17326,81 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "samsung": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "005930.KS",
+   "day": "2026-10-28",
+   "price": 242000.0,
+   "currency": "KRW",
+   "marketCap": 1575885296304000.0,
+   "change1d": 8.764,
+   "yearHigh": 374500.0,
+   "yearLow": 94500.0,
+   "source": "yahoo"
+  }
+ },
+ "samsung-foundry": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "005930.KS",
+   "day": "2026-10-28",
+   "price": 242000.0,
+   "currency": "KRW",
+   "marketCap": 1575885296304000.0,
+   "change1d": 8.764,
+   "yearHigh": 374500.0,
+   "yearLow": 94500.0,
+   "source": "yahoo"
+  }
+ },
+ "sap-ai": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SAP",
+   "day": "2026-10-28",
+   "price": 236.93,
+   "currency": "USD",
+   "marketCap": 273465600234.11572,
+   "change1d": -6.134,
+   "yearHigh": 265.8800048828125,
+   "yearLow": 144.97000122070312,
+   "source": "yahoo"
+  }
  },
  "scale-ai": {
   "people": [],
@@ -14506,7 +17612,393 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "schneider-electric": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SU",
+   "day": "2026-10-28",
+   "price": 77.54,
+   "currency": "USD",
+   "marketCap": 91554983036.06451,
+   "change1d": 1.775,
+   "yearHigh": 80.25,
+   "yearLow": 38.720001220703125,
+   "source": "yahoo"
+  }
+ },
+ "screen-holdings": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "7735.T",
+   "day": "2026-10-28",
+   "price": 12030.0,
+   "currency": "JPY",
+   "marketCap": 2274726594900.0,
+   "change1d": 4.472,
+   "yearHigh": 19770.0,
+   "yearLow": 5825.0,
+   "source": "yahoo"
+  }
+ },
+ "servicenow": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "NOW",
+   "day": "2026-10-28",
+   "price": 150.13,
+   "currency": "USD",
+   "marketCap": 155213707108.1543,
+   "change1d": -2.791,
+   "yearHigh": 192.96600341796875,
+   "yearLow": 81.23999786376953,
+   "source": "yahoo"
+  }
+ },
+ "shin-etsu": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "4063.T",
+   "day": "2026-10-28",
+   "price": 6004.0,
+   "currency": "JPY",
+   "marketCap": 10901659238872.0,
+   "change1d": 2.283,
+   "yearHigh": 7930.0,
+   "yearLow": 4366.0,
+   "source": "yahoo"
+  }
+ },
+ "siemens-eda": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SIE.DE",
+   "day": "2026-10-28",
+   "price": 270.05,
+   "currency": "EUR",
+   "marketCap": 206376199841.65594,
+   "change1d": 1.237,
+   "yearHigh": 291.70001220703125,
+   "yearLow": 198.0,
+   "source": "yahoo"
+  }
+ },
+ "siltronic": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "WAF.DE",
+   "day": "2026-10-28",
+   "price": 60.65,
+   "currency": "EUR",
+   "marketCap": 2001450050.354004,
+   "change1d": 0.915,
+   "yearHigh": 108.80000305175781,
+   "yearLow": 41.720001220703125,
+   "source": "yahoo"
+  }
+ },
+ "sk-hynix": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "000660.KS",
+   "day": "2026-10-28",
+   "price": 1487000.0,
+   "currency": "KRW",
+   "marketCap": 1048592732788000.0,
+   "change1d": 10.475,
+   "yearHigh": 2987000.0,
+   "yearLow": 501000.0,
+   "source": "yahoo"
+  }
+ },
+ "smic": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "0981.HK",
+   "day": "2026-10-28",
+   "price": 47.8,
+   "currency": "HKD",
+   "marketCap": 409281848717.62103,
+   "change1d": 5.426,
+   "yearHigh": 93.0,
+   "yearLow": 44.099998474121094,
+   "source": "yahoo"
+  }
+ },
+ "snowflake": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SNOW",
+   "day": "2026-10-28",
+   "price": 339.91,
+   "currency": "USD",
+   "marketCap": 119920249291.99219,
+   "change1d": 1.164,
+   "yearHigh": 384.55999755859375,
+   "yearLow": 118.30000305175781,
+   "source": "yahoo"
+  }
+ },
+ "softbank": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SFTBY",
+   "day": "2026-10-28",
+   "price": 15.23,
+   "currency": "USD",
+   "marketCap": 173593039171.30444,
+   "change1d": 5.034,
+   "yearHigh": 28.969999313354492,
+   "yearLow": 10.550000190734863,
+   "source": "yahoo"
+  }
+ },
+ "softbank-arm-ai": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "9984.T",
+   "day": "2026-10-28",
+   "price": 4682.0,
+   "currency": "JPY",
+   "marketCap": 26682949239298.0,
+   "change1d": 4.416,
+   "yearHigh": 9074.0,
+   "yearLow": 3365.0,
+   "source": "yahoo"
+  }
+ },
+ "sony-image-sensor": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6758.T",
+   "day": "2026-10-28",
+   "price": 3957.0,
+   "currency": "JPY",
+   "marketCap": 23108270511204.0,
+   "change1d": -3.252,
+   "yearHigh": 4776.0,
+   "yearLow": 3043.0,
+   "source": "yahoo"
+  }
+ },
+ "stmicro": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "STM",
+   "day": "2026-10-28",
+   "price": 48.52,
+   "currency": "USD",
+   "marketCap": 43397010047.39064,
+   "change1d": 0.455,
+   "yearHigh": 81.41999816894531,
+   "yearLow": 21.110000610351562,
+   "source": "yahoo"
+  }
+ },
+ "sumco": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "3436.T",
+   "day": "2026-10-28",
+   "price": 2534.5,
+   "currency": "JPY",
+   "marketCap": 886396549833.0,
+   "change1d": 6.268,
+   "yearHigh": 5939.0,
+   "yearLow": 1131.0,
+   "source": "yahoo"
+  }
+ },
+ "synopsys": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "SNPS",
+   "day": "2026-10-28",
+   "price": 481.89,
+   "currency": "USD",
+   "marketCap": 92347786148.11743,
+   "change1d": 1.121,
+   "yearHigh": 539.47998046875,
+   "yearLow": 362.54998779296875,
+   "source": "yahoo"
+  }
+ },
+ "teradyne": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "TER",
+   "day": "2026-10-28",
+   "price": 313.24,
+   "currency": "USD",
+   "marketCap": 48972175003.23486,
+   "change1d": 2.016,
+   "yearHigh": 487.9100036621094,
+   "yearLow": 151.52000427246094,
+   "source": "yahoo"
+  }
  },
  "thinking-machines": {
   "people": [],
@@ -14717,7 +18209,273 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
+ },
+ "tokyo-electron": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "8035.T",
+   "day": "2026-10-28",
+   "price": 9805.0,
+   "currency": "JPY",
+   "marketCap": 22271903365400.0,
+   "change1d": 4.945,
+   "yearHigh": 16252.0,
+   "yearLow": 6012.0,
+   "source": "yahoo"
+  }
+ },
+ "tokyo-ohka": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "4186.T",
+   "day": "2026-10-28",
+   "price": 8347.0,
+   "currency": "JPY",
+   "marketCap": 1001438912423.0,
+   "change1d": 7.606,
+   "yearHigh": 12925.0,
+   "yearLow": 5343.0,
+   "source": "yahoo"
+  }
+ },
+ "tongfu": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "002156.SZ",
+   "day": "2026-10-28",
+   "price": 45.24,
+   "currency": "CNY",
+   "marketCap": 72103410894.57654,
+   "change1d": 5.849,
+   "yearHigh": 84.69999694824219,
+   "yearLow": 34.650001525878906,
+   "source": "yahoo"
+  }
+ },
+ "toppan-photomask": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "7911.T",
+   "day": "2026-10-28",
+   "price": 2212.5,
+   "currency": "JPY",
+   "marketCap": 620725736062.5,
+   "change1d": 2.312,
+   "yearHigh": 2964.0,
+   "yearLow": 1833.0,
+   "source": "yahoo"
+  }
+ },
+ "tsmc": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "TSM",
+   "day": "2026-10-28",
+   "price": 439.51,
+   "currency": "USD",
+   "marketCap": 2279507244102.79,
+   "change1d": 0.382,
+   "yearHigh": 487.4700012207031,
+   "yearLow": 266.82000732421875,
+   "source": "yahoo"
+  }
+ },
+ "umc": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "UMC",
+   "day": "2026-10-28",
+   "price": 18.82,
+   "currency": "USD",
+   "marketCap": 47198838710.24704,
+   "change1d": -3.98,
+   "yearHigh": 28.959999084472656,
+   "yearLow": 6.96999979019165,
+   "source": "yahoo"
+  }
+ },
+ "vertiv": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "VRT",
+   "day": "2026-10-28",
+   "price": 242.94,
+   "currency": "USD",
+   "marketCap": 93529027688.53253,
+   "change1d": 15.106,
+   "yearHigh": 379.93499755859375,
+   "yearLow": 147.82000732421875,
+   "source": "yahoo"
+  }
+ },
+ "vistra": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "VST",
+   "day": "2026-10-28",
+   "price": 142.72,
+   "currency": "USD",
+   "marketCap": 47901855440.11093,
+   "change1d": -2.62,
+   "yearHigh": 200.72999572753906,
+   "yearLow": 132.66000366210938,
+   "source": "yahoo"
+  }
+ },
+ "waymo-av": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "GOOGL",
+   "day": "2026-10-28",
+   "price": 324.89,
+   "currency": "USD",
+   "marketCap": 3973383706393.026,
+   "change1d": 0.408,
+   "yearHigh": 408.6099853515625,
+   "yearLow": 267.6700134277344,
+   "source": "yahoo"
+  }
+ },
+ "wistron": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "3231.TW",
+   "day": "2026-10-28",
+   "price": 194.5,
+   "currency": "TWD",
+   "marketCap": 667104317625.0,
+   "change1d": 2.639,
+   "yearHigh": 206.0,
+   "yearLow": 122.5,
+   "source": "yahoo"
+  }
+ },
+ "wiwynn": {
+  "people": [],
+  "rounds": [],
+  "legal": [],
+  "advisors": [],
+  "facts": [],
+  "hiring": null,
+  "site": null,
+  "attention": null,
+  "tone": null,
+  "footprint": null,
+  "agreements": [],
+  "market": {
+   "symbol": "6669.TW",
+   "day": "2026-10-28",
+   "price": 1950.0,
+   "currency": "TWD",
+   "marketCap": 1083814498650.0,
+   "change1d": 0.0,
+   "yearHigh": 2875.0,
+   "yearLow": 1102.992431640625,
+   "source": "yahoo"
+  }
  },
  "xai-capital": {
   "people": [],
@@ -14968,7 +18726,9 @@ export const AI_360: Record<string, Entity360> = {
   "site": null,
   "attention": null,
   "tone": null,
-  "footprint": null
+  "footprint": null,
+  "agreements": [],
+  "market": null
  }
 };
 

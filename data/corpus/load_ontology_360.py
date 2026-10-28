@@ -82,10 +82,11 @@ OWNED = {
     "engagement": f"SELECT id FROM ontology.engagement WHERE source_file={lit(SRC)}",
     "funding_round": f"SELECT id FROM ontology.funding_round WHERE source_file={lit(SRC)}",
     "fact": f"SELECT id FROM ontology.fact WHERE source_file={lit(SRC)}",
+    "agreement": f"SELECT id FROM ontology.agreement WHERE source_file={lit(SRC)}",
 }
 for kind, sel in OWNED.items():
     st.append(f"DELETE FROM ontology.evidence WHERE target_kind={lit(kind)} AND target_id IN ({sel});")
-for table in ("affiliation", "legal_case", "engagement", "funding_round", "fact"):
+for table in ("affiliation", "legal_case", "engagement", "funding_round", "fact", "agreement"):
     st.append(f"DELETE FROM ontology.{table} WHERE source_file={lit(SRC)};")
 # People are upserted (their photos stay); people this file no longer lists are removed.
 slugs = [p["slug"] for p in D.get("people", [])]
@@ -148,6 +149,12 @@ for f in D.get("facts", []):
         " ON CONFLICT (entity_id, key) DO UPDATE SET label=EXCLUDED.label, value=EXCLUDED.value, as_of=EXCLUDED.as_of, sort_order=EXCLUDED.sort_order, source_file=EXCLUDED.source_file",
         f["evidence"]))
 
+for g in D.get("agreements", []):
+    st.append(with_evidence("agreement",
+        "INSERT INTO ontology.agreement (entity_id,exhibit,title,counterparty,counterparty_entity_id,kind,dated_on,url,redacted,sort_order,source_file)"
+        f" VALUES ({eid(ENT)},{lit(g.get('exhibit'))},{lit(g['title'])},{lit(g.get('counterparty'))},{eid(g.get('counterparty_entity'))},{lit(g['kind'])},{lit(g.get('dated_on'))},"
+        f"{lit(g.get('url'))},{lit(bool(g.get('redacted')))},{lit(g.get('sort_order'))},{lit(SRC)})", g["evidence"]))
+
 sql("\n".join(st), timeout=300)
 c = query(f"""SELECT
   (SELECT count(*) FROM ontology.person WHERE source_file={lit(SRC)}),
@@ -157,6 +164,7 @@ c = query(f"""SELECT
   (SELECT count(*) FROM ontology.funding_round WHERE source_file={lit(SRC)}),
   (SELECT count(*) FROM ontology.round_investor ri JOIN ontology.funding_round r ON r.id=ri.round_id WHERE r.source_file={lit(SRC)}),
   (SELECT count(*) FROM ontology.fact WHERE source_file={lit(SRC)}),
-  (SELECT count(*) FROM ontology.evidence WHERE target_kind IN ('affiliation','legal_case','engagement','funding_round','fact')
+  (SELECT count(*) FROM ontology.agreement WHERE source_file={lit(SRC)}),
+  (SELECT count(*) FROM ontology.evidence WHERE target_kind IN ('affiliation','legal_case','engagement','funding_round','fact','agreement')
      OR (target_kind='person' AND target_id IN (SELECT id FROM ontology.person WHERE source_file={lit(SRC)})))""")[0]
-print(f"{ENT} 360: people={c[0]} affiliations={c[1]} legal={c[2]} advisors={c[3]} rounds={c[4]} round_investors={c[5]} facts={c[6]} evidence={c[7]}")
+print(f"{ENT} 360: people={c[0]} affiliations={c[1]} legal={c[2]} advisors={c[3]} rounds={c[4]} round_investors={c[5]} facts={c[6]} agreements={c[7]} evidence={c[8]}")

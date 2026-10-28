@@ -11,7 +11,9 @@
   "mgmt": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
   "legal_counsel": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#i3d950dafcf4d44e1917d6bc4cf1dd813_1208",
   "accountant": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#id107d9247df5415f9b38717209b6918d_2829",
-  "notes": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1623"
+  "notes": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1623",
+  "signatures": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_3917",
+  "exhibits": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html"
  },
  "sources": [
   {
@@ -151,6 +153,21 @@
    "sort_order": 3
   },
   {
+   "slug": "effendi-ng",
+   "name": "Effendi Ng",
+   "group": "officer",
+   "public_role": "Chief Accounting Officer (principal accounting officer)",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "signatures",
+     "quote": "/s/ Effendi Ng Chief Accounting Officer October 26, 2026 Effendi Ng (Principal Accounting Officer)",
+     "locator": "Signatures"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
    "slug": "reed-hastings",
    "name": "Reed Hastings",
    "group": "director",
@@ -170,7 +187,7 @@
      "locator": "Management, Board Leadership"
     }
    ],
-   "sort_order": 4
+   "sort_order": 5
   },
   {
    "slug": "christopher-liddell",
@@ -192,7 +209,7 @@
      "locator": "Management, Committees"
     }
    ],
-   "sort_order": 5
+   "sort_order": 6
   },
   {
    "slug": "vas-narasimhan",
@@ -220,7 +237,7 @@
      "locator": "Management, Committees"
     }
    ],
-   "sort_order": 6
+   "sort_order": 7
   },
   {
    "slug": "yasmin-razavi",
@@ -240,7 +257,7 @@
      "locator": "Anthropic newsroom"
     }
    ],
-   "sort_order": 7
+   "sort_order": 8
   },
   {
    "slug": "jay-kreps",
@@ -255,7 +272,7 @@
      "locator": "Management, Director Compensation"
     }
    ],
-   "sort_order": 8
+   "sort_order": 9
   },
   {
    "slug": "tom-brown",
@@ -270,7 +287,7 @@
      "locator": "Prospectus Summary"
     }
    ],
-   "sort_order": 9
+   "sort_order": 10
   },
   {
    "slug": "jack-clark",
@@ -286,7 +303,7 @@
      "locator": "Prospectus Summary"
     }
    ],
-   "sort_order": 10
+   "sort_order": 11
   },
   {
    "slug": "jared-kaplan",
@@ -302,7 +319,7 @@
      "locator": "Prospectus Summary"
     }
    ],
-   "sort_order": 11
+   "sort_order": 12
   },
   {
    "slug": "sam-mccandlish",
@@ -318,7 +335,7 @@
      "locator": "Prospectus Summary"
     }
    ],
-   "sort_order": 12
+   "sort_order": 13
   },
   {
    "slug": "christopher-olah",
@@ -334,7 +351,7 @@
      "locator": "Prospectus Summary"
     }
    ],
-   "sort_order": 13
+   "sort_order": 14
   },
   {
    "slug": "neil-buddy-shah",
@@ -350,7 +367,7 @@
      "locator": "Our Governance Structure, Trustees of the LTBT"
     }
    ],
-   "sort_order": 14
+   "sort_order": 15
   },
   {
    "slug": "richard-fontaine",
@@ -366,7 +383,7 @@
      "locator": "Our Governance Structure, Trustees of the LTBT"
     }
    ],
-   "sort_order": 15
+   "sort_order": 16
   },
   {
    "slug": "ben-bernanke",
@@ -382,7 +399,7 @@
      "locator": "Our Governance Structure, Trustees of the LTBT"
     }
    ],
-   "sort_order": 16
+   "sort_order": 17
   },
   {
    "slug": "christopher-stubbs",
@@ -400,7 +417,7 @@
      "locator": "Our Governance Structure, Trustees of the LTBT"
     }
    ],
-   "sort_order": 17
+   "sort_order": 18
   }
  ],
  "affiliations": [
@@ -3431,6 +3448,274 @@
     }
    ],
    "sort_order": 8
+  }
+ ],
+ "agreements": [
+  {
+   "exhibit": "4.3",
+   "title": "2026 Stock Purchase and Convertible Note Facility Agreement",
+   "counterparty": "Amazon Web Services, Inc.",
+   "counterparty_entity": "aws",
+   "kind": "financing",
+   "dated_on": "2026-04-20",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit43-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "2026 Stock Purchase and Convertible Note Facility Agreement between the registrant and Amazon Web Services, Inc., dated as of April 20, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "exhibit": "4.4",
+   "title": "Note Purchase Agreement",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "financing",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit44-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Note Purchase Agreement between the registrant and Broadcom Inc., dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "exhibit": "4.5",
+   "title": "Note Purchase Agreement",
+   "counterparty": "Google LLC",
+   "counterparty_entity": "google-investor",
+   "kind": "financing",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit45-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Note Purchase Agreement between the registrant and Google LLC, dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "exhibit": "4.6",
+   "title": "Registration Rights Agreement",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "financing",
+   "dated_on": "2026-06-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit46-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Registration Rights Agreement between the registrant and Broadcom Inc., dated as of June 8, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "exhibit": "4.7",
+   "title": "Registration Rights Agreement",
+   "counterparty": "Google LLC",
+   "counterparty_entity": "google-investor",
+   "kind": "financing",
+   "dated_on": "2026-05-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit47-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Registration Rights Agreement between the registrant and Google LLC, dated as of May 4, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "exhibit": "4.2",
+   "title": "Amended and Restated Investors' Rights Agreement",
+   "counterparty": "Holders of its capital stock",
+   "counterparty_entity": null,
+   "kind": "financing",
+   "dated_on": "2026-05-28",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit42-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Amended and Restated Investors’ Rights Agreement among the registrant and certain holders of its capital stock, dated as of May 28, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "exhibit": "10.10",
+   "title": "Amended and Restated Credit Agreement",
+   "counterparty": "Morgan Stanley Senior Funding, Inc. and lenders",
+   "counterparty_entity": null,
+   "kind": "credit",
+   "dated_on": "2026-09-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1010-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Amended and Restated Credit Agreement between the registrant, the several lenders from time to time party thereto, and Morgan Stanley Senior Funding, Inc., dated as of September 4, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "exhibit": "10.11",
+   "title": "Master Equipment Lease Agreement (via AI Infrastructure OpCo II, LLC)",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "equipment",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1011-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Master Equipment Lease Agreement between AI Infrastructure OpCo II, LLC, a wholly owned subsidiary of the registrant, and Broadcom Inc., dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "exhibit": "10.8",
+   "title": "Sublease Agreement",
+   "counterparty": "Salesforce, Inc.",
+   "counterparty_entity": null,
+   "kind": "real_estate",
+   "dated_on": "2023-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit108-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Sublease Agreement between the registrant and Salesforce, Inc., dated as of September 22, 2023.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "exhibit": "10.9",
+   "title": "Office Lease",
+   "counterparty": "300 Howard Owner, LLC",
+   "counterparty_entity": null,
+   "kind": "real_estate",
+   "dated_on": "2026-01-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit109-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Office Lease between the registrant and 300 Howard Owner, LLC, dated as of January 29, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "exhibit": "10.12",
+   "title": "Irrevocable Proxy Agreement",
+   "counterparty": "Daffy Charitable Fund",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": "2025-10-06",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1012-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Irrevocable Proxy Agreement between the registrant, Daffy Charitable Fund, and the registrant’s Chief Executive Officer, dated as of October 6, 2025.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "exhibit": "10.13",
+   "title": "Irrevocable Proxy Agreement",
+   "counterparty": "Dechomai Asset Trust",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": "2024-12-20",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1013-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Irrevocable Proxy Agreement between the registrant, Dechomai Asset Trust, and the registrant’s Chief Executive Officer, dated as of December 20, 2024.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "exhibit": "99.1",
+   "title": "Amended and Restated Trust Agreement (form)",
+   "counterparty": "Long-Term Benefit Trust",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": null,
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit991-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Form of Amended and Restated Trust Agreement.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "exhibit": "99.2",
+   "title": "Limited Liability Company Agreement of Anthropic Founders, LLC (form)",
+   "counterparty": "Anthropic Founders, LLC",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": null,
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit992-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Form of Limited Liability Company Agreement of Anthropic Founders, LLC.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 14
   }
  ]
 }

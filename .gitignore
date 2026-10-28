@@ -56,3 +56,6 @@ data/corpus/cache/
 
 # LinkedIn archive local preview data (includes items pending the owner's review): never commit
 src/data/*.preview.ts
+
+# Raw paid-API responses and personal data: local only
+data/corpus/raw/

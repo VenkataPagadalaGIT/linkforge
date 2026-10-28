@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link } from "@/lib/router-shim";
 import { getNode } from "@/data/aiOntology";
 import { AI_INTEL, type IntelEvidence } from "@/data/aiIntel";
-import { AI_360, type Affiliation, type FundingRound, type Hiring, type InvestorKind, type LegalCase, type Person360, type PersonGroup } from "@/data/ai360";
+import { AI_360, type Affiliation, type Agreement, type FundingRound, type Hiring, type InvestorKind, type LegalCase, type Person360, type PersonGroup } from "@/data/ai360";
 import { dayMonthYear, monthYear } from "./intelModel";
 
 /**
@@ -839,9 +839,11 @@ function outsideOf(id: string): OutGroup[] {
   for (const r of f?.rounds ?? []) for (const w of r.who) if (w.role !== "participant" || w.entity) inv.set(canon(w.name), { name: canon(w.name), entity: w.entity });
   if (inv.size) groups.push({ key: "investors", label: "Investors that led or are strategic", items: [...inv.values()].map((x) => ({ ...x, people: [] })) });
   // Deals: who it buys compute from and who it sells to, from the graph's deals.
-  const buys = (intel?.deals ?? []).filter((d) => d.side === "buys").map((d) => ({ name: d.counterpartyName, entity: d.counterparty, people: [] as string[] }));
   const uniq = <T extends { name: string }>(xs: T[]) => xs.filter((x, i) => xs.findIndex((y) => y.name === x.name) === i);
+  const buys = (intel?.deals ?? []).filter((d) => d.side === "buys").map((d) => ({ name: d.counterpartyName, entity: d.counterparty, people: [] as string[] }));
   if (buys.length) groups.push({ key: "suppliers", label: "Compute and suppliers", items: uniq(buys) });
+  const signed = uniq((f?.agreements ?? []).filter((a) => a.counterparty).map((a) => ({ name: a.counterparty!, entity: a.entity, people: [] as string[], note: `${a.title}${a.datedOn ? `, ${a.datedOn.slice(0, 4)}` : ""}` })));
+  if (signed.length) groups.push({ key: "agreements", label: "Signed agreements on file", items: signed });
   const adv = (f?.advisors ?? []).filter((a) => a.role !== "Underwriter" && a.current);
   if (adv.length) groups.push({ key: "advisors", label: "Auditor and counsel", items: adv.map((a) => ({ name: a.org, entity: a.entity, people: [], note: a.role })) });
   const opp = uniq((f?.legal ?? []).flatMap((c) => c.counterparties.slice(0, 2).map((n) => ({ name: n, entity: null, people: [] as string[], note: c.name }))));
@@ -849,7 +851,7 @@ function outsideOf(id: string): OutGroup[] {
   return groups;
 }
 
-const GROUP_COLOR: Record<string, string> = { people: "#10b981", investors: "#ec4899", suppliers: "#06b6d4", advisors: "#94a3b8", legal: "#f59e0b" };
+const GROUP_COLOR: Record<string, string> = { people: "#10b981", investors: "#ec4899", suppliers: "#06b6d4", agreements: "#6366f1", advisors: "#94a3b8", legal: "#f59e0b" };
 
 export function InsideOutMap({ id, onPick }: { id: string; onPick?: (id: string) => void }) {
   const f = AI_360[id];
@@ -1164,6 +1166,7 @@ export function TimelineSection({ id }: { id: string }) {
 // ---------------------------------------------------------------------------
 
 const FOOTPRINT_SOURCES: { key: string; label: string; how: string }[] = [
+  { key: "company_site", label: "Its own sites", how: "people named as authors on the company's own pages" },
   { key: "openalex", label: "Research papers", how: "authors whose paper lists the company as their affiliation (OpenAlex)" },
   { key: "linkedin", label: "LinkedIn", how: "profiles that name the company as the current employer (Bright Data, after approval)" },
   { key: "x", label: "X", how: "accounts whose bio names the company (Bright Data, after approval)" },
@@ -1181,7 +1184,7 @@ export function FootprintSection({ id }: { id: string }) {
   return (
     <div className="space-y-3" data-testid="ai-footprint">
       <H aside={`${fmt(f.people.length)} people shown`}>Everyone with a public footprint</H>
-      <ul className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-4">
+      <ul className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-5">
         {FOOTPRINT_SOURCES.map((s) => (
           <li key={s.key} className="border-b border-r border-border">
             <button type="button" onClick={() => setSrc(src === s.key ? null : s.key)} disabled={!n(s.key)} className={`block h-full w-full p-3 text-left ${src === s.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"}`}>
@@ -1203,7 +1206,7 @@ export function FootprintSection({ id }: { id: string }) {
           />
           <ol className="max-h-[28rem] divide-y divide-border overflow-y-auto border border-border">
             {shown.map((p) => (
-              <li key={`${p.source}-${p.name}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] sm:gap-3">
+              <li key={`${p.source}-${p.name}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-3">
                 <span className="min-w-0">
                   {p.url ? (
                     <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground hover:underline">
@@ -1217,6 +1220,7 @@ export function FootprintSection({ id }: { id: string }) {
                       {p.tier}
                     </span>
                   )}
+                  <span className="ml-1.5 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{FOOTPRINT_SOURCES.find((x) => x.key === p.source)?.label ?? p.source}</span>
                 </span>
                 <span className="min-w-0 text-foreground/85">
                   {p.headline}
@@ -1233,10 +1237,125 @@ export function FootprintSection({ id }: { id: string }) {
         </>
       )}
       <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
-        Research: {c["openalex:confirmed"] ?? 0} confirmed (a paper matches a research page on the company&apos;s own site) and {c["openalex:likely"] ?? 0} likely (two or more papers with the
+        Its own sites: {c["company_site:confirmed"] ?? 0} people named as authors. Research: {c["openalex:confirmed"] ?? 0} confirmed (a paper matches a research page on the company&apos;s own site) and {c["openalex:likely"] ?? 0} likely (two or more papers with the
         affiliation). Left out: {c["openalex:model"] ?? 0} records where the AI model itself is listed as the author, and {c["openalex:unverified"] ?? 0} authors with one paper or only
         self-published ones. A paper shows where someone published, not that they still work there.
       </p>
+    </div>
+  );
+}
+
+
+// ---------------------------------------------------------------------------
+// Agreements on file, market quote, and the websites read
+// ---------------------------------------------------------------------------
+
+const AGREEMENT_KIND: Record<string, string> = { financing: "Financing", credit: "Credit", equipment: "Equipment", real_estate: "Real estate", governance: "Governance", commercial: "Commercial" };
+
+export function AgreementsSection({ id, onPick }: { id: string; onPick?: (id: string) => void }) {
+  const ag = AI_360[id]?.agreements ?? [];
+  if (!ag.length) return null;
+  const kinds = [...new Set(ag.map((a) => a.kind))];
+  return (
+    <div data-testid="ai-agreements">
+      <H aside={`${ag.length} exhibits to the S-1`}>Agreements on file</H>
+      <ul className="divide-y divide-border border border-border">
+        {kinds.flatMap((k) =>
+          ag
+            .filter((a) => a.kind === k)
+            .map((a: Agreement) => (
+              <li key={`${a.exhibit}-${a.title}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[4.5rem_minmax(0,14rem)_minmax(0,1fr)] sm:gap-3">
+                <span className="text-muted-foreground">
+                  {AGREEMENT_KIND[a.kind] ?? a.kind}
+                  {a.exhibit && <span className="block text-[9px]">Ex. {a.exhibit}</span>}
+                </span>
+                <span className="min-w-0">
+                  <EntityLink id={a.entity} onPick={onPick} className="font-bold text-foreground underline decoration-dotted underline-offset-2 hover:decoration-solid">
+                    {a.counterparty ?? "Unnamed"}
+                  </EntityLink>
+                  {a.datedOn && <span className="block text-[10px] text-muted-foreground">{dayMonthYear(a.datedOn)}</span>}
+                </span>
+                <span className="min-w-0 text-foreground/85">
+                  {a.url ? (
+                    <a href={a.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                      {a.title} ↗
+                    </a>
+                  ) : (
+                    a.title
+                  )}
+                  {a.redacted && <span className="ml-1.5 border border-border px-1 text-[8px] uppercase tracking-[0.15em] text-muted-foreground">terms redacted</span>}
+                  <Quotes evidence={a.evidence} />
+                </span>
+              </li>
+            )),
+        )}
+      </ul>
+      <p className="mt-1 font-mono text-[10px] text-muted-foreground">Each is a filed exhibit; a redacted one keeps its commercial terms private, so no amount is shown unless the filing states it elsewhere.</p>
+    </div>
+  );
+}
+
+export function MarketStrip({ id }: { id: string }) {
+  const m = AI_360[id]?.market;
+  if (!m) return null;
+  const cur = m.currency ?? "";
+  const fmtP = (v: number | null) => (v == null ? "" : v >= 1000 ? Math.round(v).toLocaleString("en-US") : v.toFixed(2));
+  const cap = m.marketCap == null ? "" : cur === "USD" ? money(m.marketCap) : `${(m.marketCap / 1e12).toFixed(2)}T ${cur}`;
+  return (
+    <div data-testid="ai-market">
+      <Kpis
+        items={[
+          ["Last price", `${fmtP(m.price)} ${cur}`.trim(), `${m.symbol} · ${dayMonthYear(m.day)}`],
+          ["Day change", m.change1d == null ? "" : `${m.change1d > 0 ? "+" : ""}${m.change1d.toFixed(2)}%`, "against the previous close"],
+          ["Market cap", cap, cur === "USD" ? "US dollars" : `in ${cur}`],
+          ["52-week range", m.yearLow != null && m.yearHigh != null ? `${fmtP(m.yearLow)} to ${fmtP(m.yearHigh)}` : "", cur],
+        ]}
+      />
+      <p className="mt-1 font-mono text-[10px] text-muted-foreground">Yahoo Finance, read once a day; delayed and unofficial. Not investment advice.</p>
+    </div>
+  );
+}
+
+export function SitesRead({ id }: { id: string }) {
+  const site = AI_360[id]?.site;
+  if (!site?.hosts?.length) return null;
+  return (
+    <div data-testid="ai-sites">
+      <H aside={`${fmt(site.pagesWithText)} pages with text · ${fmt(site.words)} words`}>Its websites, read whole</H>
+      <div className="overflow-x-auto border border-border">
+        <table className="w-full min-w-[560px] font-mono text-[11px]">
+          <thead className="text-left text-[9px] uppercase tracking-[0.15em] text-muted-foreground">
+            <tr className="border-b border-border">
+              <th className="px-3 py-2 font-normal">Site</th>
+              <th className="px-2 py-2 text-right font-normal">Pages</th>
+              <th className="px-2 py-2 text-right font-normal">With text</th>
+              <th className="px-2 py-2 text-right font-normal">Dated</th>
+              <th className="px-2 py-2 text-right font-normal">Name authors</th>
+              <th className="px-2 py-2 text-right font-normal">Words</th>
+              <th className="px-3 py-2 font-normal">Read</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {site.hosts.map((h) => (
+              <tr key={h.host}>
+                <td className="px-3 py-1.5">
+                  <a href={`https://${h.host}/`} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground hover:underline">
+                    {h.label}
+                  </a>
+                  <span className="ml-1.5 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{h.mode === "titles" ? "titles only" : "full text"}</span>
+                </td>
+                <td className="px-2 py-1.5 text-right tabular-nums">{fmt(h.pages)}</td>
+                <td className="px-2 py-1.5 text-right tabular-nums">{fmt(h.withText)}</td>
+                <td className="px-2 py-1.5 text-right tabular-nums">{fmt(h.dated)}</td>
+                <td className="px-2 py-1.5 text-right tabular-nums">{fmt(h.withAuthors)}</td>
+                <td className="px-2 py-1.5 text-right tabular-nums">{fmt(h.words)}</td>
+                <td className="px-3 py-1.5 text-muted-foreground">{h.readOn ? dayMonthYear(h.readOn) : "not yet"}{h.failed ? ` · ${h.failed} failed` : ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-1 font-mono text-[10px] text-muted-foreground">Every page in each site's sitemap or index, one request a second, robots.txt respected. Docs, support and marketplace pages are kept as titles. A page is re-read when it changes.</p>
     </div>
   );
 }
@@ -1261,7 +1380,9 @@ export function anglesOf(id: string): Angle[] {
     { key: "advisors", label: "Advisors", count: f?.advisors.length ?? 0, note: f?.advisors.length ? "auditor, counsel, underwriters" : "not collected yet", tab: "investors" },
     { key: "news", label: "News and events", count: (intel?.events.length ?? 0), note: "dated events from filings and this site's news", tab: "news" },
     { key: "posts", label: "Posts", count: intel?.posts.length ?? 0, note: "release notes and posts from official channels", tab: "people" },
-    { key: "website", label: "Its website", count: f?.site?.dated ?? 0, note: f?.site ? `dated pages, ${ym(f.site.first)} to now` : "not read yet", tab: "f360" },
+    { key: "website", label: "Its websites", count: f?.site?.pagesWithText ?? 0, note: f?.site ? `pages read in full across ${f.site.hosts?.length ?? 1} sites` : "not read yet", tab: "f360" },
+    { key: "agreements", label: "Agreements", count: f?.agreements.length ?? 0, note: f?.agreements.length ? "contracts filed as exhibits" : "none on file yet", tab: "f360" },
+    { key: "market", label: "Market", count: f?.market ? 1 : null, note: f?.market ? `${f.market.symbol} quote, daily` : "not listed", tab: "f360" },
     { key: "attention", label: "Public attention", count: f?.attention?.total ?? 0, note: f?.attention ? "Hacker News stories naming it, by month" : "no clear query yet", tab: "f360" },
     { key: "tone", label: "News tone", count: f?.tone?.days.length ?? null, note: f?.tone ? "days of GDELT news tone" : "GDELT news tone: next refresh", tab: "f360" },
     { key: "reddit", label: "Reddit", count: null, note: "pending a licensed source", tab: "f360" },
@@ -1288,7 +1409,10 @@ export function Company360({ id, onPick, onTab }: { id: string; onPick?: (id: st
           ))}
         </ul>
       </div>
+      <MarketStrip id={id} />
       <TimelineSection id={id} />
+      <SitesRead id={id} />
+      <AgreementsSection id={id} onPick={onPick} />
       <InsideOutMap id={id} onPick={onPick} />
     </div>
   );
