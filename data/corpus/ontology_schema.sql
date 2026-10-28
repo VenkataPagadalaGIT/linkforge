@@ -547,3 +547,25 @@ CREATE TABLE IF NOT EXISTS ontology.tone (
 -- Hacker News threads join the official-channel posts (public discussion; usernames are not stored).
 ALTER TABLE ontology.post DROP CONSTRAINT IF EXISTS post_platform_check;
 ALTER TABLE ontology.post ADD CONSTRAINT post_platform_check CHECK (platform IN ('company_blog','github','youtube','substack','reddit','linkedin','x','podcast','conference','paper','hackernews'));
+
+-- ===== Public footprint (2026-10-28): everyone linked to a company in a public source =====
+-- One row per person per source: a paper's author affiliation, a LinkedIn profile that names the company, an X bio,
+-- a Substack. Source-specific detail (works, years, titles) sits in `detail`. Names come only as the source shows them.
+CREATE TABLE IF NOT EXISTS ontology.footprint (
+  id serial PRIMARY KEY,
+  entity_id int NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  source text NOT NULL,
+  source_id text NOT NULL,
+  name text NOT NULL,
+  headline text,
+  location text,
+  profile_url text,
+  evidence_url text,
+  first_seen date,
+  last_seen date,
+  is_current boolean,
+  detail jsonb,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  UNIQUE (entity_id, source, source_id)
+);
+CREATE INDEX IF NOT EXISTS footprint_entity_idx ON ontology.footprint (entity_id, source);

@@ -27,9 +27,11 @@ export interface Hiring {
 export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[] }
 export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
 export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
+export interface FootprintPerson { source: string; name: string; headline: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
+export interface Footprint { people: FootprintPerson[]; counts: Record<string, number> }
 export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
-  site: SitePages | null; attention: Attention | null; tone: Tone | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null;
 }
 
 export const AI_360: Record<string, Entity360> = {
@@ -7356,7 +7358,1131 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": {
+   "people": [
+    {
+     "source": "openalex",
+     "name": "Deep Ganguli",
+     "headline": "7 papers with this affiliation",
+     "url": "https://openalex.org/A5006294201",
+     "evidence": "https://doi.org/10.1038/s41562-025-02309-z",
+     "first": "2022-06-20",
+     "last": "2025-10-01",
+     "tier": "confirmed",
+     "works": 7,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "The impact of advanced AI systems on democracy",
+      "How will advanced AI systems impact democracy?"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jared Kaplan",
+     "headline": "5 papers with this affiliation",
+     "url": "https://openalex.org/A5053213601",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2021-07-07",
+     "last": "2025-01-31",
+     "tier": "confirmed",
+     "works": 5,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Evaluating and Mitigating Discrimination in Language Model Decisions"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Dario Amodei",
+     "headline": "4 papers with this affiliation",
+     "url": "https://openalex.org/A5066197394",
+     "evidence": "https://doi.org/10.70777/si.v2i1.10695",
+     "first": "2021-07-07",
+     "last": "2025-03-05",
+     "tier": "confirmed",
+     "works": 4,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "On DeepSeek and Export Controls",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Dawn Drain",
+     "headline": "4 papers with this affiliation",
+     "url": "https://openalex.org/A5059021264",
+     "evidence": "https://doi.org/10.1145/3540250.3558959",
+     "first": "2022-05-17",
+     "last": "2022-11-07",
+     "tier": "confirmed",
+     "works": 4,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Exploring and evaluating personalized models for code generation",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Amanda Askell",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5030305998",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2022-06-20",
+     "last": "2025-01-31",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Evaluating and Mitigating Discrimination in Language Model Decisions"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Catherine Olsson",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5108225540",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2022-06-20",
+     "last": "2025-01-31",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Kamal Ndousse",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5028970835",
+     "evidence": "https://doi.org/10.48550/arxiv.2610.04364",
+     "first": "2022-06-20",
+     "last": "2026-10-03",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "A Bird's-Eye View of Iterative Reward Design",
+      "Evolution Through Large Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Liane Lovitt",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5047846683",
+     "evidence": "https://doi.org/10.1145/3630106.3658979",
+     "first": "2022-06-20",
+     "last": "2024-06-03",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Collective Constitutional AI: Aligning a Language Model with Public Input",
+      "Evaluating and Mitigating Discrimination in Language Model Decisions"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nicholas Schiefer",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5050348824",
+     "evidence": "https://doi.org/10.1145/3586183.3606801",
+     "first": "2022-09-21",
+     "last": "2023-10-20",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Riffle: Reactive Relational State for Local-First Applications",
+      "Learned Interpolation for Better Streaming Quantile Approximation with Worst-Case Guarantees"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Sam McCandlish",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5054887773",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2021-07-07",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Shauna Kravec",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5009112681",
+     "evidence": "https://doi.org/10.48550/arxiv.2312.03689",
+     "first": "2022-06-20",
+     "last": "2023-12-06",
+     "tier": "confirmed",
+     "works": 3,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Evaluating and Mitigating Discrimination in Language Model Decisions",
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Christopher Olah",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5027253674",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-06-20",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 2,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nicholas Joseph",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5063374092",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2021-07-07",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 2,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models",
+      "Evaluating Large Language Models Trained on Code"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Tom Henighan",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5110225167",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-06-20",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 2,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Zac Hatfield-Dodds",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5070402589",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-06-20",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 2,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Andy Jones",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5011636042",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Ben Mann",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5110949689",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Carol Chen",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5019382510",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-09-21",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Daniela Amodei",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5086110112",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Danny Hernandez",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5030442997",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jack Clark",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5031107879",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jackson Kernian",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5063790015",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "MARTIN P. WATTENBERG",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5039276358",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-09-21",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Neel Nanda",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5044489746",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nelson Elhage",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5020683620",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nova DasSarma",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5072660054",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Robert Lasenby",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5026561317",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-09-21",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Roger Grosse",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5067036768",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-09-21",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Sheer El-Showk",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5049068767",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Stanislav Fort",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5082696325",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Tom Conerly",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5059073226",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Tom P Brown",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5074565235",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Tristan Hume",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5026832201",
+     "evidence": "https://doi.org/10.48550/arxiv.2209.10652",
+     "first": "2022-09-21",
+     "last": "2022-09-21",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Toy Models of Superposition"
+     ],
+     "recent": [
+      "Toy Models of Superposition"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Yuntao Bai",
+     "headline": "1 paper with this affiliation",
+     "url": "https://openalex.org/A5091860006",
+     "evidence": "https://doi.org/10.1145/3531146.3533229",
+     "first": "2022-06-20",
+     "last": "2022-06-20",
+     "tier": "confirmed",
+     "works": 1,
+     "matched": [
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "Predictability and Surprise in Large Generative Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Ethan Perez",
+     "headline": "11 papers with this affiliation",
+     "url": "https://openalex.org/A5091112967",
+     "evidence": "https://doi.org/10.48550/arxiv.2601.23045",
+     "first": "2023-01-01",
+     "last": "2026-01-30",
+     "tier": "likely",
+     "works": 11,
+     "matched": [],
+     "recent": [
+      "The Hot Mess of AI: How Does Misalignment Scale With Model Intelligence and Task Complexity?",
+      "The Hot Mess of AI: How Does Misalignment Scale With Model Intelligence and Task Complexity?"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Samuel R. Bowman",
+     "headline": "7 papers with this affiliation",
+     "url": "https://openalex.org/A5112713734",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2023-01-01",
+     "last": "2025-01-31",
+     "tier": "likely",
+     "works": 7,
+     "matched": [],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Language Models Learn to Mislead Humans via RLHF"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Esin Durmus",
+     "headline": "6 papers with this affiliation",
+     "url": "https://openalex.org/A5001994692",
+     "evidence": "https://doi.org/10.1145/3800687",
+     "first": "2023-06-20",
+     "last": "2026-03-19",
+     "tier": "likely",
+     "works": 6,
+     "matched": [],
+     "recent": [
+      "Must Read: A Comprehensive Survey of Computational Persuasion",
+      "The impact of advanced AI systems on democracy"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jack Lindsey",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5137019053",
+     "evidence": "https://doi.org/10.48550/arxiv.2608.10218",
+     "first": "2025-01-01",
+     "last": "2026-08-10",
+     "tier": "likely",
+     "works": 6,
+     "matched": [],
+     "recent": [
+      "Mind Viruses: Self-Propagating Ideas in Multi-Agent LLM Systems",
+      "The Value Axis: Language Models Encode Whether They're on the Right Track"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Fabien Roger",
+     "headline": "5 papers with this affiliation",
+     "url": "https://openalex.org/A5028042353",
+     "evidence": "https://doi.org/10.48550/arxiv.2605.16626",
+     "first": "2025-01-01",
+     "last": "2026-05-15",
+     "tier": "likely",
+     "works": 5,
+     "matched": [],
+     "recent": [
+      "SLEIGHT-Bench: A Benchmark of Evasion Attacks Against Agent Monitors",
+      "Excess Description Length of Learning Generalizable Predictors"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nicholas Carlini",
+     "headline": "5 papers with this affiliation",
+     "url": "https://openalex.org/A5034257647",
+     "evidence": "https://doi.org/10.48550/arxiv.2605.11086",
+     "first": "2025-05-12",
+     "last": "2026-05-11",
+     "tier": "likely",
+     "works": 5,
+     "matched": [],
+     "recent": [
+      "ExploitGym: Can AI Agents Turn Security Vulnerabilities into Real Attacks?",
+      "Haiku to Opus in Just 10 bits: LLMs Unlock Large Compression Gains"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Joe Benton",
+     "headline": "4 papers with this affiliation",
+     "url": "https://openalex.org/A5056010406",
+     "evidence": "https://doi.org/10.48550/arxiv.2606.08892",
+     "first": "2025-01-31",
+     "last": "2026-06-08",
+     "tier": "likely",
+     "works": 4,
+     "matched": [],
+     "recent": [
+      "Diffuse AI Control on Fuzzy Tasks",
+      "SLEIGHT-Bench: A Benchmark of Evasion Attacks Against Agent Monitors"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Matthew Jagielski",
+     "headline": "4 papers with this affiliation",
+     "url": "https://openalex.org/A5054655342",
+     "evidence": "https://doi.org/10.1109/eurosp68448.2026.00047",
+     "first": "2025-01-01",
+     "last": "2026-07-01",
+     "tier": "likely",
+     "works": 4,
+     "matched": [],
+     "recent": [
+      "Covert Attacks on Machine Learning Training in Passively Secure MPC",
+      "Curation Leaks: Membership Inference Attacks against Data Curation for Machine Learning"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Simon Kornblith",
+     "headline": "4 papers with this affiliation",
+     "url": "https://openalex.org/A5042760897",
+     "evidence": "https://doi.org/10.1038/s44271-026-00502-y",
+     "first": "2024-09-15",
+     "last": "2026-07-13",
+     "tier": "likely",
+     "works": 4,
+     "matched": [],
+     "recent": [
+      "Masked attribution-based probing of strategies as a computational framework to align human, non-human primate, and model explanations",
+      "Aligning machine and human visual representations across abstraction levels"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Akbir Khan",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5084386381",
+     "evidence": "https://doi.org/10.48550/arxiv.2411.17693",
+     "first": "2024-09-19",
+     "last": "2024-11-26",
+     "tier": "likely",
+     "works": 3,
+     "matched": [],
+     "recent": [
+      "Adaptive Deployment of Untrusted LLMs Reduces Distributed Threats",
+      "BALROG: Benchmarking Agentic LLM and VLM Reasoning On Games"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Evan Hubinger",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5025461840",
+     "evidence": "https://doi.org/10.48550/arxiv.2609.33220",
+     "first": "2025-03-05",
+     "last": "2026-09-27",
+     "tier": "likely",
+     "works": 3,
+     "matched": [],
+     "recent": [
+      "When Do Models Admit They Are Wrong? Failure Disclosure Is Unstable Under Reinforcement Learning",
+      "Will AI Tell Lies to Save Sick Children? Litmus-Testing AI Values Prioritization with AIRiskDilemmas"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "John Hughes",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5033583291",
+     "evidence": "https://doi.org/10.48550/arxiv.2610.30582",
+     "first": "2025-01-01",
+     "last": "2026-10-22",
+     "tier": "likely",
+     "works": 3,
+     "matched": [],
+     "recent": [
+      "Model Organisms of Collusion: Corrective Transfer in Untrusted Monitors",
+      "Improving Evaluation Realism with Inference-Time Compute and Deployment Scaffolds"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Juhan Bae",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5078051293",
+     "evidence": "https://doi.org/10.52202/085713-4883",
+     "first": "2025-01-01",
+     "last": "2025-01-01",
+     "tier": "likely",
+     "works": 3,
+     "matched": [],
+     "recent": [
+      "What is Your Data Worth to GPT? LLM-Scale Data Valuation with Influence Functions",
+      "IF-Guide: Influence Function-Guided Detoxification of LLMs"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Theodore R. Sumers",
+     "headline": "3 papers with this affiliation",
+     "url": "https://openalex.org/A5047918106",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2024-10-07",
+     "last": "2025-01-31",
+     "tier": "likely",
+     "works": 3,
+     "matched": [],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Are Large Language Models Sensitive to the Motives Behind Communication?"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Alex Cloud",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5021811140",
+     "evidence": "https://doi.org/10.1038/s41586-026-10319-8",
+     "first": "2025-01-01",
+     "last": "2026-04-15",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Language models transmit behavioural traits through hidden signals in data",
+      "Distillation Robustifies Unlearning"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Alex Tamkin",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5081558429",
+     "evidence": "https://doi.org/10.1145/3630106.3658979",
+     "first": "2023-12-06",
+     "last": "2024-06-03",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Collective Constitutional AI: Aligning a Language Model with Public Input",
+      "Evaluating and Mitigating Discrimination in Language Model Decisions"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Andrew K. Lampinen",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5030015839",
+     "evidence": "https://doi.org/10.48550/arxiv.2609.33220",
+     "first": "2026-08-14",
+     "last": "2026-09-27",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "When Do Models Admit They Are Wrong? Failure Disclosure Is Unstable Under Reinforcement Learning",
+      "Data augmentation as a framework for modeling hippocampal contributions to generalization"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Arushi Somani",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5120336210",
+     "evidence": "https://doi.org/10.52202/085713-2453",
+     "first": "2025-01-01",
+     "last": "2025-01-01",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Best-of-N Jailbreaking",
+      "Quantifying Elicitation of Latent Capabilities in Language Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Emmanuel Ameisen",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5133647610",
+     "evidence": "https://doi.org/10.64898/2026.10.05.755809",
+     "first": "2025-01-01",
+     "last": "2026-10-11",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Autonomous AI agents discover reverse transcriptases with tandem repeat arrays",
+      "Circuit-Tracer: A New Library for Finding Feature Circuits"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Hailey Joren",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5114065500",
+     "evidence": "https://doi.org/10.48550/arxiv.2601.04728",
+     "first": "2025-01-01",
+     "last": "2026-01-08",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Excess Description Length of Learning Generalizable Predictors",
+      "Quantifying Elicitation of Latent Capabilities in Language Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Ivan Vendrov",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5008265316",
+     "evidence": "https://doi.org/10.1145/3658675",
+     "first": "2023-06-20",
+     "last": "2024-04-16",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Discovering Personalized Semantics for Soft Attributes in Recommender Systems Using Concept Activation Vectors",
+      "Opportunities and Risks of LLMs for Scalable Deliberation with Polis"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jan Leike",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5090592321",
+     "evidence": "https://doi.org/10.48550/arxiv.2601.04728",
+     "first": "2025-01-31",
+     "last": "2026-01-08",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Excess Description Length of Learning Generalizable Predictors",
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Jascha Sohl‐Dickstein",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5064986566",
+     "evidence": "https://doi.org/10.48550/arxiv.2601.23045",
+     "first": "2026-01-30",
+     "last": "2026-01-30",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "The Hot Mess of AI: How Does Misalignment Scale With Model Intelligence and Task Complexity?",
+      "The Hot Mess of AI: How Does Misalignment Scale With Model Intelligence and Task Complexity?"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Keri Warr",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5120791032",
+     "evidence": "https://doi.org/10.48550/arxiv.2604.02343",
+     "first": "2025-11-04",
+     "last": "2026-02-09",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Haiku to Opus in Just 10 bits: LLMs Unlock Large Compression Gains",
+      "Verifying LLM Inference to Detect Model Weight Exfiltration"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Kyle Fish",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5123209938",
+     "evidence": "https://doi.org/10.48550/arxiv.2601.10387",
+     "first": "2025-05-20",
+     "last": "2026-01-15",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models",
+      "Will AI Tell Lies to Save Sick Children? Litmus-Testing AI Values Prioritization with AIRiskDilemmas"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Linda Petrini",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5027936662",
+     "evidence": "https://doi.org/10.48550/arxiv.2610.04364",
+     "first": "2025-01-31",
+     "last": "2026-10-03",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "A Bird's-Eye View of Iterative Reward Design",
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Marina Favaro",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5069116837",
+     "evidence": "https://doi.org/10.48550/arxiv.2308.00862",
+     "first": "2023-01-02",
+     "last": "2023-08-01",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Confidence-Building Measures for Artificial Intelligence: Workshop Proceedings",
+      "False Sense of Supremacy: Emerging Technologies, the War in Ukraine, and the Risk of Nuclear Escalation"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Mrinank Sharma",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5003223014",
+     "evidence": "https://doi.org/10.48550/arxiv.2501.18837",
+     "first": "2024-11-26",
+     "last": "2025-01-31",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
+      "Adaptive Deployment of Untrusted LLMs Reduces Distributed Threats"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Nina Panickssery",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5114449312",
+     "evidence": "https://doi.org/10.48448/6qvg-y653",
+     "first": "2026-01-01",
+     "last": "2026-03-06",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models",
+      "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Peter Hase",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5013096489",
+     "evidence": "https://doi.org/10.18653/v1/2025.naacl-long.412",
+     "first": "2024-10-18",
+     "last": "2025-01-01",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Teaching Models to Balance Resisting and Accepting Persuasion",
+      "Teaching Models to Balance Resisting and Accepting Persuasion"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Saffron Huang",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5040949100",
+     "evidence": "https://doi.org/10.1093/pnasnexus/pgag305",
+     "first": "2025-10-01",
+     "last": "2026-09-30",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Conversational AI increases political knowledge as effectively as self-directed internet search",
+      "The impact of advanced AI systems on democracy"
+     ]
+    },
+    {
+     "source": "openalex",
+     "name": "Suchin Gururangan",
+     "headline": "2 papers with this affiliation",
+     "url": "https://openalex.org/A5075783850",
+     "evidence": "https://doi.org/10.48550/arxiv.2510.01123",
+     "first": "2025-09-17",
+     "last": "2025-10-01",
+     "tier": "likely",
+     "works": 2,
+     "matched": [],
+     "recent": [
+      "Rethinking Thinking Tokens: LLMs as Improvement Operators",
+      "Compute as Teacher: Turning Inference Compute Into Reference-Free Supervision"
+     ]
+    }
+   ],
+   "counts": {
+    "openalex:confirmed": 34,
+    "openalex:likely": 33,
+    "openalex:unverified": 142,
+    "openalex:model": 282
+   }
+  }
  },
  "cohere": {
   "people": [],
@@ -7608,7 +8734,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "coreweave-capital": {
   "people": [],
@@ -8240,7 +9367,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -8470,7 +9598,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "databricks": {
   "people": [],
@@ -9378,7 +10507,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "google-deepmind": {
   "people": [],
@@ -10104,7 +11234,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "harvey-ai": {
   "people": [],
@@ -10318,7 +11449,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "lambda": {
   "people": [],
@@ -10541,7 +11673,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "mistral": {
   "people": [],
@@ -10819,7 +11952,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "nvidia": {
   "people": [
@@ -11540,7 +12674,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "openai": {
   "people": [],
@@ -12410,7 +13545,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "perplexity": {
   "people": [],
@@ -12935,7 +14071,8 @@ export const AI_360: Record<string, Entity360> = {
     }
    ]
   },
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "sambanova": {
   "people": [],
@@ -13156,7 +14293,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "scale-ai": {
   "people": [],
@@ -13367,7 +14505,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "thinking-machines": {
   "people": [],
@@ -13577,7 +14716,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  },
  "xai-capital": {
   "people": [],
@@ -13827,7 +14967,8 @@ export const AI_360: Record<string, Entity360> = {
   },
   "site": null,
   "attention": null,
-  "tone": null
+  "tone": null,
+  "footprint": null
  }
 };
 

@@ -1158,6 +1158,89 @@ export function TimelineSection({ id }: { id: string }) {
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// Everyone with a public footprint: people a public source ties to the company
+// ---------------------------------------------------------------------------
+
+const FOOTPRINT_SOURCES: { key: string; label: string; how: string }[] = [
+  { key: "openalex", label: "Research papers", how: "authors whose paper lists the company as their affiliation (OpenAlex)" },
+  { key: "linkedin", label: "LinkedIn", how: "profiles that name the company as the current employer (Bright Data, after approval)" },
+  { key: "x", label: "X", how: "accounts whose bio names the company (Bright Data, after approval)" },
+  { key: "substack", label: "Substack", how: "writers who say they work there (after approval)" },
+];
+
+export function FootprintSection({ id }: { id: string }) {
+  const f = AI_360[id]?.footprint;
+  const [src, setSrc] = React.useState<string | null>(null);
+  const [q, setQ] = React.useState("");
+  if (!f) return null;
+  const c = f.counts;
+  const shown = f.people.filter((p) => (!src || p.source === src) && (!q || p.name.toLowerCase().includes(q.toLowerCase())));
+  const n = (k: string) => f.people.filter((p) => p.source === k).length;
+  return (
+    <div className="space-y-3" data-testid="ai-footprint">
+      <H aside={`${fmt(f.people.length)} people shown`}>Everyone with a public footprint</H>
+      <ul className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-4">
+        {FOOTPRINT_SOURCES.map((s) => (
+          <li key={s.key} className="border-b border-r border-border">
+            <button type="button" onClick={() => setSrc(src === s.key ? null : s.key)} disabled={!n(s.key)} className={`block h-full w-full p-3 text-left ${src === s.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]"}`}>
+              <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</span>
+              <span className={`mt-1 block font-display text-xl font-bold tabular-nums ${n(s.key) ? "text-foreground" : "text-muted-foreground"}`}>{n(s.key) ? fmt(n(s.key)) : "pending"}</span>
+              <span className="block font-mono text-[10px] leading-snug text-muted-foreground">{s.how}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      {f.people.length > 0 && (
+        <>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Find a name"
+            aria-label="Find a name"
+            className="w-full max-w-xs border border-border bg-transparent px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-foreground/40"
+          />
+          <ol className="max-h-[28rem] divide-y divide-border overflow-y-auto border border-border">
+            {shown.map((p) => (
+              <li key={`${p.source}-${p.name}`} className="grid grid-cols-[minmax(0,1fr)] gap-1 px-3 py-2 font-mono text-[11px] sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] sm:gap-3">
+                <span className="min-w-0">
+                  {p.url ? (
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground hover:underline">
+                      {p.name} ↗
+                    </a>
+                  ) : (
+                    <span className="font-bold text-foreground">{p.name}</span>
+                  )}
+                  {p.tier && (
+                    <span className={`ml-1.5 border px-1 text-[8px] uppercase tracking-[0.15em] ${p.tier === "confirmed" ? "border-emerald-600/40 text-emerald-700 dark:text-emerald-300" : "border-border text-muted-foreground"}`}>
+                      {p.tier}
+                    </span>
+                  )}
+                </span>
+                <span className="min-w-0 text-foreground/85">
+                  {p.headline}
+                  {p.first && p.last ? ` · ${p.first.slice(0, 4) === p.last.slice(0, 4) ? p.first.slice(0, 4) : `${p.first.slice(0, 4)} to ${p.last.slice(0, 4)}`}` : ""}
+                  {(p.matched[0] || p.recent[0]) && (
+                    <span className="block truncate text-[10px] text-muted-foreground">
+                      {p.matched[0] ? `On ${getNode(id)?.name ?? "the company"}'s own site: ${p.matched[0]}` : `Latest: ${p.recent[0]}`}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+      <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
+        Research: {c["openalex:confirmed"] ?? 0} confirmed (a paper matches a research page on the company&apos;s own site) and {c["openalex:likely"] ?? 0} likely (two or more papers with the
+        affiliation). Left out: {c["openalex:model"] ?? 0} records where the AI model itself is listed as the author, and {c["openalex:unverified"] ?? 0} authors with one paper or only
+        self-published ones. A paper shows where someone published, not that they still work there.
+      </p>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // The 360 summary: every angle, what is collected, where it comes from
 // ---------------------------------------------------------------------------
