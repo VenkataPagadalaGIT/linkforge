@@ -1,10 +1,10 @@
-# The AI SEO job market study: plan v3 (2026-10-29)
+# The AI SEO job market study: plan v4 (2026-10-29)
 
 Owner's ask: the largest study ever done of jobs in SEO, AI search, AEO, GEO and AI visibility: every country, every language, every level, every company; store every aspect (titles, salary, duties, responsibilities, AI skills, SEO skills, marketing skills, levels) and classify by company and company type (public, private, agency, full-time, contract and every other possibility).
 
 Owner's clarification (2026-10-29): Nozzle's "Poisoned Google SERPs" study is the model for the style and format. We publish the same kind of study for the AI SEO job market.
 
-Status: plan. Nothing paid has run. Next free step: a clickable mockup of the study page on sample data, numbered M1 to M16 as in section 2. Unit prices come from vendor pages or our own billing; volumes are assumptions until the pilot measures them.
+Status: plan v4. Nothing paid has run. Every vendor and price below was cross-checked on 29 Oct 2026 against the vendor's own page, its docs or our own accounts. Job counts are estimates until the free counts in section 8 run. Vendor research: Obsidian `Tools/Job data at scale` and its Notion page under Tools.
 
 ## 1. The model: Nozzle's study (read 2026-10-29)
 
@@ -83,22 +83,25 @@ What makes the format work:
 
 Company type comes from several sources, in this order: the company's own filings and Wikidata (stock exchange and ticker), the LinkedIn company profile's organization type, Glassdoor's `company_type` on job listings, Crunchbase for funding and ownership, and a model reading the company description and the job text for agency, in-house or staffing (checked on a hand-labelled sample).
 
-## 5. Sources (checked 2026-10-29)
+## 5. Sources (cross-checked 2026-10-29)
 
-| Source | Gives | Price |
-|---|---|---|
-| Bright Data, LinkedIn job listings (`gd_lpfll7v5hcqtkxl6l`, 29 fields) | Full description, salary or pay range, seniority, employment type, function, industries, posted date and time, applicants, company | $2.50 per 1,000 records; $0 when nothing matches |
-| Bright Data, Indeed job listings (`gd_l4dx9j9sscpvs7no2`, 28 fields, 7.38M records) | Description, salary, benefits, qualifications, job type, company rating | Same |
-| Bright Data, Glassdoor job listings (`gd_lpfbbndm1xnopbrcr0`, 39 fields) | Employer and Glassdoor pay ranges, company type, size, revenue, industry, ratings | Same |
-| Bright Data company datasets (LinkedIn companies, Glassdoor companies 2.48M, Crunchbase 2.3M) | Organization type, size, industry, funding, ownership | Same |
-| DataForSEO Google Jobs | Employer, location, salary, contract type, posted time, the original posting's link; up to 200 results per term, country and language; no description | $0.0006 per page of 10 (standard queue) |
-| Company job boards (Greenhouse, Lever, Ashby, Workable, SmartRecruiters, Recruitee, Personio, Teamtailor) | Full description, published pay ranges, dates | Free |
-| Company career pages (`JobPosting` structured data) | Title, description, dates, base salary, employment type, location | Free |
-| ECB reference rates, World Bank PPP | Currency conversion, purchasing-power comparison | Free |
-| O*NET, ISCO/ESCO | Standard tasks and occupation codes | Free |
-| OpenRouter (classification and extraction) | gpt-5-nano $0.05 per 1M input tokens and $0.40 per 1M output; gemini-2.5-flash $0.30 and $2.50 (for the checking sample) | As listed |
+| Source | What it gives | Price | Verdict |
+|---|---|---|---|
+| TheirStack | 258M job postings from 367K sources in 195 countries since 2021, duplicates merged across LinkedIn, Indeed, Glassdoor, company sites and ATSs. Filters for job title, description, country, posting date, seniority, salary and company type. | 1 API credit per job: $900 a month for 200,000; $1,200 for 500,000; $1,500 for 1M. Unused credits roll over for 12 months. | Main candidate |
+| Coresignal | 486M postings since August 2020 in 195+ countries, from company sites, professional networks, ATSs and aggregators. Filters for title, company, location, skills, date and seniority. | Search is free; 1 credit per job collected: $1,000 a month for 150,000; $1,500 for 1M. Bulk datasets from $1,000. | Main candidate, with room for other topics |
+| Bright Data datasets | LinkedIn, Indeed (7.38M records) and Glassdoor job listings, one dataset per source, not merged | $2.50 per 1,000 records; $0 when nothing matches. The order screen shows the record count and total before purchase. | Cheapest for LinkedIn alone; how far back it reaches is unconfirmed |
+| Bright Data scrapers | Live LinkedIn, Indeed and Glassdoor jobs by URL or keyword | $1.50 per 1,000 delivered records; 5,000 free credits a month | Fresh jobs only |
+| DataForSEO Google Jobs | Jobs Google lists today: employer, location, salary, contract type, original link; no description | $0.0006 per page of 10 jobs | One pass to top up |
+| Company job boards | Greenhouse, Lever and Ashby public APIs, no login needed | Free | Top-up for known employers |
+| Company career pages | `JobPosting` structured data: title, description, dates, salary, employment type | Free, or 1 MCP Scraper credit per page | Full text for jobs found only on Google |
+| Techmap | 451M postings since 2020 in 250 countries and territories | API $1 per 1,000, but only the last 3 months; US history $5,999 one-time | Not a fit |
+| Apify LinkedIn job actors | LinkedIn's public job search, open jobs only | $0.10 to $2 per 1,000 | Ruled out: we would be scraping LinkedIn |
+| Web Data Commons | Job markup extracted yearly from Common Crawl; 50,000 sites used it by 2022 | Free | A sample, not a census |
+| ECB reference rates, World Bank PPP | Currency conversion, purchasing-power comparison | Free | |
+| O*NET, ISCO/ESCO | Standard tasks and occupation codes | Free | |
+| OpenRouter | Reading and labelling each job | About $0.20 per 1,000 jobs with gpt-5-nano in batch; $0.60 with claude-haiku-5.5 | |
 
-No scraping of LinkedIn or Indeed pages ourselves: their data comes only from the licensed datasets.
+We never scrape LinkedIn or Indeed ourselves, and nothing is collected while signed in. LinkedIn's user agreement, section 8.2, bars scraping by software, crawlers, browser plugins "or any other means or processes".
 
 ## 6. Storage
 
@@ -107,44 +110,59 @@ No scraping of LinkedIn or Indeed pages ourselves: their data comes only from th
 - **Public:** the aggregate dataset and codebook as CSV and Parquet files on Cloudflare R2; the site serves aggregates and live jobs only (not the full database, which would raise the Railway Postgres bill).
 - **People:** recruiter names in LinkedIn records (`job_poster`) stay in the raw archive and never reach the site or the public files.
 
-## 7. Cost for every country (unit prices are real; volumes are assumptions)
+## 7. Cost (unit prices verified; job counts are estimates)
 
-| Part | Assumption | Formula | One-time census | Monthly after |
-|---|---|---|---|---|
-| Google Jobs sweep | 175 countries × about 12 terms in their languages × 10 pages, plus 30 large countries split into 25 cities | (21,000 + 90,000) pages × $0.0006 | about $67 | about $67 (monthly) to $290 (weekly) |
-| Job datasets (LinkedIn, Indeed, Glassdoor) | 200,000 to 1,000,000 matching records across the three | records × $2.50 / 1,000 | $500 to $2,500 | $62 to $250 for new postings |
-| Company enrichment | 50,000 to 200,000 employers, up to three company datasets each | records × $2.50 / 1,000 | $375 to $1,500 | small (new employers only) |
-| Extraction | 2,500 tokens in, 700 out per job, gpt-5-nano | 300,000 to 1,000,000 × $0.000405 | $122 to $405 | $10 to $40 |
-| Checking sample | 5% of jobs re-read by gemini-2.5-flash, $0.0025 each | 15,000 to 50,000 × $0.0025 | $38 to $125 | small |
-| **Total** | | | **about $1,100 to $4,600** | **about $150 to $600** |
+**Countries:** there are 195: the 193 UN members plus the Holy See and Palestine. The ISO list has 249 codes because it counts territories. Google's job search runs in all of Latin America, North America and Sub-Saharan Africa, and only in listed countries elsewhere.
 
-Reasoning tokens (gpt-5-nano is a reasoning model) can raise extraction cost; the pilot measures them. Storage on the local database and free sources add no vendor cost.
+**Volume assumption:** Semrush counted 3,900 open SEO listings on Indeed US on 25 Nov 2025. Listings turn over about monthly, which suggests about 40,000 a year on Indeed US alone. Assuming the US holds about 30% of the world's SEO jobs gives 120,000 to 300,000 unique SEO jobs worldwide in 2026.
 
-## 8. The pilot first ($12.35 cap, needs the owner's yes)
-
-| Step | Size | Cap |
+| Option | What you get | Cost |
 |---|---|---|
-| DataForSEO Google Jobs | 25 countries × 8 terms × 5 pages = 1,000 pages | $0.60 |
-| Bright Data LinkedIn job listings | titles matching the terms, all countries, up to 2,000 records | $5.00 |
-| Bright Data Indeed job listings | up to 1,000 records | $2.50 |
-| Bright Data Glassdoor job listings | up to 500 records | $1.25 |
-| OpenRouter extraction | about 3,500 jobs | $3.00 |
-| **Total** | | **$12.35** |
+| Snapshot | Every SEO job open today: one Google Jobs pass, the free job boards, AI reading | About $30 to $60 |
+| **Vendor, one time (recommended)** | Every 2026 SEO job to date, merged across sources: TheirStack or Coresignal, plus one Google Jobs pass and AI reading | About $1,000 to $1,600 |
+| Bright Data, LinkedIn only | 2026 LinkedIn SEO jobs, plus one Google Jobs pass and AI reading | About $250 to $610 |
+| Bright Data, three datasets | Adds Indeed and Glassdoor | About $500 to $1,220 |
+| Ongoing to year-end | History plus weekly Google passes and live scrapers to 31 Dec | About $980 to $2,400; company details add $240 to $600 |
 
-It measures volume per country and language, how many keyword matches are real (in our own 4,136 roles only 1 of 7 was: "GEO" was a sales territory, "AI Search" an engineer), how often pay is stated per source, overlap between sources, field coverage, and the true cost per job. The census budget is then set from measured numbers.
+Every option costs under 1 cent per job. For all of 2026 in one pull, pull once in early January 2027.
+
+## 8. First step: count before buying (replaces the $12.35 pilot)
+
+1. The owner opens free accounts at Coresignal, a 7-day trial with 2,000 credits, and TheirStack. Only the owner can create accounts.
+2. I count SEO jobs posted since 1 Jan 2026 in every country. Coresignal's search is free; TheirStack returns the total with each search for 1 credit; Bright Data's order screen shows its counts too.
+3. I pull a free sample of about 100 jobs from each, to compare descriptions, pay, seniority and company fields.
+4. The owner picks the vendor, the topics (SEO only, or SEO with AI and marketing jobs) and the budget, and says yes.
+
+Spend before the main purchase: $0.
 
 ## 9. Quality
 
 - Two models label the same 1,000 jobs; disagreements are read by a person; accuracy per field is published with the study.
-- The term lists are tested for precision and recall per language on the pilot (a term is dropped when most of its matches are false).
-- Every published number has a query behind it and is re-computed in the pre-release check (the same discipline as the site's attested counts).
+- The term lists are tested for precision and recall per language on the samples; a term is dropped when most of its matches are false.
+- A sample of records is checked against the live posting in a logged-out browser: the one good use of a browser here.
+- Every published number has a query behind it and is recomputed in the pre-release check.
 - Claims register: any "largest" or "first" claim is checked against earlier studies before publication.
 
 ## 10. Order
 
-1. Free now: a clickable mockup of the study page on sample data, schema, codebook, term lists for the first 25 markets (with native-language terms), skill and task taxonomies, company job boards storing full descriptions and pay, the `JobPosting` reader, ECB rates.
-2. Pilot ($12.35) after the owner's yes and the new OpenRouter key in `~/Desktop/sec/opnerouter.rtf`.
-3. Pilot report: measured volumes, precision, field coverage, cost per job; the owner sets the census budget.
-4. Census: all sources, all countries; extraction; checking sample.
-5. Publication: the study page in the format of section 2, plus country and role pages, the open dataset and codebook; launch with the AI graph (localhost first, preprod after approval).
-6. Monthly index from then on.
+1. Free now: schema, codebook, term lists with native-language terms, and the clickable mockup of the study page.
+2. Free counts and samples, as in section 8.
+3. One purchase, after the owner's yes.
+4. One Google Jobs pass and the free job boards.
+5. Duplicates merged locally; AI reading with a checked sample.
+6. Publication: the study page in the format of section 2, country and role pages, the open dataset and codebook; launch with the AI graph, localhost first and preprod after approval.
+7. Refresh monthly, or one pull in January 2027 for the full year.
+
+## 11. Why not collect in a browser
+
+- A browser only sees jobs still open, so January to September 2026 is out of reach.
+- At an estimated 5 to 15 pages a minute, 200,000 jobs take 200 to 700 hours. Hosted browsers cost $240 to $3,200 for the same pages.
+- Collecting while signed in breaches LinkedIn's user agreement: hiQ paid $500,000 and deleted its data in December 2022. Logged-out collection of public data won in Meta v. Bright Data, January 2024, one district court ruling.
+- Browsers stay for spot checks.
+
+## 12. Open decisions for the owner
+
+- Open the Coresignal and TheirStack accounts.
+- Topics: SEO only, or SEO plus AI and marketing jobs.
+- Vendor and budget, after the counts.
+- Timing: now for 2026 to date, or early January 2027 for the full year.
