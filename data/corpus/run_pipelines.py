@@ -27,10 +27,16 @@ def lit(v):
     return "NULL" if v is None else ("'" + str(v).replace("'", "''") + "'")
 
 
+def ts(s):
+    """Postgres prints timestamptz as '2026-10-29 04:14:01.766763+00'; Python before 3.11 only reads '+00:00'."""
+    s = s.replace(" ", "T", 1)
+    return dt.datetime.fromisoformat(s + ":00" if s[-3] in "+-" else s)
+
+
 def last_runs():
     out = {}
     for pid, started, status in query("SELECT DISTINCT ON (pipeline) pipeline, started_at, status FROM ontology.pipeline_run ORDER BY pipeline, started_at DESC"):
-        out[pid] = (dt.datetime.fromisoformat(started), status)
+        out[pid] = (ts(started), status)
     return out
 
 

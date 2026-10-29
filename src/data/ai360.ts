@@ -21531,7 +21531,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 53,
+     "count": 54,
      "examples": [
       "IAM Engineer",
       "OSP Engineer",
@@ -21541,7 +21541,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 47,
+     "count": 46,
      "examples": [
       "Barista",
       "Cook, Sushi",
@@ -21594,8 +21594,8 @@ export const AI_360: Record<string, Entity360> = {
      "count": 3,
      "examples": [
       "Research Analyst",
-      "Post-Training and RL",
-      "Software Engineer - Evals"
+      "Software Engineer - Evals",
+      "Software Engineer, Post-Training & RL"
      ]
     },
     {

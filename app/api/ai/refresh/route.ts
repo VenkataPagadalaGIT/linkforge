@@ -35,7 +35,9 @@ export async function POST(req: Request) {
   if ([...runs.values()].some((r) => r.finished === null)) return NextResponse.json({ error: "another pull is running" }, { status: 409 });
   const run: Run = { started: Date.now(), finished: null, code: null, tail: "" };
   runs.set(pipeline, run);
-  const child = spawn("zsh", ["-c", `python3 run_pipelines.py --only ${pipeline} && ${GENERATE}`], { cwd: path.join(process.cwd(), "data", "corpus") });
+  // Homebrew's Python first, the one the scripts are run with from the terminal (macOS's own python3 is older).
+  const env = { ...process.env, PATH: `/opt/homebrew/bin:/usr/local/bin:${process.env.PATH ?? ""}` };
+  const child = spawn("zsh", ["-c", `python3 run_pipelines.py --only ${pipeline} && ${GENERATE}`], { cwd: path.join(process.cwd(), "data", "corpus"), env });
   const keep = (d: Buffer) => {
     run.tail = (run.tail + d.toString()).slice(-800);
   };

@@ -242,7 +242,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -813,7 +813,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -879,7 +879,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -943,7 +943,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -992,7 +992,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -1386,7 +1386,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -1607,7 +1607,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-26",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -2161,7 +2161,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-29",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -2334,7 +2334,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -2519,7 +2519,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -2617,7 +2617,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -2951,7 +2951,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -3185,7 +3185,7 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
     "people"
    ],
    "dataAsOf": "2026-10-27",
-   "pulledAt": "2026-10-29T04:13:47.016738+00:00",
+   "pulledAt": "2026-10-29T04:35:51.076405+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "jobs",
@@ -3289,9 +3289,9 @@ export const AI_PIPELINES: PipelineState[] = [
   "why": "every open role on public job boards; closed roles need daily runs",
   "cadenceH": 24,
   "cost": "free",
-  "lastOk": "2026-10-29T04:13:47.016738+00:00",
+  "lastOk": "2026-10-29T04:35:51.076405+00:00",
   "lastStatus": "ok",
-  "lastRun": "2026-10-29T04:13:33.494624+00:00"
+  "lastRun": "2026-10-29T04:35:40.713483+00:00"
  },
  {
   "id": "site",
