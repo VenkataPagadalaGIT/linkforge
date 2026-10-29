@@ -1,27 +1,61 @@
-# The Search Jobs Census: plan v2 (2026-10-29)
+# The AI SEO job market study: plan v3 (2026-10-29)
 
-Owner's ask: the largest study ever done of jobs in SEO, AI search, AEO, GEO and AI visibility: every country, every language, every level, every company; store every aspect (titles, salary, duties, responsibilities, AI skills, SEO skills, marketing skills, levels) and classify by company and company type (public, private, agency, full-time, contract and every other possibility). Benchmark to beat: Nozzle's "Poisoned Google SERPs" (published 10 Oct 2026, updated 21 Oct 2026).
+Owner's ask: the largest study ever done of jobs in SEO, AI search, AEO, GEO and AI visibility: every country, every language, every level, every company; store every aspect (titles, salary, duties, responsibilities, AI skills, SEO skills, marketing skills, levels) and classify by company and company type (public, private, agency, full-time, contract and every other possibility).
 
-Status: plan. Nothing paid has run. Unit prices come from vendor pages or our own billing; volumes are assumptions until the pilot measures them.
+Owner's clarification (2026-10-29): Nozzle's "Poisoned Google SERPs" study is the model for the style and format. We publish the same kind of study for the AI SEO job market.
 
-## 1. The bar, and how we clear it
+Status: plan. Nothing paid has run. Next free step: a clickable mockup of the study page on sample data, numbered M1 to M16 as in section 2. Unit prices come from vendor pages or our own billing; volumes are assumptions until the pilot measures them.
 
-Nozzle's study (read 2026-10-29): 56.1 million SERPs judged, 53 countries, three devices, 20 Aug to 21 Oct 2026, one outcome (the share of "poisoned" SERPs), a sample of the keywords Nozzle tracks for its customers; interactive SERP comparisons, daily charts, a country map, an industry breakdown, six downloadable CSVs with column definitions, a methodology section and stated limitations.
+## 1. The model: Nozzle's study (read 2026-10-29)
 
-"10,000 times" is not a meaningful target in raw counts (it would mean 561 billion SERPs). The study wins on the dimensions that make research cited and reused:
+Facts: by Derek Perkins, published 10 Oct 2026, updated 21 Oct 2026, "data through" 21 Oct 2026. 56.1 million SERPs judged (29.9 million since 13 Sep), 53 countries, desktop, iPhone and Android, 20 Aug to 21 Oct 2026, a sample of the SERPs Nozzle tracks for its customers. Six gzipped CSV downloads. JSON-LD types on the page include Report and VideoObject. Source: https://nozzle.io/research/poisoned-google-serps/
 
-| Dimension | Nozzle | The Search Jobs Census |
+What makes the format work:
+- **One plain sentence and four numbers first.** A short dek says what happened; a band of four big numbers gives the scale.
+- **Show, then tell.** Real examples you can pick and compare (wipe, side by side, flip) come before any chart.
+- **Every chart carries its evidence.** A caption explains each mark, then a collapsible table, then a download with its row count, then a note on each column.
+- **Before and after everywhere.** Tiles and dumbbell charts read "baseline to now", so change is the unit of every module.
+- **Honest thresholds.** Thin days are drawn hollow; a country below a minimum sample is not coloured on the map.
+- **The reader filters.** Country and device chips and metric tabs redraw the chart and the tiles.
+- **A practical close.** What it does to the reader's own sites, then how to tell it apart from a real ranking change.
+- **A short method.** Run-in definitions, the counts, the dates, the sample.
+- **A living page.** Published, updated and "data through" dates in the byline; dated update sections.
+
+## 2. Our study page, module by module
+
+| # | Module | Modeled on | What it shows | Reader controls | Fields it needs |
+|---|---|---|---|---|---|
+| M1 | Hero | Hero | Kicker, two-tone title, byline (published, updated, postings through, read time), one-sentence finding, four numbers: postings analyzed, countries, share of SEO postings that ask for AI search skills, pay gap of AI search roles | none | counts, ai_exposure, pay |
+| M2 | Key findings 01 to 05 | Key findings + film | Five numbered findings, each a bold claim and one sentence with its number; a short film of the posting viewer | play the film | all |
+| M3 | Updates | Dated updates | One dated note per monthly refresh: what changed in the data and the method | none | run log |
+| M4 | What it looks like | SERP comparisons | Four real postings as cards; the viewer marks every duty and skill by family; the same title then and now, or the original language beside the English | pick a posting; Annotated, Side by side, Flip; jump to duties, skills, pay, requirements | posting text, duties, skills, pay, company type, source |
+| M5 | By the numbers | By the numbers | Definitions; baseline-to-now tiles; monthly chart of the share of SEO postings asking for AI search skills, with event lines (AI Overviews in the US on 14 May 2024, ChatGPT search on 31 Oct 2024, AI Mode in the US on 20 May 2025) and hollow points for thin months | country, level and company-type chips; tabs for postings, AI share, median pay | posted_on, ai_exposure, country, level, company_type, pay |
+| M6 | What employers ask for | What takes their place | Dumbbells: how often each skill or tool appears in classic SEO postings against AI search postings, grouped "asked more" and "asked less" | tabs: skills, tools | skills, tools |
+| M7 | Where the jobs are | Where it hit | World map with a Europe inset; five bins; a country needs a minimum number of postings to be coloured; four short findings under the map | metric toggle | country, ai_exposure |
+| M8 | By company type | Industry ridgelines | One ridge per company type (in-house brand, agency, software vendor, publisher, e-commerce, staffing) on one scale | hover | company_type, posted_on |
+| M9 | What it pays | (new) | Pay range by level, in local currency, USD or purchasing power; how many postings state pay, by country | country, currency | pay fields, fx_rate |
+| M10 | Who hires | (new) | Ownership (public, private, private-equity owned, venture-backed, government, nonprofit), size, top employers with links to the AI graph | sort | company fields |
+| M11 | Titles and levels | (new) | The title ladder from specialist to head; new titles (AEO, GEO, AI search); postings per level | level | title_norm, level |
+| M12 | How to read an AI SEO job posting | How to tell it from a real ranking change | Four rules: GEO can be a sales territory; "AI search" can be an engineer; stated pay against estimated pay; agency or in-house | none | (classifier rules) |
+| M13 | Explore the postings | (new) | Search and filter the postings behind every number, each with its source and pulled date | search, filters | posting, posting_source |
+| M14 | Method | Method | Run-in definitions: postings, sources, matched, classified, counted once, pay, company type, countries and languages, thresholds, accuracy | none | provenance |
+| M15 | Downloads | Download the data | One gzipped CSV per module plus Parquet and the codebook, each with its row count and column notes; no person data | download | aggregates |
+| M16 | Machine-readable | Report JSON-LD | Report plus Dataset JSON-LD with each download as a distribution, so the data shows in Google Dataset Search | none | page metadata |
+
+## 3. Where we go further than the model
+
+| Dimension | Nozzle | The AI SEO job market study |
 |---|---|---|
 | Universe | A sample of its customers' keywords | Every posting matching the terms, from every source we can license or read, in every country those sources cover (target 175) |
 | Depth | One outcome per SERP | About 120 structured fields per job: pay, duties, skills in four families, tools, level, company type, ownership |
-| Languages | Not stated | Search terms and labels in every language of the countries covered; original text kept |
-| Time | Two months | A census, then a monthly index that never stops (closed jobs are kept) |
-| Comparability | Own definitions | Duties mapped to O*NET 13-1161.01 (Search Marketing Strategists) and ISCO 2513; our own extension for AEO, GEO and AI visibility, which the standard taxonomies do not cover yet |
-| Proof | Method described | Every number links to the postings behind it, with source and pulled date; classifier accuracy measured against a hand-checked sample and published |
-| Openness | Six CSVs | The full aggregate dataset (CSV and Parquet), the codebook, the term lists, the prompts and the code |
-| Use | Read the report | An explorer: any country × level × skill × company type × pay band; a page per country and per role; an API |
+| Languages | Not stated | Search terms and labels in every language of the countries covered; the original text kept beside the English |
+| Time | Two months | A census, then a monthly refresh that never stops (closed postings are kept) |
+| Comparability | Own definitions | Duties mapped to O*NET 13-1161.01 (Search Marketing Strategists) and ISCO 2513; our own extension for AEO, GEO and AI visibility |
+| Proof | Method described | Every number links to the postings behind it (M13); classifier accuracy against a hand-checked sample is published |
+| Openness | Six CSVs | CSV and Parquet, the codebook, the term lists, the prompts and the code |
+| Findability | Report JSON-LD | Report and Dataset JSON-LD (M16) |
 
-## 2. What we record for every job (the codebook)
+## 4. What we record for every job (the codebook)
 
 **Posting:** title as written, title in English, normalized title, language; country, region, city, coordinates; workplace (onsite, hybrid, remote) and where remote applies; employment type (full-time, part-time, contract, freelance, internship, apprenticeship, temporary); schedule; posted date, valid-through date, first seen, last seen, closed; applicants; easy apply; every source it appears on, with its own ids and links.
 
@@ -49,7 +83,7 @@ Nozzle's study (read 2026-10-29): 56.1 million SERPs judged, 53 countries, three
 
 Company type comes from several sources, in this order: the company's own filings and Wikidata (stock exchange and ticker), the LinkedIn company profile's organization type, Glassdoor's `company_type` on job listings, Crunchbase for funding and ownership, and a model reading the company description and the job text for agency, in-house or staffing (checked on a hand-labelled sample).
 
-## 3. Sources (checked 2026-10-29)
+## 5. Sources (checked 2026-10-29)
 
 | Source | Gives | Price |
 |---|---|---|
@@ -66,14 +100,14 @@ Company type comes from several sources, in this order: the company's own filing
 
 No scraping of LinkedIn or Indeed pages ourselves: their data comes only from the licensed datasets.
 
-## 4. Storage
+## 6. Storage
 
 - **Everything:** Postgres `research_corpus`, schema `jobs` (posting, posting_source with every field each source sent as jsonb, company, term, query_run, extraction, fx_rate, taxonomy tables for skills, tasks and tools). Local, on the research database.
 - **Raw:** every response, paid or free, archived whole as gzip under `data/corpus/raw/jobs/` and logged in `ontology.raw_capture`; fields not used today stay stored.
 - **Public:** the aggregate dataset and codebook as CSV and Parquet files on Cloudflare R2; the site serves aggregates and live jobs only (not the full database, which would raise the Railway Postgres bill).
 - **People:** recruiter names in LinkedIn records (`job_poster`) stay in the raw archive and never reach the site or the public files.
 
-## 5. Cost for every country (unit prices are real; volumes are assumptions)
+## 7. Cost for every country (unit prices are real; volumes are assumptions)
 
 | Part | Assumption | Formula | One-time census | Monthly after |
 |---|---|---|---|---|
@@ -86,7 +120,7 @@ No scraping of LinkedIn or Indeed pages ourselves: their data comes only from th
 
 Reasoning tokens (gpt-5-nano is a reasoning model) can raise extraction cost; the pilot measures them. Storage on the local database and free sources add no vendor cost.
 
-## 6. The pilot first ($12.35 cap, needs the owner's yes)
+## 8. The pilot first ($12.35 cap, needs the owner's yes)
 
 | Step | Size | Cap |
 |---|---|---|
@@ -99,18 +133,18 @@ Reasoning tokens (gpt-5-nano is a reasoning model) can raise extraction cost; th
 
 It measures volume per country and language, how many keyword matches are real (in our own 4,136 roles only 1 of 7 was: "GEO" was a sales territory, "AI Search" an engineer), how often pay is stated per source, overlap between sources, field coverage, and the true cost per job. The census budget is then set from measured numbers.
 
-## 7. Quality
+## 9. Quality
 
 - Two models label the same 1,000 jobs; disagreements are read by a person; accuracy per field is published with the study.
 - The term lists are tested for precision and recall per language on the pilot (a term is dropped when most of its matches are false).
 - Every published number has a query behind it and is re-computed in the pre-release check (the same discipline as the site's attested counts).
 - Claims register: any "largest" or "first" claim is checked against earlier studies before publication.
 
-## 8. Order
+## 10. Order
 
-1. Free now: schema, codebook, term lists for the first 25 markets (with native-language terms), skill and task taxonomies, company job boards storing full descriptions and pay, the `JobPosting` reader, ECB rates.
+1. Free now: a clickable mockup of the study page on sample data, schema, codebook, term lists for the first 25 markets (with native-language terms), skill and task taxonomies, company job boards storing full descriptions and pay, the `JobPosting` reader, ECB rates.
 2. Pilot ($12.35) after the owner's yes and the new OpenRouter key in `~/Desktop/sec/opnerouter.rtf`.
 3. Pilot report: measured volumes, precision, field coverage, cost per job; the owner sets the census budget.
 4. Census: all sources, all countries; extraction; checking sample.
-5. Publication: report, explorer, country and role pages, open dataset and codebook, methodology and limitations; launch with the AI graph (localhost first, preprod after approval).
+5. Publication: the study page in the format of section 2, plus country and role pages, the open dataset and codebook; launch with the AI graph (localhost first, preprod after approval).
 6. Monthly index from then on.
