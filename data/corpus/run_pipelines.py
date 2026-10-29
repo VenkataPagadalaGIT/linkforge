@@ -48,9 +48,10 @@ def run(p):
     r = subprocess.run(["zsh", "-c", p["cmd"]], cwd=HERE, capture_output=True, text=True, timeout=6 * 3600)
     tail = (r.stdout + r.stderr).strip().splitlines()
     note = " | ".join(tail[-3:])[:900]
-    status = "ok" if r.returncode == 0 else "failed"
+    # Exit code 3 means the collector stopped at its own cap (for example GitHub's hourly call budget): what it pulled is good.
+    status = "ok" if r.returncode == 0 else "partial" if r.returncode == 3 else "failed"
     sql(f"UPDATE ontology.pipeline_run SET finished_at=now(), status={lit(status)}, note={lit(note)} WHERE id={rid};")
-    print(f"{'OK ' if status == 'ok' else 'FAIL'} {p['id']:16} {time.time() - t0:7.1f}s  {tail[-1][:110] if tail else ''}", flush=True)
+    print(f"{'OK ' if status == 'ok' else 'PART' if status == 'partial' else 'FAIL'} {p['id']:16} {time.time() - t0:7.1f}s  {tail[-1][:110] if tail else ''}", flush=True)
     return status
 
 

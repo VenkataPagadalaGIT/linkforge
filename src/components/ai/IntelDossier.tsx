@@ -6,6 +6,7 @@ import { logoUrl } from "@/data/aiLogos";
 import { FollowButton } from "./Watch";
 import { DEGREE, rankedSearch, searchAll, type AiScope, type Analysis, type CategoryHit, type Edge, type GroupHit } from "./intelModel";
 import { fileSections, scrollToSection } from "./entityFile";
+import { newestFor, pulledText } from "./Freshness";
 
 // ---------------------------------------------------------------------------
 // Search box (command-palette style)
@@ -165,6 +166,7 @@ export function Dossier({
   const sections = fileSections(id);
   const filled = sections.filter((s) => !s.empty);
   const empty = sections.filter((s) => s.empty);
+  const fresh = newestFor(id);
 
   return (
     <div className="space-y-5">
@@ -217,7 +219,12 @@ export function Dossier({
             </li>
           ))}
         </ol>
-        {empty.length > 0 && <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted-foreground">Not collected yet: {empty.map((s) => s.label).join(" · ")}.</p>}
+        {empty.length > 0 && <p className="mt-1.5 font-mono text-[10px] leading-relaxed text-muted-foreground">Data coming soon: {empty.map((s) => s.label).join(" · ")}.</p>}
+        {fresh.newest && (
+          <button type="button" onClick={() => scrollToSection("sources")} className="mt-1 block text-left font-mono text-[10px] leading-relaxed text-muted-foreground hover:text-foreground">
+            Latest pull {pulledText(fresh.newest)} ({fresh.newest.label}) · see every source
+          </button>
+        )}
       </nav>
 
       <div>

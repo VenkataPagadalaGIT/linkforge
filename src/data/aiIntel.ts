@@ -1282,6 +1282,12 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340"
    },
    {
+    "name": "Effendi Ng",
+    "role": "Chief Accounting Officer (principal accounting officer)",
+    "sitePath": null,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_3917"
+   },
+   {
     "name": "Reed Hastings",
     "role": "Lead independent director; on the board since May 2025",
     "sitePath": null,
@@ -1502,7 +1508,116 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "label": "Anthropic's S-1: what its IPO filing teaches marketing, SEO and AI search teams"
    }
   ],
-  "posts": [],
+  "posts": [
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1xh1fih/ai_startup_hacks_anthropic_in_12_hours_gains/",
+    "title": "AI startup hacks Anthropic in 12 hours, gains access to employee details and internal messages",
+    "author": null,
+    "publishedOn": "2026-10-27",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 14437 upvotes · 400 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1xbjr1n/anthropic_posts_staggering_807_billion_net_loss/",
+    "title": "Anthropic posts staggering $80.7 billion net loss in first half of 2026 as IPO approaches",
+    "author": null,
+    "publishedOn": "2026-10-21",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 18003 upvotes · 1680 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1xb7op7/anthropic_logged_net_loss_of_over_80_billion_in/",
+    "title": "Anthropic logged net loss of over $80 billion in first half of 2026",
+    "author": null,
+    "publishedOn": "2026-10-20",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 29014 upvotes · 2612 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/wallstreetbets/comments/1xb73hx/anthropic_plans_to_give_each_kid_in_america_a/",
+    "title": "Anthropic plans to give each kid in America a portion of its $80B in losses.",
+    "author": null,
+    "publishedOn": "2026-10-20",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/wallstreetbets · 27943 upvotes · 448 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1x1i81q/top_executives_at_anthropic_openai_and_other_ai/",
+    "title": "Top executives at Anthropic, OpenAI and other AI companies are privately gaming out scenarios for a public and political revolt after a catastrophic AI event.",
+    "author": null,
+    "publishedOn": "2026-10-09",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 12887 upvotes · 1504 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1wxgn8c/florida_woman_used_claude_as_a_diary_then/",
+    "title": "Florida woman used Claude as a diary, then Anthropic reported an entry to police",
+    "author": null,
+    "publishedOn": "2026-10-04",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 18825 upvotes · 1650 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1wujpgm/michael_burry_says_it_would_be_for_the_good_of/",
+    "title": "Michael Burry says it would be for the 'good of humanity' if a market crash stops OpenAI and Anthropic from going public",
+    "author": null,
+    "publishedOn": "2026-09-30",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 21748 upvotes · 623 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/stocks/comments/1wtdg4w/anthropic_ipo_leak_is_insane/",
+    "title": "Anthropic IPO leak is insane",
+    "author": null,
+    "publishedOn": "2026-09-29",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/stocks · 14987 upvotes · 1140 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/MurderedByAOC/comments/1wkv0b7/aoc_we_must_make_it_clear_now_that_should_the_ai/",
+    "title": "AOC: \"We must make it clear now that should the AI bubble pop, Congress should not bail out Big Tech...Silicon Valley billionaires want us to believe that AI robots will destroy humanity. But the bigg",
+    "author": null,
+    "publishedOn": "2026-09-19",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/MurderedByAOC · 17932 upvotes · 265 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1wbgwa6/an_anthropic_researcher_just_quit_saying_openai/",
+    "title": "An Anthropic researcher just quit, saying OpenAI and Anthropic are 'gambling with our lives'",
+    "author": null,
+    "publishedOn": "2026-09-09",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 15235 upvotes · 1455 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1w1xxoy/sony_warner_sue_anthropic_alleging_blatant_theft/",
+    "title": "Sony, Warner sue Anthropic, alleging \"blatant theft\" of intellectual property",
+    "author": null,
+    "publishedOn": "2026-08-29",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 12556 upvotes · 311 comments"
+   },
+   {
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/technology/comments/1vq3dh3/anthropic_ceo_dario_amodei_says_the_way_for_ai_to/",
+    "title": "Anthropic CEO Dario Amodei says the way for AI to win over the public is to 'actually' cure cancer",
+    "author": null,
+    "publishedOn": "2026-08-16",
+    "retrieval": "brightdata-scraper",
+    "summary": "r/technology · 12477 upvotes · 2332 comments"
+   }
+  ],
   "sources": [
    {
     "title": "Anthropic, PBC, Form S-1 registration statement",

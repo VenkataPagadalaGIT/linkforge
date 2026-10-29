@@ -18,7 +18,7 @@ site). --people runs only that step.
 
 Run: python3 collect_site.py [--only host] [--refresh] [--limit N] [--people]
 """
-import html, json, os, re, sys, time, urllib.error, urllib.request, urllib.robotparser
+import datetime as dt, html, json, os, re, sys, time, urllib.error, urllib.request, urllib.robotparser
 sys.path.insert(0, os.path.dirname(__file__))
 from db import sql, query
 
@@ -147,15 +147,19 @@ def extract(raw):
     # Bylines, dates, team and topics often sit outside the article body (Distill's d-byline, the page header), so
     # those are read from the whole page; the stored text is the body.
     full = text_lines(raw) if main else lines
+    # A page cannot be published after the day it is read: docs and help pages mention future dates (a model's
+    # deprecation date, the end of a program), which the text fallback below used to take as the publication date.
+    today = dt.date.today().isoformat()
+    if published and published > today:
+        published = None
     if not published:
         for i, l in enumerate(full[:80]):
             d = to_date(l)
-            if d:
-                published = d
-                break
             # Distill pages split "October 6," and "2025" over two lines.
-            if re.match(rf"^({MONTHS}) \d{{1,2}},?$", l) and i + 1 < len(full) and re.match(r"^20\d\d$", full[i + 1]):
-                published = to_date(f"{l} {full[i + 1]}")
+            if not d and re.match(rf"^({MONTHS}) \d{{1,2}},?$", l) and i + 1 < len(full) and re.match(r"^20\d\d$", full[i + 1]):
+                d = to_date(f"{l} {full[i + 1]}")
+            if d and d <= today:
+                published = d
                 break
     # anthropic.com marks the team and topics as links in the article header; read those markers straight from the HTML.
     tm = re.search(r'href="/research/team/[^"]+"[^>]*>([^<]{1,60})<', raw)

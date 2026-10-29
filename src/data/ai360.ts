@@ -4082,14 +4082,14 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:anthropic",
    "careersUrl": "https://www.anthropic.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 680,
-   "new30": 200,
+   "open": 679,
+   "new30": 187,
    "closed30": null,
    "workplace": {
-    "Not stated": 617,
-    "Remote-friendly": 63
+    "Not stated": 615,
+    "Remote-friendly": 64
    },
    "teams": [
     {
@@ -4129,11 +4129,11 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "San Francisco",
-     "count": 489
+     "count": 488
     },
     {
      "name": "New York City",
-     "count": 363
+     "count": 362
     },
     {
      "name": "Seattle",
@@ -4145,7 +4145,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Remote-friendly",
-     "count": 63
+     "count": 64
     },
     {
      "name": "London",
@@ -4164,7 +4164,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 217,
+     "count": 218,
      "examples": [
       "Customer Success",
       "Support Engineer",
@@ -4184,7 +4184,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 93,
+     "count": 91,
      "examples": [
       "Developer Relations",
       "Copywriter, Developer",
@@ -4263,10 +4263,24 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Staff+ Software Engineer, Deployment",
+     "team": "Software Engineering - Infrastructure",
+     "location": "Remote-Friendly (Travel-Required) | San Francisco, CA | Seattle, WA | New York City, NY",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5466480008",
+     "published": "2026-10-28"
+    },
+    {
      "title": "Senior Partner Systems Analyst",
      "team": "Sales",
      "location": "San Francisco, CA",
      "url": "https://job-boards.greenhouse.io/anthropic/jobs/5465561008",
+     "published": "2026-10-28"
+    },
+    {
+     "title": "Senior Field Engineer, Data Center Design and Engineering",
+     "team": "Compute",
+     "location": "Remote-Friendly, United States",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5466517008",
      "published": "2026-10-28"
     },
     {
@@ -4303,20 +4317,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "Boston, MA; San Francisco, CA | New York City, NY",
      "url": "https://job-boards.greenhouse.io/anthropic/jobs/5464926008",
      "published": "2026-10-27"
-    },
-    {
-     "title": "Manager, Enterprise Sales - Asset & Wealth Management",
-     "team": "Sales",
-     "location": "New York City, NY",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5464894008",
-     "published": "2026-10-27"
-    },
-    {
-     "title": "IP Counsel, Life Sciences Patents",
-     "team": "Legal",
-     "location": "San Francisco, CA | New York City, NY",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5453569008",
-     "published": "2026-10-27"
     }
    ],
    "rolesUrl": "/ai/360/jobs/anthropic.json",
@@ -4328,8 +4328,8 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 4555,
-   "dated": 487,
+   "total": 4562,
+   "dated": 488,
    "first": "2021-05-28",
    "latest": "2026-10-28",
    "items": [
@@ -4338,6 +4338,12 @@ export const AI_360: Record<string, Entity360> = {
      "section": "news",
      "title": "Newsroom",
      "url": "https://www.anthropic.com/news"
+    },
+    {
+     "date": "2026-10-28",
+     "section": "news",
+     "title": "AI for Science expands to foundations and institutions",
+     "url": "https://www.anthropic.com/news/ai-for-science-expands-foundations-research-institutions"
     },
     {
      "date": "2026-10-28",
@@ -7261,13 +7267,13 @@ export const AI_360: Record<string, Entity360> = {
      "host": "www.anthropic.com",
      "label": "anthropic.com",
      "mode": "text",
-     "pages": 587,
-     "withText": 586,
+     "pages": 588,
+     "withText": 587,
      "dated": 527,
      "withAuthors": 1,
-     "words": 1133278,
+     "words": 1134461,
      "failed": 0,
-     "readOn": "2026-10-28"
+     "readOn": "2026-10-29"
     },
     {
      "host": "alignment.anthropic.com",
@@ -7297,13 +7303,13 @@ export const AI_360: Record<string, Entity360> = {
      "host": "claude.com",
      "label": "claude.com",
      "mode": "text",
-     "pages": 2650,
+     "pages": 2656,
      "withText": 1068,
-     "dated": 338,
+     "dated": 334,
      "withAuthors": 33,
      "words": 1009614,
      "failed": 0,
-     "readOn": "2026-10-28"
+     "readOn": "2026-10-29"
     },
     {
      "host": "platform.claude.com",
@@ -7311,7 +7317,7 @@ export const AI_360: Record<string, Entity360> = {
      "mode": "titles",
      "pages": 821,
      "withText": 0,
-     "dated": 31,
+     "dated": 29,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
@@ -7323,15 +7329,15 @@ export const AI_360: Record<string, Entity360> = {
      "mode": "titles",
      "pages": 380,
      "withText": 0,
-     "dated": 37,
+     "dated": 29,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
      "readOn": "2026-10-28"
     }
    ],
-   "words": 2907530,
-   "pagesWithText": 1771,
+   "words": 2908713,
+   "pagesWithText": 1772,
    "teams": [
     {
      "name": "Alignment",
@@ -7440,7 +7446,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Anthropic -principle",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2021-01",
@@ -7720,16 +7726,16 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     271
+     277
     ]
    ],
-   "total": 3727,
+   "total": 3733,
    "top": [
     {
      "title": "Anthropic S-1",
      "url": "https://news.ycombinator.com/item?id=50242939",
      "date": "2026-10-26",
-     "summary": "1,700 points · 1,671 comments · links to sec.gov"
+     "summary": "1,701 points · 1,673 comments · links to sec.gov"
     },
     {
      "title": "Redesigning source control at Anthropic",
@@ -12838,15 +12844,15 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:cohere",
    "careersUrl": "https://cohere.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 118,
+   "open": 119,
    "new30": 33,
    "closed30": null,
    "workplace": {
     "Remote": 79,
     "Hybrid": 28,
-    "OnSite": 7,
+    "OnSite": 8,
     "Not stated": 4
    },
    "teams": [
@@ -12867,11 +12873,11 @@ export const AI_360: Record<string, Entity360> = {
      "count": 7
     },
     {
-     "name": "Internships",
-     "count": 4
+     "name": "Delivery Engineering | Infrastructure",
+     "count": 5
     },
     {
-     "name": "Delivery Engineering | Infrastructure",
+     "name": "Internships",
      "count": 4
     },
     {
@@ -12907,7 +12913,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "United States",
-     "count": 28
+     "count": 29
     },
     {
      "name": "San Francisco",
@@ -12970,6 +12976,16 @@ export const AI_360: Record<string, Entity360> = {
      ]
     },
     {
+     "key": "inference",
+     "label": "Inference and performance",
+     "count": 6,
+     "examples": [
+      "Forward Deployed Engineer, Inference",
+      "Audio Inference Engineer, Model Efficiency",
+      "Staff Software Engineer, Inference Infrastructure"
+     ]
+    },
+    {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
      "count": 5,
@@ -12977,16 +12993,6 @@ export const AI_360: Record<string, Entity360> = {
       "Chief of Staff",
       "Talent Sourcer, Tech",
       "IT Support Specialist"
-     ]
-    },
-    {
-     "key": "inference",
-     "label": "Inference and performance",
-     "count": 5,
-     "examples": [
-      "Audio Inference Engineer, Model Efficiency",
-      "Staff Software Engineer, Inference Infrastructure",
-      "Site Reliability Engineer, Inference Infrastructure"
      ]
     },
     {
@@ -13024,6 +13030,13 @@ export const AI_360: Record<string, Entity360> = {
      "team": "Talent Acquisition",
      "location": "Toronto",
      "url": "https://jobs.ashbyhq.com/cohere/5da754e4-d83a-4d91-b6fe-a128227ae609",
+     "published": "2026-10-28"
+    },
+    {
+     "title": "Forward Deployed Engineer, Inference",
+     "team": "Delivery Engineering | Infrastructure",
+     "location": "United States",
+     "url": "https://jobs.ashbyhq.com/cohere/8df498e9-aba8-487f-80ba-362b492bad09",
      "published": "2026-10-28"
     },
     {
@@ -13066,13 +13079,6 @@ export const AI_360: Record<string, Entity360> = {
      "team": "Legal",
      "location": "United States",
      "url": "https://jobs.ashbyhq.com/cohere/4e3694ee-d051-497f-bb3b-8cff3d7f578f",
-     "published": "2026-10-23"
-    },
-    {
-     "title": "Engineering Manager, Cohere APIs and DevEx",
-     "team": "Product Engineering | Cohere Dashboard",
-     "location": "Toronto",
-     "url": "https://jobs.ashbyhq.com/cohere/dca93d1a-9ab8-442b-aa76-950595e8b9c3",
      "published": "2026-10-23"
     }
    ],
@@ -13149,10 +13155,10 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:coreweave",
    "careersUrl": "https://www.coreweave.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 311,
-   "new30": 76,
+   "new30": 74,
    "closed30": null,
    "workplace": {
     "Not stated": 307,
@@ -13169,7 +13175,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Global Field Organization",
-     "count": 32
+     "count": 33
     },
     {
      "name": "Data Center - COR",
@@ -13196,15 +13202,15 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "Sunnyvale",
-     "count": 162
+     "count": 161
     },
     {
      "name": "Bellevue",
-     "count": 145
+     "count": 144
     },
     {
      "name": "New York City",
-     "count": 145
+     "count": 144
     },
     {
      "name": "Livingston",
@@ -13212,7 +13218,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "San Francisco",
-     "count": 69
+     "count": 70
     },
     {
      "name": "Dallas",
@@ -13231,7 +13237,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 77,
+     "count": 76,
      "examples": [
       "AI Engineer",
       "Senior Engineer I",
@@ -13261,11 +13267,11 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 45,
+     "count": 46,
      "examples": [
+      "Account Manager",
       "Solutions Architect",
-      "Sr. Sales Development Rep",
-      "Strategic Account Manager"
+      "Sr. Sales Development Rep"
      ]
     },
     {
@@ -13334,6 +13340,13 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-28"
     },
     {
+     "title": "Account Manager",
+     "team": "Global Field Organization",
+     "location": "San Francisco, CA",
+     "url": "https://coreweave.com/careers/job?4725626006&board=coreweave&gh_jid=4725626006",
+     "published": "2026-10-28"
+    },
+    {
      "title": "Recruiting Coordination Manager",
      "team": "People",
      "location": "Livingston, NJ / New York, NY / Sunnyvale, CA / San Francisco, CA / Bellevue, WA",
@@ -13367,13 +13380,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "Plano, TX",
      "url": "https://coreweave.com/careers/job?4724187006&board=coreweave&gh_jid=4724187006",
      "published": "2026-10-22"
-    },
-    {
-     "title": "Data Center Technician - Chester, VA",
-     "team": "Data Center - COR",
-     "location": "Chester, VA",
-     "url": "https://coreweave.com/careers/job?4723545006&board=coreweave&gh_jid=4723545006",
-     "published": "2026-10-21"
     }
    ],
    "rolesUrl": "/ai/360/jobs/coreweave-capital.json",
@@ -13383,7 +13389,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "CoreWeave",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2019-01",
@@ -13759,10 +13765,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     7
+     8
     ]
    ],
-   "total": 119,
+   "total": 120,
    "top": [
     {
      "title": "Nvidia, CoreWeave, and Nebius: Inside the Circular Financing of the GPU Boom",
@@ -13824,10 +13830,10 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:cursor",
    "careersUrl": "https://cursor.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 122,
-   "new30": 35,
+   "new30": 33,
    "closed30": null,
    "workplace": {
     "OnSite": 65,
@@ -13877,11 +13883,11 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "New York City",
-     "count": 42
+     "count": 41
     },
     {
      "name": "Remote",
-     "count": 26
+     "count": 25
     },
     {
      "name": "Singapore",
@@ -14087,13 +14093,13 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:databricks",
    "careersUrl": "https://www.databricks.com/company/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 897,
-   "new30": 189,
+   "open": 902,
+   "new30": 192,
    "closed30": null,
    "workplace": {
-    "Not stated": 822,
+    "Not stated": 827,
     "Remote": 75
    },
    "teams": [
@@ -14106,12 +14112,12 @@ export const AI_360: Record<string, Entity360> = {
      "count": 119
     },
     {
-     "name": "Field Engineering - Other",
+     "name": "Enterprise Sales",
      "count": 95
     },
     {
-     "name": "Enterprise Sales",
-     "count": 93
+     "name": "Field Engineering - Other",
+     "count": 95
     },
     {
      "name": "Engineering",
@@ -14145,11 +14151,11 @@ export const AI_360: Record<string, Entity360> = {
      "count": 77
     },
     {
-     "name": "Remote",
-     "count": 75
+     "name": "Bengaluru",
+     "count": 76
     },
     {
-     "name": "Bengaluru",
+     "name": "Remote",
      "count": 75
     },
     {
@@ -14169,7 +14175,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 510,
+     "count": 514,
      "examples": [
       "Account Executive",
       "Engagement Manager",
@@ -14179,7 +14185,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 225,
+     "count": 226,
      "examples": [
       "Senior SAP Developer",
       "Staff Product Manager",
@@ -14265,10 +14271,38 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-28"
     },
     {
+     "title": "Strategic Core Account Executive (Telco)",
+     "team": "Enterprise Sales",
+     "location": "Toronto, Canada",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8912711002",
+     "published": "2026-10-28"
+    },
+    {
+     "title": "Strategic Core Account Executive (Retail)",
+     "team": "Enterprise Sales",
+     "location": "Toronto, Canada",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8895631002",
+     "published": "2026-10-28"
+    },
+    {
      "title": "Strategic Account Executive, Medtech",
      "team": "Enterprise Sales",
      "location": "Amsterdam, Netherlands",
      "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8905737002",
+     "published": "2026-10-28"
+    },
+    {
+     "title": "Sr. Solutions Engineer (Greater China)",
+     "team": "Field Engineering - Other",
+     "location": "Singapore",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8899597002",
+     "published": "2026-10-28"
+    },
+    {
+     "title": "Sr. Sales Compensation Analyst",
+     "team": "Finance",
+     "location": "Bengaluru, India",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8922722002",
      "published": "2026-10-28"
     },
     {
@@ -14279,39 +14313,11 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-28"
     },
     {
-     "title": "Named Core Account Executive",
-     "team": "Enterprise Sales",
-     "location": "Remote - New York",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8920452002",
+     "title": "Software Engineer, Infrastructure",
+     "team": "Infrastructure",
+     "location": "United States",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8829039002",
      "published": "2026-10-28"
-    },
-    {
-     "title": "Lakebase Sales Specialist, Nordics",
-     "team": "HQ Management",
-     "location": "Remote - Denmark",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8569526002",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Forward Deployed Engineer",
-     "team": "Professional Services Operations",
-     "location": "London, United Kingdom",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8921476002",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Enterprise Account Executive",
-     "team": "Enterprise Sales",
-     "location": "Sydney, Australia",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8910840002",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Strategic Enterprise Account Executive, Life Sciences",
-     "team": "Enterprise Sales",
-     "location": "Northeast - United States",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8870720002",
-     "published": "2026-10-27"
     }
    ],
    "rolesUrl": "/ai/360/jobs/databricks.json",
@@ -14321,7 +14327,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Databricks",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2015-01",
@@ -15316,7 +15322,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "DeepMind",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2014-01",
@@ -16071,14 +16077,14 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:harvey",
    "careersUrl": "https://www.harvey.ai/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 369,
-   "new30": 164,
+   "open": 366,
+   "new30": 161,
    "closed30": null,
    "workplace": {
-    "Hybrid": 277,
-    "Not stated": 76,
+    "Hybrid": 275,
+    "Not stated": 75,
     "Remote": 13,
     "OnSite": 3
    },
@@ -16089,7 +16095,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Engineering",
-     "count": 63
+     "count": 61
     },
     {
      "name": "Go to Market",
@@ -16097,15 +16103,15 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Customer Success",
-     "count": 26
+     "count": 24
+    },
+    {
+     "name": "Product",
+     "count": 22
     },
     {
      "name": "Marketing",
      "count": 22
-    },
-    {
-     "name": "Product",
-     "count": 21
     },
     {
      "name": "Customer Experience",
@@ -16120,11 +16126,11 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "San Francisco",
-     "count": 120
+     "count": 118
     },
     {
      "name": "New York City",
-     "count": 107
+     "count": 106
     },
     {
      "name": "London",
@@ -16155,7 +16161,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 142,
+     "count": 140,
      "examples": [
       "CX Specialist",
       "CX Data Analyst",
@@ -16165,7 +16171,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 91,
+     "count": 90,
      "examples": [
       "API Product Lead",
       "Broadcast Engineer",
@@ -16252,8 +16258,8 @@ export const AI_360: Record<string, Entity360> = {
     {
      "title": "API Product Lead",
      "team": "Product",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/harvey/310cde20-2456-4132-a3eb-b5d80e691ed5",
+     "location": "New York",
+     "url": "https://jobs.ashbyhq.com/harvey/5f3959e4-8d36-4e3f-b6f4-2ee248a4f1d6",
      "published": "2026-10-28"
     },
     {
@@ -16604,10 +16610,10 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:lambda",
    "careersUrl": "https://lambda.ai/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 94,
-   "new30": 35,
+   "new30": 34,
    "closed30": null,
    "workplace": {
     "Hybrid": 77,
@@ -17044,7 +17050,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Mistral -wind",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2023-05",
@@ -17221,7 +17227,7 @@ export const AI_360: Record<string, Entity360> = {
      "title": "Timestral: Mistral's time-series foundation models",
      "url": "https://news.ycombinator.com/item?id=50150434",
      "date": "2026-10-19",
-     "summary": "622 points · 127 comments · links to mistral.ai"
+     "summary": "623 points · 127 comments · links to mistral.ai"
     },
     {
      "title": "Mistral Large 4",
@@ -17526,7 +17532,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Nvidia",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2015-01",
@@ -18094,10 +18100,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     148
+     149
     ]
    ],
-   "total": 7785,
+   "total": 7786,
    "top": [
     {
      "title": "Owed a billion dollars in Nvidia stock",
@@ -18295,16 +18301,16 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:openai",
    "careersUrl": "https://openai.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 807,
-   "new30": 240,
+   "open": 811,
+   "new30": 236,
    "closed30": null,
    "workplace": {
-    "Hybrid": 516,
+    "Hybrid": 517,
     "Not stated": 232,
-    "Remote": 32,
-    "OnSite": 27
+    "Remote": 33,
+    "OnSite": 29
    },
    "teams": [
     {
@@ -18313,7 +18319,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Applied AI Engineering",
-     "count": 69
+     "count": 70
     },
     {
      "name": "Sales",
@@ -18321,58 +18327,58 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Marketing",
-     "count": 39
-    },
-    {
-     "name": "Forward Deployed Engineering",
-     "count": 32
+     "count": 40
     },
     {
      "name": "Finance",
      "count": 32
     },
     {
-     "name": "Hardware",
-     "count": 30
-    },
-    {
-     "name": "Support Delivery",
-     "count": 30
-    }
-   ],
-   "teamCount": 84,
-   "cities": [
-    {
-     "name": "San Francisco",
-     "count": 570
-    },
-    {
-     "name": "New York City",
-     "count": 97
-    },
-    {
-     "name": "Seattle",
-     "count": 80
-    },
-    {
-     "name": "Remote (US)",
-     "count": 42
-    },
-    {
-     "name": "Singapore",
-     "count": 38
-    },
-    {
-     "name": "Washington",
-     "count": 35
-    },
-    {
-     "name": "London",
+     "name": "Forward Deployed Engineering",
      "count": 32
     },
     {
+     "name": "Security",
+     "count": 31
+    },
+    {
+     "name": "Hardware",
+     "count": 30
+    }
+   ],
+   "teamCount": 83,
+   "cities": [
+    {
+     "name": "San Francisco",
+     "count": 571
+    },
+    {
+     "name": "New York City",
+     "count": 96
+    },
+    {
+     "name": "Seattle",
+     "count": 81
+    },
+    {
+     "name": "Remote (US)",
+     "count": 41
+    },
+    {
+     "name": "Singapore",
+     "count": 39
+    },
+    {
+     "name": "Washington",
+     "count": 34
+    },
+    {
+     "name": "London",
+     "count": 33
+    },
+    {
      "name": "Tokyo",
-     "count": 29
+     "count": 30
     }
    ],
    "themes": [
@@ -18389,7 +18395,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 179,
+     "count": 185,
      "examples": [
       "Designer",
       "Data Engineer",
@@ -18399,7 +18405,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 79,
+     "count": 78,
      "examples": [
       "Red Team - Cyber",
       "Account Director, Cyber",
@@ -18409,7 +18415,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "research",
      "label": "Research",
-     "count": 67,
+     "count": 66,
      "examples": [
       "Research Engineer",
       "Research Scientist",
@@ -18478,6 +18484,41 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Software Engineer, Traffic Infrastructure",
+     "team": "Scaling",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/1d386acc-5fe0-44ed-b288-a6b1b891c9a8",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Software Engineer, Infranomics",
+     "team": "Scaling",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/b6e0d9c6-a5ad-4d27-ad67-fde760e277b6",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Software Engineer, IP Infrastructure",
+     "team": "Research Program Management",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/33acf0e2-5c11-46d7-9dc9-417f5537139b",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Product Content Creator",
+     "team": "Marketing",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/67c67c36-e710-4f21-bd9c-759eb72cfabf",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Network Infrastructure Engineer, Global Network Infra (WAN)",
+     "team": "Compute",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/9f7371c4-e306-4a45-a400-aa2843fabd85",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Research Engineer / Research Scientist, Human Flourishing",
      "team": "Post-training",
      "location": "San Francisco",
@@ -18497,41 +18538,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "San Francisco",
      "url": "https://jobs.ashbyhq.com/openai/30b0a80b-8421-4847-a670-5bd09920c4ce",
      "published": "2026-10-28"
-    },
-    {
-     "title": "Mechanical Lead",
-     "team": "Datacenter Design",
-     "location": "US - Remote",
-     "url": "https://jobs.ashbyhq.com/openai/86133dea-e4e2-4030-b8e6-8f944be27b0e",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Land and Data Center Development",
-     "team": "Compute",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/openai/9878a31f-423b-43cc-b169-8bb7e55b8fc7",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "HSE and Portfolio Performance Lead",
-     "team": "Datacenter Design",
-     "location": "US - Remote",
-     "url": "https://jobs.ashbyhq.com/openai/c3f0fb07-2153-4ba9-b812-cd7ceb363ae8",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Fire Protection Engineer",
-     "team": "Datacenter Design",
-     "location": "US - Remote",
-     "url": "https://jobs.ashbyhq.com/openai/8ff67de2-7ee8-4d9d-bef4-dadabeeaf312",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Enterprise Account Associate- EMEA (French Speaking)",
-     "team": "Account Associates",
-     "location": "Dublin, Ireland",
-     "url": "https://jobs.ashbyhq.com/openai/1eb6ef0f-0e51-46d3-b888-c1a4c22c190a",
-     "published": "2026-10-28"
     }
    ],
    "rolesUrl": "/ai/360/jobs/openai.json",
@@ -18541,7 +18547,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "OpenAI",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2015-12",
@@ -19065,10 +19071,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     308
+     314
     ]
    ],
-   "total": 11559,
+   "total": 11565,
    "top": [
     {
      "title": "Discovery of a new OpenAI agent message board",
@@ -19250,7 +19256,7 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:perplexity",
    "careersUrl": "https://www.perplexity.ai/hub/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 133,
    "new30": 35,
@@ -19481,7 +19487,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Perplexity",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "months": [
     [
      "2022-12",
@@ -19990,7 +19996,7 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:sambanovasystems",
    "careersUrl": "https://sambanova.ai/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 71,
    "new30": 15,
@@ -20296,7 +20302,7 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:scaleai",
    "careersUrl": "https://scale.com/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
    "open": 171,
    "new30": 24,
@@ -20346,7 +20352,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "New York City",
-     "count": 61
+     "count": 62
     },
     {
      "name": "Washington",
@@ -20930,18 +20936,18 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:thinkingmachines",
    "careersUrl": "https://thinkingmachines.ai",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 52,
-   "new30": 14,
+   "open": 53,
+   "new30": 15,
    "closed30": null,
    "workplace": {
-    "OnSite": 52
+    "OnSite": 53
    },
    "teams": [
     {
      "name": "Core Engineering",
-     "count": 16
+     "count": 17
     },
     {
      "name": "Research",
@@ -20972,11 +20978,11 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "San Francisco",
-     "count": 52
+     "count": 53
     },
     {
      "name": "New York City",
-     "count": 10
+     "count": 11
     },
     {
      "name": "Washington",
@@ -21027,11 +21033,11 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 3,
+     "count": 4,
      "examples": [
+      "Brand Designer",
       "Data Partnerships",
-      "Product Manager - Deployment",
-      "Executive Business Partner, Operations"
+      "Product Manager - Deployment"
      ]
     },
     {
@@ -21077,6 +21083,13 @@ export const AI_360: Record<string, Entity360> = {
      "published": "2026-10-28"
     },
     {
+     "title": "Brand Designer",
+     "team": "Core Engineering",
+     "location": "New York",
+     "url": "https://jobs.ashbyhq.com/thinkingmachines/9ab3e86f-b636-4a75-867c-4ffd04d7b87d",
+     "published": "2026-10-28"
+    },
+    {
      "title": "Software Engineer, Security",
      "team": "Security & IT",
      "location": "San Francisco",
@@ -21117,13 +21130,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "San Francisco",
      "url": "https://jobs.ashbyhq.com/thinkingmachines/3d5af57e-a67d-40be-9a81-166474d2f460",
      "published": "2026-10-19"
-    },
-    {
-     "title": "GTM Recruiter",
-     "team": "Operations",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/thinkingmachines/c190a799-fa73-4f38-b44a-85871968c094",
-     "published": "2026-10-14"
     }
    ],
    "rolesUrl": "/ai/360/jobs/thinking-machines.json",
@@ -21433,13 +21439,13 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:xai",
    "careersUrl": "https://x.ai/careers",
-   "asOf": "2026-10-28",
+   "asOf": "2026-10-29",
    "trackedSince": "2026-10-28",
-   "open": 305,
-   "new30": 73,
+   "open": 304,
+   "new30": 70,
    "closed30": null,
    "workplace": {
-    "Not stated": 283,
+    "Not stated": 282,
     "Remote": 22
    },
    "teams": [
@@ -21468,11 +21474,11 @@ export const AI_360: Record<string, Entity360> = {
      "count": 11
     },
     {
-     "name": "Operations",
-     "count": 11
+     "name": "Safety",
+     "count": 10
     },
     {
-     "name": "Safety",
+     "name": "Operations",
      "count": 10
     }
    ],
@@ -21480,7 +21486,7 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "Memphis",
-     "count": 169
+     "count": 168
     },
     {
      "name": "Southaven",
@@ -21535,7 +21541,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 48,
+     "count": 47,
      "examples": [
       "Barista",
       "Cook, Sushi",

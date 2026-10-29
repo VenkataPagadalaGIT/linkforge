@@ -42,7 +42,8 @@ def get_json(url, headers=None):
     global calls
     calls += 1
     if calls > MAX_CALLS:
-        raise SystemExit(f"stopped at {MAX_CALLS} calls (--max-calls raises it)")
+        print(f"stopped at {MAX_CALLS} calls (--max-calls raises it)", flush=True)
+        sys.exit(3)  # partial, not failed: run_pipelines.py records it as such
     h = {"User-Agent": "mono-mind-ai-graph (official-channel collector)", **(headers or {})}
     req = urllib.request.Request(url, headers=h)
     with urllib.request.urlopen(req, timeout=30) as r:

@@ -7,8 +7,9 @@ import { DEGREE, dealsOf } from "./intelModel";
 import { sharesOf } from "./AiShares";
 import { hasCompanyFile, sections360For } from "@/lib/ai360-sections";
 import { sectionPath } from "@/lib/graph-urls";
+import { freshnessOf } from "@/data/aiFreshness";
 
-export type FileSectionId = "overview" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings";
+export type FileSectionId = "overview" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings" | "sources";
 
 export interface FileSection {
   id: FileSectionId;
@@ -41,9 +42,12 @@ export function fileSections(id: string): FileSection[] {
   const legal = f?.legal.length ?? 0;
   const news = (intel?.events.length ?? 0) + newsFor(id).length;
   const listed = !!n.ticker && n.ticker !== "private" && !/proposed/i.test(n.ticker);
+  const posts = intel?.posts?.length ?? 0;
+  const full = !!f && (f.people.length > 0 || f.rounds.length > 0 || f.legal.length > 0 || f.facts.length > 0 || !!f.hiring || !!f.site || !!f.attention);
+  const sources = freshnessOf(id).length + 1;
   const sections: FileSection[] = [
     { id: "overview", label: "Overview", count: units ? `${some(units, "unit")} in the group` : null, pages: [], empty: false },
-    { id: "f360", label: "360", count: f ? "birth to now" : null, pages: page("timeline", "Birth to now"), empty: !f },
+    { id: "f360", label: "360", count: full ? "birth to now" : null, pages: page("timeline", "Birth to now"), empty: !full },
     { id: "connections", label: "Connections", count: some(links, "link"), pages: [], empty: !links },
     { id: "money", label: "Money", count: some(deals, "deal"), pages: [], empty: !deals },
     ...(hasCompanyFile(id) ? [{ id: "financials" as const, label: "Financials", count: some(figures, "figure") ?? "from its filings", pages: [], empty: false }] : []),
@@ -54,11 +58,12 @@ export function fileSections(id: string): FileSection[] {
       label: "People and hiring",
       count: [some(people, "person", "people"), some(roles, "open role")].filter(Boolean).join(" · ") || null,
       pages: [...page("people", "People"), ...page("hiring", "Hiring")],
-      empty: !people && !roles,
+      empty: !people && !roles && !posts && !f?.footprint,
     },
     { id: "legal", label: "Legal", count: some(legal, "matter"), pages: page("legal", "Legal"), empty: !legal },
     { id: "news", label: "News and events", count: some(news, "item"), pages: [], empty: !news },
-    { id: "earnings", label: "Earnings calls", count: listed ? "not collected yet" : null, pages: [], empty: true },
+    { id: "earnings", label: "Earnings calls", count: null, pages: [], empty: true },
+    { id: "sources", label: "Data sources", count: `${sources} ${sources === 1 ? "source" : "sources"}`, pages: [], empty: false },
   ];
   return sections;
 }
