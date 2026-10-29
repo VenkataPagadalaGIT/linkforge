@@ -1,113 +1,116 @@
-# Global SEO and AI search jobs: collection and storage plan (2026-10-29)
+# The Search Jobs Census: plan v2 (2026-10-29)
 
-Owner's ask: every job in SEO, AI search, AEO, GEO and AI visibility, at every level, in every company possible, in about 175 countries and their languages; store everything (description, salary, posted date, company, all fields) because the data serves many purposes; launch with the AI graph. Tools on hand: Bright Data, OpenRouter, DataForSEO.
+Owner's ask: the largest study ever done of jobs in SEO, AI search, AEO, GEO and AI visibility: every country, every language, every level, every company; store every aspect (titles, salary, duties, responsibilities, AI skills, SEO skills, marketing skills, levels) and classify by company and company type (public, private, agency, full-time, contract and every other possibility). Benchmark to beat: Nozzle's "Poisoned Google SERPs" (published 10 Oct 2026, updated 21 Oct 2026).
 
-Status: plan. Nothing paid has run. Unit prices below come from the vendors' own pages or our billing; volumes are assumptions until the pilot measures them.
+Status: plan. Nothing paid has run. Unit prices come from vendor pages or our own billing; volumes are assumptions until the pilot measures them.
 
-## 1. What each source gives (checked 2026-10-29)
+## 1. The bar, and how we clear it
 
-| Source | How | Fields (as the source names them) | Gaps |
-|---|---|---|---|
-| Bright Data, LinkedIn job listings (`gd_lpfll7v5hcqtkxl6l`) | Marketplace filter, $2.50 per 1,000 records, $0 when nothing matches | job_title, company_name, company_id, company_url, company_logo, job_location, country_code, job_posted_date, job_posted_time, job_seniority_level, job_employment_type, job_function, job_industries, job_num_applicants, job_description_formatted, job_summary, base_salary, job_base_pay_range, salary_standards, apply_link, is_easy_apply, application_availability, job_poster, job_posting_id, title_id, url (29) | Salary only where LinkedIn shows it; `job_poster` is a person: never published |
-| Bright Data, Indeed job listings (`gd_l4dx9j9sscpvs7no2`, 7.38M records) | Same | job_title, company_name, company_link, company_website, company_rating, company_reviews_count, location, country, region, date_posted, date_posted_parsed, description, description_text, job_description_formatted, salary_formatted, job_type, benefits, qualifications, shift_schedule, is_expired, apply_link, jobid, url, srcname, domain, logo_url (28) | Indeed's country coverage only |
-| Bright Data, Glassdoor job listings (`gd_lpfbbndm1xnopbrcr0`) | Same | job_title, job_overview, pay_range_employer_est, pay_range_glassdoor_est, pay_median_employer, pay_median_glassdoor, pay_range_currency, pay_type, company size, revenue, industry, sector, founded year, headquarters, ratings (culture, comp, work-life, management, CEO approval), benefits, job_application_link, job_posting_id, url (39) | Best salary data; fewer countries |
-| DataForSEO Google Jobs SERP | Per page of 10 results: $0.0006 standard queue, $0.0012 priority; up to 200 results per keyword, location and language | job_id, title, employer_name, employer_url, employer_image_url, location, source_name, source_url, salary, contract_type, timestamp, time_ago | No description: `source_url` points to the original posting, which we read for the full text |
-| Company job boards (Greenhouse, Lever, Ashby, Workable, SmartRecruiters, Recruitee, Personio, Teamtailor) | Free public APIs (we already read 13 boards) | Full description, location, team, posted and updated dates, workplace type; pay ranges where published (pay-transparency states, EU) | Only companies we know |
-| Company career pages | Free: the `JobPosting` structured data on the page | title, description, datePosted, validThrough, baseSalary (min, max, currency, unit), employmentType, hiringOrganization, jobLocation, applicantLocationRequirements | Not every site marks it up |
-| Currency rates | Free: European Central Bank daily reference rates | Rate per currency per day | For salary comparison only; the original amount is always kept |
+Nozzle's study (read 2026-10-29): 56.1 million SERPs judged, 53 countries, three devices, 20 Aug to 21 Oct 2026, one outcome (the share of "poisoned" SERPs), a sample of the keywords Nozzle tracks for its customers; interactive SERP comparisons, daily charts, a country map, an industry breakdown, six downloadable CSVs with column definitions, a methodology section and stated limitations.
 
-Rule kept from the AI graph work: no scraping of LinkedIn or Indeed pages ourselves; their data comes only from the licensed datasets.
+"10,000 times" is not a meaningful target in raw counts (it would mean 561 billion SERPs). The study wins on the dimensions that make research cited and reused:
 
-## 2. The search plan
-
-- **Themes (labels, not just keywords):** SEO (technical, content, local, e-commerce, international, enterprise), AEO, GEO / LLM optimization, AI visibility, AI search (marketing side), search and organic growth; plus a separate builder label for AI search engineering and product, because "AI search" also means engineers building search.
-- **Keywords per language:** "SEO" is used as is in most languages; add local terms (for example 検索エンジン最適化 and SEO担当 in Japanese, Suchmaschinenoptimierung in German, référencement naturel in French, posicionamiento web in Spanish, otimização para mecanismos de busca in Portuguese, 搜索引擎优化 in Chinese, 검색엔진 최적화 in Korean). The list lives in a data file, one row per term, language and theme.
-- **Countries:** start with 25 markets, then all countries the sources support (Google Jobs, LinkedIn `country_code`, Indeed and Glassdoor country sites).
-- **Levels:** intern, entry, mid, senior, lead or staff, manager, director, head or VP, C-level; freelance and contract as their own flag.
-
-Keyword matches are not enough. In our own 4,136 open roles, 7 titles matched these words and 1 was a real fit: "GEO" was a sales territory ("Account Executive, Geo Enterprise") and "AI Search" was a search engineer. Every posting goes through a classifier (section 4).
-
-## 3. Storage: schema `jobs` in research_corpus (Postgres)
-
-| Table | One row per | Key columns |
+| Dimension | Nozzle | The Search Jobs Census |
 |---|---|---|
-| `jobs.posting` | unique job | title, title_norm, company_name, company_id → `jobs.company`, country, region, city, workplace (onsite, hybrid, remote), employment_type, level, function, themes[], language, description_text, description_html, salary_min, salary_max, salary_currency, salary_period, salary_text, salary_basis (stated by employer, estimated by Glassdoor), salary_usd_year (derived), posted_on, valid_through, first_seen, last_seen, closed_on, applicants, relevance (core, adjacent, not relevant), dedupe_key |
-| `jobs.posting_source` | posting × source | source (linkedin, indeed, glassdoor, google_jobs, ats, career_page), source_id, url, apply_url, fields jsonb (every field the source sent, unchanged), raw_capture_id, retrieved_at |
-| `jobs.company` | employer | name, domain, linkedin_id, ats_type, ats_slug, size, industry, hq_country, ratings jsonb, entity_id → `ontology.entity` when the company is in the AI graph |
-| `jobs.term` | search term | term, language, theme, countries[] |
-| `jobs.query_run` | search executed | source, term, country, language, page or snapshot, results, cost_usd, run_at |
-| `jobs.classification` | posting × model run | model, prompt version, labels jsonb (themes, level, function, relevance, skills, tools), confidence, cost_usd |
-| `jobs.fx_rate` | currency × day | rate to USD (ECB) |
+| Universe | A sample of its customers' keywords | Every posting matching the terms, from every source we can license or read, in every country those sources cover (target 175) |
+| Depth | One outcome per SERP | About 120 structured fields per job: pay, duties, skills in four families, tools, level, company type, ownership |
+| Languages | Not stated | Search terms and labels in every language of the countries covered; original text kept |
+| Time | Two months | A census, then a monthly index that never stops (closed jobs are kept) |
+| Comparability | Own definitions | Duties mapped to O*NET 13-1161.01 (Search Marketing Strategists) and ISCO 2513; our own extension for AEO, GEO and AI visibility, which the standard taxonomies do not cover yet |
+| Proof | Method described | Every number links to the postings behind it, with source and pulled date; classifier accuracy measured against a hand-checked sample and published |
+| Openness | Six CSVs | The full aggregate dataset (CSV and Parquet), the codebook, the term lists, the prompts and the code |
+| Use | Read the report | An explorer: any country × level × skill × company type × pay band; a page per country and per role; an API |
 
-- Every raw response, paid or free, is archived whole: gzip on disk under `data/corpus/raw/jobs/` and a row in `ontology.raw_capture`. Fields not used today stay stored.
-- Dedupe across sources by normalized title + company + city + posted week; the merged posting keeps every source row.
-- Postings are never deleted: `closed_on` is set when a posting is missing from two runs in a row, so demand and pay can be tracked over time.
-- People: `job_poster` (LinkedIn) is kept in the raw archive only, never in the site data.
-- Size: about 5 KB of description per posting; 500,000 postings is about 2.5 GB plus the raw archive. Local Postgres holds it all; the site serves aggregates and live postings only (the Railway bill is Postgres memory).
+## 2. What we record for every job (the codebook)
 
-## 4. Classification with OpenRouter (prices from openrouter.ai's model list, 2026-10-29)
+**Posting:** title as written, title in English, normalized title, language; country, region, city, coordinates; workplace (onsite, hybrid, remote) and where remote applies; employment type (full-time, part-time, contract, freelance, internship, apprenticeship, temporary); schedule; posted date, valid-through date, first seen, last seen, closed; applicants; easy apply; every source it appears on, with its own ids and links.
 
-| Model | Input per 1M tokens | Output per 1M tokens |
+**Pay:** minimum, maximum, currency, period (hour, day, month, year); stated by the employer or estimated (Glassdoor); converted to USD a year with that day's ECB rate; bonus, commission and equity mentioned; benefits listed.
+
+**Role:** level (intern, entry, mid, senior, lead or staff, manager, director, head or VP, C-level); years of experience asked; people managed; reports to; function family (SEO, AEO and GEO, AI search marketing, AI search engineering and product, content, technical, analytics, paid search, growth); specialization (technical, content, local, e-commerce, international, enterprise, link building and digital PR, programmatic, app stores, video); O*NET and ISCO codes.
+
+**Duties and responsibilities:** every duty sentence as written, each also mapped to a normalized task (O*NET task where one exists, our own task list otherwise); requirements split into must-have and nice-to-have.
+
+**Skills, in four families, each from a fixed list with an "other" field:**
+- SEO skills: keyword research, technical audits, crawling and indexing, site architecture, structured data, Core Web Vitals, international and hreflang, local and Business Profile, e-commerce, migrations, log analysis, content optimization, link building, digital PR, reporting.
+- AI skills: AEO, GEO, AI visibility tracking, LLM prompting, AI content workflows, AI agents and automation, retrieval and embeddings, machine learning, evaluating AI output.
+- Marketing skills: content strategy, copywriting, paid search, conversion optimization, analytics, email and CRM, social, PR, brand, product marketing, marketing operations.
+- Technical skills: HTML, CSS, JavaScript, SQL, Python, APIs, BigQuery and data warehouses, cloud.
+
+**Tools named:** normalized vendor list (Semrush, Ahrefs, Moz, Screaming Frog, Sitebulb, Search Console, GA4, Looker Studio, BigQuery, Adobe Analytics, Botify, Conductor, BrightEdge, seoClarity, Similarweb, Surfer, Clearscope, MarketMuse, HubSpot, Salesforce, WordPress, Shopify, ChatGPT, Claude, Gemini, Perplexity, and AI visibility trackers), plus anything else as written.
+
+**Requirements:** education level and field, certifications, human languages required, travel, visa sponsorship, security clearance.
+
+**AI exposure:** whether the job mentions AI search, AI Overviews or LLMs; required or nice-to-have; the share of duties that involve AI.
+
+**Company:** name and normalized name, domain, LinkedIn id; headquarters country; size band; revenue band; industry (NAICS and ISIC); ownership (public, private, private-equity owned, venture-backed, government, nonprofit, education, cooperative); listed or not, exchange and ticker; type relative to search (in-house brand, agency, consultancy, software vendor, publisher or media, marketplace, e-commerce, staffing firm posting for a client); funding stage; founded year; ratings; link to the AI graph when the company is in it.
+
+**Provenance:** source, pulled date and time, raw record id, model and prompt version, confidence, whether a person checked it.
+
+Company type comes from several sources, in this order: the company's own filings and Wikidata (stock exchange and ticker), the LinkedIn company profile's organization type, Glassdoor's `company_type` on job listings, Crunchbase for funding and ownership, and a model reading the company description and the job text for agency, in-house or staffing (checked on a hand-labelled sample).
+
+## 3. Sources (checked 2026-10-29)
+
+| Source | Gives | Price |
 |---|---|---|
-| openai/gpt-5-nano | $0.05 | $0.40 |
-| mistralai/mistral-small-3.2-24b-instruct | $0.075 | $0.20 |
-| google/gemini-2.5-flash-lite | $0.10 | $0.40 |
-| openai/gpt-4o-mini | $0.15 | $0.60 |
+| Bright Data, LinkedIn job listings (`gd_lpfll7v5hcqtkxl6l`, 29 fields) | Full description, salary or pay range, seniority, employment type, function, industries, posted date and time, applicants, company | $2.50 per 1,000 records; $0 when nothing matches |
+| Bright Data, Indeed job listings (`gd_l4dx9j9sscpvs7no2`, 28 fields, 7.38M records) | Description, salary, benefits, qualifications, job type, company rating | Same |
+| Bright Data, Glassdoor job listings (`gd_lpfbbndm1xnopbrcr0`, 39 fields) | Employer and Glassdoor pay ranges, company type, size, revenue, industry, ratings | Same |
+| Bright Data company datasets (LinkedIn companies, Glassdoor companies 2.48M, Crunchbase 2.3M) | Organization type, size, industry, funding, ownership | Same |
+| DataForSEO Google Jobs | Employer, location, salary, contract type, posted time, the original posting's link; up to 200 results per term, country and language; no description | $0.0006 per page of 10 (standard queue) |
+| Company job boards (Greenhouse, Lever, Ashby, Workable, SmartRecruiters, Recruitee, Personio, Teamtailor) | Full description, published pay ranges, dates | Free |
+| Company career pages (`JobPosting` structured data) | Title, description, dates, base salary, employment type, location | Free |
+| ECB reference rates, World Bank PPP | Currency conversion, purchasing-power comparison | Free |
+| O*NET, ISCO/ESCO | Standard tasks and occupation codes | Free |
+| OpenRouter (classification and extraction) | gpt-5-nano $0.05 per 1M input tokens and $0.40 per 1M output; gemini-2.5-flash $0.30 and $2.50 (for the checking sample) | As listed |
 
-- Input: title, company, location and the first part of the description (about 1,500 tokens). Output: one JSON object (about 200 tokens): relevance, themes, level, function, skills, tools (Semrush, Ahrefs, Search Console, Screaming Frog, Python...), salary parsed from text when no structured salary exists, language.
-- Cost per posting with gpt-5-nano: 1,500 × $0.05/1M + 200 × $0.40/1M = $0.000155, before any reasoning tokens (the pilot measures them). 50,000 postings: about $7.75.
-- A sample of 200 postings is labelled by two models; disagreements are read by hand to set the accuracy before scaling.
+No scraping of LinkedIn or Indeed pages ourselves: their data comes only from the licensed datasets.
 
-## 5. Pipelines (run through `run_pipelines.py`, so every pull has its time)
+## 4. Storage
 
-| Pipeline | Cadence | Cost class | Does |
-|---|---|---|---|
-| `jobs_google` | weekly | paid (DataForSEO) | Google Jobs by term × country × language; finds employers and the original posting URLs |
-| `jobs_datasets` | monthly first, then weekly for new postings | paid (Bright Data) | LinkedIn, Indeed and Glassdoor listings whose titles match the terms, filtered by posted date after the last pull |
-| `jobs_ats` | daily | free | Every known company's own job board; new employers from the other pipelines are added when their board type is detected |
-| `jobs_pages` | daily | free | The `JobPosting` data on original posting URLs that are company career pages (one request a second, robots.txt respected) |
-| `jobs_classify` | after each pull | paid (OpenRouter) | New or changed postings only |
-| `jobs_fx` | daily | free | ECB rates |
-| `jobs_lifecycle` | daily | free | first_seen, last_seen, closed_on |
+- **Everything:** Postgres `research_corpus`, schema `jobs` (posting, posting_source with every field each source sent as jsonb, company, term, query_run, extraction, fx_rate, taxonomy tables for skills, tasks and tools). Local, on the research database.
+- **Raw:** every response, paid or free, archived whole as gzip under `data/corpus/raw/jobs/` and logged in `ontology.raw_capture`; fields not used today stay stored.
+- **Public:** the aggregate dataset and codebook as CSV and Parquet files on Cloudflare R2; the site serves aggregates and live jobs only (not the full database, which would raise the Railway Postgres bill).
+- **People:** recruiter names in LinkedIn records (`job_poster`) stay in the raw archive and never reach the site or the public files.
 
-Each paid pipeline has a cost cap in code, a lock against double runs, the raw archive, and runs only with the owner's yes.
+## 5. Cost for every country (unit prices are real; volumes are assumptions)
 
-## 6. Cost
+| Part | Assumption | Formula | One-time census | Monthly after |
+|---|---|---|---|---|
+| Google Jobs sweep | 175 countries × about 12 terms in their languages × 10 pages, plus 30 large countries split into 25 cities | (21,000 + 90,000) pages × $0.0006 | about $67 | about $67 (monthly) to $290 (weekly) |
+| Job datasets (LinkedIn, Indeed, Glassdoor) | 200,000 to 1,000,000 matching records across the three | records × $2.50 / 1,000 | $500 to $2,500 | $62 to $250 for new postings |
+| Company enrichment | 50,000 to 200,000 employers, up to three company datasets each | records × $2.50 / 1,000 | $375 to $1,500 | small (new employers only) |
+| Extraction | 2,500 tokens in, 700 out per job, gpt-5-nano | 300,000 to 1,000,000 × $0.000405 | $122 to $405 | $10 to $40 |
+| Checking sample | 5% of jobs re-read by gemini-2.5-flash, $0.0025 each | 15,000 to 50,000 × $0.0025 | $38 to $125 | small |
+| **Total** | | | **about $1,100 to $4,600** | **about $150 to $600** |
 
-**Pilot (needs the owner's yes; caps enforced in code):**
+Reasoning tokens (gpt-5-nano is a reasoning model) can raise extraction cost; the pilot measures them. Storage on the local database and free sources add no vendor cost.
+
+## 6. The pilot first ($12.35 cap, needs the owner's yes)
 
 | Step | Size | Cap |
 |---|---|---|
-| DataForSEO Google Jobs | 25 countries × 8 terms × 5 pages = 1,000 pages × $0.0006 | $0.60 |
+| DataForSEO Google Jobs | 25 countries × 8 terms × 5 pages = 1,000 pages | $0.60 |
 | Bright Data LinkedIn job listings | titles matching the terms, all countries, up to 2,000 records | $5.00 |
-| Bright Data Indeed job listings | same, up to 1,000 records | $2.50 |
-| Bright Data Glassdoor job listings | same, up to 500 records | $1.25 |
-| OpenRouter classification | about 3,500 postings, gpt-5-nano | $3.00 |
+| Bright Data Indeed job listings | up to 1,000 records | $2.50 |
+| Bright Data Glassdoor job listings | up to 500 records | $1.25 |
+| OpenRouter extraction | about 3,500 jobs | $3.00 |
 | **Total** | | **$12.35** |
 
-The pilot answers: how many postings per country and language, how many keyword matches are real, how often salary is present per source, overlap between sources, and the true cost per posting.
+It measures volume per country and language, how many keyword matches are real (in our own 4,136 roles only 1 of 7 was: "GEO" was a sales territory, "AI Search" an engineer), how often pay is stated per source, overlap between sources, field coverage, and the true cost per job. The census budget is then set from measured numbers.
 
-**Steady state (unit prices are real; volumes are assumptions until the pilot):**
+## 7. Quality
 
-| Scenario | Bright Data new postings | DataForSEO weekly sweep | OpenRouter | Monthly |
-|---|---|---|---|---|
-| Narrow: 50,000 live postings with the terms in the title, a quarter new each month | 12,500 × $2.50/1,000 × about 2 overlapping sources = about $62 | 175 countries × 20 terms × 5 pages = 17,500 pages × $0.0006 = $10.50 a sweep, about $45 | about $2 | about $110 |
-| Broad: 500,000 postings that list SEO as a skill | about $625 | about $45 | about $20 | about $690 |
-
-Free sources (company job boards, career pages, ECB) add no vendor cost.
-
-## 7. What the data serves
-
-- A jobs board: SEO and AI search jobs by country, language, level and company, each with its source and pulled date.
-- Pay: salary ranges by country, level and theme, in the original currency and in USD per year, with how many postings state pay.
-- Demand: AEO and GEO roles as a share of SEO roles, month by month; skills and tools employers ask for.
-- Employers: who hires for search, how fast, at which levels; companies hiring SEO are also prospects for the agency.
-- The AI graph: hiring signals on company pages (already live for 13 boards).
-- Research and content: a labour-market paper, country pages, a monthly note.
+- Two models label the same 1,000 jobs; disagreements are read by a person; accuracy per field is published with the study.
+- The term lists are tested for precision and recall per language on the pilot (a term is dropped when most of its matches are false).
+- Every published number has a query behind it and is re-computed in the pre-release check (the same discipline as the site's attested counts).
+- Claims register: any "largest" or "first" claim is checked against earlier studies before publication.
 
 ## 8. Order
 
-1. Free now: schema, term file for the first 25 markets, ATS collector stores descriptions and pay, `JobPosting` reader, ECB rates.
-2. Pilot ($12.35 cap) after the owner's yes and the new OpenRouter key in `~/Desktop/sec/opnerouter.rtf`.
-3. Pilot report with measured volumes and the real monthly cost; owner sets the monthly cap.
-4. Scale country by country; the jobs board launches with the AI graph (localhost first, preprod after approval).
+1. Free now: schema, codebook, term lists for the first 25 markets (with native-language terms), skill and task taxonomies, company job boards storing full descriptions and pay, the `JobPosting` reader, ECB rates.
+2. Pilot ($12.35) after the owner's yes and the new OpenRouter key in `~/Desktop/sec/opnerouter.rtf`.
+3. Pilot report: measured volumes, precision, field coverage, cost per job; the owner sets the census budget.
+4. Census: all sources, all countries; extraction; checking sample.
+5. Publication: report, explorer, country and role pages, open dataset and codebook, methodology and limitations; launch with the AI graph (localhost first, preprod after approval).
+6. Monthly index from then on.
