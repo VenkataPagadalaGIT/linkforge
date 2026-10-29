@@ -1632,6 +1632,9 @@ export function Highlights({ id, onTab }: { id: string; onTab?: (tab: string) =>
   const listing = f.ipo?.terms.find((t) => t.key === "ipo_listing")?.value.match(/ticker ([A-Z]+)/)?.[1];
   const s1 = f.ipo?.filings.find((x) => x.form === "S-1");
   if (listing && s1) cards.push({ label: "IPO", value: `Nasdaq: ${listing}`, sub: `S-1 filed ${Number(s1.filedOn.slice(8, 10))} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(s1.filedOn.slice(5, 7)) - 1]} ${s1.filedOn.slice(0, 4)}; price not set`, tab: "ipo", href: sectionPath(id, "ipo") });
+  if (f.customers) cards.push({ label: "Customers named", value: fmt(f.customers.total), sub: "in its own case studies", tab: "customers", href: sectionPath(id, "customers") });
+  const lq = f.gov?.lobbying?.quarters.slice(-1)[0];
+  if (lq) cards.push({ label: `Lobbying, ${lq.q}`, value: `$${((lq.inHouse + lq.outside) / 1e6).toFixed(2)}M`, sub: `in-house and ${lq.firms} outside firms`, tab: "gov", href: sectionPath(id, "government") });
   if (raised) cards.push({ label: "Capital raised", value: money(raised.value), sub: `to ${monthYear(raised.asOf ?? raised.period)}, per its filing`, tab: "investors", href: sectionPath(id, "investors") });
   if (val?.postMoney) cards.push({ label: "Latest valuation", value: money(val.postMoney), sub: `${val.round}, post-money`, tab: "investors", href: sectionPath(id, "investors") });
   if (rev) cards.push({ label: rev === last("revenue_usd") ? "Revenue" : "Quarterly revenue", value: money(rev.value), sub: rev.period, tab: "money", href: entityPath(id) });

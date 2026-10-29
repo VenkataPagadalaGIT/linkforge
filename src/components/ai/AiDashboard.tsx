@@ -33,6 +33,8 @@ import AiCompanyFile from "./AiCompanyFile";
 import { fileSections, scrollToSection, sectionDomId, type FileSection as FileSectionMeta, type FileSectionId } from "./entityFile";
 import { FreshStamp, SourcesPanel } from "./Freshness";
 import { IpoSection } from "./AiIpo";
+import { CustomersSection } from "./AiCustomers";
+import { GovSection } from "./AiGov";
 import { entityPath } from "@/lib/graph-urls";
 import { Company360, FootprintSection, HiringSection, TalentSection, HiringTable, InvestorsSection, LegalSection, PeopleSection, AdvisorsSection, has360, money } from "./Ai360";
 import { AI_SHARES } from "@/data/aiIntel";
@@ -1298,6 +1300,7 @@ function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiSco
         {block("f360", has360(id) ? <Company360 id={id} onPick={pick} onTab={(t) => scrollToSection(t)} /> : <No360 name={node.name} />)}
         {block("connections", <EntityConnections id={id} compare={scope.compare} onPick={pick} onCompare={(x) => onScope({ ...scope, compare: x })} />)}
         {block("money", <MoneyTab ids={[id]} onPick={pick} />)}
+        {block("customers", <CustomersSection id={id} />)}
         {intel && block("financials", <AiCompanyFile name={node.name} intel={intel} hidePeople hideDeals hideEvents />)}
         {block(
           "investors",
@@ -1324,6 +1327,7 @@ function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiSco
             </NotCollected>
           ),
         )}
+        {block("gov", <GovSection id={id} />)}
         {block("news", <NewsTab ids={[id]} />)}
         {block("earnings", <EarningsTab ids={[id]} onPick={pick} />)}
         {block("sources", <SourcesPanel id={id} />)}

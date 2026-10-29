@@ -38,7 +38,7 @@ for e in ev:
     by[(e["target_kind"], e["target_id"])].append({"quote": e["quote"], "url": e["url"], "locator": e["locator"], "source": e["title"] or "",
                                                    "publisher": e["publisher"], "publishedOn": e["published_on"], "secondary": e["source_kind"] == "aggregator"})
 
-out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None, "talent": None, "reddit": None, "ipo": None})
+out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None, "talent": None, "reddit": None, "ipo": None, "customers": None, "gov": None})
 
 aff = collections.defaultdict(list)
 for a in rows("""SELECT a.id, a.person_id, a.org_name, o.slug AS org_entity, a.title, a.kind, a.period, a.start_year, a.end_year, a.current
@@ -94,6 +94,88 @@ for f in rows("""SELECT f.*, e.slug AS entity FROM ontology.fact f JOIN ontology
         out[f["entity"]]["ipo"]["terms"].append(item)
     else:
         out[f["entity"]]["facts"].append(item)
+
+# ---- Customers named in the company's own case studies (its site's /customers/<name> pages) ----
+CUST_RE = re.compile(r"^(.*?) (Claude.*?) case study$")
+
+
+def customer(title, url):
+    t = (title or "").strip()
+    m = CUST_RE.match(t)
+    if m:
+        return m.group(1).strip(" |:"), m.group(2)
+    for sep in (" | ", ": "):
+        if sep in t:
+            head, tail = t.split(sep, 1)[0], t.rsplit(sep, 1)[1].strip()
+            return re.sub(r" Q&A$", "", head).strip(), (tail if sep == " | " and tail.startswith("Claude") else None)
+    if t.endswith(" Q&A"):
+        return t[:-4].strip(), None
+    slug = url.rstrip("/").rsplit("/", 1)[1]
+    return (slug.upper() if len(slug) <= 4 else slug.replace("-", " ").title()), None
+
+
+cust = collections.defaultdict(list)
+for r in rows("""SELECT e.slug AS entity, sp.url, sp.title FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id
+                 WHERE sp.url ~ '/customers/[^/]+/?$' AND (sp.http_status IS NULL OR sp.http_status = 200) ORDER BY e.slug, sp.url"""):
+    name, product = customer(r["title"], r["url"])
+    cust[r["entity"]].append({"name": name, "product": product, "url": r["url"]})
+for ent, items in cust.items():
+    items.sort(key=lambda x: (x["name"].lower(), x["url"]))
+    counts = collections.Counter(x["product"] or "Not stated" for x in items)
+    out[ent]["customers"] = {"total": len(items), "products": sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])), "items": items}
+
+# ---- Government: federal awards (USAspending) and lobbying disclosures (Senate LDA) ----
+def quarter(year, period):
+    m = re.match(r"(\d)(?:st|nd|rd|th) Quarter", period or "")
+    return f"{year} Q{m.group(1)}" if m and year else None
+
+
+gov = collections.defaultdict(lambda: {"awards": [], "lobby": []})
+for a in rows("""SELECT e.slug AS entity, g.award_id, g.agency, g.sub_agency, g.amount, g.start_date, g.end_date, g.award_type, g.description, g.url, g.retrieved_at
+                 FROM ontology.gov_award g JOIN ontology.entity e ON e.id = g.entity_id ORDER BY e.slug, g.amount DESC NULLS LAST, g.award_id"""):
+    gov[a["entity"]]["awards"].append(a)
+for l in rows("""SELECT e.slug AS entity, l.filing_uuid, l.filing_year, l.filing_period, l.filing_type, l.registrant, l.client, l.income, l.expenses, l.posted_at,
+                        l.issues, l.lobbyists, l.entities, l.url, l.retrieved_at
+                 FROM ontology.lobbying_filing l JOIN ontology.entity e ON e.id = l.entity_id ORDER BY e.slug, l.posted_at"""):
+    gov[l["entity"]]["lobby"].append(l)
+for ent, g in gov.items():
+    aw = g["awards"]
+    # An amendment restates a report: per registrant and quarter, the latest posted filing counts, once.
+    latest = {}
+    for l in g["lobby"]:
+        q = quarter(l["filing_year"], l["filing_period"])
+        if q:
+            latest[(l["registrant"], q)] = l
+    inhouse = lambda l: bool(re.match(r"^ANTHROPIC\b", (l["registrant"] or "").upper()))
+    qs = collections.defaultdict(lambda: {"inHouse": 0.0, "outside": 0.0, "firms": set()})
+    firms = collections.defaultdict(lambda: {"total": 0.0, "quarters": set(), "filings": 0})
+    for (reg, q), l in latest.items():
+        if inhouse(l):
+            qs[q]["inHouse"] += float(l["expenses"] or 0)
+        else:
+            qs[q]["outside"] += float(l["income"] or 0)
+            qs[q]["firms"].add(reg)
+            firms[reg]["total"] += float(l["income"] or 0)
+            firms[reg]["quarters"].add(q)
+            firms[reg]["filings"] += 1
+    issues = collections.Counter(i for l in latest.values() for i in (l["issues"] or []))
+    entities = collections.Counter(x for l in latest.values() for x in (l["entities"] or []))
+    lobbyists = {x for l in g["lobby"] for x in (l["lobbyists"] or [])}
+    quarters = [{"q": q, "inHouse": v["inHouse"], "outside": v["outside"], "firms": len(v["firms"])} for q, v in sorted(qs.items())]
+    out[ent]["gov"] = {
+        "awards": [{"id": a["award_id"], "agency": a["agency"], "subAgency": a["sub_agency"], "amount": float(a["amount"]) if a["amount"] is not None else None, "start": a["start_date"],
+                    "end": a["end_date"], "type": a["award_type"], "description": a["description"], "url": a["url"]} for a in aw],
+        "awardTotal": sum(float(a["amount"] or 0) for a in aw),
+        "agencies": [[k, v] for k, v in sorted(collections.Counter(a["agency"] for a in aw if a["agency"]).items(), key=lambda kv: (-kv[1], kv[0]))],
+        "lobbying": {
+            "filings": len(g["lobby"]), "counted": len(latest), "quarters": quarters,
+            "firms": sorted(({"name": k, "total": v["total"], "first": min(v["quarters"]), "last": max(v["quarters"]), "filings": v["filings"]} for k, v in firms.items()), key=lambda f: (-f["total"], f["name"])),
+            "issues": issues.most_common(12), "entities": entities.most_common(12), "lobbyists": len(lobbyists),
+            "inHouseTotal": sum(q["inHouse"] for q in quarters), "outsideTotal": sum(q["outside"] for q in quarters),
+            "latestPosted": max((l["posted_at"] for l in g["lobby"] if l["posted_at"]), default=None),
+        } if g["lobby"] else None,
+        "readOn": max(filter(None, [x["retrieved_at"] for x in aw + g["lobby"]]), default=None),
+    }
 
 # ---- IPO: the SEC filing trail, newest first, read from EDGAR's company filing index ----
 for g in rows("""SELECT g.form, g.filed_on, g.accession, g.url, g.description, g.size, g.retrieved_at, e.slug AS entity
@@ -364,7 +446,7 @@ for ent, ps in by_ent.items():
         out[ent]["hiring"]["companyId"] = LINKEDIN_IDS.get(ent)
 json.dump({"entities": sorted(by_ent.keys())}, open(os.path.join(JOBS_DIR, "index.json"), "w", encoding="utf8"))
 
-data = {k: v for k, v in sorted(out.items()) if v["people"] or v["rounds"] or v["legal"] or v["facts"] or v["hiring"] or v["site"] or v["attention"] or v["tone"] or v["footprint"] or v["agreements"] or v["market"] or v["ipo"]}
+data = {k: v for k, v in sorted(out.items()) if v["people"] or v["rounds"] or v["legal"] or v["facts"] or v["hiring"] or v["site"] or v["attention"] or v["tone"] or v["footprint"] or v["agreements"] or v["market"] or v["ipo"] or v["customers"] or v["gov"]}
 HEADER = """// AUTO-GENERATED by data/corpus/gen_ontology_360_ts.py from the ontology schema in research_corpus.
 // The 360 layer of each company file: people and their other roles, funding rounds and investors,
 // legal matters, advisors, identity facts and hiring. Do not edit by hand.
@@ -407,7 +489,19 @@ export interface Entity360 {
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
   reddit: { posts: number; top: { title: string; url: string; date: string | null; summary: string }[] } | null;
   ipo: Ipo | null;
+  customers: Customers | null;
+  gov: Gov | null;
 }
+/** Customers named in the company's own case studies, with the product each story is about. */
+export interface Customers { total: number; products: [string, number][]; items: { name: string; product: string | null; url: string }[] }
+export interface GovAward { id: string; agency: string | null; subAgency: string | null; amount: number | null; start: string | null; end: string | null; type: string; description: string | null; url: string | null }
+export interface Lobbying {
+  filings: number; counted: number; quarters: { q: string; inHouse: number; outside: number; firms: number }[];
+  firms: { name: string; total: number; first: string; last: string; filings: number }[]; issues: [string, number][]; entities: [string, number][];
+  lobbyists: number; inHouseTotal: number; outsideTotal: number; latestPosted: string | null;
+}
+/** Federal awards (USAspending.gov) and lobbying disclosures (Senate LDA). */
+export interface Gov { awards: GovAward[]; awardTotal: number; agencies: [string, number][]; lobbying: Lobbying | null; readOn: string | null }
 export interface Filing { form: string; filedOn: string; accession: string; url: string; description: string | null; size: string | null }
 /** The listing: SEC filings newest first, and the offering terms the registration statement states or leaves blank. */
 export interface Ipo { filings: Filing[]; terms: Fact[]; readOn: string | null }

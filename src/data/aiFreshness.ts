@@ -250,6 +250,21 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "url": "https://www.anthropic.com/careers"
   },
   {
+   "id": "lda",
+   "label": "Senate lobbying disclosures (LDA)",
+   "detail": "64 filings",
+   "sections": [
+    "gov"
+   ],
+   "dataAsOf": "2026-10-21",
+   "pulledAt": "2026-10-29T04:45:31.737071+00:00",
+   "pulledOn": null,
+   "cadenceH": 168,
+   "pipeline": "gov",
+   "cost": "free",
+   "url": "https://lda.senate.gov/"
+  },
+  {
    "id": "linkedin",
    "label": "LinkedIn profiles (Bright Data dataset)",
    "detail": "5,072 profiles naming it as employer",
@@ -300,7 +315,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "detail": "4,562 pages on 6 sites",
    "sections": [
     "f360",
-    "news"
+    "news",
+    "customers"
    ],
    "dataAsOf": "2026-10-28",
    "pulledAt": "2026-10-29T04:14:01.679347+00:00",
@@ -324,6 +340,21 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "pipeline": "tone",
    "cost": "free",
    "url": null
+  },
+  {
+   "id": "usaspending",
+   "label": "USAspending.gov federal awards",
+   "detail": "5 awards",
+   "sections": [
+    "gov"
+   ],
+   "dataAsOf": "2026-10-26",
+   "pulledAt": "2026-10-29T04:45:31.737071+00:00",
+   "pulledOn": null,
+   "cadenceH": 168,
+   "pipeline": "gov",
+   "cost": "free",
+   "url": "https://www.usaspending.gov/"
   },
   {
    "id": "doc:https://menlovc.com/perspective/2025-the-state-of-generative-ai-in-the-enterprise/",
@@ -3353,6 +3384,15 @@ export const AI_PIPELINES: PipelineState[] = [
   "lastOk": "2026-10-29T04:38:53.59415+00:00",
   "lastStatus": "ok",
   "lastRun": "2026-10-29T04:38:18.140912+00:00"
+ },
+ {
+  "id": "gov",
+  "why": "federal awards (USAspending) and lobbying disclosures (Senate LDA) where the company is the recipient or the client",
+  "cadenceH": 168,
+  "cost": "free",
+  "lastOk": "2026-10-29T04:45:31.737071+00:00",
+  "lastStatus": "ok",
+  "lastRun": "2026-10-29T04:45:18.189968+00:00"
  },
  {
   "id": "photos",

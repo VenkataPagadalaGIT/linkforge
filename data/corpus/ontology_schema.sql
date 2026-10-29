@@ -656,3 +656,44 @@ CREATE TABLE IF NOT EXISTS ontology.filing (
   retrieved_at date NOT NULL DEFAULT current_date,
   UNIQUE (entity_id, accession)
 );
+
+-- Federal awards to a company (USAspending.gov), matched on the recipient's own name, not a substring search.
+CREATE TABLE IF NOT EXISTS ontology.gov_award (
+  id bigserial PRIMARY KEY,
+  entity_id integer NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  award_id text NOT NULL,
+  recipient text NOT NULL,
+  agency text,
+  sub_agency text,
+  amount numeric,
+  start_date date,
+  end_date date,
+  award_type text,
+  description text,
+  url text,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  UNIQUE (entity_id, award_id)
+);
+
+-- Lobbying disclosure filings (Senate LDA) where the company is the client: its own in-house reports (expenses) and
+-- outside firms' reports (income from the company), with issues, lobbyists and government entities contacted.
+CREATE TABLE IF NOT EXISTS ontology.lobbying_filing (
+  id bigserial PRIMARY KEY,
+  entity_id integer NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  filing_uuid text NOT NULL,
+  filing_year integer,
+  filing_period text,
+  filing_type text,
+  registrant text,
+  client text,
+  income numeric,
+  expenses numeric,
+  posted_at timestamptz,
+  issues text[],
+  lobbyists text[],
+  entities text[],
+  description text,
+  url text,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  UNIQUE (entity_id, filing_uuid)
+);

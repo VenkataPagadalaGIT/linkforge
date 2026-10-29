@@ -5,6 +5,8 @@ import { logoUrl } from "@/data/aiLogos";
 import { AdvisorsSection, AgreementsSection, FootprintSection, HiringSection, InvestorsSection, LegalSection, PeopleSection, SitesRead, TalentSection, TimelineSection } from "@/components/ai/Ai360";
 import type { Section360, Section360Id } from "@/lib/ai360-sections";
 import { IpoSection } from "@/components/ai/AiIpo";
+import { CustomersSection } from "@/components/ai/AiCustomers";
+import { GovSection } from "@/components/ai/AiGov";
 import { entityPath, GRAPHS, hubPath, sectionPath } from "@/lib/graph-urls";
 
 /** One section of a company's file on its own page: a focused title, the section, and links to the rest of the file. */
@@ -61,6 +63,8 @@ export default function Section360View({ id, section, sections }: { id: string; 
 
         <div className="space-y-10">
           {section === "ipo" && <IpoSection id={id} />}
+          {section === "customers" && <CustomersSection id={id} />}
+          {section === "government" && <GovSection id={id} />}
           {section === "people" && (
             <>
               <PeopleSection ids={[id]} />

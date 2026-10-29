@@ -5,7 +5,7 @@ import { AI_360, type Entity360 } from "@/data/ai360";
 import { AI_INTEL } from "@/data/aiIntel";
 import { getNode } from "@/data/aiOntology";
 
-export type Section360Id = "ipo" | "people" | "investors" | "legal" | "hiring" | "timeline";
+export type Section360Id = "ipo" | "customers" | "government" | "people" | "investors" | "legal" | "hiring" | "timeline";
 
 export interface Section360 {
   id: Section360Id;
@@ -20,6 +20,7 @@ export interface Section360 {
 
 const money = (v: number) => (v >= 1e12 ? `$${(v / 1e12).toFixed(2)}T` : v >= 1e9 ? `$${(v / 1e9).toFixed(1).replace(/\.0$/, "")}B` : `$${Math.round(v / 1e6)}M`);
 const n = (v: number) => v.toLocaleString("en-US");
+const usd2 = (v: number) => (v >= 1e6 ? `$${(v / 1e6).toFixed(2)}M` : `$${Math.round(v / 1e3)}K`);
 
 const day = (d: string) => `${Number(d.slice(8, 10))} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`;
 
@@ -37,6 +38,28 @@ export const SECTIONS_360: Section360[] = [
       return `${name}'s listing from its own filings: ${ipo.filings.length} SEC filings from the first confidential draft${first ? ` (${day(first.filedOn)})` : ""}${s1 ? ` to the public S-1 (${day(s1.filedOn)})` : ""}${listing ? `, ${listing}` : ""}; price range ${range && /not set/i.test(range) ? "not set yet" : range}; share classes, lock-up and use of proceeds, each with its sentence.`;
     },
     has: (f) => !!f.ipo,
+  },
+  {
+    id: "customers",
+    label: "Customers",
+    title: (name) => `${name} customers: every company it names in its own case studies`,
+    description: (name, f) => {
+      const c = f.customers!;
+      return `${n(c.total)} customers ${name} names in customer stories on its own site, by product (${c.products.slice(0, 3).map(([p, k]) => `${p} ${n(k)}`).join(", ")}), each linked to its story.`;
+    },
+    has: (f) => !!f.customers,
+  },
+  {
+    id: "government",
+    label: "Government",
+    title: (name) => `${name} lobbying and government contracts: spending by quarter, firms, issues and federal awards`,
+    description: (name, f) => {
+      const g = f.gov!;
+      const l = g.lobbying;
+      const last = l?.quarters[l.quarters.length - 1];
+      return `${name} and government from public records: ${l ? `${n(l.counted)} lobbying reports since ${l.quarters[0]?.q}, ${last ? `${usd2(last.inHouse + last.outside)} in ${last.q}` : ""} across ${n(l.firms.length)} outside firms, the issues and the offices lobbied; ` : ""}${n(g.awards.length)} federal awards worth ${usd2(g.awardTotal)} obligated.`;
+    },
+    has: (f) => !!f.gov,
   },
   {
     id: "people",

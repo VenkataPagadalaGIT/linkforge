@@ -40,7 +40,19 @@ export interface Entity360 {
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
   reddit: { posts: number; top: { title: string; url: string; date: string | null; summary: string }[] } | null;
   ipo: Ipo | null;
+  customers: Customers | null;
+  gov: Gov | null;
 }
+/** Customers named in the company's own case studies, with the product each story is about. */
+export interface Customers { total: number; products: [string, number][]; items: { name: string; product: string | null; url: string }[] }
+export interface GovAward { id: string; agency: string | null; subAgency: string | null; amount: number | null; start: string | null; end: string | null; type: string; description: string | null; url: string | null }
+export interface Lobbying {
+  filings: number; counted: number; quarters: { q: string; inHouse: number; outside: number; firms: number }[];
+  firms: { name: string; total: number; first: string; last: string; filings: number }[]; issues: [string, number][]; entities: [string, number][];
+  lobbyists: number; inHouseTotal: number; outsideTotal: number; latestPosted: string | null;
+}
+/** Federal awards (USAspending.gov) and lobbying disclosures (Senate LDA). */
+export interface Gov { awards: GovAward[]; awardTotal: number; agencies: [string, number][]; lobbying: Lobbying | null; readOn: string | null }
 export interface Filing { form: string; filedOn: string; accession: string; url: string; description: string | null; size: string | null }
 /** The listing: SEC filings newest first, and the offering terms the registration statement states or leaves blank. */
 export interface Ipo { filings: Filing[]; terms: Fact[]; readOn: string | null }
@@ -71,7 +83,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "agc-blanks": {
   "people": [],
@@ -98,7 +112,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "alchip-guc": {
   "people": [],
@@ -125,7 +141,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "amazon-investor": {
   "people": [],
@@ -152,7 +170,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "amd": {
   "people": [],
@@ -179,7 +199,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "amec": {
   "people": [],
@@ -206,7 +228,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "amkor": {
   "people": [],
@@ -233,7 +257,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "anthropic": {
   "people": [
@@ -12816,6 +12842,1824 @@ export const AI_360: Record<string, Entity360> = {
     }
    ],
    "readOn": "2026-10-29"
+  },
+  "customers": {
+   "total": 286,
+   "products": [
+    [
+     "Claude Platform (API)",
+     193
+    ],
+    [
+     "Claude Code",
+     25
+    ],
+    [
+     "Claude Enterprise",
+     17
+    ],
+    [
+     "Claude",
+     14
+    ],
+    [
+     "Not stated",
+     10
+    ],
+    [
+     "Claude Cowork",
+     9
+    ],
+    [
+     "Claude Agent SDK",
+     6
+    ],
+    [
+     "Claude Managed Agents",
+     6
+    ],
+    [
+     "Claude by Anthropic",
+     2
+    ],
+    [
+     "Claude Tag",
+     1
+    ],
+    [
+     "Claude and AWS",
+     1
+    ],
+    [
+     "Claude and Google Cloud",
+     1
+    ],
+    [
+     "Claude for Nonprofits",
+     1
+    ]
+   ],
+   "items": [
+    {
+     "name": "Adalat AI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/adalat-ai"
+    },
+    {
+     "name": "Advantage Solutions",
+     "product": "Claude",
+     "url": "https://claude.com/customers/advantage-solutions"
+    },
+    {
+     "name": "Advolve",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/advolve"
+    },
+    {
+     "name": "AES",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/aes"
+    },
+    {
+     "name": "AirOps",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/airops"
+    },
+    {
+     "name": "Airtree",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/airtree"
+    },
+    {
+     "name": "Alexa+",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/alexa-plus"
+    },
+    {
+     "name": "Amazon Connect",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/amazon-q-in-connect"
+    },
+    {
+     "name": "Amira",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/amira"
+    },
+    {
+     "name": "Anything",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/anything"
+    },
+    {
+     "name": "Apollo",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/apollo"
+    },
+    {
+     "name": "AppFolio",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/appfolio"
+    },
+    {
+     "name": "Armanino",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/armanino"
+    },
+    {
+     "name": "Artemis",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/artemis"
+    },
+    {
+     "name": "Asana",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/asana"
+    },
+    {
+     "name": "Asana",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/asana-qa"
+    },
+    {
+     "name": "ASAPP",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/asapp"
+    },
+    {
+     "name": "Assembled",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/assembled"
+    },
+    {
+     "name": "Athena",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/athena"
+    },
+    {
+     "name": "Atlassian",
+     "product": "Claude and Google Cloud",
+     "url": "https://claude.com/customers/atlassian"
+    },
+    {
+     "name": "Attention",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/attention"
+    },
+    {
+     "name": "Audience Strategies",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/audience-strategies"
+    },
+    {
+     "name": "Augment Code",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/augment-code"
+    },
+    {
+     "name": "Aura",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/aura"
+    },
+    {
+     "name": "Banner Health",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/banner-health"
+    },
+    {
+     "name": "Base44",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/base44"
+    },
+    {
+     "name": "Benchling",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/benchling"
+    },
+    {
+     "name": "Binti",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/binti"
+    },
+    {
+     "name": "Biomni",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/biomni"
+    },
+    {
+     "name": "Bito",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/bito"
+    },
+    {
+     "name": "Blank Metal",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/blank-metal-qa"
+    },
+    {
+     "name": "Block",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/block"
+    },
+    {
+     "name": "BlueFlame",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/blueflame"
+    },
+    {
+     "name": "Bluenote",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/bluenote"
+    },
+    {
+     "name": "Bolt",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/bolt"
+    },
+    {
+     "name": "Box",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/box"
+    },
+    {
+     "name": "Brainlabs",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/brainlabs"
+    },
+    {
+     "name": "Braintrust",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/braintrust"
+    },
+    {
+     "name": "Brand.ai",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/brand-ai"
+    },
+    {
+     "name": "Brex",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/brex"
+    },
+    {
+     "name": "Brian Impact Foundation",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/brian-impact-foundation"
+    },
+    {
+     "name": "Bubble",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/bubble"
+    },
+    {
+     "name": "bunq",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/bunq"
+    },
+    {
+     "name": "Campfire",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/campfire"
+    },
+    {
+     "name": "Canva",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/canva"
+    },
+    {
+     "name": "Carta Healthcare",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/carta-healthcare"
+    },
+    {
+     "name": "Carvana",
+     "product": "Claude Tag",
+     "url": "https://claude.com/customers/carvana"
+    },
+    {
+     "name": "Caylent",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/caylent"
+    },
+    {
+     "name": "Charm Industrial",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/charm-industrial"
+    },
+    {
+     "name": "ChatAndBuild",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/chatandbuild"
+    },
+    {
+     "name": "Chatbase",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/chatbase"
+    },
+    {
+     "name": "ChatPlace",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/chatplace"
+    },
+    {
+     "name": "Chronograph",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/chronograph"
+    },
+    {
+     "name": "Circleback",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/circleback"
+    },
+    {
+     "name": "CircleCI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/circleci"
+    },
+    {
+     "name": "ClassDojo",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/classdojo"
+    },
+    {
+     "name": "Classmethod",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/classmethod"
+    },
+    {
+     "name": "Clay",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/clay"
+    },
+    {
+     "name": "CodeRabbit",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/coderabbit"
+    },
+    {
+     "name": "CodeWords",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/codewords"
+    },
+    {
+     "name": "Cogent",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cogent"
+    },
+    {
+     "name": "Cognition",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cognition"
+    },
+    {
+     "name": "Coinbase",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/coinbase"
+    },
+    {
+     "name": "Copy.ai",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/copy-ai"
+    },
+    {
+     "name": "Cove",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cove"
+    },
+    {
+     "name": "Cox Automotive",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cox-automotive"
+    },
+    {
+     "name": "Cox Communications",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/cox-communications-qa"
+    },
+    {
+     "name": "Cox Communications & Accenture",
+     "product": "Claude",
+     "url": "https://claude.com/customers/cox-and-accenture"
+    },
+    {
+     "name": "CRED",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cred"
+    },
+    {
+     "name": "Crunched",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/crunched"
+    },
+    {
+     "name": "Cubic",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/cubic"
+    },
+    {
+     "name": "Cursor",
+     "product": "Claude",
+     "url": "https://claude.com/customers/cursor-qa"
+    },
+    {
+     "name": "Cyera",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/cyera"
+    },
+    {
+     "name": "Cyera",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/cyera-qa"
+    },
+    {
+     "name": "Decagon",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/decagon"
+    },
+    {
+     "name": "Deepgram",
+     "product": "Claude",
+     "url": "https://claude.com/customers/deepgram"
+    },
+    {
+     "name": "Delight.ai",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/delightai-qa"
+    },
+    {
+     "name": "Delivery Hero",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/delivery-hero"
+    },
+    {
+     "name": "Descript",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/descript"
+    },
+    {
+     "name": "Doctolib",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/doctolib"
+    },
+    {
+     "name": "Dolly",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/dolly"
+    },
+    {
+     "name": "DoorDash",
+     "product": null,
+     "url": "https://claude.com/customers/doordash-boris-office-hours"
+    },
+    {
+     "name": "Dust",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/dust"
+    },
+    {
+     "name": "Duvo",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/duvo"
+    },
+    {
+     "name": "DXC",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/dxc"
+    },
+    {
+     "name": "Elation Health",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/elation-health"
+    },
+    {
+     "name": "Emergent",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/emergent"
+    },
+    {
+     "name": "Epic Systems",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/epic-systems"
+    },
+    {
+     "name": "Epilepsy Foundation",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/epilepsy-foundation"
+    },
+    {
+     "name": "Epilepsy Foundation",
+     "product": null,
+     "url": "https://claude.com/customers/epilepsy-foundation-qa"
+    },
+    {
+     "name": "eSentire",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/esentire"
+    },
+    {
+     "name": "Eve Legal",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/eve-legal"
+    },
+    {
+     "name": "EvenUp",
+     "product": "Claude",
+     "url": "https://claude.com/customers/evenup"
+    },
+    {
+     "name": "Factory",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/factory"
+    },
+    {
+     "name": "Figma",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/figma"
+    },
+    {
+     "name": "Fountain",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/fountain"
+    },
+    {
+     "name": "Freedom Forever",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/freedom-forever"
+    },
+    {
+     "name": "FutureHouse",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/futurehouse"
+    },
+    {
+     "name": "Gambit",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gambit"
+    },
+    {
+     "name": "Gamma",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gamma"
+    },
+    {
+     "name": "Garvan Institute",
+     "product": "Claude",
+     "url": "https://claude.com/customers/garvan-institute-qa"
+    },
+    {
+     "name": "GC AI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gc-ai"
+    },
+    {
+     "name": "Genspark.ai",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/genspark"
+    },
+    {
+     "name": "GitLab",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gitlab"
+    },
+    {
+     "name": "GitLab",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/gitlab-enterprise"
+    },
+    {
+     "name": "Grab",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/grab"
+    },
+    {
+     "name": "Gradial",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gradial"
+    },
+    {
+     "name": "Gradient Labs",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gradient-labs"
+    },
+    {
+     "name": "Grafana",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/grafana"
+    },
+    {
+     "name": "Graphite",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/graphite"
+    },
+    {
+     "name": "Greptile",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/greptile"
+    },
+    {
+     "name": "Gumroad",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/gumroad"
+    },
+    {
+     "name": "Harvey",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/harvey"
+    },
+    {
+     "name": "Headstart",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/headstart"
+    },
+    {
+     "name": "Hebbia",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/hebbia"
+    },
+    {
+     "name": "Hostinger",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/hostinger"
+    },
+    {
+     "name": "HubSpot",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/hubspot"
+    },
+    {
+     "name": "HubSpot",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/hubspot-qa"
+    },
+    {
+     "name": "Humach",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/humach"
+    },
+    {
+     "name": "Hume",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/hume"
+    },
+    {
+     "name": "IFS",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/ifs"
+    },
+    {
+     "name": "IG Group",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/ig-group"
+    },
+    {
+     "name": "Impel",
+     "product": "Claude",
+     "url": "https://claude.com/customers/impel"
+    },
+    {
+     "name": "Inscribe",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/inscribe"
+    },
+    {
+     "name": "Intercom",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/intercom"
+    },
+    {
+     "name": "Intuit",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/intuit"
+    },
+    {
+     "name": "IRC",
+     "product": null,
+     "url": "https://claude.com/customers/irc"
+    },
+    {
+     "name": "Irc Qa",
+     "product": null,
+     "url": "https://claude.com/customers/irc-qa"
+    },
+    {
+     "name": "JAKALA",
+     "product": "Claude",
+     "url": "https://claude.com/customers/jakala"
+    },
+    {
+     "name": "Jamf",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/jamf"
+    },
+    {
+     "name": "Jamf",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/jamf-qa"
+    },
+    {
+     "name": "JetBrains",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/jetbrains"
+    },
+    {
+     "name": "Jetbrains",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/jetbrains-2"
+    },
+    {
+     "name": "Jumpcut",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/jumpcut"
+    },
+    {
+     "name": "Juno",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/juno"
+    },
+    {
+     "name": "Kai",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/kai"
+    },
+    {
+     "name": "Kindora",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/kindora"
+    },
+    {
+     "name": "Kodif",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/kodif"
+    },
+    {
+     "name": "LaunchNotes",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/graph"
+    },
+    {
+     "name": "Law&Company",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/law-and-company"
+    },
+    {
+     "name": "Lazy AI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lazy-ai"
+    },
+    {
+     "name": "League",
+     "product": "Claude",
+     "url": "https://claude.com/customers/league"
+    },
+    {
+     "name": "League",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/league-qa"
+    },
+    {
+     "name": "Legora",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/legora"
+    },
+    {
+     "name": "Lex",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lex"
+    },
+    {
+     "name": "LG CNS",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/lg-cns"
+    },
+    {
+     "name": "Lindy",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lindy"
+    },
+    {
+     "name": "Lokalise",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lokalise"
+    },
+    {
+     "name": "Lotte Homeshopping",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lotte-homeshopping"
+    },
+    {
+     "name": "Lovable",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lovable"
+    },
+    {
+     "name": "Lyft",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/lyft"
+    },
+    {
+     "name": "L’Oréal",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/loreal"
+    },
+    {
+     "name": "MagicSchool",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/magicschool"
+    },
+    {
+     "name": "MagicSchool",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/magicschool-qa"
+    },
+    {
+     "name": "Matillion",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/matillion"
+    },
+    {
+     "name": "Medgate",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/medgate"
+    },
+    {
+     "name": "Mercy Corps",
+     "product": null,
+     "url": "https://claude.com/customers/prosper-global-qa"
+    },
+    {
+     "name": "micro1",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/micro1"
+    },
+    {
+     "name": "Mid-Ohio Food Collective Claude case study",
+     "product": "Claude by Anthropic",
+     "url": "https://claude.com/customers/mid-ohio-food-collective"
+    },
+    {
+     "name": "Mintlify",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/mintlify"
+    },
+    {
+     "name": "Miro",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/miro-qa"
+    },
+    {
+     "name": "Money Forward",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/money-forward"
+    },
+    {
+     "name": "Montgomery County Food Bank Claude case study",
+     "product": "Claude by Anthropic",
+     "url": "https://claude.com/customers/montgomery-county-food-bank"
+    },
+    {
+     "name": "Mutiny",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/mutiny"
+    },
+    {
+     "name": "N26",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/n26"
+    },
+    {
+     "name": "n8n",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/n8n"
+    },
+    {
+     "name": "National Domestic Workers Alliance",
+     "product": "Claude",
+     "url": "https://claude.com/customers/national-domestic-workers-alliance"
+    },
+    {
+     "name": "National Domestic Workers Alliance",
+     "product": null,
+     "url": "https://claude.com/customers/national-domestic-workers-alliance-qa"
+    },
+    {
+     "name": "NBIM",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/nbim"
+    },
+    {
+     "name": "Nevis",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/nevis"
+    },
+    {
+     "name": "Newfront",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/newfront"
+    },
+    {
+     "name": "Notability",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/notability"
+    },
+    {
+     "name": "Notion",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/notion"
+    },
+    {
+     "name": "Notion",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/notion-qa"
+    },
+    {
+     "name": "Novo Nordisk",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/novo-nordisk"
+    },
+    {
+     "name": "NRI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/nri"
+    },
+    {
+     "name": "OffDeal",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/offdeal"
+    },
+    {
+     "name": "OpusClip",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/opusclip"
+    },
+    {
+     "name": "Orange",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/orange"
+    },
+    {
+     "name": "Otter",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/otter"
+    },
+    {
+     "name": "Pacific Community Ventures",
+     "product": "Claude",
+     "url": "https://claude.com/customers/pacific-community-ventures"
+    },
+    {
+     "name": "Pacific Community Ventures",
+     "product": null,
+     "url": "https://claude.com/customers/pacific-community-ventures-qa"
+    },
+    {
+     "name": "Palo Alto Networks",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/palo-alto-networks"
+    },
+    {
+     "name": "Panorama",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/panorama"
+    },
+    {
+     "name": "Panther",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/panther"
+    },
+    {
+     "name": "Parcha",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/parcha"
+    },
+    {
+     "name": "Pelanor",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/pelanor"
+    },
+    {
+     "name": "Pendo",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/pendo-qa"
+    },
+    {
+     "name": "Pensive",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/pensive"
+    },
+    {
+     "name": "Perplexity",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/perplexity"
+    },
+    {
+     "name": "Pictet",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/pictet"
+    },
+    {
+     "name": "Postman",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/postman"
+    },
+    {
+     "name": "Pratham International",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/pratham-international"
+    },
+    {
+     "name": "Praxis",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/praxis"
+    },
+    {
+     "name": "Presien",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/presien"
+    },
+    {
+     "name": "Pressmaster",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/pressmaster"
+    },
+    {
+     "name": "Prosper Global’s",
+     "product": "Claude for Nonprofits",
+     "url": "https://claude.com/customers/prosper-global"
+    },
+    {
+     "name": "Pulpit AI",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/pulpit-ai"
+    },
+    {
+     "name": "PwC",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/pwc-qa"
+    },
+    {
+     "name": "Qodo",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/qodo"
+    },
+    {
+     "name": "Qonto",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/qonto"
+    },
+    {
+     "name": "Qualified Health",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/qualified-health"
+    },
+    {
+     "name": "Quantium",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/quantium"
+    },
+    {
+     "name": "Quantium",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/quantium-qa"
+    },
+    {
+     "name": "Quillit",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/quillit"
+    },
+    {
+     "name": "RAINN",
+     "product": "Claude",
+     "url": "https://claude.com/customers/rainn"
+    },
+    {
+     "name": "Rakuten",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/rakuten"
+    },
+    {
+     "name": "Rakuten",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/rakuten-qa"
+    },
+    {
+     "name": "Ramp",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/ramp"
+    },
+    {
+     "name": "Ramp",
+     "product": null,
+     "url": "https://claude.com/customers/ramp-boris-office-hours"
+    },
+    {
+     "name": "Replit",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/replit"
+    },
+    {
+     "name": "Reversia",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/reversia"
+    },
+    {
+     "name": "RileyBot",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/rileybot"
+    },
+    {
+     "name": "Rising Academies",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/rising-academies"
+    },
+    {
+     "name": "Rocket",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/rocket"
+    },
+    {
+     "name": "Rocket Money",
+     "product": "Claude",
+     "url": "https://claude.com/customers/rocket-money"
+    },
+    {
+     "name": "Rocket Money",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/rocket-money-qa"
+    },
+    {
+     "name": "Rogo",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/rogo"
+    },
+    {
+     "name": "Satispay",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/satispay"
+    },
+    {
+     "name": "Scribd",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/scribd"
+    },
+    {
+     "name": "Section",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/section"
+    },
+    {
+     "name": "Semgrep",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/semgrep"
+    },
+    {
+     "name": "Sentry",
+     "product": "Claude Managed Agents",
+     "url": "https://claude.com/customers/sentry"
+    },
+    {
+     "name": "Sett",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/sett"
+    },
+    {
+     "name": "Shopify",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/shopify"
+    },
+    {
+     "name": "Shortcut",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/shortcut"
+    },
+    {
+     "name": "SK Telecom",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/skt"
+    },
+    {
+     "name": "Skillfully",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/skillfully"
+    },
+    {
+     "name": "Slack",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/slack"
+    },
+    {
+     "name": "Smartsheet",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/smartsheet"
+    },
+    {
+     "name": "Snowflake",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/snowflake"
+    },
+    {
+     "name": "Solvely.ai",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/solvely"
+    },
+    {
+     "name": "Sourcegraph",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/sourcegraph"
+    },
+    {
+     "name": "Sourcegraph",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/sourcegraph-claude-for-work"
+    },
+    {
+     "name": "Spellbook",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/spellbook"
+    },
+    {
+     "name": "Spotify",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/spotify"
+    },
+    {
+     "name": "Spotify",
+     "product": null,
+     "url": "https://claude.com/customers/spotify-boris-office-hours"
+    },
+    {
+     "name": "Spring.new",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/spring-new"
+    },
+    {
+     "name": "Stairwell",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/stairwell"
+    },
+    {
+     "name": "Steno",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/steno"
+    },
+    {
+     "name": "Stripe",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/stripe"
+    },
+    {
+     "name": "StubHub",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/stubhub"
+    },
+    {
+     "name": "StudyFetch",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/studyfetch"
+    },
+    {
+     "name": "Super Teacher",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/super-teacher"
+    },
+    {
+     "name": "Supermetrics",
+     "product": null,
+     "url": "https://claude.com/customers/supermetrics"
+    },
+    {
+     "name": "Syracuse University",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/syracuse"
+    },
+    {
+     "name": "Syracuse University",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/syracuse-university"
+    },
+    {
+     "name": "Tabnine",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tabnine"
+    },
+    {
+     "name": "Tahoe Lead Removal Project",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/tahoe-lead-removal-project"
+    },
+    {
+     "name": "Tasklet",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tasklet"
+    },
+    {
+     "name": "TELUS",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/telus"
+    },
+    {
+     "name": "The Patrick J. McGovern Foundation",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/pjmf"
+    },
+    {
+     "name": "Thomson Reuters",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/thomson-reuters"
+    },
+    {
+     "name": "Thomson Reuters",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/thomson-reuters-qa"
+    },
+    {
+     "name": "Tidio",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tidio"
+    },
+    {
+     "name": "Tines",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tines"
+    },
+    {
+     "name": "tl;dv",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tldv"
+    },
+    {
+     "name": "Tome",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/tome"
+    },
+    {
+     "name": "Trellix",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/trellix"
+    },
+    {
+     "name": "Triple Whale",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/triple-whale"
+    },
+    {
+     "name": "TRY",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/try"
+    },
+    {
+     "name": "Twilio",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/twilio-qa"
+    },
+    {
+     "name": "Vambe",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/vambe"
+    },
+    {
+     "name": "Vanta",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/vanta"
+    },
+    {
+     "name": "Vapi",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/vapi"
+    },
+    {
+     "name": "Vega",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/vega"
+    },
+    {
+     "name": "Vercel",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/vercel-qa"
+    },
+    {
+     "name": "Vibecode",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/vibecode"
+    },
+    {
+     "name": "Warp",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/warp"
+    },
+    {
+     "name": "Wedia Group",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/wedia-group"
+    },
+    {
+     "name": "Windsurf",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/windsurf"
+    },
+    {
+     "name": "Wiz",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/wiz"
+    },
+    {
+     "name": "Wondr Health",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/wondr-health"
+    },
+    {
+     "name": "Wordsmith",
+     "product": "Claude Code",
+     "url": "https://claude.com/customers/wordsmith"
+    },
+    {
+     "name": "Workato",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/workato"
+    },
+    {
+     "name": "WRTN",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/wrtn"
+    },
+    {
+     "name": "YMCA South Australia",
+     "product": "Claude",
+     "url": "https://claude.com/customers/ymca-south-australia"
+    },
+    {
+     "name": "Yoodli",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/yoodli"
+    },
+    {
+     "name": "You.com",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/you-dot-com"
+    },
+    {
+     "name": "Zapia",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/zapia"
+    },
+    {
+     "name": "Zapier",
+     "product": "Claude Enterprise",
+     "url": "https://claude.com/customers/zapier"
+    },
+    {
+     "name": "Zapier",
+     "product": "Claude Cowork",
+     "url": "https://claude.com/customers/zapier-cowork-qa"
+    },
+    {
+     "name": "Zencoder",
+     "product": "Claude Agent SDK",
+     "url": "https://claude.com/customers/zencoder"
+    },
+    {
+     "name": "Zendesk",
+     "product": "Claude and AWS",
+     "url": "https://claude.com/customers/zendesk"
+    },
+    {
+     "name": "Zingage",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/zingage"
+    },
+    {
+     "name": "Zoom",
+     "product": "Claude Platform (API)",
+     "url": "https://claude.com/customers/zoom"
+    }
+   ]
+  },
+  "gov": {
+   "awards": [
+    {
+     "id": "7571TE27C00002",
+     "agency": "Department of Health and Human Services",
+     "subAgency": "Office of the Assistant Secretary for Financial Resources",
+     "amount": 4842000.0,
+     "start": "2026-10-26",
+     "end": "2027-04-25",
+     "type": "contracts",
+     "description": "ANTHROPIC SI ENTERPRISE WIDE CHAT BRIDGE",
+     "url": "https://www.usaspending.gov/award/CONT_AWD_7571TE27C00002_7571_-NONE-_-NONE-"
+    },
+    {
+     "id": "7571TE27C00003",
+     "agency": "Department of Health and Human Services",
+     "subAgency": "Office of the Assistant Secretary for Financial Resources",
+     "amount": 3573000.0,
+     "start": "2026-10-26",
+     "end": "2027-04-25",
+     "type": "contracts",
+     "description": "ANTHROPIC SI ENTERPRISE WIDE CHAT BRIDGE",
+     "url": "https://www.usaspending.gov/award/CONT_AWD_7571TE27C00003_7571_-NONE-_-NONE-"
+    },
+    {
+     "id": "7571TE27C00004",
+     "agency": "Department of Health and Human Services",
+     "subAgency": "Office of the Assistant Secretary for Financial Resources",
+     "amount": 585000.0,
+     "start": "2026-10-26",
+     "end": "2027-04-25",
+     "type": "contracts",
+     "description": "ANTHROPIC SI ENTERPRISE WIDE CHAT BRIDGE",
+     "url": "https://www.usaspending.gov/award/CONT_AWD_7571TE27C00004_7571_-NONE-_-NONE-"
+    },
+    {
+     "id": "33330227CF0010440",
+     "agency": "Smithsonian Institution",
+     "subAgency": "Smithsonian Institution",
+     "amount": 114000.0,
+     "start": "2026-10-09",
+     "end": "2026-10-19",
+     "type": "contracts",
+     "description": "CLAUDE ENTERPRISE SOFTWARE LICENSING.",
+     "url": "https://www.usaspending.gov/award/CONT_AWD_33330227CF0010440_3300_-NONE-_-NONE-"
+    },
+    {
+     "id": "19PCRD26K4661",
+     "agency": "Department of State",
+     "subAgency": "Department of State",
+     "amount": 18960.0,
+     "start": "2026-02-11",
+     "end": "2026-03-12",
+     "type": "contracts",
+     "description": "CLAUDE AI",
+     "url": "https://www.usaspending.gov/award/CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"
+    }
+   ],
+   "awardTotal": 9132960.0,
+   "agencies": [
+    [
+     "Department of Health and Human Services",
+     3
+    ],
+    [
+     "Department of State",
+     1
+    ],
+    [
+     "Smithsonian Institution",
+     1
+    ]
+   ],
+   "lobbying": {
+    "filings": 64,
+    "counted": 53,
+    "quarters": [
+     {
+      "q": "2023 Q1",
+      "inHouse": 0.0,
+      "outside": 50000.0,
+      "firms": 1
+     },
+     {
+      "q": "2023 Q2",
+      "inHouse": 0.0,
+      "outside": 50000.0,
+      "firms": 1
+     },
+     {
+      "q": "2023 Q3",
+      "inHouse": 0.0,
+      "outside": 50000.0,
+      "firms": 1
+     },
+     {
+      "q": "2023 Q4",
+      "inHouse": 0.0,
+      "outside": 50000.0,
+      "firms": 1
+     },
+     {
+      "q": "2024 Q1",
+      "inHouse": 100000.0,
+      "outside": 60000.0,
+      "firms": 1
+     },
+     {
+      "q": "2024 Q2",
+      "inHouse": 150000.0,
+      "outside": 60000.0,
+      "firms": 1
+     },
+     {
+      "q": "2024 Q3",
+      "inHouse": 220000.0,
+      "outside": 60000.0,
+      "firms": 1
+     },
+     {
+      "q": "2024 Q4",
+      "inHouse": 250000.0,
+      "outside": 60000.0,
+      "firms": 1
+     },
+     {
+      "q": "2025 Q1",
+      "inHouse": 360000.0,
+      "outside": 60000.0,
+      "firms": 1
+     },
+     {
+      "q": "2025 Q2",
+      "inHouse": 920000.0,
+      "outside": 150000.0,
+      "firms": 2
+     },
+     {
+      "q": "2025 Q3",
+      "inHouse": 1010000.0,
+      "outside": 150000.0,
+      "firms": 2
+     },
+     {
+      "q": "2025 Q4",
+      "inHouse": 840000.0,
+      "outside": 240000.0,
+      "firms": 5
+     },
+     {
+      "q": "2026 Q1",
+      "inHouse": 1560000.0,
+      "outside": 600000.0,
+      "firms": 8
+     },
+     {
+      "q": "2026 Q2",
+      "inHouse": 1970000.0,
+      "outside": 900000.0,
+      "firms": 8
+     },
+     {
+      "q": "2026 Q3",
+      "inHouse": 2110000.0,
+      "outside": 910000.0,
+      "firms": 8
+     }
+    ],
+    "firms": [
+     {
+      "name": "BALLARD PARTNERS",
+      "total": 890000.0,
+      "first": "2026 Q1",
+      "last": "2026 Q3",
+      "filings": 3
+     },
+     {
+      "name": "AQUIA GROUP, LLC",
+      "total": 860000.0,
+      "first": "2023 Q1",
+      "last": "2026 Q3",
+      "filings": 15
+     },
+     {
+      "name": "CONTINENTAL STRATEGY, LLC",
+      "total": 740000.0,
+      "first": "2025 Q2",
+      "last": "2026 Q3",
+      "filings": 6
+     },
+     {
+      "name": "FIERCE GOVERNMENT RELATIONS",
+      "total": 270000.0,
+      "first": "2025 Q4",
+      "last": "2026 Q3",
+      "filings": 4
+     },
+     {
+      "name": "KOUNTOUPES DENHAM CARR & REID, LLC",
+      "total": 190000.0,
+      "first": "2025 Q4",
+      "last": "2026 Q3",
+      "filings": 4
+     },
+     {
+      "name": "AVENUE SOLUTIONS",
+      "total": 180000.0,
+      "first": "2026 Q1",
+      "last": "2026 Q3",
+      "filings": 3
+     },
+     {
+      "name": "THORN RUN PARTNERS",
+      "total": 170000.0,
+      "first": "2025 Q4",
+      "last": "2026 Q3",
+      "filings": 4
+     },
+     {
+      "name": "NAVIGATORS GLOBAL LLC (FORMERLY DC NAVIGATORS, LLC)",
+      "total": 150000.0,
+      "first": "2026 Q1",
+      "last": "2026 Q3",
+      "filings": 3
+     }
+    ],
+    "issues": [
+     [
+      "Science/Technology",
+      43
+     ],
+     [
+      "Computer Industry",
+      25
+     ],
+     [
+      "Defense",
+      14
+     ],
+     [
+      "Energy/Nuclear",
+      4
+     ],
+     [
+      "Budget/Appropriations",
+      3
+     ],
+     [
+      "Health Issues",
+      2
+     ],
+     [
+      "Consumer Issues/Safety/Products",
+      2
+     ],
+     [
+      "Economics/Economic Development",
+      1
+     ],
+     [
+      "Government Issues",
+      1
+     ],
+     [
+      "Taxation/Internal Revenue Code",
+      1
+     ],
+     [
+      "Labor Issues/Antitrust/Workplace",
+      1
+     ]
+    ],
+    "entities": [
+     [
+      "House Of Representatives",
+      35
+     ],
+     [
+      "Senate",
+      35
+     ],
+     [
+      "White House Office",
+      12
+     ],
+     [
+      "Executive Office Of The President (Eop)",
+      12
+     ],
+     [
+      "Treasury, Dept Of",
+      7
+     ],
+     [
+      "Commerce, Dept Of (Doc)",
+      7
+     ],
+     [
+      "Natl Security Council (Nsc)",
+      3
+     ],
+     [
+      "Energy, Dept Of",
+      2
+     ],
+     [
+      "Office Of Management & Budget (Omb)",
+      2
+     ],
+     [
+      "Office Of The Vice President Of The United States",
+      2
+     ],
+     [
+      "Defense, Dept Of (Dod)",
+      2
+     ],
+     [
+      "Office Of Science & Technology Policy (Ostp)",
+      1
+     ]
+    ],
+    "lobbyists": 48,
+    "inHouseTotal": 9490000.0,
+    "outsideTotal": 3450000.0,
+    "latestPosted": "2026-10-21T23:45:02+00:00"
+   },
+   "readOn": "2026-10-29"
   }
  },
  "applied-materials": {
@@ -12843,7 +14687,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "arista": {
   "people": [],
@@ -12870,7 +14716,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "arm": {
   "people": [],
@@ -12897,7 +14745,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "ase": {
   "people": [],
@@ -12924,7 +14774,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "asm-international": {
   "people": [],
@@ -12951,7 +14803,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "asml": {
   "people": [],
@@ -12978,7 +14832,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "ats-substrate": {
   "people": [],
@@ -13005,7 +14861,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "aws": {
   "people": [],
@@ -13032,7 +14890,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "azure": {
   "people": [],
@@ -13059,7 +14919,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "besi": {
   "people": [],
@@ -13086,7 +14948,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "bloom-energy": {
   "people": [],
@@ -13113,7 +14977,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "broadcom": {
   "people": [],
@@ -13140,7 +15006,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "cadence": {
   "people": [],
@@ -13167,7 +15035,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "cambricon": {
   "people": [],
@@ -13194,7 +15064,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "cisco": {
   "people": [],
@@ -13221,7 +15093,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "cohere": {
   "people": [],
@@ -13481,7 +15355,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "coherent": {
   "people": [],
@@ -13508,7 +15384,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "constellation-energy": {
   "people": [],
@@ -13535,7 +15413,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "coreweave-capital": {
   "people": [],
@@ -14185,7 +16065,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "coreweave-facilities": {
   "people": [],
@@ -14212,7 +16094,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -14450,7 +16334,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "daikin-fluoropolymer": {
   "people": [],
@@ -14477,7 +16363,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "databricks": {
   "people": [],
@@ -15393,7 +17281,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "delta-electronics": {
   "people": [],
@@ -15420,7 +17310,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "digital-realty": {
   "people": [],
@@ -15447,7 +17339,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "disco-corp": {
   "people": [],
@@ -15474,7 +17368,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "ebara": {
   "people": [],
@@ -15501,7 +17397,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "equinix": {
   "people": [],
@@ -15528,7 +17426,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "foxconn-industrial-internet": {
   "people": [],
@@ -15555,7 +17455,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "fujimi-slurry": {
   "people": [],
@@ -15582,7 +17484,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "fujitsu-fugaku": {
   "people": [],
@@ -15609,7 +17513,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "ge-vernova": {
   "people": [],
@@ -15636,7 +17542,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "github-copilot": {
   "people": [],
@@ -15663,7 +17571,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "globalfoundries": {
   "people": [],
@@ -15690,7 +17600,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "google-cloud": {
   "people": [],
@@ -15717,7 +17629,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "google-deepmind": {
   "people": [],
@@ -16449,7 +18363,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "google-investor": {
   "people": [],
@@ -16476,7 +18392,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "harvey-ai": {
   "people": [],
@@ -16698,7 +18616,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "hoya-mask-blanks": {
   "people": [],
@@ -16725,7 +18645,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "hygon": {
   "people": [],
@@ -16752,7 +18674,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "intel": {
   "people": [],
@@ -16779,7 +18703,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "intel-foundry": {
   "people": [],
@@ -16806,7 +18732,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "inventec": {
   "people": [],
@@ -16833,7 +18761,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "jcet": {
   "people": [],
@@ -16860,7 +18790,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "jpmorgan-ai": {
   "people": [],
@@ -16887,7 +18819,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "kioxia": {
   "people": [],
@@ -16914,7 +18848,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "kla": {
   "people": [],
@@ -16941,7 +18877,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "kokusai-electric": {
   "people": [],
@@ -16968,7 +18906,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "kyec": {
   "people": [],
@@ -16995,7 +18935,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "lam-research": {
   "people": [],
@@ -17022,7 +18964,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "lambda": {
   "people": [],
@@ -17253,7 +19197,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "lasertec": {
   "people": [],
@@ -17280,7 +19226,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "lite-on": {
   "people": [],
@@ -17307,7 +19255,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "lumentum": {
   "people": [],
@@ -17334,7 +19284,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "marvell": {
   "people": [],
@@ -17361,7 +19313,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "mediatek": {
   "people": [],
@@ -17388,7 +19342,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "meta-infra": {
   "people": [],
@@ -17415,7 +19371,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "micron": {
   "people": [],
@@ -17442,7 +19400,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "microsoft": {
   "people": [],
@@ -17469,7 +19429,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "mistral": {
   "people": [],
@@ -17753,7 +19715,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "murata": {
   "people": [],
@@ -17780,7 +19744,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nan-ya-pcb": {
   "people": [],
@@ -17807,7 +19773,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "naura": {
   "people": [],
@@ -17834,7 +19802,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nebius": {
   "people": [],
@@ -17861,7 +19831,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "ntt-iown": {
   "people": [],
@@ -17888,7 +19860,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nuscale": {
   "people": [],
@@ -17915,7 +19889,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nvidia": {
   "people": [
@@ -18652,7 +20628,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nxp": {
   "people": [],
@@ -18679,7 +20657,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "nyt-copyright-suit": {
   "people": [],
@@ -18706,7 +20686,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "oklo": {
   "people": [],
@@ -18733,7 +20715,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "openai": {
   "people": [],
@@ -19611,7 +21595,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "oracle-cloud": {
   "people": [],
@@ -19638,7 +21624,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "palantir": {
   "people": [],
@@ -19665,7 +21653,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "palantir-aip": {
   "people": [],
@@ -19692,7 +21682,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "perplexity": {
   "people": [],
@@ -20225,7 +22217,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "psmc": {
   "people": [],
@@ -20252,7 +22246,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "pti-powertech": {
   "people": [],
@@ -20279,7 +22275,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "qualcomm-edge": {
   "people": [],
@@ -20306,7 +22304,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "quanta": {
   "people": [],
@@ -20333,7 +22333,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "reddit-data-licensing": {
   "people": [],
@@ -20360,7 +22362,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "renesas": {
   "people": [],
@@ -20387,7 +22391,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "resonac": {
   "people": [],
@@ -20414,7 +22420,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "salesforce-agentforce": {
   "people": [],
@@ -20441,7 +22449,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "sambanova": {
   "people": [],
@@ -20670,7 +22680,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "samsung": {
   "people": [],
@@ -20697,7 +22709,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "samsung-foundry": {
   "people": [],
@@ -20724,7 +22738,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "sap-ai": {
   "people": [],
@@ -20751,7 +22767,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "scale-ai": {
   "people": [],
@@ -20970,7 +22988,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "schneider-electric": {
   "people": [],
@@ -20997,7 +23017,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "screen-holdings": {
   "people": [],
@@ -21024,7 +23046,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "servicenow": {
   "people": [],
@@ -21051,7 +23075,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "shin-etsu": {
   "people": [],
@@ -21078,7 +23104,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "siemens-eda": {
   "people": [],
@@ -21105,7 +23133,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "siltronic": {
   "people": [],
@@ -21132,7 +23162,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "sk-hynix": {
   "people": [],
@@ -21159,7 +23191,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "smic": {
   "people": [],
@@ -21186,7 +23220,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "snowflake": {
   "people": [],
@@ -21213,7 +23249,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "softbank": {
   "people": [],
@@ -21240,7 +23278,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "softbank-arm-ai": {
   "people": [],
@@ -21267,7 +23307,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "sony-image-sensor": {
   "people": [],
@@ -21294,7 +23336,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "stmicro": {
   "people": [],
@@ -21321,7 +23365,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "sumco": {
   "people": [],
@@ -21348,7 +23394,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "synopsys": {
   "people": [],
@@ -21375,7 +23423,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "teradyne": {
   "people": [],
@@ -21402,7 +23452,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "thinking-machines": {
   "people": [],
@@ -21620,7 +23672,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "tokyo-electron": {
   "people": [],
@@ -21647,7 +23701,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "tokyo-ohka": {
   "people": [],
@@ -21674,7 +23730,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "tongfu": {
   "people": [],
@@ -21701,7 +23759,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "toppan-photomask": {
   "people": [],
@@ -21728,7 +23788,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "tsmc": {
   "people": [],
@@ -21755,7 +23817,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "umc": {
   "people": [],
@@ -21782,7 +23846,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "vertiv": {
   "people": [],
@@ -21809,7 +23875,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "vistra": {
   "people": [],
@@ -21836,7 +23904,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "waymo-av": {
   "people": [],
@@ -21863,7 +23933,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "wistron": {
   "people": [],
@@ -21890,7 +23962,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "wiwynn": {
   "people": [],
@@ -21917,7 +23991,9 @@ export const AI_360: Record<string, Entity360> = {
   },
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  },
  "xai-capital": {
   "people": [],
@@ -22175,7 +24251,9 @@ export const AI_360: Record<string, Entity360> = {
   "market": null,
   "talent": null,
   "reddit": null,
-  "ipo": null
+  "ipo": null,
+  "customers": null,
+  "gov": null
  }
 };
 

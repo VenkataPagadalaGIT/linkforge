@@ -125,7 +125,7 @@ for r in rows("""
 for r in rows("SELECT entity_id, count(*) AS pages, count(DISTINCT host) AS hosts, max(retrieved_at) AS day, max(published_on) FILTER (WHERE published_on <= retrieved_at) AS newest FROM ontology.site_page GROUP BY 1"):
     at, on = stamp("site", r["day"])
     add(r["entity_id"], "site", "Its own websites", f"{r['pages']:,} pages on {r['hosts']} {'site' if r['hosts'] == 1 else 'sites'}",
-        ["f360", "news"], r["newest"], at, on, "site", "free")
+        ["f360", "news", "customers"], r["newest"], at, on, "site", "free")
 
 # 4) Public attention and news tone.
 att = rows("SELECT entity_id, sum(items) AS items, max(retrieved_at) AS day, max(month) AS newest FROM ontology.attention GROUP BY 1")
@@ -168,7 +168,15 @@ for r in rows("SELECT entity_id, count(*) AS n, max(retrieved_at) AS day, max(fi
     add(r["entity_id"], "edgar", "SEC EDGAR filing index", f"{r['n']} filings", ["ipo"], r["newest"], None, r["day"], None, "manual",
         None)
 
-# 8) Market quotes for listed companies.
+# 8) Government records: federal awards and lobbying disclosures.
+for r in rows("SELECT entity_id, count(*) AS n, sum(amount) AS total, max(retrieved_at) AS day, max(start_date) AS newest FROM ontology.gov_award GROUP BY 1"):
+    at, on = stamp("gov", r["day"])
+    add(r["entity_id"], "usaspending", "USAspending.gov federal awards", f"{r['n']} awards", ["gov"], r["newest"], at, on, "gov", "free", "https://www.usaspending.gov/")
+for r in rows("SELECT entity_id, count(*) AS n, max(retrieved_at) AS day, max(posted_at)::date AS newest FROM ontology.lobbying_filing GROUP BY 1"):
+    at, on = stamp("gov", r["day"])
+    add(r["entity_id"], "lda", "Senate lobbying disclosures (LDA)", f"{r['n']} filings", ["gov"], r["newest"], at, on, "gov", "free", "https://lda.senate.gov/")
+
+# 9) Market quotes for listed companies.
 for r in rows("SELECT entity_id, max(day) AS day, max(retrieved_at) AS at FROM ontology.market_quote GROUP BY 1"):
     add(r["entity_id"], "market", "Market quote (Yahoo Finance, unofficial)", None, ["f360"], r["day"], r["at"], None, "market", "free")
 

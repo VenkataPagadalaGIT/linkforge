@@ -9,7 +9,7 @@ import { hasCompanyFile, sections360For } from "@/lib/ai360-sections";
 import { sectionPath } from "@/lib/graph-urls";
 import { freshnessOf } from "@/data/aiFreshness";
 
-export type FileSectionId = "overview" | "ipo" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings" | "sources";
+export type FileSectionId = "overview" | "ipo" | "customers" | "gov" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings" | "sources";
 
 export interface FileSection {
   id: FileSectionId;
@@ -51,6 +51,7 @@ export function fileSections(id: string): FileSection[] {
     { id: "f360", label: "360", count: full ? "birth to now" : null, pages: page("timeline", "Birth to now"), empty: !full },
     { id: "connections", label: "Connections", count: some(links, "link"), pages: [], empty: !links },
     { id: "money", label: "Money", count: some(deals, "deal"), pages: [], empty: !deals },
+    ...(f?.customers ? [{ id: "customers" as const, label: "Customers", count: `${f.customers.total} named`, pages: page("customers", "Customers"), empty: false }] : []),
     ...(hasCompanyFile(id) ? [{ id: "financials" as const, label: "Financials", count: some(figures, "figure") ?? "from its filings", pages: [], empty: false }] : []),
     { id: "investors", label: "Investors", count: some(rounds, "round"), pages: page("investors", "Investors"), empty: !rounds },
     { id: "share", label: "Market share", count: some(shares, "segment"), pages: [], empty: !shares },
@@ -62,6 +63,7 @@ export function fileSections(id: string): FileSection[] {
       empty: !people && !roles && !posts && !f?.footprint,
     },
     { id: "legal", label: "Legal", count: some(legal, "matter"), pages: page("legal", "Legal"), empty: !legal },
+    ...(f?.gov ? [{ id: "gov" as const, label: "Government", count: [some(f.gov.lobbying?.counted ?? 0, "lobbying report"), some(f.gov.awards.length, "award")].filter(Boolean).join(" · ") || null, pages: page("government", "Government"), empty: false }] : []),
     { id: "news", label: "News and events", count: some(news, "item"), pages: [], empty: !news },
     { id: "earnings", label: "Earnings calls", count: null, pages: [], empty: true },
     { id: "sources", label: "Data sources", count: `${sources} ${sources === 1 ? "source" : "sources"}`, pages: [], empty: false },
