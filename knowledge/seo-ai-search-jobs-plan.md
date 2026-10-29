@@ -46,7 +46,7 @@ What makes the format work:
 
 | Dimension | Nozzle | The AI SEO job market study |
 |---|---|---|
-| Universe | A sample of its customers' keywords | Every posting matching the terms, from every source we can license or read, in every country those sources cover (target 175) |
+| Universe | A sample of its customers' keywords | Every posting matching the terms, from every source we can license or read, in every country those sources cover (target: all 195) |
 | Depth | One outcome per SERP | About 120 structured fields per job: pay, duties, skills in four families, tools, level, company type, ownership |
 | Languages | Not stated | Search terms and labels in every language of the countries covered; the original text kept beside the English |
 | Time | Two months | A census, then a monthly refresh that never stops (closed postings are kept) |
