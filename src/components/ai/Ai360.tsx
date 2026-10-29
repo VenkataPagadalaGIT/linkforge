@@ -1629,6 +1629,9 @@ export function Highlights({ id, onTab }: { id: string; onTab?: (tab: string) =>
   const val = [...f.rounds].reverse().find((r) => r.postMoney);
   const staff = f.facts.find((x) => x.key === "employees");
   const cards: { label: string; value: string; sub: string; tab: string; href: string }[] = [];
+  const listing = f.ipo?.terms.find((t) => t.key === "ipo_listing")?.value.match(/ticker ([A-Z]+)/)?.[1];
+  const s1 = f.ipo?.filings.find((x) => x.form === "S-1");
+  if (listing && s1) cards.push({ label: "IPO", value: `Nasdaq: ${listing}`, sub: `S-1 filed ${Number(s1.filedOn.slice(8, 10))} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(s1.filedOn.slice(5, 7)) - 1]} ${s1.filedOn.slice(0, 4)}; price not set`, tab: "ipo", href: sectionPath(id, "ipo") });
   if (raised) cards.push({ label: "Capital raised", value: money(raised.value), sub: `to ${monthYear(raised.asOf ?? raised.period)}, per its filing`, tab: "investors", href: sectionPath(id, "investors") });
   if (val?.postMoney) cards.push({ label: "Latest valuation", value: money(val.postMoney), sub: `${val.round}, post-money`, tab: "investors", href: sectionPath(id, "investors") });
   if (rev) cards.push({ label: rev === last("revenue_usd") ? "Revenue" : "Quarterly revenue", value: money(rev.value), sub: rev.period, tab: "money", href: entityPath(id) });

@@ -5,7 +5,7 @@ import { AI_360, type Entity360 } from "@/data/ai360";
 import { AI_INTEL } from "@/data/aiIntel";
 import { getNode } from "@/data/aiOntology";
 
-export type Section360Id = "people" | "investors" | "legal" | "hiring" | "timeline";
+export type Section360Id = "ipo" | "people" | "investors" | "legal" | "hiring" | "timeline";
 
 export interface Section360 {
   id: Section360Id;
@@ -21,7 +21,23 @@ export interface Section360 {
 const money = (v: number) => (v >= 1e12 ? `$${(v / 1e12).toFixed(2)}T` : v >= 1e9 ? `$${(v / 1e9).toFixed(1).replace(/\.0$/, "")}B` : `$${Math.round(v / 1e6)}M`);
 const n = (v: number) => v.toLocaleString("en-US");
 
+const day = (d: string) => `${Number(d.slice(8, 10))} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(d.slice(5, 7)) - 1]} ${d.slice(0, 4)}`;
+
 export const SECTIONS_360: Section360[] = [
+  {
+    id: "ipo",
+    label: "IPO",
+    title: (name) => `${name} IPO: the filings, share classes, lock-up and what is set so far`,
+    description: (name, f) => {
+      const ipo = f.ipo!;
+      const s1 = ipo.filings.find((x) => x.form === "S-1");
+      const first = ipo.filings[ipo.filings.length - 1];
+      const listing = ipo.terms.find((t) => t.key === "ipo_listing")?.value.replace(/ \(Class A common stock\)$/, "");
+      const range = ipo.terms.find((t) => t.key === "ipo_price_range")?.value;
+      return `${name}'s listing from its own filings: ${ipo.filings.length} SEC filings from the first confidential draft${first ? ` (${day(first.filedOn)})` : ""}${s1 ? ` to the public S-1 (${day(s1.filedOn)})` : ""}${listing ? `, ${listing}` : ""}; price range ${range && /not set/i.test(range) ? "not set yet" : range}; share classes, lock-up and use of proceeds, each with its sentence.`;
+    },
+    has: (f) => !!f.ipo,
+  },
   {
     id: "people",
     label: "People",

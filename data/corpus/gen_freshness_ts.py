@@ -74,7 +74,8 @@ ev = rows("""
       WHEN 'fact' THEN (SELECT entity_id FROM ontology.fact WHERE id = e.target_id)
       WHEN 'entity' THEN e.target_id
     END AS entity_id,
-    CASE WHEN e.target_kind = 'signal' THEN (SELECT metric FROM ontology.signal WHERE id = e.target_id) END AS metric,
+    CASE WHEN e.target_kind = 'signal' THEN (SELECT metric FROM ontology.signal WHERE id = e.target_id)
+         WHEN e.target_kind = 'fact' THEN (SELECT key FROM ontology.fact WHERE id = e.target_id) END AS metric,
     CASE WHEN e.target_kind = 'deal' THEN (SELECT jsonb_build_array(r.from_id, r.to_id) FROM ontology.deal dl JOIN ontology.relation r ON r.id = dl.relation_id WHERE dl.id = e.target_id) END AS deal_ends
   FROM ontology.evidence e LEFT JOIN document d ON d.id = e.document_id
   WHERE COALESCE(d.url, e.url) IS NOT NULL""")
@@ -83,6 +84,8 @@ for e in ev:
     ents = e["deal_ends"] or [e["entity_id"]]
     if e["kind"] == "signal":
         secs = ["share"] if (e["metric"] or "").startswith("share_") else ["financials", "overview"]
+    elif e["kind"] == "fact" and (e["metric"] or "").startswith("ipo_"):
+        secs = ["ipo"]
     else:
         secs = KIND_SECTIONS.get(e["kind"], ["overview"])
     for ent in ents:
@@ -160,7 +163,12 @@ for r in rows("SELECT entity_id, platform, count(*) AS n, max(retrieved_at) AS a
     else:
         add(r["entity_id"], "reddit", "Reddit posts (Bright Data)", f"{r['n']} posts", ["f360"], r["newest"], r["at"], None, "reddit", "paid")
 
-# 7) Market quotes for listed companies.
+# 7) SEC filings (EDGAR's company filing index, read in the browser; a pull needs the SEC contact string).
+for r in rows("SELECT entity_id, count(*) AS n, max(retrieved_at) AS day, max(filed_on) AS newest FROM ontology.filing GROUP BY 1"):
+    add(r["entity_id"], "edgar", "SEC EDGAR filing index", f"{r['n']} filings", ["ipo"], r["newest"], None, r["day"], None, "manual",
+        None)
+
+# 8) Market quotes for listed companies.
 for r in rows("SELECT entity_id, max(day) AS day, max(retrieved_at) AS at FROM ontology.market_quote GROUP BY 1"):
     add(r["entity_id"], "market", "Market quote (Yahoo Finance, unofficial)", None, ["f360"], r["day"], r["at"], None, "market", "free")
 

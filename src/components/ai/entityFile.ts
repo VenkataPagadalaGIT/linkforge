@@ -9,7 +9,7 @@ import { hasCompanyFile, sections360For } from "@/lib/ai360-sections";
 import { sectionPath } from "@/lib/graph-urls";
 import { freshnessOf } from "@/data/aiFreshness";
 
-export type FileSectionId = "overview" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings" | "sources";
+export type FileSectionId = "overview" | "ipo" | "f360" | "connections" | "money" | "financials" | "investors" | "share" | "people" | "legal" | "news" | "earnings" | "sources";
 
 export interface FileSection {
   id: FileSectionId;
@@ -47,6 +47,7 @@ export function fileSections(id: string): FileSection[] {
   const sources = freshnessOf(id).length + 1;
   const sections: FileSection[] = [
     { id: "overview", label: "Overview", count: units ? `${some(units, "unit")} in the group` : null, pages: [], empty: false },
+    ...(f?.ipo ? [{ id: "ipo" as const, label: "IPO", count: `${f.ipo.filings.length} SEC filings`, pages: page("ipo", "IPO"), empty: false }] : []),
     { id: "f360", label: "360", count: full ? "birth to now" : null, pages: page("timeline", "Birth to now"), empty: !full },
     { id: "connections", label: "Connections", count: some(links, "link"), pages: [], empty: !links },
     { id: "money", label: "Money", count: some(deals, "deal"), pages: [], empty: !deals },

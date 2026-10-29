@@ -86,7 +86,7 @@ OWNED = {
 }
 for kind, sel in OWNED.items():
     st.append(f"DELETE FROM ontology.evidence WHERE target_kind={lit(kind)} AND target_id IN ({sel});")
-for table in ("affiliation", "legal_case", "engagement", "funding_round", "fact", "agreement"):
+for table in ("affiliation", "legal_case", "engagement", "funding_round", "fact", "agreement", "filing"):
     st.append(f"DELETE FROM ontology.{table} WHERE source_file={lit(SRC)};")
 # People are upserted (their photos stay); people this file no longer lists are removed.
 slugs = [p["slug"] for p in D.get("people", [])]
@@ -155,6 +155,13 @@ for g in D.get("agreements", []):
         f" VALUES ({eid(ENT)},{lit(g.get('exhibit'))},{lit(g['title'])},{lit(g.get('counterparty'))},{eid(g.get('counterparty_entity'))},{lit(g['kind'])},{lit(g.get('dated_on'))},"
         f"{lit(g.get('url'))},{lit(bool(g.get('redacted')))},{lit(g.get('sort_order'))},{lit(SRC)})", g["evidence"]))
 
+# SEC filings (the IPO paper trail): the filing index itself is the record, so they carry no quotes.
+for g in D.get("filings", []):
+    st.append("INSERT INTO ontology.filing (entity_id,form,filed_on,accession,url,description,size,sort_order,source_file) VALUES"
+              f" ({eid(ENT)},{lit(g['form'])},{lit(g['filed_on'])},{lit(g['accession'])},{lit(g['url'])},{lit(g.get('description'))},{lit(g.get('size'))},{lit(g.get('sort_order'))},{lit(SRC)})"
+              " ON CONFLICT (entity_id, accession) DO UPDATE SET form=EXCLUDED.form, filed_on=EXCLUDED.filed_on, url=EXCLUDED.url, description=EXCLUDED.description,"
+              " size=EXCLUDED.size, sort_order=EXCLUDED.sort_order, source_file=EXCLUDED.source_file, retrieved_at=current_date;")
+
 sql("\n".join(st), timeout=300)
 c = query(f"""SELECT
   (SELECT count(*) FROM ontology.person WHERE source_file={lit(SRC)}),
@@ -167,4 +174,4 @@ c = query(f"""SELECT
   (SELECT count(*) FROM ontology.agreement WHERE source_file={lit(SRC)}),
   (SELECT count(*) FROM ontology.evidence WHERE target_kind IN ('affiliation','legal_case','engagement','funding_round','fact','agreement')
      OR (target_kind='person' AND target_id IN (SELECT id FROM ontology.person WHERE source_file={lit(SRC)})))""")[0]
-print(f"{ENT} 360: people={c[0]} affiliations={c[1]} legal={c[2]} advisors={c[3]} rounds={c[4]} round_investors={c[5]} facts={c[6]} agreements={c[7]} evidence={c[8]}")
+print(f"{ENT} 360 ({SRC}): filings={query(f'SELECT count(*) FROM ontology.filing WHERE source_file={lit(SRC)}')[0][0]} people={c[0]} affiliations={c[1]} legal={c[2]} advisors={c[3]} rounds={c[4]} round_investors={c[5]} facts={c[6]} agreements={c[7]} evidence={c[8]}")

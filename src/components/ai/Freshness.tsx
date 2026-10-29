@@ -14,6 +14,7 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const LOCAL_REFRESH = process.env.NEXT_PUBLIC_AI_LOCAL_REFRESH === "1";
 const SECTION_LABEL: Record<string, string> = {
   overview: "Overview",
+  ipo: "IPO",
   f360: "360",
   connections: "Connections",
   money: "Money",

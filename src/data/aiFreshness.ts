@@ -30,8 +30,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -47,8 +47,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -64,8 +64,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -98,8 +98,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -145,8 +145,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -177,8 +177,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -194,8 +194,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -407,11 +407,12 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
   {
    "id": "doc:https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
    "label": "Anthropic, PBC, Form S-1 registration statement",
-   "detail": "206 quoted passages · sec.gov",
+   "detail": "225 quoted passages · sec.gov",
    "sections": [
     "f360",
     "financials",
     "investors",
+    "ipo",
     "legal",
     "money",
     "overview",
@@ -440,6 +441,21 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "pipeline": null,
    "cost": "manual",
    "url": null
+  },
+  {
+   "id": "edgar",
+   "label": "SEC EDGAR filing index",
+   "detail": "7 filings",
+   "sections": [
+    "ipo"
+   ],
+   "dataAsOf": "2026-10-26",
+   "pulledAt": null,
+   "pulledOn": "2026-10-29",
+   "cadenceH": null,
+   "pipeline": null,
+   "cost": "manual",
+   "url": null
   }
  ],
  "applied-materials": [
@@ -450,8 +466,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -467,8 +483,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -484,8 +500,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -501,8 +517,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -518,8 +534,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -535,8 +551,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -552,8 +568,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -569,8 +585,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -616,8 +632,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -680,8 +696,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -697,8 +713,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -714,8 +730,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -746,8 +762,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -763,8 +779,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -780,8 +796,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -829,8 +845,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -846,8 +862,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -893,8 +909,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -925,8 +941,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -959,8 +975,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1040,8 +1056,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1057,8 +1073,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1074,8 +1090,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1091,8 +1107,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1108,8 +1124,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1125,8 +1141,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1142,8 +1158,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1159,8 +1175,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1176,8 +1192,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1193,8 +1209,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1210,8 +1226,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1242,8 +1258,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1336,8 +1352,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1402,8 +1418,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1419,8 +1435,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1436,8 +1452,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1453,8 +1469,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1470,8 +1486,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1487,8 +1503,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1504,8 +1520,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1521,8 +1537,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1538,8 +1554,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1555,8 +1571,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1572,8 +1588,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1589,8 +1605,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1638,8 +1654,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1655,8 +1671,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1672,8 +1688,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1689,8 +1705,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1706,8 +1722,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1723,8 +1739,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1740,8 +1756,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1772,8 +1788,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1851,8 +1867,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1868,8 +1884,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1885,8 +1901,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1902,8 +1918,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1936,8 +1952,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1953,8 +1969,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -1985,8 +2001,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2079,8 +2095,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2096,8 +2112,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2113,8 +2129,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2252,8 +2268,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2269,8 +2285,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2286,8 +2302,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2365,8 +2381,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2382,8 +2398,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2416,8 +2432,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2433,8 +2449,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2450,8 +2466,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2467,8 +2483,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2484,8 +2500,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2501,8 +2517,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2535,8 +2551,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2567,8 +2583,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2599,8 +2615,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2633,8 +2649,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2650,8 +2666,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2667,8 +2683,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2684,8 +2700,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2701,8 +2717,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2718,8 +2734,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2735,8 +2751,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2782,8 +2798,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2814,8 +2830,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2831,8 +2847,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2848,8 +2864,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2865,8 +2881,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2882,8 +2898,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2899,8 +2915,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2916,8 +2932,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2933,8 +2949,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2967,8 +2983,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -2984,8 +3000,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3001,8 +3017,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3018,8 +3034,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3035,8 +3051,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3067,8 +3083,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3099,8 +3115,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3116,8 +3132,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3133,8 +3149,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3150,8 +3166,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3167,8 +3183,8 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "sections": [
     "f360"
    ],
-   "dataAsOf": "2026-10-28",
-   "pulledAt": "2026-10-28T21:15:08.612259+00:00",
+   "dataAsOf": "2026-10-29",
+   "pulledAt": "2026-10-29T04:38:53.324019+00:00",
    "pulledOn": null,
    "cadenceH": 24,
    "pipeline": "market",
@@ -3316,8 +3332,8 @@ export const AI_PIPELINES: PipelineState[] = [
   "why": "GDELT news tone; stops when refused",
   "cadenceH": 24,
   "cost": "free",
-  "lastOk": null,
-  "lastStatus": "running",
+  "lastOk": "2026-10-29T04:38:18.051299+00:00",
+  "lastStatus": "ok",
   "lastRun": "2026-10-29T04:22:01.08986+00:00"
  },
  {
@@ -3334,9 +3350,9 @@ export const AI_PIPELINES: PipelineState[] = [
   "why": "daily quotes for the 111 listed companies (Yahoo, unofficial)",
   "cadenceH": 24,
   "cost": "free",
-  "lastOk": null,
-  "lastStatus": null,
-  "lastRun": null
+  "lastOk": "2026-10-29T04:38:53.59415+00:00",
+  "lastStatus": "ok",
+  "lastRun": "2026-10-29T04:38:18.140912+00:00"
  },
  {
   "id": "photos",

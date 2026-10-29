@@ -39,7 +39,11 @@ export interface Entity360 {
   people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
   site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
   reddit: { posts: number; top: { title: string; url: string; date: string | null; summary: string }[] } | null;
+  ipo: Ipo | null;
 }
+export interface Filing { form: string; filedOn: string; accession: string; url: string; description: string | null; size: string | null }
+/** The listing: SEC filings newest first, and the offering terms the registration statement states or leaves blank. */
+export interface Ipo { filings: Filing[]; terms: Fact[]; readOn: string | null }
 
 export const AI_360: Record<string, Entity360> = {
  "advantest": {
@@ -56,17 +60,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6857.T",
-   "day": "2026-10-28",
-   "price": 34930.0,
+   "day": "2026-10-29",
+   "price": 36980.0,
    "currency": "JPY",
-   "marketCap": 25217814971650.0,
-   "change1d": 2.615,
+   "marketCap": 26697818426900.0,
+   "change1d": 5.597,
    "yearHigh": 41990.0,
    "yearLow": 18270.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "agc-blanks": {
   "people": [],
@@ -82,17 +87,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "5201.T",
-   "day": "2026-10-28",
-   "price": 5478.0,
+   "day": "2026-10-29",
+   "price": 5422.0,
    "currency": "JPY",
-   "marketCap": 1163493198054.0,
-   "change1d": 0.22,
+   "marketCap": 1151599145646.0,
+   "change1d": -0.859,
    "yearHigh": 8315.0,
    "yearLow": 4761.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "alchip-guc": {
   "people": [],
@@ -108,17 +114,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3661.TW",
-   "day": "2026-10-28",
-   "price": 3800.0,
+   "day": "2026-10-29",
+   "price": 3675.0,
    "currency": "TWD",
-   "marketCap": 327959433200.0,
-   "change1d": 8.727,
+   "marketCap": 317171293950.0,
+   "change1d": -3.162,
    "yearHigh": 5640.0,
    "yearLow": 2480.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "amazon-investor": {
   "people": [],
@@ -134,7 +141,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMZN",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 254.6,
    "currency": "USD",
    "marketCap": 2746195501265.6333,
@@ -144,7 +151,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "amd": {
   "people": [],
@@ -160,7 +168,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMD",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 578.44,
    "currency": "USD",
    "marketCap": 944288867280.0148,
@@ -170,7 +178,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "amec": {
   "people": [],
@@ -186,17 +195,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688012.SS",
-   "day": "2026-10-28",
-   "price": 240.0,
+   "day": "2026-10-29",
+   "price": 224.21,
    "currency": "CNY",
-   "marketCap": 229882163520.0,
-   "change1d": 1.437,
+   "marketCap": 214757839275.9063,
+   "change1d": -6.49,
    "yearHigh": 500.0,
    "yearLow": 171.95301818847656,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "amkor": {
   "people": [],
@@ -212,7 +222,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMKR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 42.21,
    "currency": "USD",
    "marketCap": 10487178615.654968,
@@ -222,7 +232,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "anthropic": {
   "people": [
@@ -12443,6 +12454,368 @@ export const AI_360: Record<string, Entity360> = {
      "summary": "r/technology · 12477 upvotes · 2332 comments"
     }
    ]
+  },
+  "ipo": {
+   "filings": [
+    {
+     "form": "S-1",
+     "filedOn": "2026-10-26",
+     "accession": "0001628280-26-067168",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.htm",
+     "description": "Registration statement, filed publicly",
+     "size": "224 MB"
+    },
+    {
+     "form": "DRS/A",
+     "filedOn": "2026-10-09",
+     "accession": "0002130357-26-000014",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000014/0002130357-26-000014-index.htm",
+     "description": "Confidential draft, amended",
+     "size": "108 MB"
+    },
+    {
+     "form": "DRS/A",
+     "filedOn": "2026-10-01",
+     "accession": "0002130357-26-000009",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000009/0002130357-26-000009-index.htm",
+     "description": "Confidential draft, amended",
+     "size": "88 MB"
+    },
+    {
+     "form": "DRS/A",
+     "filedOn": "2026-09-04",
+     "accession": "0001628279-26-001111",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926001111/0001628279-26-001111-index.htm",
+     "description": "Confidential draft, amended",
+     "size": "70 MB"
+    },
+    {
+     "form": "DRS/A",
+     "filedOn": "2026-08-10",
+     "accession": "0001628279-26-000993",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926000993/0001628279-26-000993-index.htm",
+     "description": "Confidential draft, amended",
+     "size": "58 MB"
+    },
+    {
+     "form": "DRS/A",
+     "filedOn": "2026-07-13",
+     "accession": "0001628279-26-000861",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926000861/0001628279-26-000861-index.htm",
+     "description": "Confidential draft, amended",
+     "size": "3 MB"
+    },
+    {
+     "form": "DRS",
+     "filedOn": "2026-06-01",
+     "accession": "0002130357-26-000005",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000005/0002130357-26-000005-index.htm",
+     "description": "Confidential draft registration statement",
+     "size": "3 MB"
+    }
+   ],
+   "terms": [
+    {
+     "key": "ipo_listing",
+     "label": "Listing",
+     "value": "Nasdaq Global Select Market, ticker ANT (Class A common stock)",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "We have applied to list our Class A common stock on the Nasdaq Global Select Market under the symbol “ANT.”",
+       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+       "locator": "Prospectus cover",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_market",
+     "label": "Public market today",
+     "value": "None: the Class A stock has never traded",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "Prior to this offering, there has been no public market for our Class A common stock.",
+       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+       "locator": "Prospectus cover",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_price_range",
+     "label": "Price range",
+     "value": "Not set yet: the S-1 leaves the range blank",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "It is currently estimated that the initial public offering price per share will be between $ and $ .",
+       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+       "locator": "Prospectus cover",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_shares",
+     "label": "Shares offered",
+     "value": "New shares from Anthropic and shares from selling stockholders; both counts are still blank",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "We are selling shares of Class A common stock and the selling stockholders identified in this prospectus are selling an additional shares of Class A common stock.",
+       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+       "locator": "Prospectus cover",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_delivery",
+     "label": "Delivery date",
+     "value": "Not set yet: the S-1 leaves the date blank",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "The underwriters expect to deliver the shares against payment in New York, New York, on or about .",
+       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+       "locator": "Prospectus cover",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_proceeds",
+     "label": "Use of proceeds",
+     "value": "General corporate purposes: working capital, operating costs, capital spending including compute and infrastructure, and hiring and keeping skilled staff",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "We intend to use the net proceeds from this offering for general corporate purposes, including working capital, operating expenses, and capital expenditures, including investments in compute and infrastructure, as well as hiring and retention of highly skilled personnel.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_dividends",
+     "label": "Dividends",
+     "value": "None planned",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "We do not anticipate paying cash dividends in the foreseeable future.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_class_a",
+     "label": "Class A (the shares sold)",
+     "value": "One vote per share",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "Each share of Class A common stock is entitled to one vote per share and shares of Class N common stock have no voting rights, except as otherwise required by law.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_class_n",
+     "label": "Class N",
+     "value": "No vote; held mainly by strategic business partners; becomes Class A when sold to an unaffiliated party",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "The holders of our Class N common stock are primarily strategic business partners, and shares of Class N common stock will generally convert to Class A common stock upon a sale or transfer to an unaffiliated third party.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_class_f",
+     "label": "Class F (the founders)",
+     "value": "One share, held by the co-founders' LLC, carrying 50.1% of the votes on general matters, including electing every director other than the Class T directors",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "Our Class F common stock, which will be held by the Founder LLC, will be entitled to an aggregate number of votes that equals 50.1% of the total voting power of our outstanding shares of capital stock with respect to matters submitted to stockholders generally, including the election of our directors other than the Class T directors.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      },
+      {
+       "quote": "Immediately prior to the completion of this offering, we will also issue a single share of Class F common stock, a special class of our common stock, to a limited liability company organized by our co-founders (the “Founder LLC”).",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_class_t",
+     "label": "Class T (the Long-Term Benefit Trust)",
+     "value": "Elects and removes the Class T directors, a majority of the board; no other vote and no economic rights",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "Our Class T common stock does not otherwise have voting rights with respect to matters submitted to stockholders generally and has no economic rights.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      },
+      {
+       "quote": "Through a special class of common stock, Class T common stock, the LTBT generally has the authority to elect and remove the Class T directors, who together will constitute a majority of the authorized members of our board of directors.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_class_e",
+     "label": "Class E",
+     "value": "Votes only on certain limited matters; no economic rights; none issued before the offering",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "no issuance of shares of Class E common stock prior to the completion of this offering",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      },
+      {
+       "quote": "Our Class E common stock will be entitled to vote only on certain limited matters and will not have any economic rights.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_ltbt",
+     "label": "Long-Term Benefit Trust",
+     "value": "Governed by five trustees",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "The LTBT is governed by five Trustees.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_controlled",
+     "label": "Controlled company",
+     "value": "Yes, under Nasdaq's governance rules",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "We are considered a “controlled company” within the meaning of the Nasdaq Global Select Market corporate governance requirements.",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_lockup",
+     "label": "Lock-up",
+     "value": "180 days after the prospectus date for directors, officers and holders of substantially all shares",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "Our directors, officers, and the holders of substantially all of our capital stock and securities convertible into or exercisable or exchangeable for our capital stock have entered into market standoff agreements with us under which they have agreed that, subject to certain exceptions, for a period of 180 days after the date of this prospectus, they will not, without our prior written consent, sell, make any short sale of, loan, grant any option for the purchase of, or otherwise dispose of any of our securities, including securities issued or issuable upon the conversion, exercise, exchange, reclassification, or replacement of such securities.",
+       "url": null,
+       "locator": "Lock-Up and Market Standoff Agreements",
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    },
+    {
+     "key": "ipo_split",
+     "label": "Stock split",
+     "value": "10-for-1 forward split of Class A and Class N stock on 17 Sep 2026",
+     "asOf": "2026-10-26",
+     "evidence": [
+      {
+       "quote": "a 10-for-one forward split of our Class A common stock and Class N common stock effected on September 17, 2026",
+       "url": null,
+       "locator": null,
+       "source": "Anthropic, PBC, Form S-1 registration statement",
+       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
+       "publishedOn": "2026-10-26",
+       "secondary": false
+      }
+     ]
+    }
+   ],
+   "readOn": "2026-10-29"
   }
  },
  "applied-materials": {
@@ -12459,7 +12832,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMAT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 416.0,
    "currency": "USD",
    "marketCap": 330136536288.0,
@@ -12469,7 +12842,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "arista": {
   "people": [],
@@ -12485,7 +12859,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ANET",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 186.72,
    "currency": "USD",
    "marketCap": 235495867814.14087,
@@ -12495,7 +12869,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "arm": {
   "people": [],
@@ -12511,7 +12886,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ARM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 235.9,
    "currency": "USD",
    "marketCap": 251940855908.55405,
@@ -12521,7 +12896,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "ase": {
   "people": [],
@@ -12537,7 +12913,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASX",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 43.92,
    "currency": "USD",
    "marketCap": 96956640284.29152,
@@ -12547,7 +12923,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "asm-international": {
   "people": [],
@@ -12563,7 +12940,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 4.79,
    "currency": "USD",
    "marketCap": 813606741.6105356,
@@ -12573,7 +12950,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "asml": {
   "people": [],
@@ -12589,7 +12967,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASML",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 1662.85,
    "currency": "USD",
    "marketCap": 640891882875.0872,
@@ -12599,7 +12977,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "ats-substrate": {
   "people": [],
@@ -12615,7 +12994,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ATS.VI",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 155.0,
    "currency": "EUR",
    "marketCap": 6021750000.0,
@@ -12625,7 +13004,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "aws": {
   "people": [],
@@ -12641,7 +13021,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMZN",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 254.6,
    "currency": "USD",
    "marketCap": 2746195501265.6333,
@@ -12651,7 +13031,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "azure": {
   "people": [],
@@ -12667,7 +13048,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 531.01,
    "currency": "USD",
    "marketCap": 3943038983691.003,
@@ -12677,7 +13058,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "besi": {
   "people": [],
@@ -12693,17 +13075,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "BESI.AS",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 161.55,
    "currency": "EUR",
-   "marketCap": 12780815245.435791,
+   "marketCap": 12779779953.150002,
    "change1d": -0.92,
    "yearHigh": 328.3999938964844,
    "yearLow": 120.1500015258789,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "bloom-energy": {
   "people": [],
@@ -12719,7 +13102,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "BE",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 228.08,
    "currency": "USD",
    "marketCap": 67406128994.50481,
@@ -12729,7 +13112,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "broadcom": {
   "people": [],
@@ -12745,7 +13129,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AVGO",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 351.81,
    "currency": "USD",
    "marketCap": 1679410711151.2803,
@@ -12755,7 +13139,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "cadence": {
   "people": [],
@@ -12771,7 +13156,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CDNS",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 342.46,
    "currency": "USD",
    "marketCap": 94311084426.78833,
@@ -12781,7 +13166,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "cambricon": {
   "people": [],
@@ -12797,17 +13183,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688256.SS",
-   "day": "2026-10-28",
-   "price": 958.0,
+   "day": "2026-10-29",
+   "price": 910.0,
    "currency": "CNY",
-   "marketCap": 602442139664.0,
-   "change1d": 4.931,
+   "marketCap": 572257147280.0,
+   "change1d": -4.901,
    "yearHigh": 1620.0,
    "yearLow": 649.6644287109375,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "cisco": {
   "people": [],
@@ -12823,7 +13210,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CSCO",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 110.29,
    "currency": "USD",
    "marketCap": 434827909832.71606,
@@ -12833,7 +13220,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "cohere": {
   "people": [],
@@ -13092,7 +13480,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "coherent": {
   "people": [],
@@ -13108,7 +13497,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "COHR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 239.59,
    "currency": "USD",
    "marketCap": 47182737340.75653,
@@ -13118,7 +13507,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "constellation-energy": {
   "people": [],
@@ -13134,17 +13524,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CEG",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 258.08,
    "currency": "USD",
    "marketCap": 91439643614.77463,
    "change1d": -0.547,
-   "yearHigh": 406.0429992675781,
+   "yearHigh": 400.9800109863281,
    "yearLow": 228.6300048828125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "coreweave-capital": {
   "people": [],
@@ -13783,17 +14174,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRWV",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 63.93,
    "currency": "USD",
    "marketCap": 35259735134.17561,
    "change1d": 6.745,
-   "yearHigh": 140.3300018310547,
+   "yearHigh": 138.36000061035156,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "coreweave-facilities": {
   "people": [],
@@ -13809,17 +14201,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRWV",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 63.93,
    "currency": "USD",
    "marketCap": 35259735134.17561,
    "change1d": 6.745,
-   "yearHigh": 140.3300018310547,
+   "yearHigh": 138.36000061035156,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "cursor-anysphere": {
   "people": [],
@@ -14056,7 +14449,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "daikin-fluoropolymer": {
   "people": [],
@@ -14072,17 +14466,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6367.T",
-   "day": "2026-10-28",
-   "price": 21535.0,
+   "day": "2026-10-29",
+   "price": 21155.0,
    "currency": "JPY",
-   "marketCap": 5993968344200.0,
-   "change1d": 0.279,
+   "marketCap": 5888200618600.0,
+   "change1d": -1.787,
    "yearHigh": 26440.0,
    "yearLow": 17380.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "databricks": {
   "people": [],
@@ -14997,7 +15392,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "delta-electronics": {
   "people": [],
@@ -15013,17 +15409,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2308.TW",
-   "day": "2026-10-28",
-   "price": 1550.0,
+   "day": "2026-10-29",
+   "price": 1465.0,
    "currency": "TWD",
-   "marketCap": 4026192159950.0,
-   "change1d": 2.649,
+   "marketCap": 3805400976985.0,
+   "change1d": -5.484,
    "yearHigh": 2585.0,
    "yearLow": 886.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "digital-realty": {
   "people": [],
@@ -15039,7 +15436,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "DLR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 179.77,
    "currency": "USD",
    "marketCap": 66694442737.86757,
@@ -15049,7 +15446,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "disco-corp": {
   "people": [],
@@ -15065,17 +15463,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6146.T",
-   "day": "2026-10-28",
-   "price": 52360.0,
+   "day": "2026-10-29",
+   "price": 51790.0,
    "currency": "JPY",
-   "marketCap": 5679370081000.0,
-   "change1d": 5.077,
+   "marketCap": 5617543477750.0,
+   "change1d": -1.427,
    "yearHigh": 91680.0,
    "yearLow": 42370.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "ebara": {
   "people": [],
@@ -15091,17 +15490,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6361.T",
-   "day": "2026-10-28",
-   "price": 3930.0,
+   "day": "2026-10-29",
+   "price": 3875.0,
    "currency": "JPY",
-   "marketCap": 1789712253600.0,
-   "change1d": 2.477,
+   "marketCap": 1764665390000.0,
+   "change1d": -1.425,
    "yearHigh": 6890.0,
    "yearLow": 3538.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "equinix": {
   "people": [],
@@ -15117,7 +15517,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "EQIX",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 1007.66,
    "currency": "USD",
    "marketCap": 99427508464.88562,
@@ -15127,7 +15527,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "foxconn-industrial-internet": {
   "people": [],
@@ -15143,17 +15544,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2317.TW",
-   "day": "2026-10-28",
-   "price": 251.5,
+   "day": "2026-10-29",
+   "price": 248.5,
    "currency": "TWD",
-   "marketCap": 3539677249878.5,
-   "change1d": 1.616,
+   "marketCap": 3497454459621.5,
+   "change1d": -0.996,
    "yearHigh": 314.0,
    "yearLow": 187.5,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "fujimi-slurry": {
   "people": [],
@@ -15169,17 +15571,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "5384.T",
-   "day": "2026-10-28",
-   "price": 3270.0,
+   "day": "2026-10-29",
+   "price": 3255.0,
    "currency": "JPY",
-   "marketCap": 242579247120.0,
-   "change1d": 4.306,
+   "marketCap": 241466498280.0,
+   "change1d": -0.913,
    "yearHigh": 5090.0,
    "yearLow": 2212.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "fujitsu-fugaku": {
   "people": [],
@@ -15195,17 +15598,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6702.T",
-   "day": "2026-10-28",
-   "price": 4450.0,
+   "day": "2026-10-29",
+   "price": 4308.0,
    "currency": "JPY",
-   "marketCap": 7683450589500.0,
-   "change1d": -0.581,
+   "marketCap": 7438270817880.0,
+   "change1d": -3.038,
    "yearHigh": 4668.0,
    "yearLow": 3016.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "ge-vernova": {
   "people": [],
@@ -15221,7 +15625,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GEV",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 878.03,
    "currency": "USD",
    "marketCap": 233848881928.17163,
@@ -15231,7 +15635,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "github-copilot": {
   "people": [],
@@ -15247,7 +15652,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 531.01,
    "currency": "USD",
    "marketCap": 3943038983691.003,
@@ -15257,7 +15662,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "globalfoundries": {
   "people": [],
@@ -15273,7 +15679,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GFS",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 46.11,
    "currency": "USD",
    "marketCap": 25702572124.551315,
@@ -15283,7 +15689,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "google-cloud": {
   "people": [],
@@ -15299,17 +15706,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 324.89,
    "currency": "USD",
    "marketCap": 3973383706393.026,
    "change1d": 0.408,
    "yearHigh": 408.6099853515625,
-   "yearLow": 267.6700134277344,
+   "yearLow": 270.70001220703125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "google-deepmind": {
   "people": [],
@@ -16040,7 +16448,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "google-investor": {
   "people": [],
@@ -16056,17 +16465,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 324.89,
    "currency": "USD",
    "marketCap": 3973383706393.026,
    "change1d": 0.408,
    "yearHigh": 408.6099853515625,
-   "yearLow": 267.6700134277344,
+   "yearLow": 270.70001220703125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "harvey-ai": {
   "people": [],
@@ -16287,7 +16697,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "hoya-mask-blanks": {
   "people": [],
@@ -16303,17 +16714,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7741.T",
-   "day": "2026-10-28",
-   "price": 26415.0,
+   "day": "2026-10-29",
+   "price": 26305.0,
    "currency": "JPY",
-   "marketCap": 8784071545185.0,
-   "change1d": 0.038,
+   "marketCap": 8747492030895.0,
+   "change1d": -0.246,
    "yearHigh": 30400.0,
    "yearLow": 22165.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "hygon": {
   "people": [],
@@ -16329,17 +16741,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688041.SS",
-   "day": "2026-10-28",
-   "price": 192.7,
+   "day": "2026-10-29",
+   "price": 185.26,
    "currency": "CNY",
-   "marketCap": 447899943042.38306,
-   "change1d": 3.059,
+   "marketCap": 430606861970.6895,
+   "change1d": -3.112,
    "yearHigh": 395.1700134277344,
    "yearLow": 186.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "intel": {
   "people": [],
@@ -16355,7 +16768,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "INTC",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 95.53,
    "currency": "USD",
    "marketCap": 501964892457.7333,
@@ -16365,7 +16778,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "intel-foundry": {
   "people": [],
@@ -16381,7 +16795,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "INTC",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 95.53,
    "currency": "USD",
    "marketCap": 501964892457.7333,
@@ -16391,7 +16805,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "inventec": {
   "people": [],
@@ -16407,17 +16822,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2356.TW",
-   "day": "2026-10-28",
-   "price": 63.8,
+   "day": "2026-10-29",
+   "price": 61.5,
    "currency": "TWD",
-   "marketCap": 228880906473.77374,
-   "change1d": 1.27,
+   "marketCap": 220629716559.0,
+   "change1d": -3.454,
    "yearHigh": 88.5999984741211,
    "yearLow": 38.54999923706055,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "jcet": {
   "people": [],
@@ -16433,17 +16849,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "600584.SS",
-   "day": "2026-10-28",
-   "price": 55.41,
+   "day": "2026-10-29",
+   "price": 53.16,
    "currency": "CNY",
-   "marketCap": 99151461050.65701,
-   "change1d": 3.978,
+   "marketCap": 95125278268.15701,
+   "change1d": -4.061,
    "yearHigh": 113.87000274658203,
    "yearLow": 34.58000183105469,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "jpmorgan-ai": {
   "people": [],
@@ -16459,7 +16876,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "JPM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 339.3,
    "currency": "USD",
    "marketCap": 901045047583.0078,
@@ -16469,7 +16886,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "kioxia": {
   "people": [],
@@ -16485,17 +16903,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "285A.T",
-   "day": "2026-10-28",
-   "price": 14340.0,
+   "day": "2026-10-29",
+   "price": 15005.0,
    "currency": "JPY",
-   "marketCap": 22913965357560.0,
-   "change1d": 14.172,
+   "marketCap": 23976572537670.0,
+   "change1d": 3.985,
    "yearHigh": 37566.66796875,
    "yearLow": 2784.333251953125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "kla": {
   "people": [],
@@ -16511,7 +16930,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "KLAC",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 158.77,
    "currency": "USD",
    "marketCap": 207195886310.42926,
@@ -16521,7 +16940,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "kokusai-electric": {
   "people": [],
@@ -16537,17 +16957,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6525.T",
-   "day": "2026-10-28",
-   "price": 7265.0,
+   "day": "2026-10-29",
+   "price": 7260.0,
    "currency": "JPY",
-   "marketCap": 1695533641190.0,
-   "change1d": 7.312,
+   "marketCap": 1694366721960.0,
+   "change1d": -0.425,
    "yearHigh": 12220.0,
    "yearLow": 3852.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "kyec": {
   "people": [],
@@ -16563,17 +16984,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2449.TW",
-   "day": "2026-10-28",
-   "price": 277.5,
+   "day": "2026-10-29",
+   "price": 268.5,
    "currency": "TWD",
-   "marketCap": 356277324375.0,
-   "change1d": 2.778,
+   "marketCap": 344722384125.0,
+   "change1d": -3.069,
    "yearHigh": 350.0,
    "yearLow": 187.14285278320312,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "lam-research": {
   "people": [],
@@ -16589,7 +17011,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "LRCX",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 253.82,
    "currency": "USD",
    "marketCap": 317636540728.5458,
@@ -16599,7 +17021,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "lambda": {
   "people": [],
@@ -16829,7 +17252,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "lasertec": {
   "people": [],
@@ -16845,17 +17269,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6920.T",
-   "day": "2026-10-28",
-   "price": 41590.0,
+   "day": "2026-10-29",
+   "price": 41130.0,
    "currency": "JPY",
-   "marketCap": 3730898117850.0,
-   "change1d": 5.291,
+   "marketCap": 3689633074950.0,
+   "change1d": -0.772,
    "yearHigh": 58580.0,
    "yearLow": 25590.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "lite-on": {
   "people": [],
@@ -16871,17 +17296,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2301.TW",
-   "day": "2026-10-28",
-   "price": 261.5,
+   "day": "2026-10-29",
+   "price": 250.5,
    "currency": "TWD",
-   "marketCap": 593370576233.0,
-   "change1d": 4.183,
+   "marketCap": 568410437271.0,
+   "change1d": -4.207,
    "yearHigh": 328.0,
    "yearLow": 139.5,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "lumentum": {
   "people": [],
@@ -16897,7 +17323,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "LITE",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 913.95,
    "currency": "USD",
    "marketCap": 82788202346.94775,
@@ -16907,7 +17333,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "marvell": {
   "people": [],
@@ -16923,7 +17350,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MRVL",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 251.65,
    "currency": "USD",
    "marketCap": 226159010376.19235,
@@ -16933,7 +17360,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "mediatek": {
   "people": [],
@@ -16949,17 +17377,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2454.TW",
-   "day": "2026-10-28",
-   "price": 4235.0,
+   "day": "2026-10-29",
+   "price": 4040.0,
    "currency": "TWD",
-   "marketCap": 6763966366080.0,
-   "change1d": 6.008,
+   "marketCap": 6452520453120.0,
+   "change1d": -4.604,
    "yearHigh": 5480.0,
    "yearLow": 1130.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "meta-infra": {
   "people": [],
@@ -16975,17 +17404,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "META",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 612.49,
    "currency": "USD",
-   "marketCap": 1566034640025.5874,
+   "marketCap": 1594209179576.3687,
    "change1d": -1.116,
    "yearHigh": 779.8200073242188,
    "yearLow": 520.260009765625,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "micron": {
   "people": [],
@@ -17001,7 +17431,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MU",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 983.23,
    "currency": "USD",
    "marketCap": 1112449222636.6504,
@@ -17011,7 +17441,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "microsoft": {
   "people": [],
@@ -17027,7 +17458,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 531.01,
    "currency": "USD",
    "marketCap": 3943038983691.003,
@@ -17037,7 +17468,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "mistral": {
   "people": [],
@@ -17320,7 +17752,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "murata": {
   "people": [],
@@ -17336,17 +17769,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6981.T",
-   "day": "2026-10-28",
-   "price": 6701.0,
+   "day": "2026-10-29",
+   "price": 6711.0,
    "currency": "JPY",
-   "marketCap": 12128202581154.0,
-   "change1d": 4.442,
+   "marketCap": 12146301674694.0,
+   "change1d": -0.342,
    "yearHigh": 12895.0,
    "yearLow": 2821.5,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nan-ya-pcb": {
   "people": [],
@@ -17362,17 +17796,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "8046.TW",
-   "day": "2026-10-28",
-   "price": 1300.0,
+   "day": "2026-10-29",
+   "price": 1275.0,
    "currency": "TWD",
-   "marketCap": 840015133100.0,
-   "change1d": 3.175,
+   "marketCap": 823860995925.0,
+   "change1d": -2.299,
    "yearHigh": 1560.0,
    "yearLow": 232.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "naura": {
   "people": [],
@@ -17388,17 +17823,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "002371.SZ",
-   "day": "2026-10-28",
-   "price": 511.68,
+   "day": "2026-10-29",
+   "price": 504.19,
    "currency": "CNY",
-   "marketCap": 372479394540.62714,
-   "change1d": 4.82,
+   "marketCap": 367027027695.04095,
+   "change1d": -1.564,
    "yearHigh": 968.0,
    "yearLow": 386.6199951171875,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nebius": {
   "people": [],
@@ -17414,7 +17850,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NBIS",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 182.34,
    "currency": "USD",
    "marketCap": 49570079454.55646,
@@ -17424,7 +17860,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "ntt-iown": {
   "people": [],
@@ -17440,17 +17877,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "9432.T",
-   "day": "2026-10-28",
-   "price": 171.9,
+   "day": "2026-10-29",
+   "price": 170.7,
    "currency": "JPY",
-   "marketCap": 13912384150900.701,
-   "change1d": -1.15,
+   "marketCap": 13815264784311.85,
+   "change1d": -0.466,
    "yearHigh": 181.3000030517578,
    "yearLow": 142.60000610351562,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nuscale": {
   "people": [],
@@ -17466,7 +17904,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SMR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 5.67,
    "currency": "USD",
    "marketCap": 2326908621.0502357,
@@ -17476,7 +17914,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nvidia": {
   "people": [
@@ -18202,7 +18641,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NVDA",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 215.38,
    "currency": "USD",
    "marketCap": 5200780977905.273,
@@ -18212,7 +18651,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nxp": {
   "people": [],
@@ -18228,7 +18668,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NXPI",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 251.69,
    "currency": "USD",
    "marketCap": 63467201569.69519,
@@ -18238,7 +18678,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "nyt-copyright-suit": {
   "people": [],
@@ -18254,17 +18695,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NYT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 69.18,
    "currency": "USD",
    "marketCap": 11157598528.699844,
    "change1d": -0.902,
    "yearHigh": 87.0999984741211,
-   "yearLow": 55.93000030517578,
+   "yearLow": 56.0099983215332,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "oklo": {
   "people": [],
@@ -18280,17 +18722,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "OKLO",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 27.12,
    "currency": "USD",
    "marketCap": 5044798824.112225,
    "change1d": -0.544,
-   "yearHigh": 152.05999755859375,
+   "yearHigh": 145.3000030517578,
    "yearLow": 25.389999389648438,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "openai": {
   "people": [],
@@ -19167,7 +19610,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "oracle-cloud": {
   "people": [],
@@ -19183,17 +19627,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ORCL",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 144.54,
    "currency": "USD",
    "marketCap": 438173155723.3639,
    "change1d": 9.866,
-   "yearHigh": 281.6199951171875,
+   "yearHigh": 269.760009765625,
    "yearLow": 114.5,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "palantir": {
   "people": [],
@@ -19209,7 +19654,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "PLTR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 196.81,
    "currency": "USD",
    "marketCap": 472945933581.958,
@@ -19219,7 +19664,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "palantir-aip": {
   "people": [],
@@ -19235,7 +19681,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "PLTR",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 196.81,
    "currency": "USD",
    "marketCap": 472945933581.958,
@@ -19245,7 +19691,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "perplexity": {
   "people": [],
@@ -19777,7 +20224,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "psmc": {
   "people": [],
@@ -19793,17 +20241,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6770.TW",
-   "day": "2026-10-28",
-   "price": 71.3,
+   "day": "2026-10-29",
+   "price": 69.3,
    "currency": "TWD",
-   "marketCap": 339390662679.7805,
-   "change1d": 2.443,
+   "marketCap": 329870588397.7805,
+   "change1d": -3.212,
    "yearHigh": 94.5,
    "yearLow": 27.899999618530273,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "pti-powertech": {
   "people": [],
@@ -19819,17 +20268,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6239.TW",
-   "day": "2026-10-28",
-   "price": 272.5,
+   "day": "2026-10-29",
+   "price": 272.0,
    "currency": "TWD",
-   "marketCap": 198597182500.0,
-   "change1d": 6.654,
+   "marketCap": 198232784000.0,
+   "change1d": -0.548,
    "yearHigh": 387.0,
    "yearLow": 148.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "qualcomm-edge": {
   "people": [],
@@ -19845,7 +20295,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "QCOM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 182.97,
    "currency": "USD",
    "marketCap": 195382595899.30502,
@@ -19855,7 +20305,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "quanta": {
   "people": [],
@@ -19871,17 +20322,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2382.TW",
-   "day": "2026-10-28",
-   "price": 330.0,
+   "day": "2026-10-29",
+   "price": 320.0,
    "currency": "TWD",
-   "marketCap": 1352841072000.0,
-   "change1d": 0.763,
+   "marketCap": 1311845888000.0,
+   "change1d": -2.736,
    "yearHigh": 438.0,
    "yearLow": 260.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "reddit-data-licensing": {
   "people": [],
@@ -19897,7 +20349,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "RDDT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 134.7,
    "currency": "USD",
    "marketCap": 25915809309.852448,
@@ -19907,7 +20359,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "renesas": {
   "people": [],
@@ -19923,17 +20376,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6723.T",
-   "day": "2026-10-28",
-   "price": 3100.0,
+   "day": "2026-10-29",
+   "price": 2891.5,
    "currency": "JPY",
-   "marketCap": 5665216640900.0,
-   "change1d": 7.732,
+   "marketCap": 5284185134568.5,
+   "change1d": -6.996,
    "yearHigh": 5284.0,
    "yearLow": 1753.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "resonac": {
   "people": [],
@@ -19949,17 +20403,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4004.T",
-   "day": "2026-10-28",
-   "price": 13535.0,
+   "day": "2026-10-29",
+   "price": 13945.0,
    "currency": "JPY",
-   "marketCap": 2567684109650.0,
-   "change1d": 5.045,
+   "marketCap": 2645463975550.0,
+   "change1d": 2.915,
    "yearHigh": 20495.0,
    "yearLow": 5413.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "salesforce-agentforce": {
   "people": [],
@@ -19975,7 +20430,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 242.11,
    "currency": "USD",
    "marketCap": 199256530502.31934,
@@ -19985,7 +20440,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "sambanova": {
   "people": [],
@@ -20213,7 +20669,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "samsung": {
   "people": [],
@@ -20229,17 +20686,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "005930.KS",
-   "day": "2026-10-28",
-   "price": 242000.0,
+   "day": "2026-10-29",
+   "price": 230500.0,
    "currency": "KRW",
-   "marketCap": 1575885296304000.0,
-   "change1d": 8.764,
+   "marketCap": 1500998185116000.0,
+   "change1d": -4.158,
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "samsung-foundry": {
   "people": [],
@@ -20255,17 +20713,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "005930.KS",
-   "day": "2026-10-28",
-   "price": 242000.0,
+   "day": "2026-10-29",
+   "price": 230500.0,
    "currency": "KRW",
-   "marketCap": 1575885296304000.0,
-   "change1d": 8.764,
+   "marketCap": 1500998185116000.0,
+   "change1d": -4.158,
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "sap-ai": {
   "people": [],
@@ -20281,7 +20740,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SAP",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 236.93,
    "currency": "USD",
    "marketCap": 273465600234.11572,
@@ -20291,7 +20750,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "scale-ai": {
   "people": [],
@@ -20509,7 +20969,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "schneider-electric": {
   "people": [],
@@ -20525,7 +20986,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SU",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 77.54,
    "currency": "USD",
    "marketCap": 91554983036.06451,
@@ -20535,7 +20996,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "screen-holdings": {
   "people": [],
@@ -20551,17 +21013,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7735.T",
-   "day": "2026-10-28",
-   "price": 12030.0,
+   "day": "2026-10-29",
+   "price": 11990.0,
    "currency": "JPY",
-   "marketCap": 2274726594900.0,
-   "change1d": 4.472,
+   "marketCap": 2267163081700.0,
+   "change1d": -0.786,
    "yearHigh": 19770.0,
    "yearLow": 5825.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "servicenow": {
   "people": [],
@@ -20577,7 +21040,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NOW",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 150.13,
    "currency": "USD",
    "marketCap": 155213707108.1543,
@@ -20587,7 +21050,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "shin-etsu": {
   "people": [],
@@ -20603,17 +21067,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4063.T",
-   "day": "2026-10-28",
-   "price": 6004.0,
+   "day": "2026-10-29",
+   "price": 5989.0,
    "currency": "JPY",
-   "marketCap": 10901659238872.0,
-   "change1d": 2.283,
+   "marketCap": 10874423248102.0,
+   "change1d": -0.183,
    "yearHigh": 7930.0,
    "yearLow": 4366.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "siemens-eda": {
   "people": [],
@@ -20629,17 +21094,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SIE.DE",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 270.05,
    "currency": "EUR",
-   "marketCap": 206376199841.65594,
+   "marketCap": 206376209170.45,
    "change1d": 1.237,
    "yearHigh": 291.70001220703125,
    "yearLow": 198.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "siltronic": {
   "people": [],
@@ -20655,17 +21121,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "WAF.DE",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 60.65,
    "currency": "EUR",
-   "marketCap": 2001450050.354004,
+   "marketCap": 2001450000.0,
    "change1d": 0.915,
    "yearHigh": 108.80000305175781,
    "yearLow": 41.720001220703125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "sk-hynix": {
   "people": [],
@@ -20681,17 +21148,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "000660.KS",
-   "day": "2026-10-28",
-   "price": 1487000.0,
+   "day": "2026-10-29",
+   "price": 1527000.0,
    "currency": "KRW",
-   "marketCap": 1048592732788000.0,
-   "change1d": 10.475,
+   "marketCap": 1076799665748000.0,
+   "change1d": 3.106,
    "yearHigh": 2987000.0,
    "yearLow": 501000.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "smic": {
   "people": [],
@@ -20707,17 +21175,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "0981.HK",
-   "day": "2026-10-28",
-   "price": 47.8,
+   "day": "2026-10-29",
+   "price": 44.7,
    "currency": "HKD",
-   "marketCap": 409281848717.62103,
-   "change1d": 5.426,
+   "marketCap": 382738477864.87897,
+   "change1d": -6.485,
    "yearHigh": 93.0,
    "yearLow": 44.099998474121094,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "snowflake": {
   "people": [],
@@ -20733,7 +21202,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SNOW",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 339.91,
    "currency": "USD",
    "marketCap": 119920249291.99219,
@@ -20743,7 +21212,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "softbank": {
   "people": [],
@@ -20759,17 +21229,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SFTBY",
-   "day": "2026-10-28",
-   "price": 15.23,
+   "day": "2026-10-29",
+   "price": 15.25,
    "currency": "USD",
-   "marketCap": 173593039171.30444,
-   "change1d": 5.034,
+   "marketCap": 173821006364.5,
+   "change1d": 5.172,
    "yearHigh": 28.969999313354492,
    "yearLow": 10.550000190734863,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "softbank-arm-ai": {
   "people": [],
@@ -20785,17 +21256,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "9984.T",
-   "day": "2026-10-28",
-   "price": 4682.0,
+   "day": "2026-10-29",
+   "price": 4712.0,
    "currency": "JPY",
-   "marketCap": 26682949239298.0,
-   "change1d": 4.416,
+   "marketCap": 26853920720968.0,
+   "change1d": 0.106,
    "yearHigh": 9074.0,
    "yearLow": 3365.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "sony-image-sensor": {
   "people": [],
@@ -20811,17 +21283,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6758.T",
-   "day": "2026-10-28",
-   "price": 3957.0,
+   "day": "2026-10-29",
+   "price": 3891.0,
    "currency": "JPY",
-   "marketCap": 23108270511204.0,
-   "change1d": -3.252,
+   "marketCap": 22722840677052.0,
+   "change1d": -2.187,
    "yearHigh": 4776.0,
    "yearLow": 3043.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "stmicro": {
   "people": [],
@@ -20837,7 +21310,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "STM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 48.52,
    "currency": "USD",
    "marketCap": 43397010047.39064,
@@ -20847,7 +21320,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "sumco": {
   "people": [],
@@ -20863,17 +21337,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3436.T",
-   "day": "2026-10-28",
-   "price": 2534.5,
+   "day": "2026-10-29",
+   "price": 2522.5,
    "currency": "JPY",
-   "marketCap": 886396549833.0,
-   "change1d": 6.268,
+   "marketCap": 882199762065.0,
+   "change1d": -1.059,
    "yearHigh": 5939.0,
    "yearLow": 1131.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "synopsys": {
   "people": [],
@@ -20889,7 +21364,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SNPS",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 481.89,
    "currency": "USD",
    "marketCap": 92347786148.11743,
@@ -20899,7 +21374,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "teradyne": {
   "people": [],
@@ -20915,7 +21391,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "TER",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 313.24,
    "currency": "USD",
    "marketCap": 48972175003.23486,
@@ -20925,7 +21401,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "thinking-machines": {
   "people": [],
@@ -21142,7 +21619,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "tokyo-electron": {
   "people": [],
@@ -21158,17 +21636,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "8035.T",
-   "day": "2026-10-28",
-   "price": 9805.0,
+   "day": "2026-10-29",
+   "price": 9850.0,
    "currency": "JPY",
-   "marketCap": 22271903365400.0,
-   "change1d": 4.945,
+   "marketCap": 22374120158000.0,
+   "change1d": 0.377,
    "yearHigh": 16252.0,
    "yearLow": 6012.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "tokyo-ohka": {
   "people": [],
@@ -21184,17 +21663,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4186.T",
-   "day": "2026-10-28",
-   "price": 8347.0,
+   "day": "2026-10-29",
+   "price": 8395.0,
    "currency": "JPY",
-   "marketCap": 1001438912423.0,
-   "change1d": 7.606,
+   "marketCap": 1007197756055.0,
+   "change1d": 0.155,
    "yearHigh": 12925.0,
    "yearLow": 5343.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "tongfu": {
   "people": [],
@@ -21210,17 +21690,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "002156.SZ",
-   "day": "2026-10-28",
-   "price": 45.24,
+   "day": "2026-10-29",
+   "price": 43.16,
    "currency": "CNY",
-   "marketCap": 72103410894.57654,
-   "change1d": 5.849,
+   "marketCap": 68788308747.76578,
+   "change1d": -4.556,
    "yearHigh": 84.69999694824219,
    "yearLow": 34.650001525878906,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "toppan-photomask": {
   "people": [],
@@ -21236,17 +21717,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7911.T",
-   "day": "2026-10-28",
-   "price": 2212.5,
+   "day": "2026-10-29",
+   "price": 2220.5,
    "currency": "JPY",
-   "marketCap": 620725736062.5,
-   "change1d": 2.312,
+   "marketCap": 622970168102.5,
+   "change1d": 0.362,
    "yearHigh": 2964.0,
    "yearLow": 1833.0,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "tsmc": {
   "people": [],
@@ -21262,7 +21744,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "TSM",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 439.51,
    "currency": "USD",
    "marketCap": 2279507244102.79,
@@ -21272,7 +21754,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "umc": {
   "people": [],
@@ -21288,7 +21771,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "UMC",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 18.82,
    "currency": "USD",
    "marketCap": 47198838710.24704,
@@ -21298,7 +21781,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "vertiv": {
   "people": [],
@@ -21314,7 +21798,7 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "VRT",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 242.94,
    "currency": "USD",
    "marketCap": 93529027688.53253,
@@ -21324,7 +21808,8 @@ export const AI_360: Record<string, Entity360> = {
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "vistra": {
   "people": [],
@@ -21340,17 +21825,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "VST",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 142.72,
    "currency": "USD",
    "marketCap": 47901855440.11093,
    "change1d": -2.62,
-   "yearHigh": 200.72999572753906,
+   "yearHigh": 198.82000732421875,
    "yearLow": 132.66000366210938,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "waymo-av": {
   "people": [],
@@ -21366,17 +21852,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-28",
+   "day": "2026-10-29",
    "price": 324.89,
    "currency": "USD",
    "marketCap": 3973383706393.026,
    "change1d": 0.408,
    "yearHigh": 408.6099853515625,
-   "yearLow": 267.6700134277344,
+   "yearLow": 270.70001220703125,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "wistron": {
   "people": [],
@@ -21392,17 +21879,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3231.TW",
-   "day": "2026-10-28",
-   "price": 194.5,
+   "day": "2026-10-29",
+   "price": 189.5,
    "currency": "TWD",
-   "marketCap": 667104317625.0,
-   "change1d": 2.639,
+   "marketCap": 649955106375.0,
+   "change1d": -2.067,
    "yearHigh": 206.0,
    "yearLow": 122.5,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "wiwynn": {
   "people": [],
@@ -21418,17 +21906,18 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6669.TW",
-   "day": "2026-10-28",
-   "price": 1950.0,
+   "day": "2026-10-29",
+   "price": 1885.0,
    "currency": "TWD",
-   "marketCap": 1083814498650.0,
-   "change1d": 0.0,
+   "marketCap": 1047687348695.0,
+   "change1d": -3.333,
    "yearHigh": 2875.0,
    "yearLow": 1102.992431640625,
    "source": "yahoo"
   },
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  },
  "xai-capital": {
   "people": [],
@@ -21685,7 +22174,8 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": null,
   "talent": null,
-  "reddit": null
+  "reddit": null,
+  "ipo": null
  }
 };
 

@@ -639,3 +639,20 @@ CREATE TABLE IF NOT EXISTS ontology.raw_capture (
   cost_usd numeric,
   payload jsonb NOT NULL
 );
+
+-- SEC filings per company, read from EDGAR's company filing index: the IPO paper trail (confidential drafts, the
+-- public S-1, amendments with the price range, the final prospectus) and, after listing, the periodic reports.
+CREATE TABLE IF NOT EXISTS ontology.filing (
+  id bigserial PRIMARY KEY,
+  entity_id integer NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  form text NOT NULL,
+  filed_on date NOT NULL,
+  accession text NOT NULL,
+  url text NOT NULL,
+  description text,
+  size text,
+  sort_order integer,
+  source_file text,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  UNIQUE (entity_id, accession)
+);
