@@ -310,6 +310,261 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "url": null
   },
   {
+   "id": "sig_app_store",
+   "label": "App Store rating",
+   "detail": "2 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": null
+  },
+  {
+   "id": "sig_dfs_labs",
+   "label": "Search rankings and traffic estimates (DataForSEO Labs)",
+   "detail": "40 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_dfs_trends",
+   "label": "Search interest (DataForSEO Trends)",
+   "detail": "1,560 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-25",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_federal_register",
+   "label": "Federal Register documents",
+   "detail": "7 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-06",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": "https://www.federalregister.gov/"
+  },
+  {
+   "id": "sig_github",
+   "label": "GitHub repos, stars and forks",
+   "detail": "182 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": null
+  },
+  {
+   "id": "sig_google_ads",
+   "label": "Google search volume (DataForSEO)",
+   "detail": "156 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-09-01",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_google_ads_transparency",
+   "label": "Google Ads Transparency Center (MCP Scraper)",
+   "detail": "1 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": null,
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_google_news",
+   "label": "Google News (DataForSEO)",
+   "detail": "29 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_google_play",
+   "label": "Google Play rating (DataForSEO)",
+   "detail": "3 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_huggingface",
+   "label": "Hugging Face datasets",
+   "detail": "30 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": null
+  },
+  {
+   "id": "sig_llm_mentions",
+   "label": "AI answer mentions (DataForSEO LLM Mentions)",
+   "detail": "20 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_meta_ad_library",
+   "label": "Meta Ad Library (MCP Scraper)",
+   "detail": "2 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": null,
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_npm",
+   "label": "npm downloads",
+   "detail": "2,339 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-29",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": "https://www.npmjs.com/"
+  },
+  {
+   "id": "sig_pypi",
+   "label": "PyPI downloads (pypistats.org)",
+   "detail": "410 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-29",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": "https://pypistats.org/"
+  },
+  {
+   "id": "sig_statuspage",
+   "label": "Status page incidents",
+   "detail": "50 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-28",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": null
+  },
+  {
+   "id": "sig_trustpilot",
+   "label": "Trustpilot reviews (MCP Scraper)",
+   "detail": "60 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-30",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 720,
+   "pipeline": "paid_signals",
+   "cost": "paid",
+   "url": null
+  },
+  {
+   "id": "sig_wikipedia",
+   "label": "Wikipedia page views (Wikimedia)",
+   "detail": "2,373 rows",
+   "sections": [
+    "f360"
+   ],
+   "dataAsOf": "2026-10-29",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": 24,
+   "pipeline": "signals",
+   "cost": "free",
+   "url": "https://pageviews.wmcloud.org/"
+  },
+  {
    "id": "site",
    "label": "Its own websites",
    "detail": "4,579 pages on 6 sites",
@@ -468,6 +723,51 @@ export const AI_FRESHNESS: Record<string, FreshSource[]> = {
    "dataAsOf": "2025-11-18",
    "pulledAt": null,
    "pulledOn": "2026-10-28",
+   "cadenceH": null,
+   "pipeline": null,
+   "cost": "manual",
+   "url": null
+  },
+  {
+   "id": "docs:ipverse.greyb.com",
+   "label": "1 more pages on ipverse.greyb.com",
+   "detail": "1 quoted passages",
+   "sections": [
+    "legal"
+   ],
+   "dataAsOf": "2026-07-21",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": null,
+   "pipeline": null,
+   "cost": "manual",
+   "url": null
+  },
+  {
+   "id": "docs:thenextweb.com",
+   "label": "1 more pages on thenextweb.com",
+   "detail": "1 quoted passages",
+   "sections": [
+    "legal"
+   ],
+   "dataAsOf": "2026-07-22",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
+   "cadenceH": null,
+   "pipeline": null,
+   "cost": "manual",
+   "url": null
+  },
+  {
+   "id": "docs:thestar.com.my",
+   "label": "1 more pages on thestar.com.my",
+   "detail": "2 quoted passages",
+   "sections": [
+    "legal"
+   ],
+   "dataAsOf": "2026-07-21",
+   "pulledAt": null,
+   "pulledOn": "2026-10-30",
    "cadenceH": null,
    "pipeline": null,
    "cost": "manual",
@@ -3425,6 +3725,24 @@ export const AI_PIPELINES: PipelineState[] = [
   "id": "reddit",
   "why": "posts naming the company; weekly",
   "cadenceH": 168,
+  "cost": "paid",
+  "lastOk": null,
+  "lastStatus": null,
+  "lastRun": null
+ },
+ {
+  "id": "signals",
+  "why": "adoption (npm, PyPI, GitHub), attention (Wikipedia), status incidents, app rating, new repos and datasets, Federal Register documents",
+  "cadenceH": 24,
+  "cost": "free",
+  "lastOk": null,
+  "lastStatus": null,
+  "lastRun": null
+ },
+ {
+  "id": "paid_signals",
+  "why": "search demand, search traffic, AI answer share, news, ads and reviews; monthly, each run owner-approved",
+  "cadenceH": 720,
   "cost": "paid",
   "lastOk": null,
   "lastStatus": null,

@@ -8,6 +8,7 @@ import { dayMonthYear, monthYear } from "./intelModel";
 import { logoUrl } from "@/data/aiLogos";
 import { orgLogo } from "@/data/aiOrgLogos";
 import { entityPath, sectionPath } from "@/lib/graph-urls";
+import { SignalsSection } from "./AiSignals";
 
 /**
  * The 360 layer of a company file: who runs it and where else they work, who paid for it round by round,
@@ -555,15 +556,15 @@ const shortRound = (r: FundingRound) => (r.round.startsWith("Series ") ? r.round
 /** Price per share at each priced round, on a log scale: what an early share became. */
 function PriceLadder({ rounds }: { rounds: FundingRound[] }) {
   const pts = rounds.filter((r) => r.kind === "priced_round" && r.voting && r.pricePerShare && r.started);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [el, setEl] = React.useState<HTMLDivElement | null>(null); // a callback ref: the chart can mount after a first render with nothing to measure
   const [W, setW] = React.useState(640);
   React.useLayoutEffect(() => {
-    const el = ref.current;
+    // measure whenever the element (re)appears
     if (!el) return;
     const ro = new ResizeObserver(() => setW(Math.max(300, Math.round(el.clientWidth))));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [el]);
   if (pts.length < 2) return null;
   const t = (s: string) => new Date(`${s}-15T00:00:00Z`).getTime();
   const t0 = t(pts[0].started!), t1 = t(pts[pts.length - 1].started!);
@@ -580,8 +581,8 @@ function PriceLadder({ rounds }: { rounds: FundingRound[] }) {
   return (
     <figure className="border border-border p-3">
       <H aside={`${price(first.pricePerShare)} to ${price(last.pricePerShare)} · ${Math.round(last.pricePerShare! / first.pricePerShare!)}x`}>Price per share, round by round</H>
-      <div ref={ref} className="w-full">
-      <svg width={W} height={Hh} viewBox={`0 0 ${W} ${Hh}`} className="block" role="img" aria-label={`Price per preferred share rose from ${price(first.pricePerShare)} in the ${first.round} to ${price(last.pricePerShare)} in the ${last.round}.`}>
+      <div ref={setEl} className="w-full">
+      <svg width="100%" height={Hh} viewBox={`0 0 ${W} ${Hh}`} className="block" role="img" aria-label={`Price per preferred share rose from ${price(first.pricePerShare)} in the ${first.round} to ${price(last.pricePerShare)} in the ${last.round}.`}>
         {Array.from({ length: hi - lo + 1 }, (_, i) => 10 ** (lo + i)).map((v) => (
           <g key={v}>
             <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke="currentColor" strokeOpacity={0.12} />
@@ -816,7 +817,7 @@ export function InvestorsSection({ id, onPick }: { id: string; onPick?: (id: str
 // Legal
 // ---------------------------------------------------------------------------
 
-const LEGAL_KIND: Record<string, string> = { government: "Government actions", copyright: "Copyright", contract: "Contract and data", consumer: "Consumer", regulatory: "Regulatory inquiries" };
+const LEGAL_KIND: Record<string, string> = { government: "Government actions", copyright: "Copyright", patent: "Patent", contract: "Contract and data", consumer: "Consumer", regulatory: "Regulatory inquiries" };
 const LEGAL_ROLE: Record<string, string> = { plaintiff: "Brought by the company", petitioner: "Brought by the company", defendant: "Against the company", respondent: "Against the company", subject: "Inquiry" };
 
 export function LegalSection({ ids, onPick }: { ids: string[]; onPick?: (id: string) => void }) {
@@ -825,7 +826,8 @@ export function LegalSection({ ids, onPick }: { ids: string[]; onPick?: (id: str
   const settled = cases.filter((c) => /settled/i.test(c.status));
   const brought = cases.filter((c) => c.role === "plaintiff" || c.role === "petitioner");
   const largest = Math.max(0, ...cases.map((c) => c.amount ?? 0));
-  const kinds = Object.keys(LEGAL_KIND).filter((k) => cases.some((c) => c.kind === k));
+  // Known kinds in their set order, then any kind without a label yet, so no case is ever counted but not shown.
+  const kinds = [...Object.keys(LEGAL_KIND), ...[...new Set(cases.map((c) => c.kind))].filter((k) => !(k in LEGAL_KIND))].filter((k) => cases.some((c) => c.kind === k));
   return (
     <div className="space-y-5" data-testid="ai-legal">
       <Kpis
@@ -838,7 +840,7 @@ export function LegalSection({ ids, onPick }: { ids: string[]; onPick?: (id: str
       />
       {kinds.map((k) => (
         <div key={k}>
-          <H aside={`${cases.filter((c) => c.kind === k).length}`}>{LEGAL_KIND[k]}</H>
+          <H aside={`${cases.filter((c) => c.kind === k).length}`}>{LEGAL_KIND[k] ?? k.charAt(0).toUpperCase() + k.slice(1)}</H>
           <ul className="grid gap-2 lg:grid-cols-2">
             {cases
               .filter((c) => c.kind === k)
@@ -1129,17 +1131,17 @@ function monthsBetween(a: string, b: string): string[] {
 export function TimelineSection({ id, full = false }: { id: string; full?: boolean }) {
   const f = AI_360[id];
   const [limit, setLimit] = React.useState(40);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [el, setEl] = React.useState<HTMLDivElement | null>(null); // a callback ref: the chart can mount after a first render with nothing to measure
   const [W, setW] = React.useState(900);
   const [year, setYear] = React.useState<string | null>(null);
   const [section, setSection] = React.useState<string | null>(null);
   React.useLayoutEffect(() => {
-    const el = ref.current;
+    // measure whenever the element (re)appears
     if (!el) return;
     const ro = new ResizeObserver(() => setW(Math.max(300, Math.round(el.clientWidth))));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [el]);
   if (!f || (!f.site && !f.attention)) return null;
   const inc = f.facts.find((x) => x.key === "incorporated");
   const start =
@@ -1172,8 +1174,8 @@ export function TimelineSection({ id, full = false }: { id: string; full?: boole
     <div className="space-y-4" data-testid="ai-timeline">
       <H aside={`${ym(start)} to ${ym(end)}`}>Birth to now</H>
       <figure className="border border-border p-3">
-        <div ref={ref} className="w-full">
-          <svg width={W} height={CH} viewBox={`0 0 ${W} ${CH}`} className="block" role="img" aria-label={`Month by month from ${ym(start)} to ${ym(end)}: Hacker News stories naming the company, the company's own dated pages, funding rounds and lawsuits.`}>
+        <div ref={setEl} className="w-full">
+          <svg width="100%" height={CH} viewBox={`0 0 ${W} ${CH}`} className="block" role="img" aria-label={`Month by month from ${ym(start)} to ${ym(end)}: Hacker News stories naming the company, the company's own dated pages, funding rounds and lawsuits.`}>
             <text x={L} y={12} className="fill-muted-foreground font-mono" fontSize={9} letterSpacing="0.12em">
               {f.attention ? (compact ? `HACKER NEWS STORIES A MONTH, PEAK ${fmt(maxA)}` : `PUBLIC ATTENTION: HACKER NEWS STORIES NAMING IT, A MONTH (PEAK ${fmt(maxA)})`) : ""}
             </text>
@@ -1754,6 +1756,7 @@ export function Company360({ id, onPick, onTab }: { id: string; onPick?: (id: st
         </ul>
       </div>
       <MarketStrip id={id} />
+      <SignalsSection id={id} />
       <TimelineSection id={id} />
       <SitesRead id={id} />
       <AgreementsSection id={id} onPick={onPick} />

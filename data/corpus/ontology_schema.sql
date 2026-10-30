@@ -701,3 +701,34 @@ CREATE TABLE IF NOT EXISTS ontology.lobbying_filing (
 -- 2026-10-30: 'partial' (a collector hit its own call cap) is a valid run status
 ALTER TABLE ontology.pipeline_run DROP CONSTRAINT IF EXISTS pipeline_run_status_check;
 ALTER TABLE ontology.pipeline_run ADD CONSTRAINT pipeline_run_status_check CHECK (status IN ('running','ok','partial','failed','skipped'));
+
+-- 2026-10-30: signals over time and dated watch items, per company.
+-- series_point: one number per subject per period (Wikipedia views of an article on a day, npm downloads
+--   of a package on a day, stars of a repo on the day we read it, search volume of a keyword in a month).
+--   grain 'snapshot' = the value on the day we read it, so history builds up run by run.
+-- watch_item: one dated thing (a status incident, a Federal Register document, an ad, a review, a news story).
+-- Re-runs upsert on the primary key, so a run never double-counts.
+CREATE TABLE IF NOT EXISTS ontology.series_point (
+  entity_id    integer NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  source       text NOT NULL,
+  series       text NOT NULL,
+  subject      text NOT NULL,
+  period       date NOT NULL,
+  grain        text NOT NULL DEFAULT 'day' CHECK (grain IN ('day','week','month','snapshot')),
+  value        numeric NOT NULL,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  PRIMARY KEY (entity_id, source, series, subject, period)
+);
+CREATE TABLE IF NOT EXISTS ontology.watch_item (
+  entity_id    integer NOT NULL REFERENCES ontology.entity(id) ON DELETE CASCADE,
+  source       text NOT NULL,
+  item_key     text NOT NULL,
+  kind         text,
+  title        text,
+  url          text,
+  happened_at  timestamptz,
+  ended_at     timestamptz,
+  detail       jsonb,
+  retrieved_at date NOT NULL DEFAULT current_date,
+  PRIMARY KEY (entity_id, source, item_key)
+);

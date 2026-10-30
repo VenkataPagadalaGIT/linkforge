@@ -164,11 +164,28 @@
       "why": "posts naming the company; weekly"
     },
     {
+      "id": "signals",
+      "cmd": "python3 collect_signals.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "series_point, watch_item",
+      "why": "adoption (npm, PyPI, GitHub), attention (Wikipedia), status incidents, app rating, new repos and datasets, Federal Register documents"
+    },
+    {
+      "id": "paid_signals",
+      "cmd": "python3 paid_signals.py fetch --entity anthropic --cap ${PAID_CAP:-5} --credit-cap ${MCPS_CAP:-600} && python3 paid_signals.py parse --entity anthropic",
+      "cadence_h": 720,
+      "cost": "paid",
+      "rate": "DataForSEO about $0.91 and MCP Scraper about 190 credits a run (30 Oct 2026 pilot)",
+      "writes": "series_point, watch_item",
+      "why": "search demand, search traffic, AI answer share, news, ads and reviews; monthly, each run owner-approved"
+    },
+    {
       "id": "generate",
-      "cmd": "python3 gen_ontology_ts.py | tail -1 && python3 gen_ontology_intel_ts.py | cut -c1-100 && python3 gen_ontology_360_ts.py | cut -c1-100 && python3 gen_ontology_ts.py --check && python3 gen_ontology_intel_ts.py --check && python3 gen_ontology_360_ts.py --check && python3 gen_freshness_ts.py | tail -1",
+      "cmd": "python3 gen_ontology_ts.py | tail -1 && python3 gen_ontology_intel_ts.py | cut -c1-100 && python3 gen_ontology_360_ts.py | cut -c1-100 && python3 gen_ontology_ts.py --check && python3 gen_ontology_intel_ts.py --check && python3 gen_ontology_360_ts.py --check && python3 gen_signals_ts.py | tail -1 && python3 gen_signals_ts.py --check && python3 gen_freshness_ts.py | tail -1",
       "cadence_h": 0,
       "cost": "free",
-      "writes": "src/data/aiOntologyData.ts, aiIntel.ts, ai360.ts",
+      "writes": "src/data/aiOntologyData.ts, aiIntel.ts, ai360.ts, aiSignals.ts",
       "why": "the site reads these; always last"
     },
     {

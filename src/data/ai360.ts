@@ -3389,6 +3389,60 @@ export const AI_360: Record<string, Entity360> = {
       "secondary": false
      }
     ]
+   },
+   {
+    "slug": "utrf-v-anthropic-ded",
+    "name": "University of Tennessee Research Foundation v. Anthropic PBC",
+    "court": "U.S. District Court, District of Delaware (1:26-cv-00887)",
+    "role": "defendant",
+    "kind": "patent",
+    "filed": "2026-07-20",
+    "status": "Complaint filed with a jury demand; no ruling found as of 30 October 2026",
+    "statusOn": "2026-07-21",
+    "counterparties": [
+     "University of Tennessee Research Foundation"
+    ],
+    "amount": null,
+    "summary": "The foundation that licenses the University of Tennessee's patents says Anthropic's AI systems infringe two of its patents on neuroscience-inspired machine learning, and asks for damages and an order to stop. Reported as the first patent case against Anthropic. Not among the matters this file took from the S-1.",
+    "docketUrl": "https://ipverse.greyb.com/litigations/university-of-tennessee-research-foundation-v-anth--ded--1-26-cv-00887",
+    "evidence": [
+     {
+      "quote": "It asked the court for an unspecified amount of monetary damages and an order blocking Anthropic from infringing its patents.",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/07/21/university-of-tennessee-sues-anthropic-over-neural-network-technology",
+      "locator": "Reuters, paragraph 5",
+      "source": "Anthropic sued for infringing neural network technology patents (Reuters, via The Star)",
+      "publisher": "Reuters",
+      "publishedOn": "2026-07-21",
+      "secondary": true
+     },
+     {
+      "quote": "The University of Tennessee Research Foundation's complaint, filed on Monday and made public on Tuesday, said that Anthropic's AI systems violate its patents on machine-learning technology inspired by neuroscience.",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/07/21/university-of-tennessee-sues-anthropic-over-neural-network-technology",
+      "locator": "Reuters, paragraph 2",
+      "source": "Anthropic sued for infringing neural network technology patents (Reuters, via The Star)",
+      "publisher": "Reuters",
+      "publishedOn": "2026-07-21",
+      "secondary": true
+     },
+     {
+      "quote": "Bloomberg Law reported that the asserted patents are numbered 10,019,470 and 10,095,718, and that the complaint singles out Claude Code, Anthropic’s agentic coding tool, along with its underlying software architecture.",
+      "url": "https://thenextweb.com/news/university-tennessee-sues-anthropic-neural-network-patents",
+      "locator": "The Next Web",
+      "source": "University of Tennessee sues Anthropic over neural network patents",
+      "publisher": "The Next Web",
+      "publishedOn": "2026-07-22",
+      "secondary": true
+     },
+     {
+      "quote": "COMPLAINT filed with Jury Demand against Anthropic PBC",
+      "url": "https://ipverse.greyb.com/litigations/university-of-tennessee-research-foundation-v-anth--ded--1-26-cv-00887",
+      "locator": "Docket entry, Jul 21, 2026",
+      "source": "University of Tennessee Research Foundation v. Anthropic PBC, 1:26-cv-00887",
+      "publisher": "IP Verse (GreyB) litigation tracker",
+      "publishedOn": "2026-07-21",
+      "secondary": true
+     }
+    ]
    }
   ],
   "advisors": [

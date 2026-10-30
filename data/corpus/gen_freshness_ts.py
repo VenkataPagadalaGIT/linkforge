@@ -180,6 +180,41 @@ for r in rows("SELECT entity_id, count(*) AS n, max(retrieved_at) AS day, max(po
 for r in rows("SELECT entity_id, max(day) AS day, max(retrieved_at) AS at FROM ontology.market_quote GROUP BY 1"):
     add(r["entity_id"], "market", "Market quote (Yahoo Finance, unofficial)", None, ["f360"], r["day"], r["at"], None, "market", "free")
 
+# 10) Signals: free public APIs (collect_signals.py) and the owner-approved paid pilot (paid_signals.py).
+SIG = {"wikipedia": ("Wikipedia page views (Wikimedia)", "signals", "free", "https://pageviews.wmcloud.org/"),
+       "pypi": ("PyPI downloads (pypistats.org)", "signals", "free", "https://pypistats.org/"),
+       "npm": ("npm downloads", "signals", "free", "https://www.npmjs.com/"),
+       "github": ("GitHub repos, stars and forks", "signals", "free", None),
+       "app_store": ("App Store rating", "signals", "free", None),
+       "statuspage": ("Status page incidents", "signals", "free", None),
+       "federal_register": ("Federal Register documents", "signals", "free", "https://www.federalregister.gov/"),
+       "huggingface": ("Hugging Face datasets", "signals", "free", None),
+       "google_ads": ("Google search volume (DataForSEO)", "paid_signals", "paid", None),
+       "dfs_trends": ("Search interest (DataForSEO Trends)", "paid_signals", "paid", None),
+       "dfs_labs": ("Search rankings and traffic estimates (DataForSEO Labs)", "paid_signals", "paid", None),
+       "google_news": ("Google News (DataForSEO)", "paid_signals", "paid", None),
+       "llm_mentions": ("AI answer mentions (DataForSEO LLM Mentions)", "paid_signals", "paid", None),
+       "google_play": ("Google Play rating (DataForSEO)", "paid_signals", "paid", None),
+       "google_ads_transparency": ("Google Ads Transparency Center (MCP Scraper)", "paid_signals", "paid", None),
+       "meta_ad_library": ("Meta Ad Library (MCP Scraper)", "paid_signals", "paid", None),
+       "trustpilot": ("Trustpilot reviews (MCP Scraper)", "paid_signals", "paid", None)}
+for r in rows("""SELECT entity_id, source, count(*) AS n, max(period)::text AS newest, max(retrieved_at)::text AS day FROM ontology.series_point GROUP BY 1, 2
+                 UNION ALL SELECT entity_id, source, count(*), max(happened_at)::date::text, max(retrieved_at)::text FROM ontology.watch_item GROUP BY 1, 2"""):
+    if r["source"] not in SIG:
+        continue
+    label, pipe, cost, url = SIG[r["source"]]
+    at, on = stamp(pipe, r["day"])
+    add(r["entity_id"], "sig_" + r["source"], label, f"{r['n']:,} rows", ["f360"], r["newest"], at, on, pipe, cost, url)
+seen = {}
+for k in out:
+    keep = []
+    for s_ in out[k]:
+        if s_["id"].startswith("sig_") and (k, s_["id"]) in seen:
+            continue
+        seen[(k, s_["id"])] = 1
+        keep.append(s_)
+    out[k] = keep
+
 for k in out:
     out[k].sort(key=lambda s: (s["cost"] == "manual", s["id"]))
 
