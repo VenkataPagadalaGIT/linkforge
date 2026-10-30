@@ -5,25 +5,38 @@ news organizations and YouTube channels (publishers); everything else is the pla
 Called by event_collect.py (modes: transcribe, parse).
 """
 import datetime as dt, gzip, json, os, re, urllib.request
-from event_collect import load, upsert
+import urllib.error
+from event_collect import load, save, upsert
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CREATOR_MIN = 50_000
 NEWS_ORGS = {"cointelegraph", "coindesk", "theblock__", "decryptmedia", "watcherguru", "kobeissiletter", "wublockchain", "reuters", "business", "cnbc",
              "bloombergcrypto", "evolving.ai", "evolving_ai"}
 
 
-def sc_of(d):
-    """structuredContent of an MCP result, or the full file it was handed over as."""
+def sc_of(d, slug=None, name=None):
+    """structuredContent of an MCP result, or the full file it was handed over as. The file's link expires, so the
+    first download is archived beside the call ("<name>_full") and later parses read the archive."""
     r = (d or {}).get("result") or {}
     sc = r.get("structuredContent") or {}
     dl = sc.get("delivery") or {}
-    if dl.get("mode") == "artifact":
-        url = next((a["downloadUrl"] for a in dl.get("artifacts", []) if a.get("filename") == "complete-result.json"), None)
-        if url:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "curl/8.4"}), timeout=120) as f:
-                full = json.loads(f.read())
+    if dl.get("mode") != "artifact":
+        return sc
+    if slug and name:
+        full = load(slug, name + "_full")
+        if full is not None:
             return full.get("structuredContent") or full
-    return sc
+    url = next((a["downloadUrl"] for a in dl.get("artifacts", []) if a.get("filename") == "complete-result.json"), None)
+    if not url:
+        return {}
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "curl/8.4"}), timeout=120) as f:
+            full = json.loads(f.read())
+    except urllib.error.HTTPError:
+        return {}  # link expired: whatever was parsed before stays in the database (the upsert keeps the longer body)
+    if slug and name:
+        save(slug, name + "_full", full)
+    return full.get("structuredContent") or full
 
 
 def ts(v):
@@ -105,7 +118,10 @@ def parse(c):
                      "metrics": {k: num(r.get(k)) for k in ("likes", "views", "replies", "reposts", "quotes") if r.get(k) is not None}, "source_call": "bd-x-profiles"})
     # Bright Data: TikTok, Instagram and Reddit posts found by keyword (public voices: no names)
     for r in records(slug, "bd-tiktok"):
-        docs.append({"url": r.get("url"), "platform": "tiktok", "kind": "video", "voice": "public", "title": (r.get("description") or "")[:140],
+        # A verified account or one with 50K+ followers publishes to the public like a YouTube channel: named, with its cover.
+        creator = bool(r.get("is_verified")) or (num(r.get("profile_followers")) or 0) >= CREATOR_MIN
+        docs.append({"url": r.get("url"), "platform": "tiktok", "kind": "video", "voice": "creator" if creator else "public", "title": (r.get("description") or "")[:140],
+                     "author": r.get("profile_username") if creator else None,
                      "body": r.get("description"), "published_at": ts(r.get("create_time") or r.get("date_posted")), "source_call": "bd-tiktok",
                      "metrics": {"views": num(r.get("play_count")), "likes": num(r.get("digg_count")), "comments": num(r.get("comment_count")), "shares": num(r.get("share_count"))}})
     for r in records(slug, "bd-instagram") + records(slug, "bd-instagram-profiles"):
@@ -132,12 +148,12 @@ def parse(c):
                              "published_at": ts(cm.get("createdAt") or cm.get("created_utc") or cm.get("date")), "source_call": f"reddit-thread-{n}",
                              "metrics": {"score": num(cm.get("score") or cm.get("upvotes"))}})
     # YouTube search results, with transcripts where we bought them
-    sc = sc_of(load(slug, "youtube"))
+    sc = sc_of(load(slug, "youtube"), slug, "youtube")
     for v in sc.get("videos") or sc.get("items") or []:
         vid = v.get("videoId") or v.get("id")
         if not vid:
             continue
-        tr = sc_of(load(slug, f"yt-{vid}"))
+        tr = sc_of(load(slug, f"yt-{vid}"), slug, f"yt-{vid}")
         text = tr.get("transcriptText") or tr.get("transcript") or tr.get("text") or " ".join(ch.get("text", "") for ch in tr.get("chunks") or [] if isinstance(ch, dict)) or None
         text = text if isinstance(text, str) else None
         docs.append({"url": f"https://www.youtube.com/watch?v={vid}", "platform": "youtube", "kind": "video", "voice": "public", "title": v.get("title"),
@@ -150,7 +166,7 @@ def parse(c):
             d = load(slug, nm)
             if not d:
                 continue
-            tr = sc_of(d)
+            tr = sc_of(d, slug, nm)
             said = tr.get("transcriptText") or (tr.get("transcript") if isinstance(tr.get("transcript"), str) else None)
             text = " ".join(filter(None, [tr.get("caption"), said]))
             url = (tr.get("sourceUrl") or tr.get("url") or "").rstrip("/")
@@ -159,8 +175,11 @@ def parse(c):
                 rec = next((r for r in records(slug, "bd-tiktok") + records(slug, "bd-instagram-profiles") if (r.get("url") or "").rstrip("/") == url), {})
                 acct = (rec.get("user_posted") or "").lower()
                 press = acct in {a.lower() for a in c.get("instagram_accounts", [])}
-                docs.append({"url": rec.get("url") or url, "platform": plat, "kind": "video" if plat == "tiktok" or said else "post", "voice": "press" if press else "public",
-                             "author": rec.get("user_posted") if press else None, "title": None, "body": text, "source_call": nm, "metrics": {"transcript": bool(said)}})
+                creator = plat == "tiktok" and (bool(rec.get("is_verified")) or (num(rec.get("profile_followers")) or 0) >= CREATOR_MIN)
+                docs.append({"url": rec.get("url") or url, "platform": plat, "kind": "video" if plat == "tiktok" or said else "post",
+                             "voice": "press" if press else ("creator" if creator else "public"),
+                             "author": rec.get("user_posted") if press else (rec.get("profile_username") if creator else None), "title": None, "body": text,
+                             "source_call": nm, "metrics": {"transcript": bool(said)}})
     docs = [d for d in docs if d.get("url")]
     upsert(slug, docs)
     by = {}

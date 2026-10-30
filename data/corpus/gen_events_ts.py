@@ -103,6 +103,15 @@ def embed_of(d):
     return None
 
 
+def english(t):
+    """Mostly plain Latin letters and a few common English words: good enough to split English from everything else."""
+    letters = [ch for ch in t if ch.isalpha()]
+    if not letters:
+        return True
+    ascii_share = sum(1 for ch in letters if ch.isascii()) / len(letters)
+    return ascii_share > 0.9 and bool(re.search(r"\b(the|and|is|of|to|in|for|on|hack|binance)\b", t, re.I))
+
+
 def norm_title(t):
     return re.sub(r"[^a-z0-9]+", " ", (t or "").lower()).strip()[:90]
 
@@ -125,7 +134,7 @@ def build_sources(slug, docs, claim_hits):
     mp = os.path.join(HERE, "events", slug + ".media.json")
     if os.path.exists(mp):
         media = json.load(open(mp))
-    thumbs, logos = media.get("thumbs", {}), media.get("logos", {})
+    thumbs, logos, avatars = media.get("thumbs", {}), media.get("logos", {}), media.get("avatars", {})
     out, seen = [], {}
     items = [d for d in docs if d["kind"] != "comment"]
     # one card per story: a Google News redirect duplicate of a story we hold with its real link is dropped
@@ -161,8 +170,13 @@ def build_sources(slug, docs, claim_hits):
                     "title": (d.get("title") or text[:140] or "").strip(), "url": link, "publisher": d.get("author") if (d["voice"] != "public" or d["platform"] == "youtube") else None,
                     "domain": dom, "logo": logos.get(dom) if dom else None, "thumb": thumbs.get(d["url"]), "date": (d.get("published_at") or "")[:19] or None,
                     "views": m.get("views"), "likes": m.get("likes"), "comments": m.get("comments"), "points": m.get("points") or m.get("upvotes") or m.get("score"),
-                    "subreddit": m.get("subreddit"), "embed": embed_of(d), "transcript": bool(m.get("transcript")), "excerpt": excerpt,
-                    "claims": [{"key": h["key"], "verdict": h["verdict"]} for h in hits][:4]})
+                    "subreddit": m.get("subreddit"), "embed": embed_of(d), "excerpt": excerpt,
+                    # a transcript read earlier stays in the stored text even when the flag was reset by a later parse
+                    "transcript": bool(m.get("transcript")) or (d["platform"] in ("youtube", "tiktok") and len(text) > 1500),
+                    "claims": [{"key": h["key"], "verdict": h["verdict"]} for h in hits][:4],
+                    "avatar": avatars.get((re.search(r"x\.com/([^/]+)/status", d["url"]) or [None, ""])[1].lower()) if d["platform"] == "x" else None,
+                    "lang": "en" if english(text or d.get("title") or "") else "other",
+                    "reach": max([m.get(k) or 0 for k in ("views", "likes", "points", "upvotes", "score", "comments")] + [0])})
     order = {g: i for i, (g, _) in enumerate(GROUPS)}
     out.sort(key=lambda x: (order[x["group"]], -(x["views"] or x["likes"] or x["points"] or x["comments"] or 0), x["date"] or ""), reverse=False)
     return out
@@ -187,7 +201,7 @@ def build(ev, docs):
              "frozen": [{"who": f["who"], "usd": f["usd"], "quote": f["quote"], **{k: v for k, v in src(f["url"]).items() if k in ("url", "author")}} for f in mon.get("frozen", [])]}
     watch = [{"label": w["label"], "when": w.get("when"), "note": w.get("note"), "quote": w["quote"], **{k: v for k, v in src(w["url"]).items() if k in ("url", "author")}} for w in seed.get("watch", [])]
 
-    talk = [d for d in docs if d["voice"] in ("press", "public")]
+    talk = [d for d in docs if d["voice"] in ("press", "public", "creator")]
     claims, claim_hits = [], {}
     for c in seed.get("claims", []):
         rx = re.compile(c["match"], re.I)
@@ -230,7 +244,7 @@ def build(ev, docs):
     start = dt.datetime.fromisoformat(seed.get("moments", [{}])[0].get("at", "2026-10-29T00:00:00Z").replace("Z", "+00:00")).replace(minute=0, second=0)
     hours = collections.defaultdict(collections.Counter)
     for d in docs:
-        if d.get("published_at") and d["voice"] in ("press", "public"):
+        if d.get("published_at") and d["voice"] in ("press", "public", "creator"):
             try:
                 t = dt.datetime.fromisoformat(d["published_at"].replace("Z", "+00:00"))
             except ValueError:
@@ -241,14 +255,27 @@ def build(ev, docs):
                 hours[t.replace(minute=0, second=0, microsecond=0).isoformat()[:13]][d["platform"]] += 1
     top = {}
     for p in PLATFORMS:
-        items = [d for d in docs if d["platform"] == p and d["kind"] != "comment" and d["voice"] in ("press", "public")]
+        items = [d for d in docs if d["platform"] == p and d["kind"] != "comment" and d["voice"] in ("press", "public", "creator")]
         items.sort(key=lambda d: (-reach(d), (d.get("metrics") or {}).get("rank") or 999, d.get("published_at") or ""))
         if items:
             top[p] = [{"title": (d.get("title") or (d.get("body") or "")[:140]).strip(), "url": linkable(d), "date": (d.get("published_at") or "")[:10] or None,
                        "meta": meta(d), "transcript": bool((d.get("metrics") or {}).get("transcript"))} for d in items[:8]]
     sources = build_sources(ev["slug"], docs, claim_hits)
+    # The hero is the most-watched video with a picture (a landscape YouTube frame when there is one).
+    playable = [x for x in sources if x["thumb"] and x["embed"] and x["platform"] == "youtube"] or [x for x in sources if x["thumb"] and x["embed"]]
+    featured = max(playable, key=lambda x: x["reach"])["id"] if playable else None
+    top10 = [x["id"] for x in sorted([x for x in sources if x["group"] not in ("official", "investigators") and x["reach"]], key=lambda x: -x["reach"])[:10]]
+    colls = []
+    for c in sorted(claims, key=lambda c: -c["spread"]["total"]):
+        ids = [x["id"] for x in sources if any(k["key"] == c["key"] for k in x["claims"])]
+        if len(ids) >= 3:
+            colls.append({"id": "claim-" + c["key"], "label": f"Saying \"{c['claim']}\"", "verdict": c["verdict"], "ids": ids})
+    wrong = [x["id"] for x in sources if any(k["verdict"] in ("false", "misleading") for k in x["claims"])]
+    if wrong:
+        colls.insert(0, {"id": "wrong", "label": "Spreading something false or misleading", "verdict": "false", "ids": wrong})
     return {"slug": ev["slug"], "title": ev["title"], "summary": ev.get("summary"), "updatedAt": ev["updated_at"][:19], "window": [ev["window_from"], ev["window_to"]],
             "groups": [{"id": g, "label": lab, "count": sum(1 for x in sources if x["group"] == g)} for g, lab in GROUPS if any(x["group"] == g for x in sources)],
+            "featured": featured, "top10": top10, "collections": colls,
             "sources": sources,
             "facts": facts, "moments": moments, "money": money, "actors": seed.get("actors", []), "claims": claims, "watch": watch,
             "coverage": {"items": len(docs), "byPlatform": [{"platform": p, "label": LABEL[p], "items": cov[p]} for p in PLATFORMS if cov[p]],
@@ -280,10 +307,12 @@ export interface EventSourceCard {
   domain: string | null; logo: string | null; thumb: string | null; date: string | null; views: number | null; likes: number | null;
   comments: number | null; points: number | null; subreddit: string | null; embed: { type: "youtube" | "tiktok" | "instagram" | "x" | "reddit"; id: string } | null;
   transcript: boolean; excerpt: string | null; claims: { key: string; verdict: Verdict }[];
+  avatar: string | null; lang: "en" | "other"; reach: number;
 }
 export interface EventFile {
   slug: string; title: string; summary: string | null; updatedAt: string; window: [string, string];
   groups: { id: SourceGroup; label: string; count: number }[]; sources: EventSourceCard[];
+  featured: string | null; top10: string[]; collections: { id: string; label: string; verdict: Verdict; ids: string[] }[];
   facts: EventFact[]; moments: EventMoment[]; money: EventMoney; actors: { name: string; role: string; kind: string }[];
   claims: EventClaim[]; watch: EventWatch[];
   coverage: { items: number; byPlatform: { platform: string; label: string; items: number }[]; byVoice: Record<string, number>; hours: [string, Record<string, number>][] };

@@ -188,9 +188,21 @@ export function EventFile({ slug }: { slug: string }) {
         </p>
         <h1 className="mb-4 font-display text-3xl font-bold leading-tight text-foreground sm:text-4xl">{e.title}</h1>
         {e.summary && <p className="mb-3 border-l-2 border-foreground/20 pl-4 font-mono text-sm leading-relaxed text-muted-foreground">{e.summary}</p>}
-        <p className="mb-10 font-mono text-[10px] text-muted-foreground">
+        <p className="mb-6 font-mono text-[10px] text-muted-foreground">
           Read {e.coverage.items.toLocaleString("en-US")} items: {e.coverage.byPlatform.map((p) => `${p.label} ${p.items}`).join(" · ")}
         </p>
+        {/* Contents on phones and tablets (the sidebar holds them on wide screens): sticky under the site header. */}
+        <nav aria-label="On this page" className="sticky top-16 z-30 -mx-4 mb-8 border-y border-border bg-background/95 px-4 py-2 backdrop-blur lg:hidden">
+          <ul className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]">
+            {TOC.map((t) => (
+              <li key={t.id} className="shrink-0">
+                <a href={`#${t.id}`} className="block whitespace-nowrap rounded-full border border-border px-2.5 py-1 font-mono text-[10px] text-muted-foreground hover:text-foreground">
+                  {t.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <Section id="takeaways" title="Key Takeaways" aside="each line opens to the exact words in its source">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

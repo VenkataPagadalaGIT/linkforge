@@ -99,15 +99,25 @@ def main(slug):
             t = ((arch(slug, sc) or {}).get("tweet") or {})
             media = t.get("media") or {}
             img.setdefault(u, first([p.get("url") for p in media.get("photos") or []], [v.get("thumbnail_url") for v in media.get("videos") or []]) or "")
-    for name in ("bd-x-profiles", "bd-tiktok", "bd-instagram", "bd-reddit"):
+    for name in ("bd-x-profiles", "bd-tiktok", "bd-instagram", "bd-instagram-profiles", "bd-reddit"):
         for r in (arch(slug, name) or {}).get("records") or []:
             if isinstance(r, dict) and r.get("url"):
                 img.setdefault(r["url"], first(r.get("photos"), r.get("external_image_urls"), r.get("preview_image"), r.get("cover"), r.get("origin_cover"),
                                                r.get("thumbnail"), r.get("display_url"), r.get("image"), r.get("images")) or "")
-    media, ok, miss = {"thumbs": {}, "logos": {}, "platforms": {}}, 0, 0
+    media, ok, miss = {"thumbs": {}, "logos": {}, "platforms": {}, "avatars": {}}, 0, 0
     # Posts by private people (TikTok, Instagram, Reddit, X) get no stored picture: their covers often show faces,
     # so the card shows the post's text and the post itself only plays in the platform's own player.
     private = {d["url"] for d in docs if d["voice"] == "public" and d["platform"] in ("tiktok", "instagram", "reddit", "x")}
+    # Profile photos of the official and investigator accounts (organizations and public roles), for their cards.
+    os.makedirs(os.path.join(PUBLIC, slug, "avatars"), exist_ok=True)
+    media["avatars"] = {}
+    for r in (arch(slug, "bd-x-profiles") or {}).get("records") or []:
+        h, src = (r.get("user_posted") or "").lstrip("@"), r.get("profile_image_link") or ""
+        if not h or not src or h.lower() in media["avatars"]:
+            continue
+        out = os.path.join(PUBLIC, slug, "avatars", re.sub(r"[^A-Za-z0-9_-]", "_", h.lower()) + ".jpg")
+        if thumb(src.replace("_normal.", "_400x400."), out):
+            media["avatars"][h.lower()] = "/" + os.path.relpath(out, os.path.join(PUBLIC, "..")).replace(os.sep, "/")
     for u in private:
         old = os.path.join(PUBLIC, slug, "thumbs", hashlib.sha1(u.encode()).hexdigest()[:16] + ".jpg")
         if os.path.exists(old):

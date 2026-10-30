@@ -2,7 +2,7 @@
  "about": {
   "title": "The Binance hack, October 2026",
   "page": "https://venkatapagadala.com/notebook/events/binance-hack-2026",
-  "updated": "2026-10-30 19:06:42Z",
+  "updated": "2026-10-30 20:42:55Z",
   "publisher": "Venkata Pagadala",
   "method": "Every quote is checked word for word against its stored source before publishing. Public posts carry no author names.",
   "cite": "The Binance hack, October 2026, Venkata Pagadala, https://venkatapagadala.com/notebook/events/binance-hack-2026"
@@ -10,7 +10,7 @@
  "slug": "binance-hack-2026",
  "title": "The Binance hack, October 2026",
  "summary": "On 29 October 2026 an attacker emptied Binance's hot wallets on ten blockchains in about four hours. Binance puts the impact at around $6.3 billion; three blockchain analytics firms count $6.36 billion to $6.43 billion, the largest crypto theft on record at the value when taken. About $3 billion has been frozen. Binance says it will cover every loss. The analytics firms blame North Korea's TraderTraitor group; Binance and the US government have not confirmed who did it.",
- "updatedAt": "2026-10-30 19:06:42",
+ "updatedAt": "2026-10-30 20:42:55",
  "window": [
   "2026-10-29",
   "2026-11-05"
@@ -62,6 +62,229 @@
    "count": 25
   }
  ],
+ "featured": "1b64396d08",
+ "top10": [
+  "ea5b57ee2e",
+  "3aaf584511",
+  "028e6128f6",
+  "1f7f82c3ea",
+  "fc59b18ac5",
+  "1b64396d08",
+  "65eb18985f",
+  "621e803124",
+  "ad5f445c67",
+  "707a1f8f45"
+ ],
+ "collections": [
+  {
+   "id": "wrong",
+   "label": "Spreading something false or misleading",
+   "verdict": "false",
+   "ids": [
+    "17b6c0241a",
+    "c9ea82f812",
+    "d8f136c1d1",
+    "0a0d91d323",
+    "7c903f9d66",
+    "1b64396d08",
+    "ad5f445c67",
+    "980ac65bff",
+    "f08af334e4",
+    "b3289dfd81",
+    "e8f94688d1",
+    "b37ca96c1c"
+   ]
+  },
+  {
+   "id": "claim-dprk",
+   "label": "Saying \"North Korea did it\"",
+   "verdict": "unconfirmed",
+   "ids": [
+    "1dad8889ea",
+    "002af7141f",
+    "45b15b6277",
+    "74ca9507e5",
+    "5e8693be5c",
+    "3366d82cd9",
+    "17b6c0241a",
+    "0221ec34dd",
+    "3174e1a793",
+    "497d897c5c",
+    "26ae7f3ae1",
+    "26cc23ce5f",
+    "97b0503d93",
+    "8aecddd9f6",
+    "36cd8f5aee",
+    "513b542fde",
+    "61fd55c579",
+    "c9ea82f812",
+    "409bd5ff9e",
+    "b192f74f0a",
+    "5472b11c55",
+    "5c29006ebd",
+    "32bfb6857a",
+    "02b0dda943",
+    "16bb4140c5",
+    "5e4ab4f104",
+    "50771b7c5a",
+    "1d4adf4e20",
+    "88a71ac1fb",
+    "69ed2d0a2a",
+    "de44dfce71",
+    "7cfa3e8feb",
+    "6d5f1ac570",
+    "5c79f256b8",
+    "01753298e0",
+    "19bb03e470",
+    "d8f136c1d1",
+    "9b31a4a847",
+    "06a1cced2c",
+    "c64d52346b",
+    "bbc3ddb8fd",
+    "2c2312b09f",
+    "16a6189094",
+    "7c903f9d66",
+    "04ea7c5c83",
+    "f7a11c959f",
+    "7a77abea15",
+    "ac2678fcbd",
+    "650aece2e6",
+    "e3591b24f9",
+    "e5ff5041f0",
+    "e3a4b0d810",
+    "1b64396d08",
+    "65eb18985f",
+    "ad5f445c67",
+    "980ac65bff",
+    "ea5b57ee2e",
+    "707a1f8f45",
+    "11a8a416e8",
+    "c0e0979002",
+    "ae57727c19",
+    "22900b8d3e",
+    "095b806ba4",
+    "d4b0869f36",
+    "31b6ca3584",
+    "8e530482e7",
+    "6dc3ac82a0",
+    "0909ab9b7f",
+    "785e8c9b7b",
+    "5ccd0dfefe",
+    "3a3cc5eaaf",
+    "21ecd4348d",
+    "6c77efa9ec",
+    "d25fa31eea",
+    "0670081321",
+    "c46af10cbe",
+    "2be77846e7"
+   ]
+  },
+  {
+   "id": "claim-biggest",
+   "label": "Saying \"The biggest crypto hack ever\"",
+   "verdict": "true",
+   "ids": [
+    "1dad8889ea",
+    "74ca9507e5",
+    "5e8693be5c",
+    "17b6c0241a",
+    "6c4177937a",
+    "ab2d8c1321",
+    "5472b11c55",
+    "16bb4140c5",
+    "5e4ab4f104",
+    "69ed2d0a2a",
+    "23a80b586d",
+    "de44dfce71",
+    "7cfa3e8feb",
+    "c1fd3ad55b",
+    "5c79f256b8",
+    "9b31a4a847",
+    "c10422413a",
+    "cf49bf0736",
+    "ffc2a14603",
+    "bbc3ddb8fd",
+    "4f908b8b1d",
+    "290beab302",
+    "2c2312b09f",
+    "7a77abea15",
+    "69082af60f",
+    "9ad556234b",
+    "1b64396d08",
+    "65eb18985f",
+    "980ac65bff",
+    "b495848483",
+    "b6ee6d1803",
+    "95c2a9beb4",
+    "ea5b57ee2e",
+    "fc59b18ac5",
+    "11a8a416e8",
+    "64214c0e03",
+    "c8cb80b5d2",
+    "22900b8d3e",
+    "488da22fb6",
+    "095b806ba4",
+    "4882dfcc93",
+    "31b6ca3584",
+    "8e530482e7",
+    "49cc5454c2",
+    "b3289dfd81",
+    "1664ee3eec",
+    "0909ab9b7f",
+    "785e8c9b7b",
+    "5ccd0dfefe",
+    "c95c34c455",
+    "b55fca1614",
+    "735376aee0",
+    "0b6f43f90d",
+    "21ecd4348d",
+    "0670081321",
+    "2be77846e7",
+    "19aab59ce9"
+   ]
+  },
+  {
+   "id": "claim-twenty_minutes",
+   "label": "Saying \"It was done in 20 minutes\"",
+   "verdict": "true",
+   "ids": [
+    "002af7141f",
+    "36cd8f5aee",
+    "b192f74f0a",
+    "5472b11c55",
+    "16bb4140c5",
+    "5e4ab4f104",
+    "50771b7c5a",
+    "69ed2d0a2a",
+    "de44dfce71",
+    "7cfa3e8feb",
+    "5c79f256b8",
+    "ac2678fcbd",
+    "1b64396d08",
+    "65eb18985f",
+    "ad5f445c67",
+    "3ca82010ea",
+    "11a8a416e8",
+    "22900b8d3e",
+    "ccfeabe5d6",
+    "732f05bbae"
+   ]
+  },
+  {
+   "id": "claim-lost_63",
+   "label": "Saying \"$6.3 billion is gone\"",
+   "verdict": "misleading",
+   "ids": [
+    "0a0d91d323",
+    "7c903f9d66",
+    "ad5f445c67",
+    "980ac65bff",
+    "f08af334e4",
+    "b3289dfd81",
+    "e8f94688d1"
+   ]
+  }
+ ],
  "sources": [
   {
    "id": "6bc8a52905",
@@ -85,9 +308,12 @@
     "type": "x",
     "id": "2115915423174853077"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/cz_binance.jpg",
+   "lang": "en",
+   "reach": 6228881
   },
   {
    "id": "f51612affa",
@@ -111,9 +337,12 @@
     "type": "x",
     "id": "2115993361517891592"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 5936380
   },
   {
    "id": "b02f10eb6a",
@@ -137,9 +366,12 @@
     "type": "x",
     "id": "2116121748555153621"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 1952158
   },
   {
    "id": "3df2119f10",
@@ -163,9 +395,12 @@
     "type": "x",
     "id": "2115918888429133902"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 1383928
   },
   {
    "id": "a746d886a7",
@@ -189,9 +424,12 @@
     "type": "x",
     "id": "2115970069696217576"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 1247516
   },
   {
    "id": "851eb1c7eb",
@@ -215,9 +453,12 @@
     "type": "x",
     "id": "2115960292115124558"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 1002572
   },
   {
    "id": "c2e284103a",
@@ -241,9 +482,12 @@
     "type": "x",
     "id": "2115981055043981791"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 951318
   },
   {
    "id": "6501d31e78",
@@ -267,9 +511,12 @@
     "type": "x",
     "id": "2116137390180065546"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/cz_binance.jpg",
+   "lang": "en",
+   "reach": 835959
   },
   {
    "id": "a7df15df66",
@@ -293,9 +540,12 @@
     "type": "x",
     "id": "2115947325617299903"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 823733
   },
   {
    "id": "4c69ac9975",
@@ -319,9 +569,12 @@
     "type": "x",
     "id": "2116198836729520420"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/cz_binance.jpg",
+   "lang": "en",
+   "reach": 741748
   },
   {
    "id": "88d8dea64c",
@@ -345,9 +598,12 @@
     "type": "x",
     "id": "2116089661408108712"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 721583
   },
   {
    "id": "7b7bd08fe5",
@@ -371,9 +627,12 @@
     "type": "x",
     "id": "2116072080525656150"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/_richardteng.jpg",
+   "lang": "en",
+   "reach": 556354
   },
   {
    "id": "f58d7e01ee",
@@ -397,9 +656,12 @@
     "type": "x",
     "id": "2116072080525656150"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/_richardteng.jpg",
+   "lang": "en",
+   "reach": 555125
   },
   {
    "id": "9ae8342254",
@@ -423,9 +685,12 @@
     "type": "x",
     "id": "2116026356740034858"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 534661
   },
   {
    "id": "b699d29dc6",
@@ -449,9 +714,12 @@
     "type": "x",
     "id": "2116176335722913865"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/_richardteng.jpg",
+   "lang": "en",
+   "reach": 520261
   },
   {
    "id": "f3cc33f8d6",
@@ -475,9 +743,12 @@
     "type": "x",
     "id": "2116189354418897261"
    },
-   "transcript": false,
    "excerpt": "Yi He on X: \"User funds are SAFU.\" / X I'm Binance's co-CEO and also its Chief Customer Service Officer, Yi He. This morning we suffered a hack that affected $6.3 billion in assets. Read more",
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/heyibinance.jpg",
+   "lang": "en",
+   "reach": 492545
   },
   {
    "id": "626c727d3a",
@@ -501,9 +772,12 @@
     "type": "x",
     "id": "2115935002139742437"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 489214
   },
   {
    "id": "8f310916b4",
@@ -527,9 +801,12 @@
     "type": "x",
     "id": "2115915841195942020"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/heyibinance.jpg",
+   "lang": "en",
+   "reach": 440524
   },
   {
    "id": "8a2fcc6333",
@@ -553,9 +830,12 @@
     "type": "x",
     "id": "2115943482204574108"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 388983
   },
   {
    "id": "af16ee90b4",
@@ -579,9 +859,12 @@
     "type": "x",
     "id": "2115930656589119995"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 233248
   },
   {
    "id": "2897218261",
@@ -605,9 +888,12 @@
     "type": "x",
     "id": "2115962445584081395"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/_richardteng.jpg",
+   "lang": "en",
+   "reach": 105024
   },
   {
    "id": "3f012aaf63",
@@ -631,9 +917,12 @@
     "type": "x",
     "id": "2115933712856891856"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/binance.jpg",
+   "lang": "en",
+   "reach": 1645
   },
   {
    "id": "11f3d49749",
@@ -654,9 +943,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "This is a general announcement. Products and services referred to here may not be available in your region. Fellow Binancians, Binance's initial investigation suggests that the security incident may...",
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "a074340331",
@@ -680,9 +972,12 @@
     "type": "x",
     "id": "2115960582230913357"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/zachxbt.jpg",
+   "lang": "en",
+   "reach": 1089983
   },
   {
    "id": "7f9a560ac6",
@@ -706,9 +1001,12 @@
     "type": "x",
     "id": "2116030284261179538"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": "/events/binance-hack-2026/avatars/zachxbt.jpg",
+   "lang": "en",
+   "reach": 402052
   },
   {
    "id": "0dbb64f5c9",
@@ -729,9 +1027,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "44a60d3985",
@@ -752,9 +1053,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "412b9e518e",
@@ -775,9 +1079,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7690189df0",
@@ -798,9 +1105,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "2514106275",
@@ -821,9 +1131,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "1dad8889ea",
@@ -844,8 +1157,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "The incident was subsequently attributed to North Korea.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -855,7 +1168,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "afb028518b",
@@ -876,9 +1192,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "a211b6ce27",
@@ -899,9 +1218,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "a2945c9275",
@@ -922,9 +1244,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "19dfc430c4",
@@ -945,9 +1270,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "870e5c763e",
@@ -968,9 +1296,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "501889d88e",
@@ -991,9 +1322,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "4e99ae00d7",
@@ -1014,9 +1348,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "50a3015516",
@@ -1037,9 +1374,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "449a4fb57f",
@@ -1060,9 +1400,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "1e000ff4d1",
@@ -1083,9 +1426,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "39ba3a02bb",
@@ -1106,9 +1452,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "cf0fb0ae31",
@@ -1129,9 +1478,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "85ef5938c2",
@@ -1152,9 +1504,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "9c6662d365",
@@ -1175,9 +1530,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "002af7141f",
@@ -1198,8 +1556,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -1209,7 +1567,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "45b15b6277",
@@ -1230,14 +1591,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "74ca9507e5",
@@ -1258,8 +1622,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Blockchain security experts, including ZachXBT, an investigator, and intelligence firm Blockaid and TRM Labs said North Korea was likely behind the hack.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -1269,7 +1633,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "fe1f6df996",
@@ -1290,9 +1657,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "24c397b96f",
@@ -1313,9 +1683,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5fd9da3f84",
@@ -1336,9 +1709,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "53777a5ad0",
@@ -1359,9 +1735,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c4305309f6",
@@ -1382,9 +1761,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "4888a301a0",
@@ -1405,9 +1787,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6d850331c2",
@@ -1428,9 +1813,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5e8693be5c",
@@ -1451,8 +1839,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -1462,7 +1850,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "3366d82cd9",
@@ -1483,14 +1874,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "163706dc2d",
@@ -1511,9 +1905,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "17b6c0241a",
@@ -1534,8 +1931,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -1549,7 +1946,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6c4177937a",
@@ -1570,14 +1970,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "22f24bcb26",
@@ -1598,9 +2001,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "0221ec34dd",
@@ -1621,14 +2027,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "3174e1a793",
@@ -1649,14 +2058,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "d7f9879a75",
@@ -1677,9 +2089,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6788b6a980",
@@ -1700,9 +2115,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "497d897c5c",
@@ -1723,14 +2141,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "26ae7f3ae1",
@@ -1751,14 +2172,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "d605e8a844",
@@ -1779,9 +2203,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "26cc23ce5f",
@@ -1802,14 +2229,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "97b0503d93",
@@ -1830,14 +2260,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "8aecddd9f6",
@@ -1858,14 +2291,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "36cd8f5aee",
@@ -1886,8 +2322,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -1897,7 +2333,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "086ff372ea",
@@ -1918,12 +2357,15 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
-   "id": "e09aa009cb",
+   "id": "9f4dad59c3",
    "group": "news",
    "platform": "news",
    "kind": "article",
@@ -1934,16 +2376,19 @@
    "domain": null,
    "logo": null,
    "thumb": null,
-   "date": "2026-10-30 09:26:59",
+   "date": "2026-10-30 09:27:22",
    "views": null,
    "likes": null,
    "comments": null,
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "513b542fde",
@@ -1964,14 +2409,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Who is TraderTraitor?",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7e3c43e6ad",
@@ -1992,9 +2440,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "cb3adf86a6",
@@ -2015,9 +2466,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "3e879a5e13",
@@ -2038,9 +2492,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "61fd55c579",
@@ -2061,14 +2518,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "North Korea Behind the Binance Hack?",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "f3eea08f58",
@@ -2089,9 +2549,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "0cd4f51759",
@@ -2112,9 +2575,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "ab2d8c1321",
@@ -2135,14 +2601,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c9ea82f812",
@@ -2163,8 +2632,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2174,7 +2643,10 @@
      "key": "trading_halted",
      "verdict": "false"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "409bd5ff9e",
@@ -2195,14 +2667,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "e297259c7b",
@@ -2223,9 +2698,38 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
+  },
+  {
+   "id": "dda6b80b00",
+   "group": "news",
+   "platform": "news",
+   "kind": "article",
+   "voice": "press",
+   "title": "Binance flags 'potential security issue,' says approximately $6.3 billion impacted",
+   "url": null,
+   "publisher": null,
+   "domain": null,
+   "logo": null,
+   "thumb": null,
+   "date": "2026-10-30 11:27:22",
+   "views": null,
+   "likes": null,
+   "comments": null,
+   "points": null,
+   "subreddit": null,
+   "embed": null,
+   "excerpt": null,
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "fe91af0d13",
@@ -2246,9 +2750,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "fbfe552fe1",
@@ -2269,45 +2776,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
-  },
-  {
-   "id": "5472b11c55",
-   "group": "news",
-   "platform": "news",
-   "kind": "article",
-   "voice": "press",
-   "title": "$6.3 billion Binance hack was likely work of North Korea, blockchain intel firms say",
-   "url": "https://www.cbsnews.com/news/binance-hack-north-korea/",
-   "publisher": "cbsnews.com",
-   "domain": "cbsnews.com",
-   "logo": "/events/logos/cbsnews.com.png",
-   "thumb": null,
-   "date": "2026-10-30 11:27:38",
-   "views": null,
-   "likes": null,
-   "comments": null,
-   "points": null,
-   "subreddit": null,
-   "embed": null,
    "transcript": false,
-   "excerpt": null,
-   "claims": [
-    {
-     "key": "dprk",
-     "verdict": "unconfirmed"
-    },
-    {
-     "key": "biggest",
-     "verdict": "true"
-    },
-    {
-     "key": "twenty_minutes",
-     "verdict": "true"
-    }
-   ]
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "b192f74f0a",
@@ -2328,8 +2802,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2339,7 +2813,49 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
+  },
+  {
+   "id": "5472b11c55",
+   "group": "news",
+   "platform": "news",
+   "kind": "article",
+   "voice": "press",
+   "title": "$6.3 billion Binance hack was likely work of North Korea, blockchain intel firms say",
+   "url": "https://www.cbsnews.com/news/binance-hack-north-korea/",
+   "publisher": "cbsnews.com",
+   "domain": "cbsnews.com",
+   "logo": "/events/logos/cbsnews.com.png",
+   "thumb": null,
+   "date": "2026-10-30 11:27:38",
+   "views": null,
+   "likes": null,
+   "comments": null,
+   "points": null,
+   "subreddit": null,
+   "embed": null,
+   "excerpt": null,
+   "transcript": false,
+   "claims": [
+    {
+     "key": "dprk",
+     "verdict": "unconfirmed"
+    },
+    {
+     "key": "biggest",
+     "verdict": "true"
+    },
+    {
+     "key": "twenty_minutes",
+     "verdict": "true"
+    }
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5c29006ebd",
@@ -2360,14 +2876,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "32bfb6857a",
@@ -2388,14 +2907,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "02b0dda943",
@@ -2416,14 +2938,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Who is TraderTraitor?",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "16bb4140c5",
@@ -2444,8 +2969,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Blockchain analysts have linked the attack to North Korean hackers with high confidence, as the theft spurs calls for stronger withdrawal safeguards and coordinated industry responses.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2459,7 +2984,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5e4ab4f104",
@@ -2480,8 +3008,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2495,7 +3023,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "b6f42c7e61",
@@ -2516,9 +3047,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "50771b7c5a",
@@ -2539,8 +3073,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2550,7 +3084,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "1d4adf4e20",
@@ -2571,14 +3108,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5660461037",
@@ -2599,9 +3139,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "307adfb7f9",
@@ -2622,9 +3165,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "88a71ac1fb",
@@ -2645,14 +3191,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6f562dc8ca",
@@ -2673,9 +3222,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "69ed2d0a2a",
@@ -2696,8 +3248,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2711,7 +3263,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "23a80b586d",
@@ -2732,14 +3287,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "In what analysts termed the \"biggest crypto heist ever\", initial investigations suggest that an engineer’s compromised laptop allowed an attacker to gain access to a service container and submit unauthorised wi...",
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "de44dfce71",
@@ -2760,8 +3318,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "...t we know The world’s largest crypto exchange halts withdrawals as the theft is linked to North Korean hackers.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2775,7 +3333,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7cfa3e8feb",
@@ -2796,8 +3357,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2811,7 +3372,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c1fd3ad55b",
@@ -2832,37 +3396,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "The incident at Binance could be the biggest theft of any kind in history.",
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
-  },
-  {
-   "id": "302312df71",
-   "group": "news",
-   "platform": "news",
-   "kind": "article",
-   "voice": "press",
-   "title": "Bitcoin slides after crypto’s nightmare scenario: a historic $6.3 billion heist",
-   "url": null,
-   "publisher": null,
-   "domain": null,
-   "logo": null,
-   "thumb": "/events/binance-hack-2026/thumbs/302312df7100c55a.jpg",
-   "date": "2026-10-30 13:26:51",
-   "views": null,
-   "likes": null,
-   "comments": null,
-   "points": null,
-   "subreddit": null,
-   "embed": null,
-   "transcript": false,
-   "excerpt": null,
-   "claims": []
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6d5f1ac570",
@@ -2883,14 +3427,43 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
+  },
+  {
+   "id": "d265f1dbce",
+   "group": "news",
+   "platform": "news",
+   "kind": "article",
+   "voice": "press",
+   "title": "Bitcoin slides after crypto’s nightmare scenario: a historic $6.3 billion heist",
+   "url": null,
+   "publisher": null,
+   "domain": null,
+   "logo": null,
+   "thumb": "/events/binance-hack-2026/thumbs/d265f1dbceb77434.jpg",
+   "date": "2026-10-30 13:27:22",
+   "views": null,
+   "likes": null,
+   "comments": null,
+   "points": null,
+   "subreddit": null,
+   "embed": null,
+   "excerpt": null,
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "f48b7d7f4c",
@@ -2911,9 +3484,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c66fe88613",
@@ -2934,9 +3510,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "5c79f256b8",
@@ -2957,8 +3536,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -2972,7 +3551,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "01753298e0",
@@ -2993,14 +3575,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "19bb03e470",
@@ -3021,45 +3606,25 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
-   "id": "f5263a168b",
+   "id": "dafb099334",
    "group": "news",
    "platform": "news",
    "kind": "article",
    "voice": "press",
    "title": "FBI and US Secret Service working with Binance after $6.3 billion hack, source says",
-   "url": null,
-   "publisher": null,
-   "domain": null,
-   "logo": null,
-   "thumb": null,
-   "date": "2026-10-30 14:26:51",
-   "views": null,
-   "likes": null,
-   "comments": null,
-   "points": null,
-   "subreddit": null,
-   "embed": null,
-   "transcript": false,
-   "excerpt": null,
-   "claims": []
-  },
-  {
-   "id": "357dfbbeb4",
-   "group": "news",
-   "platform": "news",
-   "kind": "article",
-   "voice": "press",
-   "title": "Binance flags 'potential security issue,' says approximately $6.3 billion impacted",
    "url": null,
    "publisher": null,
    "domain": null,
@@ -3072,9 +3637,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "d8f136c1d1",
@@ -3095,8 +3663,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3106,7 +3674,10 @@
      "key": "one_laptop",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "22be12d449",
@@ -3127,9 +3698,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "96fd7dd1ed",
@@ -3150,9 +3724,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "9b31a4a847",
@@ -3173,8 +3750,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3184,7 +3761,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c10422413a",
@@ -3205,14 +3785,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "cf49bf0736",
@@ -3233,14 +3816,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "24ab983e0c",
@@ -3261,9 +3847,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "ffc2a14603",
@@ -3284,14 +3873,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "06a1cced2c",
@@ -3312,14 +3904,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "c64d52346b",
@@ -3340,14 +3935,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "a0d9700b40",
@@ -3368,9 +3966,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "b8c48bea3c",
@@ -3391,9 +3992,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "bbc3ddb8fd",
@@ -3414,8 +4018,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3425,7 +4029,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "0a2ce45f41",
@@ -3446,9 +4053,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "0a0d91d323",
@@ -3469,14 +4079,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Binance Lost Over $6 Billion in Crypto Hack.",
+   "transcript": false,
    "claims": [
     {
      "key": "lost_63",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6699b679fe",
@@ -3497,9 +4110,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "4f908b8b1d",
@@ -3520,14 +4136,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "915e5a2ec5",
@@ -3548,9 +4167,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "290beab302",
@@ -3571,14 +4193,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7056b41744",
@@ -3599,9 +4224,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "2c2312b09f",
@@ -3622,8 +4250,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3633,7 +4261,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "16a6189094",
@@ -3654,14 +4285,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "6e10d3859b",
@@ -3682,9 +4316,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "cac509bc17",
@@ -3705,9 +4342,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "cd0377b094",
@@ -3728,9 +4368,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7c903f9d66",
@@ -3751,8 +4394,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3762,7 +4405,10 @@
      "key": "lost_63",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "04ea7c5c83",
@@ -3783,14 +4429,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "f7a11c959f",
@@ -3811,14 +4460,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "Blockchain analytics firms TRM Labs and Chainalysis have attributed the theft to North Korean hacking group TraderTraitor.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "7a77abea15",
@@ -3839,8 +4491,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "TRM attributed the attack to North Korea’s TraderTraitor group, which the US Federal Bureau of Investigation blamed for the $1.5 billion Bybit theft in February 2025.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3850,7 +4502,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "69082af60f",
@@ -3871,14 +4526,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "2e6dcf6cc5",
@@ -3899,9 +4557,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "ac2678fcbd",
@@ -3922,8 +4583,8 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -3933,7 +4594,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "81a7020f2a",
@@ -3954,9 +4618,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "00fb7c3b9b",
@@ -3977,9 +4644,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "650aece2e6",
@@ -4000,14 +4670,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "What Is TraderTraitor?",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "9ad556234b",
@@ -4028,14 +4701,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "e3591b24f9",
@@ -4056,14 +4732,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "e5ff5041f0",
@@ -4084,14 +4763,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": "...billion in crypto was stolen from Binance, setting off a race to recover the funds before North Korea-linked hackers can...",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "29bf1c0970",
@@ -4112,9 +4794,12 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "e3a4b0d810",
@@ -4135,14 +4820,17 @@
    "points": null,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "1b64396d08",
@@ -4166,8 +4854,8 @@
     "type": "youtube",
     "id": "BMO6RQAFGhM"
    },
-   "transcript": true,
    "excerpt": "Instead, it might have everything to do with the North Koreans and a laptop.",
+   "transcript": true,
    "claims": [
     {
      "key": "dprk",
@@ -4185,7 +4873,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 142544
   },
   {
    "id": "65eb18985f",
@@ -4209,8 +4900,8 @@
     "type": "youtube",
     "id": "3tmPCylnuKE"
    },
-   "transcript": true,
    "excerpt": ">> Now there are suggestions that a North Korean linked hacking group may be behind that.",
+   "transcript": true,
    "claims": [
     {
      "key": "dprk",
@@ -4224,7 +4915,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 122528
   },
   {
    "id": "ad5f445c67",
@@ -4248,8 +4942,8 @@
     "type": "youtube",
     "id": "LVTOyJNbMA4"
    },
-   "transcript": true,
    "excerpt": "And investigators are pointing the finger at North Korea, the same culprit who stole $ 1.5 billion of crypto from Bybit almost 2 years ago.",
+   "transcript": true,
    "claims": [
     {
      "key": "dprk",
@@ -4263,7 +4957,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 102155
   },
   {
    "id": "41f489e8fe",
@@ -4287,9 +4984,12 @@
     "type": "youtube",
     "id": "fVlEM1k2IFU"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 95315
   },
   {
    "id": "980ac65bff",
@@ -4313,8 +5013,8 @@
     "type": "youtube",
     "id": "5u2IlJytBT8"
    },
-   "transcript": true,
    "excerpt": "attack to North Korea's Trader Trader Unit, part of what's known as the Lazarus Group.",
+   "transcript": true,
    "claims": [
     {
      "key": "dprk",
@@ -4328,7 +5028,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 71056
   },
   {
    "id": "b7fea28b80",
@@ -4352,9 +5055,12 @@
     "type": "youtube",
     "id": "Pw0ehu59r8A"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 67865
   },
   {
    "id": "b495848483",
@@ -4378,14 +5084,17 @@
     "type": "youtube",
     "id": "cw7WST9jBFI"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 65133
   },
   {
    "id": "a808f20663",
@@ -4409,9 +5118,12 @@
     "type": "youtube",
     "id": "hWWDsQuBjRA"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 61063
   },
   {
    "id": "b24d4ccbfb",
@@ -4435,9 +5147,12 @@
     "type": "youtube",
     "id": "tShDQ4GUa1g"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 36846
   },
   {
    "id": "d2919c7554",
@@ -4461,9 +5176,12 @@
     "type": "youtube",
     "id": "2TeyeFeN4ks"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 30997
   },
   {
    "id": "2bf813d094",
@@ -4487,9 +5205,12 @@
     "type": "youtube",
     "id": "5Mn-rO_o1c0"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 22506
   },
   {
    "id": "e39c44a9e5",
@@ -4513,9 +5234,12 @@
     "type": "youtube",
     "id": "DfJNgEbHcD4"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 18532
   },
   {
    "id": "b6ee6d1803",
@@ -4539,14 +5263,17 @@
     "type": "youtube",
     "id": "JtvNQLdExBY"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 15991
   },
   {
    "id": "f08af334e4",
@@ -4570,14 +5297,17 @@
     "type": "youtube",
     "id": "yLh79rkPW1Q"
    },
-   "transcript": false,
    "excerpt": "$6.3B GONE (Crypto Is Crashing).",
+   "transcript": false,
    "claims": [
     {
      "key": "lost_63",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 15215
   },
   {
    "id": "3ca82010ea",
@@ -4601,14 +5331,17 @@
     "type": "youtube",
     "id": "kwv-Jcg_OrY"
    },
-   "transcript": false,
    "excerpt": "Binance Hack: $5.7 Billion Gone in 20 Minutes.",
+   "transcript": false,
    "claims": [
     {
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 12552
   },
   {
    "id": "929421b1c5",
@@ -4632,9 +5365,12 @@
     "type": "youtube",
     "id": "BKTqPU3IPxM"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 11719
   },
   {
    "id": "acf9d523a2",
@@ -4658,9 +5394,12 @@
     "type": "youtube",
     "id": "OZADEGy-Ryk"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 10091
   },
   {
    "id": "55f8adbd09",
@@ -4684,9 +5423,12 @@
     "type": "youtube",
     "id": "E_rqbLH1960"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "other",
+   "reach": 6687
   },
   {
    "id": "7a9d0f1010",
@@ -4710,9 +5452,12 @@
     "type": "youtube",
     "id": "-RxZkrZWLLY"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 5346
   },
   {
    "id": "ce5d953d34",
@@ -4736,9 +5481,12 @@
     "type": "youtube",
     "id": "keYg_u5E7xQ"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 3761
   },
   {
    "id": "95c2a9beb4",
@@ -4762,14 +5510,17 @@
     "type": "youtube",
     "id": "qdtKiFU2Pns"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 2355
   },
   {
    "id": "1862585102",
@@ -4793,9 +5544,12 @@
     "type": "youtube",
     "id": "v0w0KIswFvw"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1164
   },
   {
    "id": "0c2a762fd7",
@@ -4819,9 +5573,12 @@
     "type": "youtube",
     "id": "tx_G1ScRVWQ"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 228
   },
   {
    "id": "be9c72c423",
@@ -4845,9 +5602,12 @@
     "type": "youtube",
     "id": "R6Gp0hafKQo"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 140
   },
   {
    "id": "9aa8e523ea",
@@ -4871,22 +5631,25 @@
     "type": "youtube",
     "id": "PXACUMOYU3E"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 45
   },
   {
    "id": "ea5b57ee2e",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Hackers stole over to $6 billion in cryptocurrency on Thursday from crypto exchange Binance, shattering the record for the largest such heis",
    "url": "https://www.tiktok.com/@cnn/video/7702395721504263438",
-   "publisher": null,
+   "publisher": "CNN",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/ea5b57ee2e2eb86f.jpg",
    "date": "2026-10-30 09:50:08",
    "views": 1100000,
    "likes": 79400,
@@ -4897,8 +5660,8 @@
     "type": "tiktok",
     "id": "7702395721504263438"
    },
-   "transcript": true,
    "excerpt": "biggest cryptocurrency heist in the world just happened and multiple investigators say that North Korea could actually be responsible.",
+   "transcript": true,
    "claims": [
     {
      "key": "dprk",
@@ -4908,20 +5671,23 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1100000
   },
   {
    "id": "3aaf584511",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "BREAKING: Binance is investigating a possible major security breach after billions of dollars in suspicious wallet movements sparked fears o",
    "url": "https://www.tiktok.com/@dailytrenches/video/7702247157344193812",
-   "publisher": null,
+   "publisher": "Trenches Daily",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/3aaf584511ad2ce4.jpg",
    "date": "2026-10-30 00:12:53",
    "views": 469200,
    "likes": 14700,
@@ -4932,22 +5698,25 @@
     "type": "tiktok",
     "id": "7702247157344193812"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 469200
   },
   {
    "id": "028e6128f6",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Sau vụ sàn Binance bị tấn công thiệt hại hơn 6 tỷ đô thì tỷ phú Elon Musk chỉ để lại đúng một bình luận ngắn gọn là Everyday is Zeroday #onc",
    "url": "https://www.tiktok.com/@oncoinx2/video/7702292465973234964",
-   "publisher": null,
+   "publisher": "Oncoin X",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/028e6128f6987d67.jpg",
    "date": "2026-10-30 03:08:40",
    "views": 318000,
    "likes": 7115,
@@ -4958,9 +5727,12 @@
     "type": "tiktok",
     "id": "7702292465973234964"
    },
-   "transcript": true,
    "excerpt": "The world's richest billionaire Elon Musk made a short speech after the Binance incident was hacked more than 6 billion dollars this morning, October 30. Right after information about the cyber...",
-   "claims": []
+   "transcript": true,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 318000
   },
   {
    "id": "1f7f82c3ea",
@@ -4984,22 +5756,25 @@
     "type": "tiktok",
     "id": "7702337843368135957"
    },
-   "transcript": true,
    "excerpt": "What the f**k? What is Binance doing? Bitcoin is a cryptocurrency that has a free zone of 2.45 billion. Binance has a wallet of Bitcoin, Ethereum, etc. It is a cryptocurrency that is used to trade...",
-   "claims": []
+   "transcript": true,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 204800
   },
   {
    "id": "fc59b18ac5",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "The suspected #Binance hack — said to be the biggest attack in #crypto history — is \"not the end of the world,\" says Ballet CEO Bobby Lee, w",
    "url": "https://www.tiktok.com/@bloombergbusiness/video/7702335493156965662",
-   "publisher": null,
+   "publisher": "Bloomberg Business",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/fc59b18ac5091c9a.jpg",
    "date": "2026-10-30 05:56:13",
    "views": 203600,
    "likes": 7795,
@@ -5010,27 +5785,30 @@
     "type": "tiktok",
     "id": "7702335493156965662"
    },
-   "transcript": true,
    "excerpt": "This is the biggest hack in the whole history of Bitcoin and cryptocurrency.",
+   "transcript": true,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 203600
   },
   {
    "id": "621e803124",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "ከ1 ትሪሊዮን ብር በላይ ተዘረፈ #kbnews #ethiopian_news #ethiopian_tik_tok",
    "url": "https://www.tiktok.com/@kb_news1/video/7702481263147486471",
-   "publisher": null,
+   "publisher": "KB News",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/621e803124bacc06.jpg",
    "date": "2026-10-30 15:21:18",
    "views": 106800,
    "likes": 8729,
@@ -5041,22 +5819,25 @@
     "type": "tiktok",
     "id": "7702481263147486471"
    },
-   "transcript": true,
    "excerpt": "The crypto market is now a billion dollar market. The crypto market is now a billion dollar market. The government has been very careful about the situation. The government has been very careful...",
-   "claims": []
+   "transcript": true,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 106800
   },
   {
    "id": "707a1f8f45",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "A U.S.-based blockchain intelligence firm says North Korean hackers were likely behind the theft of $6.3 billion US — nearly $9 billion Cdn",
    "url": "https://www.tiktok.com/@cbcnews/video/7702482207499095303",
-   "publisher": null,
+   "publisher": "CBC News",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/707a1f8f456ed90a.jpg",
    "date": "2026-10-30 15:24:56",
    "views": 97300,
    "likes": 2639,
@@ -5067,27 +5848,30 @@
     "type": "tiktok",
     "id": "7702482207499095303"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 97300
   },
   {
    "id": "11a8a416e8",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "North Korea linked to the $6.3 BILLION Binance hack! Blockchain investigators suspect North Korea’s notorious TraderTraitor hacking group wa",
    "url": "https://www.tiktok.com/@dailytrenches/video/7702446131883674901",
-   "publisher": null,
+   "publisher": "Trenches Daily",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/11a8a416e845f63e.jpg",
    "date": "2026-10-30 13:04:56",
    "views": 55000,
    "likes": 1010,
@@ -5098,8 +5882,8 @@
     "type": "tiktok",
     "id": "7702446131883674901"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -5113,20 +5897,23 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 55000
   },
   {
    "id": "69e4027d91",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Will you lose money after this massive Binance hack? #Binance #CryptoExchange #Cryptocurrency #NorthKorea #BBCNews",
    "url": "https://www.tiktok.com/@bbcnews/video/7702506867527879958",
-   "publisher": null,
+   "publisher": "BBC News",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/69e4027d91c821eb.jpg",
    "date": "2026-10-30 17:00:09",
    "views": 44200,
    "likes": 743,
@@ -5137,9 +5924,12 @@
     "type": "tiktok",
     "id": "7702506867527879958"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 44200
   },
   {
    "id": "d720ba81b5",
@@ -5163,9 +5953,12 @@
     "type": "tiktok",
     "id": "7702192936892648734"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 36500
   },
   {
    "id": "7bc5b61c86",
@@ -5189,22 +5982,25 @@
     "type": "tiktok",
     "id": "7702319639262448917"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 34700
   },
   {
    "id": "c0e0979002",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Are North Korean hackers behind the biggest bank heist in history? #crypto #binance #bitcoin #fyp",
    "url": "https://www.tiktok.com/@lbcnews/video/7702362657529023766",
-   "publisher": null,
+   "publisher": "LBC News",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/c0e0979002934670.jpg",
    "date": "2026-10-30 07:41:08",
    "views": 29400,
    "likes": 756,
@@ -5215,14 +6011,17 @@
     "type": "tiktok",
     "id": "7702362657529023766"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 29400
   },
   {
    "id": "64b79155c8",
@@ -5246,22 +6045,25 @@
     "type": "tiktok",
     "id": "7702360902065999122"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 26400
   },
   {
    "id": "b4ab14464f",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "#Binance said Friday that a security incident impacted about $6.3 billion in client assets, with around $3 billion frozen on-chain, marking",
    "url": "https://www.tiktok.com/@cnbc/video/7702495108276423949",
-   "publisher": null,
+   "publisher": "cnbc",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/b4ab14464f911897.jpg",
    "date": "2026-10-30 16:15:08",
    "views": 21600,
    "likes": 633,
@@ -5272,9 +6074,12 @@
     "type": "tiktok",
     "id": "7702495108276423949"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 21600
   },
   {
    "id": "915b3bd4ec",
@@ -5298,9 +6103,12 @@
     "type": "tiktok",
     "id": "7702289667382627597"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 15300
   },
   {
    "id": "86a1608b97",
@@ -5324,22 +6132,25 @@
     "type": "tiktok",
     "id": "7702225036572216628"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 11900
   },
   {
    "id": "c2b620cc82",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Elon Musk trolled Binance's massive hack. Its founder CZ hit back with a billion-dollar reminder. #elonmusk #binance #cz #crypto #spacex",
    "url": "https://www.tiktok.com/@moniify/video/7702491313651993876",
-   "publisher": null,
+   "publisher": "Moniify",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/c2b620cc82178a0e.jpg",
    "date": "2026-10-30 16:00:00",
    "views": 10700,
    "likes": 341,
@@ -5350,22 +6161,25 @@
     "type": "tiktok",
     "id": "7702491313651993876"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 10700
   },
   {
    "id": "ae57727c19",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "Cryptocurrency giant Binance suffered a record-breaking $6.3 billion heist that analysts believe was carried out by North Korean hacking gro",
    "url": "https://www.tiktok.com/@cbsnews/video/7702511123660131597",
-   "publisher": null,
+   "publisher": "cbsnews",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/ae57727c19ac4c0c.jpg",
    "date": "2026-10-30 17:17:45",
    "views": 6071,
    "likes": 147,
@@ -5376,27 +6190,30 @@
     "type": "tiktok",
     "id": "7702511123660131597"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 6071
   },
   {
    "id": "49b988353f",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "CNBC's MacKenzie Sigalos reports on how the cryptocurrency exchange #Binance is addressing the fallout from a roughly $6.3 billion hack. ⠀ R",
    "url": "https://www.tiktok.com/@cnbc/video/7702510530736508174",
-   "publisher": null,
+   "publisher": "cnbc",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/49b988353f25c13c.jpg",
    "date": "2026-10-30 17:15:08",
    "views": 5761,
    "likes": 152,
@@ -5407,9 +6224,12 @@
     "type": "tiktok",
     "id": "7702510530736508174"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 5761
   },
   {
    "id": "33f038383e",
@@ -5433,9 +6253,12 @@
     "type": "tiktok",
     "id": "7702241927999048990"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4740
   },
   {
    "id": "1da7fd9540",
@@ -5459,9 +6282,12 @@
     "type": "tiktok",
     "id": "7702516066593017108"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1719
   },
   {
    "id": "64214c0e03",
@@ -5485,27 +6311,30 @@
     "type": "tiktok",
     "id": "7702399250013080835"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 507
   },
   {
    "id": "b31490a7a3",
    "group": "tiktok",
    "platform": "tiktok",
    "kind": "video",
-   "voice": "public",
+   "voice": "creator",
    "title": "BINANCE JUST GOT HACKED FOR $2,7 BILLION!!🚨🚨 move off from exchange and Cold wallet 🚨 #xrp #crypto #binance #hack #moveofffromexchange",
    "url": "https://www.tiktok.com/@qfs_digitalassset0/video/7702286247540313364",
-   "publisher": null,
+   "publisher": "3T Global Academy",
    "domain": "tiktok.com",
    "logo": "/events/logos/tiktok.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/b31490a7a366a042.jpg",
    "date": "2026-10-30 02:44:32",
    "views": 485,
    "likes": 4,
@@ -5516,9 +6345,12 @@
     "type": "tiktok",
     "id": "7702286247540313364"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 485
   },
   {
    "id": "483c1ef631",
@@ -5542,9 +6374,12 @@
     "type": "tiktok",
     "id": "7702515148753292558"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 332
   },
   {
    "id": "9e9d14a2a3",
@@ -5568,9 +6403,12 @@
     "type": "tiktok",
     "id": "7702514758121016584"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 165
   },
   {
    "id": "69d7980eb4",
@@ -5594,9 +6432,12 @@
     "type": "tiktok",
     "id": "7702517359491173662"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 134
   },
   {
    "id": "738a993b19",
@@ -5620,9 +6461,12 @@
     "type": "tiktok",
     "id": "7702525279511563527"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 127
   },
   {
    "id": "c8cb80b5d2",
@@ -5646,14 +6490,17 @@
     "type": "tiktok",
     "id": "7702514955794386184"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 77
   },
   {
    "id": "4ac85a4bca",
@@ -5677,9 +6524,12 @@
     "type": "tiktok",
     "id": "7702520635427261716"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 8
   },
   {
    "id": "41358b9057",
@@ -5703,9 +6553,12 @@
     "type": "tiktok",
     "id": "7702523630260931892"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4
   },
   {
    "id": "22900b8d3e",
@@ -5718,7 +6571,7 @@
    "publisher": "evolving.ai",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/22900b8d3ed5429b.jpg",
    "date": "2026-10-30 09:56:58",
    "views": null,
    "likes": 7016,
@@ -5729,8 +6582,8 @@
     "type": "instagram",
     "id": "p/DfHT9FqgJpg"
    },
-   "transcript": false,
    "excerpt": "Security firms TRM Labs and Chainalysis have linked the attack to North Korea's TraderTraitor hacking group, also blamed for the $1.5 billion Bybit hack in 2025.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -5744,7 +6597,10 @@
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 7016
   },
   {
    "id": "488da22fb6",
@@ -5757,7 +6613,7 @@
    "publisher": "watcher.guru",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/488da22fb6c36c18.jpg",
    "date": "2026-10-29 22:03:28",
    "views": null,
    "likes": 5099,
@@ -5768,14 +6624,17 @@
     "type": "instagram",
     "id": "p/DfGCTT4IPNV"
    },
-   "transcript": false,
    "excerpt": "This is the largest hack in crypto history.",
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 5099
   },
   {
    "id": "095b806ba4",
@@ -5788,7 +6647,7 @@
    "publisher": "bitcoinmagazine",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/095b806ba448416f.jpg",
    "date": "2026-10-30 12:30:48",
    "views": null,
    "likes": 870,
@@ -5799,8 +6658,8 @@
     "type": "instagram",
     "id": "p/DfHlj4CIcRM"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -5810,7 +6669,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 870
   },
   {
    "id": "d4b0869f36",
@@ -5823,7 +6685,7 @@
    "publisher": "watcher.guru",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/d4b0869f36cd1f93.jpg",
    "date": "2026-10-30 16:07:14",
    "views": null,
    "likes": 569,
@@ -5834,14 +6696,17 @@
     "type": "instagram",
     "id": "p/DfH-VEzIAkY"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 569
   },
   {
    "id": "4882dfcc93",
@@ -5854,7 +6719,7 @@
    "publisher": "watcher.guru",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/4882dfcc9327b0f2.jpg",
    "date": "2026-10-30 18:00:56",
    "views": null,
    "likes": 235,
@@ -5865,14 +6730,17 @@
     "type": "instagram",
     "id": "reel/DfILDESCEYJ"
    },
-   "transcript": false,
    "excerpt": "This is the largest hack in crypto history.",
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 235
   },
   {
    "id": "31b6ca3584",
@@ -5885,7 +6753,7 @@
    "publisher": "cointelegraph",
    "domain": "instagram.com",
    "logo": "/events/logos/instagram.com.png",
-   "thumb": null,
+   "thumb": "/events/binance-hack-2026/thumbs/31b6ca3584a5e886.jpg",
    "date": "2026-10-30 11:52:27",
    "views": null,
    "likes": 129,
@@ -5896,8 +6764,8 @@
     "type": "instagram",
     "id": "p/DfHhK-aFCuz"
    },
-   "transcript": false,
    "excerpt": "Investigators attribute the attack to North Korea’s TraderTraitor group.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -5907,7 +6775,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 129
   },
   {
    "id": "fa737c0252",
@@ -5931,9 +6802,12 @@
     "type": "x",
     "id": "2116124957805514847"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "68c1ac2c5e",
@@ -5957,9 +6831,12 @@
     "type": "x",
     "id": "2115945696025346492"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "300a0a74a7",
@@ -5983,9 +6860,12 @@
     "type": "x",
     "id": "2115907228301426881"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "e8270e8ac5",
@@ -6009,9 +6889,12 @@
     "type": "x",
     "id": "2115914944696689147"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 0
   },
   {
    "id": "8e530482e7",
@@ -6035,8 +6918,8 @@
     "type": "reddit",
     "id": "/r/technology/comments/1xj6gwl/north_korea_steals_usd_636_billion_from_binance"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -6046,7 +6929,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 29394
   },
   {
    "id": "ccfeabe5d6",
@@ -6070,14 +6956,17 @@
     "type": "reddit",
     "id": "/r/technology/comments/1xjdg5q/the_63_billion_binance_hack_was_pulled_off_in"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 11332
   },
   {
    "id": "1a9123fc89",
@@ -6101,9 +6990,12 @@
     "type": "reddit",
     "id": "/r/CryptoCurrency/comments/1xj1agm/binance_was_just_hacked_for_56b_get_your_funds"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 6760
   },
   {
    "id": "9b0b6886e4",
@@ -6127,9 +7019,12 @@
     "type": "reddit",
     "id": "/r/nba/comments/1xj0ypp/at_the_same_time_adam_silver_announces"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4063
   },
   {
    "id": "6dc3ac82a0",
@@ -6153,14 +7048,17 @@
     "type": "reddit",
     "id": "/r/wallstreetbets/comments/1xj7w95/crypto_exchange_binance_hacked_of_over_6_billion"
    },
-   "transcript": false,
    "excerpt": "The hack is currently suspected to be linked to a North Korean group.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 2169
   },
   {
    "id": "3d82100b84",
@@ -6184,9 +7082,12 @@
     "type": "reddit",
     "id": "/r/todayilearned/comments/1xjdx0b/til_that_after_binance_lost_about_7000_btc"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1890
   },
   {
    "id": "49cc5454c2",
@@ -6210,14 +7111,17 @@
     "type": "reddit",
     "id": "/r/anime_titties/comments/1xiy8oq/binance_loses_57_billion_in_largest_crypto_hack"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1431
   },
   {
    "id": "b3289dfd81",
@@ -6241,8 +7145,8 @@
     "type": "reddit",
     "id": "/r/IndianStreetBets/comments/1xj2x4h/binance_hacked_56b_gone_biggest_hack_in_crypto"
    },
-   "transcript": false,
    "excerpt": "BINANCE HACKED - $5.6B gone.",
+   "transcript": false,
    "claims": [
     {
      "key": "lost_63",
@@ -6252,7 +7156,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1255
   },
   {
    "id": "5ba6d87de9",
@@ -6276,9 +7183,12 @@
     "type": "reddit",
     "id": "/r/wallstreetbetsGER/comments/1xj252a/geisteskrank_was_grade_abgeht"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "other",
+   "reach": 1073
   },
   {
    "id": "2300b665ad",
@@ -6302,9 +7212,12 @@
     "type": "reddit",
     "id": "/r/Bitcoin/comments/1xiwbgv/binance_hacked_wtf_is_going_on"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 952
   },
   {
    "id": "1664ee3eec",
@@ -6328,14 +7241,17 @@
     "type": "reddit",
     "id": "/r/CryptoCurrency/comments/1xjenal/binance_halts_withdrawals_after_record_63bn_heist"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 896
   },
   {
    "id": "c331fb9df8",
@@ -6359,9 +7275,12 @@
     "type": "reddit",
     "id": "/r/PrepperIntel/comments/1xj2fd2/polymarket_and_binance_allegedly_suffering_severe"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 891
   },
   {
    "id": "a54e2cb0ec",
@@ -6385,9 +7304,12 @@
     "type": "reddit",
     "id": "/r/CryptoCurrency/comments/1xiwlen/277_billion_flows_out_of_binancelinked_wallets"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 675
   },
   {
    "id": "08c1af8a6b",
@@ -6411,9 +7333,12 @@
     "type": "reddit",
     "id": "/r/Buttcoin/comments/1xjg02d/the_girls_are_fighting_elon_laughs_about_the"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 525
   },
   {
    "id": "0909ab9b7f",
@@ -6437,8 +7362,8 @@
     "type": "reddit",
     "id": "/r/CryptoCurrency/comments/1xj9oyy/north_korea_steals_usd_636_billion_from_binance"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -6448,7 +7373,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 498
   },
   {
    "id": "c49ac83c7c",
@@ -6472,9 +7400,12 @@
     "type": "reddit",
     "id": "/r/devops/comments/1xj4flc/binance_hack_and_a_devops_laptop"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 492
   },
   {
    "id": "785e8c9b7b",
@@ -6498,8 +7429,8 @@
     "type": "reddit",
     "id": "/r/pwnhub/comments/1xj85x9/north_korea_steals_usd_636_billion_from_binance"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -6509,7 +7440,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 492
   },
   {
    "id": "c90866b33a",
@@ -6533,9 +7467,12 @@
     "type": "reddit",
     "id": "/r/CryptoCurrency/comments/1xixi3o/the_binance_hack_is_real"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 488
   },
   {
    "id": "98fa5510bb",
@@ -6559,9 +7496,12 @@
     "type": "reddit",
     "id": "/r/Bitcoin/comments/1xixhk9/the_binance_hack_is_real"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 427
   },
   {
    "id": "2d84fc5d5e",
@@ -6585,9 +7525,12 @@
     "type": "reddit",
     "id": "/r/argentina/comments/1xj1djm/otra_victoria_de_los_gordos_corralito"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "other",
+   "reach": 382
   },
   {
    "id": "efafee1080",
@@ -6611,9 +7554,12 @@
     "type": "reddit",
     "id": "/r/btc/comments/1xj7lny/more_context_on_the_binance_crypto_hack"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 378
   },
   {
    "id": "2a1f293037",
@@ -6637,9 +7583,12 @@
     "type": "reddit",
     "id": "/r/WhitePeopleTwitter/comments/1xjlz4f/binance_gets_hacked_after_trump_pardons_their_ceo"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 338
   },
   {
    "id": "2d2ced8a22",
@@ -6663,9 +7612,12 @@
     "type": "reddit",
     "id": "/r/Economics/comments/1xjcjyo/binance_hack_updates_crypto_firm_finds_multiple"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 308
   },
   {
    "id": "5ccd0dfefe",
@@ -6689,8 +7641,8 @@
     "type": "reddit",
     "id": "/r/Bitcoin/comments/1xjehto/north_korea_steals_usd_636_billion_from_binance"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -6700,7 +7652,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 305
   },
   {
    "id": "7ff5fac7cf",
@@ -6724,9 +7679,12 @@
     "type": "reddit",
     "id": "/r/hacking/comments/1xjbj4w/crypto_giant_binance_hit_by_biggest_bank_hack_in"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 304
   },
   {
    "id": "333dc42b36",
@@ -6750,9 +7708,12 @@
     "type": "reddit",
     "id": "/r/Buttcoin/comments/1xiwt7y/binance_and_kucoin_hacked_for_over_3_billion_cz"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 285
   },
   {
    "id": "6b3b42b6c8",
@@ -6776,9 +7737,12 @@
     "type": "reddit",
     "id": "/r/USNEWS/comments/1xj6duw/crypto_industry_suffers_largest_bank_heist_in"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 281
   },
   {
    "id": "3357ffac10",
@@ -6802,9 +7766,12 @@
     "type": "reddit",
     "id": "/r/EconomyCharts/comments/1xixpi7/just_in_approximately_57_billion_left"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 277
   },
   {
    "id": "3a3cc5eaaf",
@@ -6828,14 +7795,17 @@
     "type": "reddit",
     "id": "/r/KafkaBTC/comments/1xj8bm4/binance_%D0%B2%D0%B7%D0%BB%D0%BE%D0%BC%D0%B0%D0%BB%D0%B0_%D1%81%D0%B5%D0%B2%D0%B5%D1%80%D0%BD%D0%B0%D1%8F_%D0%BA%D0%BE%D1%80%D0%B5%D1%8F_%D0%B8_%D1%81%D0%BE%D0%B2%D0%B5%D1%80%D1%88%D0%B8%D0%BB%D0%B0"
    },
-   "transcript": false,
    "excerpt": "За взломом и выводом средств стоит TraderTraitor — подгруппа мощнейшей хакерской группировки Lazarus, пишут криптоаналитики TRM Labs.",
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "other",
+   "reach": 242
   },
   {
    "id": "c95c34c455",
@@ -6859,14 +7829,17 @@
     "type": "reddit",
     "id": "/r/CryptoIndia/comments/1xj04a5/binance_hacked_56_billion_largest_crypto_theft"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 225
   },
   {
    "id": "b55fca1614",
@@ -6890,14 +7863,17 @@
     "type": "reddit",
     "id": "/r/ArtificialInteligence/comments/1xjb86s/black_october_update_the_largest_hack_in_crypto"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 209
   },
   {
    "id": "e6199fa1ae",
@@ -6921,9 +7897,12 @@
     "type": "reddit",
     "id": "/r/Buttcoin/comments/1xj26zr/this_website_is_tracking_the_binance_hack_so_far"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 204
   },
   {
    "id": "769f7d02f8",
@@ -6947,9 +7926,12 @@
     "type": "reddit",
     "id": "/r/literaciafinanceira/comments/1xiy1g4/binance_sofre_maior_hack_da_hist%C3%B3ria_5_bili%C3%B5es"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 199
   },
   {
    "id": "735376aee0",
@@ -6973,14 +7955,17 @@
     "type": "reddit",
     "id": "/r/Buttcoin/comments/1xj9nxh/the_binance_hack_is_the_largest_heist_in_human"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 190
   },
   {
    "id": "0b6f43f90d",
@@ -7004,14 +7989,17 @@
     "type": "reddit",
     "id": "/r/binance/comments/1xj5p1s/biggest_hack_in_crypto_history_and_i_rushed_to"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 185
   },
   {
    "id": "43950e58f3",
@@ -7035,9 +8023,12 @@
     "type": "reddit",
     "id": "/r/Buttcoin/comments/1xj3lwf/be_your_own_bank"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "other",
+   "reach": 182
   },
   {
    "id": "21ecd4348d",
@@ -7061,8 +8052,8 @@
     "type": "reddit",
     "id": "/r/atrioc/comments/1xjfy8j/north_korea_steals_usd_636_billion_from_binance"
    },
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -7072,7 +8063,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 179
   },
   {
    "id": "30fcbcb345",
@@ -7096,9 +8090,12 @@
     "type": "reddit",
     "id": "/r/farialimabets/comments/1xixk6v/minha_vida_aqui_%C3%A9_uma_desgra%C3%A7a_%C3%A9_problema_o_tempo"
    },
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "other",
+   "reach": 144
   },
   {
    "id": "89bac0471e",
@@ -7119,9 +8116,12 @@
    "points": 1705,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1705
   },
   {
    "id": "732f05bbae",
@@ -7142,14 +8142,17 @@
    "points": 231,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "twenty_minutes",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 231
   },
   {
    "id": "6c77efa9ec",
@@ -7170,14 +8173,17 @@
    "points": 110,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 110
   },
   {
    "id": "d25fa31eea",
@@ -7198,14 +8204,17 @@
    "points": 81,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 88
   },
   {
    "id": "d2d83540e9",
@@ -7226,9 +8235,12 @@
    "points": 39,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 39
   },
   {
    "id": "0670081321",
@@ -7249,8 +8261,8 @@
    "points": 23,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -7260,7 +8272,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 23
   },
   {
    "id": "009aa1af46",
@@ -7281,9 +8296,12 @@
    "points": 20,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 20
   },
   {
    "id": "e8a924b165",
@@ -7304,9 +8322,12 @@
    "points": 12,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 12
   },
   {
    "id": "d164902a8a",
@@ -7327,9 +8348,12 @@
    "points": 6,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 6
   },
   {
    "id": "a2d53a839d",
@@ -7350,9 +8374,12 @@
    "points": 5,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 5
   },
   {
    "id": "3c24c1f90c",
@@ -7373,9 +8400,12 @@
    "points": 4,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4
   },
   {
    "id": "2ef7f23f2b",
@@ -7396,9 +8426,12 @@
    "points": 4,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4
   },
   {
    "id": "2997689c85",
@@ -7419,9 +8452,12 @@
    "points": 4,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 4
   },
   {
    "id": "c46af10cbe",
@@ -7442,14 +8478,17 @@
    "points": 3,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
      "verdict": "unconfirmed"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 3
   },
   {
    "id": "0c74b74ced",
@@ -7470,9 +8509,12 @@
    "points": 3,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 3
   },
   {
    "id": "a153f5b217",
@@ -7493,9 +8535,12 @@
    "points": 2,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 2
   },
   {
    "id": "2be77846e7",
@@ -7516,8 +8561,8 @@
    "points": 2,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "dprk",
@@ -7527,7 +8572,10 @@
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 5
   },
   {
    "id": "0af09e6b0d",
@@ -7548,9 +8596,12 @@
    "points": 2,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 2
   },
   {
    "id": "30e041d17d",
@@ -7571,9 +8622,12 @@
    "points": 2,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 2
   },
   {
    "id": "2a3a15c5be",
@@ -7594,9 +8648,12 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   },
   {
    "id": "e1b6f7058d",
@@ -7617,9 +8674,12 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   },
   {
    "id": "eab6da0659",
@@ -7640,9 +8700,12 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
-   "claims": []
+   "transcript": false,
+   "claims": [],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   },
   {
    "id": "e8f94688d1",
@@ -7663,14 +8726,17 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "lost_63",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   },
   {
    "id": "b37ca96c1c",
@@ -7691,14 +8757,17 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "one_laptop",
      "verdict": "misleading"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   },
   {
    "id": "19aab59ce9",
@@ -7719,14 +8788,17 @@
    "points": 1,
    "subreddit": null,
    "embed": null,
-   "transcript": false,
    "excerpt": null,
+   "transcript": false,
    "claims": [
     {
      "key": "biggest",
      "verdict": "true"
     }
-   ]
+   ],
+   "avatar": null,
+   "lang": "en",
+   "reach": 1
   }
  ],
  "facts": [
@@ -8510,10 +9582,10 @@
    "examples": [
     {
      "platform": "news",
-     "text": "Binance halts trading after biggest-ever crypto hack.",
-     "url": "https://www.axios.com/2026/10/29/binance-cyberattack-crypto-heist",
+     "text": "Cryptocurrency exchange Binance suspends trading after suspected hack linked to North Korea.",
+     "url": "https://www.dw.com/en/binance-crypto-exchange-suspends-trades-over-north-korea-linked-hack/a-79803280",
      "date": "2026-10-30",
-     "who": "axios.com"
+     "who": "dw.com"
     }
    ]
   },
@@ -8743,11 +9815,12 @@
    }
   ],
   "byVoice": {
-   "press": 180,
    "official": 51,
-   "public": 120,
+   "press": 180,
    "investigator": 6,
-   "government": 1
+   "government": 1,
+   "public": 106,
+   "creator": 14
   },
   "hours": [
    [
@@ -8771,8 +9844,8 @@
    [
     "2026-10-29T20",
     {
-     "hackernews": 1,
-     "tiktok": 1
+     "tiktok": 1,
+     "hackernews": 1
     }
    ],
    [
@@ -8795,8 +9868,8 @@
    [
     "2026-10-29T23",
     {
-     "tiktok": 1,
-     "reddit": 1
+     "reddit": 1,
+     "tiktok": 1
     }
    ],
    [
@@ -8810,8 +9883,8 @@
    [
     "2026-10-30T01",
     {
-     "hackernews": 2,
      "news": 4,
+     "hackernews": 2,
      "reddit": 4
     }
    ],
@@ -8834,8 +9907,8 @@
    [
     "2026-10-30T04",
     {
-     "tiktok": 1,
      "news": 5,
+     "tiktok": 1,
      "reddit": 3
     }
    ],
@@ -8859,18 +9932,18 @@
    [
     "2026-10-30T07",
     {
+     "news": 3,
      "tiktok": 2,
      "hackernews": 3,
-     "news": 3,
      "instagram": 1
     }
    ],
    [
     "2026-10-30T08",
     {
-     "hackernews": 1,
      "news": 2,
      "instagram": 1,
+     "hackernews": 1,
      "reddit": 2
     }
    ],
@@ -8897,27 +9970,27 @@
     "2026-10-30T11",
     {
      "news": 15,
-     "reddit": 1,
-     "instagram": 1
+     "instagram": 1,
+     "reddit": 1
     }
    ],
    [
     "2026-10-30T12",
     {
      "news": 14,
+     "instagram": 1,
      "hackernews": 2,
-     "reddit": 4,
-     "instagram": 1
+     "reddit": 4
     }
    ],
    [
     "2026-10-30T13",
     {
      "news": 14,
-     "hackernews": 1,
-     "tiktok": 1,
      "instagram": 3,
-     "reddit": 2
+     "hackernews": 1,
+     "reddit": 2,
+     "tiktok": 1
     }
    ],
    [
@@ -8931,18 +10004,18 @@
    [
     "2026-10-30T15",
     {
-     "hackernews": 2,
      "news": 8,
-     "tiktok": 2,
-     "instagram": 2
+     "instagram": 2,
+     "hackernews": 2,
+     "tiktok": 2
     }
    ],
    [
     "2026-10-30T16",
     {
      "news": 21,
-     "hackernews": 2,
      "tiktok": 2,
+     "hackernews": 2,
      "instagram": 2
     }
    ],
@@ -9128,14 +10201,14 @@
      "url": "https://www.youtube.com/watch?v=BMO6RQAFGhM",
      "date": null,
      "meta": "Meet Kevin · 143K views",
-     "transcript": true
+     "transcript": false
     },
     {
      "title": "How crypto hackers drained Binance of $6.3 billion in 20 minutes | DW News",
      "url": "https://www.youtube.com/watch?v=3tmPCylnuKE",
      "date": null,
      "meta": "DW News · 123K views",
-     "transcript": true
+     "transcript": false
     },
     {
      "title": "How Binance was hacked for $6 billion?!",
@@ -9156,7 +10229,7 @@
      "url": "https://www.youtube.com/watch?v=5u2IlJytBT8",
      "date": null,
      "meta": "Coin Bureau · 71.1K views",
-     "transcript": true
+     "transcript": false
     },
     {
      "title": "Up to $8.9b stolen from Binance in largest ever cryptocurrency hack | ABC NEWS",
@@ -9188,21 +10261,21 @@
      "title": "Hackers stole over to $6 billion in cryptocurrency on Thursday from crypto exchange Binance, shattering the record for the largest such heis",
      "url": "https://www.tiktok.com/@cnn/video/7702395721504263438",
      "date": "2026-10-30",
-     "meta": "1.1M views · 79.4K likes · 1.2K comments",
+     "meta": "CNN · 1.1M views · 79.4K likes · 1.2K comments",
      "transcript": true
     },
     {
      "title": "BREAKING: Binance is investigating a possible major security breach after billions of dollars in suspicious wallet movements sparked fears o",
      "url": "https://www.tiktok.com/@dailytrenches/video/7702247157344193812",
      "date": "2026-10-30",
-     "meta": "469K views · 14.7K likes · 420 comments",
+     "meta": "Trenches Daily · 469K views · 14.7K likes · 420 comments",
      "transcript": false
     },
     {
      "title": "Sau vụ sàn Binance bị tấn công thiệt hại hơn 6 tỷ đô thì tỷ phú Elon Musk chỉ để lại đúng một bình luận ngắn gọn là Everyday is Zeroday #onc",
      "url": "https://www.tiktok.com/@oncoinx2/video/7702292465973234964",
      "date": "2026-10-30",
-     "meta": "318K views · 7.1K likes · 300 comments",
+     "meta": "Oncoin X · 318K views · 7.1K likes · 300 comments",
      "transcript": true
     },
     {
@@ -9216,28 +10289,28 @@
      "title": "The suspected #Binance hack — said to be the biggest attack in #crypto history — is \"not the end of the world,\" says Ballet CEO Bobby Lee, w",
      "url": "https://www.tiktok.com/@bloombergbusiness/video/7702335493156965662",
      "date": "2026-10-30",
-     "meta": "204K views · 7.8K likes · 298 comments",
+     "meta": "Bloomberg Business · 204K views · 7.8K likes · 298 comments",
      "transcript": true
     },
     {
      "title": "ከ1 ትሪሊዮን ብር በላይ ተዘረፈ #kbnews #ethiopian_news #ethiopian_tik_tok",
      "url": "https://www.tiktok.com/@kb_news1/video/7702481263147486471",
      "date": "2026-10-30",
-     "meta": "107K views · 8.7K likes · 1 comments",
+     "meta": "KB News · 107K views · 8.7K likes · 1 comments",
      "transcript": true
     },
     {
      "title": "A U.S.-based blockchain intelligence firm says North Korean hackers were likely behind the theft of $6.3 billion US — nearly $9 billion Cdn",
      "url": "https://www.tiktok.com/@cbcnews/video/7702482207499095303",
      "date": "2026-10-30",
-     "meta": "97.3K views · 2.6K likes · 100 comments",
+     "meta": "CBC News · 97.3K views · 2.6K likes · 100 comments",
      "transcript": false
     },
     {
      "title": "North Korea linked to the $6.3 BILLION Binance hack! Blockchain investigators suspect North Korea’s notorious TraderTraitor hacking group wa",
      "url": "https://www.tiktok.com/@dailytrenches/video/7702446131883674901",
      "date": "2026-10-30",
-     "meta": "55.0K views · 1.0K likes · 14 comments",
+     "meta": "Trenches Daily · 55.0K views · 1.0K likes · 14 comments",
      "transcript": false
     }
    ]
