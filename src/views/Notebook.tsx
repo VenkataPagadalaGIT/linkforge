@@ -4,6 +4,8 @@ import { Brain, Briefcase, ArrowRight, Users, BookOpen, Clock, Map, Library, Mic
 import ScrollReveal from "@/components/ScrollReveal";
 import PageSidebar from "@/components/PageSidebar";
 import SEO from "@/components/SEO";
+import LearnBadges from "@/components/guides/LearnBadges";
+import { LEARN_HUB, with3d } from "@/data/learnHub";
 
 const notebooks = [
   {
@@ -34,7 +36,8 @@ const notebooks = [
     icon: Mic,
     to: "/notebook/conference",
     stats: [
-      { label: "Conferences", value: "5", icon: CalendarDays },
+      // Filled at render from the conference data (app/notebook/page.tsx counts it); it read "5" against 3.
+      { label: "Conferences", value: "", icon: CalendarDays },
       { label: "Field Notes", value: "Live", icon: BookOpen },
     ],
   },
@@ -44,9 +47,10 @@ const tocSections = [
   { label: "AI Notebook", id: "ai-notebook" },
   { label: "Business Notebook", id: "business-notebook" },
   { label: "Conference Notebook", id: "conference-notebook" },
+  { label: "Learn", id: "learn" },
 ];
 
-const Notebook = () => {
+const Notebook = ({ conferenceCount }: { conferenceCount?: number }) => {
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
       <SEO
@@ -106,7 +110,9 @@ const Notebook = () => {
                             <div key={stat.label} className="flex items-center gap-2 border border-border px-3 py-2">
                               <StatIcon size={12} className="text-muted-foreground/70" />
                               <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-wider">{stat.label}</span>
-                              <span className="font-mono text-xs text-foreground/80">{stat.value}</span>
+                              <span className="font-mono text-xs text-foreground/80">
+                                {stat.label === "Conferences" && conferenceCount ? conferenceCount : stat.value}
+                              </span>
                             </div>
                           );
                         })}
@@ -117,6 +123,39 @@ const Notebook = () => {
               );
             })}
           </div>
+
+          {/* Learn: every guide lives in the notebooks (owner IA, 2026-10-30). Rendered on the server from the same
+              list as the Notebooks menu, so a crawler that never opens the menu still reaches every guide. */}
+          <section id="learn" aria-labelledby="learn-h" className="scroll-mt-28 mt-16">
+            <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em] mb-3">Learn</p>
+            <h2 id="learn-h" className="font-display text-3xl font-bold text-foreground mb-3">
+              Every guide, by subject
+            </h2>
+            <p className="font-mono text-xs text-muted-foreground leading-relaxed max-w-2xl mb-8">
+              The guides live inside the notebooks. Each subject opens its full list, with reading times and topics, on the{" "}
+              <Link href="/guides" className="underline underline-offset-4 hover:text-foreground">Learn page</Link>.
+            </p>
+            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {LEARN_HUB.map((sec) => (
+                <div key={sec.id} className="border border-border p-6">
+                  <Link href={`/guides#${sec.id}`} className="font-display text-lg font-bold text-foreground hover:text-glow transition-all">
+                    {sec.title}
+                  </Link>
+                  <ul className="mt-4 space-y-3">
+                    {sec.items.map(with3d).map((it) => (
+                      <li key={it.to}>
+                        <Link href={it.to} className="group block">
+                          <span className="font-mono text-xs text-foreground group-hover:text-glow transition-all">{it.label}</span>
+                          <LearnBadges badges={it.badges} className="text-[9px]" />
+                          <span className="block font-mono text-[11px] text-muted-foreground/80 leading-relaxed">{it.note}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
 
         <PageSidebar

@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 const DESCRIPTION = `Every reference guide topic on this site, A to Z: ${GUIDE_TOPICS.length} topics, each with its own page listing every guide that carries it.`;
 
 const metadata: Metadata = {
-  title: { absolute: "Guide Topics, A to Z | Teardowns" },
+  title: { absolute: "Guide Topics, A to Z | Learn" },
   description: DESCRIPTION,
   alternates: { canonical: "/guides/topics" },
   openGraph: {
@@ -33,7 +33,7 @@ export default function Page() {
       "@type": "CollectionPage",
       name: "Guide topics, A to Z",
       url,
-      isPartOf: { "@type": "CollectionPage", name: "Teardowns", url: `${SITE_URL}/guides` },
+      isPartOf: { "@type": "CollectionPage", name: "Learn", url: `${SITE_URL}/guides` },
       hasPart: GUIDE_TOPICS.map((t) => ({
         "@type": "CollectionPage",
         name: `${t.label}: Reference Guides`,
@@ -41,7 +41,7 @@ export default function Page() {
       })),
     },
     breadcrumbJsonLd([
-      { name: "Guides", url: `${SITE_URL}/guides` },
+      { name: "Learn", url: `${SITE_URL}/guides` },
       { name: "Topics", url },
     ]),
   ];

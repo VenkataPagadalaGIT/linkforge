@@ -1,6 +1,7 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import Notebook from "@/views/Notebook";
+import { conferences } from "@/data/conferences";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 
 const metadata: Metadata = {
@@ -14,5 +15,6 @@ const metadata: Metadata = {
 export const generateMetadata = withSeoOverrides("/notebook", metadata);
 
 export default function Page() {
-  return <Notebook />;
+  // Counted on the server so the conference data never ships to the browser and the stat cannot go stale.
+  return <Notebook conferenceCount={conferences.length} />;
 }

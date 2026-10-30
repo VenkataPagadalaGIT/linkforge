@@ -10,7 +10,7 @@ const Footer = () => {
   if (location.pathname?.startsWith("/admin")) return null;
 
   const links = [
-    { label: "User First Needs", to: "/guides/user-first-intelligence" },
+    { label: "User First Intelligence", to: "/guides/user-first-intelligence" },
     { label: "About", to: "/about" },
     { label: "Everything in 3D", to: "/3d" },
     { label: "Research & Talks", to: "/research-and-talks" },
@@ -28,7 +28,7 @@ const Footer = () => {
   const notebookLinks = [
     { label: "AI Roadmap", to: "/notebook/ai/roadmap" },
     { label: "AI Encyclopedia", to: "/notebook/ai/encyclopedia" },
-    { label: "AI Contributors", to: "/notebook/ai" },
+    { label: "AI Contributors", to: "/ai-contributors" },
     { label: "The Complete Shelf", to: "/notebook/ai/shelf" },
     { label: "Business Notebook", to: "/notebook/business" },
     { label: "Conference Notebook", to: "/notebook/conference" },

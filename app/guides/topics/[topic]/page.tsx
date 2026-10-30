@@ -27,7 +27,7 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
   const n = topic.guides.length;
   const description = `${n} reference guide${n === 1 ? "" : "s"} on ${topic.label}: ${topic.guides.map((g) => g.title).join(", ")}.`.slice(0, 300);
   return {
-    title: { absolute: `${topic.label} Guides | Teardowns` },
+    title: { absolute: `${topic.label} Guides | Learn` },
     description,
     alternates: { canonical: `/guides/topics/${topic.slug}` },
     openGraph: {
@@ -61,7 +61,7 @@ export default function Page({ params }: { params: Params }) {
       })),
     },
     breadcrumbJsonLd([
-      { name: "Guides", url: `${SITE_URL}/guides` },
+      { name: "Learn", url: `${SITE_URL}/guides` },
       { name: "Topics", url: `${SITE_URL}/guides/topics` },
       { name: topic.label, url },
     ]),

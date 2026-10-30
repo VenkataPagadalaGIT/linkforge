@@ -1,20 +1,20 @@
 "use client";
 /**
- * Navbar: the owner's IA, four pillars (2026-10-23: "only maybe four tabs,
- * four pillars"). How, What & Why AI (Learn, SEO & AI, Personas, News),
- * Notebooks, Explore in 3D, Research & Talks; User First Needs and About Me as
- * plain links and Contact as the CTA. Personas lives inside How, What & Why AI.
+ * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
+ *   Venkata Pagadala: about, experience, projects, research, talks and writing. Research and talks live under
+ *     the person, so "Research & Talks" is no longer a door of its own.
+ *   Notebooks: the AI, Business and Conference notebooks, AI Updates, the feeds, and Learn, which holds every
+ *     guide, classified once in src/data/learnHub.ts. The /guides and /notebook hubs render that same list.
+ *   User First Intelligence: the framework and all the persona work.
+ *   Contact.
  *
- * Explore in 3D is generated from src/data/threeD.ts and is the ONE home of
- * everything 3D, the 2040 game included. It used to be hand-coded with two of
- * ten items while the data file claimed the menu read from it. Each URL still
- * appears in exactly one menu. Labels are written for someone
- * who has never seen the site: a recruiter or a first-time learner should
- * know what is behind each door without clicking.
+ * Explore in 3D is no longer a menu. Any page with a 3D scene carries a small "3D" badge read from
+ * src/data/threeD.ts, and the /3d hub stays one click away. Each URL appears in exactly one menu. Labels are
+ * written for someone who has never seen the site: a recruiter or a first-time learner should know what is
+ * behind each door without clicking.
  *
- * Labels and slugs are independent: the section a visitor reads as
- * "Teardowns" is still served from /guides/*, so the site can read
- * differently without moving a single page.
+ * Labels and slugs are independent: the section a visitor reads as "Learn" is still served from /guides/*, so
+ * the site can read differently without moving a single page.
  *
  * Progressive enhancement, and it is load-bearing rather than theoretical.
  * Corporate proxies intercept .js and answer with their own block page;
@@ -29,7 +29,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
 import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./theme/ThemeToggle";
-import { threeDExperiences, THREE_D_GROUPS } from "@/data/threeD";
+import { LEARN_HUB, with3d } from "@/data/learnHub";
 import { linkedPapers } from "@/data/research";
 import { TALKS, RECOGNITION } from "@/data/talks";
 
@@ -40,6 +40,8 @@ interface MenuItem {
   to: string;
   /** Flags a new arrival in the menu. */
   badge?: string;
+  /** Small labels after the name: "3D" for anything you can fly through, "NEW" for a new arrival. */
+  badges?: string[];
 }
 interface MenuSection {
   /** Small-caps section title inside the panel, per the owner's IA. */
@@ -49,33 +51,18 @@ interface MenuSection {
 interface MegaMenu {
   id: string;
   label: string;
+  /** Where the label goes with scripts off (a hub that lists the whole section). Defaults to seeAll. */
+  hub?: string;
   /** Small-caps heading above the item grid. */
   heading: string;
   sections: MenuSection[];
-  /** Closing line: positioning for Teardowns, scope for Research. */
+  /** Closing line under the panel: what the section holds and how to read its badges. */
   footnote: string;
   /** Index link so hub pages never become orphans, and the menu can overflow. */
   seeAll: { label: string; to: string };
   /** Any path under these prefixes marks the parent as active. */
   active: string[];
 }
-
-/** Explore in 3D, built from the data so the menu cannot drift from the hub. */
-const THREE_D_MENU: MegaMenu = {
-  id: "explore3d",
-  label: "Explore in 3D",
-  heading: "Complex systems, taken apart in 3D",
-  sections: THREE_D_GROUPS.map((g) => ({
-    title: g,
-    items: threeDExperiences
-      .filter((x) => x.group === g)
-      .map((x) => ({ label: x.title, note: x.note, to: x.to, badge: x.badge === "new" ? "NEW" : undefined })),
-  })).filter((sec) => sec.items.length > 0),
-  footnote:
-    "Every scene is generated in code and runs in your browser: no downloads, no model files.",
-  seeAll: { label: "Everything in 3D", to: "/3d" },
-  active: ["/3d", "/3d-game", ...threeDExperiences.map((x) => x.to.split("#")[0]).filter((t) => t && t !== "/")],
-};
 
 /** Research & Talks: papers, talks, media and recognition, from their data. */
 const RESEARCH_MENU: MegaMenu = {
@@ -121,82 +108,93 @@ const RESEARCH_MENU: MegaMenu = {
   active: ["/research-and-talks", "/publications"],
 };
 
+/** User First Intelligence: the framework and all the persona work behind one door (owner IA, point 4). */
+const UFI_ITEMS: MenuItem[] = [
+  { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badges: ["NEW"] },
+  { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
+  { label: "Persona Builder", note: "answer the framework's questions, grade the evidence", to: "/personas/builder", badges: ["NEW"] },
+  { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
+  { label: "Global Persona Framework", note: "every dimension, with its rule and evidence", to: "/personas/framework" },
+  { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
+];
+/** The Learn list also carries the framework guide; in the menu it has its own door, so it is shown there once. */
+const UFI_URLS = new Set(UFI_ITEMS.map((it) => it.to));
+
 const MEGA: MegaMenu[] = [
   {
-    id: "ai",
-    label: "How, What & Why AI",
-    heading: "Free AI education and audience research, from zero to frontier",
+    id: "me",
+    label: "Venkata Pagadala",
+    hub: "/about",
+    heading: "Who I am, what I research, where I speak",
     sections: [
       {
-        title: "Learn",
+        title: "About",
         items: [
-          { label: "AI Encyclopedia", note: "187 concepts, one page each", to: "/notebook/ai/encyclopedia", badge: "NEW" },
-          { label: "AI Roadmap", note: "learn AI in 18 weeks + depth tracks", to: "/notebook/ai/roadmap" },
-          { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
+          { label: "About me", note: "who I am and what I build", to: "/about" },
+          { label: "Experience", note: "the roles, in order", to: "/experience" },
+          { label: "Projects", note: "what I have built", to: "/projects" },
+          { label: "Solutions", note: "how I can help a team", to: "/solutions" },
         ],
       },
       {
-        title: "SEO & AI",
+        title: "Research",
+        items: [...RESEARCH_MENU.sections[0].items, { label: "Publications", note: "published research on AI and search", to: "/publications" }],
+      },
+      {
+        title: "Talks",
         items: [
-          { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badge: "NEW" },
-          { label: "What is Jev? 3D explainer", note: "TypeSafe's decision model, one ticket walked through the bench", to: "/guides/what-is-jev", badge: "NEW" },
-          { label: "Screaming Frog Guide 2026", note: "every screen, 76 screenshots", to: "/guides/screaming-frog" },
+          ...RESEARCH_MENU.sections[1].items.filter((it) => !UFI_URLS.has(it.to)),
+          { label: "Podcasts, interviews and recognition", note: "every appearance, with its source", to: "/research-and-talks" },
+        ],
+      },
+      {
+        title: "Writing",
+        items: [
           { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
-        ],
-      },
-      {
-        // Personas moved in from its own tab: who the audience is, and where they actually are.
-        title: "Personas",
-        items: [
-          { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
-          { label: "Persona Builder", note: "answer the framework's questions, grade the evidence", to: "/personas/builder", badge: "NEW" },
-          { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
-          { label: "Global Persona Framework", note: "every dimension, with its rule and evidence", to: "/personas/framework" },
-          { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
-        ],
-      },
-      {
-        title: "AI News & Updates",
-        items: [
-          { label: "AI Agent Statistics", note: "the numbers, updated monthly", to: "/notebook/ai/agents", badge: "NEW" },
-          { label: "AI Updates", note: "AI news with primary sources", to: "/ai-updates" },
+          { label: "Every LinkedIn post", note: "the archive, by year and by topic", to: "/venkata-pagadala-universe" },
+          { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badges: ["3D"] },
         ],
       },
     ],
-    footnote:
-      "A complete free path into AI and audiences: the encyclopedia, the roadmap, the persona tools, the people and the news. The 3D machines you can fly through and train live under Explore in 3D. Every link opened and checked.",
-    seeAll: { label: "Everything in the AI Notebook", to: "/notebook/ai" },
-    active: ["/notebook/ai", "/ai-contributors", "/guides", "/ai-updates", "/insights", "/personas"],
+    footnote: "Every paper, talk and mention links to its source, and each one is worded to match what that source actually says.",
+    seeAll: { label: "Research, talks and media", to: "/research-and-talks" },
+    active: ["/about", "/experience", "/projects", "/solutions", "/research-and-talks", "/publications", "/insights", "/venkata-pagadala-universe", "/credits"],
   },
   {
     id: "notebooks",
     label: "Notebooks",
-    heading: "Working notes, kept in public",
+    hub: "/notebook",
+    heading: "Working notes kept in public, and every guide to learn from",
     sections: [
       {
         title: "Notebooks",
         items: [
-          { label: "AI Notebook", note: "the hub: roadmap, encyclopedia, contributors", to: "/notebook/ai" },
+          { label: "AI Notebook", note: "the hub: chapters, timeline, contributors", to: "/notebook/ai" },
           { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
           { label: "Conference Notebook", note: "3 conferences, 69 talks, 78 speakers", to: "/notebook/conference" },
+          { label: "AI Updates", note: "AI news with primary sources", to: "/ai-updates" },
+          { label: "Knowledge Graph Feeds", note: "each story read from every platform, as a feed", to: "/feeds", badges: ["NEW"] },
+          { label: "Everything in 3D", note: "every 3D scene, the 2040 city game included", to: "/3d" },
         ],
       },
-    ],
-    footnote:
-      "Notebooks are the working layer: what I am tracking, learning, and hearing, published as I go rather than polished after.",
-    seeAll: { label: "The full notebook", to: "/notebook" },
-    active: ["/notebook/conference", "/notebook/business"],
+      ...LEARN_HUB.map((sec) => ({ title: `Learn: ${sec.title}`, items: sec.items.filter((it) => !UFI_URLS.has(it.to)) })),
+    ].map((sec) => ({ ...sec, items: sec.items.map(with3d) })),
+    footnote: "Learn holds every guide, grouped by subject. 3D marks a page you can explore in 3D; NEW marks a recent arrival.",
+    seeAll: { label: "Learn: every guide", to: "/guides" },
+    active: ["/notebook", "/ai-updates", "/ai-contributors", "/guides", "/3d", "/3d-game", "/feeds"],
   },
-  THREE_D_MENU,
-  RESEARCH_MENU,
+  {
+    id: "ufi",
+    label: "User First Intelligence",
+    heading: "People before algorithms: the framework, and the persona tools that apply it",
+    sections: [{ title: "User First Intelligence", items: UFI_ITEMS }],
+    footnote: "The persona tools are part of User-First Intelligence: who the audience is, and where they actually are.",
+    seeAll: { label: "Read the framework", to: "/guides/user-first-intelligence" },
+    active: ["/guides/user-first-intelligence", "/personas"],
+  },
 ];
 
-/** Plain links after the menus. The 2040 game moved into Explore in 3D, where
- *  everything 3D now lives; About Me became a link once it held one item. */
-const FLAT: { label: string; to: string; dim: boolean }[] = [
-  { label: "User First Needs", to: "/guides/user-first-intelligence", dim: false },
-  { label: "About Me", to: "/about", dim: false },
-];
+const FLAT: { label: string; to: string; dim: boolean }[] = [];
 
 /**
  * The single active door. Prefixes overlap (/notebook/ai/map is both under
@@ -288,10 +286,11 @@ const Navbar = () => {
             VP_
           </Link>
 
-          {/* Desktop, from xl. Seven doors need about 1,150px; at the old md
-              breakpoint (768px) the labels collided with the logo by 1024px
-              and wrapped off-screen by 800px. Below xl the drawer takes over. */}
-          <div className="hidden xl:flex items-center gap-8">
+          {/* Desktop, from lg. Three doors, Contact and the theme toggle need
+              about 700px, so they fit at 1024px; seven doors needed xl. At md
+              (768px) the old labels collided with the logo, so below lg the
+              drawer takes over. */}
+          <div className="hidden lg:flex items-center gap-8">
             {MEGA.map((m) => (
               <div key={m.id} onMouseEnter={() => hoverOpen(m.id)} className="relative">
                 {/* A real link, JS-enhanced into a menu toggle. On locked-down
@@ -300,7 +299,7 @@ const Navbar = () => {
                     to the section's hub page instead of clicking into nothing.
                     With JS, preventDefault keeps the click-to-toggle behavior. */}
                 <a
-                  href={m.seeAll.to}
+                  href={m.hub ?? m.seeAll.to}
                   aria-expanded={openMenu === m.id}
                   aria-haspopup="true"
                   onClick={(e) => {
@@ -345,7 +344,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile toggle */}
-          <div className="xl:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
               type="button"
@@ -373,7 +372,7 @@ const Navbar = () => {
           openMenu === m.id ? (
             <div
               key={m.id}
-              className="hidden xl:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
+              className="hidden lg:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
               onMouseEnter={() => {
                 if (closeTimer.current) window.clearTimeout(closeTimer.current);
               }}
@@ -396,11 +395,11 @@ const Navbar = () => {
                           <Link key={it.to} href={it.to} className="group block">
                             <p className="font-display text-sm font-semibold text-foreground group-hover:text-glow transition-all">
                               {it.label}
-                              {it.badge && (
-                                <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-700/80 dark:text-emerald-300/80">
-                                  {it.badge}
+                              {[...(it.badges ?? []), ...(it.badge ? [it.badge] : [])].map((b) => (
+                                <span key={b} className={`ml-2 font-mono text-[9px] uppercase tracking-wider ${b === "3D" ? "text-sky-700/90 dark:text-sky-300/90" : "text-emerald-700/80 dark:text-emerald-300/80"}`}>
+                                  {b}
                                 </span>
-                              )}
+                              ))}
                             </p>
                             <p className="font-mono text-[11px] text-muted-foreground leading-relaxed">{it.note}</p>
                           </Link>
@@ -429,7 +428,7 @@ const Navbar = () => {
       {/* Mobile menu: each mega menu becomes an accordion section */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto xl:hidden"
+          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto lg:hidden"
           role="dialog"
           aria-modal="true"
           data-testid="mobile-menu-panel"
@@ -441,7 +440,7 @@ const Navbar = () => {
                     drawer never opens anyway, but keeping the label a real
                     link means any rendering of this list stays navigable. */}
                 <a
-                  href={m.seeAll.to}
+                  href={m.hub ?? m.seeAll.to}
                   aria-expanded={mobileSection === m.id}
                   onClick={(e) => {
                     e.preventDefault();
@@ -469,11 +468,11 @@ const Navbar = () => {
                           <Link key={it.to} href={it.to} onClick={() => setMobileOpen(false)} className="block">
                             <p className="font-display text-sm font-semibold text-foreground">
                               {it.label}
-                              {it.badge && (
-                                <span className="ml-2 font-mono text-[9px] uppercase tracking-wider text-emerald-700/80 dark:text-emerald-300/80">
-                                  {it.badge}
+                              {[...(it.badges ?? []), ...(it.badge ? [it.badge] : [])].map((b) => (
+                                <span key={b} className={`ml-2 font-mono text-[9px] uppercase tracking-wider ${b === "3D" ? "text-sky-700/90 dark:text-sky-300/90" : "text-emerald-700/80 dark:text-emerald-300/80"}`}>
+                                  {b}
                                 </span>
-                              )}
+                              ))}
                             </p>
                             <p className="font-mono text-[11px] text-muted-foreground">{it.note}</p>
                           </Link>
