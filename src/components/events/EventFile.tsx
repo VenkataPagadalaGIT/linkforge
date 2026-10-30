@@ -45,7 +45,7 @@ function Section({ id, title, icon, aside, children }: { id: string; title: stri
 function Src({ s }: { s: EventSource }) {
   return (
     <li className="border-l-2 border-border pl-3">
-      <q className="text-sm leading-snug text-foreground">{s.quote}</q>
+      <q className="text-sm leading-snug text-foreground"><mark className="hl hl-b">{s.quote}</mark></q>
       <span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">
         {s.url ? (
           <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
@@ -187,7 +187,23 @@ export function EventFile({ slug }: { slug: string }) {
           <span>Updated <time dateTime={e.updatedAt + "Z"}>{utc(e.updatedAt)}</time></span>
         </p>
         <h1 className="mb-4 font-display text-3xl font-bold leading-tight text-foreground sm:text-4xl">{e.title}</h1>
-        {e.summary && <p className="mb-3 border-l-2 border-foreground/20 pl-4 font-mono text-sm leading-relaxed text-muted-foreground">{e.summary}</p>}
+        {e.summary && (
+          <p className="mb-3 border-l-2 border-foreground/20 pl-4 font-mono text-sm leading-relaxed text-muted-foreground">
+            <mark className="hl hl-y text-foreground">{e.summary.split(/(?<=\.)\s/)[0]}</mark> {e.summary.split(/(?<=\.)\s/).slice(1).join(" ")}
+          </p>
+        )}
+        <p className="mb-3 pl-4 font-mono text-sm leading-relaxed text-foreground">
+          <mark className="hl hl-g">What to do: rely only on Binance&apos;s official channels for updates, and check a claim&apos;s verdict below before you share it.</mark>
+        </p>
+        {/* The site's reading key, the same as every guide that uses the highlights. */}
+        <div className="my-4 flex flex-wrap items-center gap-x-4 gap-y-2 border border-border bg-card/20 px-4 py-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">How to read this page</span>
+          {[["y", "Yellow: the key idea"], ["g", "Green: what to do"], ["b", "Blue: the evidence"]].map(([c, label]) => (
+            <span key={c} className="font-mono text-[11px] text-foreground">
+              <mark className={`hl hl-${c}`}>{label}</mark>
+            </span>
+          ))}
+        </div>
         <p className="mb-6 font-mono text-[10px] text-muted-foreground">
           Read {e.coverage.items.toLocaleString("en-US")} items: {e.coverage.byPlatform.map((p) => `${p.label} ${p.items}`).join(" · ")}
         </p>
@@ -246,7 +262,7 @@ export function EventFile({ slug }: { slug: string }) {
                 <p className="font-mono text-[10px] text-muted-foreground"><time dateTime={m.at}>{utc(m.at)}</time></p>
                 <p className="font-bold text-foreground">{m.label}</p>
                 <p className="text-sm text-muted-foreground">
-                  <q>{m.quote}</q>{" "}
+                  <q><mark className="hl hl-b text-foreground">{m.quote}</mark></q>{" "}
                   {m.url && <a href={m.url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-mono text-[10px] underline">{m.author || host(m.url)}</a>}
                 </p>
               </li>
