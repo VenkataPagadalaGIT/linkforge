@@ -1,0 +1,41 @@
+{
+  "slug": "binance-hack-2026",
+  "title": "The Binance hack, October 2026",
+  "window": ["2026-10-29", "2026-11-05"],
+  "binance_announcements": ["c5a8729a97ac486d963784d96c5642d7"],
+  "x_posts": [
+    ["binance", "2115918888429133902"],
+    ["binance", "2115993361517891592"],
+    ["binance", "2116089661408108712"],
+    ["_RichardTeng", "2116072080525656150"],
+    ["cz_binance", "2115915423174853077"],
+    ["heyibinance", "2115915841195942020"],
+    ["zachxbt", "2116030284261179538"]
+  ],
+  "pages": [
+    {"url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history", "voice": "investigator", "author": "TRM Labs"},
+    {"url": "https://www.chainalysis.com/blog/binance-exploit-latest-findings-and-response/", "voice": "investigator", "author": "Chainalysis"},
+    {"url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/", "voice": "investigator", "author": "Elliptic"},
+    {"url": "https://www.ic3.gov/PSA/2025/PSA250226", "voice": "government", "author": "FBI"},
+    {"url": "https://info.arkm.com/announcements/arkham-uncovers", "voice": "investigator", "author": "Arkham"},
+    {"url": "https://www.nextgov.com/cybersecurity/2026/10/fbi-involved-response-63-billion-binance-hack-linked-north-korea/416946/", "voice": "press", "author": "Nextgov/FCW"},
+    {"url": "https://www.theglobeandmail.com/business/international-business/us-business/article-hackers-steal-63-billion-from-binance-in-record-heist-blamed-on-north/", "voice": "press", "author": "Reuters (via The Globe and Mail)"},
+    {"url": "https://finance.yahoo.com/markets/crypto/articles/tether-circle-freeze-2-38-222607515.html", "voice": "press", "author": "Reuters (via Yahoo Finance)"},
+    {"url": "https://www.coindesk.com/business/2026/10/29/potential-multi-billion-binance-hack-hitting-crypto-markets", "voice": "press", "author": "CoinDesk"},
+    {"url": "https://www.coindesk.com/business/2026/10/30/binance-arranges-usd6-34-billion-to-cover-losses-from-record-crypto-hack", "voice": "press", "author": "CoinDesk"},
+    {"url": "https://cointelegraph.com/news/recap-binances-record-63b-hack-unfolded", "voice": "press", "author": "Cointelegraph"},
+    {"url": "https://decrypt.co/382224/trm-and-chainalysis-tie-6-4b-binance-hack-to-north-koreas-tradertraitor", "voice": "press", "author": "Decrypt"},
+    {"url": "https://decrypt.co/382237/binance-sets-aside-6-34b-to-cover-hack-losses-ceo-says-your-assets-are-safe", "voice": "press", "author": "Decrypt"},
+    {"url": "https://www.npr.org/2026/10/30/g-s1-150902/blockchain-intelligence-firms-link-north-korea-to-6-3b-hack-on-binance", "voice": "press", "author": "NPR"},
+    {"url": "https://www.cbsnews.com/news/binance-hack-north-korea/", "voice": "press", "author": "CBS News"},
+    {"url": "https://www.aljazeera.com/news/2026/10/30/binance-says-6-3bn-stolen-in-biggest-crypto-heist-in-history-what-we-know", "voice": "press", "author": "Al Jazeera"},
+    {"url": "https://www.khaleejtimes.com/business/uae-fsra-statement-binance-63-billion-security-breach", "voice": "press", "author": "Khaleej Times"},
+    {"url": "https://thehackernews.com/2026/10/binance-suffers-security-breach.html", "voice": "press", "author": "The Hacker News"}
+  ],
+  "news_queries": ["Binance hack", "Binance $6.3 billion", "Binance North Korea", "Binance withdrawals", "Binance proof of reserves", "TraderTraitor Binance"],
+  "social_queries": {"tiktok": "site:tiktok.com binance hack", "instagram": "site:instagram.com binance hack", "x": "site:x.com binance hack"},
+  "reddit_topic": "Binance hack",
+  "youtube_query": "Binance hack",
+  "hn_query": "Binance",
+  "x_profiles": ["binance", "cz_binance", "_RichardTeng", "heyibinance", "zachxbt"]
+}

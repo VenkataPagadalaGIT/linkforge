@@ -1,0 +1,569 @@
+{
+  "slug": "binance-hack-2026",
+  "summary": "On 29 October 2026 an attacker emptied Binance's hot wallets on ten blockchains in about four hours. Binance puts the impact at around $6.3 billion; three blockchain analytics firms count $6.36 billion to $6.43 billion, the largest crypto theft on record at the value when taken. About $3 billion has been frozen. Binance says it will cover every loss. The analytics firms blame North Korea's TraderTraitor group; Binance and the US government have not confirmed who did it.",
+  "facts": [
+    {
+      "key": "impact",
+      "label": "Binance's own estimate",
+      "value": "around $6.3B",
+      "status": "official",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "The estimated total impact sits at around $6.3B."
+        }
+      ]
+    },
+    {
+      "key": "counted",
+      "label": "Counted on-chain",
+      "value": "$6.36B to $6.43B",
+      "status": "independent",
+      "note": "Valued at each asset's price at the moment it was taken.",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "Valuing each transfer at the price of the asset at the moment it was taken, the total is approximately USD 6.36 billion."
+        },
+        {
+          "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+          "quote": "On 29 October 2026, $6.43 billion in cryptoassets were stolen from Binance, the world's largest cryptoasset exchange, according to Elliptic's analysis."
+        },
+        {
+          "url": "https://www.chainalysis.com/blog/binance-exploit-latest-findings-and-response/",
+          "quote": "Across the affected blockchains, the unauthorized transfers totaled approximately $6.4 billion USD."
+        }
+      ]
+    },
+    {
+      "key": "frozen",
+      "label": "Frozen so far",
+      "value": "about $2.8B to $3B",
+      "status": "independent",
+      "evidence": [
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "We are still working with partners to freeze many of the impacted assets, and have frozen around $3 billion thus far."
+        },
+        {
+          "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+          "quote": "In total, Elliptic has verified $2.84 billion of frozen funds on-chain, close to Binance's estimate of around $3 billion."
+        }
+      ]
+    },
+    {
+      "key": "held",
+      "label": "Still with the attacker, beyond any freeze",
+      "value": "about $2.4B to $3.3B",
+      "status": "independent",
+      "note": "TRM values it at the time of theft; Elliptic at current prices.",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "It now holds more than 420,000 ETH and 18,270 BTC, about USD 2.4 billion in assets beyond any issuer's reach."
+        },
+        {
+          "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+          "quote": "At current prices, the attacker now controls around $3.28 billion of assets that cannot be frozen by an issuer, spread across around 72 addresses."
+        }
+      ]
+    },
+    {
+      "key": "how",
+      "label": "How it happened",
+      "value": "A compromised engineer's laptop, then \"additional points of breach\"",
+      "status": "official",
+      "note": "No technical post-mortem yet.",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "Binance's initial investigation suggests that the security incident may involve a compromised DevOps engineer’s laptop, which allowed an attacker to gain access to a service container and submit unauthorized withdrawal transactions."
+        },
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "Our initial investigation suggested that the security incident may have involved a compromised laptop, however our subsequent investigation has uncovered additional points of breach."
+        },
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "On Ethereum, the attacker used an EIP-7702 delegation to turn a Binance hot wallet into a sweeper it controlled, with 50 pre-signed authorizations prepared in advance."
+        }
+      ]
+    },
+    {
+      "key": "keys",
+      "label": "Private keys",
+      "value": "No evidence of a key leak, says Binance",
+      "status": "official",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "We have found no evidence of any wallet private key leak."
+        }
+      ]
+    },
+    {
+      "key": "who",
+      "label": "Who did it",
+      "value": "North Korea's TraderTraitor, say the analytics firms; not confirmed by Binance or any government",
+      "status": "disputed",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "We make this judgment with high confidence."
+        },
+        {
+          "url": "https://www.chainalysis.com/blog/binance-exploit-latest-findings-and-response/",
+          "quote": "Chainalysis attributes the hack to TraderTraitor, a North Korean cybercrime group."
+        },
+        {
+          "url": "https://x.com/_RichardTeng/status/2116072080525656150",
+          "quote": "Our investigation has not attributed responsibility to any individual."
+        },
+        {
+          "url": "https://www.nextgov.com/cybersecurity/2026/10/fbi-involved-response-63-billion-binance-hack-linked-north-korea/416946/",
+          "quote": "The FBI is aware of the incident and is engaged with relevant public and private partners to understand the scope of the activity, evaluate potential impacts and coordinate appropriate investigative steps"
+        }
+      ]
+    },
+    {
+      "key": "users",
+      "label": "Customers' money",
+      "value": "Binance says it covers every loss; checkable when its Proof of Reserves is out",
+      "status": "official",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "Binance will cover all losses from the SAFU fund and the company’s funds."
+        },
+        {
+          "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+          "quote": "It has said it will cover all losses using its SAFU fund and company funds, and that it has reserved more than $6.34 billion of company funds to do so."
+        }
+      ]
+    },
+    {
+      "key": "access",
+      "label": "Withdrawals and deposits",
+      "value": "Withdrawals paused; deposits working",
+      "status": "official",
+      "evidence": [
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "We are still on track towards the expected timeline to resume the withdrawal service in 45 hours. Deposits remain unaffected."
+        }
+      ]
+    },
+    {
+      "key": "record",
+      "label": "Is it the biggest ever?",
+      "value": "Yes, at the value when taken: about 4x Bybit",
+      "status": "independent",
+      "note": "Valued at today's prices, older Bitcoin thefts such as LuBian (2020) are larger.",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "That makes this the largest crypto theft on record, about four times the USD 1.5 billion Bybit hack of February 2025."
+        },
+        {
+          "url": "https://info.arkm.com/announcements/arkham-uncovers",
+          "quote": "Based on analysis of on-chain data, it appears that 127,426 BTC was stolen from LuBian in December 2020, worth $3.5 billion at the time and now worth approximately $14.5 billion."
+        }
+      ]
+    },
+    {
+      "key": "markets",
+      "label": "Markets",
+      "value": "Bitcoin to a six-week low of $76,368",
+      "status": "reported",
+      "evidence": [
+        {
+          "url": "https://finance.yahoo.com/markets/crypto/articles/tether-circle-freeze-2-38-222607515.html",
+          "quote": "Bitcoin hit a six-week low of $76,368 and ether fell more than 3% to a two-month low of $2,178 before markets stabilised."
+        }
+      ]
+    },
+    {
+      "key": "regulators",
+      "label": "Regulators",
+      "value": "Abu Dhabi's regulator is \"monitoring\"; the FBI is \"aware\"",
+      "status": "reported",
+      "evidence": [
+        {
+          "url": "https://finance.yahoo.com/markets/crypto/articles/tether-circle-freeze-2-38-222607515.html",
+          "quote": "Abu Dhabi's Financial Services Regulatory Authority, which issued Binance's main operating licence, said it was \"engaging closely with Binance and monitoring the incident\"."
+        }
+      ]
+    }
+  ],
+  "money": {
+    "note": "TRM Labs, valued at the moment each asset was taken. Elliptic's chain totals differ slightly.",
+    "source": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+    "rows": [
+      {
+        "chain": "Ethereum",
+        "usd": 3790000000,
+        "what": "ETH and 185 tokens",
+        "quote": "Ethereum accounts for about USD 3.79 billion."
+      },
+      {
+        "chain": "Bitcoin",
+        "usd": 1470000000,
+        "what": "18,270 BTC",
+        "quote": "Bitcoin outflows total 18,270 BTC, about USD 1.47 billion."
+      },
+      {
+        "chain": "Tron",
+        "usd": 628000000,
+        "what": "612.7M USDT and 46.4M TRX",
+        "quote": "Tron outflows total 612.7 million USDT and 46.4 million TRX, about USD 628 million."
+      },
+      {
+        "chain": "XRP Ledger",
+        "usd": 296000000,
+        "what": "233.46M XRP",
+        "quote": "The XRP Ledger lost 233.46 million XRP, about USD 296 million."
+      },
+      {
+        "chain": "Solana",
+        "usd": 96000000,
+        "what": "970,500 SOL",
+        "quote": "Solana outflows total 970,500 SOL, about USD 96 million."
+      },
+      {
+        "chain": "Arbitrum, Optimism, Base",
+        "usd": 39000000,
+        "what": "including 74.6M ARB",
+        "quote": "Arbitrum, Optimism and Base combine to about USD 39 million, including 74.6 million ARB taken on Arbitrum."
+      },
+      {
+        "chain": "Avalanche",
+        "usd": 28000000,
+        "what": "",
+        "quote": "Avalanche outflows total about USD 28 million, and Polygon outflows total about USD 10 million."
+      },
+      {
+        "chain": "Polygon",
+        "usd": 10000000,
+        "what": "",
+        "quote": "Avalanche outflows total about USD 28 million, and Polygon outflows total about USD 10 million."
+      }
+    ],
+    "frozen": [
+      {
+        "who": "Tether, Circle, Ripple, World Liberty Financial and Arbitrum's Security Council",
+        "usd": 2700000000,
+        "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+        "quote": "Tether, Circle, Ripple and World Liberty Financial froze about USD 2.67 billion in stablecoins, and Arbitrum's Security Council froze 8,426 ETH and 74.6 million ARB on its network, for a total of roughly USD 2.7 billion."
+      }
+    ]
+  },
+  "moments": [
+    {
+      "at": "2026-10-29T15:59:00Z",
+      "label": "The attacker deploys the contract it will use, four hours ahead",
+      "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+      "quote": "At 15:59 UTC on 29 October, the attacker deployed the \"sweeper\" contract used in the attack, which was rehearsed on another wallet around four hours before it was used against Binance."
+    },
+    {
+      "at": "2026-10-29T20:05:00Z",
+      "label": "First theft: 233 million XRP",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "Between 20:05 and 20:09 UTC, five Binance wallets sent 233.46 million XRP to a single attacker address, leaving each wallet with only its minimum balance."
+    },
+    {
+      "at": "2026-10-29T20:10:00Z",
+      "label": "Solana and Optimism wallets follow",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "Binance wallets on Solana and Optimism followed shortly after 20:10 UTC."
+    },
+    {
+      "at": "2026-10-29T20:20:00Z",
+      "label": "18,270 bitcoin leave in one transfer; 50 pre-signed authorizations hit Ethereum",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "At 20:20 UTC, a Binance Bitcoin hot wallet sent 18,270 BTC to an attacker address, which began splitting the funds into round 1,000 BTC and 100 BTC pieces inside the same block."
+    },
+    {
+      "at": "2026-10-29T20:24:00Z",
+      "label": "$2.53 billion leaves Ethereum in a single transaction",
+      "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+      "quote": "Two-thirds of the Ethereum losses, $2.53 billion, left in a single transaction at 20:24 UTC."
+    },
+    {
+      "at": "2026-10-29T21:15:23Z",
+      "label": "Binance's co-founder: \"It does look like a hack\"",
+      "url": "https://x.com/cz_binance/status/2115915423174853077",
+      "quote": "It does look like a hack on Binance."
+    },
+    {
+      "at": "2026-10-29T21:29:09Z",
+      "label": "Binance's first statement",
+      "url": "https://x.com/binance/status/2115918888429133902",
+      "quote": "Our teams are aware of reports of a potential security issue and are actively investigating."
+    },
+    {
+      "at": "2026-10-29T23:05:00Z",
+      "label": "Second wave: Avalanche and Polygon",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "About two and a half hours later, at 23:05 UTC, Binance wallets on Avalanche and Polygon followed."
+    },
+    {
+      "at": "2026-10-29T23:35:00Z",
+      "label": "Frozen total passes $2.5 billion",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "Binance said at 23:35 UTC that the verified total frozen had reached USD 2.54 billion."
+    },
+    {
+      "at": "2026-10-29T23:56:00Z",
+      "label": "Last sweep of new deposits",
+      "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+      "quote": "As new funds reached the Binance hot wallet, the operator swept them again at 20:41, 20:59, 21:04, 21:44, 22:39 and 23:56 UTC."
+    },
+    {
+      "at": "2026-10-30T02:23:22Z",
+      "label": "Binance puts the impact at around $6.3 billion",
+      "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+      "quote": "The estimated total impact sits at around $6.3B."
+    },
+    {
+      "at": "2026-10-30T04:51:48Z",
+      "label": "Stolen funds meet funds from the Bitget hack",
+      "url": "https://x.com/zachxbt/status/2116030284261179538",
+      "quote": "This indicates the same actor is likely behind both incidents."
+    },
+    {
+      "at": "2026-10-30T07:37:53Z",
+      "label": "CEO Richard Teng: \"your money is safe\"",
+      "url": "https://x.com/_RichardTeng/status/2116072080525656150",
+      "quote": "Bottom line - your money is safe, and we're covering every loss."
+    },
+    {
+      "at": "2026-10-30T08:47:44Z",
+      "label": "Binance finds \"additional points of breach\"; withdrawals in 45 hours",
+      "url": "https://x.com/binance/status/2116089661408108712",
+      "quote": "We are still on track towards the expected timeline to resume the withdrawal service in 45 hours."
+    }
+  ],
+  "actors": [
+    {
+      "name": "Binance",
+      "role": "The exchange that was hit",
+      "kind": "company"
+    },
+    {
+      "name": "Richard Teng",
+      "role": "Binance CEO",
+      "kind": "public role"
+    },
+    {
+      "name": "Changpeng Zhao (CZ)",
+      "role": "Binance co-founder and shareholder",
+      "kind": "public role"
+    },
+    {
+      "name": "Yi He",
+      "role": "Binance co-founder",
+      "kind": "public role"
+    },
+    {
+      "name": "TraderTraitor",
+      "role": "North Korean group the analytics firms blame",
+      "kind": "attributed"
+    },
+    {
+      "name": "TRM Labs, Chainalysis, Elliptic",
+      "role": "Blockchain analytics firms tracing the funds",
+      "kind": "investigator"
+    },
+    {
+      "name": "ZachXBT",
+      "role": "Independent on-chain investigator",
+      "kind": "investigator"
+    },
+    {
+      "name": "Tether, Circle",
+      "role": "Stablecoin issuers that froze stolen funds",
+      "kind": "company"
+    },
+    {
+      "name": "FBI, US Secret Service",
+      "role": "US agencies involved in the response",
+      "kind": "government"
+    },
+    {
+      "name": "Abu Dhabi FSRA",
+      "role": "Binance's main licensing regulator",
+      "kind": "government"
+    }
+  ],
+  "claims": [
+    {
+      "key": "binance_confirmed_dprk",
+      "claim": "Binance confirmed North Korea did it",
+      "verdict": "false",
+      "explain": "Binance's CEO said its investigation has not attributed responsibility to anyone.",
+      "match": "binance (has |have )?(confirm|admit)\\w*[^.]{0,60}(north korea|dprk|lazarus)",
+      "evidence": [
+        {
+          "url": "https://x.com/_RichardTeng/status/2116072080525656150",
+          "quote": "Our investigation has not attributed responsibility to any individual."
+        }
+      ]
+    },
+    {
+      "key": "dprk",
+      "claim": "North Korea did it",
+      "verdict": "unconfirmed",
+      "explain": "Three analytics firms say so, TRM with high confidence. No government has said so yet.",
+      "match": "north korea|dprk|lazarus|tradertraitor",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "We make this judgment with high confidence."
+        }
+      ]
+    },
+    {
+      "key": "lost_63",
+      "claim": "$6.3 billion is gone",
+      "verdict": "misleading",
+      "explain": "$6.3 billion was taken, but about $3 billion is frozen and Binance says it covers every customer loss.",
+      "match": "\\b(lost|lose|gone|vanished|wiped out)\\b[^.]{0,40}\\$?6(\\.\\d)? ?(b\\b|bn|billion)|\\$?6(\\.\\d)? ?(b\\b|bn|billion)[^.]{0,30}\\b(is |are |was )?(gone|lost|vanished|wiped out)\\b",
+      "evidence": [
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "We are still working with partners to freeze many of the impacted assets, and have frozen around $3 billion thus far."
+        }
+      ]
+    },
+    {
+      "key": "cold_wallets",
+      "claim": "Cold wallets were hacked",
+      "verdict": "false",
+      "explain": "The thefts came from hot wallets, the ones kept online to pay withdrawals.",
+      "match": "cold (wallet|storage)s?[^.]{0,40}\\b(hack|drain|breach|compromis|stolen|emptied)|\\b(hack|drain|breach|compromis|stole|emptied)\\w*[^.]{0,40}cold (wallet|storage)",
+      "evidence": [
+        {
+          "url": "https://cointelegraph.com/news/recap-binances-record-63b-hack-unfolded",
+          "quote": "The attackers targeted hot wallets, which exchanges keep connected to the internet to process withdrawals."
+        }
+      ]
+    },
+    {
+      "key": "trading_halted",
+      "claim": "Binance halted trading",
+      "verdict": "false",
+      "explain": "Binance paused withdrawals only; deposits kept working. Its statements never mention halting trading.",
+      "match": "(halt|suspend|stop|pause|freez)\\w* (all )?trading|trading (is |was )?(halt|suspend|stop|pause)",
+      "evidence": [
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "We are still on track towards the expected timeline to resume the withdrawal service in 45 hours. Deposits remain unaffected."
+        }
+      ]
+    },
+    {
+      "key": "users_lost",
+      "claim": "Customers lost their money",
+      "verdict": "unconfirmed",
+      "explain": "Binance says it covers every loss from its emergency fund and company money; its Proof of Reserves will show whether it can.",
+      "match": "\\b(users?|customers?|traders?|depositors?) (have |had |will )?(lost|lose)\\b|\\b(user|customer) funds (are |were |have been )?(gone|lost|stolen)",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "Binance will cover all losses from the SAFU fund and the company’s funds."
+        }
+      ],
+      "unless": "cover|replac|reimburs|match|restor|refund|made whole|compensat|SAFU|safe"
+    },
+    {
+      "key": "biggest",
+      "claim": "The biggest crypto hack ever",
+      "verdict": "true",
+      "explain": "True at the value when taken, about four times Bybit. Older Bitcoin thefts are bigger at today's prices.",
+      "match": "(biggest|largest) (crypto(currency)? )?(hack|heist|theft|exploit)",
+      "evidence": [
+        {
+          "url": "https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history",
+          "quote": "That makes this the largest crypto theft on record, about four times the USD 1.5 billion Bybit hack of February 2025."
+        }
+      ]
+    },
+    {
+      "key": "twenty_minutes",
+      "claim": "It was done in 20 minutes",
+      "verdict": "true",
+      "explain": "The main transfers ran from 20:05 to 20:24 UTC; smaller sweeps went on until 23:56.",
+      "match": "(20|twenty) minutes",
+      "evidence": [
+        {
+          "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+          "quote": "Two-thirds of the Ethereum losses, $2.53 billion, left in a single transaction at 20:24 UTC."
+        }
+      ]
+    },
+    {
+      "key": "one_laptop",
+      "claim": "One engineer's laptop let the hacker in",
+      "verdict": "misleading",
+      "explain": "Binance first pointed to a laptop, then said it found additional points of breach; its CEO said it was not a one-click attack.",
+      "match": "(engineer|employee|developer|dev)'?s?\\s+(laptop|computer)|laptop[^.]{0,60}\\b(let|allowed|gave|enabled|led to)\\b",
+      "evidence": [
+        {
+          "url": "https://x.com/binance/status/2116089661408108712",
+          "quote": "Our initial investigation suggested that the security incident may have involved a compromised laptop, however our subsequent investigation has uncovered additional points of breach."
+        }
+      ],
+      "unless": "initial|suggest|may (have|involve)|first (said|pointed)|additional points|not (simply|a single)"
+    },
+    {
+      "key": "keys_stolen",
+      "claim": "Binance's private keys were stolen",
+      "verdict": "unconfirmed",
+      "explain": "Binance says it found no evidence of a key leak; the analytics firms say the attacker got Binance's own signing to approve the transfers.",
+      "match": "private keys? (were |was |got |had been )?(stolen|leaked|compromised|exposed)",
+      "evidence": [
+        {
+          "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+          "quote": "We have found no evidence of any wallet private key leak."
+        }
+      ]
+    }
+  ],
+  "watch": [
+    {
+      "label": "Withdrawals reopen",
+      "when": "2026-11-01",
+      "note": "Binance said 45 hours from 08:47 UTC on 30 October.",
+      "url": "https://decrypt.co/382237/binance-sets-aside-6-34b-to-cover-hack-losses-ceo-says-your-assets-are-safe",
+      "quote": "Binance aims to restore withdrawals by Sunday and publish a full proof of reserves by Monday, as the attacker keeps moving funds on Tron."
+    },
+    {
+      "label": "Proof of Reserves report",
+      "when": "2026-11-02",
+      "note": "Shows whether Binance holds every customer's assets after the theft.",
+      "url": "https://decrypt.co/382237/binance-sets-aside-6-34b-to-cover-hack-losses-ceo-says-your-assets-are-safe",
+      "quote": "It plans to publish a full proof of reserves report by Monday, with an initial view before then."
+    },
+    {
+      "label": "Technical post-mortem",
+      "when": null,
+      "note": "Binance's own account of how the attacker got in.",
+      "url": "https://www.binance.com/en/support/announcement/detail/c5a8729a97ac486d963784d96c5642d7",
+      "quote": "We will share a detailed technical post-mortem once the investigation is complete and the facts are fully verified."
+    },
+    {
+      "label": "An official attribution",
+      "when": null,
+      "note": "So far only private firms name North Korea.",
+      "url": "https://www.nextgov.com/cybersecurity/2026/10/fbi-involved-response-63-billion-binance-hack-linked-north-korea/416946/",
+      "quote": "The FBI is aware of the incident and is engaged with relevant public and private partners to understand the scope of the activity, evaluate potential impacts and coordinate appropriate investigative steps"
+    },
+    {
+      "label": "The unfrozen $2.4B to $3.3B",
+      "when": null,
+      "note": "Whether the attacker can cash out the assets no issuer can freeze.",
+      "url": "https://www.elliptic.co/insights/binance-largest-hack-in-history/",
+      "quote": "The attacker is swapping the rest into ETH and other assets that cannot be frozen, and has begun moving funds between blockchains."
+    }
+  ]
+}
