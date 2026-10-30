@@ -1,8 +1,7 @@
 "use client";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
-import { ArrowUp, ChevronLeft, ChevronRight, ExternalLink, FileSearch, Heart, Layers, LayoutGrid, Newspaper, Play, Search, Smartphone, X as Close } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, FileSearch, Layers, Newspaper, Play, Search, Smartphone, X as Close } from "lucide-react";
 import type { EventFile, EventSourceCard, Verdict } from "@/data/events";
 
 const LABEL: Record<string, string> = { youtube: "YouTube", tiktok: "TikTok", instagram: "Instagram", x: "X", reddit: "Reddit", hackernews: "Hacker News", news: "News", web: "Report", binance: "Binance" };
@@ -29,13 +28,13 @@ const PORTRAIT = new Set(["tiktok", "instagram"]);
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const compact = (v: number) => (v >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : v >= 1e3 ? `${(v / 1e3).toFixed(v >= 1e4 ? 0 : 1)}K` : String(v));
-const reachLabel = (s: EventSourceCard) =>
+export const reachLabel = (s: EventSourceCard) =>
   s.views ? `${compact(s.views)} views` : s.likes ? `${compact(s.likes)} likes` : s.points ? `${compact(s.points)} points` : s.comments ? `${compact(s.comments)} comments` : null;
-const who = (s: EventSourceCard) => s.publisher || (s.subreddit ? `r/${s.subreddit}` : s.domain) || LABEL[s.platform] || s.platform;
+export const who = (s: EventSourceCard) => s.publisher || (s.subreddit ? `r/${s.subreddit}` : s.domain) || LABEL[s.platform] || s.platform;
 const hueOf = (key: string) => NEWS_HUES[[...key].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7) % NEWS_HUES.length];
 
 /** "3 hours ago" after load; the plain date in the server HTML, so crawlers and the first paint agree. */
-function Ago({ iso }: { iso: string | null }) {
+export function Ago({ iso }: { iso: string | null }) {
   const [now, setNow] = React.useState<number | null>(null);
   React.useEffect(() => setNow(Date.now()), []);
   if (!iso) return null;
@@ -61,7 +60,7 @@ export function PlatformMark({ platform, size = 14 }: { platform: string; size?:
   );
 }
 
-function VerdictChips({ s, max = 2 }: { s: EventSourceCard; max?: number }) {
+export function VerdictChips({ s, max = 2 }: { s: EventSourceCard; max?: number }) {
   if (!s.claims.length) return null;
   return (
     <span className="mt-1 flex flex-wrap gap-1">
@@ -75,7 +74,7 @@ function VerdictChips({ s, max = 2 }: { s: EventSourceCard; max?: number }) {
 }
 
 /** A designed poster for an item without a picture: the platform's colours and the words themselves, large. */
-function Poster({ s }: { s: EventSourceCard }) {
+export function Poster({ s }: { s: EventSourceCard }) {
   const bg = s.platform === "news" ? `linear-gradient(150deg, ${hueOf(s.domain || s.title)} 0%, #0b0b0b 100%)` : (POSTER[s.platform] ?? POSTER.x);
   const text = (s.excerpt || s.title || "").replace(/\s+/g, " ").trim();
   return (
@@ -96,7 +95,7 @@ function Poster({ s }: { s: EventSourceCard }) {
   );
 }
 
-function Media({ s, className = "", big = false }: { s: EventSourceCard; className?: string; big?: boolean }) {
+export function Media({ s, className = "", big = false }: { s: EventSourceCard; className?: string; big?: boolean }) {
   return (
     <div className={`relative overflow-hidden bg-neutral-900 ${className}`}>
       {s.thumb ? (
@@ -122,7 +121,7 @@ function Media({ s, className = "", big = false }: { s: EventSourceCard; classNa
 }
 
 /** The platform's official embedded player, loaded only when someone asks for it. */
-function Embed({ s }: { s: EventSourceCard }) {
+export function Embed({ s }: { s: EventSourceCard }) {
   const e = s.embed!;
   const src =
     e.type === "youtube" ? `https://www.youtube-nocookie.com/embed/${e.id}?autoplay=1&rel=0`
@@ -305,118 +304,6 @@ function Info({ s }: { s: EventSourceCard }) {
   );
 }
 
-/** Vertical feed, one source per screen, like a short-video app. */
-function Feed({ items, onClose }: { items: EventSourceCard[]; onClose: () => void }) {
-  const [playing, setPlaying] = React.useState<string | null>(null);
-  return (
-    <Overlay onClose={onClose} label="Sources feed">
-      <div className="h-[100dvh] snap-y snap-mandatory overflow-y-auto">
-        {items.map((s, i) => (
-          <section key={s.id} className="flex h-[100dvh] snap-start flex-col items-center justify-center gap-4 py-14" aria-label={`${i + 1} of ${items.length}`}>
-            <div className={`w-full ${PORTRAIT.has(s.platform) ? "max-w-[min(420px,90vw)]" : "max-w-3xl px-4"}`}>
-              {playing === s.id ? <Embed s={s} /> : <Media s={s} big className={PORTRAIT.has(s.platform) ? "mx-auto aspect-[9/16] max-h-[62vh] rounded-lg" : "aspect-video rounded-lg"} />}
-            </div>
-            <Info s={s} />
-            <div className="flex gap-2">
-              {s.embed && playing !== s.id && (
-                <button type="button" onClick={() => setPlaying(s.id)} className="flex items-center gap-1.5 rounded-full bg-white px-4 py-2 font-mono text-xs font-bold text-black">
-                  <Play size={14} fill="currentColor" /> Play here
-                </button>
-              )}
-              {s.url && (
-                <a href={s.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 font-mono text-xs text-white">
-                  Open on {LABEL[s.platform] ?? "the site"} <ExternalLink size={12} />
-                </a>
-              )}
-            </div>
-            <p className="font-mono text-[10px] text-white/50">{i + 1} / {items.length} · swipe or scroll for the next</p>
-          </section>
-        ))}
-      </div>
-    </Overlay>
-  );
-}
-
-/** A card deck: drag right to keep, left to skip, up to open. Buttons and arrow keys do the same. */
-function Swipe({ items, onClose }: { items: EventSourceCard[]; onClose: () => void }) {
-  const [i, setI] = React.useState(0);
-  const [kept, setKept] = React.useState<EventSourceCard[]>([]);
-  const [exit, setExit] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-240, 240], [-14, 14]);
-  const s = items[i];
-  const decide = React.useCallback(
-    (dir: "left" | "right" | "up") => {
-      if (!s) return;
-      setExit(dir === "left" ? { x: -600, y: 0 } : dir === "right" ? { x: 600, y: 0 } : { x: 0, y: -700 });
-      if (dir === "right") setKept((k) => [...k, s]);
-      if (dir === "up" && s.url) window.open(s.url, "_blank", "noopener,noreferrer");
-      setI((n) => n + 1);
-    },
-    [s],
-  );
-  React.useEffect(() => {
-    const k = (e: KeyboardEvent) => (e.key === "ArrowLeft" ? decide("left") : e.key === "ArrowRight" ? decide("right") : e.key === "ArrowUp" ? decide("up") : null);
-    window.addEventListener("keydown", k);
-    return () => window.removeEventListener("keydown", k);
-  }, [decide]);
-  const end = (_: unknown, info: PanInfo) => {
-    if (info.offset.x > 120) decide("right");
-    else if (info.offset.x < -120) decide("left");
-    else if (info.offset.y < -140) decide("up");
-  };
-  return (
-    <Overlay onClose={onClose} label="Swipe through sources">
-      <div className="flex h-[100dvh] flex-col items-center justify-center gap-4 px-4">
-        <p className="font-mono text-[10px] text-white/60">
-          {Math.min(i + 1, items.length)} / {items.length} · kept {kept.length} · drag right to keep, left to skip, up to open
-        </p>
-        <div className="relative h-[62vh] w-full max-w-sm">
-          <AnimatePresence initial={false} custom={exit}>
-            {s ? (
-              <motion.div
-                key={s.id}
-                className="absolute inset-0 cursor-grab touch-none overflow-hidden rounded-2xl bg-neutral-900 shadow-2xl ring-1 ring-white/10 active:cursor-grabbing"
-                style={{ x, rotate }}
-                drag
-                dragSnapToOrigin
-                onDragEnd={end}
-                initial={{ scale: 0.94, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ x: exit.x, y: exit.y, opacity: 0, transition: { duration: 0.25 } }}
-              >
-                <Media s={s} className="h-[58%]" />
-                <div className="p-3">
-                  <Info s={s} />
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div key="done" className="absolute inset-0 overflow-y-auto rounded-2xl bg-neutral-900 p-4 text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <p className="font-display text-lg font-bold">You kept {kept.length}</p>
-                <ul className="mt-2 space-y-2">
-                  {kept.map((k) => (
-                    <li key={k.id} className="text-sm">
-                      <a href={k.url ?? undefined} target="_blank" rel="noopener noreferrer" className="underline">{k.title}</a>
-                      <span className="block font-mono text-[10px] text-white/60">{who(k)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        {s && (
-          <div className="flex gap-3">
-            <button type="button" onClick={() => decide("left")} aria-label="Skip" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"><Close size={20} /></button>
-            <button type="button" onClick={() => decide("up")} aria-label="Open the source" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"><ArrowUp size={20} /></button>
-            <button type="button" onClick={() => decide("right")} aria-label="Keep" className="grid h-12 w-12 place-items-center rounded-full bg-[#ef4444] text-white hover:brightness-110"><Heart size={20} /></button>
-          </div>
-        )}
-      </div>
-    </Overlay>
-  );
-}
-
 type Filters = { q: string; group: string; verdict: string; claim: string; lang: string; sort: "reach" | "newest" };
 const NO_FILTERS: Filters = { q: "", group: "", verdict: "", claim: "", lang: "", sort: "reach" };
 
@@ -429,7 +316,6 @@ function readFilters(): Filters {
 /** Every source at a glance: a featured hero, a Top 10, rows by platform and by claim (all in the server HTML, with real links
  * for crawlers and agents), filters and search, plus a full-screen feed and a swipe deck. */
 export function EventSources({ e }: { e: EventFile }) {
-  const [mode, setMode] = React.useState<"browse" | "feed" | "swipe">("browse");
   const [player, setPlayer] = React.useState<EventSourceCard | null>(null);
   const [f, setF] = React.useState<Filters>(NO_FILTERS);
   const [loaded, setLoaded] = React.useState(false);
@@ -461,11 +347,6 @@ export function EventSources({ e }: { e: EventFile }) {
     );
     return f.sort === "newest" ? [...out].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")) : [...out].sort((a, b) => b.reach - a.reach);
   }, [e.sources, f]);
-  const feedOrder = React.useMemo(() => {
-    const rank: Record<string, number> = { tiktok: 0, youtube: 1, instagram: 2, x: 3, reddit: 4, official: 5, investigators: 6, news: 7, hackernews: 8 };
-    const base = filtering ? results : e.sources;
-    return [...base].sort((a, b) => (rank[a.group] ?? 9) - (rank[b.group] ?? 9) || b.reach - a.reach);
-  }, [e.sources, results, filtering]);
   const featured = e.featured ? byId.get(e.featured) : undefined;
   const top10 = e.top10.map((id) => byId.get(id)).filter((s): s is EventSourceCard => Boolean(s));
   const claimNames = Object.fromEntries(e.collections.filter((c) => c.id.startsWith("claim-")).map((c) => [c.id.slice(6), c.label.replace(/^Saying /, "")]));
@@ -477,12 +358,12 @@ export function EventSources({ e }: { e: EventFile }) {
 
       <div className="mb-6 space-y-2">
         <div className="flex flex-wrap items-center gap-2" role="group" aria-label="How to view the sources">
-          {([["browse", "Browse", <LayoutGrid key="b" size={14} />], ["feed", "Feed", <Smartphone key="f" size={14} />], ["swipe", "Swipe", <Layers key="s" size={14} />]] as const).map(([id, label, icon]) => (
-            <button key={id} type="button" onClick={() => setMode(id)} aria-pressed={mode === id}
-              className={`flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] ${mode === id ? "border-[#ef4444] text-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}>
-              {icon} {label}
-            </button>
-          ))}
+          <a href={`/feeds/${e.slug}?chapter=sources`} className="flex items-center gap-1.5 border border-[#ef4444] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-foreground hover:bg-[#ef4444] hover:text-white">
+            <Smartphone size={14} /> Open as a feed
+          </a>
+          <a href={`/feeds/${e.slug}?chapter=theories`} className="flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground">
+            <Layers size={14} /> True or false?
+          </a>
           <label className="flex min-w-[180px] flex-1 items-center gap-1.5 border border-border px-2 py-1.5">
             <Search size={13} className="text-muted-foreground" aria-hidden="true" />
             <input value={f.q} onChange={(ev) => setF({ ...f, q: ev.target.value })} placeholder="Search titles, captions, publishers" aria-label="Search the sources"
@@ -556,8 +437,6 @@ export function EventSources({ e }: { e: EventFile }) {
         </div>
       )}
 
-      {mode === "feed" && <Feed items={feedOrder} onClose={() => setMode("browse")} />}
-      {mode === "swipe" && <Swipe items={feedOrder} onClose={() => setMode("browse")} />}
       {player && (
         <Overlay onClose={() => setPlayer(null)} label={`Playing: ${player.title}`}>
           <div className="flex h-[100dvh] flex-col items-center justify-center gap-4 py-14">

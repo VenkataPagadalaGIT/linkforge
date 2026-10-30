@@ -4,6 +4,7 @@ import { ExternalLink, FileText, Users } from "lucide-react";
 import PageSidebar from "@/components/PageSidebar";
 import { EVENTS, type EventClaim, type EventFact, type EventFile as EventFileData, type EventSource, type FactStatus, type Verdict } from "@/data/events";
 import { EventSources, PlatformMark } from "./EventSources";
+import { TopicGraph } from "@/components/graph/TopicGraph";
 
 const SITE = "https://venkatapagadala.com";
 const VERDICT: Record<Verdict, { label: string; color: string }> = {
@@ -156,16 +157,16 @@ function Coverage({ hours }: { hours: [string, Record<string, number>][] }) {
 }
 
 const TOC = [
-  { label: "Key Takeaways", id: "takeaways" },
-  { label: "Sources at a Glance", id: "sources" },
-  { label: "Primary Documents", id: "documents" },
   { label: "What Happened", id: "what-happened" },
-  { label: "The Numbers", id: "numbers" },
-  { label: "Is It True?", id: "claims" },
-  { label: "People in This Story", id: "people" },
+  { label: "The Impact", id: "impact" },
+  { label: "The Details", id: "details" },
+  { label: "How It Connects", id: "graph" },
+  { label: "Theories and Claims", id: "claims" },
   { label: "What Happens Next", id: "next" },
+  { label: "Sources", id: "sources" },
   { label: "Data for AI Agents", id: "data" },
 ];
+const IMPACT = new Set(["impact", "counted", "frozen", "held", "users", "access", "markets", "record"]);
 
 export function EventFile({ slug }: { slug: string }) {
   const e: EventFileData | undefined = EVENTS[slug];
@@ -220,18 +221,67 @@ export function EventFile({ slug }: { slug: string }) {
           </ul>
         </nav>
 
-        <Section id="takeaways" title="Key Takeaways" aside="each line opens to the exact words in its source">
+        <a href={`/feeds/${e.slug}`} className="group mb-10 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#05060a] px-5 py-4 text-white transition hover:border-[#ef4444]/60" style={{ background: "radial-gradient(400px 160px at 15% 0%, rgba(239,68,68,0.25), transparent), radial-gradient(400px 160px at 100% 100%, rgba(37,99,235,0.22), transparent), #05060a" }}>
+          <span>
+            <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">Knowledge Graph Feeds</span>
+            <span className="block font-display text-lg font-bold">Swipe through this story: what happened, the impact, the theories, every source</span>
+          </span>
+          <span className="shrink-0 rounded-full bg-white px-4 py-2 font-mono text-xs font-bold text-black group-hover:bg-[#ef4444] group-hover:text-white">Open the feed →</span>
+        </a>
+
+        <Section id="what-happened" title="What Happened" aside="all times UTC">
+          <ol className="relative space-y-3 border-l border-border pl-4">
+            {e.moments.map((m) => (
+              <li key={m.at + m.label} className="min-w-0">
+                <span className="absolute -left-[5px] mt-1.5 h-2.5 w-2.5 rounded-full bg-[#ef4444]" aria-hidden="true" />
+                <p className="font-mono text-[10px] text-muted-foreground"><time dateTime={m.at}>{utc(m.at)}</time></p>
+                <p className="font-bold text-foreground">{m.label}</p>
+                <p className="text-sm text-muted-foreground">
+                  <q><mark className="hl hl-b text-foreground">{m.quote}</mark></q>{" "}
+                  {m.url && <a href={m.url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-mono text-[10px] underline">{m.author || host(m.url)}</a>}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </Section>
+
+        <Section id="impact" title="The Impact" aside="each line opens to the exact words in its source">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {e.facts.map((f) => <FactCard key={f.key} f={f} />)}
+            {e.facts.filter((f) => IMPACT.has(f.key)).map((f) => <FactCard key={f.key} f={f} />)}
           </div>
+          <h3 className="mb-2 mt-8 font-display text-lg font-bold text-foreground">Where the money went</h3>
+          <ul className="space-y-1.5">
+            {e.money.rows.map((r) => (
+              <li key={r.chain} className="grid min-w-0 grid-cols-[minmax(0,9rem)_1fr_auto] items-center gap-2 text-sm">
+                <span className="truncate text-foreground">{r.chain}</span>
+                <span className="h-3 bg-[#ef4444]/80" style={{ width: `${Math.max(1, (r.usd / maxChain) * 100)}%` }} title={r.quote} />
+                <span className="font-mono text-xs tabular-nums text-foreground">{usd(r.usd)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 font-mono text-[10px] text-muted-foreground">
+            Total {usd(e.money.total)} by chain
+            {e.money.source?.url && <>{" · "}<a href={e.money.source.url} target="_blank" rel="noopener noreferrer" className="underline">{e.money.source.author || host(e.money.source.url)}</a></>}
+          </p>
+          {e.money.frozen.map((f) => (
+            <p key={f.who} className="mt-2 text-sm text-foreground"><span className="font-bold">Frozen: {usd(f.usd)}</span> by {f.who}.</p>
+          ))}
         </Section>
 
-        <Section id="sources" title="Sources at a Glance" aside="news, videos and posts from every platform">
-          <EventSources e={e} />
-          <Coverage hours={e.coverage.hours} />
-        </Section>
-
-        <Section id="documents" title="Primary Documents" icon={<FileText size={14} className="text-foreground/50" />}>
+        <Section id="details" title="The Details" aside="how it happened, who did it, who is involved">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {e.facts.filter((f) => !IMPACT.has(f.key)).map((f) => <FactCard key={f.key} f={f} />)}
+          </div>
+          <h3 className="mb-2 mt-8 flex items-center gap-2 font-display text-lg font-bold text-foreground"><Users size={14} className="text-foreground/50" /> People in This Story</h3>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {e.actors.map((a) => (
+              <li key={a.name} className="min-w-0 border border-border p-2.5">
+                <p className="font-bold text-foreground">{a.name}</p>
+                <p className="text-sm text-muted-foreground">{a.role}</p>
+              </li>
+            ))}
+          </ul>
+          <h3 className="mb-2 mt-8 flex items-center gap-2 font-display text-lg font-bold text-foreground"><FileText size={14} className="text-foreground/50" /> Primary Documents</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             {primary.map((d) => (
               <a key={d.id} href={d.url ?? undefined} target="_blank" rel="noopener noreferrer" className="group border border-border p-4 transition-all hover:bg-secondary/20">
@@ -254,54 +304,12 @@ export function EventFile({ slug }: { slug: string }) {
           </div>
         </Section>
 
-        <Section id="what-happened" title="What Happened" aside="all times UTC">
-          <ol className="relative space-y-3 border-l border-border pl-4">
-            {e.moments.map((m) => (
-              <li key={m.at + m.label} className="min-w-0">
-                <span className="absolute -left-[5px] mt-1.5 h-2.5 w-2.5 rounded-full bg-[#ef4444]" aria-hidden="true" />
-                <p className="font-mono text-[10px] text-muted-foreground"><time dateTime={m.at}>{utc(m.at)}</time></p>
-                <p className="font-bold text-foreground">{m.label}</p>
-                <p className="text-sm text-muted-foreground">
-                  <q><mark className="hl hl-b text-foreground">{m.quote}</mark></q>{" "}
-                  {m.url && <a href={m.url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-mono text-[10px] underline">{m.author || host(m.url)}</a>}
-                </p>
-              </li>
-            ))}
-          </ol>
+        <Section id="graph" title="How It All Connects" aside="tap a node to light its links">
+          <TopicGraph data={e.graph} title="Knowledge graph" />
         </Section>
 
-        <Section id="numbers" title="The Numbers" aside={e.money.note ?? undefined}>
-          <ul className="space-y-1.5">
-            {e.money.rows.map((r) => (
-              <li key={r.chain} className="grid min-w-0 grid-cols-[minmax(0,9rem)_1fr_auto] items-center gap-2 text-sm">
-                <span className="truncate text-foreground">{r.chain}</span>
-                <span className="h-3 bg-[#ef4444]/80" style={{ width: `${Math.max(1, (r.usd / maxChain) * 100)}%` }} title={r.quote} />
-                <span className="font-mono text-xs tabular-nums text-foreground">{usd(r.usd)}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-2 font-mono text-[10px] text-muted-foreground">
-            Total {usd(e.money.total)} by chain
-            {e.money.source?.url && <>{" · "}<a href={e.money.source.url} target="_blank" rel="noopener noreferrer" className="underline">{e.money.source.author || host(e.money.source.url)}</a></>}
-          </p>
-          {e.money.frozen.map((f) => (
-            <p key={f.who} className="mt-2 text-sm text-foreground"><span className="font-bold">Frozen: {usd(f.usd)}</span> by {f.who}.</p>
-          ))}
-        </Section>
-
-        <Section id="claims" title="Is It True? What People Are Saying" aside="matched in every story, post, transcript and comment we read">
+        <Section id="claims" title="Theories and Claims: What Is True?" aside="matched in every story, post, transcript and comment we read">
           <ul>{e.claims.map((c) => <ClaimRow key={c.key} c={c} />)}</ul>
-        </Section>
-
-        <Section id="people" title="People in This Story" icon={<Users size={14} className="text-foreground/50" />}>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {e.actors.map((a) => (
-              <li key={a.name} className="min-w-0 border border-border p-2.5">
-                <p className="font-bold text-foreground">{a.name}</p>
-                <p className="text-sm text-muted-foreground">{a.role}</p>
-              </li>
-            ))}
-          </ul>
         </Section>
 
         <Section id="next" title="What Happens Next">
@@ -322,6 +330,11 @@ export function EventFile({ slug }: { slug: string }) {
           </ul>
         </Section>
 
+        <Section id="sources" title="Sources" aside="news, videos and posts from every platform">
+          <EventSources e={e} />
+          <Coverage hours={e.coverage.hours} />
+        </Section>
+
         <Section id="data" title="Data for AI Agents and Researchers" aside="free to read and cite, with a link back">
           <ul className="grid gap-2 sm:grid-cols-2">
             {files.map((f) => (
@@ -340,6 +353,7 @@ export function EventFile({ slug }: { slug: string }) {
             each platform&apos;s own player. Cite as: {e.title}, Venkata Pagadala, {url}
           </p>
         </Section>
+
       </article>
       <PageSidebar sections={TOC} shareTitle={e.title} canonicalUrl={url} />
     </div>

@@ -285,6 +285,986 @@
    ]
   }
  ],
+ "graph": {
+  "nodes": [
+   {
+    "id": "event",
+    "label": "The Binance hack, October 2026",
+    "kind": "event"
+   },
+   {
+    "id": "c-actors",
+    "label": "People and organizations",
+    "kind": "category"
+   },
+   {
+    "id": "c-facts",
+    "label": "Key facts",
+    "kind": "category"
+   },
+   {
+    "id": "c-claims",
+    "label": "Claims going around",
+    "kind": "category"
+   },
+   {
+    "id": "c-platforms",
+    "label": "Where it is discussed",
+    "kind": "category"
+   },
+   {
+    "id": "c-money",
+    "label": "The money",
+    "kind": "category"
+   },
+   {
+    "id": "a-0",
+    "label": "Binance",
+    "kind": "actor",
+    "role": "The exchange that was hit",
+    "sub": "company"
+   },
+   {
+    "id": "a-1",
+    "label": "Richard Teng",
+    "kind": "actor",
+    "role": "Binance CEO",
+    "sub": "public role"
+   },
+   {
+    "id": "a-2",
+    "label": "Changpeng Zhao (CZ)",
+    "kind": "actor",
+    "role": "Binance co-founder and shareholder",
+    "sub": "public role"
+   },
+   {
+    "id": "a-3",
+    "label": "Yi He",
+    "kind": "actor",
+    "role": "Binance co-founder",
+    "sub": "public role"
+   },
+   {
+    "id": "a-4",
+    "label": "TraderTraitor",
+    "kind": "actor",
+    "role": "North Korean group the analytics firms blame",
+    "sub": "attributed"
+   },
+   {
+    "id": "a-5",
+    "label": "TRM Labs, Chainalysis, Elliptic",
+    "kind": "actor",
+    "role": "Blockchain analytics firms tracing the funds",
+    "sub": "investigator"
+   },
+   {
+    "id": "a-6",
+    "label": "ZachXBT",
+    "kind": "actor",
+    "role": "Independent on-chain investigator",
+    "sub": "investigator"
+   },
+   {
+    "id": "a-7",
+    "label": "Tether, Circle",
+    "kind": "actor",
+    "role": "Stablecoin issuers that froze stolen funds",
+    "sub": "company"
+   },
+   {
+    "id": "a-8",
+    "label": "FBI, US Secret Service",
+    "kind": "actor",
+    "role": "US agencies involved in the response",
+    "sub": "government"
+   },
+   {
+    "id": "a-9",
+    "label": "Abu Dhabi FSRA",
+    "kind": "actor",
+    "role": "Binance's main licensing regulator",
+    "sub": "government"
+   },
+   {
+    "id": "f-impact",
+    "label": "Binance's own estimate",
+    "kind": "fact",
+    "value": "around $6.3B",
+    "status": "official"
+   },
+   {
+    "id": "f-counted",
+    "label": "Counted on-chain",
+    "kind": "fact",
+    "value": "$6.36B to $6.43B",
+    "status": "independent"
+   },
+   {
+    "id": "f-frozen",
+    "label": "Frozen so far",
+    "kind": "fact",
+    "value": "about $2.8B to $3B",
+    "status": "independent"
+   },
+   {
+    "id": "f-held",
+    "label": "Still with the attacker, beyond any freeze",
+    "kind": "fact",
+    "value": "about $2.4B to $3.3B",
+    "status": "independent"
+   },
+   {
+    "id": "f-how",
+    "label": "How it happened",
+    "kind": "fact",
+    "value": "A compromised engineer's laptop, then \"additional points of breach\"",
+    "status": "official"
+   },
+   {
+    "id": "f-keys",
+    "label": "Private keys",
+    "kind": "fact",
+    "value": "No evidence of a key leak, says Binance",
+    "status": "official"
+   },
+   {
+    "id": "f-who",
+    "label": "Who did it",
+    "kind": "fact",
+    "value": "North Korea's TraderTraitor, say the analytics firms; not confirmed by Binance or any government",
+    "status": "disputed"
+   },
+   {
+    "id": "f-users",
+    "label": "Customers' money",
+    "kind": "fact",
+    "value": "Binance says it covers every loss; checkable when its Proof of Reserves is out",
+    "status": "official"
+   },
+   {
+    "id": "f-access",
+    "label": "Withdrawals and deposits",
+    "kind": "fact",
+    "value": "Withdrawals paused; deposits working",
+    "status": "official"
+   },
+   {
+    "id": "f-record",
+    "label": "Is it the biggest ever?",
+    "kind": "fact",
+    "value": "Yes, at the value when taken: about 4x Bybit",
+    "status": "independent"
+   },
+   {
+    "id": "f-markets",
+    "label": "Markets",
+    "kind": "fact",
+    "value": "Bitcoin to a six-week low of $76,368",
+    "status": "reported"
+   },
+   {
+    "id": "f-regulators",
+    "label": "Regulators",
+    "kind": "fact",
+    "value": "Abu Dhabi's regulator is \"monitoring\"; the FBI is \"aware\"",
+    "status": "reported"
+   },
+   {
+    "id": "q-dprk",
+    "label": "North Korea did it",
+    "kind": "claim",
+    "verdict": "unconfirmed",
+    "count": 93
+   },
+   {
+    "id": "q-biggest",
+    "label": "The biggest crypto hack ever",
+    "kind": "claim",
+    "verdict": "true",
+    "count": 62
+   },
+   {
+    "id": "q-twenty_minutes",
+    "label": "It was done in 20 minutes",
+    "kind": "claim",
+    "verdict": "true",
+    "count": 20
+   },
+   {
+    "id": "q-lost_63",
+    "label": "$6.3 billion is gone",
+    "kind": "claim",
+    "verdict": "misleading",
+    "count": 7
+   },
+   {
+    "id": "q-trading_halted",
+    "label": "Binance halted trading",
+    "kind": "claim",
+    "verdict": "false",
+    "count": 3
+   },
+   {
+    "id": "q-one_laptop",
+    "label": "One engineer's laptop let the hacker in",
+    "kind": "claim",
+    "verdict": "misleading",
+    "count": 2
+   },
+   {
+    "id": "q-cold_wallets",
+    "label": "Cold wallets were hacked",
+    "kind": "claim",
+    "verdict": "false",
+    "count": 1
+   },
+   {
+    "id": "q-binance_confirmed_dprk",
+    "label": "Binance confirmed North Korea did it",
+    "kind": "claim",
+    "verdict": "false",
+    "count": 0
+   },
+   {
+    "id": "q-users_lost",
+    "label": "Customers lost their money",
+    "kind": "claim",
+    "verdict": "unconfirmed",
+    "count": 0
+   },
+   {
+    "id": "q-keys_stolen",
+    "label": "Binance's private keys were stolen",
+    "kind": "claim",
+    "verdict": "unconfirmed",
+    "count": 0
+   },
+   {
+    "id": "p-official",
+    "label": "From Binance",
+    "kind": "platform",
+    "count": 23
+   },
+   {
+    "id": "p-investigators",
+    "label": "Investigators and agencies",
+    "kind": "platform",
+    "count": 7
+   },
+   {
+    "id": "p-news",
+    "label": "News",
+    "kind": "platform",
+    "count": 125
+   },
+   {
+    "id": "p-youtube",
+    "label": "YouTube",
+    "kind": "platform",
+    "count": 25
+   },
+   {
+    "id": "p-tiktok",
+    "label": "TikTok",
+    "kind": "platform",
+    "count": 30
+   },
+   {
+    "id": "p-instagram",
+    "label": "Instagram",
+    "kind": "platform",
+    "count": 6
+   },
+   {
+    "id": "p-x",
+    "label": "On X",
+    "kind": "platform",
+    "count": 4
+   },
+   {
+    "id": "p-reddit",
+    "label": "Reddit",
+    "kind": "platform",
+    "count": 38
+   },
+   {
+    "id": "p-hackernews",
+    "label": "Hacker News",
+    "kind": "platform",
+    "count": 25
+   },
+   {
+    "id": "m-ethereum",
+    "label": "Ethereum",
+    "kind": "money",
+    "usd": 3790000000
+   },
+   {
+    "id": "m-bitcoin",
+    "label": "Bitcoin",
+    "kind": "money",
+    "usd": 1470000000
+   },
+   {
+    "id": "m-tron",
+    "label": "Tron",
+    "kind": "money",
+    "usd": 628000000
+   },
+   {
+    "id": "m-xrp-ledger",
+    "label": "XRP Ledger",
+    "kind": "money",
+    "usd": 296000000
+   },
+   {
+    "id": "m-solana",
+    "label": "Solana",
+    "kind": "money",
+    "usd": 96000000
+   },
+   {
+    "id": "m-arbitrum-optimism-base",
+    "label": "Arbitrum, Optimism, Base",
+    "kind": "money",
+    "usd": 39000000
+   },
+   {
+    "id": "m-avalanche",
+    "label": "Avalanche",
+    "kind": "money",
+    "usd": 28000000
+   },
+   {
+    "id": "m-polygon",
+    "label": "Polygon",
+    "kind": "money",
+    "usd": 10000000
+   }
+  ],
+  "edges": [
+   {
+    "source": "event",
+    "target": "c-actors",
+    "label": "has",
+    "weight": 1
+   },
+   {
+    "source": "event",
+    "target": "c-facts",
+    "label": "has",
+    "weight": 1
+   },
+   {
+    "source": "event",
+    "target": "c-claims",
+    "label": "has",
+    "weight": 1
+   },
+   {
+    "source": "event",
+    "target": "c-platforms",
+    "label": "has",
+    "weight": 1
+   },
+   {
+    "source": "event",
+    "target": "c-money",
+    "label": "has",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-0",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-1",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-2",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-3",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-4",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-5",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-6",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-7",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-8",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-actors",
+    "target": "a-9",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-impact",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-counted",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-frozen",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-held",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-how",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-keys",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-who",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-users",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-access",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-record",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-markets",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-facts",
+    "target": "f-regulators",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-dprk",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-biggest",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-twenty_minutes",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-lost_63",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-trading_halted",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-one_laptop",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-cold_wallets",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-binance_confirmed_dprk",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-users_lost",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-claims",
+    "target": "q-keys_stolen",
+    "label": "includes",
+    "weight": 1
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-official",
+    "label": "includes",
+    "weight": 23
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-investigators",
+    "label": "includes",
+    "weight": 7
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-news",
+    "label": "includes",
+    "weight": 125
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-youtube",
+    "label": "includes",
+    "weight": 25
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-tiktok",
+    "label": "includes",
+    "weight": 30
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-instagram",
+    "label": "includes",
+    "weight": 6
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-x",
+    "label": "includes",
+    "weight": 4
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-reddit",
+    "label": "includes",
+    "weight": 38
+   },
+   {
+    "source": "c-platforms",
+    "target": "p-hackernews",
+    "label": "includes",
+    "weight": 25
+   },
+   {
+    "source": "c-money",
+    "target": "m-ethereum",
+    "label": "lost",
+    "weight": 3790000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-bitcoin",
+    "label": "lost",
+    "weight": 1470000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-tron",
+    "label": "lost",
+    "weight": 628000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-xrp-ledger",
+    "label": "lost",
+    "weight": 296000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-solana",
+    "label": "lost",
+    "weight": 96000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-arbitrum-optimism-base",
+    "label": "lost",
+    "weight": 39000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-avalanche",
+    "label": "lost",
+    "weight": 28000000
+   },
+   {
+    "source": "c-money",
+    "target": "m-polygon",
+    "label": "lost",
+    "weight": 10000000
+   },
+   {
+    "source": "p-news",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 52
+   },
+   {
+    "source": "p-youtube",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 4
+   },
+   {
+    "source": "p-tiktok",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 5
+   },
+   {
+    "source": "p-instagram",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 4
+   },
+   {
+    "source": "p-reddit",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 7
+   },
+   {
+    "source": "p-hackernews",
+    "target": "q-dprk",
+    "label": "carries",
+    "weight": 5
+   },
+   {
+    "source": "p-news",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 26
+   },
+   {
+    "source": "p-youtube",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 6
+   },
+   {
+    "source": "p-tiktok",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 5
+   },
+   {
+    "source": "p-instagram",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 5
+   },
+   {
+    "source": "p-reddit",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 12
+   },
+   {
+    "source": "p-hackernews",
+    "target": "q-biggest",
+    "label": "carries",
+    "weight": 3
+   },
+   {
+    "source": "p-news",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 12
+   },
+   {
+    "source": "p-youtube",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 4
+   },
+   {
+    "source": "p-tiktok",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-instagram",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-reddit",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-hackernews",
+    "target": "q-twenty_minutes",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-news",
+    "target": "q-trading_halted",
+    "label": "carries",
+    "weight": 2
+   },
+   {
+    "source": "p-news",
+    "target": "q-one_laptop",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-hackernews",
+    "target": "q-one_laptop",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-news",
+    "target": "q-lost_63",
+    "label": "carries",
+    "weight": 2
+   },
+   {
+    "source": "p-youtube",
+    "target": "q-lost_63",
+    "label": "carries",
+    "weight": 3
+   },
+   {
+    "source": "p-reddit",
+    "target": "q-lost_63",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-hackernews",
+    "target": "q-lost_63",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "p-youtube",
+    "target": "q-cold_wallets",
+    "label": "carries",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-impact",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-counted",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-frozen",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-frozen",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-held",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-how",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-how",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-keys",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-who",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-1",
+    "target": "f-who",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-users",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-users",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "f-access",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "f-record",
+    "label": "is the source for",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "q-dprk",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "q-biggest",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-5",
+    "target": "q-twenty_minutes",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "q-lost_63",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "q-trading_halted",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "q-one_laptop",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-1",
+    "target": "q-binance_confirmed_dprk",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "q-users_lost",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   },
+   {
+    "source": "a-0",
+    "target": "q-keys_stolen",
+    "label": "is the evidence for the verdict on",
+    "weight": 1
+   }
+  ]
+ },
  "sources": [
   {
    "id": "6bc8a52905",

@@ -182,6 +182,73 @@ def build_sources(slug, docs, claim_hits):
     return out
 
 
+
+
+def event_graph(ev, seed, facts, claims, sources, money):
+    """The page's knowledge graph: the event at the centre; people and organizations, key facts, claims, platforms and
+    the money around it; edges say who is the source for what and which platforms carry which claim (with counts)."""
+    N, E = [], []
+    def node(id, label, kind, **kw):
+        N.append({"id": id, "label": label, "kind": kind, **kw})
+    def edge(a, b, label, weight=1):
+        E.append({"source": a, "target": b, "label": label, "weight": weight})
+    node("event", ev["title"], "event")
+    cats = [("c-actors", "People and organizations"), ("c-facts", "Key facts"), ("c-claims", "Claims going around"), ("c-platforms", "Where it is discussed"), ("c-money", "The money")]
+    for cid, lab in cats:
+        node(cid, lab, "category")
+        edge("event", cid, "has")
+    for i, a in enumerate(seed.get("actors", [])):
+        node(f"a-{i}", a["name"], "actor", role=a["role"], sub=a["kind"])
+        edge("c-actors", f"a-{i}", "includes")
+    for f in facts:
+        node(f"f-{f['key']}", f["label"], "fact", value=f["value"], status=f["status"])
+        edge("c-facts", f"f-{f['key']}", "includes")
+    for c in claims:
+        node(f"q-{c['key']}", c["claim"], "claim", verdict=c["verdict"], count=c["spread"]["total"])
+        edge("c-claims", f"q-{c['key']}", "includes")
+    groups = collections.Counter(x["group"] for x in sources)
+    labels = dict(GROUPS)
+    for g, n in groups.items():
+        node(f"p-{g}", labels.get(g, g), "platform", count=n)
+        edge("c-platforms", f"p-{g}", "includes", n)
+    for r in money.get("rows", []):
+        k = re.sub(r"[^a-z0-9]+", "-", r["chain"].lower())
+        node(f"m-{k}", r["chain"], "money", usd=r["usd"])
+        edge("c-money", f"m-{k}", "lost", r["usd"])
+    # which platforms carry which claim
+    per = collections.defaultdict(collections.Counter)
+    for x in sources:
+        for c in x["claims"]:
+            per[c["key"]][x["group"]] += 1
+    for k, cnt in per.items():
+        for g, n in cnt.items():
+            edge(f"p-{g}", f"q-{k}", "carries", n)
+    # who is the source for which fact and claim (by the evidence's author)
+    actors = [(f"a-{i}", a["name"]) for i, a in enumerate(seed.get("actors", []))]
+    def actor_of(author):
+        a = (author or "").lower()
+        for aid, name in actors:
+            for part in re.split(r",\s*| and ", name):
+                part = re.sub(r"\s*\(.*?\)", "", part).strip().lower()
+                if part and len(part) > 2 and (part in a or a in part):
+                    return aid
+        return None
+    seen = set()
+    for f in facts:
+        for v in f["evidence"]:
+            aid = actor_of(v.get("author"))
+            if aid and (aid, f"f-{f['key']}") not in seen:
+                seen.add((aid, f"f-{f['key']}"))
+                edge(aid, f"f-{f['key']}", "is the source for")
+    for c in claims:
+        for v in c["evidence"]:
+            aid = actor_of(v.get("author"))
+            if aid and (aid, f"q-{c['key']}") not in seen:
+                seen.add((aid, f"q-{c['key']}"))
+                edge(aid, f"q-{c['key']}", "is the evidence for the verdict on")
+    return {"nodes": N, "edges": E}
+
+
 def build(ev, docs):
     seed = ev["seed"] or {}
     by_url = {d["url"]: d for d in docs}
@@ -276,6 +343,7 @@ def build(ev, docs):
     return {"slug": ev["slug"], "title": ev["title"], "summary": ev.get("summary"), "updatedAt": ev["updated_at"][:19], "window": [ev["window_from"], ev["window_to"]],
             "groups": [{"id": g, "label": lab, "count": sum(1 for x in sources if x["group"] == g)} for g, lab in GROUPS if any(x["group"] == g for x in sources)],
             "featured": featured, "top10": top10, "collections": colls,
+            "graph": event_graph(ev, seed, facts, claims, sources, money),
             "sources": sources,
             "facts": facts, "moments": moments, "money": money, "actors": seed.get("actors", []), "claims": claims, "watch": watch,
             "coverage": {"items": len(docs), "byPlatform": [{"platform": p, "label": LABEL[p], "items": cov[p]} for p in PLATFORMS if cov[p]],
@@ -301,6 +369,9 @@ export interface EventMoney { note: string | null; source: Omit<EventSource, "qu
 export interface EventClaim { key: string; claim: string; verdict: Verdict; explain: string; evidence: EventSource[]; spread: { total: number; byPlatform: Record<string, number> }; examples: { platform: string; text: string; url: string | null; date: string | null; who: string | null }[] }
 export interface EventWatch { label: string; when: string | null; note: string | null; quote: string; url: string | null; author: string | null }
 export interface EventTopItem { title: string; url: string | null; date: string | null; meta: string | null; transcript: boolean }
+export interface TopicGraphNode { id: string; label: string; kind: "event" | "category" | "actor" | "fact" | "claim" | "platform" | "money"; role?: string; sub?: string; value?: string; status?: string; verdict?: Verdict; count?: number; usd?: number }
+export interface TopicGraphEdge { source: string; target: string; label: string; weight: number }
+export interface TopicGraphData { nodes: TopicGraphNode[]; edges: TopicGraphEdge[] }
 export type SourceGroup = "official" | "investigators" | "news" | "youtube" | "tiktok" | "instagram" | "x" | "reddit" | "hackernews";
 export interface EventSourceCard {
   id: string; group: SourceGroup; platform: string; kind: string; voice: string; title: string; url: string | null; publisher: string | null;
@@ -313,6 +384,7 @@ export interface EventFile {
   slug: string; title: string; summary: string | null; updatedAt: string; window: [string, string];
   groups: { id: SourceGroup; label: string; count: number }[]; sources: EventSourceCard[];
   featured: string | null; top10: string[]; collections: { id: string; label: string; verdict: Verdict; ids: string[] }[];
+  graph: TopicGraphData;
   facts: EventFact[]; moments: EventMoment[]; money: EventMoney; actors: { name: string; role: string; kind: string }[];
   claims: EventClaim[]; watch: EventWatch[];
   coverage: { items: number; byPlatform: { platform: string; label: string; items: number }[]; byVoice: Record<string, number>; hours: [string, Record<string, number>][] };
