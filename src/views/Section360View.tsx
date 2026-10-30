@@ -63,13 +63,13 @@ export default function Section360View({ id, section, sections }: { id: string; 
 
         <div className="space-y-10">
           {section === "ipo" && <IpoSection id={id} />}
-          {section === "customers" && <CustomersSection id={id} />}
+          {section === "customers" && <CustomersSection id={id} full />}
           {section === "government" && <GovSection id={id} />}
           {section === "people" && (
             <>
               <PeopleSection ids={[id]} />
               <TalentSection id={id} />
-              <FootprintSection id={id} />
+              <FootprintSection id={id} full />
             </>
           )}
           {section === "investors" && (
@@ -83,7 +83,7 @@ export default function Section360View({ id, section, sections }: { id: string; 
           {section === "hiring" && <HiringSection id={id} />}
           {section === "timeline" && (
             <>
-              <TimelineSection id={id} />
+              <TimelineSection id={id} full />
               <SitesRead id={id} />
             </>
           )}

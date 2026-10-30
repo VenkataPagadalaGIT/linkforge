@@ -621,7 +621,7 @@ CREATE TABLE IF NOT EXISTS ontology.pipeline_run (
   pipeline text NOT NULL,
   started_at timestamptz NOT NULL DEFAULT now(),
   finished_at timestamptz,
-  status text NOT NULL DEFAULT 'running' CHECK (status IN ('running','ok','failed','skipped')),
+  status text NOT NULL DEFAULT 'running' CHECK (status IN ('running','ok','partial','failed','skipped')),
   rows_written int,
   spend_usd numeric NOT NULL DEFAULT 0,
   note text
@@ -697,3 +697,7 @@ CREATE TABLE IF NOT EXISTS ontology.lobbying_filing (
   retrieved_at date NOT NULL DEFAULT current_date,
   UNIQUE (entity_id, filing_uuid)
 );
+
+-- 2026-10-30: 'partial' (a collector hit its own call cap) is a valid run status
+ALTER TABLE ontology.pipeline_run DROP CONSTRAINT IF EXISTS pipeline_run_status_check;
+ALTER TABLE ontology.pipeline_run ADD CONSTRAINT pipeline_run_status_check CHECK (status IN ('running','ok','partial','failed','skipped'));

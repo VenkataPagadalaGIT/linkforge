@@ -1,0 +1,7 @@
+{
+  "anthropic": {
+    "feeds": [
+      { "platform": "youtube", "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCrDwWp7EBBv4NwvScIpBDOA", "note": "Official channel @anthropic-ai; YouTube's own public RSS feed (latest 15 videos)" }
+    ]
+  }
+}

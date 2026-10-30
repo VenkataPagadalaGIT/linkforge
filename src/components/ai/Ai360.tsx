@@ -682,7 +682,7 @@ function InvestorMatrix({ rounds }: { rounds: FundingRound[] }) {
   const repeat = [...cells.entries()].filter(([, m]) => m.size > 1).sort((a, b) => b[1].size - a[1].size || a[0].localeCompare(b[0]));
   if (!repeat.length) return null;
   return (
-    <div>
+    <div className="min-w-0">
       <H aside={`${cells.size} named investors · ${repeat.length} came back`}>Investors who came back</H>
       <div className="overflow-x-auto border border-border">
         <table className="font-mono text-[10px]">
@@ -1126,8 +1126,9 @@ function monthsBetween(a: string, b: string): string[] {
   return out;
 }
 
-export function TimelineSection({ id }: { id: string }) {
+export function TimelineSection({ id, full = false }: { id: string; full?: boolean }) {
   const f = AI_360[id];
+  const [limit, setLimit] = React.useState(40);
   const ref = React.useRef<HTMLDivElement>(null);
   const [W, setW] = React.useState(900);
   const [year, setYear] = React.useState<string | null>(null);
@@ -1245,7 +1246,7 @@ export function TimelineSection({ id }: { id: string }) {
               ))}
             </div>
             <ol className="max-h-[26rem] divide-y divide-border overflow-y-auto border border-border">
-              {items.map((it) => (
+              {(full ? items : items.slice(0, limit)).map((it) => (
                 <li key={it.url} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 px-3 py-1.5 font-mono text-[11px]">
                   <span className="tabular-nums text-muted-foreground">{dayMonthYear(it.date)}</span>
                   <a href={it.url} target="_blank" rel="noopener noreferrer" className="min-w-0 text-foreground hover:underline">
@@ -1255,7 +1256,19 @@ export function TimelineSection({ id }: { id: string }) {
               ))}
             </ol>
             <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-              {items.length} shown. Every dated page in these sections of its sitemap, with the publish date the page states.
+              {full || items.length <= limit ? `${items.length} shown` : `${limit} of ${items.length} shown`}. Every dated page in these sections of its sitemap, with the publish date the page states.
+              {!full && items.length > limit && (
+                <>
+                  {" "}
+                  <button type="button" onClick={() => setLimit(limit + 40)} className="underline decoration-dotted hover:text-foreground">
+                    Show 40 more
+                  </button>
+                  {" · "}
+                  <a href={sectionPath(id, "timeline")} className="underline decoration-dotted hover:text-foreground">
+                    all {items.length} on the Birth to now page
+                  </a>
+                </>
+              )}
             </p>
           </div>
         )}
@@ -1315,8 +1328,9 @@ const FOOTPRINT_SOURCES: { key: string; label: string; how: string }[] = [
   { key: "substack", label: "Substack", how: "writers who say they work there (after approval)" },
 ];
 
-export function FootprintSection({ id }: { id: string }) {
+export function FootprintSection({ id, full = false }: { id: string; full?: boolean }) {
   const f = AI_360[id]?.footprint;
+  const [limit, setLimit] = React.useState(30);
   const [src, setSrc] = React.useState<string | null>(null);
   const [q, setQ] = React.useState("");
   const [all, setAll] = React.useState<FootprintPerson[] | null>(null);
@@ -1370,7 +1384,7 @@ export function FootprintSection({ id }: { id: string }) {
             </button>
           )}
           <ol className="grid max-h-[34rem] gap-2 overflow-y-auto border border-border p-2 sm:grid-cols-2 xl:grid-cols-3">
-            {shown.slice(0, 600).map((p) => (
+            {shown.slice(0, full ? 600 : limit).map((p) => (
               <li key={`${p.source}-${p.name}`} className="flex gap-2.5 border border-border p-2.5 font-mono text-[11px]">
                 <Avatar p={{ name: p.name, photo: null }} size={34} />
                 <span className="min-w-0 flex-1">
@@ -1401,6 +1415,18 @@ export function FootprintSection({ id }: { id: string }) {
               </li>
             ))}
           </ol>
+          {!full && shown.length > limit && (
+            <p className="font-mono text-[10px] text-muted-foreground">
+              {limit} of {fmt(shown.length)} shown.{" "}
+              <button type="button" onClick={() => setLimit(limit + 30)} className="underline decoration-dotted hover:text-foreground">
+                Show 30 more
+              </button>
+              {" · "}
+              <a href={sectionPath(id, "people")} className="underline decoration-dotted hover:text-foreground">
+                everyone on the People page
+              </a>
+            </p>
+          )}
         </>
       )}
       <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">

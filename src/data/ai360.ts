@@ -72,11 +72,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6857.T",
-   "day": "2026-10-29",
-   "price": 36980.0,
+   "day": "2026-10-30",
+   "price": 34860.0,
    "currency": "JPY",
-   "marketCap": 26697818426900.0,
-   "change1d": 5.597,
+   "marketCap": 25171148983260.0,
+   "change1d": -5.962,
    "yearHigh": 41990.0,
    "yearLow": 18270.0,
    "source": "yahoo"
@@ -101,13 +101,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "5201.T",
-   "day": "2026-10-29",
-   "price": 5422.0,
+   "day": "2026-10-30",
+   "price": 5420.0,
    "currency": "JPY",
-   "marketCap": 1151599145646.0,
-   "change1d": -0.859,
+   "marketCap": 1151174358060.0,
+   "change1d": -0.514,
    "yearHigh": 8315.0,
-   "yearLow": 4761.0,
+   "yearLow": 4765.0,
    "source": "yahoo"
   },
   "talent": null,
@@ -130,11 +130,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3661.TW",
-   "day": "2026-10-29",
-   "price": 3675.0,
+   "day": "2026-10-30",
+   "price": 3425.0,
    "currency": "TWD",
-   "marketCap": 317171293950.0,
-   "change1d": -3.162,
+   "marketCap": 295595015450.0,
+   "change1d": -7.182,
    "yearHigh": 5640.0,
    "yearLow": 2480.0,
    "source": "yahoo"
@@ -159,11 +159,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMZN",
-   "day": "2026-10-29",
-   "price": 254.6,
+   "day": "2026-10-30",
+   "price": 240.21,
    "currency": "USD",
-   "marketCap": 2746195501265.6333,
-   "change1d": 0.333,
+   "marketCap": 2596910382583.618,
+   "change1d": 6.292,
    "yearHigh": 287.20001220703125,
    "yearLow": 196.0,
    "source": "yahoo"
@@ -188,11 +188,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMD",
-   "day": "2026-10-29",
-   "price": 578.44,
+   "day": "2026-10-30",
+   "price": 503.13,
    "currency": "USD",
-   "marketCap": 944288867280.0148,
-   "change1d": 2.578,
+   "marketCap": 821347175852.5295,
+   "change1d": -4.739,
    "yearHigh": 658.52001953125,
    "yearLow": 188.22000122070312,
    "source": "yahoo"
@@ -217,11 +217,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688012.SS",
-   "day": "2026-10-29",
-   "price": 224.21,
+   "day": "2026-10-30",
+   "price": 213.69,
    "currency": "CNY",
-   "marketCap": 214757839275.9063,
-   "change1d": -6.49,
+   "marketCap": 204681331344.12,
+   "change1d": -4.929,
    "yearHigh": 500.0,
    "yearLow": 171.95301818847656,
    "source": "yahoo"
@@ -246,11 +246,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMKR",
-   "day": "2026-10-29",
-   "price": 42.21,
+   "day": "2026-10-30",
+   "price": 39.335,
    "currency": "USD",
-   "marketCap": 10487178615.654968,
-   "change1d": 5.413,
+   "marketCap": 9747613557.437996,
+   "change1d": 0.028,
    "yearHigh": 96.68000030517578,
    "yearLow": 29.760000228881836,
    "source": "yahoo"
@@ -1716,6 +1716,15 @@ export const AI_360: Record<string, Entity360> = {
     ],
     "evidence": [
      {
+      "quote": "We are pleased to announce that we have raised $450 million in Series C funding led by Spark Capital with participation from Google, Salesforce Ventures, Sound Ventures, Zoom Ventures, and others.",
+      "url": "https://www.anthropic.com/news/anthropic-series-c",
+      "locator": "Anthropic newsroom",
+      "source": "Anthropic raises $450 million in Series C",
+      "publisher": "Anthropic newsroom",
+      "publishedOn": "2023-05-23",
+      "secondary": false
+     },
+     {
       "quote": "Series C-2 13,362 13,362 $11.23 150 150",
       "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1623",
       "locator": "Notes, Redeemable Convertible Preferred Stock",
@@ -1731,15 +1740,6 @@ export const AI_360: Record<string, Entity360> = {
       "source": "Anthropic, PBC, Form S-1 registration statement",
       "publisher": "U.S. Securities and Exchange Commission, EDGAR",
       "publishedOn": "2026-10-26",
-      "secondary": false
-     },
-     {
-      "quote": "We are pleased to announce that we have raised $450 million in Series C funding led by Spark Capital with participation from Google, Salesforce Ventures, Sound Ventures, Zoom Ventures, and others.",
-      "url": "https://www.anthropic.com/news/anthropic-series-c",
-      "locator": "Anthropic newsroom",
-      "source": "Anthropic raises $450 million in Series C",
-      "publisher": "Anthropic newsroom",
-      "publishedOn": "2023-05-23",
       "secondary": false
      }
     ]
@@ -4119,14 +4119,14 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:anthropic",
    "careersUrl": "https://www.anthropic.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 679,
-   "new30": 187,
+   "open": 671,
+   "new30": 180,
    "closed30": null,
    "workplace": {
-    "Not stated": 615,
-    "Remote-friendly": 64
+    "Not stated": 614,
+    "Remote-friendly": 57
    },
    "teams": [
     {
@@ -4135,7 +4135,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "AI Research & Engineering",
-     "count": 68
+     "count": 70
     },
     {
      "name": "Applied AI",
@@ -4143,15 +4143,15 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Security",
-     "count": 52
+     "count": 53
     },
     {
      "name": "Engineering & Design - Product",
-     "count": 51
+     "count": 52
     },
     {
      "name": "Finance",
-     "count": 50
+     "count": 49
     },
     {
      "name": "Software Engineering - Infrastructure",
@@ -4159,30 +4159,30 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Safeguards (Trust & Safety)",
-     "count": 43
+     "count": 39
     }
    ],
    "teamCount": 20,
    "cities": [
     {
      "name": "San Francisco",
-     "count": 488
+     "count": 483
     },
     {
      "name": "New York City",
-     "count": 362
+     "count": 357
     },
     {
      "name": "Seattle",
-     "count": 187
+     "count": 188
     },
     {
      "name": "Washington",
-     "count": 66
+     "count": 62
     },
     {
      "name": "Remote-friendly",
-     "count": 64
+     "count": 57
     },
     {
      "name": "London",
@@ -4193,8 +4193,8 @@ export const AI_360: Record<string, Entity360> = {
      "count": 16
     },
     {
-     "name": "Seoul",
-     "count": 14
+     "name": "Munich",
+     "count": 13
     }
    ],
    "themes": [
@@ -4211,7 +4211,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 101,
+     "count": 97,
      "examples": [
       "Privacy Counsel",
       "Audit, Security GRC",
@@ -4231,7 +4231,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 89,
+     "count": 86,
      "examples": [
       "APAC Tax Lead",
       "Recruiter, G&A",
@@ -4241,17 +4241,17 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "research",
      "label": "Research",
-     "count": 85,
+     "count": 86,
      "examples": [
       "Research Counsel",
       "Data Scientist, GTM",
-      "Anthropic STEM Fellow"
+      "Data Scientist, Growth"
      ]
     },
     {
      "key": "datacenters",
      "label": "Data centers and compute",
-     "count": 53,
+     "count": 50,
      "examples": [
       "Data Center Architect, CSA",
       "Compute Country Lead, Japan",
@@ -4261,7 +4261,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "inference",
      "label": "Inference and performance",
-     "count": 15,
+     "count": 16,
      "examples": [
       "Performance Engineer",
       "Staff Software Engineer, Inference",
@@ -4271,7 +4271,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 13,
+     "count": 14,
      "examples": [
       "Technical Architect",
       "AI Outcomes Manager, GSI",
@@ -4281,7 +4281,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "chips",
      "label": "Chips and hardware",
-     "count": 12,
+     "count": 11,
      "examples": [
       "Silicon Engineer",
       "Hardware Lab Manager",
@@ -4300,60 +4300,60 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
-     "title": "Staff+ Software Engineer, Deployment",
-     "team": "Software Engineering - Infrastructure",
-     "location": "Remote-Friendly (Travel-Required) | San Francisco, CA | Seattle, WA | New York City, NY",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5466480008",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Senior Partner Systems Analyst",
-     "team": "Sales",
-     "location": "San Francisco, CA",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5465561008",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Senior Field Engineer, Data Center Design and Engineering",
-     "team": "Compute",
-     "location": "Remote-Friendly, United States",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5466517008",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Data Science Tech Lead Manager, Model Experience",
-     "team": "Data Science & Analytics",
-     "location": "New York City, NY; San Francisco, CA; Seattle, WA",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5197211008",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Anthropic Research Resident",
+     "title": "Research Operations Lead, Biology",
      "team": "AI Research & Engineering",
+     "location": "Boston, MA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5467690008",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "Customer Success Manager, Beneficial Deployments EMEA",
+     "team": "Sales",
      "location": "London, UK",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5439169008",
-     "published": "2026-10-28"
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5462040008",
+     "published": "2026-10-30"
     },
     {
-     "title": "Tech Lead Manager, Core Apps Data Scientist",
-     "team": "Data Science & Analytics",
-     "location": "New York City, NY; San Francisco, CA | New York City, NY; Seattle, WA",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5464493008",
-     "published": "2026-10-27"
-    },
-    {
-     "title": "Solutions Marketing Manager, Emerging Industries",
-     "team": "Sales",
+     "title": "Staff+ Software Engineer, Enterprise Connectivity",
+     "team": "Engineering & Design - Product",
      "location": "San Francisco, CA | New York City, NY",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5463888008",
-     "published": "2026-10-27"
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5173120008",
+     "published": "2026-10-29"
     },
     {
-     "title": "Manager, Enterprise Sales - Pharma",
-     "team": "Sales",
-     "location": "Boston, MA; San Francisco, CA | New York City, NY",
-     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5464926008",
-     "published": "2026-10-27"
+     "title": "Staff / Senior Data Center Security Engineer",
+     "team": "Security",
+     "location": "Remote-Friendly (Travel Required) | San Francisco, CA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5419154008",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Senior Manager, Order-to-Cash Assurance",
+     "team": "Finance",
+     "location": "San Francisco, CA | Seattle, WA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5451912008",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Senior Engineer, Bioinformatics",
+     "team": "AI Research & Engineering",
+     "location": "San Francisco, CA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5467083008",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Research Scientist, Life Sciences (Large Molecules, Process Development)",
+     "team": "AI Research & Engineering",
+     "location": "San Francisco, CA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5467099008",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Research Scientist, Life Sciences (Large Molecules, Antibody Design)",
+     "team": "AI Research & Engineering",
+     "location": "San Francisco, CA",
+     "url": "https://job-boards.greenhouse.io/anthropic/jobs/5467092008",
+     "published": "2026-10-29"
     }
    ],
    "rolesUrl": "/ai/360/jobs/anthropic.json",
@@ -4365,7 +4365,7 @@ export const AI_360: Record<string, Entity360> = {
     "news",
     "research"
    ],
-   "total": 4562,
+   "total": 4579,
    "dated": 488,
    "first": "2021-05-28",
    "latest": "2026-10-28",
@@ -7310,7 +7310,7 @@ export const AI_360: Record<string, Entity360> = {
      "withAuthors": 1,
      "words": 1134461,
      "failed": 0,
-     "readOn": "2026-10-29"
+     "readOn": "2026-10-30"
     },
     {
      "host": "alignment.anthropic.com",
@@ -7328,37 +7328,37 @@ export const AI_360: Record<string, Entity360> = {
      "host": "transformer-circuits.pub",
      "label": "Transformer Circuits",
      "mode": "text",
-     "pages": 53,
-     "withText": 53,
+     "pages": 54,
+     "withText": 54,
      "dated": 19,
      "withAuthors": 20,
-     "words": 419619,
+     "words": 419959,
      "failed": 0,
-     "readOn": "2026-10-28"
+     "readOn": "2026-10-30"
     },
     {
      "host": "claude.com",
      "label": "claude.com",
      "mode": "text",
-     "pages": 2656,
+     "pages": 2667,
      "withText": 1068,
      "dated": 334,
      "withAuthors": 33,
      "words": 1009614,
      "failed": 0,
-     "readOn": "2026-10-29"
+     "readOn": "2026-10-30"
     },
     {
      "host": "platform.claude.com",
      "label": "Developer docs",
      "mode": "titles",
-     "pages": 821,
+     "pages": 826,
      "withText": 0,
      "dated": 29,
      "withAuthors": 0,
      "words": 0,
      "failed": 0,
-     "readOn": "2026-10-28"
+     "readOn": "2026-10-30"
     },
     {
      "host": "support.claude.com",
@@ -7373,8 +7373,8 @@ export const AI_360: Record<string, Entity360> = {
      "readOn": "2026-10-28"
     }
    ],
-   "words": 2908713,
-   "pagesWithText": 1772,
+   "words": 2909053,
+   "pagesWithText": 1773,
    "teams": [
     {
      "name": "Alignment",
@@ -7483,7 +7483,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Anthropic -principle",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2021-01",
@@ -7763,16 +7763,16 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     277
+     290
     ]
    ],
-   "total": 3733,
+   "total": 3746,
    "top": [
     {
      "title": "Anthropic S-1",
      "url": "https://news.ycombinator.com/item?id=50242939",
      "date": "2026-10-26",
-     "summary": "1,701 points · 1,673 comments · links to sec.gov"
+     "summary": "1,704 points · 1,677 comments · links to sec.gov"
     },
     {
      "title": "Redesigning source control at Anthropic",
@@ -10559,6 +10559,27 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "source": "openalex",
+     "name": "Dario Amodei",
+     "headline": "5 papers with this affiliation",
+     "hasTitle": false,
+     "flag": null,
+     "url": "https://openalex.org/A5066197394",
+     "evidence": "https://doi.org/10.70777/si.v3i4.18908",
+     "first": "2021-07-07",
+     "last": "2026-10-27",
+     "tier": "confirmed",
+     "works": 5,
+     "matched": [
+      "Toy Models of Superposition",
+      "Predictability and Surprise in Large Generative Models"
+     ],
+     "recent": [
+      "White House Accord on Super Intelligence",
+      "On DeepSeek and Export Controls"
+     ]
+    },
+    {
+     "source": "openalex",
      "name": "Jared Kaplan",
      "headline": "5 papers with this affiliation",
      "hasTitle": false,
@@ -10576,27 +10597,6 @@ export const AI_360: Record<string, Entity360> = {
      "recent": [
       "Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming",
       "Evaluating and Mitigating Discrimination in Language Model Decisions"
-     ]
-    },
-    {
-     "source": "openalex",
-     "name": "Dario Amodei",
-     "headline": "4 papers with this affiliation",
-     "hasTitle": false,
-     "flag": null,
-     "url": "https://openalex.org/A5066197394",
-     "evidence": "https://doi.org/10.70777/si.v2i1.10695",
-     "first": "2021-07-07",
-     "last": "2025-03-05",
-     "tier": "confirmed",
-     "works": 4,
-     "matched": [
-      "Toy Models of Superposition",
-      "Predictability and Surprise in Large Generative Models"
-     ],
-     "recent": [
-      "On DeepSeek and Export Controls",
-      "Toy Models of Superposition"
      ]
     },
     {
@@ -11792,7 +11792,7 @@ export const AI_360: Record<string, Entity360> = {
     "openalex:unverified": 142,
     "company_site:confirmed": 154,
     "linkedin:stated": 5072,
-    "openalex:model": 282
+    "openalex:model": 283
    }
   },
   "agreements": [
@@ -12841,7 +12841,7 @@ export const AI_360: Record<string, Entity360> = {
      ]
     }
    ],
-   "readOn": "2026-10-29"
+   "readOn": "2026-10-30"
   },
   "customers": {
    "total": 286,
@@ -14659,7 +14659,7 @@ export const AI_360: Record<string, Entity360> = {
     "outsideTotal": 3450000.0,
     "latestPosted": "2026-10-21T23:45:02+00:00"
    },
-   "readOn": "2026-10-29"
+   "readOn": "2026-10-30"
   }
  },
  "applied-materials": {
@@ -14676,11 +14676,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMAT",
-   "day": "2026-10-29",
-   "price": 416.0,
+   "day": "2026-10-30",
+   "price": 389.71,
    "currency": "USD",
-   "marketCap": 330136536288.0,
-   "change1d": 4.37,
+   "marketCap": 309272852730.3019,
+   "change1d": -5.41,
    "yearHigh": 739.6699829101562,
    "yearLow": 203.39999389648438,
    "source": "yahoo"
@@ -14705,11 +14705,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ANET",
-   "day": "2026-10-29",
-   "price": 186.72,
+   "day": "2026-10-30",
+   "price": 169.52,
    "currency": "USD",
-   "marketCap": 235495867814.14087,
-   "change1d": -0.416,
+   "marketCap": 213802807717.49304,
+   "change1d": -5.031,
    "yearHigh": 217.41000366210938,
    "yearLow": 114.5199966430664,
    "source": "yahoo"
@@ -14734,11 +14734,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ARM",
-   "day": "2026-10-29",
-   "price": 235.9,
+   "day": "2026-10-30",
+   "price": 203.94,
    "currency": "USD",
-   "marketCap": 251940855908.55405,
-   "change1d": 3.898,
+   "marketCap": 217807630769.27838,
+   "change1d": -3.346,
    "yearHigh": 452.70001220703125,
    "yearLow": 100.0199966430664,
    "source": "yahoo"
@@ -14763,11 +14763,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASX",
-   "day": "2026-10-29",
-   "price": 43.92,
+   "day": "2026-10-30",
+   "price": 39.0348,
    "currency": "USD",
-   "marketCap": 96956640284.29152,
-   "change1d": 4.051,
+   "marketCap": 86172207735.81387,
+   "change1d": -10.265,
    "yearHigh": 47.93000030517578,
    "yearLow": 13.350000381469727,
    "source": "yahoo"
@@ -14792,11 +14792,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASM",
-   "day": "2026-10-29",
-   "price": 4.79,
+   "day": "2026-10-30",
+   "price": 4.358,
    "currency": "USD",
-   "marketCap": 813606741.6105356,
-   "change1d": -1.033,
+   "marketCap": 740229237.3247852,
+   "change1d": -5.554,
    "yearHigh": 11.989999771118164,
    "yearLow": 4.050000190734863,
    "source": "yahoo"
@@ -14821,11 +14821,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ASML",
-   "day": "2026-10-29",
-   "price": 1662.85,
+   "day": "2026-10-30",
+   "price": 1575.71,
    "currency": "USD",
-   "marketCap": 640891882875.0872,
-   "change1d": 1.47,
+   "marketCap": 607306575191.4395,
+   "change1d": -3.83,
    "yearHigh": 1999.9599609375,
    "yearLow": 946.1099853515625,
    "source": "yahoo"
@@ -14850,11 +14850,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ATS.VI",
-   "day": "2026-10-29",
-   "price": 155.0,
+   "day": "2026-10-30",
+   "price": 135.4,
    "currency": "EUR",
-   "marketCap": 6021750000.0,
-   "change1d": -0.257,
+   "marketCap": 5260289762.878418,
+   "change1d": -13.316,
    "yearHigh": 242.0,
    "yearLow": 25.0,
    "source": "yahoo"
@@ -14879,11 +14879,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AMZN",
-   "day": "2026-10-29",
-   "price": 254.6,
+   "day": "2026-10-30",
+   "price": 240.21,
    "currency": "USD",
-   "marketCap": 2746195501265.6333,
-   "change1d": 0.333,
+   "marketCap": 2596910382583.618,
+   "change1d": 6.292,
    "yearHigh": 287.20001220703125,
    "yearLow": 196.0,
    "source": "yahoo"
@@ -14908,11 +14908,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-29",
-   "price": 531.01,
+   "day": "2026-10-30",
+   "price": 522.13,
    "currency": "USD",
-   "marketCap": 3943038983691.003,
-   "change1d": -0.307,
+   "marketCap": 3877438997696.4756,
+   "change1d": -1.308,
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
@@ -14937,11 +14937,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "BESI.AS",
-   "day": "2026-10-29",
-   "price": 161.55,
+   "day": "2026-10-30",
+   "price": 153.5,
    "currency": "EUR",
-   "marketCap": 12779779953.150002,
-   "change1d": -0.92,
+   "marketCap": 12142966405.5,
+   "change1d": -6.231,
    "yearHigh": 328.3999938964844,
    "yearLow": 120.1500015258789,
    "source": "yahoo"
@@ -14966,11 +14966,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "BE",
-   "day": "2026-10-29",
-   "price": 228.08,
+   "day": "2026-10-30",
+   "price": 201.92,
    "currency": "USD",
-   "marketCap": 67406128994.50481,
-   "change1d": 4.141,
+   "marketCap": 59674874315.49519,
+   "change1d": -2.642,
    "yearHigh": 351.2799987792969,
    "yearLow": 75.69999694824219,
    "source": "yahoo"
@@ -14995,11 +14995,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "AVGO",
-   "day": "2026-10-29",
-   "price": 351.81,
+   "day": "2026-10-30",
+   "price": 325.47,
    "currency": "USD",
-   "marketCap": 1679410711151.2803,
-   "change1d": 2.563,
+   "marketCap": 1553673317988.7349,
+   "change1d": -2.882,
    "yearHigh": 495.0,
    "yearLow": 289.9599914550781,
    "source": "yahoo"
@@ -15024,11 +15024,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CDNS",
-   "day": "2026-10-29",
-   "price": 342.46,
+   "day": "2026-10-30",
+   "price": 329.48,
    "currency": "USD",
-   "marketCap": 94311084426.78833,
-   "change1d": -0.157,
+   "marketCap": 90402395934.41772,
+   "change1d": -3.094,
    "yearHigh": 416.69000244140625,
    "yearLow": 262.75,
    "source": "yahoo"
@@ -15053,11 +15053,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688256.SS",
-   "day": "2026-10-29",
-   "price": 910.0,
+   "day": "2026-10-30",
+   "price": 880.0,
    "currency": "CNY",
-   "marketCap": 572257147280.0,
-   "change1d": -4.901,
+   "marketCap": 553391527040.0,
+   "change1d": -2.417,
    "yearHigh": 1620.0,
    "yearLow": 649.6644287109375,
    "source": "yahoo"
@@ -15082,11 +15082,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CSCO",
-   "day": "2026-10-29",
-   "price": 110.29,
+   "day": "2026-10-30",
+   "price": 104.92,
    "currency": "USD",
-   "marketCap": 434827909832.71606,
-   "change1d": -1.393,
+   "marketCap": 413656207496.0678,
+   "change1d": -5.015,
    "yearHigh": 130.3699951171875,
    "yearLow": 70.54000091552734,
    "source": "yahoo"
@@ -15106,16 +15106,16 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:cohere",
    "careersUrl": "https://cohere.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 119,
-   "new30": 33,
+   "open": 120,
+   "new30": 34,
    "closed30": null,
    "workplace": {
-    "Remote": 79,
-    "Hybrid": 28,
-    "OnSite": 8,
-    "Not stated": 4
+    "Remote": 80,
+    "Hybrid": 29,
+    "OnSite": 6,
+    "Not stated": 5
    },
    "teams": [
     {
@@ -15124,7 +15124,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Revenue",
-     "count": 23
+     "count": 22
     },
     {
      "name": "Engineering Program Management",
@@ -15139,47 +15139,47 @@ export const AI_360: Record<string, Entity360> = {
      "count": 5
     },
     {
+     "name": "PR & Communications",
+     "count": 4
+    },
+    {
      "name": "Internships",
      "count": 4
     },
     {
      "name": "Solutions Architecture",
      "count": 4
-    },
-    {
-     "name": "PR & Communications",
-     "count": 3
     }
    ],
-   "teamCount": 36,
+   "teamCount": 37,
    "cities": [
     {
      "name": "Toronto",
-     "count": 58
+     "count": 59
     },
     {
      "name": "New York City",
-     "count": 44
+     "count": 46
     },
     {
      "name": "Montreal",
-     "count": 40
+     "count": 39
     },
     {
      "name": "Canada",
-     "count": 35
+     "count": 36
     },
     {
      "name": "London",
-     "count": 34
+     "count": 33
     },
     {
      "name": "United States",
-     "count": 29
+     "count": 30
     },
     {
      "name": "San Francisco",
-     "count": 24
+     "count": 26
     },
     {
      "name": "Ottawa",
@@ -15190,7 +15190,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 47,
+     "count": 49,
      "examples": [
       "VP Sales, EMEA",
       "Account Executive Japan",
@@ -15230,7 +15230,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 10,
+     "count": 9,
      "examples": [
       "Senior Security Engineer",
       "Software Engineer, Security",
@@ -15238,23 +15238,23 @@ export const AI_360: Record<string, Entity360> = {
      ]
     },
     {
-     "key": "inference",
-     "label": "Inference and performance",
-     "count": 6,
-     "examples": [
-      "Forward Deployed Engineer, Inference",
-      "Audio Inference Engineer, Model Efficiency",
-      "Staff Software Engineer, Inference Infrastructure"
-     ]
-    },
-    {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 5,
+     "count": 6,
      "examples": [
       "Chief of Staff",
       "Talent Sourcer, Tech",
       "IT Support Specialist"
+     ]
+    },
+    {
+     "key": "inference",
+     "label": "Inference and performance",
+     "count": 5,
+     "examples": [
+      "Forward Deployed Engineer, Inference",
+      "Audio Inference Engineer, Model Efficiency",
+      "Staff Software Engineer, Inference Infrastructure"
      ]
     },
     {
@@ -15288,6 +15288,34 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Talent Partner, G&A (Contract)",
+     "team": "Talent Acquisition",
+     "location": "New York",
+     "url": "https://jobs.ashbyhq.com/cohere/bfa95525-f25f-4445-947e-c36308c1fc83",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "PR & Communications Manager - Germany",
+     "team": "PR & Communications",
+     "location": "Germany",
+     "url": "https://jobs.ashbyhq.com/cohere/481389bc-49c1-4cea-bc68-9e67c7ca4dd9",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Head of Marketing Operations",
+     "team": "Marketing",
+     "location": "Toronto",
+     "url": "https://jobs.ashbyhq.com/cohere/247a481a-21cc-4829-94c7-8447b692c89e",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Customer Success Manager, Public Sector & Defence",
+     "team": "Customer Success",
+     "location": "Ottawa",
+     "url": "https://jobs.ashbyhq.com/cohere/5e344658-f721-4f4a-b4df-b4052b6a0393",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Talent Sourcer, Tech",
      "team": "Talent Acquisition",
      "location": "Toronto",
@@ -15303,7 +15331,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "title": "Web Developer",
-     "team": "North",
+     "team": "Engineering & Infra",
      "location": "Toronto",
      "url": "https://jobs.ashbyhq.com/cohere/4232d337-fbc7-4e8c-81d5-2903ab0eb6e8",
      "published": "2026-10-27"
@@ -15314,34 +15342,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "Canada",
      "url": "https://jobs.ashbyhq.com/cohere/acec6038-117b-400b-92e3-0745fbb4cf53",
      "published": "2026-10-27"
-    },
-    {
-     "title": "Revenue Operations Intern (Winter, 2027)",
-     "team": "Internships",
-     "location": "Toronto",
-     "url": "https://jobs.ashbyhq.com/cohere/f3290fb2-66f1-44c7-9824-3f416f44af5a",
-     "published": "2026-10-26"
-    },
-    {
-     "title": "Public Sector Delivery Analyst",
-     "team": "Engineering Program Management",
-     "location": "Ottawa",
-     "url": "https://jobs.ashbyhq.com/cohere/9be116c1-c1df-49bd-8e90-31d41b62645f",
-     "published": "2026-10-23"
-    },
-    {
-     "title": "Manager, Government Affairs & Public Policy - Japan",
-     "team": "Government & Public Policy",
-     "location": "Tokyo",
-     "url": "https://jobs.ashbyhq.com/cohere/ada41b39-21a9-467c-a22c-9e907524af40",
-     "published": "2026-10-23"
-    },
-    {
-     "title": "Legal Counsel, Corporate Governance & Regulatory",
-     "team": "Legal",
-     "location": "United States",
-     "url": "https://jobs.ashbyhq.com/cohere/4e3694ee-d051-497f-bb3b-8cff3d7f578f",
-     "published": "2026-10-23"
     }
    ],
    "rolesUrl": "/ai/360/jobs/cohere.json",
@@ -15373,11 +15373,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "COHR",
-   "day": "2026-10-29",
-   "price": 239.59,
+   "day": "2026-10-30",
+   "price": 206.765,
    "currency": "USD",
-   "marketCap": 47182737340.75653,
-   "change1d": 1.314,
+   "marketCap": 40718472417.792755,
+   "change1d": -6.887,
    "yearHigh": 440.0,
    "yearLow": 123.75,
    "source": "yahoo"
@@ -15402,12 +15402,12 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CEG",
-   "day": "2026-10-29",
-   "price": 258.08,
+   "day": "2026-10-30",
+   "price": 262.3964,
    "currency": "USD",
-   "marketCap": 91439643614.77463,
-   "change1d": -0.547,
-   "yearHigh": 400.9800109863281,
+   "marketCap": 92968978199.91135,
+   "change1d": 0.922,
+   "yearHigh": 388.4700012207031,
    "yearLow": 228.6300048828125,
    "source": "yahoo"
   },
@@ -15426,19 +15426,19 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:coreweave",
    "careersUrl": "https://www.coreweave.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 311,
-   "new30": 74,
+   "open": 308,
+   "new30": 64,
    "closed30": null,
    "workplace": {
-    "Not stated": 307,
+    "Not stated": 304,
     "Remote": 4
    },
    "teams": [
     {
      "name": "Technology",
-     "count": 106
+     "count": 105
     },
     {
      "name": "Finance",
@@ -15466,30 +15466,30 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Data Center - G&A",
-     "count": 13
+     "count": 12
     }
    ],
    "teamCount": 20,
    "cities": [
     {
      "name": "Sunnyvale",
-     "count": 161
+     "count": 158
     },
     {
      "name": "Bellevue",
-     "count": 144
+     "count": 142
     },
     {
      "name": "New York City",
-     "count": 144
+     "count": 142
     },
     {
      "name": "Livingston",
-     "count": 116
+     "count": 114
     },
     {
      "name": "San Francisco",
-     "count": 70
+     "count": 69
     },
     {
      "name": "Dallas",
@@ -15518,7 +15518,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "datacenters",
      "label": "Data centers and compute",
-     "count": 63,
+     "count": 62,
      "examples": [
       "Facilities Technical Manager",
       "Sr Data Center Design Manager",
@@ -15538,7 +15538,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 46,
+     "count": 45,
      "examples": [
       "Account Manager",
       "Solutions Architect",
@@ -15548,7 +15548,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 26,
+     "count": 25,
      "examples": [
       "Policy Analyst",
       "Insurance Risk Analyst",
@@ -15660,7 +15660,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "CoreWeave",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2019-01",
@@ -16054,11 +16054,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRWV",
-   "day": "2026-10-29",
-   "price": 63.93,
+   "day": "2026-10-30",
+   "price": 54.6,
    "currency": "USD",
-   "marketCap": 35259735134.17561,
-   "change1d": 6.745,
+   "marketCap": 30113897627.621933,
+   "change1d": -5.043,
    "yearHigh": 138.36000061035156,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
@@ -16083,11 +16083,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRWV",
-   "day": "2026-10-29",
-   "price": 63.93,
+   "day": "2026-10-30",
+   "price": 54.6,
    "currency": "USD",
-   "marketCap": 35259735134.17561,
-   "change1d": 6.745,
+   "marketCap": 30113897627.621933,
+   "change1d": -5.043,
    "yearHigh": 138.36000061035156,
    "yearLow": 51.2400016784668,
    "source": "yahoo"
@@ -16107,14 +16107,14 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:cursor",
    "careersUrl": "https://cursor.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 122,
-   "new30": 33,
+   "open": 125,
+   "new30": 32,
    "closed30": null,
    "workplace": {
     "OnSite": 65,
-    "Remote": 44,
+    "Remote": 47,
     "Hybrid": 7,
     "Not stated": 6
    },
@@ -16132,6 +16132,10 @@ export const AI_360: Record<string, Entity360> = {
      "count": 11
     },
     {
+     "name": "Ai Deployment",
+     "count": 7
+    },
+    {
      "name": "Machine Learning",
      "count": 7
     },
@@ -16145,10 +16149,6 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Public Sector",
-     "count": 6
-    },
-    {
-     "name": "Teams",
      "count": 6
     }
    ],
@@ -16168,11 +16168,11 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Singapore",
-     "count": 14
+     "count": 15
     },
     {
      "name": "Australia",
-     "count": 9
+     "count": 11
     },
     {
      "name": "Palo Alto",
@@ -16191,7 +16191,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 87,
+     "count": 90,
      "examples": [
       "HRBP, GTM",
       "Field Engineer",
@@ -16267,6 +16267,27 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Solutions Architect - Australia",
+     "team": "Solutions",
+     "location": "Australia",
+     "url": "https://jobs.ashbyhq.com/cursor/f277b2d6-c27e-4cb9-9d0b-644e9730f06c",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "AI Deployment Manager - Australia",
+     "team": "Ai Deployment",
+     "location": "Australia",
+     "url": "https://jobs.ashbyhq.com/cursor/a4e8f126-9761-4a01-ab21-84e20c8b5de9",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "AI Deployment Manager - Singapore",
+     "team": "Ai Deployment",
+     "location": "Singapore",
+     "url": "https://jobs.ashbyhq.com/cursor/e3ccb495-a8a3-4ff0-a27b-262188abb9df",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Solutions Architect - Western Europe",
      "team": "Solutions Architecture",
      "location": "London",
@@ -16300,27 +16321,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "San Francisco",
      "url": "https://jobs.ashbyhq.com/cursor/6868de4a-f753-4f10-8dc5-f7aabef03b56",
      "published": "2026-10-22"
-    },
-    {
-     "title": "Field Engineer, Commercial",
-     "team": "Field Engineering",
-     "location": "Australia",
-     "url": "https://jobs.ashbyhq.com/cursor/ef96e7fc-5d91-48b2-a8af-26dca8caab77",
-     "published": "2026-10-22"
-    },
-    {
-     "title": "Software Engineer, Research Tooling",
-     "team": "Machine Learning",
-     "location": "Palo Alto, CA",
-     "url": "https://jobs.ashbyhq.com/cursor/fa7a821b-ca2b-43fe-8942-07f215a060c7",
-     "published": "2026-10-20"
-    },
-    {
-     "title": "Community Operations Lead",
-     "team": "Marketing",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/cursor/1a584899-847d-4e5b-8181-fb889fe4e06e",
-     "published": "2026-10-20"
     }
    ],
    "rolesUrl": "/ai/360/jobs/cursor-anysphere.json",
@@ -16352,11 +16352,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6367.T",
-   "day": "2026-10-29",
-   "price": 21155.0,
+   "day": "2026-10-30",
+   "price": 21060.0,
    "currency": "JPY",
-   "marketCap": 5888200618600.0,
-   "change1d": -1.787,
+   "marketCap": 5861758687200.0,
+   "change1d": -1.358,
    "yearHigh": 26440.0,
    "yearLow": 17380.0,
    "source": "yahoo"
@@ -16376,31 +16376,31 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:databricks",
    "careersUrl": "https://www.databricks.com/company/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 902,
-   "new30": 192,
+   "open": 901,
+   "new30": 200,
    "closed30": null,
    "workplace": {
-    "Not stated": 827,
-    "Remote": 75
+    "Not stated": 824,
+    "Remote": 77
    },
    "teams": [
     {
      "name": "Engineering - Pipeline",
-     "count": 139
+     "count": 140
     },
     {
      "name": "Professional Services Operations",
-     "count": 119
-    },
-    {
-     "name": "Enterprise Sales",
-     "count": 95
+     "count": 116
     },
     {
      "name": "Field Engineering - Other",
-     "count": 95
+     "count": 93
+    },
+    {
+     "name": "Enterprise Sales",
+     "count": 92
     },
     {
      "name": "Engineering",
@@ -16412,7 +16412,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Delivery Solutions Architects",
-     "count": 33
+     "count": 32
     },
     {
      "name": "Executive Engineering - Pipeline",
@@ -16427,10 +16427,14 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Mountain View",
-     "count": 98
+     "count": 99
     },
     {
      "name": "United States",
+     "count": 78
+    },
+    {
+     "name": "Remote",
      "count": 77
     },
     {
@@ -16438,19 +16442,15 @@ export const AI_360: Record<string, Entity360> = {
      "count": 76
     },
     {
-     "name": "Remote",
-     "count": 75
-    },
-    {
      "name": "Seattle",
-     "count": 51
+     "count": 54
     },
     {
      "name": "London",
      "count": 47
     },
     {
-     "name": "New York City",
+     "name": "Bellevue",
      "count": 43
     }
    ],
@@ -16478,7 +16478,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 64,
+     "count": 67,
      "examples": [
       "Sr. Recruiter",
       "Executive Assistant",
@@ -16488,7 +16488,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 41,
+     "count": 40,
      "examples": [
       "Principal Engineer - Privacy",
       "Sr. Counsel, Privacy Compliance",
@@ -16498,7 +16498,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 29,
+     "count": 26,
      "examples": [
       "Incident Manager",
       "Sr Video Producer",
@@ -16547,60 +16547,60 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
-     "title": "Team Lead - Platform Monitoring Engineer",
-     "team": "Support",
-     "location": "Bengaluru, India",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8788176002",
-     "published": "2026-10-28"
+     "title": "Sr. Counsel, Employment",
+     "team": "Legal",
+     "location": "Bellevue, Washington; Seattle, Washington; Washington, D.C.",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8922120002",
+     "published": "2026-10-30"
     },
     {
-     "title": "Strategic Core Account Executive (Telco)",
-     "team": "Enterprise Sales",
-     "location": "Toronto, Canada",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8912711002",
-     "published": "2026-10-28"
+     "title": "Lakebase Sales Specialist (Greater China Region)",
+     "team": "HQ Management",
+     "location": "China",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8924844002",
+     "published": "2026-10-30"
     },
     {
-     "title": "Strategic Core Account Executive (Retail)",
-     "team": "Enterprise Sales",
-     "location": "Toronto, Canada",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8895631002",
-     "published": "2026-10-28"
+     "title": "Business Development Representative (UKI)",
+     "team": "Sales Development",
+     "location": "London, United Kingdom",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8917482002",
+     "published": "2026-10-30"
     },
     {
-     "title": "Strategic Account Executive, Medtech",
-     "team": "Enterprise Sales",
-     "location": "Amsterdam, Netherlands",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8905737002",
-     "published": "2026-10-28"
+     "title": "Business Development Representative (German-speaking, DACH)",
+     "team": "Sales Development",
+     "location": "Munich, Germany",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8924302002",
+     "published": "2026-10-30"
     },
     {
-     "title": "Sr. Solutions Engineer (Greater China)",
-     "team": "Field Engineering - Other",
-     "location": "Singapore",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8899597002",
-     "published": "2026-10-28"
+     "title": "Staff Machine Learning Engineer, CustomerLake (ML/LLM)",
+     "team": "Engineering - Pipeline",
+     "location": "New York City, New York",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8923831002",
+     "published": "2026-10-29"
     },
     {
-     "title": "Sr. Sales Compensation Analyst",
+     "title": "Sr. Solutions Architect - Travel and Hospitality",
+     "team": "Field Engineering - FE Direct Enterprise",
+     "location": "Chicago, Illinois; Dallas, Texas",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8886517002",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Sr. Collections Analyst",
      "team": "Finance",
      "location": "Bengaluru, India",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8922722002",
-     "published": "2026-10-28"
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8922730002",
+     "published": "2026-10-29"
     },
     {
-     "title": "Sr. Counsel, Product",
-     "team": "Legal",
-     "location": "Bellevue, Washington; Mountain View, California; New York City, New York; San Francisco, California; Seattle, Washington; Washington, D.C.",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8922118002",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Software Engineer, Infrastructure",
-     "team": "Infrastructure",
-     "location": "United States",
-     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8829039002",
-     "published": "2026-10-28"
+     "title": "Solutions Architect Spain",
+     "team": "Field Engineering - Other",
+     "location": "Madrid",
+     "url": "https://databricks.com/company/careers/open-positions/job?gh_jid=8921587002",
+     "published": "2026-10-29"
     }
    ],
    "rolesUrl": "/ai/360/jobs/databricks.json",
@@ -16610,7 +16610,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Databricks",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2015-01",
@@ -17299,11 +17299,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2308.TW",
-   "day": "2026-10-29",
-   "price": 1465.0,
+   "day": "2026-10-30",
+   "price": 1335.0,
    "currency": "TWD",
-   "marketCap": 3805400976985.0,
-   "change1d": -5.484,
+   "marketCap": 3467720344215.0,
+   "change1d": -9.797,
    "yearHigh": 2585.0,
    "yearLow": 886.0,
    "source": "yahoo"
@@ -17328,11 +17328,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "DLR",
-   "day": "2026-10-29",
-   "price": 179.77,
+   "day": "2026-10-30",
+   "price": 179.395,
    "currency": "USD",
-   "marketCap": 66694442737.86757,
-   "change1d": 0.425,
+   "marketCap": 66555318215.24257,
+   "change1d": -3.03,
    "yearHigh": 208.13999938964844,
    "yearLow": 146.22999572753906,
    "source": "yahoo"
@@ -17357,11 +17357,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6146.T",
-   "day": "2026-10-29",
-   "price": 51790.0,
+   "day": "2026-10-30",
+   "price": 49540.0,
    "currency": "JPY",
-   "marketCap": 5617543477750.0,
-   "change1d": -1.427,
+   "marketCap": 5375457834500.0,
+   "change1d": -5.041,
    "yearHigh": 91680.0,
    "yearLow": 42370.0,
    "source": "yahoo"
@@ -17386,11 +17386,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6361.T",
-   "day": "2026-10-29",
-   "price": 3875.0,
+   "day": "2026-10-30",
+   "price": 3752.0,
    "currency": "JPY",
-   "marketCap": 1764665390000.0,
-   "change1d": -1.425,
+   "marketCap": 1708651495040.0,
+   "change1d": -3.523,
    "yearHigh": 6890.0,
    "yearLow": 3538.0,
    "source": "yahoo"
@@ -17415,11 +17415,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "EQIX",
-   "day": "2026-10-29",
-   "price": 1007.66,
+   "day": "2026-10-30",
+   "price": 1020.74,
    "currency": "USD",
-   "marketCap": 99427508464.88562,
-   "change1d": 2.187,
+   "marketCap": 101041334748.6372,
+   "change1d": -1.537,
    "yearHigh": 1128.6800537109375,
    "yearLow": 720.6199951171875,
    "source": "yahoo"
@@ -17444,11 +17444,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2317.TW",
-   "day": "2026-10-29",
-   "price": 248.5,
+   "day": "2026-10-30",
+   "price": 245.5,
    "currency": "TWD",
-   "marketCap": 3497454459621.5,
-   "change1d": -0.996,
+   "marketCap": 3455231669364.5,
+   "change1d": -1.207,
    "yearHigh": 314.0,
    "yearLow": 187.5,
    "source": "yahoo"
@@ -17473,11 +17473,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "5384.T",
-   "day": "2026-10-29",
-   "price": 3255.0,
+   "day": "2026-10-30",
+   "price": 3135.0,
    "currency": "JPY",
-   "marketCap": 241466498280.0,
-   "change1d": -0.913,
+   "marketCap": 232564507560.0,
+   "change1d": -3.982,
    "yearHigh": 5090.0,
    "yearLow": 2212.0,
    "source": "yahoo"
@@ -17502,11 +17502,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6702.T",
-   "day": "2026-10-29",
-   "price": 4308.0,
+   "day": "2026-10-30",
+   "price": 3622.0,
    "currency": "JPY",
-   "marketCap": 7438270817880.0,
-   "change1d": -3.038,
+   "marketCap": 6253810794420.0,
+   "change1d": -16.099,
    "yearHigh": 4668.0,
    "yearLow": 3016.0,
    "source": "yahoo"
@@ -17531,11 +17531,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GEV",
-   "day": "2026-10-29",
-   "price": 878.03,
+   "day": "2026-10-30",
+   "price": 864.57,
    "currency": "USD",
-   "marketCap": 233848881928.17163,
-   "change1d": -2.528,
+   "marketCap": 228831852890.17273,
+   "change1d": 0.015,
    "yearHigh": 1195.93994140625,
    "yearLow": 530.1599731445312,
    "source": "yahoo"
@@ -17560,11 +17560,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-29",
-   "price": 531.01,
+   "day": "2026-10-30",
+   "price": 522.13,
    "currency": "USD",
-   "marketCap": 3943038983691.003,
-   "change1d": -0.307,
+   "marketCap": 3877438997696.4756,
+   "change1d": -1.308,
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
@@ -17589,11 +17589,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GFS",
-   "day": "2026-10-29",
-   "price": 46.11,
+   "day": "2026-10-30",
+   "price": 41.65,
    "currency": "USD",
-   "marketCap": 25702572124.551315,
-   "change1d": -0.839,
+   "marketCap": 23216485665.50329,
+   "change1d": -5.341,
    "yearHigh": 92.55000305175781,
    "yearLow": 32.02000045776367,
    "source": "yahoo"
@@ -17618,11 +17618,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-29",
-   "price": 324.89,
+   "day": "2026-10-30",
+   "price": 280.505,
    "currency": "USD",
-   "marketCap": 3973383706393.026,
-   "change1d": 0.408,
+   "marketCap": 3448528530029.297,
+   "change1d": -0.055,
    "yearHigh": 408.6099853515625,
    "yearLow": 270.70001220703125,
    "source": "yahoo"
@@ -17644,7 +17644,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "DeepMind",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2014-01",
@@ -18260,10 +18260,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     9
+     10
     ]
    ],
-   "total": 1673,
+   "total": 1674,
    "top": [
     {
      "title": "DeepMind's WeatherNext model achieves breakthrough forecasting cyclones",
@@ -18381,11 +18381,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-29",
-   "price": 324.89,
+   "day": "2026-10-30",
+   "price": 280.505,
    "currency": "USD",
-   "marketCap": 3973383706393.026,
-   "change1d": 0.408,
+   "marketCap": 3448528530029.297,
+   "change1d": -0.055,
    "yearHigh": 408.6099853515625,
    "yearLow": 270.70001220703125,
    "source": "yahoo"
@@ -18405,36 +18405,36 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:harvey",
    "careersUrl": "https://www.harvey.ai/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 366,
-   "new30": 161,
+   "open": 382,
+   "new30": 180,
    "closed30": null,
    "workplace": {
-    "Hybrid": 275,
-    "Not stated": 75,
+    "Hybrid": 288,
+    "Not stated": 78,
     "Remote": 13,
     "OnSite": 3
    },
    "teams": [
     {
      "name": "Go-to-Market",
-     "count": 75
+     "count": 78
     },
     {
      "name": "Engineering",
-     "count": 61
+     "count": 68
     },
     {
      "name": "Go to Market",
-     "count": 31
-    },
-    {
-     "name": "Customer Success",
-     "count": 24
+     "count": 27
     },
     {
      "name": "Product",
+     "count": 23
+    },
+    {
+     "name": "Customer Success",
      "count": 22
     },
     {
@@ -18443,34 +18443,38 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Customer Experience",
-     "count": 20
+     "count": 18
     },
     {
      "name": "Recruiting",
      "count": 18
     }
    ],
-   "teamCount": 23,
+   "teamCount": 24,
    "cities": [
     {
      "name": "San Francisco",
-     "count": 118
+     "count": 125
     },
     {
      "name": "New York City",
-     "count": 106
+     "count": 111
     },
     {
      "name": "London",
-     "count": 32
+     "count": 31
     },
     {
      "name": "Dublin",
-     "count": 24
+     "count": 23
     },
     {
      "name": "Chicago",
-     "count": 15
+     "count": 17
+    },
+    {
+     "name": "Sydney",
+     "count": 13
     },
     {
      "name": "Toronto",
@@ -18479,27 +18483,23 @@ export const AI_360: Record<string, Entity360> = {
     {
      "name": "Munich",
      "count": 12
-    },
-    {
-     "name": "Sydney",
-     "count": 12
     }
    ],
    "themes": [
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 140,
+     "count": 138,
      "examples": [
-      "CX Specialist",
       "CX Data Analyst",
-      "Partner Manager"
+      "Partner Manager",
+      "SMB Sales Manager"
      ]
     },
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 90,
+     "count": 97,
      "examples": [
       "API Product Lead",
       "Broadcast Engineer",
@@ -18509,7 +18509,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 86,
+     "count": 92,
      "examples": [
       "M&A Counsel",
       "Legal Engineer",
@@ -18519,7 +18519,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 31,
+     "count": 34,
      "examples": [
       "Advisory CISO",
       "Lead Copywriter",
@@ -18539,7 +18539,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "research",
      "label": "Research",
-     "count": 5,
+     "count": 7,
      "examples": [
       "Staff User Researcher",
       "Data Scientist, Product",
@@ -18549,60 +18549,60 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
-     "title": "Transformation Advisory Lead, Strategy & Economics, EMEA",
-     "team": "Go-to-Market",
-     "location": "London",
-     "url": "https://jobs.ashbyhq.com/harvey/400a2ac7-4e79-492b-b742-a0c3315b0c16",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Staff Product Security Engineer",
-     "team": "Security",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/harvey/d2aaaa58-eb59-42ba-9a62-ca6ce4cdf206",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Senior Product Manager, Embedded Experiences",
-     "team": "Product",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/harvey/bc94becd-102e-49a1-abdc-5ce42076a68d",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Forward Deployed Finance Engineer, Private Credit",
+     "title": "Staff Software Engineer, Full Stack",
      "team": "Engineering",
-     "location": "London",
-     "url": "https://jobs.ashbyhq.com/harvey/8407b840-8645-471b-8bbf-f4c6c8861a2d",
-     "published": "2026-10-28"
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/harvey/9f4a2d85-8fa6-4374-9f1d-800492967dc7",
+     "published": "2026-10-30"
     },
     {
-     "title": "Executive Assistant, APAC",
-     "team": "Human Resources",
-     "location": "Singapore",
-     "url": "https://jobs.ashbyhq.com/harvey/21e7d9f0-4d47-435e-8acf-c220b6bd720c",
-     "published": "2026-10-28"
+     "title": "Account Executive, Mid-Market - Mexico",
+     "team": "Go-to-Market",
+     "location": "Mexico",
+     "url": "https://jobs.ashbyhq.com/harvey/37050642-ee74-457a-829c-ea7e77ec3cfc",
+     "published": "2026-10-30"
     },
     {
-     "title": "API Product Lead",
+     "title": "Transformation Advisory Lead, Talent & Learning",
+     "team": "Transformation Office",
+     "location": "Chicago",
+     "url": "https://jobs.ashbyhq.com/harvey/f10fb9da-676a-4dc6-9d7d-0065490dfd57",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Staff Brand Designer",
+     "team": "Design",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/harvey/e293b2cc-4269-4009-be34-850b000ef6c5",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Senior Product Manager, Admin",
      "team": "Product",
-     "location": "New York",
-     "url": "https://jobs.ashbyhq.com/harvey/5f3959e4-8d36-4e3f-b6f4-2ee248a4f1d6",
-     "published": "2026-10-28"
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/harvey/7a3b9337-ac67-4255-8db5-08bb3d57541e",
+     "published": "2026-10-29"
     },
     {
-     "title": "Strategic Account Executive, DACH",
-     "team": "Go to Market",
-     "location": "Munich",
-     "url": "https://jobs.ashbyhq.com/harvey/c34ee114-fd2d-4507-9888-711397e037bd",
-     "published": "2026-10-27"
+     "title": "Senior Product Designer",
+     "team": "Design",
+     "location": "Toronto",
+     "url": "https://jobs.ashbyhq.com/harvey/eaf0f789-5d7f-400b-bd48-e398a32f307a",
+     "published": "2026-10-29"
     },
     {
-     "title": "Senior People Systems Analyst",
-     "team": "IT",
+     "title": "Sales Manager, Enterprise, India",
+     "team": "Go-to-Market",
+     "location": "Bengaluru",
+     "url": "https://jobs.ashbyhq.com/harvey/710bcb7e-c80d-4f38-99e9-5e9704a54aaf",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Member of Technical Staff, Modeling",
+     "team": "Engineering",
      "location": "New York",
-     "url": "https://jobs.ashbyhq.com/harvey/bbf25f2b-0652-4a14-aab2-5205aba53d30",
-     "published": "2026-10-27"
+     "url": "https://jobs.ashbyhq.com/harvey/db7a2623-bc3c-4db9-b1e3-500c2622d194",
+     "published": "2026-10-29"
     }
    ],
    "rolesUrl": "/ai/360/jobs/harvey-ai.json",
@@ -18634,11 +18634,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7741.T",
-   "day": "2026-10-29",
-   "price": 26305.0,
+   "day": "2026-10-30",
+   "price": 26210.0,
    "currency": "JPY",
-   "marketCap": 8747492030895.0,
-   "change1d": -0.246,
+   "marketCap": 8715900632190.0,
+   "change1d": -0.531,
    "yearHigh": 30400.0,
    "yearLow": 22165.0,
    "source": "yahoo"
@@ -18663,13 +18663,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "688041.SS",
-   "day": "2026-10-29",
-   "price": 185.26,
+   "day": "2026-10-30",
+   "price": 170.2,
    "currency": "CNY",
-   "marketCap": 430606861970.6895,
-   "change1d": -3.112,
+   "marketCap": 395602343088.19995,
+   "change1d": -7.253,
    "yearHigh": 395.1700134277344,
-   "yearLow": 186.0,
+   "yearLow": 170.02000427246094,
    "source": "yahoo"
   },
   "talent": null,
@@ -18692,11 +18692,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "INTC",
-   "day": "2026-10-29",
-   "price": 95.53,
+   "day": "2026-10-30",
+   "price": 64.87,
    "currency": "USD",
-   "marketCap": 501964892457.7333,
-   "change1d": 1.478,
+   "marketCap": 344459714584.3506,
+   "change1d": -8.486,
    "yearHigh": 142.35000610351562,
    "yearLow": 32.88999938964844,
    "source": "yahoo"
@@ -18721,11 +18721,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "INTC",
-   "day": "2026-10-29",
-   "price": 95.53,
+   "day": "2026-10-30",
+   "price": 64.87,
    "currency": "USD",
-   "marketCap": 501964892457.7333,
-   "change1d": 1.478,
+   "marketCap": 344459714584.3506,
+   "change1d": -8.486,
    "yearHigh": 142.35000610351562,
    "yearLow": 32.88999938964844,
    "source": "yahoo"
@@ -18750,11 +18750,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2356.TW",
-   "day": "2026-10-29",
-   "price": 61.5,
+   "day": "2026-10-30",
+   "price": 59.5,
    "currency": "TWD",
-   "marketCap": 220629716559.0,
-   "change1d": -3.454,
+   "marketCap": 213454766427.0,
+   "change1d": -3.252,
    "yearHigh": 88.5999984741211,
    "yearLow": 38.54999923706055,
    "source": "yahoo"
@@ -18779,11 +18779,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "600584.SS",
-   "day": "2026-10-29",
-   "price": 53.16,
+   "day": "2026-10-30",
+   "price": 49.0,
    "currency": "CNY",
-   "marketCap": 95125278268.15701,
-   "change1d": -4.061,
+   "marketCap": 87681313930.0,
+   "change1d": -5.533,
    "yearHigh": 113.87000274658203,
    "yearLow": 34.58000183105469,
    "source": "yahoo"
@@ -18808,11 +18808,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "JPM",
-   "day": "2026-10-29",
-   "price": 339.3,
+   "day": "2026-10-30",
+   "price": 339.07,
    "currency": "USD",
-   "marketCap": 901045047583.0078,
-   "change1d": 1.045,
+   "marketCap": 900434311450.1953,
+   "change1d": -1.79,
    "yearHigh": 366.5,
    "yearLow": 279.1000061035156,
    "source": "yahoo"
@@ -18837,11 +18837,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "285A.T",
-   "day": "2026-10-29",
-   "price": 15005.0,
+   "day": "2026-10-30",
+   "price": 13470.0,
    "currency": "JPY",
-   "marketCap": 23976572537670.0,
-   "change1d": 3.985,
+   "marketCap": 21523787542980.0,
+   "change1d": -9.9,
    "yearHigh": 37566.66796875,
    "yearLow": 2784.333251953125,
    "source": "yahoo"
@@ -18866,11 +18866,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "KLAC",
-   "day": "2026-10-29",
-   "price": 158.77,
+   "day": "2026-10-30",
+   "price": 160.01,
    "currency": "USD",
-   "marketCap": 207195886310.42926,
-   "change1d": 2.837,
+   "marketCap": 208814081616.30524,
+   "change1d": -2.924,
    "yearHigh": 307.3699951171875,
    "yearLow": 107.19599914550781,
    "source": "yahoo"
@@ -18895,11 +18895,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6525.T",
-   "day": "2026-10-29",
-   "price": 7260.0,
+   "day": "2026-10-30",
+   "price": 6919.0,
    "currency": "JPY",
-   "marketCap": 1694366721960.0,
-   "change1d": -0.425,
+   "marketCap": 1614782830474.0,
+   "change1d": -5.594,
    "yearHigh": 12220.0,
    "yearLow": 3852.0,
    "source": "yahoo"
@@ -18924,11 +18924,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2449.TW",
-   "day": "2026-10-29",
-   "price": 268.5,
+   "day": "2026-10-30",
+   "price": 253.5,
    "currency": "TWD",
-   "marketCap": 344722384125.0,
-   "change1d": -3.069,
+   "marketCap": 325464150375.0,
+   "change1d": -5.937,
    "yearHigh": 350.0,
    "yearLow": 187.14285278320312,
    "source": "yahoo"
@@ -18953,11 +18953,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "LRCX",
-   "day": "2026-10-29",
-   "price": 253.82,
+   "day": "2026-10-30",
+   "price": 237.81,
    "currency": "USD",
-   "marketCap": 317636540728.5458,
-   "change1d": 5.044,
+   "marketCap": 297601224471.98474,
+   "change1d": -3.533,
    "yearHigh": 438.5,
    "yearLow": 135.5,
    "source": "yahoo"
@@ -18977,7 +18977,7 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:lambda",
    "careersUrl": "https://lambda.ai/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
    "open": 94,
    "new30": 34,
@@ -19215,11 +19215,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6920.T",
-   "day": "2026-10-29",
-   "price": 41130.0,
+   "day": "2026-10-30",
+   "price": 37700.0,
    "currency": "JPY",
-   "marketCap": 3689633074950.0,
-   "change1d": -0.772,
+   "marketCap": 3381939385500.0,
+   "change1d": -8.981,
    "yearHigh": 58580.0,
    "yearLow": 25590.0,
    "source": "yahoo"
@@ -19244,11 +19244,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2301.TW",
-   "day": "2026-10-29",
-   "price": 250.5,
+   "day": "2026-10-30",
+   "price": 240.5,
    "currency": "TWD",
-   "marketCap": 568410437271.0,
-   "change1d": -4.207,
+   "marketCap": 545719401851.0,
+   "change1d": -4.752,
    "yearHigh": 328.0,
    "yearLow": 139.5,
    "source": "yahoo"
@@ -19273,11 +19273,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "LITE",
-   "day": "2026-10-29",
-   "price": 913.95,
+   "day": "2026-10-30",
+   "price": 820.3101,
    "currency": "USD",
-   "marketCap": 82788202346.94775,
-   "change1d": 5.089,
+   "marketCap": 74306033441.68799,
+   "change1d": -6.889,
    "yearHigh": 1143.0,
    "yearLow": 184.1999969482422,
    "source": "yahoo"
@@ -19302,11 +19302,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MRVL",
-   "day": "2026-10-29",
-   "price": 251.65,
+   "day": "2026-10-30",
+   "price": 196.77,
    "currency": "USD",
-   "marketCap": 226159010376.19235,
-   "change1d": 2.903,
+   "marketCap": 176838110539.69037,
+   "change1d": -5.738,
    "yearHigh": 329.8800048828125,
    "yearLow": 70.69000244140625,
    "source": "yahoo"
@@ -19331,11 +19331,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2454.TW",
-   "day": "2026-10-29",
-   "price": 4040.0,
+   "day": "2026-10-30",
+   "price": 3915.0,
    "currency": "TWD",
-   "marketCap": 6452520453120.0,
-   "change1d": -4.604,
+   "marketCap": 6252875637120.0,
+   "change1d": -3.333,
    "yearHigh": 5480.0,
    "yearLow": 1130.0,
    "source": "yahoo"
@@ -19360,11 +19360,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "META",
-   "day": "2026-10-29",
-   "price": 612.49,
+   "day": "2026-10-30",
+   "price": 621.19,
    "currency": "USD",
-   "marketCap": 1594209179576.3687,
-   "change1d": -1.116,
+   "marketCap": 1588279118632.728,
+   "change1d": 0.059,
    "yearHigh": 779.8200073242188,
    "yearLow": 520.260009765625,
    "source": "yahoo"
@@ -19389,11 +19389,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MU",
-   "day": "2026-10-29",
-   "price": 983.23,
+   "day": "2026-10-30",
+   "price": 883.39,
    "currency": "USD",
-   "marketCap": 1112449222636.6504,
-   "change1d": 4.377,
+   "marketCap": 999487967822.2622,
+   "change1d": -2.09,
    "yearHigh": 1255.0,
    "yearLow": 192.58999633789062,
    "source": "yahoo"
@@ -19418,11 +19418,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "MSFT",
-   "day": "2026-10-29",
-   "price": 531.01,
+   "day": "2026-10-30",
+   "price": 522.13,
    "currency": "USD",
-   "marketCap": 3943038983691.003,
-   "change1d": -0.307,
+   "marketCap": 3877438997696.4756,
+   "change1d": -1.308,
    "yearHigh": 551.1500244140625,
    "yearLow": 349.20001220703125,
    "source": "yahoo"
@@ -19444,7 +19444,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Mistral -wind",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2023-05",
@@ -19612,16 +19612,22 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     27
+     31
     ]
    ],
-   "total": 558,
+   "total": 562,
    "top": [
+    {
+     "title": "We're releasing the weights of Mistral Large 4",
+     "url": "https://news.ycombinator.com/item?id=50289418",
+     "date": "2026-10-29",
+     "summary": "1,637 points · 426 comments · links to mistral.ai"
+    },
     {
      "title": "Timestral: Mistral's time-series foundation models",
      "url": "https://news.ycombinator.com/item?id=50150434",
      "date": "2026-10-19",
-     "summary": "623 points · 127 comments · links to mistral.ai"
+     "summary": "624 points · 127 comments · links to mistral.ai"
     },
     {
      "title": "Mistral Large 4",
@@ -19733,11 +19739,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6981.T",
-   "day": "2026-10-29",
-   "price": 6711.0,
+   "day": "2026-10-30",
+   "price": 6358.0,
    "currency": "JPY",
-   "marketCap": 12146301674694.0,
-   "change1d": -0.342,
+   "marketCap": 11507403672732.0,
+   "change1d": -5.387,
    "yearHigh": 12895.0,
    "yearLow": 2821.5,
    "source": "yahoo"
@@ -19762,11 +19768,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "8046.TW",
-   "day": "2026-10-29",
-   "price": 1275.0,
+   "day": "2026-10-30",
+   "price": 1190.0,
    "currency": "TWD",
-   "marketCap": 823860995925.0,
-   "change1d": -2.299,
+   "marketCap": 768936929530.0,
+   "change1d": -5.179,
    "yearHigh": 1560.0,
    "yearLow": 232.0,
    "source": "yahoo"
@@ -19791,11 +19797,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "002371.SZ",
-   "day": "2026-10-29",
-   "price": 504.19,
+   "day": "2026-10-30",
+   "price": 478.74,
    "currency": "CNY",
-   "marketCap": 367027027695.04095,
-   "change1d": -1.564,
+   "marketCap": 348500601733.26,
+   "change1d": -3.732,
    "yearHigh": 968.0,
    "yearLow": 386.6199951171875,
    "source": "yahoo"
@@ -19820,11 +19826,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NBIS",
-   "day": "2026-10-29",
-   "price": 182.34,
+   "day": "2026-10-30",
+   "price": 155.325,
    "currency": "USD",
-   "marketCap": 49570079454.55646,
-   "change1d": 5.661,
+   "marketCap": 42225910906.213715,
+   "change1d": -3.645,
    "yearHigh": 299.8599853515625,
    "yearLow": 73.5199966430664,
    "source": "yahoo"
@@ -19849,11 +19855,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "9432.T",
-   "day": "2026-10-29",
-   "price": 170.7,
+   "day": "2026-10-30",
+   "price": 173.3,
    "currency": "JPY",
-   "marketCap": 13815264784311.85,
-   "change1d": -0.466,
+   "marketCap": 14025690860716.201,
+   "change1d": 1.345,
    "yearHigh": 181.3000030517578,
    "yearLow": 142.60000610351562,
    "source": "yahoo"
@@ -19878,11 +19884,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SMR",
-   "day": "2026-10-29",
-   "price": 5.67,
+   "day": "2026-10-30",
+   "price": 5.615,
    "currency": "USD",
-   "marketCap": 2326908621.0502357,
-   "change1d": -1.22,
+   "marketCap": 2304337072.0992928,
+   "change1d": -0.607,
    "yearHigh": 45.540000915527344,
    "yearLow": 5.199999809265137,
    "source": "yahoo"
@@ -19947,7 +19953,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Nvidia",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2015-01",
@@ -20515,10 +20521,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     149
+     157
     ]
    ],
-   "total": 7786,
+   "total": 7794,
    "top": [
     {
      "title": "Owed a billion dollars in Nvidia stock",
@@ -20617,11 +20623,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NVDA",
-   "day": "2026-10-29",
-   "price": 215.38,
+   "day": "2026-10-30",
+   "price": 204.8086,
    "currency": "USD",
-   "marketCap": 5200780977905.273,
-   "change1d": -1.261,
+   "marketCap": 4945513113281.25,
+   "change1d": -2.54,
    "yearHigh": 243.3699951171875,
    "yearLow": 164.27000427246094,
    "source": "yahoo"
@@ -20646,11 +20652,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NXPI",
-   "day": "2026-10-29",
-   "price": 251.69,
+   "day": "2026-10-30",
+   "price": 259.115,
    "currency": "USD",
-   "marketCap": 63467201569.69519,
-   "change1d": 7.111,
+   "marketCap": 65310707524.16504,
+   "change1d": -0.722,
    "yearHigh": 339.95001220703125,
    "yearLow": 183.0,
    "source": "yahoo"
@@ -20675,13 +20681,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NYT",
-   "day": "2026-10-29",
-   "price": 69.18,
+   "day": "2026-10-30",
+   "price": 70.61,
    "currency": "USD",
-   "marketCap": 11157598528.699844,
-   "change1d": -0.902,
+   "marketCap": 11388234105.899689,
+   "change1d": 1.832,
    "yearHigh": 87.0999984741211,
-   "yearLow": 56.0099983215332,
+   "yearLow": 56.47999954223633,
    "source": "yahoo"
   },
   "talent": null,
@@ -20704,12 +20710,12 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "OKLO",
-   "day": "2026-10-29",
-   "price": 27.12,
+   "day": "2026-10-30",
+   "price": 25.04,
    "currency": "USD",
-   "marketCap": 5044798824.112225,
-   "change1d": -0.544,
-   "yearHigh": 145.3000030517578,
+   "marketCap": 4657882126.304245,
+   "change1d": -3.544,
+   "yearHigh": 141.6999969482422,
    "yearLow": 25.389999389648438,
    "source": "yahoo"
   },
@@ -20728,13 +20734,13 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:openai",
    "careersUrl": "https://openai.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 811,
-   "new30": 236,
+   "open": 814,
+   "new30": 239,
    "closed30": null,
    "workplace": {
-    "Hybrid": 517,
+    "Hybrid": 520,
     "Not stated": 232,
     "Remote": 33,
     "OnSite": 29
@@ -20742,7 +20748,7 @@ export const AI_360: Record<string, Entity360> = {
    "teams": [
     {
      "name": "Technical Success",
-     "count": 74
+     "count": 75
     },
     {
      "name": "Applied AI Engineering",
@@ -20750,30 +20756,30 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Sales",
-     "count": 43
+     "count": 44
     },
     {
      "name": "Marketing",
      "count": 40
     },
     {
-     "name": "Finance",
+     "name": "Forward Deployed Engineering",
      "count": 32
     },
     {
-     "name": "Forward Deployed Engineering",
-     "count": 32
+     "name": "Finance",
+     "count": 31
     },
     {
      "name": "Security",
      "count": 31
     },
     {
-     "name": "Hardware",
+     "name": "Support Delivery",
      "count": 30
     }
    ],
-   "teamCount": 83,
+   "teamCount": 82,
    "cities": [
     {
      "name": "San Francisco",
@@ -20781,15 +20787,15 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "New York City",
-     "count": 96
+     "count": 98
     },
     {
      "name": "Seattle",
-     "count": 81
+     "count": 80
     },
     {
      "name": "Remote (US)",
-     "count": 41
+     "count": 40
     },
     {
      "name": "Singapore",
@@ -20797,11 +20803,11 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Washington",
-     "count": 34
+     "count": 35
     },
     {
      "name": "London",
-     "count": 33
+     "count": 34
     },
     {
      "name": "Tokyo",
@@ -20832,7 +20838,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 78,
+     "count": 80,
      "examples": [
       "Red Team - Cyber",
       "Account Director, Cyber",
@@ -20842,7 +20848,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "research",
      "label": "Research",
-     "count": 66,
+     "count": 67,
      "examples": [
       "Research Engineer",
       "Research Scientist",
@@ -20852,7 +20858,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 64,
+     "count": 63,
      "examples": [
       "IT Logistics Lead",
       "Accounting Manager",
@@ -20862,7 +20868,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "datacenters",
      "label": "Data centers and compute",
-     "count": 49,
+     "count": 48,
      "examples": [
       "Mechanical Lead",
       "Network Engineer",
@@ -20872,17 +20878,17 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "other",
      "label": "Other",
-     "count": 45,
+     "count": 48,
      "examples": [
       "SDR Manager",
-      "Marketplace Lead",
-      "Content Studio Lead"
+      "Art Director",
+      "Marketplace Lead"
      ]
     },
     {
      "key": "chips",
      "label": "Chips and hardware",
-     "count": 30,
+     "count": 29,
      "examples": [
       "SoC Engineer",
       "3P Systems Architect",
@@ -20911,6 +20917,41 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Service Designer, Intelligence & Investigations",
+     "team": "Intelligence & Investigations",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/33250b88-936a-4994-950c-fc5fe346446c",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "Research Program Manager, Safety Measurement",
+     "team": "Research Program Management",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/4bcc25ef-cf03-47db-896c-0fd9122afab1",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "Applied AI Delivery Lead - London",
+     "team": "Technical Success",
+     "location": "London, UK",
+     "url": "https://jobs.ashbyhq.com/openai/ec0aa7c7-8995-4e01-9939-594a94549f85",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "Trusted Access Specialist, Critical Harm Operations",
+     "team": "Trust & Safety",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/5ebf3a52-0023-484c-a0fd-75f6ec7483ca",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Trusted Access Lead, Critical Harm Operations",
+     "team": "Trust & Safety",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/openai/500c16b5-26ca-46be-9280-abbfff3b5c2b",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Software Engineer, Traffic Infrastructure",
      "team": "Scaling",
      "location": "San Francisco",
@@ -20930,41 +20971,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "San Francisco",
      "url": "https://jobs.ashbyhq.com/openai/33acf0e2-5c11-46d7-9dc9-417f5537139b",
      "published": "2026-10-29"
-    },
-    {
-     "title": "Product Content Creator",
-     "team": "Marketing",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/openai/67c67c36-e710-4f21-bd9c-759eb72cfabf",
-     "published": "2026-10-29"
-    },
-    {
-     "title": "Network Infrastructure Engineer, Global Network Infra (WAN)",
-     "team": "Compute",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/openai/9f7371c4-e306-4a45-a400-aa2843fabd85",
-     "published": "2026-10-29"
-    },
-    {
-     "title": "Research Engineer / Research Scientist, Human Flourishing",
-     "team": "Post-training",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/openai/0f600ed1-d70a-4648-820f-a1d1da3f7617",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Network Infrastructure Lead",
-     "team": "Datacenter Design",
-     "location": "US - Remote",
-     "url": "https://jobs.ashbyhq.com/openai/6c1d86d0-e89d-475b-a324-6c57fa30b345",
-     "published": "2026-10-28"
-    },
-    {
-     "title": "Motion Designer",
-     "team": "Creative",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/openai/30b0a80b-8421-4847-a670-5bd09920c4ce",
-     "published": "2026-10-28"
     }
    ],
    "rolesUrl": "/ai/360/jobs/openai.json",
@@ -20974,7 +20980,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "OpenAI",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2015-12",
@@ -21498,10 +21504,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     314
+     324
     ]
    ],
-   "total": 11565,
+   "total": 11575,
    "top": [
     {
      "title": "Discovery of a new OpenAI agent message board",
@@ -21613,12 +21619,12 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "ORCL",
-   "day": "2026-10-29",
-   "price": 144.54,
+   "day": "2026-10-30",
+   "price": 131.865,
    "currency": "USD",
-   "marketCap": 438173155723.3639,
-   "change1d": 9.866,
-   "yearHigh": 269.760009765625,
+   "marketCap": 399748915665.41815,
+   "change1d": -2.322,
+   "yearHigh": 265.80999755859375,
    "yearLow": 114.5,
    "source": "yahoo"
   },
@@ -21642,11 +21648,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "PLTR",
-   "day": "2026-10-29",
-   "price": 196.81,
+   "day": "2026-10-30",
+   "price": 186.375,
    "currency": "USD",
-   "marketCap": 472945933581.958,
-   "change1d": -1.101,
+   "marketCap": 447870024210.0,
+   "change1d": -3.848,
    "yearHigh": 212.94000244140625,
    "yearLow": 106.37000274658203,
    "source": "yahoo"
@@ -21671,11 +21677,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "PLTR",
-   "day": "2026-10-29",
-   "price": 196.81,
+   "day": "2026-10-30",
+   "price": 186.375,
    "currency": "USD",
-   "marketCap": 472945933581.958,
-   "change1d": -1.101,
+   "marketCap": 447870024210.0,
+   "change1d": -3.848,
    "yearHigh": 212.94000244140625,
    "yearLow": 106.37000274658203,
    "source": "yahoo"
@@ -21695,15 +21701,15 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:perplexity",
    "careersUrl": "https://www.perplexity.ai/hub/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 133,
+   "open": 134,
    "new30": 35,
    "closed30": null,
    "workplace": {
     "Not stated": 68,
-    "Hybrid": 58,
-    "OnSite": 7
+    "Hybrid": 60,
+    "OnSite": 6
    },
    "teams": [
     {
@@ -21723,12 +21729,12 @@ export const AI_360: Record<string, Entity360> = {
      "count": 13
     },
     {
-     "name": "AI Products",
+     "name": "Sales",
      "count": 11
     },
     {
-     "name": "Sales",
-     "count": 10
+     "name": "AI Products",
+     "count": 11
     },
     {
      "name": "People",
@@ -21743,7 +21749,7 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "San Francisco",
-     "count": 109
+     "count": 111
     },
     {
      "name": "New York City",
@@ -21788,17 +21794,17 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 40,
+     "count": 42,
      "examples": [
       "Senior Editor",
       "Social Media Manager",
-      "Account Executive, API"
+      "Customer Success Lead"
      ]
     },
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 19,
+     "count": 18,
      "examples": [
       "Payroll Analyst",
       "AI Strategist, Legal",
@@ -21863,6 +21869,20 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Sales Onboarding Manager",
+     "team": "Sales",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/perplexity/91814621-dd0e-46d1-8aba-24957c5a4296",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Customer Success Lead",
+     "team": "Customer Success & Support",
+     "location": "San Francisco",
+     "url": "https://jobs.ashbyhq.com/perplexity/6b2da750-51fb-4428-b682-fe2296d9aef7",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Member of Technical Staff (Software Engineer, GPU Cluster Infrastructure)",
      "team": "Platform & Infrastructure",
      "location": "San Francisco",
@@ -21903,20 +21923,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "San Francisco",
      "url": "https://jobs.ashbyhq.com/perplexity/7e4a95c3-6322-4300-9455-96c511ab2621",
      "published": "2026-10-24"
-    },
-    {
-     "title": "Senior Commercial Counsel, Enterprise",
-     "team": "Legal",
-     "location": "San Francisco",
-     "url": "https://jobs.ashbyhq.com/perplexity/bf978d98-404d-48a5-bcf2-a1f70f195c2b",
-     "published": "2026-10-23"
-    },
-    {
-     "title": "Member of Technical Staff (Software Engineer, Fraud Prevention)",
-     "team": "Search",
-     "location": "London",
-     "url": "https://jobs.ashbyhq.com/perplexity/3938a587-e8ba-4cdf-a811-1f58072b51e3",
-     "published": "2026-10-23"
     }
    ],
    "rolesUrl": "/ai/360/jobs/perplexity.json",
@@ -21926,7 +21932,7 @@ export const AI_360: Record<string, Entity360> = {
   "attention": {
    "source": "Hacker News",
    "query": "Perplexity",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "months": [
     [
      "2022-12",
@@ -22114,10 +22120,10 @@ export const AI_360: Record<string, Entity360> = {
     ],
     [
      "2026-10",
-     12
+     13
     ]
    ],
-   "total": 682,
+   "total": 683,
    "top": [
     {
      "title": "Amazon vs. Perplexity – U.S. Court of Appeals for the Ninth Circuit",
@@ -22235,11 +22241,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6770.TW",
-   "day": "2026-10-29",
-   "price": 69.3,
+   "day": "2026-10-30",
+   "price": 66.6,
    "currency": "TWD",
-   "marketCap": 329870588397.7805,
-   "change1d": -3.212,
+   "marketCap": 317018473590.6,
+   "change1d": -4.173,
    "yearHigh": 94.5,
    "yearLow": 27.899999618530273,
    "source": "yahoo"
@@ -22264,11 +22270,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6239.TW",
-   "day": "2026-10-29",
-   "price": 272.0,
+   "day": "2026-10-30",
+   "price": 256.0,
    "currency": "TWD",
-   "marketCap": 198232784000.0,
-   "change1d": -0.548,
+   "marketCap": 186572032000.0,
+   "change1d": -5.36,
    "yearHigh": 387.0,
    "yearLow": 148.0,
    "source": "yahoo"
@@ -22293,11 +22299,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "QCOM",
-   "day": "2026-10-29",
-   "price": 182.97,
+   "day": "2026-10-30",
+   "price": 165.1,
    "currency": "USD",
-   "marketCap": 195382595899.30502,
-   "change1d": -1.044,
+   "marketCap": 176300309123.27512,
+   "change1d": -8.537,
    "yearHigh": 259.9200134277344,
    "yearLow": 121.98999786376953,
    "source": "yahoo"
@@ -22322,11 +22328,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "2382.TW",
-   "day": "2026-10-29",
-   "price": 320.0,
+   "day": "2026-10-30",
+   "price": 318.0,
    "currency": "TWD",
-   "marketCap": 1311845888000.0,
-   "change1d": -2.736,
+   "marketCap": 1303646851200.0,
+   "change1d": -0.469,
    "yearHigh": 438.0,
    "yearLow": 260.0,
    "source": "yahoo"
@@ -22351,11 +22357,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "RDDT",
-   "day": "2026-10-29",
-   "price": 134.7,
+   "day": "2026-10-30",
+   "price": 91.8,
    "currency": "USD",
-   "marketCap": 25915809309.852448,
-   "change1d": -1.965,
+   "marketCap": 17662000205.147552,
+   "change1d": -13.396,
    "yearHigh": 263.5,
    "yearLow": 119.2699966430664,
    "source": "yahoo"
@@ -22380,13 +22386,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6723.T",
-   "day": "2026-10-29",
-   "price": 2891.5,
+   "day": "2026-10-30",
+   "price": 2865.0,
    "currency": "JPY",
-   "marketCap": 5284185134568.5,
-   "change1d": -6.996,
+   "marketCap": 5235756669735.0,
+   "change1d": -1.749,
    "yearHigh": 5284.0,
-   "yearLow": 1753.0,
+   "yearLow": 1761.5,
    "source": "yahoo"
   },
   "talent": null,
@@ -22409,11 +22415,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4004.T",
-   "day": "2026-10-29",
-   "price": 13945.0,
+   "day": "2026-10-30",
+   "price": 13050.0,
    "currency": "JPY",
-   "marketCap": 2645463975550.0,
-   "change1d": 2.915,
+   "marketCap": 2475676219500.0,
+   "change1d": -6.216,
    "yearHigh": 20495.0,
    "yearLow": 5413.0,
    "source": "yahoo"
@@ -22438,11 +22444,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "CRM",
-   "day": "2026-10-29",
-   "price": 242.11,
+   "day": "2026-10-30",
+   "price": 230.685,
    "currency": "USD",
-   "marketCap": 199256530502.31934,
-   "change1d": 1.09,
+   "marketCap": 189853752990.72266,
+   "change1d": 1.089,
    "yearHigh": 269.1099853515625,
    "yearLow": 146.32000732421875,
    "source": "yahoo"
@@ -22462,23 +22468,23 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:sambanovasystems",
    "careersUrl": "https://sambanova.ai/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 71,
-   "new30": 15,
+   "open": 72,
+   "new30": 16,
    "closed30": null,
    "workplace": {
-    "Not stated": 66,
+    "Not stated": 67,
     "Remote": 5
    },
    "teams": [
     {
      "name": "Software",
-     "count": 24
+     "count": 26
     },
     {
      "name": "Hardware",
-     "count": 17
+     "count": 16
     },
     {
      "name": "Marketing",
@@ -22509,11 +22515,11 @@ export const AI_360: Record<string, Entity360> = {
    "cities": [
     {
      "name": "San Jose",
-     "count": 51
+     "count": 52
     },
     {
      "name": "Austin",
-     "count": 14
+     "count": 16
     },
     {
      "name": "Bengaluru",
@@ -22544,7 +22550,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 31,
+     "count": 33,
      "examples": [
       "Software Architect",
       "Principal DFT Engineer",
@@ -22564,7 +22570,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "chips",
      "label": "Chips and hardware",
-     "count": 10,
+     "count": 9,
      "examples": [
       "ASIC Network Architect",
       "Senior RTL Design Engineer",
@@ -22613,6 +22619,20 @@ export const AI_360: Record<string, Entity360> = {
    ],
    "latest": [
     {
+     "title": "Senior Principal Model Bring-up Engineer",
+     "team": "Software",
+     "location": "Austin, Texas, United States; San Jose, California, United States",
+     "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6232108004",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Principal Place and Route (PnR) Engineer",
+     "team": "Software",
+     "location": "Austin, Texas, United States; San Jose, California, United States",
+     "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6236715004",
+     "published": "2026-10-29"
+    },
+    {
      "title": "Technical Project Manager / Engineering Lead – AI/ML Infrastructure",
      "team": "Sales",
      "location": "Tokyo Prefecture, Japan",
@@ -22653,20 +22673,6 @@ export const AI_360: Record<string, Entity360> = {
      "location": "Austin, Texas, United States; San Jose, California, United States",
      "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6224938004",
      "published": "2026-10-27"
-    },
-    {
-     "title": "Design Verification Engineer, New Grad",
-     "team": "Hardware",
-     "location": "San Jose, California, United States",
-     "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6236595004",
-     "published": "2026-10-27"
-    },
-    {
-     "title": "Compiler Engineer - New Grad",
-     "team": "Software",
-     "location": "Austin, Texas, United States; San Jose, California, United States",
-     "url": "https://sambanova.ai/sambanova-available-positions/?gh_jid=6224835004",
-     "published": "2026-10-27"
     }
    ],
    "rolesUrl": "/ai/360/jobs/sambanova.json",
@@ -22698,11 +22704,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "005930.KS",
-   "day": "2026-10-29",
-   "price": 230500.0,
+   "day": "2026-10-30",
+   "price": 225000.0,
    "currency": "KRW",
-   "marketCap": 1500998185116000.0,
-   "change1d": -4.158,
+   "marketCap": 1465182610200000.0,
+   "change1d": -3.017,
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
@@ -22727,11 +22733,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "005930.KS",
-   "day": "2026-10-29",
-   "price": 230500.0,
+   "day": "2026-10-30",
+   "price": 225000.0,
    "currency": "KRW",
-   "marketCap": 1500998185116000.0,
-   "change1d": -4.158,
+   "marketCap": 1465182610200000.0,
+   "change1d": -3.017,
    "yearHigh": 374500.0,
    "yearLow": 94500.0,
    "source": "yahoo"
@@ -22756,11 +22762,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SAP",
-   "day": "2026-10-29",
-   "price": 236.93,
+   "day": "2026-10-30",
+   "price": 235.81,
    "currency": "USD",
-   "marketCap": 273465600234.11572,
-   "change1d": -6.134,
+   "marketCap": 272172897130.03857,
+   "change1d": 1.206,
    "yearHigh": 265.8800048828125,
    "yearLow": 144.97000122070312,
    "source": "yahoo"
@@ -22780,22 +22786,22 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:scaleai",
    "careersUrl": "https://scale.com/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 171,
-   "new30": 24,
+   "open": 169,
+   "new30": 25,
    "closed30": null,
    "workplace": {
-    "Not stated": 171
+    "Not stated": 169
    },
    "teams": [
     {
      "name": "Human Frontier Collective",
-     "count": 16
+     "count": 17
     },
     {
      "name": "Public Sector Engineering",
-     "count": 16
+     "count": 15
     },
     {
      "name": "Public Sector",
@@ -22810,19 +22816,19 @@ export const AI_360: Record<string, Entity360> = {
      "count": 12
     },
     {
-     "name": "Gen AI Operations",
-     "count": 11
-    },
-    {
      "name": "Research",
      "count": 11
     },
     {
      "name": "GPS Engineering",
      "count": 9
+    },
+    {
+     "name": "Gen AI Operations",
+     "count": 9
     }
    ],
-   "teamCount": 30,
+   "teamCount": 29,
    "cities": [
     {
      "name": "San Francisco",
@@ -22830,30 +22836,30 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "New York City",
-     "count": 62
+     "count": 63
     },
     {
      "name": "Washington",
-     "count": 35
+     "count": 34
     },
     {
      "name": "London",
      "count": 21
     },
     {
+     "name": "United States",
+     "count": 9
+    },
+    {
      "name": "Doha",
      "count": 9
     },
     {
-     "name": "United States",
+     "name": "United Kingdom",
      "count": 8
     },
     {
      "name": "Seattle",
-     "count": 7
-    },
-    {
-     "name": "St. Louis",
      "count": 7
     }
    ],
@@ -22861,17 +22867,17 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "gtm",
      "label": "Sales and customers",
-     "count": 89,
+     "count": 86,
      "examples": [
       "Strategist, Qatar",
-      "Support Team Lead",
-      "Support Specialist"
+      "Frontier Data Strategist",
+      "Staff Applied AI Engineer"
      ]
     },
     {
      "key": "research",
      "label": "Research",
-     "count": 28,
+     "count": 29,
      "examples": [
       "VP, Research",
       "ML Research Engineer, ML Systems",
@@ -22881,7 +22887,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 27,
+     "count": 28,
      "examples": [
       "Staff Product Designer",
       "Senior AI Product Manager",
@@ -22911,11 +22917,11 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "safety",
      "label": "Safety, security, policy",
-     "count": 6,
+     "count": 5,
      "examples": [
       "Security Engineer, Infrastructure",
       "Security Engineer, Product Security",
-      "Technical Program Manager, Red Team"
+      "Public Sector Lead, Defence & Security"
      ]
     }
    ],
@@ -23006,11 +23012,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SU",
-   "day": "2026-10-29",
-   "price": 77.54,
+   "day": "2026-10-30",
+   "price": 78.965,
    "currency": "USD",
-   "marketCap": 91554983036.06451,
-   "change1d": 1.775,
+   "marketCap": 93237539525.36697,
+   "change1d": 1.72,
    "yearHigh": 80.25,
    "yearLow": 38.720001220703125,
    "source": "yahoo"
@@ -23035,11 +23041,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7735.T",
-   "day": "2026-10-29",
-   "price": 11990.0,
+   "day": "2026-10-30",
+   "price": 11375.0,
    "currency": "JPY",
-   "marketCap": 2267163081700.0,
-   "change1d": -0.786,
+   "marketCap": 2150874066250.0,
+   "change1d": -6.069,
    "yearHigh": 19770.0,
    "yearLow": 5825.0,
    "source": "yahoo"
@@ -23064,12 +23070,12 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "NOW",
-   "day": "2026-10-29",
-   "price": 150.13,
+   "day": "2026-10-30",
+   "price": 104.96,
    "currency": "USD",
-   "marketCap": 155213707108.1543,
-   "change1d": -2.791,
-   "yearHigh": 192.96600341796875,
+   "marketCap": 108939767369.7586,
+   "change1d": -2.761,
+   "yearHigh": 189.52999877929688,
    "yearLow": 81.23999786376953,
    "source": "yahoo"
   },
@@ -23093,11 +23099,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4063.T",
-   "day": "2026-10-29",
-   "price": 5989.0,
+   "day": "2026-10-30",
+   "price": 5966.0,
    "currency": "JPY",
-   "marketCap": 10874423248102.0,
-   "change1d": -0.183,
+   "marketCap": 10832661395588.0,
+   "change1d": -0.267,
    "yearHigh": 7930.0,
    "yearLow": 4366.0,
    "source": "yahoo"
@@ -23122,11 +23128,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SIE.DE",
-   "day": "2026-10-29",
-   "price": 270.05,
+   "day": "2026-10-30",
+   "price": 265.1,
    "currency": "EUR",
-   "marketCap": 206376209170.45,
-   "change1d": 1.237,
+   "marketCap": 202593350530.29703,
+   "change1d": -3.018,
    "yearHigh": 291.70001220703125,
    "yearLow": 198.0,
    "source": "yahoo"
@@ -23151,11 +23157,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "WAF.DE",
-   "day": "2026-10-29",
-   "price": 60.65,
+   "day": "2026-10-30",
+   "price": 57.65,
    "currency": "EUR",
-   "marketCap": 2001450000.0,
-   "change1d": 0.915,
+   "marketCap": 1902450050.354004,
+   "change1d": -8.637,
    "yearHigh": 108.80000305175781,
    "yearLow": 41.720001220703125,
    "source": "yahoo"
@@ -23180,11 +23186,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "000660.KS",
-   "day": "2026-10-29",
-   "price": 1527000.0,
+   "day": "2026-10-30",
+   "price": 1418000.0,
    "currency": "KRW",
-   "marketCap": 1076799665748000.0,
-   "change1d": 3.106,
+   "marketCap": 999935773432000.0,
+   "change1d": -7.742,
    "yearHigh": 2987000.0,
    "yearLow": 501000.0,
    "source": "yahoo"
@@ -23209,13 +23215,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "0981.HK",
-   "day": "2026-10-29",
-   "price": 44.7,
+   "day": "2026-10-30",
+   "price": 42.98,
    "currency": "HKD",
-   "marketCap": 382738477864.87897,
-   "change1d": -6.485,
+   "marketCap": 368011174448.81995,
+   "change1d": -4.404,
    "yearHigh": 93.0,
-   "yearLow": 44.099998474121094,
+   "yearLow": 42.2599983215332,
    "source": "yahoo"
   },
   "talent": null,
@@ -23238,11 +23244,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SNOW",
-   "day": "2026-10-29",
-   "price": 339.91,
+   "day": "2026-10-30",
+   "price": 296.86,
    "currency": "USD",
-   "marketCap": 119920249291.99219,
-   "change1d": 1.164,
+   "marketCap": 104732202832.03125,
+   "change1d": -6.686,
    "yearHigh": 384.55999755859375,
    "yearLow": 118.30000305175781,
    "source": "yahoo"
@@ -23267,11 +23273,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SFTBY",
-   "day": "2026-10-29",
-   "price": 15.25,
+   "day": "2026-10-30",
+   "price": 13.66,
    "currency": "USD",
-   "marketCap": 173821006364.5,
-   "change1d": 5.172,
+   "marketCap": 155698027568.26816,
+   "change1d": -8.812,
    "yearHigh": 28.969999313354492,
    "yearLow": 10.550000190734863,
    "source": "yahoo"
@@ -23296,11 +23302,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "9984.T",
-   "day": "2026-10-29",
-   "price": 4712.0,
+   "day": "2026-10-30",
+   "price": 4481.0,
    "currency": "JPY",
-   "marketCap": 26853920720968.0,
-   "change1d": 0.106,
+   "marketCap": 25537440312109.0,
+   "change1d": -5.683,
    "yearHigh": 9074.0,
    "yearLow": 3365.0,
    "source": "yahoo"
@@ -23325,11 +23331,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6758.T",
-   "day": "2026-10-29",
-   "price": 3891.0,
+   "day": "2026-10-30",
+   "price": 3958.0,
    "currency": "JPY",
-   "marketCap": 22722840677052.0,
-   "change1d": -2.187,
+   "marketCap": 23114110357176.0,
+   "change1d": 0.944,
    "yearHigh": 4776.0,
    "yearLow": 3043.0,
    "source": "yahoo"
@@ -23354,11 +23360,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "STM",
-   "day": "2026-10-29",
-   "price": 48.52,
+   "day": "2026-10-30",
+   "price": 46.645,
    "currency": "USD",
-   "marketCap": 43397010047.39064,
-   "change1d": 0.455,
+   "marketCap": 41719982160.51564,
+   "change1d": -3.864,
    "yearHigh": 81.41999816894531,
    "yearLow": 21.110000610351562,
    "source": "yahoo"
@@ -23383,11 +23389,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3436.T",
-   "day": "2026-10-29",
-   "price": 2522.5,
+   "day": "2026-10-30",
+   "price": 2321.5,
    "currency": "JPY",
-   "marketCap": 882199762065.0,
-   "change1d": -1.059,
+   "marketCap": 811903566951.0,
+   "change1d": -7.932,
    "yearHigh": 5939.0,
    "yearLow": 1131.0,
    "source": "yahoo"
@@ -23412,11 +23418,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "SNPS",
-   "day": "2026-10-29",
-   "price": 481.89,
+   "day": "2026-10-30",
+   "price": 469.06,
    "currency": "USD",
-   "marketCap": 92347786148.11743,
-   "change1d": 1.121,
+   "marketCap": 89889084704.8971,
+   "change1d": -2.874,
    "yearHigh": 539.47998046875,
    "yearLow": 362.54998779296875,
    "source": "yahoo"
@@ -23441,11 +23447,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "TER",
-   "day": "2026-10-29",
-   "price": 313.24,
+   "day": "2026-10-30",
+   "price": 269.8701,
    "currency": "USD",
-   "marketCap": 48972175003.23486,
-   "change1d": 2.016,
+   "marketCap": 42191691752.54059,
+   "change1d": -4.975,
    "yearHigh": 487.9100036621094,
    "yearLow": 151.52000427246094,
    "source": "yahoo"
@@ -23465,10 +23471,10 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "ashby:thinkingmachines",
    "careersUrl": "https://thinkingmachines.ai",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
    "open": 53,
-   "new30": 15,
+   "new30": 14,
    "closed30": null,
    "workplace": {
     "OnSite": 53
@@ -23522,7 +23528,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "research",
      "label": "Research",
-     "count": 18,
+     "count": 19,
      "examples": [
       "Research, Safety",
       "Research, RL Scaling",
@@ -23532,7 +23538,7 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 14,
+     "count": 13,
      "examples": [
       "Model Designer",
       "Engineering Manager",
@@ -23690,11 +23696,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "8035.T",
-   "day": "2026-10-29",
-   "price": 9850.0,
+   "day": "2026-10-30",
+   "price": 9514.0,
    "currency": "JPY",
-   "marketCap": 22374120158000.0,
-   "change1d": 0.377,
+   "marketCap": 21610901439920.0,
+   "change1d": -4.765,
    "yearHigh": 16252.0,
    "yearLow": 6012.0,
    "source": "yahoo"
@@ -23719,13 +23725,13 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "4186.T",
-   "day": "2026-10-29",
-   "price": 8395.0,
+   "day": "2026-10-30",
+   "price": 7959.0,
    "currency": "JPY",
-   "marketCap": 1007197756055.0,
-   "change1d": 0.155,
+   "marketCap": 954888259731.0,
+   "change1d": -6.1,
    "yearHigh": 12925.0,
-   "yearLow": 5343.0,
+   "yearLow": 5480.0,
    "source": "yahoo"
   },
   "talent": null,
@@ -23748,11 +23754,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "002156.SZ",
-   "day": "2026-10-29",
-   "price": 43.16,
+   "day": "2026-10-30",
+   "price": 40.72,
    "currency": "CNY",
-   "marketCap": 68788308747.76578,
-   "change1d": -4.556,
+   "marketCap": 64899442588.32,
+   "change1d": -3.667,
    "yearHigh": 84.69999694824219,
    "yearLow": 34.650001525878906,
    "source": "yahoo"
@@ -23777,11 +23783,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "7911.T",
-   "day": "2026-10-29",
-   "price": 2220.5,
+   "day": "2026-10-30",
+   "price": 2127.5,
    "currency": "JPY",
-   "marketCap": 622970168102.5,
-   "change1d": 0.362,
+   "marketCap": 1193757291275.0,
+   "change1d": -4.21,
    "yearHigh": 2964.0,
    "yearLow": 1833.0,
    "source": "yahoo"
@@ -23806,11 +23812,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "TSM",
-   "day": "2026-10-29",
-   "price": 439.51,
+   "day": "2026-10-30",
+   "price": 407.2705,
    "currency": "USD",
-   "marketCap": 2279507244102.79,
-   "change1d": 0.382,
+   "marketCap": 2112297905030.8447,
+   "change1d": -2.915,
    "yearHigh": 487.4700012207031,
    "yearLow": 266.82000732421875,
    "source": "yahoo"
@@ -23835,11 +23841,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "UMC",
-   "day": "2026-10-29",
-   "price": 18.82,
+   "day": "2026-10-30",
+   "price": 16.525,
    "currency": "USD",
-   "marketCap": 47198838710.24704,
-   "change1d": -3.98,
+   "marketCap": 41441293174.75255,
+   "change1d": -5.463,
    "yearHigh": 28.959999084472656,
    "yearLow": 6.96999979019165,
    "source": "yahoo"
@@ -23864,11 +23870,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "VRT",
-   "day": "2026-10-29",
-   "price": 242.94,
+   "day": "2026-10-30",
+   "price": 233.28,
    "currency": "USD",
-   "marketCap": 93529027688.53253,
-   "change1d": 15.106,
+   "marketCap": 89826894540.83554,
+   "change1d": -0.66,
    "yearHigh": 379.93499755859375,
    "yearLow": 147.82000732421875,
    "source": "yahoo"
@@ -23893,12 +23899,12 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "VST",
-   "day": "2026-10-29",
-   "price": 142.72,
+   "day": "2026-10-30",
+   "price": 137.4201,
    "currency": "USD",
-   "marketCap": 47901855440.11093,
-   "change1d": -2.62,
-   "yearHigh": 198.82000732421875,
+   "marketCap": 46123023732.0401,
+   "change1d": -0.42,
+   "yearHigh": 196.8000030517578,
    "yearLow": 132.66000366210938,
    "source": "yahoo"
   },
@@ -23922,11 +23928,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "GOOGL",
-   "day": "2026-10-29",
-   "price": 324.89,
+   "day": "2026-10-30",
+   "price": 280.505,
    "currency": "USD",
-   "marketCap": 3973383706393.026,
-   "change1d": 0.408,
+   "marketCap": 3448528530029.297,
+   "change1d": -0.055,
    "yearHigh": 408.6099853515625,
    "yearLow": 270.70001220703125,
    "source": "yahoo"
@@ -23951,11 +23957,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "3231.TW",
-   "day": "2026-10-29",
-   "price": 189.5,
+   "day": "2026-10-30",
+   "price": 183.5,
    "currency": "TWD",
-   "marketCap": 649955106375.0,
-   "change1d": -2.067,
+   "marketCap": 629376052875.0,
+   "change1d": -2.653,
    "yearHigh": 206.0,
    "yearLow": 122.5,
    "source": "yahoo"
@@ -23980,11 +23986,11 @@ export const AI_360: Record<string, Entity360> = {
   "agreements": [],
   "market": {
    "symbol": "6669.TW",
-   "day": "2026-10-29",
-   "price": 1885.0,
+   "day": "2026-10-30",
+   "price": 1810.0,
    "currency": "TWD",
-   "marketCap": 1047687348695.0,
-   "change1d": -3.333,
+   "marketCap": 1006002175670.0,
+   "change1d": -4.233,
    "yearHigh": 2875.0,
    "yearLow": 1102.992431640625,
    "source": "yahoo"
@@ -24004,23 +24010,23 @@ export const AI_360: Record<string, Entity360> = {
   "hiring": {
    "board": "greenhouse:xai",
    "careersUrl": "https://x.ai/careers",
-   "asOf": "2026-10-29",
+   "asOf": "2026-10-30",
    "trackedSince": "2026-10-28",
-   "open": 304,
-   "new30": 70,
+   "open": 305,
+   "new30": 69,
    "closed30": null,
    "workplace": {
-    "Not stated": 282,
+    "Not stated": 283,
     "Remote": 22
    },
    "teams": [
     {
      "name": "Data Center",
-     "count": 162
+     "count": 164
     },
     {
      "name": "Engineering",
-     "count": 27
+     "count": 26
     },
     {
      "name": "Human Data",
@@ -24035,12 +24041,12 @@ export const AI_360: Record<string, Entity360> = {
      "count": 13
     },
     {
-     "name": "Sales",
-     "count": 11
+     "name": "Safety",
+     "count": 12
     },
     {
-     "name": "Safety",
-     "count": 10
+     "name": "Sales",
+     "count": 11
     },
     {
      "name": "Operations",
@@ -24055,7 +24061,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Southaven",
-     "count": 131
+     "count": 133
     },
     {
      "name": "Palo Alto",
@@ -24071,7 +24077,7 @@ export const AI_360: Record<string, Entity360> = {
     },
     {
      "name": "Austin",
-     "count": 19
+     "count": 20
     },
     {
      "name": "Washington",
@@ -24089,28 +24095,28 @@ export const AI_360: Record<string, Entity360> = {
      "count": 125,
      "examples": [
       "Network Engineer",
-      "Data Center Manager",
-      "IT Services Technician"
+      "IT Services Technician",
+      "HVAC Technician - Memphis"
      ]
     },
     {
      "key": "product",
      "label": "Product and engineering",
-     "count": 54,
+     "count": 55,
      "examples": [
-      "IAM Engineer",
-      "OSP Engineer",
-      "Web Engineer (X)"
+      "Sr. IAM Engineer",
+      "Web Engineer (X)",
+      "Mobile iOS Engineer"
      ]
     },
     {
      "key": "other",
      "label": "Other",
-     "count": 46,
+     "count": 48,
      "examples": [
       "Barista",
       "Cook, Sushi",
-      "Cook - Memphis"
+      "KYC Analyst"
      ]
     },
     {
@@ -24118,9 +24124,9 @@ export const AI_360: Record<string, Entity360> = {
      "label": "Training data and tutors",
      "count": 23,
      "examples": [
-      "AI Tutor - Oromo",
-      "AI Tutor - Uzbek",
-      "AI Tutor - Design"
+      "Human Data Manager",
+      "Human Data - Engineer",
+      "AI Tutor, Math - Temporary"
      ]
     },
     {
@@ -24146,21 +24152,11 @@ export const AI_360: Record<string, Entity360> = {
     {
      "key": "corporate",
      "label": "Finance, legal, people, ops",
-     "count": 15,
+     "count": 14,
      "examples": [
       "Product Counsel",
       "Corporate Counsel",
       "Corporate Paralegal"
-     ]
-    },
-    {
-     "key": "research",
-     "label": "Research",
-     "count": 3,
-     "examples": [
-      "Research Analyst",
-      "Software Engineer - Evals",
-      "Software Engineer, Post-Training & RL"
      ]
     },
     {
@@ -24180,9 +24176,46 @@ export const AI_360: Record<string, Entity360> = {
       "Software Engineer, RL Inference",
       "Software Engineer, Training/Inference (C++)"
      ]
+    },
+    {
+     "key": "research",
+     "label": "Research",
+     "count": 2,
+     "examples": [
+      "Software Engineer - Evals",
+      "Software Engineer, Post-Training & RL"
+     ]
     }
    ],
    "latest": [
+    {
+     "title": "Operation & Maintenance Engineer (Power Plant) - Memphis",
+     "team": "Data Center",
+     "location": " Southaven, MS; Memphis, TN",
+     "url": "https://job-boards.greenhouse.io/xai/jobs/5279894007",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "KYC Analyst",
+     "team": "Safety",
+     "location": "New York, NY",
+     "url": "https://job-boards.greenhouse.io/xai/jobs/5279620007",
+     "published": "2026-10-30"
+    },
+    {
+     "title": "Sr. Mechanical Engineer - Memphis",
+     "team": "Data Center",
+     "location": " Southaven, MS; Memphis, TN",
+     "url": "https://job-boards.greenhouse.io/xai/jobs/5278993007",
+     "published": "2026-10-29"
+    },
+    {
+     "title": "Sr. Analyst, Monetization Operations",
+     "team": "Safety",
+     "location": "Austin, TX",
+     "url": "https://job-boards.greenhouse.io/xai/jobs/5278701007",
+     "published": "2026-10-29"
+    },
     {
      "title": "Sr. Manager, Materials Management - Memphis",
      "team": "Data Center",
@@ -24209,34 +24242,6 @@ export const AI_360: Record<string, Entity360> = {
      "team": "Data Center",
      "location": " Southaven, MS; Memphis, TN",
      "url": "https://job-boards.greenhouse.io/xai/jobs/5275197007",
-     "published": "2026-10-26"
-    },
-    {
-     "title": "AI Tutor - Uzbek",
-     "team": "Human Data",
-     "location": "Remote International",
-     "url": "https://job-boards.greenhouse.io/xai/jobs/5270905007",
-     "published": "2026-10-26"
-    },
-    {
-     "title": "AI Tutor - Oromo",
-     "team": "Human Data",
-     "location": "Remote International",
-     "url": "https://job-boards.greenhouse.io/xai/jobs/5270907007",
-     "published": "2026-10-26"
-    },
-    {
-     "title": "AI Tutor - Latvian",
-     "team": "Human Data",
-     "location": "Remote International",
-     "url": "https://job-boards.greenhouse.io/xai/jobs/5270903007",
-     "published": "2026-10-26"
-    },
-    {
-     "title": "AI Tutor - Icelandic",
-     "team": "Human Data",
-     "location": "Remote International",
-     "url": "https://job-boards.greenhouse.io/xai/jobs/5270904007",
      "published": "2026-10-26"
     }
    ],

@@ -2,13 +2,15 @@
 import * as React from "react";
 import { AI_360 } from "@/data/ai360";
 import { getNode } from "@/data/aiOntology";
+import { sectionPath } from "@/lib/graph-urls";
 
 /**
  * Customers a company names itself, one per customer story on its own site, with the product the story is about.
  * Every name links to its story, the primary source; nothing here comes from inference or third-party lists.
  */
-export function CustomersSection({ id }: { id: string }) {
+export function CustomersSection({ id, full = false }: { id: string; full?: boolean }) {
   const c = AI_360[id]?.customers;
+  const [limit, setLimit] = React.useState(36);
   const name = getNode(id)?.name ?? id;
   const [product, setProduct] = React.useState<string | null>(null);
   const [q, setQ] = React.useState("");
@@ -65,7 +67,7 @@ export function CustomersSection({ id }: { id: string }) {
             </span>
           </div>
           <ul className="grid max-h-[28rem] grid-cols-1 gap-px overflow-auto border border-border bg-border sm:grid-cols-2 xl:grid-cols-3">
-            {items.map((x) => (
+            {(full ? items : items.slice(0, limit)).map((x) => (
               <li key={x.url} className="bg-background">
                 <a href={x.url} target="_blank" rel="noopener noreferrer" className="block px-3 py-1.5 hover:bg-foreground/[0.04]">
                   <span className="block truncate font-mono text-[11px] font-bold text-foreground">{x.name} ↗</span>
@@ -74,6 +76,18 @@ export function CustomersSection({ id }: { id: string }) {
               </li>
             ))}
           </ul>
+          {!full && items.length > limit && (
+            <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+              {limit} of {items.length} shown.{" "}
+              <button type="button" onClick={() => setLimit(limit + 36)} className="underline decoration-dotted hover:text-foreground">
+                Show 36 more
+              </button>
+              {" · "}
+              <a href={sectionPath(id, "customers")} className="underline decoration-dotted hover:text-foreground">
+                all {items.length} on the Customers page
+              </a>
+            </p>
+          )}
         </div>
       </div>
       <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">

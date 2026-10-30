@@ -331,7 +331,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "amazon-investor": {
   "deals": [
    {
-    "id": 116,
+    "id": 152,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -369,7 +369,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 119,
+    "id": 155,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -434,7 +434,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "amd": {
   "deals": [
    {
-    "id": 115,
+    "id": 151,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -493,7 +493,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "anthropic": {
   "deals": [
    {
-    "id": 113,
+    "id": 149,
     "counterparty": "broadcom",
     "counterpartyName": "Broadcom",
     "side": "buys",
@@ -531,7 +531,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 108,
+    "id": 144,
     "counterparty": "google-tpu",
     "counterpartyName": "Google TPU",
     "side": "buys",
@@ -569,7 +569,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 110,
+    "id": 146,
     "counterparty": "xai-capital",
     "counterpartyName": "xAI (SpaceXAI)",
     "side": "buys",
@@ -607,7 +607,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 107,
+    "id": 143,
     "counterparty": "google-cloud",
     "counterpartyName": "Google Cloud (GCP)",
     "side": "buys",
@@ -636,7 +636,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 122,
+    "id": 158,
     "counterparty": "aws",
     "counterpartyName": "Amazon Web Services (AWS)",
     "side": "buys",
@@ -665,7 +665,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 109,
+    "id": 145,
     "counterparty": "azure",
     "counterpartyName": "Microsoft Azure",
     "side": "buys",
@@ -694,7 +694,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 111,
+    "id": 147,
     "counterparty": "nscale-sovereign",
     "counterpartyName": "Nscale",
     "side": "buys",
@@ -723,7 +723,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 114,
+    "id": 150,
     "counterparty": "broadcom",
     "counterpartyName": "Broadcom",
     "side": "receives",
@@ -752,7 +752,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 112,
+    "id": 148,
     "counterparty": "lambda",
     "counterpartyName": "Lambda (Lambda Labs)",
     "side": "buys",
@@ -790,7 +790,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 115,
+    "id": 151,
     "counterparty": "amd",
     "counterpartyName": "AMD",
     "side": "buys",
@@ -828,7 +828,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 123,
+    "id": 159,
     "counterparty": "google-investor",
     "counterpartyName": "Alphabet (Google)",
     "side": "receives",
@@ -857,7 +857,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 116,
+    "id": 152,
     "counterparty": "amazon-investor",
     "counterpartyName": "Amazon",
     "side": "receives",
@@ -895,7 +895,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 117,
+    "id": 153,
     "counterparty": "microsoft",
     "counterpartyName": "Microsoft",
     "side": "receives",
@@ -1582,6 +1582,15 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "summary": "r/stocks · 14987 upvotes · 1140 comments"
    },
    {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=DdCEmlAydcw",
+    "title": "Inside Anthropic's molecular biology lab",
+    "author": "Anthropic",
+    "publishedOn": "2026-09-23",
+    "retrieval": "rss",
+    "summary": "Some of the biggest discoveries in biology started with someone noticing something strange in one of the many molecular machines found in nature. We’re introducing a new molecular biology research group and lab at Anthropic to see if Claude"
+   },
+   {
     "platform": "reddit",
     "url": "https://www.reddit.com/r/MurderedByAOC/comments/1wkv0b7/aoc_we_must_make_it_clear_now_that_should_the_ai/",
     "title": "AOC: \"We must make it clear now that should the AI bubble pop, Congress should not bail out Big Tech...Silicon Valley billionaires want us to believe that AI robots will destroy humanity. But the bigg",
@@ -1600,22 +1609,13 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     "summary": "r/technology · 15235 upvotes · 1455 comments"
    },
    {
-    "platform": "reddit",
-    "url": "https://www.reddit.com/r/technology/comments/1w1xxoy/sony_warner_sue_anthropic_alleging_blatant_theft/",
-    "title": "Sony, Warner sue Anthropic, alleging \"blatant theft\" of intellectual property",
-    "author": null,
-    "publishedOn": "2026-08-29",
-    "retrieval": "brightdata-scraper",
-    "summary": "r/technology · 12556 upvotes · 311 comments"
-   },
-   {
-    "platform": "reddit",
-    "url": "https://www.reddit.com/r/technology/comments/1vq3dh3/anthropic_ceo_dario_amodei_says_the_way_for_ai_to/",
-    "title": "Anthropic CEO Dario Amodei says the way for AI to win over the public is to 'actually' cure cancer",
-    "author": null,
-    "publishedOn": "2026-08-16",
-    "retrieval": "brightdata-scraper",
-    "summary": "r/technology · 12477 upvotes · 2332 comments"
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=ROF2Nv_KjOM",
+    "title": "Introducing Claude Fable 5.1",
+    "author": "Anthropic",
+    "publishedOn": "2026-09-01",
+    "retrieval": "rss",
+    "summary": "Claude Fable 5.1 is the latest upgrade to our most capable class of models. It excels at complex, long-running tasks, and its research capabilities offer an early glimpse of how AI will contribute to scientific progress. It excels at comple"
    }
   ],
   "sources": [
@@ -1639,7 +1639,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "aws": {
   "deals": [
    {
-    "id": 122,
+    "id": 158,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1711,7 +1711,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "azure": {
   "deals": [
    {
-    "id": 109,
+    "id": 145,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1805,7 +1805,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "broadcom": {
   "deals": [
    {
-    "id": 113,
+    "id": 149,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -1843,7 +1843,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 114,
+    "id": 150,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -2053,7 +2053,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-cloud": {
   "deals": [
    {
-    "id": 107,
+    "id": 143,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2167,7 +2167,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-investor": {
   "deals": [
    {
-    "id": 123,
+    "id": 159,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -2217,7 +2217,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "google-tpu": {
   "deals": [
    {
-    "id": 108,
+    "id": 144,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2276,7 +2276,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "lambda": {
   "deals": [
    {
-    "id": 112,
+    "id": 148,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2370,7 +2370,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "microsoft": {
   "deals": [
    {
-    "id": 117,
+    "id": 153,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "provides",
@@ -2549,7 +2549,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "nscale-sovereign": {
   "deals": [
    {
-    "id": 111,
+    "id": 147,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
@@ -2599,7 +2599,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "nvidia": {
   "deals": [
    {
-    "id": 121,
+    "id": 157,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -2637,7 +2637,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 120,
+    "id": 156,
     "counterparty": "openai",
     "counterpartyName": "OpenAI",
     "side": "provides",
@@ -2970,7 +2970,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "openai": {
   "deals": [
    {
-    "id": 121,
+    "id": 157,
     "counterparty": "nvidia",
     "counterpartyName": "Nvidia",
     "side": "receives",
@@ -3008,7 +3008,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 119,
+    "id": 155,
     "counterparty": "amazon-investor",
     "counterpartyName": "Amazon",
     "side": "receives",
@@ -3037,7 +3037,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
     ]
    },
    {
-    "id": 120,
+    "id": 156,
     "counterparty": "nvidia",
     "counterpartyName": "Nvidia",
     "side": "receives",
@@ -3768,7 +3768,7 @@ export const AI_INTEL: Record<string, EntityIntel> = {
  "xai-capital": {
   "deals": [
    {
-    "id": 110,
+    "id": 146,
     "counterparty": "anthropic",
     "counterpartyName": "Anthropic",
     "side": "sells",
