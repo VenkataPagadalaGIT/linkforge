@@ -4,9 +4,7 @@ import { EventFile } from "@/components/events/EventFile";
 export default function EventFileView({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <EventFile slug={slug} />
-      </div>
+      <EventFile slug={slug} />
     </div>
   );
 }

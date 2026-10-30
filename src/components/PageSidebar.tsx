@@ -8,6 +8,8 @@ export interface TocItem {
 }
 
 interface PageSidebarProps {
+  /** Absolute canonical URL, so links rendered on the server are complete before hydration. */
+  canonicalUrl?: string;
   sections: TocItem[];
   shareTitle?: string;
   shareDescription?: string;
@@ -17,10 +19,12 @@ interface PageSidebarProps {
   children?: React.ReactNode;
 }
 
-const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, children }: PageSidebarProps) => {
+const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, children, canonicalUrl }: PageSidebarProps) => {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const [copied, setCopied] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState("");
+  // Start from the canonical URL so the share and Ask AI links in the server HTML (what crawlers and agents read)
+  // already carry the page's address; the browser's own URL replaces it after load.
+  const [currentUrl, setCurrentUrl] = useState(canonicalUrl ?? "");
 
   useEffect(() => {
     setCurrentUrl(window.location.href);

@@ -12,7 +12,7 @@ events.document (everything read about it).
 Public posts are shown as text with a link; their authors are never named.
 Run: python3 gen_events_ts.py [--check]
 """
-import collections, datetime as dt, json, os, re, subprocess, sys
+import collections, csv, datetime as dt, hashlib, html, io, json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from db import CONTAINER, DB, USER
 
@@ -64,7 +64,7 @@ def meta(d):
     return " · ".join(parts) or None
 
 
-NEGATION = r"\bno evidence\b|\bnot\b|n't\b|\bdeni(ed|es)\b|\bdeny\b|\bfalse\b|\bdebunk|\bfake\b|\brumou?r"
+NEGATION = r"\bno evidence\b|\bnot\b|n't\b|\bdeni(ed|es)\b|\bdeny\b|\bfalse\b|\bdebunk|\bfake\b|\brumou?r|\bno (one|binance|customer|user)s?\b|\bnobody\b|\bnever\b"
 
 
 def snippet(text, rx):
@@ -73,6 +73,99 @@ def snippet(text, rx):
             s = s.strip()
             return s if len(s) <= 220 else s[:217].rsplit(" ", 1)[0] + "..."
     return None
+
+
+
+GROUPS = [("official", "From Binance"), ("investigators", "Investigators and agencies"), ("news", "News"), ("youtube", "YouTube"), ("tiktok", "TikTok"),
+          ("instagram", "Instagram"), ("x", "On X"), ("reddit", "Reddit"), ("hackernews", "Hacker News")]
+
+
+def group_of(d):
+    if d["voice"] == "official":
+        return "official"
+    if d["voice"] in ("investigator", "government"):
+        return "investigators"
+    return d["platform"] if d["platform"] in ("youtube", "tiktok", "instagram", "x", "reddit", "hackernews") else "news"
+
+
+def embed_of(d):
+    u = d["url"]
+    for typ, rx in (("youtube", r"[?&]v=([\w-]{11})"), ("tiktok", r"tiktok\.com/@[^/]+/video/(\d+)"), ("x", r"(?:x|twitter)\.com/[^/]+/status/(\d+)")):
+        m = re.search(rx, u)
+        if m and d["platform"] in (typ, "x" if typ == "x" else typ):
+            return {"type": typ, "id": m.group(1)}
+    m = re.search(r"instagram\.com/(p|reel|tv)/([\w-]+)", u)
+    if m:
+        return {"type": "instagram", "id": f"{m.group(1)}/{m.group(2)}"}
+    m = re.search(r"reddit\.com(/r/[^/]+/comments/[^?#]+)", u)
+    if m and d["kind"] == "thread":
+        return {"type": "reddit", "id": m.group(1).rstrip("/")}
+    return None
+
+
+def norm_title(t):
+    return re.sub(r"[^a-z0-9]+", " ", (t or "").lower()).strip()[:90]
+
+
+def host_of(u):
+    return re.sub(r"^www\.", "", (re.match(r"https?://([^/]+)", u or "") or [None, ""])[1].lower())
+
+
+ABOUT = re.compile(r"binance|\bhack|exploit|heist|stolen|TraderTraitor|North Korea|\bCZ\b", re.I)
+RELEVANT = re.compile(r"hack|exploit|security|incident|withdraw|deposit|SAFU|stolen|theft|breach|attack|freez|frozen|reserve|funds|laptop|TraderTraitor|North Korea|DPRK|recover", re.I)
+CFG_X_NAMES = {}
+for _f in os.listdir(os.path.join(HERE, "events")):
+    if _f.endswith(".json") and not _f.endswith((".seed.json", ".media.json")):
+        _c = json.load(open(os.path.join(HERE, "events", _f)))
+        CFG_X_NAMES[_c["slug"]] = _c.get("x_names") or {}
+
+
+def build_sources(slug, docs, claim_hits):
+    media = {}
+    mp = os.path.join(HERE, "events", slug + ".media.json")
+    if os.path.exists(mp):
+        media = json.load(open(mp))
+    thumbs, logos = media.get("thumbs", {}), media.get("logos", {})
+    out, seen = [], {}
+    items = [d for d in docs if d["kind"] != "comment"]
+    # one card per story: a Google News redirect duplicate of a story we hold with its real link is dropped
+    items.sort(key=lambda d: ("google.com/goto" in d["url"], "news.google.com" in d["url"]))
+    names = {k.lower(): v for k, v in (CFG_X_NAMES.get(slug) or {}).items()}
+    for d in items:
+        g = group_of(d)
+        # Official accounts post about other things too: keep only their posts about the event.
+        if g in ("official", "investigators") and d["platform"] == "x" and not RELEVANT.search(d.get("body") or d.get("title") or ""):
+            continue
+        # Posts pulled by account (Instagram news accounts) cover everything they posted: keep only the ones about the event.
+        if d["platform"] == "instagram" and not ABOUT.search((d.get("title") or "") + " " + (d.get("body") or "")):
+            continue
+        if d["platform"] == "x" and d["voice"] in ("official", "investigator"):
+            h = (re.search(r"x\.com/([^/]+)/status", d["url"]) or [None, ""])[1].lower()
+            d = dict(d, author=names.get(h, d.get("author")))
+        nt = norm_title(d.get("title")) if g == "news" else None
+        if nt and nt in seen:
+            continue
+        if nt:
+            seen[nt] = True
+        m = d.get("metrics") or {}
+        link = linkable(d)
+        dom = m.get("domain") or (host_of(m.get("link")) if d["platform"] == "hackernews" else host_of(link)) or None
+        hits = claim_hits.get(d["url"], [])
+        said = next((h["said"] for h in hits if h.get("said")), None)
+        text = (d.get("body") or "").strip()
+        excerpt = said or (text[:200].rsplit(" ", 1)[0] + "..." if len(text) > 200 else text) or None
+        # No excerpt that only repeats the card's own title (a claim matched in a headline).
+        if excerpt and d.get("title") and norm_title(excerpt).startswith(norm_title(d.get("title"))[:50]):
+            excerpt = None
+        out.append({"id": hashlib.sha1(d["url"].encode()).hexdigest()[:10], "group": g, "platform": d["platform"], "kind": d["kind"], "voice": d["voice"],
+                    "title": (d.get("title") or text[:140] or "").strip(), "url": link, "publisher": d.get("author") if (d["voice"] != "public" or d["platform"] == "youtube") else None,
+                    "domain": dom, "logo": logos.get(dom) if dom else None, "thumb": thumbs.get(d["url"]), "date": (d.get("published_at") or "")[:19] or None,
+                    "views": m.get("views"), "likes": m.get("likes"), "comments": m.get("comments"), "points": m.get("points") or m.get("upvotes") or m.get("score"),
+                    "subreddit": m.get("subreddit"), "embed": embed_of(d), "transcript": bool(m.get("transcript")), "excerpt": excerpt,
+                    "claims": [{"key": h["key"], "verdict": h["verdict"]} for h in hits][:4]})
+    order = {g: i for i, (g, _) in enumerate(GROUPS)}
+    out.sort(key=lambda x: (order[x["group"]], -(x["views"] or x["likes"] or x["points"] or x["comments"] or 0), x["date"] or ""), reverse=False)
+    return out
 
 
 def build(ev, docs):
@@ -95,7 +188,7 @@ def build(ev, docs):
     watch = [{"label": w["label"], "when": w.get("when"), "note": w.get("note"), "quote": w["quote"], **{k: v for k, v in src(w["url"]).items() if k in ("url", "author")}} for w in seed.get("watch", [])]
 
     talk = [d for d in docs if d["voice"] in ("press", "public")]
-    claims = []
+    claims, claim_hits = [], {}
     for c in seed.get("claims", []):
         rx = re.compile(c["match"], re.I)
         # A sentence that denies or negates the claim does not count as saying it ("no evidence of any private key leak").
@@ -114,6 +207,8 @@ def build(ev, docs):
                     return ("..." if a else "") + s[a:b].strip() + ("..." if b < len(s) else "")
             return None
         hits = [d for d in talk if says(d)]
+        for d in hits:
+            claim_hits.setdefault(d["url"], []).append({"key": c["key"], "verdict": c["verdict"], "claim": c["claim"], "said": says(d)})
         per = collections.Counter(d["platform"] for d in hits)
         ex, seen = [], set()
         for d in sorted(hits, key=lambda d: (-reach(d), d["platform"])):
@@ -151,7 +246,10 @@ def build(ev, docs):
         if items:
             top[p] = [{"title": (d.get("title") or (d.get("body") or "")[:140]).strip(), "url": linkable(d), "date": (d.get("published_at") or "")[:10] or None,
                        "meta": meta(d), "transcript": bool((d.get("metrics") or {}).get("transcript"))} for d in items[:8]]
+    sources = build_sources(ev["slug"], docs, claim_hits)
     return {"slug": ev["slug"], "title": ev["title"], "summary": ev.get("summary"), "updatedAt": ev["updated_at"][:19], "window": [ev["window_from"], ev["window_to"]],
+            "groups": [{"id": g, "label": lab, "count": sum(1 for x in sources if x["group"] == g)} for g, lab in GROUPS if any(x["group"] == g for x in sources)],
+            "sources": sources,
             "facts": facts, "moments": moments, "money": money, "actors": seed.get("actors", []), "claims": claims, "watch": watch,
             "coverage": {"items": len(docs), "byPlatform": [{"platform": p, "label": LABEL[p], "items": cov[p]} for p in PLATFORMS if cov[p]],
                          "byVoice": dict(voices), "hours": [[h, dict(c)] for h, c in sorted(hours.items())]},
@@ -176,8 +274,16 @@ export interface EventMoney { note: string | null; source: Omit<EventSource, "qu
 export interface EventClaim { key: string; claim: string; verdict: Verdict; explain: string; evidence: EventSource[]; spread: { total: number; byPlatform: Record<string, number> }; examples: { platform: string; text: string; url: string | null; date: string | null; who: string | null }[] }
 export interface EventWatch { label: string; when: string | null; note: string | null; quote: string; url: string | null; author: string | null }
 export interface EventTopItem { title: string; url: string | null; date: string | null; meta: string | null; transcript: boolean }
+export type SourceGroup = "official" | "investigators" | "news" | "youtube" | "tiktok" | "instagram" | "x" | "reddit" | "hackernews";
+export interface EventSourceCard {
+  id: string; group: SourceGroup; platform: string; kind: string; voice: string; title: string; url: string | null; publisher: string | null;
+  domain: string | null; logo: string | null; thumb: string | null; date: string | null; views: number | null; likes: number | null;
+  comments: number | null; points: number | null; subreddit: string | null; embed: { type: "youtube" | "tiktok" | "instagram" | "x" | "reddit"; id: string } | null;
+  transcript: boolean; excerpt: string | null; claims: { key: string; verdict: Verdict }[];
+}
 export interface EventFile {
   slug: string; title: string; summary: string | null; updatedAt: string; window: [string, string];
+  groups: { id: SourceGroup; label: string; count: number }[]; sources: EventSourceCard[];
   facts: EventFact[]; moments: EventMoment[]; money: EventMoney; actors: { name: string; role: string; kind: string }[];
   claims: EventClaim[]; watch: EventWatch[];
   coverage: { items: number; byPlatform: { platform: string; label: string; items: number }[]; byVoice: Record<string, number>; hours: [string, Record<string, number>][] };
@@ -186,10 +292,93 @@ export interface EventFile {
 
 """
 text = header + "export const EVENTS: Record<string, EventFile> = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n"
+
+
+# ---- Copies for crawlers, AI agents and researchers: static files beside the page (never under /api/, which
+# robots.txt closes to every bot), each linked from the page head and from its "Data for AI agents" section.
+SITE = "https://venkatapagadala.com"
+PUB = os.path.join(HERE, "..", "..", "public", "notebook", "events")
+VLABEL = {"true": "True", "false": "False", "misleading": "Misleading", "unconfirmed": "Unconfirmed"}
+
+
+def md_of(e):
+    url = f"{SITE}/notebook/events/{e['slug']}"
+    L = [f"# {e['title']}", "", f"Updated {e['updatedAt']} UTC. Source page: {url}", "", e.get("summary") or "", "", "## Key takeaways", ""]
+    for f in e["facts"]:
+        L.append(f"- **{f['label']}:** {f['value']}" + (f" ({f['note']})" if f.get("note") else ""))
+        for ev in f["evidence"]:
+            L.append(f"  - \"{ev['quote']}\" ({ev.get('author') or ''} {ev.get('url') or ''})".replace("  )", ")"))
+    L += ["", "## What happened (UTC)", ""]
+    for m in e["moments"]:
+        L.append(f"- {m['at'][:16].replace('T', ' ')}: {m['label']}. \"{m['quote']}\" ({m.get('url') or ''})")
+    L += ["", "## The numbers", "", "| Chain | USD | What |", "|---|---|---|"]
+    for r in e["money"]["rows"]:
+        L.append(f"| {r['chain']} | {r['usd']:,} | {r.get('what') or ''} |")
+    for f in e["money"]["frozen"]:
+        L.append(f"\nFrozen: about USD {f['usd']:,} by {f['who']}. \"{f['quote']}\" ({f.get('url') or ''})")
+    L += ["", "## Is it true? Claims people are making", "", "| Claim | Verdict | Why | Items making it |", "|---|---|---|---|"]
+    for c in e["claims"]:
+        L.append(f"| {c['claim']} | {VLABEL[c['verdict']]} | {c['explain']} | {c['spread']['total']} |")
+    L += ["", "## What happens next", ""]
+    for w in e["watch"]:
+        L.append(f"- **{w['label']}**" + (f" (expected {w['when']})" if w.get("when") else "") + f": {w.get('note') or ''} \"{w['quote']}\" ({w.get('url') or ''})")
+    L += ["", "## People in this story", ""] + [f"- {a['name']}: {a['role']}" for a in e["actors"]]
+    L += ["", "## Sources", ""]
+    for g in e["groups"]:
+        L += [f"### {g['label']} ({g['count']})", ""]
+        for x in [x for x in e["sources"] if x["group"] == g["id"]]:
+            meta = ", ".join(filter(None, [x.get("publisher") or x.get("domain"), (x.get("date") or "")[:10], f"{x['views']:,} views" if x.get("views") else None]))
+            L.append(f"- [{x['title'][:160]}]({x['url']})" + (f" ({meta})" if meta else "") if x.get("url") else f"- {x['title'][:160]}" + (f" ({meta})" if meta else ""))
+        L.append("")
+    L += ["## How this page is made", "",
+          "Every fact, moment and verdict carries the exact words of its source, checked word for word against the stored page before publishing. "
+          "Public posts are listed without their authors' names. Data files: "
+          f"{url}.json, {url}-sources.csv, {url}.rss.xml. Cite as: {e['title']}, Venkata Pagadala, {url}", ""]
+    return "\n".join(L)
+
+
+def csv_of(e):
+    b = io.StringIO()
+    w = csv.writer(b)
+    w.writerow(["group", "platform", "title", "publisher", "domain", "url", "published", "views", "likes", "comments", "points", "claims"])
+    for x in e["sources"]:
+        w.writerow([x["group"], x["platform"], x["title"], x.get("publisher") or "", x.get("domain") or "", x.get("url") or "", x.get("date") or "",
+                    x.get("views") or "", x.get("likes") or "", x.get("comments") or "", x.get("points") or "", ";".join(f"{c['key']}={c['verdict']}" for c in x["claims"])])
+    return b.getvalue()
+
+
+def rss_of(e):
+    url = f"{SITE}/notebook/events/{e['slug']}"
+    esc = lambda t: html.escape(t or "", quote=True)
+    items = []
+    for m in sorted(e["moments"], key=lambda m: m["at"], reverse=True):
+        when = dt.datetime.fromisoformat(m["at"].replace("Z", "+00:00")).strftime("%a, %d %b %Y %H:%M:%S +0000")
+        items.append(f"<item><title>{esc(m['label'])}</title><link>{url}#what-happened</link><guid isPermaLink=\"false\">{esc(e['slug'] + ':' + m['at'])}</guid>"
+                     f"<pubDate>{when}</pubDate><description>{esc(chr(8220) + m['quote'] + chr(8221) + ' Source: ' + (m.get('url') or ''))}</description></item>")
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel>'
+            f"<title>{esc(e['title'])}</title><link>{url}</link><description>{esc(e.get('summary'))}</description><language>en</language>"
+            f"<lastBuildDate>{dt.datetime.fromisoformat(e['updatedAt'] + '+00:00').strftime('%a, %d %b %Y %H:%M:%S +0000')}</lastBuildDate>"
+            + "".join(items) + "</channel></rss>\n")
+
+
+def write_twins(data):
+    os.makedirs(PUB, exist_ok=True)
+    for slug, e in data.items():
+        url = f"{SITE}/notebook/events/{slug}"
+        doc = {"about": {"title": e["title"], "page": url, "updated": e["updatedAt"] + "Z", "publisher": "Venkata Pagadala",
+                         "method": "Every quote is checked word for word against its stored source before publishing. Public posts carry no author names.",
+                         "cite": f"{e['title']}, Venkata Pagadala, {url}"}, **e}
+        open(os.path.join(PUB, f"{slug}.json"), "w", encoding="utf8").write(json.dumps(doc, ensure_ascii=False, indent=1))
+        open(os.path.join(PUB, f"{slug}.md"), "w", encoding="utf8").write(md_of(e))
+        open(os.path.join(PUB, f"{slug}-sources.csv"), "w", encoding="utf8", newline="").write(csv_of(e))
+        open(os.path.join(PUB, f"{slug}.rss.xml"), "w", encoding="utf8").write(rss_of(e))
+
+
 if "--check" in sys.argv:
     if (open(DEST, encoding="utf8").read() if os.path.exists(DEST) else "") != text:
         raise SystemExit("events.ts is stale: run gen_events_ts.py")
     print("events.ts up to date")
 else:
     open(DEST, "w", encoding="utf8").write(text)
-    print(f"wrote {DEST}: {len(text) // 1024} KB; " + "; ".join(f"{k}: {v['coverage']['items']} items, {len(v['claims'])} claims" for k, v in data.items()))
+    write_twins(data)
+    print(f"wrote {DEST} and the .json/.md/.csv/.rss.xml copies: {len(text) // 1024} KB; " + "; ".join(f"{k}: {v['coverage']['items']} items, {len(v['claims'])} claims" for k, v in data.items()))

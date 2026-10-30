@@ -432,6 +432,7 @@ const AIUpdateDetail = ({ update: given, prev, next }: { update?: AIUpdate; prev
         <PageSidebar
           sections={tocSections}
           shareTitle={update.title}
+          canonicalUrl={`https://venkatapagadala.com/ai-updates/${update.slug}`}
         />
       </div>
     </div>

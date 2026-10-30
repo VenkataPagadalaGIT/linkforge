@@ -223,6 +223,8 @@ def mcps_call(slug, b, name, tool, args, worst):
     old = load(slug, name)
     if old and "result" in old and not (old["result"] or {}).get("isError"):
         return old
+    if old and (old.get("result") or {}).get("isError") and not os.environ.get("RETRY_FAILED"):
+        return old  # a failed extraction is final unless asked: re-buying it would likely fail again
     if not b.reserve("mcps", worst, name):
         return None
     key = re.findall(r"sk_[A-Za-z0-9_-]{20,}", rtf_text("mcpscraper.rtf"))[0]
@@ -309,20 +311,58 @@ def bd_keyword(slug, b, name, dataset, inputs, per):
         st = {"snapshot_id": r.get("snapshot_id"), "worst": worst}
         save(slug, name, st)
         print(f"bd   {name} snapshot {st['snapshot_id']}", flush=True)
+    return collect_snapshot(slug, b, name, st, h)
+
+
+def bd_profile(slug, b, name, dataset, inputs, per):
+    """Bright Data discovery by profile URL (Instagram posts): the same trigger, keep, collect flow as by keyword."""
+    if not inputs:
+        return None
+    st = load(slug, name) or {}
+    if st.get("records") is not None or st.get("error"):
+        return st
+    tok = re.findall(r"[A-Za-z0-9-]{32,}", rtf_text("brightdata.rtf"))[0]
+    h = {"Authorization": f"Bearer {tok}", "Content-Type": "application/json"}
+    if not st.get("snapshot_id"):
+        worst = len(inputs) * per * BD_RATE
+        if not b.reserve("bd", worst, name):
+            return None
+        url = f"https://api.brightdata.com/datasets/v3/trigger?dataset_id={dataset}&type=discover_new&discover_by=url&include_errors=true&notify=false"
+        try:
+            r = http(url, h, {"input": inputs, "limit_per_input": per})
+        except urllib.error.HTTPError as e:
+            st = {"error": f"HTTP {e.code}: {e.read()[:400].decode(errors='ignore')}"}
+            save(slug, name, st)
+            print(f"bd   {name} trigger refused (no charge): {st['error'][:220]}")
+            return st
+        st = {"snapshot_id": r.get("snapshot_id"), "worst": worst}
+        save(slug, name, st)
+        print(f"bd   {name} snapshot {st['snapshot_id']}", flush=True)
+    return collect_snapshot(slug, b, name, st, h)
+
+
+def collect_snapshot(slug, b, name, st, h):
     for _ in range(90):
-        p = http(f"https://api.brightdata.com/datasets/v3/progress/{st['snapshot_id']}", h)
+        try:
+            p = http(f"https://api.brightdata.com/datasets/v3/progress/{st['snapshot_id']}", h)
+        except (urllib.error.URLError, TimeoutError):  # a dropped poll is retried, never treated as an empty result
+            time.sleep(10)
+            continue
         if p.get("status") in ("ready", "failed"):
             break
         time.sleep(10)
+    else:
+        print(f"bd   {name}: still running; snapshot id saved for the next run")
+        return st
     if p.get("status") != "ready":
-        print(f"bd   {name}: snapshot {p.get('status')}; id saved for the next run")
+        print(f"bd   {name}: snapshot {p.get('status')}")
         return st
     req = urllib.request.Request(f"https://api.brightdata.com/datasets/v3/snapshot/{st['snapshot_id']}?format=json", headers=h)
     with urllib.request.urlopen(req, timeout=300) as r:
         recs = json.loads(r.read())
     st["records"] = recs
     save(slug, name, st)
-    good = [x for x in recs if not x.get("error")]
+    good = [x for x in recs if isinstance(x, dict) and not x.get("error")]
     b.spend("bd", len(good) * BD_RATE, name, {"records": len(good)})
     print(f"bd   {name} {len(good)} records (${len(good) * BD_RATE:.4f})", flush=True)
     return st
@@ -331,7 +371,11 @@ def bd_keyword(slug, b, name, dataset, inputs, per):
 def social(c, b):
     slug = c["slug"]
     bd_keyword(slug, b, "bd-tiktok", "gd_lu702nij2f790tmv9h", [{"search_keyword": "binance hack", "country": ""}], 30)
-    bd_keyword(slug, b, "bd-instagram", "gd_lk5ns7kz21pck8jpis", [{"keyword": "binance hack"}], 30)
+    # Instagram posts can only be discovered by profile: recent posts from crypto and tech news accounts, inside the window.
+    ig_from = c["window"][0][5:7] + "-" + c["window"][0][8:10] + "-" + c["window"][0][:4]
+    ig_to = c["window"][1][5:7] + "-" + c["window"][1][8:10] + "-" + c["window"][1][:4]
+    bd_profile(slug, b, "bd-instagram-profiles", "gd_lk5ns7kz21pck8jpis",
+               [{"url": f"https://www.instagram.com/{h}/", "num_of_posts": 12, "start_date": ig_from, "end_date": ig_to} for h in c.get("instagram_accounts", [])], 12)
     bd_keyword(slug, b, "bd-reddit", "gd_lvz8ah06191smkebj4", [{"keyword": "binance hack", "date": "Past week", "sort_by": "Top"}], 40)
 
 

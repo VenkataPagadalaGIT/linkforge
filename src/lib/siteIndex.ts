@@ -40,6 +40,7 @@ import { linkedPapers } from "@/data/research";
 import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, UNIVERSE_NAME, UNIVERSE_PATH, postPath, topicPath, topicTrail } from "@/data/linkedinArchive";
 import { LINKEDIN_ARTICLES, LINKEDIN_SOCIAL_POSTS, LINKEDIN_TOPICS } from "@/data/linkedinArchiveServer";
 import { entityPath, sectionPath } from "@/lib/graph-urls";
+import { EVENTS } from "@/data/events";
 
 export type SectionId =
   | "guides" | "topics" | "videos" | "awards" | "sessions" | "talks"
@@ -352,6 +353,15 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
   out.push(...updates.sort((a, b) => (b.note ?? "").localeCompare(a.note ?? "")));
+
+  // Event files: one breaking event read from every platform (data/corpus/gen_events_ts.py), listed with the
+  // AI updates so the sitemap, llms.txt and the OKF index all carry them.
+  for (const ev of Object.values(EVENTS)) {
+    out.push({
+      href: `/notebook/events/${ev.slug}`, title: ev.title, section: "updates", group: "Event files", note: ev.updatedAt.slice(0, 10),
+      xml: { lastModified: toDate(ev.updatedAt + "Z"), changeFrequency: "hourly", priority: 0.8 },
+    });
+  }
 
   // Business Notebook: the published content file is the one source, so a
   // note, company or person published without a deploy is listed at once.

@@ -440,7 +440,7 @@
       "claim": "Cold wallets were hacked",
       "verdict": "false",
       "explain": "The thefts came from hot wallets, the ones kept online to pay withdrawals.",
-      "match": "cold (wallet|storage)s?[^.]{0,40}\\b(hack|drain|breach|compromis|stolen|emptied)|\\b(hack|drain|breach|compromis|stole|emptied)\\w*[^.]{0,40}cold (wallet|storage)",
+      "match": "cold (wallet|storage)s? (were |was |have been |has been |got |also )?(hacked|drained|breached|compromised|emptied|hit)|\\b(hack|drain|breach|compromis|empt)\\w* (\\w+ ){0,3}cold (wallet|storage)s?\\b",
       "evidence": [
         {
           "url": "https://cointelegraph.com/news/recap-binances-record-63b-hack-unfolded",

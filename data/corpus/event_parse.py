@@ -108,8 +108,10 @@ def parse(c):
         docs.append({"url": r.get("url"), "platform": "tiktok", "kind": "video", "voice": "public", "title": (r.get("description") or "")[:140],
                      "body": r.get("description"), "published_at": ts(r.get("create_time") or r.get("date_posted")), "source_call": "bd-tiktok",
                      "metrics": {"views": num(r.get("play_count")), "likes": num(r.get("digg_count")), "comments": num(r.get("comment_count")), "shares": num(r.get("share_count"))}})
-    for r in records(slug, "bd-instagram"):
-        docs.append({"url": r.get("url"), "platform": "instagram", "kind": "post", "voice": "public", "title": (r.get("description") or "")[:140],
+    for r in records(slug, "bd-instagram") + records(slug, "bd-instagram-profiles"):
+        acct = (r.get("user_posted") or "").lower()
+        docs.append({"url": r.get("url"), "platform": "instagram", "kind": "post", "voice": "press" if acct in {a.lower() for a in c.get("instagram_accounts", [])} else "public",
+                     "author": r.get("user_posted") if acct in {a.lower() for a in c.get("instagram_accounts", [])} else None, "title": (r.get("description") or "")[:140],
                      "body": r.get("description"), "published_at": ts(r.get("date_posted")), "source_call": "bd-instagram",
                      "metrics": {"likes": num(r.get("likes")), "comments": num(r.get("num_comments")), "views": num(r.get("video_view_count") or r.get("views"))}})
     for r in records(slug, "bd-reddit"):
@@ -136,7 +138,8 @@ def parse(c):
         if not vid:
             continue
         tr = sc_of(load(slug, f"yt-{vid}"))
-        text = tr.get("transcript") or tr.get("text") or " ".join(ch.get("text", "") for ch in tr.get("chunks") or [] if isinstance(ch, dict)) or None
+        text = tr.get("transcriptText") or tr.get("transcript") or tr.get("text") or " ".join(ch.get("text", "") for ch in tr.get("chunks") or [] if isinstance(ch, dict)) or None
+        text = text if isinstance(text, str) else None
         docs.append({"url": f"https://www.youtube.com/watch?v={vid}", "platform": "youtube", "kind": "video", "voice": "public", "title": v.get("title"),
                      "author": v.get("channelName") or v.get("channelTitle"),
                      "published_at": ts(v.get("publishedAt") or v.get("published") or v.get("uploadDate")), "body": " ".join(filter(None, [v.get("title"), v.get("description"), text])),
@@ -148,11 +151,16 @@ def parse(c):
             if not d:
                 continue
             tr = sc_of(d)
-            text = tr.get("transcript") or tr.get("text") or (tr.get("transcription") or {}).get("text") if isinstance(tr.get("transcription"), dict) else tr.get("transcript") or tr.get("text")
-            url = tr.get("url") or tr.get("sourceUrl") or tr.get("videoUrl")
+            said = tr.get("transcriptText") or (tr.get("transcript") if isinstance(tr.get("transcript"), str) else None)
+            text = " ".join(filter(None, [tr.get("caption"), said]))
+            url = (tr.get("sourceUrl") or tr.get("url") or "").rstrip("/")
             if url and text:
-                docs.append({"url": url, "platform": plat, "kind": "video", "voice": "public", "title": None, "body": text, "source_call": nm,
-                             "metrics": {"transcript": True}})
+                # same post as the discovery record: the upsert keeps the longer body, so the transcript is added, not a second card
+                rec = next((r for r in records(slug, "bd-tiktok") + records(slug, "bd-instagram-profiles") if (r.get("url") or "").rstrip("/") == url), {})
+                acct = (rec.get("user_posted") or "").lower()
+                press = acct in {a.lower() for a in c.get("instagram_accounts", [])}
+                docs.append({"url": rec.get("url") or url, "platform": plat, "kind": "video" if plat == "tiktok" or said else "post", "voice": "press" if press else "public",
+                             "author": rec.get("user_posted") if press else None, "title": None, "body": text, "source_call": nm, "metrics": {"transcript": bool(said)}})
     docs = [d for d in docs if d.get("url")]
     upsert(slug, docs)
     by = {}
@@ -177,7 +185,8 @@ def transcribe(c, b, top, mcps_call):
     tt = sorted(records(slug, "bd-tiktok"), key=lambda r: -(num(r.get("play_count")) or 0))
     for n, r in enumerate(tt[:top]):
         mcps_call(slug, b, f"tt-{n}", "tiktok_video_transcribe", {"url": r["url"]}, 220)
-    ig = sorted(records(slug, "bd-instagram"), key=lambda r: -(num(r.get("likes")) or 0))
+    ig = [r for r in records(slug, "bd-instagram") + records(slug, "bd-instagram-profiles") if re.search(r"binance", r.get("description") or "", re.I)]
+    ig = sorted(ig, key=lambda r: -(num(r.get("likes")) or 0))
     for n, r in enumerate(ig[:max(2, top // 2)]):
         mcps_call(slug, b, f"ig-{n}", "instagram_media_download", {"url": r["url"], "includeTranscript": True, "downloadMedia": False}, 230)
     rd = sorted(records(slug, "bd-reddit"), key=lambda r: -(num(r.get("num_comments")) or 0))
