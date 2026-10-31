@@ -1756,11 +1756,24 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
 
   // The Topics and Platforms lists, one block for the panel beside the feed (lg and up) and the sheet (phones, tablets).
   const matchCount = feed.filter((p) => !FRAME.has(p.kind)).length;
+  // The story these topics belong to. One today; when there are more, this becomes the story switcher.
+  const storyCover = coverOf(e);
+  const storyCard = (
+    <a href={page} className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-2.5 transition-colors hover:bg-white/[0.07]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {storyCover && <img src={storyCover} alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-lg object-cover" />}
+      <span className="min-w-0">
+        <span className="block text-[10px] font-semibold uppercase tracking-wider text-white/45">Story{live ? " · Live" : ""}</span>
+        <span className="line-clamp-2 block text-[14px] font-bold leading-snug text-white">{e.title}</span>
+        <span className="block text-[11px] text-white/50">{e.sources.length} sources · {e.claims.length} claims checked</span>
+      </span>
+    </a>
+  );
   const lists = (k: string) => (
     <>
       <section aria-labelledby={`${k}-topics-h`}>
         <div className="mb-1 flex items-baseline justify-between px-2">
-          <h3 id={`${k}-topics-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Topics</h3>
+          <h3 id={`${k}-topics-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Topics in this story</h3>
           <span className="text-[11px] text-white/40">{TOPICS.length - prefs.off.length} of {TOPICS.length} on</span>
         </div>
         <ul>
@@ -1823,6 +1836,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           {prefs.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
       </div>
+      <div className="px-2">{storyCard}</div>
       <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("deck-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
       {lists("deck")}
       <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="self-start px-2 text-[12px] font-semibold text-white/50 hover:text-white">
@@ -1841,6 +1855,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           </div>
           <p className="px-4 pb-3 text-[13px] text-white/60">{matchCount} posts match. The feed changes as you choose.</p>
           <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
+            {storyCard}
             <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("sheet-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
             <section>
               <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">View</h3>
@@ -1920,7 +1935,8 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       <div className="flex-1 overflow-y-auto px-5 pb-6 pt-8">
         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ef4444]">Knowledge Graph Feeds</p>
         <h2 className="mt-2 font-display text-3xl font-black leading-tight">What do you want to learn?</h2>
-        <p className="mt-2 text-sm text-white/70">Pick topics. Your feed shows only these, never random posts.</p>
+        <div className="mt-4">{storyCard}</div>
+        <p className="mt-4 text-sm text-white/70">Pick topics in this story. Your feed shows only these, never random posts.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {TOPICS.map((t) => (
             <Chip key={t.id} on={pickTopics.includes(t.id)} count={topicCount(t.id)} onClick={() => { click("tick"); setPickTopics((x) => (x.includes(t.id) ? x.filter((y) => y !== t.id) : [...x, t.id])); }}>
