@@ -1,7 +1,7 @@
 "use client";
 /**
  * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
- *   Venkata Pagadala: about, research, talks and writing. Research and talks live under
+ *   Venkata Pagadala: about and writing, research, talks. Research and talks live under
  *     the person, so "Research & Talks" is no longer a door of its own.
  *   Notebooks: the AI, Business and Conference notebooks, AI Updates, the feeds, and Learn, which holds every
  *     guide, classified once in src/data/learnHub.ts. The /guides and /notebook hubs render that same list.
@@ -128,10 +128,11 @@ const MEGA: MegaMenu[] = [
     heading: "Who I am, what I research, where I speak",
     sections: [
       {
-        title: "About",
+        title: "About and writing",
         items: [
           { label: "About me", note: "who I am and what I build", to: "/about" },
-          { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badges: ["3D"] },
+          { label: "My Universe", note: "every LinkedIn post, by year and by topic", to: "/venkata-pagadala-universe" },
+          { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
         ],
       },
       {
@@ -143,13 +144,6 @@ const MEGA: MegaMenu[] = [
         items: [
           ...RESEARCH_MENU.sections[1].items.filter((it) => !UFI_URLS.has(it.to)),
           { label: "Podcasts, interviews and recognition", note: "every appearance, with its source", to: "/research-and-talks" },
-        ],
-      },
-      {
-        title: "Writing",
-        items: [
-          { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
-          { label: "Every LinkedIn post", note: "the archive, by year and by topic", to: "/venkata-pagadala-universe" },
         ],
       },
     ],
@@ -379,7 +373,7 @@ const Navbar = () => {
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70 mb-4">
                   {m.heading}
                 </p>
-                <div className={`grid gap-x-10 gap-y-6 ${m.sections.length >= 3 ? "grid-cols-2 lg:grid-cols-4" : m.sections.length === 2 ? "grid-cols-2" : "grid-cols-1 lg:grid-cols-3"}`}>
+                <div className={`grid gap-x-10 gap-y-6 ${m.sections.length >= 4 ? "grid-cols-2 lg:grid-cols-4" : m.sections.length === 3 ? "grid-cols-2 lg:grid-cols-3" : m.sections.length === 2 ? "grid-cols-2" : "grid-cols-1 lg:grid-cols-3"}`}>
                   {m.sections.map((sec) => (
                     <div key={sec.title} className={m.sections.length === 1 ? "lg:col-span-3 grid lg:grid-cols-3 gap-x-8 gap-y-4" : ""}>
                       {m.sections.length > 1 && (
