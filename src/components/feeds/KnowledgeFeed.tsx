@@ -80,6 +80,8 @@ const TOPICS: { id: string; label: string }[] = [
   { id: "theories", label: "Theories" },
   { id: "official", label: "Official word" },
   { id: "investigators", label: "Investigators" },
+  // Every post belongs to a topic the reader can switch off; nothing reaches the feed around their choices.
+  { id: "more", label: "More coverage" },
 ];
 /** Words that put a post under a topic. Generic on purpose, so the next story's posts sort without new rules. */
 const KEYWORDS: [string, RegExp][] = [
@@ -144,7 +146,7 @@ function writePrefs(p: Prefs) {
  * the default first post for a moment and then a jump: the flicker. The feed body stays hidden (the frame does not)
  * until it is in place.
  */
-const PREPAINT = `try{var q=location.search,s=JSON.parse(localStorage.getItem("${"kgf:prefs"}")||"null");if(/[?&](p|chapter|topic|view)=/.test(q)||(s&&((s.topic&&s.topic!=="all")||(s.platforms||[]).length||(s.off||[]).length||s.view==="swipe")))document.documentElement.classList.add("kgf-wait")}catch(e){}`;
+const PREPAINT = `try{if(!localStorage.getItem("kgf:prefs")&&!localStorage.getItem("kgf:onboarded"))document.documentElement.classList.add("kgf-new");var q=location.search,s=JSON.parse(localStorage.getItem("${"kgf:prefs"}")||"null");if(/[?&](p|chapter|topic|view)=/.test(q)||(s&&((s.topic&&s.topic!=="all")||(s.platforms||[]).length||(s.off||[]).length||s.view==="swipe")))document.documentElement.classList.add("kgf-wait")}catch(e){}`;
 
 type Author = { name: string; handle: string; avatar?: string | null; platform?: string; ours?: boolean; profile?: string | null };
 type Evidence = { quote: string; url: string | null; author: string | null };
@@ -206,7 +208,7 @@ function topicsFor(p: Post, e: EventFile): string[] {
       break;
     }
   }
-  return [...t];
+  return t.size || FRAME.has(p.kind) ? [...t] : ["more"];
 }
 
 /** The story as posts, in the owner's order, with the platforms' own posts between ours instead of all at the end. */
@@ -443,7 +445,7 @@ function useClicks(on: boolean) {
   );
 }
 
-type Station = { id: string; label: string; count: number };
+type Station = { id: string; label: string; count: number; seen?: number };
 type Click = (k: "tick" | "pick" | "stop") => void;
 
 /** The phone's topic control: a radio tuner across the top. Drag it, it ticks past each topic; let go to tune. */
@@ -511,7 +513,7 @@ function TopicTuner({ items, index, onPick, click }: { items: Station[]; index: 
             style={{ width: SP }}
           >
             <span className="max-w-full truncate">{t.label}</span>
-            <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.count}</span>
+            <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.seen ? `${t.seen}/${t.count} seen` : t.count}</span>
           </button>
         ))}
       </div>
@@ -691,6 +693,10 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const [announce, setAnnounce] = React.useState("");
   const [burst, setBurst] = React.useState<{ x: number; y: number; k: number } | null>(null);
   const [coach, setCoach] = React.useState<View | null>(null);
+  const [onboard, setOnboard] = React.useState(false);
+  const [pickTopics, setPickTopics] = React.useState<string[]>([]);
+  const [pickPlatforms, setPickPlatforms] = React.useState<string[]>(() => PLATFORMS.map((x) => x.id));
+  const [seen, setSeen] = React.useState<string[]>([]);
   const scroller = React.useRef<HTMLDivElement>(null);
   const column = React.useRef<HTMLDivElement>(null);
   const press = React.useRef<{ x: number; y: number; t: number } | null>(null);
@@ -712,7 +718,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   // The feed: the story's posts, keeping the platforms switched on, then tuned to one topic or to the topics For You
   // includes. The opening and closing posts frame every version.
   const platformOk = React.useCallback((p: Post) => !prefs.platforms.length || prefs.platforms.includes(platformOf(p)), [prefs.platforms]);
-  const inForYou = React.useCallback((p: Post) => !(p.topics ?? []).length || (p.topics ?? []).some((t) => !prefs.off.includes(t)), [prefs.off]);
+  const inForYou = React.useCallback((p: Post) => (p.topics ?? []).some((t) => !prefs.off.includes(t)), [prefs.off]);
   const feed = React.useMemo(
     () => posts.filter((p) => FRAME.has(p.kind) || (platformOk(p) && (prefs.topic === "all" ? inForYou(p) : (p.topics ?? []).includes(prefs.topic)))),
     [posts, platformOk, inForYou, prefs.topic]
@@ -721,10 +727,12 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const body = posts.filter((p) => !FRAME.has(p.kind));
   const topicCount = (id: string) => body.filter((p) => platformOk(p) && (p.topics ?? []).includes(id)).length;
   const platformCount = (id: string) => body.filter((p) => platformOf(p) === id && (prefs.topic === "all" ? inForYou(p) : (p.topics ?? []).includes(prefs.topic))).length;
+  const seenSet = new Set(seen);
+  const seenIn = (test: (p: Post) => boolean) => body.filter((p) => seenSet.has(p.id) && test(p)).length;
   const stations: Station[] = [
-    { id: "all", label: "For You", count: body.filter((p) => platformOk(p) && inForYou(p)).length },
+    { id: "all", label: "For You", count: body.filter((p) => platformOk(p) && inForYou(p)).length, seen: seenIn((p) => platformOk(p) && inForYou(p)) },
     ...TOPICS.filter((t) => !prefs.off.includes(t.id) || t.id === prefs.topic)
-      .map((t) => ({ ...t, count: topicCount(t.id) }))
+      .map((t) => ({ ...t, count: topicCount(t.id), seen: seenIn((p) => platformOk(p) && (p.topics ?? []).includes(t.id)) }))
       .filter((t) => t.count > 0 || t.id === prefs.topic),
   ];
   const station = Math.max(0, stations.findIndex((s) => s.id === prefs.topic));
@@ -738,6 +746,14 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     setLiked(store.get(`kgf:liked:${slug}`));
     setSaved(store.get(`kgf:saved:${slug}`));
     setFollowing(store.get("kgf:following"));
+    setSeen(store.get(`kgf:seen:${slug}`));
+    let fresh = false;
+    try {
+      fresh = !window.localStorage.getItem(PREFS_KEY) && !window.localStorage.getItem("kgf:onboarded");
+    } catch {
+      /* storage blocked: no picker, the feed opens on everything */
+    }
+    if (fresh) setOnboard(true);
     const q = new URLSearchParams(window.location.search);
     const t = q.get("topic");
     const v = q.get("view");
@@ -762,7 +778,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     const ch = q.get("chapter");
     const start = p ? feed.findIndex((x) => x.id === p) : ch ? feed.findIndex((x) => x.chapter === ch) : -1;
     lastKey.current = feedKey;
-    const reveal = () => document.documentElement.classList.remove("kgf-wait");
+    const reveal = () => document.documentElement.classList.remove("kgf-wait", "kgf-new");
     if (start > 0) {
       setCurrent(start);
       requestAnimationFrame(() => {
@@ -816,13 +832,23 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
 
   // A first-time hint for each view, once.
   React.useEffect(() => {
-    if (!ready) return;
-    const seen = store.get("kgf:coach");
-    if (!seen.includes(view)) {
+    if (!ready || onboard) return;
+    const shown = store.get("kgf:coach");
+    if (!shown.includes(view)) {
       setCoach(view);
-      store.set("kgf:coach", [...seen, view]);
+      store.set("kgf:coach", [...shown, view]);
     }
-  }, [ready, view]);
+  }, [ready, view, onboard]);
+
+  // What has been read in this story: the tuner shows progress per topic, so a reader can finish one and move on.
+  React.useEffect(() => {
+    if (!ready || onboard) return;
+    const id = feed[current]?.id;
+    if (!id || seen.includes(id)) return;
+    const next = [...seen, id];
+    setSeen(next);
+    store.set(`kgf:seen:${slug}`, next);
+  }, [ready, onboard, current, feed, seen, slug]);
 
   const go = React.useCallback(
     (i: number, behavior: ScrollBehavior = "smooth") => {
@@ -977,6 +1003,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   React.useEffect(() => {
     const k = (ev: KeyboardEvent) => {
       if ((ev.target as HTMLElement | null)?.closest?.("[role=slider],input,textarea")) return;
+      if (onboard) return;
       if (read || settings) {
         if (ev.key === "Escape") {
           if (read) closeRead();
@@ -1210,9 +1237,14 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       case "end":
         return (
           <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
-            <p className="font-display text-3xl font-black text-white">You&apos;re caught up</p>
-            <p className="mt-2 text-sm text-white/75">The whole story and every source, {feed.length} posts.</p>
+            <p className="font-display text-3xl font-black text-white">{prefs.topic === "all" ? "You're caught up" : `You've finished ${stations[station]?.label}`}</p>
+            <p className="mt-2 text-sm text-white/75">{prefs.topic === "all" ? `Every post you picked, ${feed.length} in all.` : `${feed.length} posts on this topic, every one with its sources.`}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {stations[station + 1] && (
+                <button type="button" onClick={() => { click("pick"); tune(station + 1); }} className="rounded-full bg-[#ef4444] px-5 py-2.5 text-sm font-bold text-white">
+                  Next topic: {stations[station + 1].label}
+                </button>
+              )}
               <a href={page} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black">Read the full page</a>
               <button type="button" onClick={() => go(0)} className="rounded-full bg-white/15 px-5 py-2.5 text-sm font-semibold text-white">Start again</button>
             </div>
@@ -1632,7 +1664,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       <div className="rounded-xl border border-white/10 bg-[#07130f] px-4 py-3 font-mono shadow-[inset_0_2px_10px_rgba(0,0,0,0.6)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[#34d399]/60">Topic</p>
         <p className="truncate text-lg font-bold text-[#34d399]">{stations[station]?.label}</p>
-        <p className="text-[11px] text-[#34d399]/60">{feed.length} posts{filtered ? ` · ${onPlatforms.length} platforms` : ""}</p>
+        <p className="text-[11px] text-[#34d399]/60">{stations[station]?.seen ?? 0} of {stations[station]?.count ?? 0} seen{filtered ? ` · ${onPlatforms.length} platforms` : ""}</p>
       </div>
       <div className="flex justify-center">
         <TopicKnob items={stations} index={station} onPick={tune} click={click} />
@@ -1731,6 +1763,18 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 <li className="pt-1 text-center text-xs text-white/50">More stories as each one is read from every platform.</li>
               </ul>
             </section>
+            <button
+              type="button"
+              onClick={() => {
+                setPickTopics(TOPICS.map((t) => t.id).filter((id) => !prefs.off.includes(id)));
+                setPickPlatforms(onPlatforms);
+                setSettings(false);
+                setOnboard(true);
+              }}
+              className="w-full rounded-full bg-white/10 py-3 text-sm font-bold text-white hover:bg-white/15"
+            >
+              Pick topics and platforms again
+            </button>
             <div className="flex items-center justify-between pt-2">
               <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound }); }} className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">Reset to everything</button>
               <a href="/" className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">venkatapagadala.com</a>
@@ -1739,6 +1783,64 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+
+  // First visit: ask what to learn and from where, before any post. The feed then shows only that.
+  const pickedMatch = body.filter((p) => pickPlatforms.includes(platformOf(p)) && (p.topics ?? []).some((t) => pickTopics.includes(t))).length;
+  const finishPicking = (everything: boolean) => {
+    try {
+      window.localStorage.setItem("kgf:onboarded", "1");
+    } catch {
+      /* private mode: the picker may return next visit */
+    }
+    if (everything) setPrefs({ topic: "all", off: [], platforms: [] });
+    else setPrefs({ topic: "all", off: TOPICS.map((t) => t.id).filter((id) => !pickTopics.includes(id)), platforms: pickPlatforms.length === PLATFORMS.length ? [] : pickPlatforms });
+    click("pick");
+    setOnboard(false);
+    document.documentElement.classList.remove("kgf-new");
+  };
+  const picker = (
+    <div className="kgf-onboard absolute inset-0 z-[60] flex-col bg-[#0b0d12]" data-open={onboard ? "true" : "false"} role="dialog" aria-modal="true" aria-label="What do you want to learn?">
+      <div className="flex-1 overflow-y-auto px-5 pb-6 pt-8">
+        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ef4444]">Knowledge Graph Feeds</p>
+        <h2 className="mt-2 font-display text-3xl font-black leading-tight">What do you want to learn?</h2>
+        <p className="mt-2 text-sm text-white/70">Pick topics. Your feed shows only these, never random posts.</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {TOPICS.map((t) => (
+            <Chip key={t.id} on={pickTopics.includes(t.id)} count={topicCount(t.id)} onClick={() => { click("tick"); setPickTopics((x) => (x.includes(t.id) ? x.filter((y) => y !== t.id) : [...x, t.id])); }}>
+              {t.label}
+            </Chip>
+          ))}
+        </div>
+        <h3 className="mt-7 font-display text-xl font-black">From where?</h3>
+        <p className="mt-1 text-sm text-white/70">Keep the platforms you want to learn from: one, four, or all of them.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {PLATFORMS.map((pl) => (
+            <Chip
+              key={pl.id}
+              on={pickPlatforms.includes(pl.id)}
+              onClick={() => {
+                const next = pickPlatforms.includes(pl.id) ? pickPlatforms.filter((y) => y !== pl.id) : [...pickPlatforms, pl.id];
+                if (!next.length) {
+                  say("Keep at least one platform");
+                  return;
+                }
+                click("tick");
+                setPickPlatforms(next);
+              }}
+            >
+              <PlatformIcon id={pl.id} /> {pl.label}
+            </Chip>
+          ))}
+        </div>
+      </div>
+      <div className="border-t border-white/10 p-4">
+        <button type="button" disabled={!pickTopics.length || !pickedMatch} onClick={() => finishPicking(false)} className="w-full rounded-full bg-white py-3.5 text-[15px] font-black text-black disabled:opacity-40">
+          {!pickTopics.length ? "Pick at least one topic" : pickedMatch ? `Start learning: ${pickedMatch} posts` : "No posts match yet: add a topic or platform"}
+        </button>
+        <button type="button" onClick={() => finishPicking(true)} className="mt-2 w-full py-2 text-sm font-semibold text-white/60 hover:text-white">Show me everything</button>
+      </div>
+    </div>
   );
 
   return (
@@ -1750,7 +1852,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       style={{ "--kgf-top": "172px", "--kgf-bottom": "176px", "--kgf-chip": "172px", "--kgf-rail": "64px" } as React.CSSProperties}
     >
       <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
-      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}.kgf-wait .kgf-body{visibility:hidden}`}</style>
+      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}.kgf-wait .kgf-body{visibility:hidden}.kgf-onboard{display:none}.kgf-new .kgf-onboard,.kgf-onboard[data-open=true]{display:flex}`}</style>
       {/* the desktop backdrop: the post in view, blurred, like Shorts and TikTok on the web */}
       {backdrop && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -1782,9 +1884,10 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           </AnimatePresence>
           <AnimatePresence>{!wide && sheet}</AnimatePresence>
           {settingsSheet}
+          {picker}
           <AnimatePresence>
             {toast && (
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-24 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black">
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-24 left-1/2 z-[70] -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black">
                 {toast}
               </motion.p>
             )}
