@@ -1758,6 +1758,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const matchCount = feed.filter((p) => !FRAME.has(p.kind)).length;
   // The story these topics belong to. One today; when there are more, this becomes the story switcher.
   const storyCover = coverOf(e);
+  const primarySubject = (e.subjects ?? []).find((t) => t.role === "primary");
   const storyCard = (
     <a href={page} className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-2.5 transition-colors hover:bg-white/[0.07]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1766,6 +1767,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         <span className="block text-[10px] font-semibold uppercase tracking-wider text-white/45">Story{live ? " · Live" : ""}</span>
         <span className="line-clamp-2 block text-[14px] font-bold leading-snug text-white">{e.title}</span>
         <span className="block text-[11px] text-white/50">{e.sources.length} sources · {e.claims.length} claims checked</span>
+        {primarySubject && <span className="mt-0.5 block truncate text-[11px] text-white/40" title={primarySubject.path.join(" > ")}>{primarySubject.path.slice(-2).join(" › ")}</span>}
       </span>
     </a>
   );

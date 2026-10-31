@@ -188,6 +188,16 @@ export function EventFile({ slug }: { slug: string }) {
           <span>Updated <time dateTime={e.updatedAt + "Z"}>{utc(e.updatedAt)}</time></span>
         </p>
         <h1 className="mb-4 font-display text-3xl font-bold leading-tight text-foreground sm:text-4xl">{e.title}</h1>
+        {e.subjects?.length > 0 && (
+          <p className="mb-4 flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+            <span className="mr-1 uppercase tracking-[0.18em]">Filed under</span>
+            {e.subjects.map((t) => (
+              <span key={t.id} title={`${t.path.join(" > ")}: ${t.why}`} className={`border px-2 py-0.5 ${t.role === "primary" ? "border-foreground/40 text-foreground" : "border-border"}`}>
+                {t.role === "primary" ? t.path.join(" › ") : t.path[t.path.length - 1]}
+              </span>
+            ))}
+          </p>
+        )}
         {e.summary && (
           <p className="mb-3 border-l-2 border-foreground/20 pl-4 font-mono text-sm leading-relaxed text-muted-foreground">
             <mark className="hl hl-y text-foreground">{e.summary.split(/(?<=\.)\s/)[0]}</mark> {e.summary.split(/(?<=\.)\s/).slice(1).join(" ")}

@@ -134,6 +134,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/solutions", "Solutions", "solutions", true],
   ["/llms.txt", "llms.txt: a guide to this site for AI agents", "machines"],
   ["/llms-full.txt", "llms-full.txt: the full-text edition", "machines"],
+  ["/taxonomy/subjects.json", "Subject taxonomy (JSON): every subject a story can be filed under", "machines"],
 ];
 
 /**

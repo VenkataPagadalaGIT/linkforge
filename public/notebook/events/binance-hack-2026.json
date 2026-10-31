@@ -11417,5 +11417,113 @@
     }
    ]
   }
- }
+ },
+ "subjects": [
+  {
+   "id": "technology/cybersecurity/hacks-breaches/crypto-exchange-hacks",
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches",
+    "Crypto Exchange Hacks"
+   ],
+   "role": "primary",
+   "why": "An attacker emptied Binance's hot wallets on ten blockchains in about four hours.",
+   "iptc": "medtop:13000000"
+  },
+  {
+   "id": "crime-law-justice/cybercrime/crypto-theft",
+   "path": [
+    "Crime, Law & Justice",
+    "Cybercrime",
+    "Crypto Theft"
+   ],
+   "role": "secondary",
+   "why": "Three blockchain analytics firms count $6.36 billion to $6.43 billion taken, the largest crypto theft on record at the value when taken.",
+   "iptc": "medtop:02000000"
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-exchanges/withdrawals-customer-funds",
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Exchanges",
+    "Withdrawals & Customer Funds"
+   ],
+   "role": "secondary",
+   "why": "Customer withdrawals, and Binance's statement that it will cover every loss.",
+   "iptc": "medtop:04000000"
+  },
+  {
+   "id": "technology/cybersecurity/threat-actors/state-sponsored-hacking",
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Threat Actors",
+    "State-Sponsored Hacking"
+   ],
+   "role": "secondary",
+   "why": "The analytics firms blame North Korea's TraderTraitor group; Binance and the US government have not confirmed who did it.",
+   "iptc": "medtop:13000000"
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods/private-key-wallet-compromise",
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods",
+    "Private Key & Wallet Compromise"
+   ],
+   "role": "secondary",
+   "why": "The transfers ran from hot wallets, including 50 pre-signed authorizations on Ethereum.",
+   "iptc": "medtop:13000000"
+  },
+  {
+   "id": "technology/cybersecurity/security-response/asset-freezes-recovery",
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Security Response",
+    "Asset Freezes & Recovery"
+   ],
+   "role": "secondary",
+   "why": "About $3 billion has been frozen so far.",
+   "iptc": "medtop:13000000"
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/stablecoins/stablecoin-freezes",
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Stablecoins",
+    "Stablecoin Freezes"
+   ],
+   "role": "secondary",
+   "why": "Tether, Circle, Ripple and World Liberty Financial froze about $2.67 billion in stablecoins.",
+   "iptc": "medtop:04000000"
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-markets/bitcoin",
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Markets",
+    "Bitcoin"
+   ],
+   "role": "secondary",
+   "why": "The file's markets fact: Bitcoin at a six-week low of $76,368.",
+   "iptc": "medtop:04000000"
+  },
+  {
+   "id": "society/misinformation-fact-checks/viral-claims",
+   "path": [
+    "Society",
+    "Misinformation & Fact-Checks",
+    "Viral Claims"
+   ],
+   "role": "secondary",
+   "why": "Ten claims spread across platforms; each is checked against its sources in the file.",
+   "iptc": "medtop:14000000"
+  }
+ ]
 }

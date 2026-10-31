@@ -110,6 +110,18 @@ Frozen: about USD 2,700,000,000 by Tether, Circle, Ripple, World Liberty Financi
 - FBI, US Secret Service: US agencies involved in the response
 - Abu Dhabi FSRA: Binance's main licensing regulator
 
+## Subjects
+
+- Technology > Cybersecurity > Hacks & Breaches > Crypto Exchange Hacks (primary): An attacker emptied Binance's hot wallets on ten blockchains in about four hours.
+- Crime, Law & Justice > Cybercrime > Crypto Theft: Three blockchain analytics firms count $6.36 billion to $6.43 billion taken, the largest crypto theft on record at the value when taken.
+- Business & Finance > Crypto & Digital Assets > Crypto Exchanges > Withdrawals & Customer Funds: Customer withdrawals, and Binance's statement that it will cover every loss.
+- Technology > Cybersecurity > Threat Actors > State-Sponsored Hacking: The analytics firms blame North Korea's TraderTraitor group; Binance and the US government have not confirmed who did it.
+- Technology > Cybersecurity > Attack Methods > Private Key & Wallet Compromise: The transfers ran from hot wallets, including 50 pre-signed authorizations on Ethereum.
+- Technology > Cybersecurity > Security Response > Asset Freezes & Recovery: About $3 billion has been frozen so far.
+- Business & Finance > Crypto & Digital Assets > Stablecoins > Stablecoin Freezes: Tether, Circle, Ripple and World Liberty Financial froze about $2.67 billion in stablecoins.
+- Business & Finance > Crypto & Digital Assets > Crypto Markets > Bitcoin: The file's markets fact: Bitcoin at a six-week low of $76,368.
+- Society > Misinformation & Fact-Checks > Viral Claims: Ten claims spread across platforms; each is checked against its sources in the file.
+
 ## Sources
 
 ### From Binance (23)

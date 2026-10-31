@@ -28,3 +28,26 @@ CREATE TABLE IF NOT EXISTS events.document (
   UNIQUE (event_slug, url)
 );
 CREATE INDEX IF NOT EXISTS document_event_platform ON events.document (event_slug, platform);
+
+-- 2026-10-31: the subject taxonomy (Knowledge Graph Feeds) and where each story sits in it. Authored in
+-- taxonomy/subjects.outline, loaded by taxonomy/build_taxonomy.py. A story has one primary subject and any number of
+-- secondary ones, each with the reason it was filed there.
+CREATE TABLE IF NOT EXISTS events.subject (
+  id          text PRIMARY KEY,        -- the slug path, e.g. technology/cybersecurity/hacks-breaches/crypto-exchange-hacks
+  parent_id   text REFERENCES events.subject(id) ON DELETE CASCADE,
+  level       smallint NOT NULL CHECK (level BETWEEN 1 AND 10),
+  label       text NOT NULL,
+  description text,
+  iptc        text,                    -- IPTC Media Topic code where mapped (the top level today)
+  sort        integer NOT NULL
+);
+CREATE TABLE IF NOT EXISTS events.event_subject (
+  event_slug  text NOT NULL REFERENCES events.event(slug) ON DELETE CASCADE,
+  subject_id  text NOT NULL REFERENCES events.subject(id),
+  role        text NOT NULL CHECK (role IN ('primary', 'secondary')),
+  why         text NOT NULL,
+  PRIMARY KEY (event_slug, subject_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS event_subject_one_primary ON events.event_subject (event_slug) WHERE role = 'primary';
+-- The order the subjects are listed in the story's file: most important first, so pages show them that way.
+ALTER TABLE events.event_subject ADD COLUMN IF NOT EXISTS sort integer NOT NULL DEFAULT 0;

@@ -1,0 +1,51 @@
+{
+  "event": "binance-hack-2026",
+  "note": "Where the story sits in taxonomy/subjects.outline. Each reason restates the event file; nothing here is new reporting.",
+  "subjects": [
+    {
+      "id": "technology/cybersecurity/hacks-breaches/crypto-exchange-hacks",
+      "role": "primary",
+      "why": "An attacker emptied Binance's hot wallets on ten blockchains in about four hours."
+    },
+    {
+      "id": "crime-law-justice/cybercrime/crypto-theft",
+      "role": "secondary",
+      "why": "Three blockchain analytics firms count $6.36 billion to $6.43 billion taken, the largest crypto theft on record at the value when taken."
+    },
+    {
+      "id": "business-finance/crypto-digital-assets/crypto-exchanges/withdrawals-customer-funds",
+      "role": "secondary",
+      "why": "Customer withdrawals, and Binance's statement that it will cover every loss."
+    },
+    {
+      "id": "technology/cybersecurity/threat-actors/state-sponsored-hacking",
+      "role": "secondary",
+      "why": "The analytics firms blame North Korea's TraderTraitor group; Binance and the US government have not confirmed who did it."
+    },
+    {
+      "id": "technology/cybersecurity/attack-methods/private-key-wallet-compromise",
+      "role": "secondary",
+      "why": "The transfers ran from hot wallets, including 50 pre-signed authorizations on Ethereum."
+    },
+    {
+      "id": "technology/cybersecurity/security-response/asset-freezes-recovery",
+      "role": "secondary",
+      "why": "About $3 billion has been frozen so far."
+    },
+    {
+      "id": "business-finance/crypto-digital-assets/stablecoins/stablecoin-freezes",
+      "role": "secondary",
+      "why": "Tether, Circle, Ripple and World Liberty Financial froze about $2.67 billion in stablecoins."
+    },
+    {
+      "id": "business-finance/crypto-digital-assets/crypto-markets/bitcoin",
+      "role": "secondary",
+      "why": "The file's markets fact: Bitcoin at a six-week low of $76,368."
+    },
+    {
+      "id": "society/misinformation-fact-checks/viral-claims",
+      "role": "secondary",
+      "why": "Ten claims spread across platforms; each is checked against its sources in the file."
+    }
+  ]
+}

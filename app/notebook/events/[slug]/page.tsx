@@ -91,7 +91,24 @@ function graph(e: EventFile) {
         inLanguage: "en",
         isAccessibleForFree: true,
         mainEntityOfPage: url,
-        about: { "@type": "Thing", name: e.title },
+        // The story's subjects as terms in this site's taxonomy, and the IPTC Media Topic domains they map to.
+        about: [
+          { "@type": "Thing", name: e.title },
+          ...e.subjects.map((t) => ({
+            "@type": "DefinedTerm",
+            name: t.path[t.path.length - 1],
+            alternateName: t.path.join(" > "),
+            termCode: t.id,
+            inDefinedTermSet: `${SITE_URL}/taxonomy/subjects.json`,
+          })),
+          ...Array.from(new Map(e.subjects.filter((t) => t.iptc).map((t) => [t.iptc as string, t.path[0]])).entries()).map(([code, name]) => ({
+            "@type": "DefinedTerm",
+            name,
+            termCode: code,
+            url: `http://cv.iptc.org/newscodes/mediatopic/${code.replace("medtop:", "")}`,
+            inDefinedTermSet: "http://cv.iptc.org/newscodes/mediatopic/",
+          })),
+        ],
         citation: e.facts.flatMap((f) => f.evidence.map((v) => v.url)).filter((u, i, a) => u && a.indexOf(u) === i),
         liveBlogUpdate: e.moments.map((m) => ({
           "@type": "BlogPosting",
