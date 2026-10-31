@@ -5,6 +5,8 @@ import { withSeoOverrides } from "@/lib/seo-overrides";
 import { getBusiness, namesOf } from "@/lib/business-source";
 import { articleHref, companyHref, personHref } from "@/lib/business-paths";
 import { plainText } from "@/lib/business-validate";
+import { getNews } from "@/lib/news-source";
+import { businessEvents, businessNews, businessSectors } from "@/lib/business-graph";
 
 const metadata: Metadata = {
   title: "Business Notebook",
@@ -15,10 +17,10 @@ const metadata: Metadata = {
 };
 export const generateMetadata = withSeoOverrides("/notebook/business", metadata);
 
-// The lists come from the published content file, so a note, a company or a
-// person published without a deploy is listed here at once.
+// The notes, companies and people come from the published content file, so one
+// published without a deploy is listed here at once; so are the AI Updates.
 export default async function Page() {
-  const b = await getBusiness();
+  const [b, updates] = await Promise.all([getBusiness(), getNews()]);
   const names = namesOf(b);
   const name = (target: string, ref: string) => names[target as keyof typeof names]?.[ref];
   return (
@@ -29,6 +31,10 @@ export default async function Page() {
       }))}
       companies={b.companies.map((c) => ({ href: companyHref(c.slug), name: c.name, summary: plainText(c.summary, name) }))}
       people={b.people.map((p) => ({ href: personHref(p.slug), name: p.name, role: p.role }))}
+      // The business side of the site's other datasets, linked to the pages that own them (src/lib/business-graph.ts).
+      sectors={businessSectors()}
+      news={businessNews(updates)}
+      events={businessEvents()}
     />
   );
 }

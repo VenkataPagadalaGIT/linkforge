@@ -7,6 +7,7 @@ import { breadcrumbLd, companyLd } from "@/lib/business-jsonld";
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import { jsonLdScript } from "@/lib/jsonld";
 import { withSeoOverrides } from "@/lib/seo-overrides";
+import { graphFileFor } from "@/lib/business-graph";
 
 type Params = { slug: string };
 
@@ -38,6 +39,7 @@ export default async function Page({ params }: { params: Params }) {
   if (!c) notFound();
   const people = b.people.filter((p) => p.company === c.slug);
   const articles = b.articles.filter((a) => a.company === c.slug);
+  const graphFile = graphFileFor(c.slug); // the same company's full file in the AI Intelligence Graph, if it has one
   const ld = [companyLd(c, people), breadcrumbLd([{ name: c.name, path: companyHref(c.slug) }])];
   return (
     <>
@@ -55,6 +57,7 @@ export default async function Page({ params }: { params: Params }) {
         related={[
           ...(people.length ? [{ title: "People", links: people.map((p) => ({ href: personHref(p.slug), label: p.name, note: p.role, picture: p.photo, initials: initialsOf(p.name) })) }] : []),
           ...(articles.length ? [{ title: "Notes", links: articles.map((a) => ({ href: articleHref(a.slug), label: a.title, note: a.kind })) }] : []),
+          ...(graphFile ? [{ title: "In the AI Intelligence Graph", links: [{ href: graphFile.href, label: graphFile.name, note: "the company's page in the graph, with its sources" }] }] : []),
         ]}
         sections={c.sections}
         sources={c.sources}
