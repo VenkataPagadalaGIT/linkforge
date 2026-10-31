@@ -1,11 +1,12 @@
 "use client";
 /**
- * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
+ * Navbar: the owner's IA (2026-10-30). Five tabs and the CTA:
  *   Venkata Pagadala: about, research, talks. Research and talks live under
  *     the person, so "Research & Talks" is no longer a door of its own.
  *   Notebooks: the AI, Business and Conference notebooks, then AI: encyclopedia, contributors, the intelligence
  *     graph, the roadmap, All Guides (/guides, grouped by src/data/learnHub.ts) and All Topics A to Z.
  *   User First Intelligence: the label opens the framework; the panel is Persona, all the persona tools.
+ *   Tech & Business News (/ai-updates, the front page) and My Own Social Media (/feeds): one page each, plain tabs.
  *   Contact.
  *
  * Explore in 3D is no longer a menu. Any page with a 3D scene carries a small "3D" badge read from
@@ -160,7 +161,6 @@ const MEGA: MegaMenu[] = [
           { label: "AI Notebook", note: "the hub: chapters, timeline, contributors", to: "/notebook/ai" },
           { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
           { label: "Conference Notebook", note: "3 conferences, 69 talks, 78 speakers", to: "/notebook/conference" },
-          { label: "Tech & Business: News and Updates", note: "AI, tech and business stories, each with its sources", to: "/ai-updates" },
         ],
       },
       {
@@ -177,7 +177,7 @@ const MEGA: MegaMenu[] = [
     ].map((sec) => ({ ...sec, items: sec.items.map(with3d) })),
     footnote: "3D marks a page you can explore in 3D. All Guides groups every guide by subject; All Topics lists the same guides by topic, A to Z.",
     seeAll: { label: "The full notebook", to: "/notebook" },
-    active: ["/notebook", "/ai-contributors", "/guides", "/ai-updates"],
+    active: ["/notebook", "/ai-contributors", "/guides"],
   },
   {
     id: "ufi",
@@ -191,7 +191,11 @@ const MEGA: MegaMenu[] = [
   },
 ];
 
-const FLAT: { label: string; to: string; dim: boolean }[] = [];
+/** Tabs that are one page each, so they open it directly (owner, 2026-10-30: "separate Tab"). */
+const FLAT: { label: string; to: string; dim: boolean }[] = [
+  { label: "Tech & Business News", to: "/ai-updates", dim: false },
+  { label: "My Own Social Media", to: "/feeds", dim: false },
+];
 
 /**
  * The single active door. Prefixes overlap (/notebook/ai/map is both under
@@ -283,11 +287,10 @@ const Navbar = () => {
             VP_
           </Link>
 
-          {/* Desktop, from lg. Three doors, Contact and the theme toggle need
-              about 700px, so they fit at 1024px; seven doors needed xl. At md
-              (768px) the old labels collided with the logo, so below lg the
-              drawer takes over. */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop, from xl. Five tabs, Contact and the theme toggle need
+              about 1,070px, more than the 976px a 1024px screen leaves, so
+              below xl the drawer takes over. */}
+          <div className="hidden xl:flex items-center gap-8">
             {MEGA.map((m) => (
               <div key={m.id} onMouseEnter={() => hoverOpen(m.id)} className="relative">
                 {/* A real link, JS-enhanced into a menu toggle. On locked-down
@@ -341,7 +344,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile toggle */}
-          <div className="lg:hidden flex items-center gap-2">
+          <div className="xl:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
               type="button"
@@ -369,7 +372,7 @@ const Navbar = () => {
           openMenu === m.id ? (
             <div
               key={m.id}
-              className="hidden lg:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
+              className="hidden xl:block absolute left-0 right-0 top-16 z-50 bg-background border-b border-border shadow-2xl"
               onMouseEnter={() => {
                 if (closeTimer.current) window.clearTimeout(closeTimer.current);
               }}
@@ -425,7 +428,7 @@ const Navbar = () => {
       {/* Mobile menu: each mega menu becomes an accordion section */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto lg:hidden"
+          className="fixed inset-0 top-16 z-40 bg-background overflow-y-auto xl:hidden"
           role="dialog"
           aria-modal="true"
           data-testid="mobile-menu-panel"

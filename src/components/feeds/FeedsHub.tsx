@@ -18,7 +18,7 @@ export default function FeedsHub() {
   return (
     <div className="min-h-screen bg-[#05060a] pb-20 pt-24 text-white" style={{ background: "radial-gradient(900px 500px at 10% 0%, rgba(239,68,68,0.20), transparent 70%), radial-gradient(800px 500px at 100% 20%, rgba(37,99,235,0.18), transparent 70%), #05060a" }}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#25F4EE]"><span className="text-[#ef4444]">●</span> Knowledge Graph Feeds</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#25F4EE]"><span className="text-[#ef4444]">●</span> My Own Social Media · Knowledge Graph Feeds</p>
         <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold leading-tight sm:text-5xl">Every story, read from every platform, checked against its sources.</h1>
         <p className="mt-3 max-w-2xl text-sm text-white/75">Swipe a topic like social media: what happened, the impact, the details, the theories (guess true or false), what comes next, then every source. The full page is always one tap away.</p>
 

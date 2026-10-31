@@ -179,7 +179,7 @@ export default function NewsFront({ front }: { front: FrontPage }) {
         </div>
 
         <header className="pb-4 pt-6 text-center">
-          <p className="mb-2 font-sans text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Notebooks · News and Updates</p>
+          <p className="mb-2 font-sans text-[11px] uppercase tracking-[0.25em] text-muted-foreground">News and Updates</p>
           <h1 className="font-serif text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">Tech &amp; Business</h1>
           <p className="mt-3 font-serif text-sm italic text-muted-foreground sm:text-base">
             News and updates on AI, technology and business. Every story carries its primary sources.
