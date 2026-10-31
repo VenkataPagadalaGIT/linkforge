@@ -1,7 +1,7 @@
 "use client";
 /**
  * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
- *   Venkata Pagadala: about, experience, projects, research, talks and writing. Research and talks live under
+ *   Venkata Pagadala: about, research, talks and writing. Research and talks live under
  *     the person, so "Research & Talks" is no longer a door of its own.
  *   Notebooks: the AI, Business and Conference notebooks, AI Updates, the feeds, and Learn, which holds every
  *     guide, classified once in src/data/learnHub.ts. The /guides and /notebook hubs render that same list.
@@ -131,9 +131,7 @@ const MEGA: MegaMenu[] = [
         title: "About",
         items: [
           { label: "About me", note: "who I am and what I build", to: "/about" },
-          { label: "Experience", note: "the roles, in order", to: "/experience" },
-          { label: "Projects", note: "what I have built", to: "/projects" },
-          { label: "Solutions", note: "how I can help a team", to: "/solutions" },
+          { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badges: ["3D"] },
         ],
       },
       {
@@ -152,13 +150,12 @@ const MEGA: MegaMenu[] = [
         items: [
           { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
           { label: "Every LinkedIn post", note: "the archive, by year and by topic", to: "/venkata-pagadala-universe" },
-          { label: "The Living Portrait", note: "65k tiles wearing a neural net", to: "/#living-portrait", badges: ["3D"] },
         ],
       },
     ],
     footnote: "Every paper, talk and mention links to its source, and each one is worded to match what that source actually says.",
     seeAll: { label: "Research, talks and media", to: "/research-and-talks" },
-    active: ["/about", "/experience", "/projects", "/solutions", "/research-and-talks", "/publications", "/insights", "/venkata-pagadala-universe", "/credits"],
+    active: ["/about", "/research-and-talks", "/publications", "/insights", "/venkata-pagadala-universe", "/credits"],
   },
   {
     id: "notebooks",
