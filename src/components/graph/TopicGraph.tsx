@@ -43,6 +43,10 @@ function radius(n: TopicGraphNode, maxCount: number, maxUsd: number) {
 
 const short = (s: string, n = 26) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
 
+/** Two decimals: the server and the browser can differ in the last digit of a cosine, which React reports as a
+ * hydration mismatch on every coordinate. */
+const r2 = (v: number) => Math.round(v * 100) / 100;
+
 export function TopicGraph({ data, title = "The knowledge graph" }: { data: TopicGraphData; title?: string }) {
   const [focus, setFocus] = React.useState<string | null>(null);
   const [filter, setFilter] = React.useState("");
@@ -70,11 +74,11 @@ export function TopicGraph({ data, title = "The knowledge graph" }: { data: Topi
       const kids = [...new Set(children.get(c.id) ?? [])];
       const span = (2 * Math.PI * Math.max(1, kids.length)) / total;
       const mid = start + span / 2;
-      pos.set(c.id, { x: 150 * Math.cos(mid), y: 150 * Math.sin(mid), a: mid });
+      pos.set(c.id, { x: r2(150 * Math.cos(mid)), y: r2(150 * Math.sin(mid)), a: mid });
       kids.forEach((k, i) => {
         const a = start + (span * (i + 0.5)) / kids.length;
         const r = 300 + (i % 2) * 52; // two staggered rings so neighbours do not collide
-        pos.set(k, { x: r * Math.cos(a), y: r * Math.sin(a), a });
+        pos.set(k, { x: r2(r * Math.cos(a)), y: r2(r * Math.sin(a)), a });
       });
       start += span;
     }
@@ -144,8 +148,8 @@ export function TopicGraph({ data, title = "The knowledge graph" }: { data: Topi
             const c = color(n);
             const out = n.kind !== "event" && n.kind !== "category";
             const anchor = Math.cos(p.a) > 0.25 ? "start" : Math.cos(p.a) < -0.25 ? "end" : "middle";
-            const lx = out ? p.x + Math.cos(p.a) * (r + 6) : p.x;
-            const ly = out ? p.y + Math.sin(p.a) * (r + 6) + 4 : p.y + r + 16;
+            const lx = r2(out ? p.x + Math.cos(p.a) * (r + 6) : p.x);
+            const ly = r2(out ? p.y + Math.sin(p.a) * (r + 6) + 4 : p.y + r + 16);
             return (
               <g key={n.id} opacity={lit(n.id) ? 1 : 0.18} style={{ cursor: "pointer" }}
                 onMouseEnter={() => setFocus(n.id)} onClick={(ev) => { ev.stopPropagation(); setFocus(focus === n.id ? null : n.id); }}>

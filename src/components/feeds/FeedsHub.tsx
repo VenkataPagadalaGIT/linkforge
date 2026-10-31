@@ -1,4 +1,5 @@
 import { EVENTS } from "@/data/events";
+import { coverOf } from "@/components/feeds/cover";
 
 const CHAPTERS = [
   ["happened", "What happened", "the story in one screen"],
@@ -14,7 +15,7 @@ const CHAPTERS = [
 export default function FeedsHub() {
   const feeds = Object.values(EVENTS).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const top = feeds[0];
-  const hero = top?.featured ? top.sources.find((s) => s.id === top.featured) : undefined;
+  const heroThumb = top ? coverOf(top) : null; // an official image, never a creator thumbnail (see cover.ts)
   return (
     <div className="min-h-screen bg-[#05060a] pb-20 pt-24 text-white" style={{ background: "radial-gradient(900px 500px at 10% 0%, rgba(239,68,68,0.20), transparent 70%), radial-gradient(800px 500px at 100% 20%, rgba(37,99,235,0.18), transparent 70%), #05060a" }}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -24,9 +25,9 @@ export default function FeedsHub() {
 
         {top && (
           <section className="relative mt-8 overflow-hidden rounded-3xl border border-white/10" aria-label="Featured feed">
-            {hero?.thumb && (
+            {heroThumb && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={hero.thumb} alt="" className="absolute inset-0 h-full w-full object-cover opacity-50" />
+              <img src={heroThumb} alt="" className="absolute inset-0 h-full w-full object-cover opacity-50" />
             )}
             <div className="absolute inset-0 bg-gradient-to-r from-[#05060a] via-[#05060a]/80 to-transparent" />
             <div className="relative max-w-2xl p-6 sm:p-10">
@@ -62,12 +63,12 @@ export default function FeedsHub() {
           <h2 className="mb-3 font-display text-lg font-bold">Live feeds <span className="font-mono text-[10px] font-normal text-white/50">{feeds.length}</span></h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {feeds.map((f) => {
-              const pic = f.featured ? f.sources.find((s) => s.id === f.featured)?.thumb : null;
+              const pic = coverOf(f);
               return (
                 <a key={f.slug} href={`/feeds/${f.slug}`} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition hover:border-[#ef4444]/60">
                   {pic && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={pic} alt={`${f.title}: featured video frame`} className="aspect-video w-full object-cover opacity-90 transition group-hover:scale-[1.03]" />
+                    <img src={pic} alt={`${f.title}: image from an official post`} className="aspect-video w-full object-cover opacity-90 transition group-hover:scale-[1.03]" />
                   )}
                   <span className="block p-4">
                     <span className="block font-display text-lg font-bold">{f.title}</span>
