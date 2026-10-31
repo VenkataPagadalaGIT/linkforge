@@ -449,7 +449,7 @@ type Station = { id: string; label: string; count: number; seen?: number };
 type Click = (k: "tick" | "pick" | "stop") => void;
 
 /** The phone's topic control: a radio tuner across the top. Drag it, it ticks past each topic; let go to tune. */
-function TopicTuner({ items, index, onPick, click }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click }) {
+function TopicTuner({ items, index, onPick, click, onEdit }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click; onEdit?: () => void }) {
   const SP = 112;
   const [pos, setPos] = React.useState<number | null>(null);
   const drag = React.useRef<{ x: number; i: number; last: number; moved: boolean; id: number } | null>(null);
@@ -516,6 +516,11 @@ function TopicTuner({ items, index, onPick, click }: { items: Station[]; index: 
             <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.seen ? `${t.seen}/${t.count} seen` : t.count}</span>
           </button>
         ))}
+        {onEdit && (
+          <button type="button" onClick={onEdit} className="flex h-full shrink-0 items-center justify-center px-1 text-[12px] font-bold uppercase tracking-wider text-[#ef4444]" style={{ width: SP }}>
+            + Topics
+          </button>
+        )}
       </div>
       <span className="pointer-events-none absolute bottom-0 left-1/2 h-3.5 w-0.5 -translate-x-1/2 rounded bg-[#ef4444] shadow-[0_0_8px_#ef4444]" aria-hidden="true" />
       <span className="pointer-events-none absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#ef4444]" aria-hidden="true" />
@@ -523,39 +528,108 @@ function TopicTuner({ items, index, onPick, click }: { items: Station[]; index: 
   );
 }
 
-/** The desktop topic control: a knurled knob with a lit notch and a scale, turned like a car's volume knob. */
-function TopicKnob({ items, index, onPick, click }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click }) {
+/**
+ * One row of the Topics or Platforms list: a checkbox, the name, how many posts (or how many seen), and "Only" to keep
+ * just this one. Rows are 40px tall for fingers; "Only" is always visible on touch screens and below lg, on hover above.
+ */
+function ToggleRow({ checked, label, icon, count, seen, focused, onToggle, onOnly }: { checked: boolean; label: string; icon?: React.ReactNode; count: number; seen?: number; focused?: boolean; onToggle: () => void; onOnly: () => void }) {
+  return (
+    <li className={`group flex items-center gap-1 rounded-lg pr-1 transition-colors hover:bg-white/[0.06] ${focused ? "bg-white/[0.08]" : ""}`}>
+      <button type="button" role="checkbox" aria-checked={checked} onClick={onToggle} className="flex min-h-[40px] min-w-0 flex-1 items-center gap-2.5 px-2 text-left">
+        <span className={`grid h-[18px] w-[18px] shrink-0 place-items-center rounded-[5px] border transition-colors ${checked ? "border-white bg-white text-black" : "border-white/35 text-transparent"}`} aria-hidden="true">
+          <Check size={12} strokeWidth={3.5} />
+        </span>
+        {icon}
+        <span className={`min-w-0 truncate text-[14px] ${checked ? "font-medium text-white" : "text-white/50"}`}>{label}</span>
+        {focused && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#ef4444]" role="img" aria-label="the dial is on this topic" />}
+      </button>
+      <button type="button" onClick={onOnly} aria-label={`Only ${label}`} className="shrink-0 rounded-md px-2 py-1.5 text-[11px] font-semibold text-white/55 transition hover:bg-white/10 hover:text-white lg:opacity-0 lg:focus:opacity-100 lg:group-hover:opacity-100 [@media(hover:none)]:opacity-100">
+        Only
+      </button>
+      <span className="w-[52px] shrink-0 text-right text-[12px] tabular-nums text-white/45">{seen ? `${seen}/${count}` : count}</span>
+    </li>
+  );
+}
+
+/**
+ * A physical on/off switch for a platform, after the hardware toggles the owner pointed to: a recessed track that fills
+ * with the site's red when on, and a brushed-metal thumb (a conic gradient catches the light like machined aluminium).
+ */
+function Switch({ on }: { on: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative inline-flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-[background,box-shadow] duration-200"
+      style={{
+        background: on ? "linear-gradient(180deg, #f05252 0%, #c81e1e 100%)" : "linear-gradient(180deg, #0f0f12 0%, #1c1c21 100%)",
+        boxShadow: on ? "inset 0 1px 2px rgba(0,0,0,0.35), 0 0 0 1px rgba(239,68,68,0.45)" : "inset 0 2px 4px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08)",
+      }}
+    >
+      <span
+        className="h-5 w-5 rounded-full transition-transform duration-200 ease-out"
+        style={{
+          transform: on ? "translateX(20px)" : "translateX(0)",
+          background: "radial-gradient(circle at 35% 28%, rgba(255,255,255,0.95), rgba(255,255,255,0) 42%), conic-gradient(from 20deg, #c9cad1, #f7f7f9, #b4b5bd, #ededf0, #bfc0c8, #f4f4f6, #c9cad1)",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.55), inset 0 -1px 1px rgba(0,0,0,0.25)",
+        }}
+      />
+    </span>
+  );
+}
+
+/** A platform row: the whole row toggles, the switch is the control screen readers hear, "Only" keeps just this one. */
+function SwitchRow({ id, on, label, icon, count, onToggle, onOnly }: { id: string; on: boolean; label: string; icon: React.ReactNode; count: number; onToggle: () => void; onOnly: () => void }) {
+  return (
+    <li className="group flex items-center gap-1 rounded-lg pl-2 pr-0.5 transition-colors hover:bg-white/[0.06]">
+      <button type="button" tabIndex={-1} aria-hidden="true" onClick={onToggle} className="flex min-h-[44px] min-w-0 flex-1 items-center gap-2.5 text-left">
+        {icon}
+        <span id={id} className={`min-w-0 truncate text-[14px] ${on ? "font-medium text-white" : "text-white/50"}`}>{label}</span>
+      </button>
+      <button type="button" onClick={onOnly} aria-label={`Only ${label}`} className="shrink-0 rounded-md px-2 py-1.5 text-[11px] font-semibold text-white/55 transition hover:bg-white/10 hover:text-white lg:opacity-0 lg:focus:opacity-100 lg:group-hover:opacity-100 [@media(hover:none)]:opacity-100">
+        Only
+      </button>
+      <span className="w-9 shrink-0 text-right text-[12px] tabular-nums text-white/45">{count}</span>
+      <button type="button" role="switch" aria-checked={on} aria-labelledby={id} onClick={onToggle} className="grid min-h-[44px] shrink-0 place-items-center rounded-full px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+        <Switch on={on} />
+      </button>
+    </li>
+  );
+}
+
+/**
+ * The topic dial, after the matte thermostat knobs the owner pointed to on Dribbble: a dark knob with one indicator dot,
+ * a dotted arc that fills to the setting, the setting in large type beneath, then a plain list. Turn it by dragging
+ * (finger or mouse), the wheel or the arrow keys; a tap on the arc jumps there. Each step clicks.
+ */
+function TopicDial({ items, index, onPick, click, onEdit }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click; onEdit: () => void }) {
   const ref = React.useRef<HTMLDivElement>(null);
   const drag = React.useRef(false);
   const wheel = React.useRef(0);
   const n = items.length;
   const step = n > 1 ? 270 / (n - 1) : 0;
-  const angle = n > 1 ? -135 + index * step : 0;
-  const pick = React.useCallback(
-    (i: number) => {
-      const c = Math.max(0, Math.min(n - 1, i));
-      if (c === index) {
-        if (i !== c) click("stop");
-        return;
-      }
-      click("tick");
-      onPick(c);
-    },
-    [n, index, click, onPick]
-  );
+  const angle = n > 1 ? -135 + index * step : -135;
+  const pick = (i: number) => {
+    const c = Math.max(0, Math.min(n - 1, i));
+    if (c === index) {
+      if (i !== c) click("stop");
+      return;
+    }
+    click("tick");
+    onPick(c);
+  };
   const latest = React.useRef(pick);
   latest.current = pick;
-  const indexRef = React.useRef(index);
-  indexRef.current = index;
+  const at = React.useRef(index);
+  at.current = index;
   React.useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // a native listener, so the page does not scroll while the knob turns; one step per notch of the wheel
+    // a native listener, so the page does not scroll while the dial turns; one step per notch of the wheel
     const w = (ev: WheelEvent) => {
       ev.preventDefault();
       wheel.current += ev.deltaY;
       if (Math.abs(wheel.current) < 40) return;
-      latest.current(indexRef.current + (wheel.current > 0 ? 1 : -1));
+      latest.current(at.current + (wheel.current > 0 ? 1 : -1));
       wheel.current = 0;
     };
     el.addEventListener("wheel", w, { passive: false });
@@ -566,51 +640,79 @@ function TopicKnob({ items, index, onPick, click }: { items: Station[]; index: n
     const deg = Math.max(-135, Math.min(135, (Math.atan2(x - (r.left + r.width / 2), -(y - (r.top + r.height / 2))) * 180) / Math.PI));
     return step ? Math.round((deg + 135) / step) : 0;
   };
+  const S = 224;
+  const C = S / 2;
+  const R = 100;
+  const DOTS = 41;
+  const gap = 270 / (DOTS - 1);
+  const cur = items[index];
   return (
-    <div
-      ref={ref}
-      role="slider"
-      tabIndex={0}
-      aria-label="Topic dial"
-      aria-valuemin={0}
-      aria-valuemax={n - 1}
-      aria-valuenow={index}
-      aria-valuetext={items[index]?.label}
-      onPointerDown={(ev) => {
-        ev.currentTarget.setPointerCapture(ev.pointerId);
-        drag.current = true;
-        pick(fromPointer(ev.clientX, ev.clientY));
-      }}
-      onPointerMove={(ev) => {
-        if (drag.current) pick(fromPointer(ev.clientX, ev.clientY));
-      }}
-      onPointerUp={() => (drag.current = false)}
-      onKeyDown={(ev) => {
-        const k = ev.key;
-        if (k === "ArrowRight" || k === "ArrowUp") pick(index + 1);
-        else if (k === "ArrowLeft" || k === "ArrowDown") pick(index - 1);
-        else if (k === "Home") pick(0);
-        else if (k === "End") pick(n - 1);
-        else return;
-        ev.preventDefault();
-        ev.stopPropagation();
-      }}
-      className="relative h-44 w-44 cursor-grab touch-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#25F4EE] active:cursor-grabbing"
-    >
-      {items.map((t, i) => (
-        <span
-          key={t.id}
-          aria-hidden="true"
-          className={`absolute left-1/2 top-1/2 h-2.5 w-[3px] rounded-full ${i === index ? "bg-[#ef4444] shadow-[0_0_6px_#ef4444]" : i < index ? "bg-white/70" : "bg-white/25"}`}
-          style={{ transform: `translate(-50%, -50%) rotate(${-135 + i * step}deg) translateY(-82px)` }}
-        />
-      ))}
-      <div className="absolute inset-5 rounded-full shadow-[0_12px_30px_rgba(0,0,0,0.65),inset_0_2px_3px_rgba(255,255,255,0.22)]" style={{ background: "radial-gradient(circle at 35% 30%, #4b5563 0%, #1f2937 45%, #0b0f17 100%)" }} aria-hidden="true">
-        <div className="absolute inset-0 rounded-full transition-transform duration-150 ease-out" style={{ transform: `rotate(${angle}deg)`, backgroundImage: "repeating-conic-gradient(rgba(255,255,255,0.10) 0deg 3deg, transparent 3deg 9deg)" }}>
-          <span className="absolute left-1/2 top-2 h-5 w-1.5 -translate-x-1/2 rounded-full bg-[#ef4444] shadow-[0_0_10px_#ef4444]" />
+    <div className="flex flex-col items-center">
+      <p className="flex items-center gap-1.5 text-[12px] font-semibold text-white/65">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#ef4444]" aria-hidden="true" /> Topic
+      </p>
+      <div
+        ref={ref}
+        role="slider"
+        tabIndex={0}
+        aria-label="Topic dial"
+        aria-valuemin={0}
+        aria-valuemax={n - 1}
+        aria-valuenow={index}
+        aria-valuetext={cur?.label}
+        onPointerDown={(ev) => {
+          ev.currentTarget.setPointerCapture(ev.pointerId);
+          drag.current = true;
+          pick(fromPointer(ev.clientX, ev.clientY));
+        }}
+        onPointerMove={(ev) => {
+          if (drag.current) pick(fromPointer(ev.clientX, ev.clientY));
+        }}
+        onPointerUp={() => (drag.current = false)}
+        onPointerCancel={() => (drag.current = false)}
+        onKeyDown={(ev) => {
+          const k = ev.key;
+          if (k === "ArrowRight" || k === "ArrowUp") pick(index + 1);
+          else if (k === "ArrowLeft" || k === "ArrowDown") pick(index - 1);
+          else if (k === "Home") pick(0);
+          else if (k === "End") pick(n - 1);
+          else return;
+          ev.preventDefault();
+          ev.stopPropagation();
+        }}
+        className="relative cursor-grab touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/30 active:cursor-grabbing"
+        style={{ width: S, height: S }}
+      >
+        <svg width={S} height={S} className="absolute inset-0" aria-hidden="true">
+          {Array.from({ length: DOTS }, (_, k) => {
+            const a = -135 + gap * k;
+            const rad = ((a - 90) * Math.PI) / 180;
+            const here = Math.abs(a - angle) <= gap / 2;
+            return <circle key={k} cx={Math.round((C + R * Math.cos(rad)) * 100) / 100} cy={Math.round((C + R * Math.sin(rad)) * 100) / 100} r={here ? 3.4 : 1.7} fill={here ? "#ef4444" : a < angle ? "rgba(255,255,255,0.82)" : "rgba(255,255,255,0.14)"} />;
+          })}
+        </svg>
+        <div
+          className="absolute rounded-full"
+          style={{
+            inset: 36,
+            background: "radial-gradient(circle at 50% 30%, #26262b 0%, #141417 55%, #0b0b0d 100%)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            boxShadow: "0 18px 34px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -10px 18px rgba(0,0,0,0.55)",
+          }}
+        >
+          <div className="absolute inset-0 rounded-full transition-transform duration-200 ease-out" style={{ transform: `rotate(${angle}deg)` }}>
+            <span className="absolute left-1/2 top-3 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]" />
+          </div>
         </div>
-        <div className="absolute inset-7 rounded-full" style={{ background: "radial-gradient(circle at 40% 35%, #374151, #111827)" }} />
       </div>
+      <p className="-mt-2 max-w-full truncate px-2 font-display text-[26px] font-bold leading-tight text-white" aria-live="polite">{cur?.label}</p>
+      <p className="mt-1 flex items-center gap-1.5 text-[12px] text-white/50">
+        <span className="h-1 w-1 rounded-full bg-white/45" aria-hidden="true" />
+        {cur?.count ?? 0} posts{cur?.seen ? ` · ${cur.seen} seen` : ""}
+      </p>
+      <button type="button" onClick={onEdit} className="mt-3 rounded-full bg-white/[0.08] px-4 py-1.5 text-[12px] font-semibold text-white/85 hover:bg-white/[0.14]">
+        Pick topics
+      </button>
     </div>
   );
 }
@@ -963,7 +1065,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       return;
     }
     click("tick");
-    setPrefs({ off });
+    setPrefs({ off, ...(off.includes(prefs.topic) ? { topic: "all" } : {}) });
   };
 
   // Scrolling feed: tap to read, double-tap to like, swipe sideways to change chapter (a claim takes sideways itself).
@@ -1562,13 +1664,13 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           {live && <span className="rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">Live</span>}
-          <button type="button" onClick={() => setSettings(true)} aria-label="Tune your feed: topics, platforms, view and sound" className="grid h-9 w-9 place-items-center rounded-full bg-black/40 text-white">
-            <SlidersHorizontal size={18} />
+          <button type="button" onClick={() => setSettings(true)} aria-label="Tune your feed: topics, platforms, view and sound" className="flex h-9 items-center gap-1.5 rounded-full bg-black/40 px-3 text-[13px] font-bold text-white">
+            <SlidersHorizontal size={16} /> Topics
           </button>
         </div>
       </div>
       <div className="pointer-events-auto mt-2">
-        <TopicTuner items={stations} index={station} onPick={tune} click={click} />
+        <TopicTuner items={stations} index={station} onPick={tune} click={click} onEdit={() => setSettings(true)} />
       </div>
       {filtered && (
         <button type="button" onClick={() => setSettings(true)} className="pointer-events-auto mx-3 mt-1.5 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-1.5 overflow-hidden rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold text-white">
@@ -1652,33 +1754,80 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     </div>
   );
 
-  // Desktop: the control deck beside the phone column, a car stereo for the feed.
+  // The Topics and Platforms lists, one block for the panel beside the feed (lg and up) and the sheet (phones, tablets).
+  const matchCount = feed.filter((p) => !FRAME.has(p.kind)).length;
+  const lists = (k: string) => (
+    <>
+      <section aria-labelledby={`${k}-topics-h`}>
+        <div className="mb-1 flex items-baseline justify-between px-2">
+          <h3 id={`${k}-topics-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Topics</h3>
+          <span className="text-[11px] text-white/40">{TOPICS.length - prefs.off.length} of {TOPICS.length} on</span>
+        </div>
+        <ul>
+          {TOPICS.map((t) => (
+            <ToggleRow
+              key={t.id}
+              checked={!prefs.off.includes(t.id)}
+              label={t.label}
+              count={topicCount(t.id)}
+              seen={seenIn((p) => platformOk(p) && (p.topics ?? []).includes(t.id))}
+              focused={prefs.topic === t.id}
+              onToggle={() => toggleTopic(t.id)}
+              onOnly={() => { click("pick"); setPrefs({ off: TOPICS.map((x) => x.id).filter((id) => id !== t.id), topic: "all" }); }}
+            />
+          ))}
+        </ul>
+      </section>
+      <section aria-labelledby={`${k}-platforms-h`}>
+        <div className="mb-1 flex items-baseline justify-between px-2">
+          <h3 id={`${k}-platforms-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Platforms</h3>
+          <span className="text-[11px] text-white/40">{onPlatforms.length} of {PLATFORMS.length} on</span>
+        </div>
+        <div className="mb-1.5 flex flex-wrap gap-1.5 px-2">
+          {PRESETS.map((pr) => {
+            const on = pr.ids.length ? pr.ids.length === onPlatforms.length && pr.ids.every((x) => onPlatforms.includes(x)) : !prefs.platforms.length;
+            return (
+              <button key={pr.label} type="button" aria-pressed={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }} className={`rounded-full px-2.5 py-1 text-[12px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/[0.08] text-white/70 hover:bg-white/15"}`}>
+                {pr.label}
+              </button>
+            );
+          })}
+        </div>
+        <ul>
+          {PLATFORMS.map((pl) => (
+            <SwitchRow
+              key={pl.id}
+              id={`${k}-pl-${pl.id}`}
+              on={onPlatforms.includes(pl.id)}
+              label={pl.label}
+              icon={<PlatformIcon id={pl.id} />}
+              count={platformCount(pl.id)}
+              onToggle={() => togglePlatform(pl.id)}
+              onOnly={() => { click("pick"); setPrefs({ platforms: [pl.id] }); }}
+            />
+          ))}
+        </ul>
+      </section>
+    </>
+  );
+
+  // Beside the feed from lg (landscape tablets up); while reading below xl the panel steps aside for the reader.
   const deck = (
-    <aside className="hidden h-full w-[260px] shrink-0 flex-col justify-center gap-5 overflow-y-auto px-5 py-8 xl:flex" aria-label="Tune your feed">
-      <div className="flex items-center justify-between">
-        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">Tune your feed</p>
-        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Clicks on" : "Clicks off"} className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white/80 hover:bg-white/20">
+    <aside className={`h-full w-[300px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-white/[0.06] px-3 py-6 ${readPost ? "hidden xl:flex" : "hidden lg:flex"}`} aria-label="Tune your feed">
+      <div className="flex items-start justify-between gap-3 px-2">
+        <div>
+          <h2 className="font-display text-lg font-bold text-white">Tune your feed</h2>
+          <p className="mt-0.5 text-[13px] text-white/55">{matchCount} posts match your picks</p>
+        </div>
+        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Clicks on" : "Clicks off"} title={prefs.sound ? "Clicks on" : "Clicks off"} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white/55 hover:bg-white/10 hover:text-white">
           {prefs.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
       </div>
-      <div className="rounded-xl border border-white/10 bg-[#07130f] px-4 py-3 font-mono shadow-[inset_0_2px_10px_rgba(0,0,0,0.6)]">
-        <p className="text-[10px] uppercase tracking-[0.25em] text-[#34d399]/60">Topic</p>
-        <p className="truncate text-lg font-bold text-[#34d399]">{stations[station]?.label}</p>
-        <p className="text-[11px] text-[#34d399]/60">{stations[station]?.seen ?? 0} of {stations[station]?.count ?? 0} seen{filtered ? ` · ${onPlatforms.length} platforms` : ""}</p>
-      </div>
-      <div className="flex justify-center">
-        <TopicKnob items={stations} index={station} onPick={tune} click={click} />
-      </div>
-      <div>
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Platforms</p>
-        <div className="flex flex-wrap gap-1.5">
-          {PLATFORMS.map((pl) => (
-            <Chip key={pl.id} on={onPlatforms.includes(pl.id)} onClick={() => togglePlatform(pl.id)} count={platformCount(pl.id)}>
-              <PlatformIcon id={pl.id} /> {pl.label}
-            </Chip>
-          ))}
-        </div>
-      </div>
+      <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("deck-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+      {lists("deck")}
+      <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="self-start px-2 text-[12px] font-semibold text-white/50 hover:text-white">
+        Reset to everything
+      </button>
     </aside>
   );
 
@@ -1690,8 +1839,9 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
             <p className="font-display text-xl font-black">Tune your feed</p>
             <button type="button" onClick={() => setSettings(false)} className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black">Done</button>
           </div>
-          <p className="px-4 pb-3 text-[13px] text-white/60">{feed.length} posts match. The feed changes as you choose.</p>
+          <p className="px-4 pb-3 text-[13px] text-white/60">{matchCount} posts match. The feed changes as you choose.</p>
           <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
+            <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("sheet-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
             <section>
               <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">View</h3>
               <div className="flex flex-wrap gap-1.5">
@@ -1700,41 +1850,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 ))}
               </div>
             </section>
-            <section>
-              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">Tune to</h3>
-              <p className="mb-2 text-xs text-white/50">One topic at a time, or For You. The dial at the top does the same.</p>
-              <div className="flex flex-wrap gap-1.5">
-                {stations.map((s, i) => (
-                  <Chip key={s.id} on={i === station} onClick={() => { if (i !== station) { click("pick"); tune(i); } }} count={s.count}>{s.label}</Chip>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">For You includes</h3>
-              <p className="mb-2 text-xs text-white/50">Switch a topic off and For You leaves it out.</p>
-              <div className="flex flex-wrap gap-1.5">
-                {TOPICS.map((t) => (
-                  <Chip key={t.id} on={!prefs.off.includes(t.id)} onClick={() => toggleTopic(t.id)} count={topicCount(t.id)}>{t.label}</Chip>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">Platforms</h3>
-              <p className="mb-2 text-xs text-white/50">Keep any mix: one platform, four, or all of them.</p>
-              <div className="mb-2 flex flex-wrap gap-1.5">
-                {PRESETS.map((pr) => {
-                  const on = pr.ids.length ? pr.ids.length === onPlatforms.length && pr.ids.every((x) => onPlatforms.includes(x)) : !prefs.platforms.length;
-                  return <Chip key={pr.label} on={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }}>{pr.label}</Chip>;
-                })}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {PLATFORMS.map((pl) => (
-                  <Chip key={pl.id} on={onPlatforms.includes(pl.id)} onClick={() => togglePlatform(pl.id)} count={platformCount(pl.id)}>
-                    <PlatformIcon id={pl.id} /> {pl.label}
-                  </Chip>
-                ))}
-              </div>
-            </section>
+            <div className="-mx-2 space-y-5">{lists("sheet")}</div>
             <section>
               <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Sound</h3>
               <Chip on={prefs.sound} onClick={() => setPrefs({ sound: !prefs.sound })}>
