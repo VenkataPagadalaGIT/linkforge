@@ -1,7 +1,7 @@
 "use client";
 /**
  * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
- *   Venkata Pagadala: about and writing, research, talks. Research and talks live under
+ *   Venkata Pagadala: about, research, talks. Research and talks live under
  *     the person, so "Research & Talks" is no longer a door of its own.
  *   Notebooks: the AI, Business and Conference notebooks, AI Updates, the feeds, and Learn, which holds every
  *     guide, classified once in src/data/learnHub.ts. The /guides and /notebook hubs render that same list.
@@ -128,11 +128,10 @@ const MEGA: MegaMenu[] = [
     heading: "Who I am, what I research, where I speak",
     sections: [
       {
-        title: "About and writing",
+        title: "About",
         items: [
           { label: "About me", note: "who I am and what I build", to: "/about" },
           { label: "My Universe", note: "every LinkedIn post, by year and by topic", to: "/venkata-pagadala-universe" },
-          { label: "Insights", note: "essays on AI, search, and systems", to: "/insights" },
         ],
       },
       {
@@ -149,7 +148,7 @@ const MEGA: MegaMenu[] = [
     ],
     footnote: "Every paper, talk and mention links to its source, and each one is worded to match what that source actually says.",
     seeAll: { label: "Research, talks and media", to: "/research-and-talks" },
-    active: ["/about", "/research-and-talks", "/publications", "/insights", "/venkata-pagadala-universe", "/credits"],
+    active: ["/about", "/research-and-talks", "/publications", "/venkata-pagadala-universe", "/credits"],
   },
   {
     id: "notebooks",
