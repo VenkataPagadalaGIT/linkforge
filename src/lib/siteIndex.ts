@@ -128,7 +128,7 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/notebook/ai/map", "AI Systems Map", "map", true],
   ["/notebook/ai/graph", "The AI Intelligence Graph", "map", true],
   ["/ai-contributors", "AI Contributors", "contributors", true],
-  ["/ai-updates", "AI Updates", "updates", true],
+  ["/ai-updates", "Tech & Business: News and Updates", "updates", true],
   ["/insights", "Insights", "insights", true],
   ["/notebook/conference", "Conference Notebook", "sessions", true],
   ["/solutions", "Solutions", "solutions", true],

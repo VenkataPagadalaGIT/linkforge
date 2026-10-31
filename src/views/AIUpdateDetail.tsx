@@ -48,7 +48,7 @@ const AIUpdateDetail = ({ update: given, prev, next }: { update?: AIUpdate; prev
         modifiedTime={update.date}
         breadcrumbs={[
           { name: "Home", url: "https://venkatapagadala.com" },
-          { name: "AI Updates", url: "https://venkatapagadala.com/ai-updates" },
+          { name: "News and Updates", url: "https://venkatapagadala.com/ai-updates" },
           { name: update.title, url: `https://venkatapagadala.com/ai-updates/${update.slug}` },
         ]}
         jsonLd={{
@@ -70,7 +70,7 @@ const AIUpdateDetail = ({ update: given, prev, next }: { update?: AIUpdate; prev
               to="/ai-updates"
               className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
             >
-              <ArrowLeft size={12} /> All AI Updates
+              <ArrowLeft size={12} /> All news and updates
             </Link>
 
             {/* Meta bar */}

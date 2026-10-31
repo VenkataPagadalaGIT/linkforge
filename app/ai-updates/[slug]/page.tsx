@@ -61,7 +61,7 @@ export default async function Page({ params }: { params: Params }) {
             .map((c) => ({ id: c!.id, name: c!.name, affiliation: c!.affiliation, photoUrl: c!.photoUrl })),
         }),
         breadcrumbJsonLd([
-          { name: "AI Updates", url: `${SITE_URL}/ai-updates` },
+          { name: "News and Updates", url: `${SITE_URL}/ai-updates` },
           { name: upd.title, url },
         ]),
       ]

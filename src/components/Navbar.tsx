@@ -160,6 +160,7 @@ const MEGA: MegaMenu[] = [
           { label: "AI Notebook", note: "the hub: chapters, timeline, contributors", to: "/notebook/ai" },
           { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
           { label: "Conference Notebook", note: "3 conferences, 69 talks, 78 speakers", to: "/notebook/conference" },
+          { label: "Tech & Business: News and Updates", note: "AI, tech and business stories, each with its sources", to: "/ai-updates" },
         ],
       },
       {
@@ -176,7 +177,7 @@ const MEGA: MegaMenu[] = [
     ].map((sec) => ({ ...sec, items: sec.items.map(with3d) })),
     footnote: "3D marks a page you can explore in 3D. All Guides groups every guide by subject; All Topics lists the same guides by topic, A to Z.",
     seeAll: { label: "The full notebook", to: "/notebook" },
-    active: ["/notebook", "/ai-contributors", "/guides"],
+    active: ["/notebook", "/ai-contributors", "/guides", "/ai-updates"],
   },
   {
     id: "ufi",
