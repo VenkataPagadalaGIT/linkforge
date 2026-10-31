@@ -3,9 +3,9 @@
  * notebooks... a dedicated section called Learn... classify in the best way... internal links so crawlers can crawl").
  * Not to be confused with learn.ts, the lesson library behind the encyclopedia's deep dives.
  *
- * Three readers share this list, so they cannot drift apart: the Notebooks menu in the Navbar, the /guides hub
- * (titled Learn) and the Learn block on /notebook. The two hubs render it on the server, which is the crawl path:
- * the menu panel only renders when opened. Labels and groups can change freely; the URLs are frozen.
+ * Two hubs render this list on the server, which is the crawl path to every guide: /guides (titled All Guides) and
+ * the All Guides block on /notebook. The Notebooks menu links All Guides and All Topics instead of each guide
+ * (owner, 2026-10-30), and still reads with3d below. Labels and groups can change freely; the URLs are frozen.
  */
 import { threeDExperiences } from "@/data/threeD";
 

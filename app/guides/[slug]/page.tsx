@@ -150,7 +150,7 @@ export default function Page({ params }: { params: Params }) {
       })),
     },
     breadcrumbJsonLd([
-      { name: "Learn", url: `${SITE_URL}/guides` },
+      { name: "All Guides", url: `${SITE_URL}/guides` },
       { name: guide.title, url },
     ]),
   ];

@@ -3,9 +3,9 @@
  * Navbar: the owner's IA (2026-10-30, eight points). Three doors and the CTA:
  *   Venkata Pagadala: about, research, talks. Research and talks live under
  *     the person, so "Research & Talks" is no longer a door of its own.
- *   Notebooks: the AI, Business and Conference notebooks, AI Updates, the feeds, and Learn, which holds every
- *     guide, classified once in src/data/learnHub.ts. The /guides and /notebook hubs render that same list.
- *   User First Intelligence: the framework and all the persona work.
+ *   Notebooks: the AI, Business and Conference notebooks, then AI: encyclopedia, contributors, the intelligence
+ *     graph, the roadmap, All Guides (/guides, grouped by src/data/learnHub.ts) and All Topics A to Z.
+ *   User First Intelligence: the label opens the framework; the panel is Persona, all the persona tools.
  *   Contact.
  *
  * Explore in 3D is no longer a menu. Any page with a 3D scene carries a small "3D" badge read from
@@ -13,7 +13,7 @@
  * written for someone who has never seen the site: a recruiter or a first-time learner should know what is
  * behind each door without clicking.
  *
- * Labels and slugs are independent: the section a visitor reads as "Learn" is still served from /guides/*, so
+ * Labels and slugs are independent: the page a visitor reads as "All Guides" is still served from /guides, so
  * the site can read differently without moving a single page.
  *
  * Progressive enhancement, and it is load-bearing rather than theoretical.
@@ -29,7 +29,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@/lib/router-shim";
 import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./theme/ThemeToggle";
-import { LEARN_HUB, with3d } from "@/data/learnHub";
+import { with3d } from "@/data/learnHub";
 import { linkedPapers } from "@/data/research";
 import { TALKS, RECOGNITION } from "@/data/talks";
 
@@ -108,17 +108,15 @@ const RESEARCH_MENU: MegaMenu = {
   active: ["/research-and-talks", "/publications"],
 };
 
-/** User First Intelligence: the framework and all the persona work behind one door (owner IA, point 4). */
-const UFI_ITEMS: MenuItem[] = [
-  { label: "User-First Intelligence", note: "the framework: people before algorithms", to: "/guides/user-first-intelligence", badges: ["NEW"] },
+/** User First Intelligence: the framework is the door itself (its label and "Read the framework"); the panel is Persona. */
+const UFI_FRAMEWORK = "/guides/user-first-intelligence";
+const PERSONA_ITEMS: MenuItem[] = [
   { label: "Audience Personas", note: "build any audience, see the margin of error", to: "/personas" },
   { label: "Persona Builder", note: "answer the framework's questions, grade the evidence", to: "/personas/builder", badges: ["NEW"] },
   { label: "Persona Fanout Journey", note: "one query, every buyer, the whole journey", to: "/personas/fanout-journey" },
   { label: "Global Persona Framework", note: "every dimension, with its rule and evidence", to: "/personas/framework" },
   { label: "Every Figure & Source", note: "all published cells, with sample sizes", to: "/personas/data" },
 ];
-/** The Learn list also carries the framework guide; in the menu it has its own door, so it is shown there once. */
-const UFI_URLS = new Set(UFI_ITEMS.map((it) => it.to));
 
 const MEGA: MegaMenu[] = [
   {
@@ -141,7 +139,7 @@ const MEGA: MegaMenu[] = [
       {
         title: "Talks",
         items: [
-          ...RESEARCH_MENU.sections[1].items.filter((it) => !UFI_URLS.has(it.to)),
+          ...RESEARCH_MENU.sections[1].items.filter((it) => it.to !== UFI_FRAMEWORK),
           { label: "Podcasts, interviews and recognition", note: "every appearance, with its source", to: "/research-and-talks" },
         ],
       },
@@ -162,25 +160,33 @@ const MEGA: MegaMenu[] = [
           { label: "AI Notebook", note: "the hub: chapters, timeline, contributors", to: "/notebook/ai" },
           { label: "Business Notebook", note: "market and industry intelligence", to: "/notebook/business" },
           { label: "Conference Notebook", note: "3 conferences, 69 talks, 78 speakers", to: "/notebook/conference" },
-          { label: "AI Updates", note: "AI news with primary sources", to: "/ai-updates" },
-          { label: "Knowledge Graph Feeds", note: "each story read from every platform, as a feed", to: "/feeds", badges: ["NEW"] },
-          { label: "Everything in 3D", note: "every 3D scene, the 2040 city game included", to: "/3d" },
         ],
       },
-      ...LEARN_HUB.map((sec) => ({ title: `Learn: ${sec.title}`, items: sec.items.filter((it) => !UFI_URLS.has(it.to)) })),
+      {
+        title: "AI",
+        items: [
+          { label: "AI Encyclopedia", note: "187 concepts, one page each", to: "/notebook/ai/encyclopedia" },
+          { label: "AI Contributors", note: "the 100 people building AI", to: "/ai-contributors" },
+          { label: "The AI Intelligence Graph in 3D", note: "the AI economy as one graph, with a sourced file for every entity", to: "/notebook/ai/graph" },
+          { label: "AI Roadmap 2026", note: "learn AI in 18 weeks + depth tracks", to: "/notebook/ai/roadmap" },
+          { label: "All Guides: AI and AI Search (SEO, GEO)", note: "every guide, grouped by subject", to: "/guides" },
+          { label: "All Topics, A to Z", note: "every guide topic, each with its guides", to: "/guides/topics" },
+        ],
+      },
     ].map((sec) => ({ ...sec, items: sec.items.map(with3d) })),
-    footnote: "Learn holds every guide, grouped by subject. 3D marks a page you can explore in 3D; NEW marks a recent arrival.",
-    seeAll: { label: "Learn: every guide", to: "/guides" },
-    active: ["/notebook", "/ai-updates", "/ai-contributors", "/guides", "/3d", "/3d-game", "/feeds"],
+    footnote: "3D marks a page you can explore in 3D. All Guides groups every guide by subject; All Topics lists the same guides by topic, A to Z.",
+    seeAll: { label: "The full notebook", to: "/notebook" },
+    active: ["/notebook", "/ai-contributors", "/guides"],
   },
   {
     id: "ufi",
     label: "User First Intelligence",
-    heading: "People before algorithms: the framework, and the persona tools that apply it",
-    sections: [{ title: "User First Intelligence", items: UFI_ITEMS }],
+    hub: UFI_FRAMEWORK,
+    heading: "Persona: the tools that apply User-First Intelligence",
+    sections: [{ title: "Persona", items: PERSONA_ITEMS }],
     footnote: "The persona tools are part of User-First Intelligence: who the audience is, and where they actually are.",
-    seeAll: { label: "Read the framework", to: "/guides/user-first-intelligence" },
-    active: ["/guides/user-first-intelligence", "/personas"],
+    seeAll: { label: "Read the framework", to: UFI_FRAMEWORK },
+    active: [UFI_FRAMEWORK, "/personas"],
   },
 ];
 

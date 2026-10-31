@@ -30,11 +30,11 @@ export default function GuidesIndex() {
     <div className="min-h-screen bg-background pt-24 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         <ScrollReveal>
-          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">Notebooks · Learn</p>
-          {/* The nav calls this section Learn, so the page a reader lands on
-              says Learn. The slug stays /guides. */}
+          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-4 uppercase">Notebooks · AI</p>
+          {/* The nav calls this page All Guides, so the page a reader lands on
+              says All Guides. The slug stays /guides. */}
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground text-glow mb-6">
-            Learn
+            All Guides
           </h1>
           <p className="font-mono text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
             Every guide in one place, grouped by subject. Complex systems taken apart so you can see how they actually work, written to be the resource people and answer engines cite.

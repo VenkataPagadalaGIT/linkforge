@@ -47,7 +47,7 @@ const tocSections = [
   { label: "AI Notebook", id: "ai-notebook" },
   { label: "Business Notebook", id: "business-notebook" },
   { label: "Conference Notebook", id: "conference-notebook" },
-  { label: "Learn", id: "learn" },
+  { label: "All Guides", id: "learn" },
 ];
 
 const Notebook = ({ conferenceCount }: { conferenceCount?: number }) => {
@@ -124,16 +124,16 @@ const Notebook = ({ conferenceCount }: { conferenceCount?: number }) => {
             })}
           </div>
 
-          {/* Learn: every guide lives in the notebooks (owner IA, 2026-10-30). Rendered on the server from the same
+          {/* All Guides: every guide lives in the notebooks (owner IA, 2026-10-30). Rendered on the server from the same
               list as the Notebooks menu, so a crawler that never opens the menu still reaches every guide. */}
           <section id="learn" aria-labelledby="learn-h" className="scroll-mt-28 mt-16">
-            <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em] mb-3">Learn</p>
+            <p className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.3em] mb-3">All Guides</p>
             <h2 id="learn-h" className="font-display text-3xl font-bold text-foreground mb-3">
               Every guide, by subject
             </h2>
             <p className="font-mono text-xs text-muted-foreground leading-relaxed max-w-2xl mb-8">
               The guides live inside the notebooks. Each subject opens its full list, with reading times and topics, on the{" "}
-              <Link href="/guides" className="underline underline-offset-4 hover:text-foreground">Learn page</Link>.
+              <Link href="/guides" className="underline underline-offset-4 hover:text-foreground">All Guides page</Link>.
             </p>
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {LEARN_HUB.map((sec) => (
