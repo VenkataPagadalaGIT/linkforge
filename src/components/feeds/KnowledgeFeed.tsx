@@ -13,11 +13,14 @@
  *
  * Honest by construction: a count shows only where the platform published one, our own posts carry "Sourced"
  * instead of a verified tick, and the real posts in the feed are the platforms' own, linked.
+ *
+ * Tuned by the reader (owner, 2026-10-30): a topic dial (a radio tuner on phones, a car-style knob on desktop, with
+ * detent clicks), platforms switched on or off, the topics For You includes, and a Feed or Swipe view, all saved and
+ * applied at once. Rendered on the server (no portal), so the feed is the first paint, not the text page beneath it.
  */
 import * as React from "react";
-import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
-import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, ExternalLink, Heart, MessageCircle, Play, Plus, Share2, X as Close } from "lucide-react";
+import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, ExternalLink, Heart, MessageCircle, Play, Plus, RotateCcw, Share2, SlidersHorizontal, Volume2, VolumeX, X as Close } from "lucide-react";
 import { EVENTS, type EventClaim, type EventFact, type EventFile, type EventSourceCard, type Verdict } from "@/data/events";
 import { TopicGraph } from "@/components/graph/TopicGraph";
 import { Ago, Embed, PlatformMark, who } from "@/components/events/EventSources";
@@ -66,9 +69,86 @@ function handleOf(s: EventSourceCard): string {
   return s.domain || PLATFORM[s.platform] || s.platform;
 }
 
+/** Topics: what a post is about, so the whole feed can be tuned to one, or to the set someone keeps on (owner, 2026-10-30). */
+const TOPICS: { id: string; label: string }[] = [
+  { id: "live", label: "Live updates" },
+  { id: "money", label: "The money" },
+  { id: "who", label: "Who did it" },
+  { id: "how", label: "How it happened" },
+  { id: "customers", label: "Customers" },
+  { id: "markets", label: "Markets" },
+  { id: "theories", label: "Theories" },
+  { id: "official", label: "Official word" },
+  { id: "investigators", label: "Investigators" },
+];
+/** Words that put a post under a topic. Generic on purpose, so the next story's posts sort without new rules. */
+const KEYWORDS: [string, RegExp][] = [
+  // "The money" is where it went, not the headline figure every post repeats: frozen, traced, laundered, recovered.
+  ["money", /frozen|freez|recover|launder|mixer|tornado|bridg|on-?chain|trac(e|ed|ing)\b|tether|usdt|circle|usdc|stolen funds|wallet address/i],
+  ["who", /north korea|lazarus|trader ?traitor|dprk|pyongyang|attribut|state-?sponsored|hacker group/i],
+  ["how", /private key|multi-?sig|signer|smart contract|exploit|vulnerab|breach|hot wallet|cold wallet|phish|compromis|laptop|malware|pre-?signed|root cause/i],
+  ["customers", /withdraw|deposits?\b|customers?|safu|compensat|reimburs|refund|cover (every|all|the) loss|their money|user funds/i],
+  ["markets", /\bprices?\b|sell-?off|dump(ed|ing)?\b|crash|rall(y|ies)|trading (halt|paus)|halted trading|volatil|\bbnb (fell|drop|price)|market cap/i],
+];
+const topicsOfText = (t: string) => KEYWORDS.filter(([, re]) => re.test(t)).map(([id]) => id);
+
+/** Platforms someone can switch on or off. "Our explainers" are this site's own posts. */
+const PLATFORMS: { id: string; label: string }[] = [
+  { id: "kgf", label: "Our explainers" },
+  { id: "news", label: "News" },
+  { id: "x", label: "X" },
+  { id: "tiktok", label: "TikTok" },
+  { id: "youtube", label: "YouTube" },
+  { id: "instagram", label: "Instagram" },
+  { id: "reddit", label: "Reddit" },
+  { id: "hackernews", label: "Hacker News" },
+  { id: "web", label: "Official sites" },
+];
+const PRESETS: { label: string; ids: string[] }[] = [
+  { label: "Everything", ids: [] },
+  { label: "Social only", ids: ["x", "tiktok", "youtube", "instagram", "reddit"] },
+  { label: "Video only", ids: ["tiktok", "youtube", "instagram"] },
+  { label: "News and official", ids: ["kgf", "news", "web"] },
+];
+
+type View = "scroll" | "swipe";
+interface Prefs {
+  /** "all" (For You) or one topic id: what the dial is tuned to. */
+  topic: string;
+  /** Topics left out of For You. */
+  off: string[];
+  /** Platforms switched on; empty means all. */
+  platforms: string[];
+  view: View;
+  sound: boolean;
+}
+const DEFAULT_PREFS: Prefs = { topic: "all", off: [], platforms: [], view: "scroll", sound: true };
+const PREFS_KEY = "kgf:prefs";
+function readPrefs(): Prefs {
+  try {
+    const v = JSON.parse(window.localStorage.getItem(PREFS_KEY) || "null");
+    return v && typeof v === "object" ? { ...DEFAULT_PREFS, ...v } : DEFAULT_PREFS;
+  } catch {
+    return DEFAULT_PREFS;
+  }
+}
+function writePrefs(p: Prefs) {
+  try {
+    window.localStorage.setItem(PREFS_KEY, JSON.stringify(p));
+  } catch {
+    /* private mode: the settings last for this visit */
+  }
+}
+/**
+ * Runs before the feed paints. Someone arriving with saved settings, or on a link to one post, would otherwise see
+ * the default first post for a moment and then a jump: the flicker. The feed body stays hidden (the frame does not)
+ * until it is in place.
+ */
+const PREPAINT = `try{var q=location.search,s=JSON.parse(localStorage.getItem("${"kgf:prefs"}")||"null");if(/[?&](p|chapter|topic|view)=/.test(q)||(s&&((s.topic&&s.topic!=="all")||(s.platforms||[]).length||(s.off||[]).length||s.view==="swipe")))document.documentElement.classList.add("kgf-wait")}catch(e){}`;
+
 type Author = { name: string; handle: string; avatar?: string | null; platform?: string; ours?: boolean; profile?: string | null };
 type Evidence = { quote: string; url: string | null; author: string | null };
-type Base = { id: string; chapter: Chapter; author: Author; time: string | null; caption: string; tags: string[]; evidence: Evidence[]; image?: string | null };
+type Base = { id: string; chapter: Chapter; author: Author; time: string | null; caption: string; tags: string[]; evidence: Evidence[]; image?: string | null; topics?: string[] };
 type Post =
   | (Base & { kind: "intro" })
   | (Base & { kind: "timeline" })
@@ -84,6 +164,50 @@ type Post =
   | (Base & { kind: "end" });
 
 const US: Author = { name: "Knowledge Graph Feeds", handle: "every line sourced", ours: true };
+
+/** The opening and closing posts frame every tuned version of the feed. */
+const FRAME = new Set<Post["kind"]>(["intro", "end"]);
+const platformOf = (p: Post) => (p.kind !== "source" ? "kgf" : p.s.platform === "binance" ? "web" : p.s.platform);
+const FACT_TOPIC: Record<string, string> = { impact: "money", counted: "money", frozen: "money", held: "money", users: "customers", access: "customers", markets: "markets", record: "markets", how: "how", keys: "how", who: "who", regulators: "who" };
+
+function topicsFor(p: Post, e: EventFile): string[] {
+  const t = new Set<string>();
+  const add = (xs: string[]) => xs.forEach((x) => t.add(x));
+  switch (p.kind) {
+    case "intro":
+    case "timeline":
+    case "next":
+      t.add("live");
+      break;
+    case "fact":
+      p.facts.forEach((f) => (FACT_TOPIC[f.key] ? t.add(FACT_TOPIC[f.key]) : add(topicsOfText(`${f.label} ${f.value} ${f.note ?? ""}`))));
+      break;
+    case "money":
+      t.add("money");
+      break;
+    case "people":
+      t.add("who");
+      break;
+    case "theories":
+    case "score":
+      t.add("theories");
+      break;
+    case "claim":
+      t.add("theories");
+      add(topicsOfText(p.claim.claim));
+      break;
+    case "source": {
+      const s = p.s;
+      if (s.group === "official") add(["official", "live"]);
+      if (s.group === "investigators") t.add("investigators");
+      if (s.claims.length) t.add("theories");
+      s.claims.forEach((sc) => add(topicsOfText(e.claims.find((c) => c.key === sc.key)?.claim ?? "")));
+      add(topicsOfText(`${s.title} ${s.excerpt ?? ""}`));
+      break;
+    }
+  }
+  return [...t];
+}
 
 /** The story as posts, in the owner's order, with the platforms' own posts between ours instead of all at the end. */
 function buildPosts(e: EventFile): Post[] {
@@ -124,7 +248,7 @@ function buildPosts(e: EventFile): Post[] {
     kind: "claim", id: `claim-${c.key}`, chapter: "theories", claim: c, author: US, time: null, tags: tags("theories"),
     caption: `People are saying: "${c.claim}" True or false?`, evidence: c.evidence.map((x) => ({ quote: x.quote, url: x.url, author: x.author })),
   }));
-  return [
+  const list: Post[] = [
     { kind: "intro", id: "what-happened", chapter: "happened", author: US, time: e.updatedAt.replace(" ", "T"), caption: first, tags: tags("happened"), image: cover, evidence: evidenceOf(facts(["impact", "counted", "frozen"])) },
     { kind: "timeline", id: "timeline", chapter: "happened", author: US, time: e.moments[0]?.at ?? null, caption: `Minute by minute: ${e.moments.length} moments, each one from its source.`, tags: tags("happened"), evidence: e.moments.map((m) => ({ quote: m.quote, url: m.url, author: m.author })) },
     ...official.map((s) => src(s, "happened")),
@@ -146,6 +270,7 @@ function buildPosts(e: EventFile): Post[] {
     ...rest.map((s) => src(s, "sources")),
     { kind: "end", id: "end", chapter: "sources", author: US, time: null, caption: "You're caught up: the whole story and every source.", tags: [story], evidence: [] },
   ];
+  return list.map((p) => ({ ...p, topics: topicsFor(p, e) }));
 }
 
 const store = {
@@ -210,7 +335,7 @@ function Quote({ q }: { q: Evidence }) {
 }
 
 /** Tinder for claims: drag right for true, left for false, or tap a button; then the verdict, like a context note. */
-function ClaimStage({ c, answer, onAnswer }: { c: EventClaim; answer: boolean | undefined; onAnswer: (yes: boolean) => void }) {
+function ClaimStage({ c, answer, onAnswer, bare = false }: { c: EventClaim; answer: boolean | undefined; onAnswer: (yes: boolean) => void; bare?: boolean }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-220, 220], [-14, 14]);
   const yes = useTransform(x, [0, 120], [0, 1]);
@@ -222,7 +347,7 @@ function ClaimStage({ c, answer, onAnswer }: { c: EventClaim; answer: boolean | 
     else if (info.offset.x < -110) onAnswer(false);
   };
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center pb-40 pl-5 pr-16 pt-24" data-no-tap>
+    <div className="flex h-full w-full flex-col items-center justify-center pb-[var(--kgf-bottom)] pl-5 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]" data-no-tap>
       {answer === undefined ? (
         <>
           <motion.div drag="x" dragSnapToOrigin onDragEnd={end} style={{ x, rotate }} className="relative w-full max-w-[340px] cursor-grab touch-pan-y rounded-[28px] bg-white p-6 text-black shadow-2xl active:cursor-grabbing">
@@ -234,11 +359,15 @@ function ClaimStage({ c, answer, onAnswer }: { c: EventClaim; answer: boolean | 
               {c.spread.total ? `Seen in ${c.spread.total} posts: ${Object.entries(c.spread.byPlatform).map(([p, n]) => `${PLATFORM[p] ?? p} ${n}`).join(", ")}` : "Not found in what we read"}
             </p>
           </motion.div>
+          {!bare && (
+            <>
           <div className="mt-6 flex items-center gap-8">
             <button type="button" onClick={() => onAnswer(false)} aria-label="False" className="grid h-16 w-16 place-items-center rounded-full bg-white text-[#ef4444] shadow-xl ring-1 ring-black/5 transition active:scale-90"><Close size={30} strokeWidth={3} /></button>
             <button type="button" onClick={() => onAnswer(true)} aria-label="True" className="grid h-16 w-16 place-items-center rounded-full bg-white text-[#16a34a] shadow-xl ring-1 ring-black/5 transition active:scale-90"><Check size={30} strokeWidth={3} /></button>
           </div>
           <p className="mt-3 text-xs text-white/60">Swipe right for true, left for false</p>
+            </>
+          )}
         </>
       ) : (
         <motion.div initial={{ rotateY: 90, opacity: 0 }} animate={{ rotateY: 0, opacity: 1 }} transition={{ duration: 0.35 }} className="w-full max-w-[340px]">
@@ -256,89 +385,480 @@ function ClaimStage({ c, answer, onAnswer }: { c: EventClaim; answer: boolean | 
   );
 }
 
-/** One topic as a social feed. `slug` picks the story. */
+/**
+ * Detent clicks for the dial and the tuner, made in the browser (Web Audio), like a car's volume knob: a short
+ * filtered tick per step, a softer bell when a topic is picked, a dull stop at either end. A light buzz on phones that
+ * vibrate. Off when sound is off; silent, never broken, where audio is unavailable.
+ */
+function useClicks(on: boolean) {
+  const ctx = React.useRef<AudioContext | null>(null);
+  const buf = React.useRef<AudioBuffer | null>(null);
+  return React.useCallback(
+    (kind: "tick" | "pick" | "stop") => {
+      if (!on || typeof window === "undefined") return;
+      try {
+        const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!AC) return;
+        const c = (ctx.current ??= new AC());
+        if (c.state === "suspended") void c.resume();
+        if (!buf.current) {
+          const b = c.createBuffer(1, Math.floor(c.sampleRate * 0.025), c.sampleRate);
+          const d = b.getChannelData(0);
+          for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 5);
+          buf.current = b;
+        }
+        const t = c.currentTime;
+        const src = c.createBufferSource();
+        src.buffer = buf.current;
+        const f = c.createBiquadFilter();
+        f.type = "bandpass";
+        f.frequency.value = kind === "stop" ? 700 : kind === "pick" ? 2200 : 3400;
+        f.Q.value = kind === "stop" ? 0.8 : 1.6;
+        const g = c.createGain();
+        g.gain.value = kind === "stop" ? 0.7 : 0.45;
+        src.connect(f);
+        f.connect(g);
+        g.connect(c.destination);
+        src.start(t);
+        if (kind === "pick") {
+          const o = c.createOscillator();
+          const og = c.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(660, t);
+          o.frequency.exponentialRampToValueAtTime(990, t + 0.07);
+          og.gain.setValueAtTime(0.0001, t);
+          og.gain.exponentialRampToValueAtTime(0.07, t + 0.01);
+          og.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+          o.connect(og);
+          og.connect(c.destination);
+          o.start(t);
+          o.stop(t + 0.16);
+        }
+        navigator.vibrate?.(kind === "stop" ? 14 : 5);
+      } catch {
+        /* no audio here: the controls still work, silently */
+      }
+    },
+    [on]
+  );
+}
+
+type Station = { id: string; label: string; count: number };
+type Click = (k: "tick" | "pick" | "stop") => void;
+
+/** The phone's topic control: a radio tuner across the top. Drag it, it ticks past each topic; let go to tune. */
+function TopicTuner({ items, index, onPick, click }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click }) {
+  const SP = 112;
+  const [pos, setPos] = React.useState<number | null>(null);
+  const drag = React.useRef<{ x: number; i: number; last: number; moved: boolean; id: number } | null>(null);
+  const shown = pos ?? index;
+  const clampI = (v: number) => Math.max(0, Math.min(items.length - 1, v));
+  return (
+    <div
+      className="relative h-11 touch-none select-none overflow-hidden"
+      data-no-tap
+      role="group"
+      aria-label="Topics: drag to tune the feed"
+      onPointerDown={(ev) => (drag.current = { x: ev.clientX, i: index, last: index, moved: false, id: ev.pointerId })}
+      onPointerMove={(ev) => {
+        const d = drag.current;
+        if (!d) return;
+        const dx = ev.clientX - d.x;
+        if (!d.moved && Math.abs(dx) > 6) {
+          d.moved = true;
+          // capture only once it is a drag, so a plain tap still reaches the topic under the finger
+          (ev.currentTarget as HTMLElement).setPointerCapture(d.id);
+        }
+        if (!d.moved) return;
+        const raw = d.i - dx / SP;
+        const f = clampI(raw);
+        setPos(f);
+        const r = Math.round(f);
+        if (r !== d.last) {
+          d.last = r;
+          click("tick");
+        }
+      }}
+      onPointerUp={() => {
+        const d = drag.current;
+        drag.current = null;
+        if (!d?.moved) return;
+        const r = Math.round(pos ?? index);
+        setPos(null);
+        if (r !== index) {
+          click("pick");
+          onPick(r);
+        } else click("stop");
+      }}
+      onPointerCancel={() => {
+        drag.current = null;
+        setPos(null);
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2" style={{ backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0 1px, transparent 1px 14px)" }} aria-hidden="true" />
+      <div className={`absolute left-1/2 top-0 flex h-full ${pos === null ? "transition-transform duration-300 ease-out" : ""}`} style={{ transform: `translateX(${-(shown * SP + SP / 2)}px)` }}>
+        {items.map((t, i) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => {
+              if (i === index) return;
+              click("pick");
+              onPick(i);
+            }}
+            aria-pressed={i === index}
+            className={`flex h-full shrink-0 flex-col items-center justify-center px-1 text-[12px] font-bold uppercase tracking-wider transition-colors ${i === index ? "text-white" : "text-white/45"}`}
+            style={{ width: SP }}
+          >
+            <span className="max-w-full truncate">{t.label}</span>
+            <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.count}</span>
+          </button>
+        ))}
+      </div>
+      <span className="pointer-events-none absolute bottom-0 left-1/2 h-3.5 w-0.5 -translate-x-1/2 rounded bg-[#ef4444] shadow-[0_0_8px_#ef4444]" aria-hidden="true" />
+      <span className="pointer-events-none absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#ef4444]" aria-hidden="true" />
+    </div>
+  );
+}
+
+/** The desktop topic control: a knurled knob with a lit notch and a scale, turned like a car's volume knob. */
+function TopicKnob({ items, index, onPick, click }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const drag = React.useRef(false);
+  const wheel = React.useRef(0);
+  const n = items.length;
+  const step = n > 1 ? 270 / (n - 1) : 0;
+  const angle = n > 1 ? -135 + index * step : 0;
+  const pick = React.useCallback(
+    (i: number) => {
+      const c = Math.max(0, Math.min(n - 1, i));
+      if (c === index) {
+        if (i !== c) click("stop");
+        return;
+      }
+      click("tick");
+      onPick(c);
+    },
+    [n, index, click, onPick]
+  );
+  const latest = React.useRef(pick);
+  latest.current = pick;
+  const indexRef = React.useRef(index);
+  indexRef.current = index;
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // a native listener, so the page does not scroll while the knob turns; one step per notch of the wheel
+    const w = (ev: WheelEvent) => {
+      ev.preventDefault();
+      wheel.current += ev.deltaY;
+      if (Math.abs(wheel.current) < 40) return;
+      latest.current(indexRef.current + (wheel.current > 0 ? 1 : -1));
+      wheel.current = 0;
+    };
+    el.addEventListener("wheel", w, { passive: false });
+    return () => el.removeEventListener("wheel", w);
+  }, []);
+  const fromPointer = (x: number, y: number) => {
+    const r = ref.current!.getBoundingClientRect();
+    const deg = Math.max(-135, Math.min(135, (Math.atan2(x - (r.left + r.width / 2), -(y - (r.top + r.height / 2))) * 180) / Math.PI));
+    return step ? Math.round((deg + 135) / step) : 0;
+  };
+  return (
+    <div
+      ref={ref}
+      role="slider"
+      tabIndex={0}
+      aria-label="Topic dial"
+      aria-valuemin={0}
+      aria-valuemax={n - 1}
+      aria-valuenow={index}
+      aria-valuetext={items[index]?.label}
+      onPointerDown={(ev) => {
+        ev.currentTarget.setPointerCapture(ev.pointerId);
+        drag.current = true;
+        pick(fromPointer(ev.clientX, ev.clientY));
+      }}
+      onPointerMove={(ev) => {
+        if (drag.current) pick(fromPointer(ev.clientX, ev.clientY));
+      }}
+      onPointerUp={() => (drag.current = false)}
+      onKeyDown={(ev) => {
+        const k = ev.key;
+        if (k === "ArrowRight" || k === "ArrowUp") pick(index + 1);
+        else if (k === "ArrowLeft" || k === "ArrowDown") pick(index - 1);
+        else if (k === "Home") pick(0);
+        else if (k === "End") pick(n - 1);
+        else return;
+        ev.preventDefault();
+        ev.stopPropagation();
+      }}
+      className="relative h-44 w-44 cursor-grab touch-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#25F4EE] active:cursor-grabbing"
+    >
+      {items.map((t, i) => (
+        <span
+          key={t.id}
+          aria-hidden="true"
+          className={`absolute left-1/2 top-1/2 h-2.5 w-[3px] rounded-full ${i === index ? "bg-[#ef4444] shadow-[0_0_6px_#ef4444]" : i < index ? "bg-white/70" : "bg-white/25"}`}
+          style={{ transform: `translate(-50%, -50%) rotate(${-135 + i * step}deg) translateY(-82px)` }}
+        />
+      ))}
+      <div className="absolute inset-5 rounded-full shadow-[0_12px_30px_rgba(0,0,0,0.65),inset_0_2px_3px_rgba(255,255,255,0.22)]" style={{ background: "radial-gradient(circle at 35% 30%, #4b5563 0%, #1f2937 45%, #0b0f17 100%)" }} aria-hidden="true">
+        <div className="absolute inset-0 rounded-full transition-transform duration-150 ease-out" style={{ transform: `rotate(${angle}deg)`, backgroundImage: "repeating-conic-gradient(rgba(255,255,255,0.10) 0deg 3deg, transparent 3deg 9deg)" }}>
+          <span className="absolute left-1/2 top-2 h-5 w-1.5 -translate-x-1/2 rounded-full bg-[#ef4444] shadow-[0_0_10px_#ef4444]" />
+        </div>
+        <div className="absolute inset-7 rounded-full" style={{ background: "radial-gradient(circle at 40% 35%, #374151, #111827)" }} />
+      </div>
+    </div>
+  );
+}
+
+/** Swipe view's top card: drag right to like, left to skip, as on a dating app; tap to read. */
+function SwipeTop({ children, canDrag, onSwipe, onTap, dir }: { children: React.ReactNode; canDrag: boolean; onSwipe: (d: 1 | -1) => void; onTap: () => void; dir: number }) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-320, 320], [-16, 16]);
+  const likeO = useTransform(x, [24, 140], [0, 1]);
+  const skipO = useTransform(x, [-140, -24], [1, 0]);
+  const down = React.useRef<{ x: number; y: number } | null>(null);
+  return (
+    <motion.div
+      custom={dir}
+      variants={{ exit: (d: number) => ({ x: d * 560, rotate: d * 20, opacity: 0, transition: { duration: 0.3 } }) }}
+      initial={{ scale: 0.96, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit="exit"
+      drag={canDrag ? "x" : false}
+      dragSnapToOrigin
+      onDragEnd={(_, info) => {
+        if (info.offset.x > 120 || info.velocity.x > 700) onSwipe(1);
+        else if (info.offset.x < -120 || info.velocity.x < -700) onSwipe(-1);
+      }}
+      onPointerDown={(ev) => {
+        down.current = (ev.target as HTMLElement).closest("button,a,iframe,[data-no-tap]") ? null : { x: ev.clientX, y: ev.clientY };
+      }}
+      onPointerUp={(ev) => {
+        const d = down.current;
+        down.current = null;
+        if (d && Math.abs(ev.clientX - d.x) < 8 && Math.abs(ev.clientY - d.y) < 8) onTap();
+      }}
+      style={{ x, rotate }}
+      className="absolute inset-0 cursor-grab touch-pan-y overflow-hidden rounded-[28px] bg-black shadow-2xl ring-1 ring-white/10 active:cursor-grabbing"
+    >
+      {children}
+      <motion.span style={{ opacity: likeO }} className="pointer-events-none absolute left-5 top-6 z-30 -rotate-12 rounded-lg border-4 border-[#22c55e] px-3 py-0.5 font-display text-3xl font-black text-[#22c55e]">LIKE</motion.span>
+      <motion.span style={{ opacity: skipO }} className="pointer-events-none absolute right-5 top-6 z-30 rotate-12 rounded-lg border-4 border-white/80 px-3 py-0.5 font-display text-3xl font-black text-white/90">SKIP</motion.span>
+    </motion.div>
+  );
+}
+
+function Chip({ on, onClick, children, count }: { on: boolean; onClick: () => void; children: React.ReactNode; count?: number }) {
+  return (
+    <button type="button" onClick={onClick} aria-pressed={on} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/10 text-white/80 hover:bg-white/15"}`}>
+      {children}
+      {count !== undefined && <span className={`text-[11px] ${on ? "text-black/55" : "text-white/45"}`}>{count}</span>}
+    </button>
+  );
+}
+
+/**
+ * A platform's mark on a dark disc, so a white brand mark (X) still shows on a chip that is switched on (white). The
+ * Hacker News file in public/events/platforms is empty (the icon set has no such slug), so it gets its orange "Y".
+ */
+const PlatformIcon = ({ id }: { id: string }) => (
+  <span aria-hidden="true" className="grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-black/85 text-white">
+    {id === "kgf" ? <span className="text-[10px] leading-none text-[#ef4444]">●</span> : id === "hackernews" ? <span className="grid h-3 w-3 place-items-center rounded-[2px] bg-[#ff6600] text-[8px] font-black leading-none">Y</span> : <PlatformMark platform={id} size={11} />}
+  </span>
+);
+
+/** One story as a social feed, tuned by topic and platform. `slug` picks the story. */
 export function KnowledgeFeed({ slug }: { slug: string }) {
   const e = EVENTS[slug];
   const posts = React.useMemo(() => (e ? buildPosts(e) : []), [e]);
   const wide = useWide();
-  const [mounted, setMounted] = React.useState(false);
+  const [prefs, setPrefsState] = React.useState<Prefs>(DEFAULT_PREFS);
+  const [ready, setReady] = React.useState(false);
+  const [live, setLive] = React.useState(false);
   const [current, setCurrent] = React.useState(0);
+  const [dir, setDir] = React.useState(1);
   const [answers, setAnswers] = React.useState<Record<string, boolean>>({});
   const [liked, setLiked] = React.useState<string[]>([]);
   const [saved, setSaved] = React.useState<string[]>([]);
   const [following, setFollowing] = React.useState<string[]>([]);
   const [playing, setPlaying] = React.useState<string | null>(null);
   const [read, setRead] = React.useState<string | null>(null);
-  const [topics, setTopics] = React.useState(false);
+  const [settings, setSettings] = React.useState(false);
   const [toast, setToast] = React.useState<string | null>(null);
+  const [announce, setAnnounce] = React.useState("");
   const [burst, setBurst] = React.useState<{ x: number; y: number; k: number } | null>(null);
-  const [coach, setCoach] = React.useState(false);
+  const [coach, setCoach] = React.useState<View | null>(null);
   const scroller = React.useRef<HTMLDivElement>(null);
   const column = React.useRef<HTMLDivElement>(null);
   const press = React.useRef<{ x: number; y: number; t: number } | null>(null);
   const lastTap = React.useRef<number>(0);
   const single = React.useRef<number | null>(null);
+  const lastKey = React.useRef<string | null>(null);
   const page = `/notebook/events/${slug}`;
+  const click = useClicks(prefs.sound);
+  const view = prefs.view;
 
+  const setPrefs = React.useCallback((patch: Partial<Prefs>) => {
+    setPrefsState((p) => {
+      const n = { ...p, ...patch };
+      writePrefs(n);
+      return n;
+    });
+  }, []);
+
+  // The feed: the story's posts, keeping the platforms switched on, then tuned to one topic or to the topics For You
+  // includes. The opening and closing posts frame every version.
+  const platformOk = React.useCallback((p: Post) => !prefs.platforms.length || prefs.platforms.includes(platformOf(p)), [prefs.platforms]);
+  const inForYou = React.useCallback((p: Post) => !(p.topics ?? []).length || (p.topics ?? []).some((t) => !prefs.off.includes(t)), [prefs.off]);
+  const feed = React.useMemo(
+    () => posts.filter((p) => FRAME.has(p.kind) || (platformOk(p) && (prefs.topic === "all" ? inForYou(p) : (p.topics ?? []).includes(prefs.topic)))),
+    [posts, platformOk, inForYou, prefs.topic]
+  );
+  const feedKey = `${prefs.topic}|${prefs.platforms.join(",")}|${prefs.off.join(",")}`;
+  const body = posts.filter((p) => !FRAME.has(p.kind));
+  const topicCount = (id: string) => body.filter((p) => platformOk(p) && (p.topics ?? []).includes(id)).length;
+  const platformCount = (id: string) => body.filter((p) => platformOf(p) === id && (prefs.topic === "all" ? inForYou(p) : (p.topics ?? []).includes(prefs.topic))).length;
+  const stations: Station[] = [
+    { id: "all", label: "For You", count: body.filter((p) => platformOk(p) && inForYou(p)).length },
+    ...TOPICS.filter((t) => !prefs.off.includes(t.id) || t.id === prefs.topic)
+      .map((t) => ({ ...t, count: topicCount(t.id) }))
+      .filter((t) => t.count > 0 || t.id === prefs.topic),
+  ];
+  const station = Math.max(0, stations.findIndex((s) => s.id === prefs.topic));
+  const tune = (i: number) => setPrefs({ topic: stations[Math.max(0, Math.min(stations.length - 1, i))].id });
+  const allIds = PLATFORMS.map((x) => x.id);
+  const onPlatforms = prefs.platforms.length ? prefs.platforms : allIds;
+
+  // Saved settings, likes and saves; a link's ?topic= and ?view= apply to this visit without overwriting them.
   React.useEffect(() => {
-    setMounted(true);
+    if (!e) return;
     setLiked(store.get(`kgf:liked:${slug}`));
     setSaved(store.get(`kgf:saved:${slug}`));
     setFollowing(store.get("kgf:following"));
-    if (!store.get("kgf:coach").length) {
-      setCoach(true);
-      store.set("kgf:coach", ["seen"]);
-    }
+    const q = new URLSearchParams(window.location.search);
+    const t = q.get("topic");
+    const v = q.get("view");
+    setPrefsState({
+      ...readPrefs(),
+      ...(t && (t === "all" || TOPICS.some((x) => x.id === t)) ? { topic: t } : {}),
+      ...(v === "swipe" || v === "scroll" ? { view: v } : {}),
+    });
+    const today = new Date().toISOString().slice(0, 10);
+    setLive(today >= e.window[0] && today <= e.window[1]);
+    setReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  // Once the settings are in: lock the page behind the feed, go to the linked post, then show the feed.
+  React.useEffect(() => {
+    if (!ready) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const q = new URLSearchParams(window.location.search);
+    const p = q.get("p");
+    const ch = q.get("chapter");
+    const start = p ? feed.findIndex((x) => x.id === p) : ch ? feed.findIndex((x) => x.chapter === ch) : -1;
+    lastKey.current = feedKey;
+    const reveal = () => document.documentElement.classList.remove("kgf-wait");
+    if (start > 0) {
+      setCurrent(start);
+      requestAnimationFrame(() => {
+        const el = scroller.current;
+        if (el) el.scrollTo({ top: start * el.clientHeight, behavior: "auto" });
+        requestAnimationFrame(reveal);
+      });
+    } else requestAnimationFrame(reveal);
+    return () => {
+      document.body.style.overflow = prev;
+      reveal();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
+
+  // New settings, new feed: back to its first post, and say so for screen readers.
+  React.useEffect(() => {
+    if (!ready || lastKey.current === null || lastKey.current === feedKey) return;
+    lastKey.current = feedKey;
+    setCurrent(0);
+    setDir(1);
+    setPlaying(null);
+    scroller.current?.scrollTo({ top: 0, behavior: "auto" });
+    setAnnounce(`${prefs.topic === "all" ? "For You" : TOPICS.find((t) => t.id === prefs.topic)?.label}: ${feed.length} posts`);
+  }, [feedKey, ready, feed.length, prefs.topic]);
+
+  // The address keeps the place and the tuning, so back from the full page lands here and a link can be shared.
+  React.useEffect(() => {
+    if (!ready) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("chapter");
+    const id = feed[current]?.id;
+    if (id && current > 0) url.searchParams.set("p", id);
+    else url.searchParams.delete("p");
+    if (prefs.topic === "all") url.searchParams.delete("topic");
+    else url.searchParams.set("topic", prefs.topic);
+    if (view === "swipe") url.searchParams.set("view", "swipe");
+    else url.searchParams.delete("view");
+    if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url);
+  }, [ready, current, feed, prefs.topic, view]);
+
+  // Switching back to the scrolling feed lands on the card the swipe view was on.
+  React.useEffect(() => {
+    if (!ready || view !== "scroll") return;
+    requestAnimationFrame(() => {
+      const el = scroller.current;
+      if (el) el.scrollTo({ top: current * el.clientHeight, behavior: "auto" });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+
+  // A first-time hint for each view, once.
+  React.useEffect(() => {
+    if (!ready) return;
+    const seen = store.get("kgf:coach");
+    if (!seen.includes(view)) {
+      setCoach(view);
+      store.set("kgf:coach", [...seen, view]);
+    }
+  }, [ready, view]);
 
   const go = React.useCallback(
     (i: number, behavior: ScrollBehavior = "smooth") => {
+      const n = Math.max(0, Math.min(feed.length - 1, i));
+      if (view === "swipe") {
+        setDir(n >= current ? 1 : -1);
+        setCurrent(n);
+        setPlaying(null);
+        return;
+      }
       const el = scroller.current;
       if (!el) return;
-      const top = Math.max(0, Math.min(posts.length - 1, i)) * el.clientHeight;
+      const top = n * el.clientHeight;
       el.scrollTo({ top, behavior });
       // a smooth scroll that stalls (a busy tab, a throttled frame) must never leave the feed between two posts
       window.setTimeout(() => {
         if (Math.abs(el.scrollTop - top) > 2) el.scrollTo({ top, behavior: "auto" });
       }, 650);
     },
-    [posts.length]
+    [feed.length, view, current]
   );
-
-  // Start where the link points (?p=post, or ?chapter= from older links), and lock the page behind the feed.
-  React.useEffect(() => {
-    if (!mounted) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const q = new URLSearchParams(window.location.search);
-    const p = q.get("p");
-    const ch = q.get("chapter");
-    const start = p ? posts.findIndex((x) => x.id === p) : ch ? posts.findIndex((x) => x.chapter === ch) : -1;
-    if (start > 0) requestAnimationFrame(() => go(start, "auto"));
-    return () => {
-      document.body.style.overflow = prev;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted]);
 
   // The post in view is the scroll position over the screen height (every post is exactly one screen tall).
   const onScroll = (ev: React.UIEvent<HTMLDivElement>) => {
     const el = ev.currentTarget;
-    const i = Math.max(0, Math.min(posts.length - 1, Math.round(el.scrollTop / Math.max(1, el.clientHeight))));
+    const i = Math.max(0, Math.min(feed.length - 1, Math.round(el.scrollTop / Math.max(1, el.clientHeight))));
     if (i === current) return;
     setCurrent(i);
     setPlaying(null);
-    setCoach(false);
-    const url = new URL(window.location.href);
-    url.searchParams.delete("chapter");
-    url.searchParams.set("p", posts[i].id);
-    window.history.replaceState(window.history.state, "", url);
+    setCoach(null);
   };
 
   // Reading opens a history entry, so the phone's back gesture closes the sheet and returns to the feed.
   const openRead = React.useCallback((id: string) => {
     setRead(id);
-    window.history.pushState({ kgfRead: id }, "", window.location.href);
+    window.history.pushState({ ...(window.history.state ?? {}), kgfRead: id }, "", window.location.href);
   }, []);
   const closeRead = React.useCallback(() => {
     if ((window.history.state as { kgfRead?: string } | null)?.kgfRead) window.history.back();
@@ -374,14 +894,53 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       /* the person closed the share sheet */
     }
   };
-  const chapterStart = (ch: Chapter) => posts.findIndex((p) => p.chapter === ch);
-  const jumpChapter = (dir: 1 | -1) => {
-    const ci = CHAPTERS.findIndex((c) => c.id === posts[current]?.chapter);
-    go(chapterStart(CHAPTERS[Math.max(0, Math.min(CHAPTERS.length - 1, ci + dir))].id));
+  const chapters = CHAPTERS.filter((ch) => feed.some((p) => p.chapter === ch.id));
+  const jumpChapter = (d: 1 | -1) => {
+    const ci = chapters.findIndex((c) => c.id === feed[current]?.chapter);
+    const next = chapters[Math.max(0, Math.min(chapters.length - 1, ci + d))];
+    if (next) go(feed.findIndex((p) => p.chapter === next.id));
   };
   const answer = (key: string, yes: boolean) => setAnswers((a) => ({ ...a, [key]: yes }));
 
-  // Tap to read, double-tap to like, swipe sideways to change chapter (on a claim, sideways is the Tinder answer).
+  // Swipe view: right likes, left skips; on a claim not yet called, right is true and left is false.
+  const swipe = (d: 1 | -1) => {
+    const p = feed[current];
+    if (!p) return;
+    if (p.kind === "claim" && answers[p.claim.key] === undefined) {
+      answer(p.claim.key, d === 1);
+      click("pick");
+      return;
+    }
+    if (d === 1) like(p, true);
+    click("tick");
+    if (current < feed.length - 1) {
+      setDir(d);
+      setCurrent(current + 1);
+      setPlaying(null);
+    }
+  };
+  const togglePlatform = (id: string) => {
+    const next = onPlatforms.includes(id) ? onPlatforms.filter((x) => x !== id) : [...onPlatforms, id];
+    if (!next.length) {
+      say("Keep at least one platform on");
+      click("stop");
+      return;
+    }
+    click("tick");
+    setPrefs({ platforms: next.length === allIds.length ? [] : next });
+  };
+  const toggleTopic = (id: string) => {
+    const off = prefs.off.includes(id) ? prefs.off.filter((x) => x !== id) : [...prefs.off, id];
+    if (off.length === TOPICS.length) {
+      say("Keep at least one topic in For You");
+      click("stop");
+      return;
+    }
+    click("tick");
+    setPrefs({ off });
+  };
+
+  // Scrolling feed: tap to read, double-tap to like, swipe sideways to change chapter (a claim takes sideways itself).
   const onPointerDown = (ev: React.PointerEvent) => {
     press.current = (ev.target as HTMLElement).closest("button,a,iframe,input,[data-no-tap]") ? null : { x: ev.clientX, y: ev.clientY, t: Date.now() };
   };
@@ -389,7 +948,8 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     const d = press.current;
     press.current = null;
     if (!d) return;
-    const p = posts[current];
+    const p = feed[current];
+    if (!p) return;
     const dx = ev.clientX - d.x;
     const dy = ev.clientY - d.y;
     if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) {
@@ -416,14 +976,26 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
 
   React.useEffect(() => {
     const k = (ev: KeyboardEvent) => {
-      if (read) {
-        if (ev.key === "Escape") closeRead();
+      if ((ev.target as HTMLElement | null)?.closest?.("[role=slider],input,textarea")) return;
+      if (read || settings) {
+        if (ev.key === "Escape") {
+          if (read) closeRead();
+          else setSettings(false);
+        }
         return;
       }
-      const p = posts[current];
-      if (ev.key === "ArrowDown" || ev.key === "j") go(current + 1);
+      const p = feed[current];
+      if (!p) return;
+      const open = p.kind === "claim" && answers[p.claim.key] === undefined;
+      if (view === "swipe") {
+        if (ev.key === "ArrowRight") swipe(1);
+        else if (ev.key === "ArrowLeft") swipe(-1);
+        else if (ev.key === "ArrowUp" || ev.key === "Backspace") go(current - 1);
+        else if (ev.key === "Enter" || ev.key === "r") openRead(p.id);
+        else return;
+      } else if (ev.key === "ArrowDown" || ev.key === "j") go(current + 1);
       else if (ev.key === "ArrowUp" || ev.key === "k") go(current - 1);
-      else if (p?.kind === "claim" && answers[p.claim.key] === undefined && (ev.key === "ArrowRight" || ev.key === "ArrowLeft")) answer(p.claim.key, ev.key === "ArrowRight");
+      else if (open && (ev.key === "ArrowRight" || ev.key === "ArrowLeft")) answer(p.claim.key, ev.key === "ArrowRight");
       else if (ev.key === "ArrowRight") jumpChapter(1);
       else if (ev.key === "ArrowLeft") jumpChapter(-1);
       else if (ev.key === "Enter" || ev.key === "r") openRead(p.id);
@@ -435,14 +1007,14 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     return () => window.removeEventListener("keydown", k);
   });
 
-  if (!e || !mounted) return null;
-  const post = posts[current];
+  if (!e) return null;
+  const post = feed[current] ?? feed[0];
   const chapter = post?.chapter ?? "happened";
-  const live = new Date().toISOString().slice(0, 10) <= e.window[1];
   const answered = e.claims.filter((c) => answers[c.key] !== undefined);
   const correct = answered.filter((c) => (answers[c.key] ? c.verdict === "true" : c.verdict === "false" || c.verdict === "misleading")).length;
   const readPost = read ? posts.find((p) => p.id === read) ?? null : null;
-  const backdrop = post?.image ?? posts[0]?.image ?? null;
+  const backdrop = post?.image ?? feed[0]?.image ?? null;
+  const filtered = prefs.platforms.length > 0;
 
   const stage = (p: Post, i: number) => {
     switch (p.kind) {
@@ -453,7 +1025,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={p.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30 blur-[2px]" />
             )}
-            <div className="relative flex h-full flex-col justify-center pb-44 pl-6 pr-16 pt-28">
+            <div className="relative flex h-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]">
               {live && <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded bg-[#ef4444] px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-white"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> Live</span>}
               <h2 className="font-display text-[40px] font-black leading-[1.02] text-white">{e.title}</h2>
               <p className="mt-4 text-base leading-snug text-white/85"><mark className="hl hl-y text-black">{p.caption}</mark></p>
@@ -462,7 +1034,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         );
       case "timeline":
         return (
-          <div className="h-full w-full pb-44 pl-5 pr-16 pt-28" style={{ background: DARK }}>
+          <div className="h-full w-full pb-[var(--kgf-bottom)] pl-5 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]" style={{ background: DARK }}>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-white/55">Minute by minute</p>
             <ol className="relative mt-3 space-y-3 border-l-2 border-[#ef4444]/60 pl-4">
               {e.moments.slice(0, 6).map((m) => (
@@ -478,7 +1050,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         );
       case "fact":
         return (
-          <div className="flex h-full w-full flex-col justify-center pb-44 pl-6 pr-16 pt-24" style={{ background: TONE[p.facts[0].status] ?? DARK }}>
+          <div className="flex h-full w-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]" style={{ background: TONE[p.facts[0].status] ?? DARK }}>
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/75">{p.title}</p>
             {p.facts.map((f) => (
               <div key={f.key} className="mt-5">
@@ -492,7 +1064,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       case "money": {
         const max = Math.max(...e.money.rows.map((r) => r.usd));
         return (
-          <div className="flex h-full w-full flex-col justify-center px-6 pb-44 pt-24" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)]" style={{ background: DARK }}>
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/70">The money trail</p>
             <p className="mt-2 font-display text-[44px] font-black leading-none text-white">{usd(e.money.total)}</p>
             <ul className="mt-5 space-y-2.5">
@@ -509,7 +1081,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       }
       case "people":
         return (
-          <div className="flex h-full w-full flex-col justify-center pb-44 pl-5 pr-16 pt-24" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col justify-center pb-[var(--kgf-bottom)] pl-5 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]" style={{ background: DARK }}>
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/70">People in this story</p>
             <ul className="mt-4 grid grid-cols-2 gap-2.5">
               {e.actors.slice(0, 8).map((a) => (
@@ -525,7 +1097,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       case "graph": {
         const kinds = Object.entries(e.graph.nodes.reduce<Record<string, number>>((m, n) => ((m[n.kind] = (m[n.kind] ?? 0) + 1), m), {}));
         return (
-          <div className="relative flex h-full w-full flex-col items-center justify-center px-6 pb-44 pt-24 text-center" style={{ background: DARK }}>
+          <div className="relative flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <svg viewBox="-110 -110 220 220" className="h-56 w-56" aria-hidden="true">
               {e.graph.nodes.slice(0, 36).map((n, k, arr) => {
                 const a = (k / arr.length) * Math.PI * 2;
@@ -547,7 +1119,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       }
       case "theories":
         return (
-          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-44 pt-24 text-center" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <p className="font-display text-[56px] font-black leading-none text-white">{e.claims.length}</p>
             <p className="mt-2 font-display text-2xl font-bold text-white">things people are saying</p>
             <p className="mt-3 max-w-[300px] text-sm text-white/75">Swipe each one like a dating app: right for true, left for false. Then see the verdict.</p>
@@ -559,12 +1131,12 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       case "claim":
         return (
           <div className="h-full w-full" style={{ background: DARK }}>
-            <ClaimStage c={p.claim} answer={answers[p.claim.key]} onAnswer={(yes) => answer(p.claim.key, yes)} />
+            <ClaimStage c={p.claim} answer={answers[p.claim.key]} onAnswer={(yes) => answer(p.claim.key, yes)} bare={view === "swipe"} />
           </div>
         );
       case "score":
         return (
-          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-44 pt-24 text-center" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/70">Your round</p>
             <p className="mt-2 font-display text-[72px] font-black leading-none text-white">{correct}<span className="text-white/35">/{answered.length || e.claims.length}</span></p>
             <p className="mt-3 text-sm text-white/75">{answered.length ? "called right, counting misleading claims as false" : "Swipe back up to play the round."}</p>
@@ -572,7 +1144,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         );
       case "next":
         return (
-          <div className="flex h-full w-full flex-col justify-center px-6 pb-44 pt-24" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)]" style={{ background: DARK }}>
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/70">What happens next</p>
             <ul className="mt-4 space-y-3">
               {e.watch.slice(0, 5).map((w) => (
@@ -600,7 +1172,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 </div>
               </>
             ) : (
-              <div className="absolute inset-0 flex items-center pb-48 pl-4 pr-16 pt-24" style={{ background: DARK }}>
+              <div className="absolute inset-0 flex items-center pb-[var(--kgf-bottom)] pl-4 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]" style={{ background: DARK }}>
                 <div className="w-full rounded-2xl border border-white/15 bg-black/60 p-4 shadow-2xl backdrop-blur">
                   <div className="flex items-center gap-2.5">
                     <Avatar a={p.author} size={40} />
@@ -631,15 +1203,15 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 </button>
               )
             )}
-            {s.views ? <span className="absolute left-3 top-24 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-semibold text-white">▶ {compact(s.views)} views</span> : null}
+            {s.views ? <span className="absolute left-3 top-[var(--kgf-chip)] rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-semibold text-white">▶ {compact(s.views)} views</span> : null}
           </div>
         );
       }
       case "end":
         return (
-          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-44 pt-24 text-center" style={{ background: DARK }}>
+          <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <p className="font-display text-3xl font-black text-white">You&apos;re caught up</p>
-            <p className="mt-2 text-sm text-white/75">The whole story and every source, {posts.length} posts.</p>
+            <p className="mt-2 text-sm text-white/75">The whole story and every source, {feed.length} posts.</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               <a href={page} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black">Read the full page</a>
               <button type="button" onClick={() => go(0)} className="rounded-full bg-white/15 px-5 py-2.5 text-sm font-semibold text-white">Start again</button>
@@ -706,7 +1278,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     );
   };
 
-  const caption = (p: Post) => (
+  const caption = (p: Post, compact = false) => (
     <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-3 pb-5 pt-16 pr-16">
       {note(p)}
       <div className="flex items-center gap-2">
@@ -721,8 +1293,8 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       </p>
       {!(p.kind === "source" && !p.s.thumb) && <p className="mt-1.5 line-clamp-2 text-[14px] leading-snug text-white">{p.kind === "intro" ? e.title : p.caption}</p>}
       <button type="button" onClick={() => openRead(p.id)} className="mt-0.5 text-[13px] font-semibold text-white/80">Read more</button>
-      <p className="mt-1 truncate text-[13px] font-semibold text-white">{p.tags.join(" ")}</p>
-      {p.evidence.length > 0 && (
+      {!compact && <p className="mt-1 truncate text-[13px] font-semibold text-white">{p.tags.join(" ")}</p>}
+      {!compact && p.evidence.length > 0 && (
         <div className="mt-2 flex items-center gap-2 overflow-hidden text-[12px] text-white/80">
           <span aria-hidden="true">♪</span>
           <span className="kgf-marquee whitespace-nowrap">Sources: {Array.from(new Set(p.evidence.map((x) => x.author || host(x.url)).filter(Boolean))).join(" · ")}</span>
@@ -934,55 +1506,261 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     </motion.aside>
   );
 
-  const ui = (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center overflow-hidden bg-black font-sans text-white" role="dialog" aria-modal="true" aria-label={`Knowledge Graph Feeds: ${e.title}`}>
-      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}`}</style>
+  const header = (
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/85 via-black/55 to-transparent pb-5 pt-3">
+      <div className="pointer-events-auto flex items-center justify-between gap-2 px-3">
+        <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><ArrowLeft size={20} /></a>
+        <div role="tablist" aria-label="View" className="flex rounded-full bg-white/10 p-0.5 text-[13px] font-bold backdrop-blur">
+          {(["scroll", "swipe"] as View[]).map((v) => (
+            <button
+              key={v}
+              type="button"
+              role="tab"
+              aria-selected={view === v}
+              onClick={() => {
+                if (v === view) return;
+                click("pick");
+                setPrefs({ view: v });
+              }}
+              className={`rounded-full px-4 py-1.5 transition ${view === v ? "bg-white text-black" : "text-white/75 hover:text-white"}`}
+            >
+              {v === "scroll" ? "Feed" : "Swipe"}
+            </button>
+          ))}
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {live && <span className="rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">Live</span>}
+          <button type="button" onClick={() => setSettings(true)} aria-label="Tune your feed: topics, platforms, view and sound" className="grid h-9 w-9 place-items-center rounded-full bg-black/40 text-white">
+            <SlidersHorizontal size={18} />
+          </button>
+        </div>
+      </div>
+      <div className="pointer-events-auto mt-2">
+        <TopicTuner items={stations} index={station} onPick={tune} click={click} />
+      </div>
+      {filtered && (
+        <button type="button" onClick={() => setSettings(true)} className="pointer-events-auto mx-3 mt-1.5 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-1.5 overflow-hidden rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold text-white">
+          <span className="flex shrink-0 items-center gap-1">{onPlatforms.slice(0, 5).map((id) => <PlatformIcon key={id} id={id} />)}</span>
+          <span className="truncate">{onPlatforms.length} of {PLATFORMS.length} platforms · Change</span>
+        </button>
+      )}
+      <div className="pointer-events-auto mt-2 px-3">
+        {view === "scroll" ? (
+          <>
+            <div className="flex gap-1" role="tablist" aria-label="Chapters">
+              {chapters.map((ch) => {
+                const idx = feed.flatMap((p, i) => (p.chapter === ch.id ? [i] : []));
+                const done = idx.filter((i) => i < current).length + (chapter === ch.id ? 1 : 0);
+                return (
+                  <button key={ch.id} type="button" role="tab" aria-selected={chapter === ch.id} aria-label={ch.label} onClick={() => go(idx[0])} className="h-3 min-w-0 flex-1">
+                    <span className="block h-[3px] overflow-hidden rounded-full bg-white/30">
+                      <span className="block h-full rounded-full bg-white" style={{ width: `${idx.length ? (100 * done) / idx.length : 0}%` }} />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-0.5 text-[11px] font-semibold text-white/80">{CHAPTERS.find((c) => c.id === chapter)?.label} · {current + 1} of {feed.length}</p>
+          </>
+        ) : (
+          <p className="text-[11px] font-semibold text-white/80">Card {current + 1} of {feed.length}</p>
+        )}
+      </div>
+    </div>
+  );
+
+  const scrollView = (
+    <div ref={scroller} onScroll={onScroll} onPointerDown={onPointerDown} onPointerUp={onPointerUp} role="feed" aria-busy={!ready} className="kgf-body h-[100dvh] snap-y snap-mandatory overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {feed.map((p, i) => (
+        <article key={p.id} id={p.id} aria-posinset={i + 1} aria-setsize={feed.length} aria-label={p.caption} className="relative h-[100dvh] snap-start snap-always overflow-hidden">
+          {Math.abs(i - current) <= 2 ? (
+            <>
+              {stage(p, i)}
+              {caption(p)}
+              {rail(p)}
+            </>
+          ) : null}
+        </article>
+      ))}
+    </div>
+  );
+
+  const claimOpen = post?.kind === "claim" && answers[post.claim.key] === undefined;
+  const swipeView = (
+    <div className={`kgf-body absolute inset-x-0 bottom-0 ${filtered ? "top-[184px]" : "top-[150px]"} px-3 pb-28`} style={{ "--kgf-top": "32px", "--kgf-bottom": "168px", "--kgf-chip": "14px", "--kgf-rail": "20px" } as React.CSSProperties}>
+      <div className="relative h-full">
+        {feed[current + 1] && (
+          <div className="absolute inset-0 translate-y-3 scale-[0.94] overflow-hidden rounded-[28px] opacity-60" aria-hidden="true">
+            {stage(feed[current + 1], current + 1)}
+          </div>
+        )}
+        <AnimatePresence initial={false} custom={dir}>
+          {post && (
+            <SwipeTop key={post.id} dir={dir} canDrag={!claimOpen} onSwipe={swipe} onTap={() => openRead(post.id)}>
+              {stage(post, current)}
+              {caption(post, true)}
+            </SwipeTop>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-4" data-no-tap>
+        <button type="button" onClick={() => go(current - 1)} disabled={current === 0} aria-label="Back one card" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-[#facc15] disabled:opacity-30">
+          <RotateCcw size={20} />
+        </button>
+        <button type="button" onClick={() => swipe(-1)} disabled={!claimOpen && current >= feed.length - 1} aria-label={claimOpen ? "False" : "Skip"} className="grid h-16 w-16 place-items-center rounded-full bg-white text-[#64748b] shadow-xl transition active:scale-90 disabled:opacity-30">
+          <Close size={30} strokeWidth={3} className={claimOpen ? "text-[#ef4444]" : ""} />
+        </button>
+        <button type="button" onClick={() => swipe(1)} disabled={!claimOpen && current >= feed.length - 1} aria-label={claimOpen ? "True" : "Like and next"} className="grid h-16 w-16 place-items-center rounded-full bg-white shadow-xl transition active:scale-90 disabled:opacity-30">
+          {claimOpen ? <Check size={30} strokeWidth={3} className="text-[#16a34a]" /> : <Heart size={28} fill="#ef4444" strokeWidth={0} />}
+        </button>
+        <button type="button" onClick={() => post && openRead(post.id)} aria-label="Read" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white">
+          <MessageCircle size={20} />
+        </button>
+      </div>
+    </div>
+  );
+
+  // Desktop: the control deck beside the phone column, a car stereo for the feed.
+  const deck = (
+    <aside className="hidden h-full w-[260px] shrink-0 flex-col justify-center gap-5 overflow-y-auto px-5 py-8 xl:flex" aria-label="Tune your feed">
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">Tune your feed</p>
+        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Clicks on" : "Clicks off"} className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white/80 hover:bg-white/20">
+          {prefs.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        </button>
+      </div>
+      <div className="rounded-xl border border-white/10 bg-[#07130f] px-4 py-3 font-mono shadow-[inset_0_2px_10px_rgba(0,0,0,0.6)]">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[#34d399]/60">Topic</p>
+        <p className="truncate text-lg font-bold text-[#34d399]">{stations[station]?.label}</p>
+        <p className="text-[11px] text-[#34d399]/60">{feed.length} posts{filtered ? ` · ${onPlatforms.length} platforms` : ""}</p>
+      </div>
+      <div className="flex justify-center">
+        <TopicKnob items={stations} index={station} onPick={tune} click={click} />
+      </div>
+      <div>
+        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Platforms</p>
+        <div className="flex flex-wrap gap-1.5">
+          {PLATFORMS.map((pl) => (
+            <Chip key={pl.id} on={onPlatforms.includes(pl.id)} onClick={() => togglePlatform(pl.id)} count={platformCount(pl.id)}>
+              <PlatformIcon id={pl.id} /> {pl.label}
+            </Chip>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+
+  const settingsSheet = (
+    <AnimatePresence>
+      {settings && (
+        <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 32, stiffness: 320 }} className="absolute inset-0 z-50 flex flex-col bg-[#0d0f14]" role="dialog" aria-modal="true" aria-label="Tune your feed">
+          <div className="flex items-center justify-between px-4 pb-2 pt-4">
+            <p className="font-display text-xl font-black">Tune your feed</p>
+            <button type="button" onClick={() => setSettings(false)} className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black">Done</button>
+          </div>
+          <p className="px-4 pb-3 text-[13px] text-white/60">{feed.length} posts match. The feed changes as you choose.</p>
+          <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">View</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {(["scroll", "swipe"] as View[]).map((v) => (
+                  <Chip key={v} on={view === v} onClick={() => { click("pick"); setPrefs({ view: v }); }}>{v === "scroll" ? "Feed: scroll up" : "Swipe: cards"}</Chip>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">Tune to</h3>
+              <p className="mb-2 text-xs text-white/50">One topic at a time, or For You. The dial at the top does the same.</p>
+              <div className="flex flex-wrap gap-1.5">
+                {stations.map((s, i) => (
+                  <Chip key={s.id} on={i === station} onClick={() => { if (i !== station) { click("pick"); tune(i); } }} count={s.count}>{s.label}</Chip>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">For You includes</h3>
+              <p className="mb-2 text-xs text-white/50">Switch a topic off and For You leaves it out.</p>
+              <div className="flex flex-wrap gap-1.5">
+                {TOPICS.map((t) => (
+                  <Chip key={t.id} on={!prefs.off.includes(t.id)} onClick={() => toggleTopic(t.id)} count={topicCount(t.id)}>{t.label}</Chip>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h3 className="mb-1 text-[12px] font-bold uppercase tracking-wider text-white/55">Platforms</h3>
+              <p className="mb-2 text-xs text-white/50">Keep any mix: one platform, four, or all of them.</p>
+              <div className="mb-2 flex flex-wrap gap-1.5">
+                {PRESETS.map((pr) => {
+                  const on = pr.ids.length ? pr.ids.length === onPlatforms.length && pr.ids.every((x) => onPlatforms.includes(x)) : !prefs.platforms.length;
+                  return <Chip key={pr.label} on={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }}>{pr.label}</Chip>;
+                })}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {PLATFORMS.map((pl) => (
+                  <Chip key={pl.id} on={onPlatforms.includes(pl.id)} onClick={() => togglePlatform(pl.id)} count={platformCount(pl.id)}>
+                    <PlatformIcon id={pl.id} /> {pl.label}
+                  </Chip>
+                ))}
+              </div>
+            </section>
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Sound</h3>
+              <Chip on={prefs.sound} onClick={() => setPrefs({ sound: !prefs.sound })}>
+                {prefs.sound ? <><Volume2 size={14} /> Dial clicks on</> : <><VolumeX size={14} /> Dial clicks off</>}
+              </Chip>
+            </section>
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Stories</h3>
+              <ul className="space-y-3">
+                {Object.values(EVENTS).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map((t) => {
+                  const thumb = coverOf(t);
+                  return (
+                    <li key={t.slug}>
+                      <a href={`/feeds/${t.slug}`} className="flex gap-3 rounded-2xl bg-white/[0.06] p-3 hover:bg-white/[0.1]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {thumb && <img src={thumb} alt="" className="h-20 w-14 shrink-0 rounded-lg object-cover" />}
+                        <span className="min-w-0">
+                          <span className="block font-bold leading-snug">{t.title}</span>
+                          <span className="mt-1 block text-xs text-white/60">{t.sources.length} sources · {t.claims.length} claims checked</span>
+                          {t.slug === slug && <span className="mt-1 inline-block rounded bg-white px-1.5 text-[10px] font-bold text-black">Watching</span>}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+                <li className="pt-1 text-center text-xs text-white/50">More stories as each one is read from every platform.</li>
+              </ul>
+            </section>
+            <div className="flex items-center justify-between pt-2">
+              <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound }); }} className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">Reset to everything</button>
+              <a href="/" className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">venkatapagadala.com</a>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex items-center justify-center overflow-hidden bg-black font-sans text-white"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Knowledge Graph Feeds: ${e.title}`}
+      style={{ "--kgf-top": "172px", "--kgf-bottom": "176px", "--kgf-chip": "172px", "--kgf-rail": "64px" } as React.CSSProperties}
+    >
+      <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
+      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}.kgf-wait .kgf-body{visibility:hidden}`}</style>
       {/* the desktop backdrop: the post in view, blurred, like Shorts and TikTok on the web */}
       {backdrop && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={backdrop} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-30 blur-3xl sm:block" />
       )}
       <div className="relative flex h-full">
+        {deck}
         <div ref={column} className="relative h-[100dvh] w-screen overflow-hidden bg-black sm:w-[min(100vw,calc(100dvh*9/16))] sm:max-w-[480px] sm:shadow-2xl">
-          {/* top: back to the page, For You and Topics, the story bar */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/70 to-transparent px-3 pb-8 pt-3">
-            <div className="pointer-events-auto flex items-center justify-between">
-              <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 place-items-center rounded-full bg-black/40 text-white"><ArrowLeft size={20} /></a>
-              <div className="flex items-center gap-5 text-[15px] font-bold">
-                <button type="button" onClick={() => setTopics(true)} className="text-white/60 hover:text-white">Topics</button>
-                <span className="border-b-2 border-white pb-0.5 text-white">For You</span>
-              </div>
-              {live ? <span className="rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">Live</span> : <span className="w-9" />}
-            </div>
-            <div className="pointer-events-auto mt-3 flex gap-1" role="tablist" aria-label="Chapters">
-              {CHAPTERS.map((ch) => {
-                const idx = posts.flatMap((p, i) => (p.chapter === ch.id ? [i] : []));
-                const done = idx.filter((i) => i < current).length + (chapter === ch.id ? 1 : 0);
-                return (
-                  <button key={ch.id} type="button" role="tab" aria-selected={chapter === ch.id} aria-label={ch.label} onClick={() => go(idx[0])} className="h-4 min-w-0 flex-1">
-                    <span className="block h-[3px] overflow-hidden rounded-full bg-white/30"><span className="block h-full rounded-full bg-white" style={{ width: `${idx.length ? (100 * done) / idx.length : 0}%` }} /></span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="mt-0.5 text-[11px] font-semibold text-white/80">{CHAPTERS.find((c) => c.id === chapter)?.label} · {current + 1} of {posts.length}</p>
-          </div>
-
-          {/* the feed: one post per screen */}
-          <div ref={scroller} onScroll={onScroll} onPointerDown={onPointerDown} onPointerUp={onPointerUp} role="feed" aria-busy="false" className="h-[100dvh] snap-y snap-mandatory overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {posts.map((p, i) => (
-              <article key={p.id} id={p.id} aria-posinset={i + 1} aria-setsize={posts.length} aria-label={p.caption} className="relative h-[100dvh] snap-start snap-always overflow-hidden">
-                {Math.abs(i - current) <= 2 ? (
-                  <>
-                    {stage(p, i)}
-                    {caption(p)}
-                    {rail(p)}
-                  </>
-                ) : null}
-              </article>
-            ))}
-          </div>
-
+          {header}
+          {view === "scroll" ? scrollView : swipeView}
           <AnimatePresence>
             {burst && (
               <motion.span key={burst.k} initial={{ scale: 0.2, opacity: 0.95, rotate: -12 }} animate={{ scale: 1.5, opacity: 0, y: -60 }} transition={{ duration: 0.8 }} onAnimationComplete={() => setBurst(null)} className="pointer-events-none absolute z-40 text-[#ef4444]" style={{ left: burst.x - 40, top: burst.y - 40 }}>
@@ -991,70 +1769,52 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
             )}
           </AnimatePresence>
           <AnimatePresence>
-            {coach && current === 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setCoach(false)} className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 bg-black/70 text-center">
-                <motion.span animate={{ y: [0, -24, 0] }} transition={{ repeat: Infinity, duration: 1.4 }} className="text-5xl" aria-hidden="true">☝</motion.span>
-                <p className="font-display text-2xl font-black">Swipe up for the next post</p>
-                <p className="max-w-[260px] text-sm text-white/80">Tap a post to read it, double-tap to like, swipe sideways to change chapter.</p>
+            {coach && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setCoach(null)} className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-black/75 px-8 text-center">
+                <motion.span animate={coach === "swipe" ? { x: [0, 36, 0, -36, 0] } : { y: [0, -24, 0] }} transition={{ repeat: Infinity, duration: 1.6 }} className="text-5xl" aria-hidden="true">☝</motion.span>
+                <p className="font-display text-2xl font-black">{coach === "swipe" ? "Swipe right to like, left to skip" : "Swipe up for the next post"}</p>
+                <p className="max-w-[280px] text-sm text-white/80">
+                  {coach === "swipe" ? "Tap a card to read it. On a claim, right means true and left means false." : "Tap a post to read it, double-tap to like. Drag the topic dial at the top to change what the feed shows."}
+                </p>
                 <span className="rounded-full bg-white px-5 py-2 text-sm font-bold text-black">Got it</span>
               </motion.div>
             )}
           </AnimatePresence>
           <AnimatePresence>{!wide && sheet}</AnimatePresence>
-          <AnimatePresence>
-            {topics && (
-              <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 32, stiffness: 320 }} className="absolute inset-0 z-50 flex flex-col bg-[#0d0f14]" role="dialog" aria-label="Topics">
-                <div className="flex items-center justify-between px-4 pb-2 pt-4">
-                  <p className="font-display text-xl font-black">Topics</p>
-                  <button type="button" onClick={() => setTopics(false)} aria-label="Close" className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><Close size={18} /></button>
-                </div>
-                <ul className="flex-1 space-y-3 overflow-y-auto px-4 pb-6">
-                  {Object.values(EVENTS).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map((t) => {
-                    const thumb = coverOf(t);
-                    return (
-                      <li key={t.slug}>
-                        <a href={`/feeds/${t.slug}`} className="flex gap-3 rounded-2xl bg-white/[0.06] p-3 hover:bg-white/[0.1]">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          {thumb && <img src={thumb} alt="" className="h-20 w-14 shrink-0 rounded-lg object-cover" />}
-                          <span className="min-w-0">
-                            <span className="block font-bold leading-snug">{t.title}</span>
-                            <span className="mt-1 block text-xs text-white/60">{t.sources.length} sources · {t.claims.length} claims checked</span>
-                            {t.slug === slug && <span className="mt-1 inline-block rounded bg-white px-1.5 text-[10px] font-bold text-black">Watching</span>}
-                          </span>
-                        </a>
-                      </li>
-                    );
-                  })}
-                  <li className="pt-2 text-center text-xs text-white/50">More topics as each story is read from every platform.</li>
-                  <li className="text-center"><a href="/" className="text-sm font-semibold text-white/80 underline-offset-4 hover:underline">Back to venkatapagadala.com</a></li>
-                </ul>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {settingsSheet}
           <AnimatePresence>
             {toast && (
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black">
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-24 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black">
                 {toast}
               </motion.p>
             )}
           </AnimatePresence>
+          <p className="sr-only" aria-live="polite">{announce}</p>
         </div>
         <AnimatePresence>{wide && sheet}</AnimatePresence>
       </div>
 
-      {/* desktop: up and down, like Shorts */}
-      <div className="absolute right-6 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 sm:flex">
-        <button type="button" onClick={() => go(current - 1)} disabled={current === 0} aria-label="Previous post" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-30"><ChevronUp size={24} /></button>
-        <button type="button" onClick={() => go(current + 1)} disabled={current === posts.length - 1} aria-label="Next post" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-30"><ChevronDown size={24} /></button>
-      </div>
+      {view === "scroll" && (
+        <div className="absolute right-6 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 sm:flex">
+          <button type="button" onClick={() => go(current - 1)} disabled={current === 0} aria-label="Previous post" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-30"><ChevronUp size={24} /></button>
+          <button type="button" onClick={() => go(current + 1)} disabled={current === feed.length - 1} aria-label="Next post" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-30"><ChevronDown size={24} /></button>
+        </div>
+      )}
       <ul className="absolute bottom-6 right-6 z-30 hidden space-y-0.5 text-right text-[11px] text-white/45 xl:block" aria-label="Keyboard shortcuts">
-        <li>↑ ↓ next post</li>
-        <li>← → chapter</li>
+        {view === "scroll" ? (
+          <>
+            <li>↑ ↓ next post</li>
+            <li>← → chapter</li>
+          </>
+        ) : (
+          <>
+            <li>→ like · ← skip</li>
+            <li>↑ back one card</li>
+          </>
+        )}
         <li>Enter read</li>
-        <li>L like</li>
         <li>Esc close</li>
       </ul>
     </div>
   );
-  return createPortal(ui, document.body);
 }
