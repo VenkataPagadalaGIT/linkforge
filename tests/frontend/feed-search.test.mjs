@@ -63,6 +63,15 @@ test("question words are not the topic", () => {
   assert.ok(ids("who hacked binance").length > 0 || ids("binance").length > 0);
 });
 
+test("a title that opens with the question typed is the answer", () => {
+  const i = buildIndex([
+    { id: "a", kind: "news", title: "The Rise of AI Agents", href: "/a", boost: 3, date: "2026-09-03" },
+    { id: "b", kind: "topic", title: "What is AI? · The Big Picture", href: "/b", boost: 3 },
+  ]);
+  assert.equal(search(i, "what is ai")[0].doc.id, "b");
+  assert.equal(search(i, "what is ai?")[0].doc.id, "b");
+});
+
 test("a prefix finds the word", () => {
   assert.ok(ids("transform").includes("t1"));
   assert.ok(ids("pyth").includes("b1"));

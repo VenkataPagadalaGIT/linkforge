@@ -440,8 +440,9 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     const q = new URLSearchParams(window.location.search);
     const t = q.get("topic");
     const v = q.get("view");
-    // A link or a search result opens exactly that post, whatever the reader's own filters would hide: this visit only.
-    const deep = q.get("p") || q.get("chapter");
+    // A link or a search result opens exactly that post, and "See all 283 sources" means all, whatever the reader's own
+    // filters would hide: this visit only.
+    const deep = q.get("p") || q.get("chapter") || q.get("all");
     setPrefsState({
       ...readPrefs(),
       ...(deep ? { topic: "all", off: [], platforms: [] } : {}),

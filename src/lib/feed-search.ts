@@ -116,6 +116,8 @@ export interface ParsedQuery {
   level: string | null;
   free: boolean;
   phrase: string;
+  /** Exactly what was typed, question words and all. */
+  asked: string;
 }
 
 /** Separate what the person wants to know about from how they asked for it. */
@@ -134,8 +136,8 @@ export function parseQuery(query: string): ParsedQuery {
   // "ai news", "tech news", "latest business news" ask for the news, not for a story with the word "tech" in its title.
   const kept = kinds.has("news") ? terms.filter((w) => !NEWS_NOISE.has(w)) : terms;
   // Only stop words typed ("what is the"): search them as written rather than returning nothing.
-  if (!kept.length && !kinds.size && !level && !free && !raw.every((w) => STOP.has(w) || BROWSE.has(w))) return { terms: raw, kinds: [], level: null, free: false, phrase: raw.join(" ") };
-  return { terms: kept.filter((w) => !BROWSE.has(w) || kept.length > 1), kinds: [...kinds], level, free, phrase: kept.join(" ") };
+  if (!kept.length && !kinds.size && !level && !free && !raw.every((w) => STOP.has(w) || BROWSE.has(w))) return { terms: raw, kinds: [], level: null, free: false, phrase: raw.join(" "), asked: raw.join(" ") };
+  return { terms: kept.filter((w) => !BROWSE.has(w) || kept.length > 1), kinds: [...kinds], level, free, phrase: kept.join(" "), asked: raw.join(" ") };
 }
 
 /** Edit distance, stopping as soon as it passes `max`. */
@@ -234,6 +236,8 @@ function run(index: SearchIndex, p: ParsedQuery, tier: Tier, fuzzy: boolean): Se
     if (!all) continue;
     if (phrase && e.titleText.includes(phrase)) total += 8;
     if (p.terms.length && e.titleText === p.terms.join(" ")) total += 6;
+    // A title that opens with the whole question as typed is the answer: "what is ai" means "What is AI?", not any story with AI in it.
+    if (p.asked !== p.phrase && e.titleText.startsWith(p.asked)) total += 20;
     hits.push({ doc: e.doc, score: total + (e.doc.boost ?? 0) });
   }
   return hits;

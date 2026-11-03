@@ -12,6 +12,7 @@ import { getBusiness } from "@/lib/business-source";
 import { buildFront, type FrontStory } from "@/lib/news-front";
 import { rankReasons, rankScore, rankStories } from "@/lib/news-rank";
 import { coverOf } from "@/components/feeds/cover";
+import { logoUrl } from "@/data/aiLogos";
 import { orgLogo } from "@/data/aiOrgLogos";
 import type { AIUpdate } from "@/data/aiUpdates";
 
@@ -33,6 +34,8 @@ export interface StoryCard {
   subjects: string[];
   /** Searched, not shown. */
   tags: string[];
+  /** The companies in the story, for a card with no picture. */
+  marks: string[];
   sources: number;
   documents: number;
   claims: number;
@@ -53,6 +56,12 @@ function subjectsOf(u: AIUpdate): string[] {
   return [...out];
 }
 
+const slugOf = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const markOf = (name?: string | null) => (name ? orgLogo(name) ?? logoUrl(slugOf(name)) : null);
+/** Stories that share one video get different stills of it, so a run of them does not read as one post repeated. */
+const STILLS = ["maxresdefault", "maxres1", "maxres2"];
+/** A still that shows the story's own subject. */
+const OWN_STILL: Record<string, string> = { "nvidia-dlss-5-ai-graphics-breakthrough": "maxres3" };
 const youtubeId = (url?: string) => url?.match(/(?:youtu\.be\/|[?&]v=|\/live\/|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/)?.[1] ?? null;
 
 export async function getStoryCards(today = new Date().toISOString().slice(0, 10)): Promise<StoryCard[]> {
@@ -61,6 +70,13 @@ export async function getStoryCards(today = new Date().toISOString().slice(0, 10
   const front = buildFront({ updates, business, events, today });
   const bySlug = new Map(updates.map((u) => [`update:${u.slug}`, u]));
   const notes = new Map(business.articles.map((a) => [`note:${a.slug}`, a]));
+  const stillsUsed = new Map<string, number>();
+  const still = (vid: string, slug: string) => {
+    if (OWN_STILL[slug]) return `https://i.ytimg.com/vi/${vid}/${OWN_STILL[slug]}.jpg`;
+    const n = stillsUsed.get(vid) ?? 0;
+    stillsUsed.set(vid, n + 1);
+    return `https://i.ytimg.com/vi/${vid}/${STILLS[n % STILLS.length]}.jpg`;
+  };
   const cards: StoryCard[] = front.latest.map((s) => {
     const u = bySlug.get(s.id);
     const ev = s.kind === "event" ? EVENTS[s.id.replace("event:", "")] : undefined;
@@ -79,12 +95,13 @@ export async function getStoryCards(today = new Date().toISOString().slice(0, 10
       summary: s.summary,
       kicker: s.kicker,
       href: s.href,
-      ...(ev ? { feedHref: `/feeds/${ev.slug}` } : {}),
-      image: ev ? coverOf(ev) ?? undefined : s.image?.src ?? (vid ? `https://i.ytimg.com/vi/${vid}/hqdefault.jpg` : undefined),
+      ...(ev ? { feedHref: `/feeds/${ev.slug}?all=1` } : {}),
+      image: ev ? coverOf(ev) ?? undefined : vid && u ? still(vid, u.slug) : s.image?.src,
       ...(vid ? { video: { id: vid } } : {}),
       logos: s.logos,
-      logo: s.logo?.src ?? (u ? orgLogo(u.company) ?? undefined : undefined),
+      logo: s.logo?.src ?? markOf(u?.company) ?? undefined,
       tags: u?.tags ?? [],
+      marks: Array.from(new Set([s.logo?.src, ...[u?.company, ...(u?.tags ?? [])].map(markOf)].filter((x): x is string => Boolean(x)))).slice(0, 4),
       stat: s.stat ? { value: s.stat.stat, label: s.stat.label } : ev ? (() => { const f = ev.facts.find((x) => x.key === "impact"); return f ? { value: f.value, label: f.label } : undefined; })() : undefined,
       subjects: ev ? Array.from(new Set((ev.subjects ?? []).map((t) => t.path[1] ?? t.path[0]))) : u ? subjectsOf(u) : ["Companies & Deals"],
       ...signals,

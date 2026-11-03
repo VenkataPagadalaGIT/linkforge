@@ -52,6 +52,7 @@ interface Card {
   stat?: { value: string; label: string };
   logos?: StoryCard["logos"];
   logo?: string;
+  marks?: string[];
   checked?: boolean;
 }
 
@@ -244,7 +245,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
     }
     if (mode === "news") {
       const out: Card[] = storyList.map((s) => ({
-        id: s.id, kind: "story", title: s.title, kicker: s.kicker, body: s.summary, image: s.image, stat: s.stat, logos: s.logos, logo: s.logo, meta: s.why, href: s.feedHref ?? s.href,
+        id: s.id, kind: "story", title: s.title, kicker: s.kicker, body: s.summary, image: s.image, stat: s.stat, logos: s.logos, logo: s.logo, marks: s.marks, meta: s.why, href: s.feedHref ?? s.href,
         cta: s.feedHref ? `See all ${s.sources} sources` : "Read the story", creator: s.kicker, platform: s.subjects[0],
       }));
       return out.length ? [...out, { id: "end", kind: "end", title: "" }] : out;
@@ -596,21 +597,25 @@ export function CardFeed({ mode }: { mode: Mode }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/35 to-black/90" aria-hidden="true" />
           <div className="relative flex h-full flex-col justify-end pb-[calc(var(--kgf-bottom)-40px)] pl-5 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]">
-            {c.logos && (
-              <div className="mb-3 flex items-center gap-2 text-[13px] font-bold text-white">
-                {[c.logos.left, c.logos.right].map((l, k) => (
-                  <span key={k} className="flex items-center gap-1.5 rounded-lg bg-white px-2 py-1 text-black">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={l.onLight} alt={l.name} className="h-5 w-auto" />
-                  </span>
-                ))}
+            {!c.image && (c.logos || c.marks?.length || c.logo) && (
+              <div className="flex min-h-0 flex-1 flex-wrap content-center items-center justify-center gap-3 overflow-hidden pb-4 [@media(max-height:620px)]:hidden" aria-hidden="true">
+                {c.logos
+                  ? [c.logos.left, c.logos.right].map((l, k) => (
+                      <span key={k} className="flex h-20 items-center rounded-3xl bg-white px-5 shadow-2xl">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={l.onLight} alt="" className="h-9 w-auto max-w-[110px] object-contain" />
+                      </span>
+                    ))
+                  : (c.marks?.length ? c.marks : [c.logo as string]).map((m) => {
+                      const one = (c.marks?.length ?? 1) <= 1;
+                      return (
+                        <span key={m} className={`grid place-items-center rounded-3xl bg-white shadow-2xl ${one ? "h-28 w-28 p-4" : "h-20 w-20 p-3"}`}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={m} alt="" className="max-h-full max-w-full object-contain" />
+                        </span>
+                      );
+                    })}
               </div>
-            )}
-            {!c.image && c.logo && !c.logos && (
-              <span className="mb-3 grid h-16 w-16 place-items-center rounded-2xl bg-white p-2 shadow-xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.logo} alt="" className="max-h-full max-w-full object-contain" />
-              </span>
             )}
             {!c.image && c.stat && (
               <div className="mb-3">
