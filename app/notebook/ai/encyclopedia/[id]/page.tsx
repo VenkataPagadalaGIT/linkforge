@@ -172,6 +172,9 @@ export default function Page({ params }: { params: { id: string } }) {
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <article>
+        <a href={`/feeds/learn?topic=c-${c.id}`} className="mb-3 inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[11px] text-foreground hover:bg-foreground/[0.06]">
+          Learn this concept as a feed
+        </a>
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mb-2">
           <span style={{ color: cat?.color }}>{c.category}</span>
           {" · "}{c.difficulty}{" · "}concept {idx + 1} of {REF_COUNTS.concepts}

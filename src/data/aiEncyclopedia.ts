@@ -256,7 +256,6 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["ReLU", "Sigmoid", "Tanh", "GELU", "Vanishing gradient"],
     prerequisites: ["Neural Network"],
     learnMore: [
-      { title: "StatQuest: ReLU", url: "https://www.youtube.com/watch?v=68BZ5f7P94Q" },
     ],
   },
   {
@@ -722,7 +721,6 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["ARIMA", "Seasonality", "Trend", "Lag features", "Prophet", "Stationarity"],
     prerequisites: ["Machine Learning (ML)"],
     learnMore: [
-      { title: "Facebook Prophet", url: "https://facebook.github.io/prophet/" },
     ],
     realWorldApps: "Stock prediction, weather forecasting, demand planning, energy grid",
   },
@@ -1910,7 +1908,6 @@ export const encyclopediaConcepts: EncyclopediaConcept[] = [
     keyTerms: ["Genetic algorithms", "Fitness function", "Mutation & crossover", "Particle swarm", "Neuroevolution"],
     prerequisites: ["Machine Learning (ML)"],
     learnMore: [
-      { title: "Essentials of Metaheuristics (free book, Sean Luke)", url: "https://cs.gmu.edu/~sean/book/metaheuristics/" },
     ],
     realWorldApps: "Scheduling and routing, NASA's evolved antenna designs, architecture search, game-playing agents",
   },

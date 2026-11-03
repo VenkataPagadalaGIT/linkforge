@@ -5,7 +5,7 @@
  */
 import * as React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Layers, Rows3 } from "lucide-react";
+import { Check, ChevronDown, Layers, Rows3, Search } from "lucide-react";
 
 export const store = {
   get(k: string): string[] {
@@ -275,125 +275,6 @@ export function SwitchRow({ id, on, label, icon, count, onToggle, onOnly }: { id
   );
 }
 
-/**
- * The Focus dial, after the matte thermostat knobs the owner pointed to on Dribbble: a dark knob with one indicator dot
- * and a dotted arc that fills to the setting, with the setting named beside it. Optional and compact: the lists below it
- * decide what the feed holds, the dial narrows it to one for now. Turn it by dragging (finger or mouse), the wheel or the
- * arrow keys, or the two buttons (a knob alone is hard to use by touch or screen reader). Each step clicks.
- */
-export function FocusDial({ items, index, onPick, click, meta, label = "Focus" }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click; meta?: React.ReactNode; label?: string }) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const drag = React.useRef(false);
-  const wheel = React.useRef(0);
-  const n = items.length;
-  const step = n > 1 ? 270 / (n - 1) : 0;
-  const angle = n > 1 ? -135 + index * step : -135;
-  const pick = (i: number) => {
-    const c = Math.max(0, Math.min(n - 1, i));
-    if (c === index) {
-      if (i !== c) click("stop");
-      return;
-    }
-    click("tick");
-    onPick(c);
-  };
-  const latest = React.useRef(pick);
-  latest.current = pick;
-  const at = React.useRef(index);
-  at.current = index;
-  React.useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // a native listener, so the page does not scroll while the dial turns; one step per notch of the wheel
-    const w = (ev: WheelEvent) => {
-      ev.preventDefault();
-      wheel.current += ev.deltaY;
-      if (Math.abs(wheel.current) < 40) return;
-      latest.current(at.current + (wheel.current > 0 ? 1 : -1));
-      wheel.current = 0;
-    };
-    el.addEventListener("wheel", w, { passive: false });
-    return () => el.removeEventListener("wheel", w);
-  }, []);
-  const fromPointer = (x: number, y: number) => {
-    const r = ref.current!.getBoundingClientRect();
-    const deg = Math.max(-135, Math.min(135, (Math.atan2(x - (r.left + r.width / 2), -(y - (r.top + r.height / 2))) * 180) / Math.PI));
-    return step ? Math.round((deg + 135) / step) : 0;
-  };
-  const S = 104;
-  const C = S / 2;
-  const R = 46;
-  const DOTS = 25;
-  const gap = 270 / (DOTS - 1);
-  const cur = items[index];
-  return (
-    <div className="flex items-center gap-4">
-      <div
-        ref={ref}
-        role="slider"
-        tabIndex={0}
-        aria-label={`${label} dial`}
-        aria-valuemin={0}
-        aria-valuemax={n - 1}
-        aria-valuenow={index}
-        aria-valuetext={cur?.label}
-        onPointerDown={(ev) => {
-          ev.currentTarget.setPointerCapture(ev.pointerId);
-          drag.current = true;
-          pick(fromPointer(ev.clientX, ev.clientY));
-        }}
-        onPointerMove={(ev) => {
-          if (drag.current) pick(fromPointer(ev.clientX, ev.clientY));
-        }}
-        onPointerUp={() => (drag.current = false)}
-        onPointerCancel={() => (drag.current = false)}
-        onKeyDown={(ev) => {
-          const k = ev.key;
-          if (k === "ArrowRight" || k === "ArrowUp") pick(index + 1);
-          else if (k === "ArrowLeft" || k === "ArrowDown") pick(index - 1);
-          else if (k === "Home") pick(0);
-          else if (k === "End") pick(n - 1);
-          else return;
-          ev.preventDefault();
-          ev.stopPropagation();
-        }}
-        className="relative shrink-0 cursor-grab touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/30 active:cursor-grabbing"
-        style={{ width: S, height: S }}
-      >
-        <svg width={S} height={S} className="absolute inset-0" aria-hidden="true">
-          {Array.from({ length: DOTS }, (_, k) => {
-            const a = -135 + gap * k;
-            const rad = ((a - 90) * Math.PI) / 180;
-            const here = Math.abs(a - angle) <= gap / 2;
-            return <circle key={k} cx={Math.round((C + R * Math.cos(rad)) * 100) / 100} cy={Math.round((C + R * Math.sin(rad)) * 100) / 100} r={here ? 3.4 : 1.6} fill={here ? "#ef4444" : a < angle ? "rgba(255,255,255,0.82)" : "rgba(255,255,255,0.16)"} />;
-          })}
-        </svg>
-        <div
-          className="absolute rounded-full"
-          style={{
-            inset: 16,
-            background: "radial-gradient(circle at 50% 30%, #2a2a31 0%, #151519 55%, #0b0b0d 100%)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            boxShadow: "0 12px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)",
-          }}
-        >
-          <div className="absolute inset-0 rounded-full transition-transform duration-200 ease-out" style={{ transform: `rotate(${angle}deg)` }}>
-            <span className="absolute left-1/2 top-[7px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]" />
-          </div>
-        </div>
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="line-clamp-2 font-display text-[20px] font-bold leading-[1.15] text-white" aria-live="polite">{cur?.label}</p>
-        {meta && <p className="mt-1 text-[12px] leading-snug text-white/60">{meta}</p>}
-        <div className="mt-2 flex gap-2">
-          <button type="button" aria-label={`Turn the ${label.toLowerCase()} dial back`} onClick={() => pick(index - 1)} className="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white hover:bg-white/10"><ChevronLeft size={18} /></button>
-          <button type="button" aria-label={`Turn the ${label.toLowerCase()} dial forward`} onClick={() => pick(index + 1)} className="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white hover:bg-white/10"><ChevronRight size={18} /></button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /** A section of the Tune panel: a title, what is on right now, and a fold, so the panel can be short when someone wants it short. */
 export function PanelSection({ id, title, hint, summary, defaultOpen = true, children }: { id: string; title: string; hint?: string; summary?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = React.useState(defaultOpen);
@@ -456,5 +337,150 @@ export function Chip({ on, onClick, children, count }: { on: boolean; onClick: (
       {children}
       {count !== undefined && <span className={`text-[11px] ${on ? "text-black/55" : "text-white/45"}`}>{count}</span>}
     </button>
+  );
+}
+
+/**
+ * Pick where things come from: one, four, or all. With hundreds of platforms a list of switches is useless, so it is a
+ * search box over a short list, biggest first. Nothing picked means all of them.
+ */
+export function PlatformPicker({ id, items, selected, onChange, click, allLabel = "All platforms", searchLabel = "Search platforms", icon }: { id: string; items: { id: string; label: string; count: number }[]; selected: string[]; onChange: (ids: string[]) => void; click: Click; allLabel?: string; searchLabel?: string; icon?: (id: string) => React.ReactNode }) {
+  const [q, setQ] = React.useState("");
+  const [all, setAll] = React.useState(false);
+  const TOP = 6;
+  const needle = q.trim().toLowerCase();
+  const sorted = [...items].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  const matches = needle ? sorted.filter((x) => x.label.toLowerCase().includes(needle)) : sorted;
+  const shown = needle || all ? matches : matches.filter((x, i) => i < TOP || selected.includes(x.id));
+  const total = items.reduce((n, x) => n + x.count, 0);
+  const toggle = (x: string) => {
+    click("tick");
+    onChange(selected.includes(x) ? selected.filter((y) => y !== x) : [...selected, x]);
+  };
+  const row = "flex min-h-[40px] w-full items-center gap-2.5 rounded-lg px-2 text-left text-[14px] transition-colors hover:bg-white/[0.06]";
+  const box = (on: boolean) => `grid h-[18px] w-[18px] shrink-0 place-items-center rounded-[5px] border transition-colors ${on ? "border-white bg-white text-black" : "border-white/35 text-transparent"}`;
+  return (
+    <div>
+      {items.length > TOP && (
+        <label className="mx-2 mb-1 flex min-h-[38px] items-center gap-2 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 focus-within:ring-2 focus-within:ring-white/25">
+          <Search size={14} className="shrink-0 text-white/55" aria-hidden="true" />
+          <span className="sr-only">{searchLabel}</span>
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={searchLabel} className="min-w-0 flex-1 bg-transparent text-[14px] text-white outline-none placeholder:text-white/50" autoComplete="off" />
+        </label>
+      )}
+      <ul>
+        {!needle && (
+          <li>
+            <button type="button" role="checkbox" aria-checked={!selected.length} onClick={() => { click("tick"); onChange([]); }} className={row}>
+              <span className={box(!selected.length)} aria-hidden="true"><Check size={12} strokeWidth={3.5} /></span>
+              <span className={`min-w-0 flex-1 ${!selected.length ? "font-medium text-white" : "text-white/70"}`}>{allLabel}</span>
+              <span className="shrink-0 text-[12px] tabular-nums text-white/60">{total}</span>
+            </button>
+          </li>
+        )}
+        {shown.map((x) => {
+          const on = selected.includes(x.id);
+          return (
+            <li key={x.id}>
+              <button type="button" role="checkbox" aria-checked={on} id={`${id}-${x.id}`} onClick={() => toggle(x.id)} className={row}>
+                <span className={box(on)} aria-hidden="true"><Check size={12} strokeWidth={3.5} /></span>
+                {icon?.(x.id)}
+                <span className={`min-w-0 flex-1 leading-tight ${on ? "font-medium text-white" : "text-white/80"}`}>{x.label}</span>
+                <span className="shrink-0 text-[12px] tabular-nums text-white/60">{x.count}</span>
+              </button>
+            </li>
+          );
+        })}
+        {needle && !matches.length && <li className="px-2 py-2 text-[13px] text-white/65">No platform called &ldquo;{q.trim()}&rdquo;.</li>}
+      </ul>
+      {!needle && items.length > TOP && (
+        <button type="button" onClick={() => setAll((v) => !v)} className="mt-0.5 min-h-[36px] px-2 text-[13px] font-semibold text-white/75 hover:text-white">
+          {all ? "Show fewer" : `Show all ${items.length}`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+const POSTER_TONES = [
+  ["#7f1d1d", "#ef4444"], ["#1e3a8a", "#3b82f6"], ["#134e4a", "#14b8a6"], ["#581c87", "#a855f7"], ["#78350f", "#f59e0b"], ["#831843", "#ec4899"], ["#14532d", "#22c55e"], ["#0c4a6e", "#06b6d4"],
+];
+const hashOf = (s: string) => Array.from(s).reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+
+/**
+ * A cover for a resource whose page offers no picture, so no post is ever a blank screen: a book looks like a book, a
+ * paper like a first page, a course or guide like a lesson card. Its colours come from its title, so each one differs.
+ */
+export function Poster({ title, creator, format, platform }: { title: string; creator?: string; format?: string; platform?: string }) {
+  const [deep, bright] = POSTER_TONES[hashOf(title) % POSTER_TONES.length];
+  const clean = title.split(" · ")[0];
+  if (format === "paper") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center pb-[var(--kgf-bottom)] pt-[var(--kgf-top)]" style={{ background: `radial-gradient(90% 70% at 50% 40%, ${deep}, #07080c)` }}>
+        <div className="w-[62%] max-w-[300px] -rotate-2 rounded-sm bg-[#faf9f5] p-5 text-black shadow-2xl" style={{ aspectRatio: "3 / 4" }}>
+          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/55">{platform || "Paper"}</p>
+          <p className="mt-2 line-clamp-5 font-serif text-[19px] font-bold leading-[1.15]">{clean}</p>
+          <p className="mt-2 line-clamp-1 font-serif text-[11px] italic text-black/65">{creator}</p>
+          <div className="mt-3 space-y-1.5" aria-hidden="true">
+            {[100, 94, 98, 88, 96, 70].map((w, i) => <span key={i} className="block h-[3px] rounded bg-black/15" style={{ width: `${w}%` }} />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (format === "book") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center pb-[var(--kgf-bottom)] pt-[var(--kgf-top)]" style={{ background: `radial-gradient(90% 70% at 50% 40%, ${deep}, #07080c)` }}>
+        <div className="relative w-[58%] max-w-[280px] rotate-1 overflow-hidden rounded-r-lg rounded-l-sm p-5 pl-7 text-white shadow-2xl" style={{ aspectRatio: "2 / 3", background: `linear-gradient(150deg, ${bright}, ${deep})` }}>
+          <span className="absolute inset-y-0 left-0 w-3 bg-black/25" aria-hidden="true" />
+          <p className="line-clamp-6 font-display text-[23px] font-black leading-[1.1]">{clean}</p>
+          <p className="absolute bottom-4 left-7 right-4 line-clamp-2 text-[12px] font-semibold text-white/85">{creator}</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden px-5 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)]" style={{ background: `radial-gradient(90% 70% at 30% 20%, ${bright}55, transparent), radial-gradient(90% 70% at 90% 90%, ${deep}, #07080c)` }}>
+      <span className="pointer-events-none absolute -right-6 top-1/4 select-none font-display text-[150px] font-black leading-none text-white/[0.07]" aria-hidden="true">{(platform || clean).slice(0, 2)}</span>
+      <div className="relative w-full max-w-[340px] overflow-hidden rounded-2xl border border-white/15 bg-black/35 p-5 shadow-2xl backdrop-blur">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: bright }}>{platform || format}</p>
+        <p className="mt-2 line-clamp-5 font-display text-[24px] font-black leading-[1.12] text-white">{clean}</p>
+        {creator && creator !== platform && <p className="mt-2 line-clamp-1 text-[13px] text-white/80">{creator}</p>}
+      </div>
+    </div>
+  );
+}
+
+/** Days in a row with some learning done. A reason to come back that serves the reader. */
+export function useStreak(): number {
+  const [days, setDays] = React.useState(0);
+  React.useEffect(() => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+      const s = JSON.parse(window.localStorage.getItem("kgf:streak") || "null") as { last: string; days: number } | null;
+      const next = !s ? 1 : s.last === today ? s.days : s.last === yesterday ? s.days + 1 : 1;
+      window.localStorage.setItem("kgf:streak", JSON.stringify({ last: today, days: next }));
+      setDays(next);
+    } catch {
+      /* private mode: no streak, nothing else changes */
+    }
+  }, []);
+  return days;
+}
+
+/** The moment a topic is finished. */
+export function Celebrate({ title, sub, onDone }: { title: string; sub: string; onDone: () => void }) {
+  const dots = React.useMemo(() => Array.from({ length: 22 }, (_, i) => ({ a: (i / 22) * Math.PI * 2, r: 90 + (i % 5) * 26, c: POSTER_TONES[i % POSTER_TONES.length][1] })), []);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} onAnimationComplete={() => window.setTimeout(onDone, 1500)} className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center" role="status">
+      {dots.map((d, i) => (
+        <motion.span key={i} initial={{ x: 0, y: 0, opacity: 1, scale: 1 }} animate={{ x: Math.cos(d.a) * d.r, y: Math.sin(d.a) * d.r, opacity: 0, scale: 0.4 }} transition={{ duration: 1.3, ease: "easeOut" }} className="absolute h-2.5 w-2.5 rounded-full" style={{ background: d.c }} aria-hidden="true" />
+      ))}
+      <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: "spring", damping: 12, stiffness: 240 }} className="max-w-[80%] rounded-3xl bg-white px-6 py-4 text-center text-black shadow-2xl">
+        <p className="font-display text-xl font-black">{title}</p>
+        <p className="mt-0.5 text-[13px] font-semibold text-black/70">{sub}</p>
+      </motion.div>
+    </motion.div>
   );
 }

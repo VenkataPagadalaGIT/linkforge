@@ -56,8 +56,8 @@ const nextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
       {
-        // The feeds' search index is for the search box, not for search results.
-        source: "/feeds/search.json",
+        // The data files the feeds read are for the feeds, not for search results.
+        source: "/feeds/:file(search|learn|news).json",
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
       {

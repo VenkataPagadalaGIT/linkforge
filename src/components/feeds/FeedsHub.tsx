@@ -1,5 +1,6 @@
 import { EVENTS } from "@/data/events";
 import { coverOf } from "@/components/feeds/cover";
+import type { StoryCard } from "@/lib/story-index";
 
 const CHAPTERS = [
   ["happened", "What happened", "the story in one screen"],
@@ -12,7 +13,7 @@ const CHAPTERS = [
 ] as const;
 
 /** Knowledge Graph Feeds: every topic we read from every platform, as a feed people can swipe, with the full page one tap away. */
-export default function FeedsHub() {
+export default function FeedsHub({ stories = [] }: { stories?: StoryCard[] }) {
   const feeds = Object.values(EVENTS).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const top = feeds[0];
   const heroThumb = top ? coverOf(top) : null; // an official image, never a creator thumbnail (see cover.ts)
@@ -88,6 +89,22 @@ export default function FeedsHub() {
           </div>
           <p className="mt-4 font-mono text-[10px] text-white/50">More feeds are being built. Each one comes from the same pipeline: every platform read, every claim checked against its primary source.</p>
         </section>
+
+        {stories.length > 0 && (
+          <section className="mt-10" aria-labelledby="stories-h">
+            <h2 id="stories-h" className="mb-3 font-display text-lg font-bold">Every story, ranked by freshness and evidence</h2>
+            <ol className="space-y-2">
+              {stories.map((s) => (
+                <li key={s.id}>
+                  <a href={s.feedHref ?? s.href} className="block rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:border-[#ef4444]/60">
+                    <span className="block font-display text-base font-bold">{s.title}</span>
+                    <span className="mt-0.5 block font-mono text-[10px] text-white/70">{s.why.join(" · ")}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
         <section className="mt-12 grid gap-4 sm:grid-cols-3" aria-label="How it works">
           {[

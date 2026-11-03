@@ -150,7 +150,7 @@ export const NOT_INDEXED_ROUTES: { route: string; reason: string }[] = [
   { route: "/api/revalidate", reason: "signed refresh endpoint for no-deploy publishing (POST only)" },
   { route: "/brand", reason: "internal brand reference sheet" },
   { route: "/library", reason: "internal component showcase" },
-  { route: "/feeds/*", reason: "app views: a story feed canonicals to its event file; Learn and its search index defer to /notebook/ai/roadmap" },
+  { route: "/feeds/*", reason: "app views: a story feed canonicals to its event file; Learn, search and their data files defer to the pages they read from" },
   { route: "/api/ai/*", reason: "JSON and RSS data endpoints for the AI graph; robots.txt disallows /api/" },
 ];
 

@@ -1,4 +1,4 @@
--- The Learn catalog: one row per distinct resource on the AI Roadmap. Same site project, kept apart from `ontology` and
+-- The Learn catalog: one row per distinct resource on the AI Roadmap and in the AI Encyclopedia. Same site project, kept apart from `ontology` and
 -- `events`. A later source (encyclopedia, shelf) adds rows here, not another list. Loaded by learn_catalog.py.
 CREATE SCHEMA IF NOT EXISTS learn;
 
@@ -37,3 +37,8 @@ CREATE TABLE IF NOT EXISTS learn.link_check (
   note       text,
   PRIMARY KEY (resource, checked_at)
 );
+
+ALTER TABLE learn.resource ADD COLUMN IF NOT EXISTS platform text;
+ALTER TABLE learn.resource ADD COLUMN IF NOT EXISTS image text;
+ALTER TABLE learn.resource DROP CONSTRAINT IF EXISTS resource_format_check;
+ALTER TABLE learn.resource ADD CONSTRAINT resource_format_check CHECK (format IN ('video','course','book','repo','guide','paper'));

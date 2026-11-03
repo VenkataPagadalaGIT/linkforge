@@ -25,7 +25,7 @@ import { EVENTS, type EventClaim, type EventFact, type EventFile, type EventSour
 import { TopicGraph } from "@/components/graph/TopicGraph";
 import { Ago, Embed, PlatformMark, who } from "@/components/events/EventSources";
 import { coverOf } from "@/components/feeds/cover";
-import { Chip, FocusDial, ModeTabs, PanelSection, SwipeTop, SwitchRow, ToggleRow, TopicTuner, ViewToggle, store, useClicks, useWide, type Station } from "@/components/feeds/controls";
+import { ModeTabs, PanelSection, PlatformPicker, SwipeTop, ToggleRow, TopicTuner, ViewToggle, store, useClicks, useWide, type Station } from "@/components/feeds/controls";
 import { FeedSearch } from "@/components/feeds/FeedSearch";
 
 type Chapter = "happened" | "impact" | "details" | "graph" | "theories" | "next" | "sources";
@@ -108,13 +108,6 @@ const PLATFORMS: { id: string; label: string }[] = [
   { id: "hackernews", label: "Hacker News" },
   { id: "web", label: "Official sites" },
 ];
-const PRESETS: { label: string; ids: string[] }[] = [
-  { label: "Everything", ids: [] },
-  { label: "Social only", ids: ["x", "tiktok", "youtube", "instagram", "reddit"] },
-  { label: "Video only", ids: ["tiktok", "youtube", "instagram"] },
-  { label: "News and official", ids: ["kgf", "news", "web"] },
-];
-
 type View = "scroll" | "swipe";
 interface Prefs {
   /** "all" (For You) or one topic id: what the dial is tuned to. */
@@ -148,7 +141,7 @@ function writePrefs(p: Prefs) {
  * the default first post for a moment and then a jump: the flicker. The feed body stays hidden (the frame does not)
  * until it is in place.
  */
-const PREPAINT = `try{if(!localStorage.getItem("kgf:prefs")&&!localStorage.getItem("kgf:onboarded"))document.documentElement.classList.add("kgf-new");var q=location.search,s=JSON.parse(localStorage.getItem("${"kgf:prefs"}")||"null");if(/[?&](p|chapter|topic|view)=/.test(q)||(s&&((s.topic&&s.topic!=="all")||(s.platforms||[]).length||(s.off||[]).length||s.view==="swipe")))document.documentElement.classList.add("kgf-wait")}catch(e){}`;
+const PREPAINT = `try{var q=location.search,s=JSON.parse(localStorage.getItem("${"kgf:prefs"}")||"null");if(/[?&](p|chapter|topic|view)=/.test(q)||(s&&((s.topic&&s.topic!=="all")||(s.platforms||[]).length||(s.off||[]).length||s.view==="swipe")))document.documentElement.classList.add("kgf-wait")}catch(e){}`;
 
 type Author = { name: string; handle: string; avatar?: string | null; platform?: string; ours?: boolean; profile?: string | null };
 type Evidence = { quote: string; url: string | null; author: string | null };
@@ -392,9 +385,6 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const [announce, setAnnounce] = React.useState("");
   const [burst, setBurst] = React.useState<{ x: number; y: number; k: number } | null>(null);
   const [coach, setCoach] = React.useState<View | null>(null);
-  const [onboard, setOnboard] = React.useState(false);
-  const [pickTopics, setPickTopics] = React.useState<string[]>([]);
-  const [pickPlatforms, setPickPlatforms] = React.useState<string[]>(() => PLATFORMS.map((x) => x.id));
   const [seen, setSeen] = React.useState<string[]>([]);
   const scroller = React.useRef<HTMLDivElement>(null);
   const column = React.useRef<HTMLDivElement>(null);
@@ -447,18 +437,14 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     setSaved(store.get(`kgf:saved:${slug}`));
     setFollowing(store.get("kgf:following"));
     setSeen(store.get(`kgf:seen:${slug}`));
-    let fresh = false;
-    try {
-      fresh = !window.localStorage.getItem(PREFS_KEY) && !window.localStorage.getItem("kgf:onboarded");
-    } catch {
-      /* storage blocked: no picker, the feed opens on everything */
-    }
-    if (fresh) setOnboard(true);
     const q = new URLSearchParams(window.location.search);
     const t = q.get("topic");
     const v = q.get("view");
+    // A link or a search result opens exactly that post, whatever the reader's own filters would hide: this visit only.
+    const deep = q.get("p") || q.get("chapter");
     setPrefsState({
       ...readPrefs(),
+      ...(deep ? { topic: "all", off: [], platforms: [] } : {}),
       ...(t && (t === "all" || TOPICS.some((x) => x.id === t)) ? { topic: t } : {}),
       ...(v === "swipe" || v === "scroll" ? { view: v } : {}),
     });
@@ -478,7 +464,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     const ch = q.get("chapter");
     const start = p ? feed.findIndex((x) => x.id === p) : ch ? feed.findIndex((x) => x.chapter === ch) : -1;
     lastKey.current = feedKey;
-    const reveal = () => document.documentElement.classList.remove("kgf-wait", "kgf-new");
+    const reveal = () => document.documentElement.classList.remove("kgf-wait");
     if (start > 0) {
       setCurrent(start);
       requestAnimationFrame(() => {
@@ -532,23 +518,23 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
 
   // A first-time hint for each view, once.
   React.useEffect(() => {
-    if (!ready || onboard) return;
+    if (!ready || new URLSearchParams(window.location.search).has("p")) return;
     const shown = store.get("kgf:coach");
     if (!shown.includes(view)) {
       setCoach(view);
       store.set("kgf:coach", [...shown, view]);
     }
-  }, [ready, view, onboard]);
+  }, [ready, view]);
 
   // What has been read in this story: the tuner shows progress per topic, so a reader can finish one and move on.
   React.useEffect(() => {
-    if (!ready || onboard) return;
+    if (!ready) return;
     const id = feed[current]?.id;
     if (!id || seen.includes(id)) return;
     const next = [...seen, id];
     setSeen(next);
     store.set(`kgf:seen:${slug}`, next);
-  }, [ready, onboard, current, feed, seen, slug]);
+  }, [ready, current, feed, seen, slug]);
 
   const go = React.useCallback(
     (i: number, behavior: ScrollBehavior = "smooth") => {
@@ -645,16 +631,6 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       setPlaying(null);
     }
   };
-  const togglePlatform = (id: string) => {
-    const next = onPlatforms.includes(id) ? onPlatforms.filter((x) => x !== id) : [...onPlatforms, id];
-    if (!next.length) {
-      say("Keep at least one platform on");
-      click("stop");
-      return;
-    }
-    click("tick");
-    setPrefs({ platforms: next.length === allIds.length ? [] : next });
-  };
   const toggleTopic = (id: string) => {
     const off = prefs.off.includes(id) ? prefs.off.filter((x) => x !== id) : [...prefs.off, id];
     if (off.length === TOPICS.length) {
@@ -703,7 +679,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   React.useEffect(() => {
     const k = (ev: KeyboardEvent) => {
       if ((ev.target as HTMLElement | null)?.closest?.("[role=slider],input,textarea")) return;
-      if (onboard || searching) return;
+      if (searching) return;
       if (ev.key === "/" && !read && !settings) {
         ev.preventDefault();
         setSearching(true);
@@ -1247,7 +1223,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const header = (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/85 via-black/55 to-transparent pb-5 pt-3">
       <div className="pointer-events-auto flex items-center justify-between gap-1.5 px-2.5">
-        <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white max-[349px]:hidden"><ArrowLeft size={20} /></a>
+        <a href="/feeds" aria-label="Back to all stories" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white max-[349px]:hidden"><ArrowLeft size={20} /></a>
         <ModeTabs mode="news" />
         <ViewToggle view={view} onChange={(v) => { click("pick"); setPrefs({ view: v }); }} />
         <button type="button" onClick={() => setSearching(true)} aria-label="Search" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><Search size={18} /></button>
@@ -1360,35 +1336,30 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   );
   const focused = prefs.topic !== "all";
   const focusStation = stations[station];
-  const summary = (
-    <div aria-live="polite" className="rounded-2xl border border-white/[0.07] bg-[#15151a] p-4">
-      <p className="flex items-baseline gap-2"><span className="font-display text-[40px] font-bold leading-none tracking-tight text-white">{matchCount}</span><span className="text-[14px] text-white/80">posts in your feed</span></p>
-      <div className="mt-2.5 flex flex-wrap gap-1.5 text-[12px] font-semibold text-white/90">
-        <span className="rounded-full bg-white/[0.08] px-2.5 py-1">{TOPICS.length - prefs.off.length} of {TOPICS.length} angles</span>
-        <span className="rounded-full bg-white/[0.08] px-2.5 py-1">{onPlatforms.length} of {PLATFORMS.length} platforms</span>
-      </div>
+  const panelTop = (
+    <div className="space-y-2 px-2">
+      <button type="button" onClick={() => setSearching(true)} className="flex min-h-[44px] w-full items-center gap-2 rounded-xl border border-white/[0.14] bg-[#15151a] px-3 text-left text-[14px] text-white/75 hover:bg-white/[0.07]">
+        <Search size={16} aria-hidden="true" /> <span className="truncate">Search any topic, video, book or news</span>
+      </button>
+      <p className="flex items-center justify-between text-[12px] text-white/70" aria-live="polite">
+        <span><b className="text-white">{matchCount} posts</b> in your feed</span>
+        {changed > 0 && <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="font-semibold text-white/85 underline-offset-2 hover:underline">Reset</button>}
+      </p>
       {focused && (
-        <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl border border-[#ef4444]/40 bg-[#ef4444]/10 py-1.5 pl-3 pr-1.5">
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-[#ef4444]/40 bg-[#ef4444]/10 py-1.5 pl-3 pr-1.5">
           <span className="min-w-0 truncate text-[13px] text-white">Focus: <b>{focusStation?.label}</b></span>
           <button type="button" onClick={() => { click("tick"); setPrefs({ topic: "all" }); }} className="min-h-[36px] shrink-0 rounded-full bg-white/[0.12] px-3 text-[12px] font-semibold text-white">Show all</button>
         </div>
       )}
+      {storyCard}
     </div>
-  );
-  const searchBox = (
-    <button type="button" onClick={() => setSearching(true)} className="flex min-h-[42px] w-full items-center gap-2 rounded-xl border border-white/[0.12] bg-[#15151a] px-3 text-left text-[14px] text-white/65 hover:bg-white/[0.07]">
-      <Search size={16} aria-hidden="true" /> Search topics, videos, books, news
-    </button>
-  );
-  const focusDial = (
-    <section aria-label="Focus on one angle" className="px-2">
-      <p className="mb-1.5 flex items-baseline justify-between text-[12px] font-semibold uppercase tracking-wider text-white/65">Focus <span className="text-[11px] font-normal normal-case tracking-normal text-white/55">Optional</span></p>
-      <FocusDial items={stations} index={station} onPick={tune} click={click} meta={focused ? `${focusStation?.count ?? 0} posts${focusStation?.seen ? ` · ${focusStation.seen} seen` : ""} · only this angle` : "Turn to focus on one angle. More coverage stays in the list."} />
-    </section>
   );
   const lists = (k: string) => (
     <>
-      <PanelSection id={`${k}-topics`} title="Angles" hint="what you want to know" summary={`${TOPICS.length - prefs.off.length} of ${TOPICS.length} on`}>
+      <PanelSection id={`${k}-platforms`} title="Platforms" hint="where it comes from" summary={prefs.platforms.length ? `${prefs.platforms.length} picked` : "All"}>
+        <PlatformPicker id={`${k}-pl`} items={PLATFORMS.map((pl) => ({ id: pl.id, label: pl.label, count: platformCount(pl.id) })).filter((x) => x.count > 0 || prefs.platforms.includes(x.id))} selected={prefs.platforms} onChange={(ids) => setPrefs({ platforms: ids })} click={click} icon={(id) => <PlatformIcon id={id} />} />
+      </PanelSection>
+      <PanelSection id={`${k}-topics`} title="Angles" hint="what you want to know" defaultOpen={false} summary={`${TOPICS.length - prefs.off.length} of ${TOPICS.length} on`}>
         <ul>
           {TOPICS.map((t) => (
             <ToggleRow
@@ -1405,57 +1376,20 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           ))}
         </ul>
       </PanelSection>
-      <PanelSection id={`${k}-platforms`} title="Platforms" hint="where it comes from" summary={`${onPlatforms.length} of ${PLATFORMS.length} on`}>
-        <div className="mb-1.5 flex flex-wrap gap-1.5 px-2">
-          {PRESETS.map((pr) => {
-            const on = pr.ids.length ? pr.ids.length === onPlatforms.length && pr.ids.every((x) => onPlatforms.includes(x)) : !prefs.platforms.length;
-            return (
-              <button key={pr.label} type="button" aria-pressed={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }} className={`rounded-full px-2.5 py-1.5 text-[12px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/[0.08] text-white/80 hover:bg-white/15"}`}>
-                {pr.label}
-              </button>
-            );
-          })}
-        </div>
-        <ul>
-          {PLATFORMS.map((pl) => (
-            <SwitchRow
-              key={pl.id}
-              id={`${k}-pl-${pl.id}`}
-              on={onPlatforms.includes(pl.id)}
-              label={pl.label}
-              icon={<PlatformIcon id={pl.id} />}
-              count={platformCount(pl.id)}
-              onToggle={() => togglePlatform(pl.id)}
-              onOnly={() => { click("pick"); setPrefs({ platforms: [pl.id] }); }}
-            />
-          ))}
-        </ul>
-      </PanelSection>
     </>
   );
 
   // Beside the feed from lg (landscape tablets up); while reading below xl the panel steps aside for the reader.
   const deck = (
-    <aside className={`h-full w-[340px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-white/[0.06] px-3 py-5 ${readPost ? "hidden xl:flex" : "hidden lg:flex"}`} aria-label="Tune your feed">
-      <div className="flex items-start justify-between gap-3 px-2">
-        <div>
-          <h2 className="font-display text-[22px] font-bold leading-tight text-white">Tune your feed</h2>
-          <p className="mt-0.5 text-[13px] text-white/70">Only what you pick reaches your feed.</p>
-        </div>
-        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Dial clicks on" : "Dial clicks off"} className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/[0.12] text-white/80 hover:bg-white/10">
-          {prefs.sound ? <Volume2 size={18} /> : <VolumeX size={18} />}
+    <aside className={`h-full w-[320px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-white/[0.06] px-3 py-5 ${readPost ? "hidden xl:flex" : "hidden lg:flex"}`} aria-label="Tune your feed">
+      <div className="flex items-center justify-between gap-3 px-2">
+        <h2 className="font-display text-[20px] font-bold leading-tight text-white">Tune your feed</h2>
+        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Clicks on" : "Clicks off"} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white/75 hover:bg-white/10">
+          {prefs.sound ? <Volume2 size={17} /> : <VolumeX size={17} />}
         </button>
       </div>
-      <div className="space-y-3 px-2">
-        {summary}
-        {searchBox}
-        {storyCard}
-      </div>
-      {focusDial}
+      {panelTop}
       {lists("deck")}
-      <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="self-start px-2 text-[13px] font-semibold text-white/70 hover:text-white">
-        Reset to everything
-      </button>
     </aside>
   );
 
@@ -1465,117 +1399,15 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 32, stiffness: 320 }} className="absolute inset-0 z-50 flex flex-col bg-[#0d0f14]" role="dialog" aria-modal="true" aria-label="Tune your feed">
           <div className="flex items-center justify-between gap-2 px-4 pb-2 pt-4">
             <p className="font-display text-xl font-black">Tune your feed</p>
-            <div className="flex items-center gap-1.5">
-              <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Dial clicks on" : "Dial clicks off"} className="grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] text-white/80">{prefs.sound ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
-              <button type="button" onClick={() => setSettings(false)} className="min-h-[44px] rounded-full bg-white px-4 text-sm font-bold text-black">Done</button>
-            </div>
+            <button type="button" onClick={() => setSettings(false)} className="min-h-[44px] rounded-full bg-white px-4 text-sm font-bold text-black">Done</button>
           </div>
-          <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-8">
-            {summary}
-            {storyCard}
-            <div className="-mx-2">{focusDial}</div>
-            <div className="-mx-2 space-y-4">{lists("sheet")}</div>
-            <section>
-              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Stories</h3>
-              <ul className="space-y-3">
-                {Object.values(EVENTS).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).map((t) => {
-                  const thumb = coverOf(t);
-                  return (
-                    <li key={t.slug}>
-                      <a href={`/feeds/${t.slug}`} className="flex gap-3 rounded-2xl bg-white/[0.06] p-3 hover:bg-white/[0.1]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        {thumb && <img src={thumb} alt="" className="h-20 w-14 shrink-0 rounded-lg object-cover" />}
-                        <span className="min-w-0">
-                          <span className="block font-bold leading-snug">{t.title}</span>
-                          <span className="mt-1 block text-xs text-white/60">{t.sources.length} sources · {t.claims.length} claims checked</span>
-                          {t.slug === slug && <span className="mt-1 inline-block rounded bg-white px-1.5 text-[10px] font-bold text-black">Watching</span>}
-                        </span>
-                      </a>
-                    </li>
-                  );
-                })}
-                <li className="pt-1 text-center text-xs text-white/50">More stories as each one is read from every platform.</li>
-              </ul>
-            </section>
-            <button
-              type="button"
-              onClick={() => {
-                setPickTopics(TOPICS.map((t) => t.id).filter((id) => !prefs.off.includes(id)));
-                setPickPlatforms(onPlatforms);
-                setSettings(false);
-                setOnboard(true);
-              }}
-              className="w-full rounded-full bg-white/10 py-3 text-sm font-bold text-white hover:bg-white/15"
-            >
-              Pick angles and platforms again
-            </button>
-            <div className="flex items-center justify-between pt-2">
-              <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound }); }} className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">Reset to everything</button>
-              <a href="/" className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">venkatapagadala.com</a>
-            </div>
+          <div className="flex-1 space-y-4 overflow-y-auto px-2 pb-8">
+            {panelTop}
+            {lists("sheet")}
           </div>
         </motion.div>
       )}
     </AnimatePresence>
-  );
-
-  // First visit: ask what to learn and from where, before any post. The feed then shows only that.
-  const pickedMatch = body.filter((p) => pickPlatforms.includes(platformOf(p)) && (p.topics ?? []).some((t) => pickTopics.includes(t))).length;
-  const finishPicking = (everything: boolean) => {
-    try {
-      window.localStorage.setItem("kgf:onboarded", "1");
-    } catch {
-      /* private mode: the picker may return next visit */
-    }
-    if (everything) setPrefs({ topic: "all", off: [], platforms: [] });
-    else setPrefs({ topic: "all", off: TOPICS.map((t) => t.id).filter((id) => !pickTopics.includes(id)), platforms: pickPlatforms.length === PLATFORMS.length ? [] : pickPlatforms });
-    click("pick");
-    setOnboard(false);
-    document.documentElement.classList.remove("kgf-new");
-  };
-  const picker = (
-    <div className="kgf-onboard absolute inset-0 z-[60] flex-col bg-[#0b0d12]" data-open={onboard ? "true" : "false"} role="dialog" aria-modal="true" aria-label="What do you want to learn?">
-      <div className="flex-1 overflow-y-auto px-5 pb-6 pt-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ef4444]">Knowledge Graph Feeds</p>
-        <h2 className="mt-2 font-display text-3xl font-black leading-tight">What do you want to learn?</h2>
-        <div className="mt-4">{storyCard}</div>
-        <p className="mt-4 text-sm text-white/70">Pick the angles you want on this story. Your feed shows only these, never random posts.</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {TOPICS.map((t) => (
-            <Chip key={t.id} on={pickTopics.includes(t.id)} count={topicCount(t.id)} onClick={() => { click("tick"); setPickTopics((x) => (x.includes(t.id) ? x.filter((y) => y !== t.id) : [...x, t.id])); }}>
-              {t.label}
-            </Chip>
-          ))}
-        </div>
-        <h3 className="mt-7 font-display text-xl font-black">From where?</h3>
-        <p className="mt-1 text-sm text-white/70">Keep the platforms you want to learn from: one, four, or all of them.</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {PLATFORMS.map((pl) => (
-            <Chip
-              key={pl.id}
-              on={pickPlatforms.includes(pl.id)}
-              onClick={() => {
-                const next = pickPlatforms.includes(pl.id) ? pickPlatforms.filter((y) => y !== pl.id) : [...pickPlatforms, pl.id];
-                if (!next.length) {
-                  say("Keep at least one platform");
-                  return;
-                }
-                click("tick");
-                setPickPlatforms(next);
-              }}
-            >
-              <PlatformIcon id={pl.id} /> {pl.label}
-            </Chip>
-          ))}
-        </div>
-      </div>
-      <div className="border-t border-white/10 p-4">
-        <button type="button" disabled={!pickTopics.length || !pickedMatch} onClick={() => finishPicking(false)} className="w-full rounded-full bg-white py-3.5 text-[15px] font-black text-black disabled:opacity-40">
-          {!pickTopics.length ? "Pick at least one angle" : pickedMatch ? `Start learning: ${pickedMatch} posts` : "No posts match yet: add an angle or platform"}
-        </button>
-        <button type="button" onClick={() => finishPicking(true)} className="mt-2 w-full py-2 text-sm font-semibold text-white/60 hover:text-white">Show me everything</button>
-      </div>
-    </div>
   );
 
   return (
@@ -1587,7 +1419,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       style={{ "--kgf-top": "172px", "--kgf-bottom": "176px", "--kgf-chip": "172px", "--kgf-rail": "64px" } as React.CSSProperties}
     >
       <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
-      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}.kgf-wait .kgf-body{visibility:hidden}.kgf-onboard{display:none}.kgf-new .kgf-onboard,.kgf-onboard[data-open=true]{display:flex}`}</style>
+      <style>{`@keyframes kgf-marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.kgf-marquee{display:inline-block;padding-right:2rem;animation:kgf-marquee 14s linear infinite}@media (prefers-reduced-motion: reduce){.kgf-marquee{animation:none}}.kgf-wait .kgf-body{visibility:hidden}`}</style>
       {/* the desktop backdrop: the post in view, blurred, like Shorts and TikTok on the web */}
       {backdrop && (
         // eslint-disable-next-line @next/next/no-img-element
@@ -1619,7 +1451,6 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           </AnimatePresence>
           <AnimatePresence>{!wide && sheet}</AnimatePresence>
           {settingsSheet}
-          {picker}
           <AnimatePresence>
             {toast && (
               <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute bottom-24 left-1/2 z-[70] -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-black">
