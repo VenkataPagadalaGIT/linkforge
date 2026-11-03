@@ -474,7 +474,7 @@ export function LearnFeed() {
     const isSaved = saved.includes(p.id);
     const isDone = done.includes(p.id);
     return (
-      <div className="absolute bottom-28 right-2 z-20 flex flex-col items-center gap-4" data-no-tap>
+      <div className="absolute bottom-28 right-2 z-20 flex flex-col items-center gap-4 [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.9))]" data-no-tap>
         <button type="button" onClick={() => like(p)} aria-pressed={isLiked} aria-label="Like" className="flex flex-col items-center text-white">
           <motion.span whileTap={{ scale: 0.8 }}><Heart size={32} className={isLiked ? "text-[#ef4444]" : "text-white"} fill={isLiked ? "#ef4444" : "rgba(0,0,0,0.25)"} strokeWidth={isLiked ? 0 : 2} /></motion.span>
           <span className="text-[12px] font-semibold drop-shadow">Like</span>
@@ -578,7 +578,7 @@ export function LearnFeed() {
   const header = (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/90 via-black/60 to-transparent pb-5 pt-3">
       <div className="pointer-events-auto flex items-center justify-between gap-1.5 px-2.5">
-        <a href="/notebook/ai/roadmap" aria-label="Back to the AI Roadmap" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><ArrowLeft size={20} /></a>
+        <a href="/notebook/ai/roadmap" aria-label="Back to the AI Roadmap" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white max-[349px]:hidden"><ArrowLeft size={20} /></a>
         <ModeTabs mode="learn" />
         <ViewToggle view={view} onChange={(v) => { click("pick"); setPrefs({ view: v }); }} />
         <button type="button" onClick={() => setSearching(true)} aria-label="Search" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><Search size={18} /></button>

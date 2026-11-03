@@ -186,11 +186,11 @@ export function TopicTuner({ items, index, onPick, click, onEdit, editLabel = "+
               onPick(i);
             }}
             aria-pressed={i === index}
-            className={`flex h-full shrink-0 flex-col items-center justify-center px-1 text-[12px] font-bold uppercase tracking-wider transition-colors ${i === index ? "text-white" : "text-white/45"}`}
+            className={`flex h-full shrink-0 flex-col items-center justify-center px-1 text-[11px] font-bold uppercase tracking-wide transition-colors ${i === index ? "text-white" : "text-white/60"}`}
             style={{ width: SP }}
           >
             <span className="max-w-full truncate">{t.label}</span>
-            <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.seen ? `${t.seen}/${t.count} seen` : t.count}</span>
+            <span className="text-[9px] font-semibold normal-case tracking-normal text-white/65">{t.seen ? `${t.seen}/${t.count} seen` : t.count}</span>
           </button>
         ))}
         {onEdit && (
@@ -199,7 +199,7 @@ export function TopicTuner({ items, index, onPick, click, onEdit, editLabel = "+
           </button>
         )}
       </div>
-      <span className="pointer-events-none absolute bottom-0 left-1/2 h-3.5 w-0.5 -translate-x-1/2 rounded bg-[#ef4444] shadow-[0_0_8px_#ef4444]" aria-hidden="true" />
+      <span className="pointer-events-none absolute bottom-0 left-1/2 h-2 w-0.5 -translate-x-1/2 rounded bg-[#ef4444]" aria-hidden="true" />
       <span className="pointer-events-none absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#ef4444]" aria-hidden="true" />
     </div>
   );

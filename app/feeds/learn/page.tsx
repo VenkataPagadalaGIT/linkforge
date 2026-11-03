@@ -18,7 +18,7 @@ export default function Page() {
   const res = new Map(LEARN_RESOURCES.map((r) => [r.id, r]));
   return (
     <>
-      <main className="mx-auto max-w-3xl px-4 py-24 text-foreground">
+      <main className="mx-auto max-w-3xl px-4 py-24 text-foreground [overflow-wrap:anywhere]">
         <h1 className="font-display text-3xl font-bold">Learn: the AI Roadmap as a feed</h1>
         <p className="mt-2 text-sm">
           Everything on the <a className="underline" href="/notebook/ai/roadmap">AI Roadmap</a>, in learning order.

@@ -983,7 +983,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     const isSaved = saved.includes(p.id);
     const follows = following.includes(slug);
     return (
-      <div className="absolute bottom-28 right-2 z-20 flex flex-col items-center gap-4" data-no-tap>
+      <div className="absolute bottom-28 right-2 z-20 flex flex-col items-center gap-4 [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.9))]" data-no-tap>
         {p.author.ours ? (
           <button type="button" onClick={() => { flip(following, setFollowing, "kgf:following", slug); say(follows ? "Unfollowed this story" : "Following this story"); }} aria-label={follows ? "Unfollow this story" : "Follow this story"} className="relative">
             <Avatar a={p.author} size={46} />
@@ -1247,7 +1247,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const header = (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/85 via-black/55 to-transparent pb-5 pt-3">
       <div className="pointer-events-auto flex items-center justify-between gap-1.5 px-2.5">
-        <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><ArrowLeft size={20} /></a>
+        <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white max-[349px]:hidden"><ArrowLeft size={20} /></a>
         <ModeTabs mode="news" />
         <ViewToggle view={view} onChange={(v) => { click("pick"); setPrefs({ view: v }); }} />
         <button type="button" onClick={() => setSearching(true)} aria-label="Search" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><Search size={18} /></button>
