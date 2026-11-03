@@ -133,7 +133,7 @@ def main():
                     if needle not in line:
                         continue
                     # 471 is also the roadmap's current resource count; only the old entity count is stale.
-                    if needle == "471" and "471 resources" in line:
+                    if needle == "471" and re.search(r"471 (curated )?resources", line):
                         continue
                     # An old number is fine when the prose is explicitly
                     # about the past: "1,245 candidate edges, 84 were cut".

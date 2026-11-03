@@ -48,7 +48,7 @@ const TAB_META: Record<TopLevelTab, { title: string; description: string; canoni
   },
   roadmap: {
     title: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks | Venkata Pagadala",
-    description: "The best free AI roadmap for 2026. An 18-week core plus seven depth tracks, 35 topics, 473 curated resources (93% free): videos, courses, books, repos, and pro tips. From beginner to advanced.",
+    description: "The best free AI roadmap for 2026. An 18-week core plus seven depth tracks, 35 topics, 471 curated resources (93% free): videos, courses, books, repos, and pro tips. From beginner to advanced.",
     canonical: "https://venkatapagadala.com/notebook/ai/roadmap",
     ogTitle: "Free AI Roadmap 2026 · Zero to Hero in 18 Weeks",
   },
@@ -442,7 +442,7 @@ const AIContributors = () => {
                    🗺️ Free AI Roadmap, Zero to Hero · August 2026
                  </h2>
                  <p className="font-mono text-[11px] text-muted-foreground/70 max-w-2xl leading-relaxed">
-                   A structured AI curriculum with 473 curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked, July and August 2026 passes.
+                   A structured AI curriculum with 471 curated resources: videos, courses, books, repos, and pro tips. 93% are completely free. Every link was opened and checked, July and August 2026 passes.
                  </p>
               </div>
               <AILearningRoadmap />
