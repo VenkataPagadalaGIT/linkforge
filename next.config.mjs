@@ -56,6 +56,11 @@ const nextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
       {
+        // The feeds' search index is for the search box, not for search results.
+        source: "/feeds/search.json",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+      {
         // Event file Markdown twins point back at the HTML event page, as the guide twins do.
         source: "/notebook/events/:slug([^/.]+).md",
         headers: [{ key: "Link", value: '<https://venkatapagadala.com/notebook/events/:slug>; rel="canonical"' }],

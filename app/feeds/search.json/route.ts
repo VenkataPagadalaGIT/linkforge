@@ -34,6 +34,6 @@ function docs(): SearchDoc[] {
 
 export function GET() {
   return NextResponse.json(docs(), {
-    headers: { "X-Robots-Tag": "noindex", "Cache-Control": "public, max-age=300, must-revalidate" },
+    headers: { "Cache-Control": "public, max-age=300, must-revalidate" },
   });
 }
