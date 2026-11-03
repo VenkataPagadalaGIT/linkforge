@@ -237,7 +237,8 @@ function run(index: SearchIndex, p: ParsedQuery, tier: Tier, fuzzy: boolean): Se
     if (phrase && e.titleText.includes(phrase)) total += 8;
     if (p.terms.length && e.titleText === p.terms.join(" ")) total += 6;
     // A title that opens with the whole question as typed is the answer: "what is ai" means "What is AI?", not any story with AI in it.
-    if (p.asked !== p.phrase && e.titleText.startsWith(p.asked)) total += 20;
+    // A topic's own page still leads: "what is gradient descent" is the topic first, then the guide called that.
+    if (p.asked !== p.phrase && e.titleText.startsWith(p.asked)) total += e.doc.kind === "topic" ? 20 : 6;
     hits.push({ doc: e.doc, score: total + (e.doc.boost ?? 0) });
   }
   return hits;

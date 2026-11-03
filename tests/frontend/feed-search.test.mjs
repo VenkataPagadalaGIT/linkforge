@@ -70,6 +70,11 @@ test("a title that opens with the question typed is the answer", () => {
   ]);
   assert.equal(search(i, "what is ai")[0].doc.id, "b");
   assert.equal(search(i, "what is ai?")[0].doc.id, "b");
+  const j = buildIndex([
+    { id: "g", kind: "guide", title: "What is Gradient Descent? | IBM", href: "/g" },
+    { id: "t", kind: "topic", title: "Gradient Descent", href: "/t", boost: 2 },
+  ]);
+  assert.equal(search(j, "what is gradient descent")[0].doc.id, "t");
 });
 
 test("a prefix finds the word", () => {
