@@ -569,11 +569,11 @@ export function CardFeed({ mode }: { mode: Mode }) {
             <span className="absolute -right-6 top-[18%] select-none text-[170px] leading-none opacity-30" aria-hidden="true">{c.emoji || c.title.slice(0, 1)}</span>
           )}
           <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.62) 30%, rgba(0,0,0,0.78) 62%, rgba(0,0,0,0.95) 100%), linear-gradient(0deg, ${c.color ?? "#ef4444"}33, ${c.color ?? "#ef4444"}33)` }} aria-hidden="true" />
-          <div className="relative flex h-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]">
-            <p className="text-[12px] font-bold uppercase tracking-wider text-white/90">{c.kicker}</p>
-            <h2 className="mt-2 font-display text-[34px] font-black leading-[1.05] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]">{c.emoji ? `${c.emoji} ` : ""}{c.title}</h2>
-            {c.body && <p className="mt-3 line-clamp-5 text-[15px] leading-snug text-white/95 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)]">{c.body}</p>}
-            <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[12px] font-semibold text-white">
+          <div className="relative flex h-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)] [@media(max-height:620px)]:justify-end [@media(max-height:620px)]:pb-[calc(var(--kgf-bottom)-56px)]">
+            <p className="line-clamp-2 text-[12px] font-bold uppercase tracking-wider text-white/90">{c.kicker}</p>
+            <h2 className="mt-2 font-display text-[34px] font-black leading-[1.05] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)] [@media(max-height:620px)]:text-[26px]">{c.emoji ? `${c.emoji} ` : ""}{c.title}</h2>
+            {c.body && <p className="mt-3 line-clamp-5 text-[15px] leading-snug text-white/95 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] [@media(max-height:620px)]:line-clamp-3 [@media(max-height:620px)]:text-[14px]">{c.body}</p>}
+            <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[12px] font-semibold text-white [@media(max-height:620px)]:hidden">
               {c.level && <span className="rounded bg-black/45 px-2 py-0.5 capitalize backdrop-blur">{c.level}</span>}
               {c.meta?.map((m) => <span key={m} className={`rounded px-2 py-0.5 backdrop-blur ${m === "Milestone" ? "bg-[#ef4444]" : "bg-black/45"}`}>{m}</span>)}
             </p>
@@ -590,7 +590,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={c.image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={c.image} alt="" className="absolute inset-x-0 top-[var(--kgf-top)] max-h-[40%] w-full object-contain" />
+              <img src={c.image} alt="" className="absolute inset-x-0 top-[var(--kgf-top)] max-h-[40%] w-full object-contain [@media(max-height:620px)]:opacity-40" />
             </>
           ) : (
             <div className="absolute inset-0" style={{ background: "radial-gradient(90% 60% at 20% 15%, #7f1d1d, transparent), radial-gradient(90% 60% at 100% 90%, #1e3a8a, #07080c)" }} aria-hidden="true" />
@@ -926,7 +926,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
       return (
         <>
           <PanelSection id={`${k}-subjects`} title="Subjects" hint="what it is about" summary={np.subjects.length ? `${np.subjects.length} picked` : "All"}>
-            <PlatformPicker id={`${k}-sub`} items={stations.filter((s) => s.id !== "all").map((s) => ({ id: s.id, label: s.label, count: s.count }))} selected={np.subjects} onChange={(ids) => setNp({ subjects: ids })} click={click} allLabel="All subjects" searchLabel="Search subjects" />
+            <PlatformPicker id={`${k}-sub`} allCount={stations.find((s) => s.id === "all")?.count} items={stations.filter((s) => s.id !== "all").map((s) => ({ id: s.id, label: s.label, count: s.count }))} selected={np.subjects} onChange={(ids) => setNp({ subjects: ids })} click={click} allLabel="All subjects" searchLabel="Search subjects" />
           </PanelSection>
           <PanelSection id={`${k}-when`} title="When" defaultOpen={false} summary={windows.find((w) => w.id === np.window)?.label}>
             <div className="flex flex-wrap gap-1.5 px-2">{windows.map((w) => <Chip key={w.id} on={np.window === w.id} onClick={() => { click("tick"); setNp({ window: w.id }); }}>{w.label}</Chip>)}</div>
@@ -943,7 +943,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
     }
     return (
       <PanelSection id={`${k}-platforms`} title="Platforms" hint="where it comes from" summary={sPlatforms.length ? `${sPlatforms.length} picked` : "All"}>
-        <PlatformPicker id={`${k}-pl`} items={platformItems} selected={sPlatforms} onChange={setSPlatforms} click={click} />
+        <PlatformPicker id={`${k}-pl`} allCount={searchHits.filter((d) => !sKinds.length || sKinds.includes(d.kind)).length} items={platformItems} selected={sPlatforms} onChange={setSPlatforms} click={click} />
       </PanelSection>
     );
   };

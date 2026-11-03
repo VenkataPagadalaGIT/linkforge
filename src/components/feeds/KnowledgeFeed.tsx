@@ -725,6 +725,9 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const backdrop = post?.image ?? feed[0]?.image ?? null;
   const filtered = prefs.platforms.length > 0;
 
+  // The opening and closing cards are not posts: the position counts the same posts the panel does.
+  const postTotal = feed.filter((x) => !FRAME.has(x.kind)).length;
+  const place = `${Math.max(1, Math.min(feed.slice(0, current + 1).filter((x) => !FRAME.has(x.kind)).length, postTotal))} of ${postTotal}`;
   const stage = (p: Post, i: number) => {
     switch (p.kind) {
       case "intro":
@@ -736,8 +739,8 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
             )}
             <div className="relative flex h-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]">
               {live && <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded bg-[#ef4444] px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-white"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" /> Live</span>}
-              <h2 className="font-display text-[40px] font-black leading-[1.02] text-white">{e.title}</h2>
-              <p className="mt-4 text-base leading-snug text-white/85"><mark className="hl hl-y text-black">{p.caption}</mark></p>
+              <h2 className="font-display text-[40px] font-black leading-[1.02] text-white [@media(max-height:620px)]:text-[28px]">{e.title}</h2>
+              <p className="mt-4 text-base leading-snug text-white/85 [@media(max-height:620px)]:mt-2 [@media(max-height:620px)]:line-clamp-3 [@media(max-height:620px)]:text-[14px]"><mark className="hl hl-y text-black">{p.caption}</mark></p>
             </div>
           </div>
         );
@@ -920,7 +923,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         return (
           <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <p className="font-display text-3xl font-black text-white">{prefs.topic === "all" ? "You're caught up" : `You've finished ${stations[station]?.label}`}</p>
-            <p className="mt-2 text-sm text-white/75">{prefs.topic === "all" ? `Every post you picked, ${feed.length} in all.` : `${feed.length} posts on this angle, every one with its sources.`}</p>
+            <p className="mt-2 text-sm text-white/75">{prefs.topic === "all" ? `Every post you picked, ${postTotal} in all.` : `${postTotal} posts on this angle, every one with its sources.`}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {stations[station + 1] && (
                 <button type="button" onClick={() => { click("pick"); tune(station + 1); }} className="rounded-full bg-[#ef4444] px-5 py-2.5 text-sm font-bold text-white">
@@ -1258,10 +1261,10 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 );
               })}
             </div>
-            <p className="mt-0.5 text-[11px] font-semibold text-white/80">{CHAPTERS.find((c) => c.id === chapter)?.label} · {current + 1} of {feed.length}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-white/80">{CHAPTERS.find((c) => c.id === chapter)?.label} · {place}</p>
           </>
         ) : (
-          <p className="text-[11px] font-semibold text-white/80">Card {current + 1} of {feed.length}</p>
+          <p className="text-[11px] font-semibold text-white/80">Card {place}</p>
         )}
       </div>
     </div>

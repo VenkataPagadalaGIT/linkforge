@@ -344,7 +344,7 @@ export function Chip({ on, onClick, children, count }: { on: boolean; onClick: (
  * Pick where things come from: one, four, or all. With hundreds of platforms a list of switches is useless, so it is a
  * search box over a short list, biggest first. Nothing picked means all of them.
  */
-export function PlatformPicker({ id, items, selected, onChange, click, allLabel = "All platforms", searchLabel = "Search platforms", icon }: { id: string; items: { id: string; label: string; count: number }[]; selected: string[]; onChange: (ids: string[]) => void; click: Click; allLabel?: string; searchLabel?: string; icon?: (id: string) => React.ReactNode }) {
+export function PlatformPicker({ id, items, selected, onChange, click, allLabel = "All platforms", searchLabel = "Search platforms", icon, allCount }: { id: string; allCount?: number; items: { id: string; label: string; count: number }[]; selected: string[]; onChange: (ids: string[]) => void; click: Click; allLabel?: string; searchLabel?: string; icon?: (id: string) => React.ReactNode }) {
   const [q, setQ] = React.useState("");
   const [all, setAll] = React.useState(false);
   const TOP = 6;
@@ -352,7 +352,7 @@ export function PlatformPicker({ id, items, selected, onChange, click, allLabel 
   const sorted = [...items].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   const matches = needle ? sorted.filter((x) => x.label.toLowerCase().includes(needle)) : sorted;
   const shown = needle || all ? matches : matches.filter((x, i) => i < TOP || selected.includes(x.id));
-  const total = items.reduce((n, x) => n + x.count, 0);
+  const total = allCount ?? items.reduce((n, x) => n + x.count, 0);
   const toggle = (x: string) => {
     click("tick");
     onChange(selected.includes(x) ? selected.filter((y) => y !== x) : [...selected, x]);
