@@ -43,7 +43,9 @@ async function baseMetadata({ params }: Props): Promise<Metadata> {
   const n = getNode(params.id);
   // A guard only: dynamicParams = false already answers an unknown id with a 404.
   if (!n || isReservedSegment(params.id)) notFound();
-  const desc = `${(n.story || n.tagline).slice(0, 150).trim()}${fileSummary(n.id)}`.slice(0, 300);
+  const lead = n.story || n.tagline;
+  const cut = lead.length > 150 ? `${lead.slice(0, 150).replace(/\s+\S*$/, "").replace(/[,;:]$/, "")}...` : lead.trim();
+  const desc = `${cut}${fileSummary(n.id)}`.slice(0, 300);
   const url = entityPath(n.id);
   const title = `${n.name} · ${NODE_TYPE_META[n.type].label} in the AI Intelligence Graph`;
   return {

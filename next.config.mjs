@@ -50,6 +50,25 @@ const nextConfig = {
         ],
       },
       {
+        // Data endpoints are for programs, not search results. robots.txt
+        // already disallows /api/; the header keeps any linked copy out of the index.
+        source: "/api/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+      {
+        // Event file Markdown twins point back at the HTML event page, as the guide twins do.
+        source: "/notebook/events/:slug([^/.]+).md",
+        headers: [{ key: "Link", value: '<https://venkatapagadala.com/notebook/events/:slug>; rel="canonical"' }],
+      },
+      {
+        source: "/publications.md",
+        headers: [{ key: "Link", value: '<https://venkatapagadala.com/publications>; rel="canonical"' }],
+      },
+      {
+        source: "/research-and-talks.md",
+        headers: [{ key: "Link", value: '<https://venkatapagadala.com/research-and-talks>; rel="canonical"' }],
+      },
+      {
         source: "/guides/:slug([^/.]+).md",
         headers: [
           {

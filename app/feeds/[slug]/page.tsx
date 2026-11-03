@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { EVENTS } from "@/data/events";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 import { KnowledgeFeed } from "@/components/feeds/KnowledgeFeed";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 
 interface Props {
   params: { slug: string };
@@ -23,6 +24,7 @@ export const generateMetadata = withSeoOverrides("/feeds/[slug]", async ({ param
     title: `${e.title}: the feed`,
     description: (e.summary ?? "").slice(0, 300),
     alternates: { canonical: `/notebook/events/${e.slug}` },
+    openGraph: { images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url: `${SITE_URL}/notebook/events/${e.slug}`, type: "article", title: e.title, siteName: "Venkata Pagadala · Mono Mind" },
   };
 });
 

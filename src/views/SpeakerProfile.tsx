@@ -406,7 +406,7 @@ const TalkCard = ({
               conferenceEdition: talk.conferenceEdition,
               conferenceDate: talk.dayDate,
               sessionTitle: talk.title,
-              sessionUrl: `/notebook/conference/${talk.conferenceSlug}/sessions/${talk.sessionId}`,
+              sessionUrl: `/notebook/conference/${talk.conferenceSlug}/sessions/${talk.urlSlug}`,
             }}
             testId={`speaker-note-${talk.sessionId}`}
           />

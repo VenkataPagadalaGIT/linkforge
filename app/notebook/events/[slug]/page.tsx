@@ -42,10 +42,13 @@ async function baseMetadata({ params }: Props): Promise<Metadata> {
         "application/rss+xml": `${url}.rss.xml`,
       },
     },
-    openGraph: { images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url, type: "article", title, description, siteName: "Venkata Pagadala · Mono Mind", modifiedTime: e.updatedAt + "Z" },
+    openGraph: { images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }], url, type: "article", title, description, siteName: "Venkata Pagadala · Mono Mind", modifiedTime: iso(e.updatedAt) },
     twitter: { card: "summary_large_image", title, description },
   };
 }
+
+// The generator stores UTC times as "YYYY-MM-DD HH:MM:SS"; schema.org and Open Graph need ISO 8601.
+const iso = (t: string) => (t.length === 19 ? t.replace(" ", "T") + "Z" : t);
 
 const AUTHOR = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL };
 const RATING: Record<string, number> = { false: 1, misleading: 2, unconfirmed: 3, true: 5 };
@@ -55,7 +58,7 @@ function sourceLd(s: EventSourceCard) {
   const base = {
     url: s.url,
     name: s.title.slice(0, 200),
-    ...(s.date ? { datePublished: s.date.length === 19 ? s.date + "Z" : s.date } : {}),
+    ...(s.date ? { datePublished: iso(s.date) } : {}),
     ...(s.publisher ? { publisher: { "@type": "Organization", name: s.publisher } } : {}),
     ...(s.thumb ? { thumbnailUrl: `${SITE_URL}${s.thumb}`, image: `${SITE_URL}${s.thumb}` } : {}),
   };
@@ -69,7 +72,7 @@ function sourceLd(s: EventSourceCard) {
 
 function graph(e: EventFile) {
   const url = `${SITE_URL}${pagePath(e.slug)}`;
-  const updated = e.updatedAt + "Z";
+  const updated = iso(e.updatedAt);
   const start = e.moments[0]?.at;
   const linked = e.sources.filter((s) => s.url);
   return {

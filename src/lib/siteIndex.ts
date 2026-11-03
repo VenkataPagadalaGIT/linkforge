@@ -129,12 +129,12 @@ const STATIC_ROUTES: [string, string, SectionId, boolean?][] = [
   ["/notebook/ai/graph", "The AI Intelligence Graph", "map", true],
   ["/ai-contributors", "AI Contributors", "contributors", true],
   ["/ai-updates", "Tech & Business: News and Updates", "updates", true],
+  ["/feeds", "Knowledge Graph Feeds: one story, tuned by topic and platform", "updates"],
   ["/insights", "Insights", "insights", true],
   ["/notebook/conference", "Conference Notebook", "sessions", true],
   ["/solutions", "Solutions", "solutions", true],
   ["/llms.txt", "llms.txt: a guide to this site for AI agents", "machines"],
   ["/llms-full.txt", "llms-full.txt: the full-text edition", "machines"],
-  ["/taxonomy/subjects.json", "Subject taxonomy (JSON): every subject a story can be filed under", "machines"],
 ];
 
 /**
@@ -149,6 +149,8 @@ export const NOT_INDEXED_ROUTES: { route: string; reason: string }[] = [
   { route: "/api/revalidate", reason: "signed refresh endpoint for no-deploy publishing (POST only)" },
   { route: "/brand", reason: "internal brand reference sheet" },
   { route: "/library", reason: "internal component showcase" },
+  { route: "/feeds/*", reason: "swipe view of an event file; its canonical points at /notebook/events/<slug>" },
+  { route: "/api/ai/*", reason: "JSON and RSS data endpoints for the AI graph; robots.txt disallows /api/" },
 ];
 
 // Titles as the solutions grid names them; the route itself only knows slugs.
@@ -450,6 +452,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     ["/okf/site-index.md", "OKF site index: every page, by section"],
     ["/rss.xml", "RSS feed"],
     ["/robots.txt", "robots.txt"],
+    ["/taxonomy/subjects.json", "Subject taxonomy (JSON): every subject a story can be filed under"],
   ]) {
     out.push({ href, title, section: "machines" });
   }
