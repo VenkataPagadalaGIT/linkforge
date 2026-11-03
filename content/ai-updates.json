@@ -711,7 +711,7 @@
     "date": "2026-03-16",
     "summary": "Announced at GTC 2026, NemoClaw is NVIDIA's open-source stack that adds privacy and security controls to OpenClaw. It bundles Nemotron models and the new OpenShell runtime into a single-command install for autonomous AI agents.",
     "takeaways": [
-      "NemoClaw adds enterprise-grade privacy and security guardrails to OpenClaw — what Jensen called 'the operating system for personal AI.'",
+      "NemoClaw adds enterprise-grade privacy and security guardrails to OpenClaw, what Jensen called 'the operating system for personal AI.'",
       "Uses a privacy router that splits inference between local Nemotron models and cloud frontier models, keeping sensitive data on your hardware.",
       "Microsoft Security already reports a 160x improvement in finding AI-based attacks using Nemotron and OpenShell.",
       "Deploys with one command on GeForce RTX, RTX PRO workstations, DGX Station (up to 1T parameter models), and DGX Spark."
@@ -722,8 +722,8 @@
       "Why It Matters"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
-    "body": "<h3 id=\"key-architecture\">Key Architecture</h3>\n<ul>\n<li><strong>Privacy router</strong> — routes inference between local open models (Nemotron running on your hardware) and cloud frontier models, with policy-based security guardrails</li>\n<li><strong>OpenShell runtime</strong> — isolated sandbox with data privacy and security controls for autonomous AI agents (\"claws\")</li>\n<li><strong>NVIDIA Agent Toolkit</strong> — the software layer that secures OpenClaw agent operations</li>\n<li><strong>One-command install:</strong> <code>curl -fsSL https://nvidia.com/nemoclaw.sh | bash</code></li>\n</ul>\n\n<h3 id=\"where-it-runs\">Where It Runs</h3>\n<p>NemoClaw deploys on any dedicated compute: GeForce RTX PCs/laptops, RTX PRO workstations, DGX Station (748GB coherent memory, 20 petaflops, runs models up to 1 trillion parameters), and DGX Spark (supports clustering up to four systems into a compact \"desktop data center\").</p>\n\n<h3 id=\"why-it-matters\">Why It Matters</h3>\n<p>Jensen made the enterprise security case explicit during the keynote: agentic systems inside corporate networks can access sensitive information, execute code, and communicate externally. He paused and told the audience to think about the implications. NemoClaw is designed to fill exactly that security gap.</p>\n<p>Microsoft Security is already using Nemotron and OpenShell for adversarial learning, reporting a <strong>160x improvement</strong> in finding and mitigating AI-based attacks.</p>\n<p>Jensen's bottom line: just as every company needed an HTTP strategy, a Linux strategy, and a Kubernetes strategy, <strong>every company now needs an OpenClaw strategy</strong>.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
+    "body": "<h3 id=\"key-architecture\">Key Architecture</h3>\n<ul>\n<li><strong>Privacy router</strong>: routes inference between local open models (Nemotron running on your hardware) and cloud frontier models, with policy-based security guardrails</li>\n<li><strong>OpenShell runtime</strong>: isolated sandbox with data privacy and security controls for autonomous AI agents (\"claws\")</li>\n<li><strong>NVIDIA Agent Toolkit</strong>: the software layer that secures OpenClaw agent operations</li>\n<li><strong>One-command install:</strong> <code>curl -fsSL https://nvidia.com/nemoclaw.sh | bash</code></li>\n</ul>\n\n<h3 id=\"where-it-runs\">Where It Runs</h3>\n<p>NemoClaw deploys on any dedicated compute: GeForce RTX PCs/laptops, RTX PRO workstations, DGX Station (748GB coherent memory, 20 petaflops, runs models up to 1 trillion parameters), and DGX Spark (supports clustering up to four systems into a compact \"desktop data center\").</p>\n\n<h3 id=\"why-it-matters\">Why It Matters</h3>\n<p>Jensen made the enterprise security case explicit during the keynote: agentic systems inside corporate networks can access sensitive information, execute code, and communicate externally. He paused and told the audience to think about the implications. NemoClaw is designed to fill exactly that security gap.</p>\n<p>Microsoft Security is already using Nemotron and OpenShell for adversarial learning, reporting a <strong>160x improvement</strong> in finding and mitigating AI-based attacks.</p>\n<p>Jensen's bottom line: just as every company needed an HTTP strategy, a Linux strategy, and a Kubernetes strategy, <strong>every company now needs an OpenClaw strategy</strong>.</p>",
     "sourceUrl": "https://www.nvidia.com/en-us/ai/nemoclaw/",
     "tags": [
       "AI Agents",
@@ -748,7 +748,7 @@
       {
         "label": "AI Learning Roadmap",
         "to": "/notebook/ai/roadmap",
-        "description": "Learn AI fundamentals — free 18-week curriculum"
+        "description": "Learn AI fundamentals: free 18-week curriculum"
       }
     ]
   },
@@ -763,7 +763,7 @@
     "takeaways": [
       "Seven new chips and five rack-scale systems designed to function as one massive AI supercomputer, supported by 80+ NVIDIA MGX ecosystem partners.",
       "Vera Rubin NVL72 trains large MoE models with 1/4 the GPUs vs. Blackwell and delivers 10x inference throughput per watt at 1/10 cost per token.",
-      "Groq 3 LPX rack delivers 35x higher inference throughput per megawatt — Samsung manufactures the LP30 chip, shipping Q3 2026.",
+      "Groq 3 LPX rack delivers 35x higher inference throughput per megawatt. Samsung manufactures the LP30 chip, shipping Q3 2026.",
       "First rack already running at Microsoft Azure. AWS deploying 1M+ NVIDIA GPUs plus Groq LPUs."
     ],
     "tocSections": [
@@ -772,8 +772,8 @@
       "What's Next"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
-    "body": "<h3 id=\"the-lineup\">The Lineup</h3>\n<ul>\n<li><strong>Vera Rubin NVL72 GPU rack</strong> — 72 Rubin GPUs + 36 Vera CPUs connected by NVLink 6, with ConnectX-9 SuperNICs and BlueField-4 DPUs. Trains large MoE models with 1/4 the GPUs vs. Blackwell; delivers 10x higher inference throughput per watt at 1/10 the cost per token.</li>\n<li><strong>Vera CPU rack</strong> — 256 Vera CPUs in a liquid-cooled rack, purpose-built for reinforcement learning and agentic AI. 2x efficiency, 50% faster than traditional CPUs. Uses LPDDR5 — the only data center CPU to do so.</li>\n<li><strong>Groq 3 LPX inference rack</strong> — 256 LPU processors with 128GB on-chip SRAM and 640 TB/s scale-up bandwidth. Delivers up to 35x higher inference throughput per megawatt. Samsung manufactures the LP30 chip; shipping Q3 2026.</li>\n<li><strong>BlueField-4 STX storage rack</strong> — AI-native storage with 5x token throughput, 4x energy efficiency, and 2x faster data ingestion.</li>\n<li><strong>Spectrum-6 SPX Ethernet rack</strong> — NVIDIA's first co-packaged optics switch in full production, co-developed with TSMC.</li>\n</ul>\n\n<h3 id=\"key-numbers\">Key Numbers From the Keynote</h3>\n<ul>\n<li>3.6 exaflops of compute, 260 TB/s all-to-all NVLink bandwidth</li>\n<li>100% liquid cooled with 45°C hot water</li>\n<li>Installation time: 2 days → 2 hours</li>\n<li>First rack already running at Microsoft Azure (confirmed by Satya Nadella)</li>\n<li>AWS deploying 1M+ NVIDIA GPUs plus Groq LPUs</li>\n</ul>\n\n<h3 id=\"whats-next\">What's Next</h3>\n<p><strong>Rubin Ultra</strong> (taping out now): 144 GPUs in one NVLink domain via the new Kyber rack. Beyond that, the <strong>Feynman</strong> generation: new GPU, LP40 LPU, Rosa CPU, BlueField-5, CX10.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
+    "body": "<h3 id=\"the-lineup\">The Lineup</h3>\n<ul>\n<li><strong>Vera Rubin NVL72 GPU rack</strong>: 72 Rubin GPUs + 36 Vera CPUs connected by NVLink 6, with ConnectX-9 SuperNICs and BlueField-4 DPUs. Trains large MoE models with 1/4 the GPUs vs. Blackwell; delivers 10x higher inference throughput per watt at 1/10 the cost per token.</li>\n<li><strong>Vera CPU rack</strong>: 256 Vera CPUs in a liquid-cooled rack, purpose-built for reinforcement learning and agentic AI. 2x efficiency, 50% faster than traditional CPUs. Uses LPDDR5, the only data center CPU to do so.</li>\n<li><strong>Groq 3 LPX inference rack</strong>: 256 LPU processors with 128GB on-chip SRAM and 640 TB/s scale-up bandwidth. Delivers up to 35x higher inference throughput per megawatt. Samsung manufactures the LP30 chip; shipping Q3 2026.</li>\n<li><strong>BlueField-4 STX storage rack</strong>: AI-native storage with 5x token throughput, 4x energy efficiency, and 2x faster data ingestion.</li>\n<li><strong>Spectrum-6 SPX Ethernet rack</strong>: NVIDIA's first co-packaged optics switch in full production, co-developed with TSMC.</li>\n</ul>\n\n<h3 id=\"key-numbers\">Key Numbers From the Keynote</h3>\n<ul>\n<li>3.6 exaflops of compute, 260 TB/s all-to-all NVLink bandwidth</li>\n<li>100% liquid cooled with 45°C hot water</li>\n<li>Installation time: 2 days → 2 hours</li>\n<li>First rack already running at Microsoft Azure (confirmed by Satya Nadella)</li>\n<li>AWS deploying 1M+ NVIDIA GPUs plus Groq LPUs</li>\n</ul>\n\n<h3 id=\"whats-next\">What's Next</h3>\n<p><strong>Rubin Ultra</strong> (taping out now): 144 GPUs in one NVLink domain via the new Kyber rack. Beyond that, the <strong>Feynman</strong> generation: new GPU, LP40 LPU, Rosa CPU, BlueField-5, CX10.</p>",
     "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-vera-rubin-platform",
     "tags": [
       "NVIDIA",
@@ -787,12 +787,12 @@
       {
         "label": "Jensen Huang",
         "to": "/ai-contributors/huang",
-        "description": "NVIDIA CEO — architect of the Vera Rubin platform"
+        "description": "NVIDIA CEO, architect of the Vera Rubin platform"
       },
       {
         "label": "Bill Dally",
         "to": "/ai-contributors/dally",
-        "description": "NVIDIA Chief Scientist — accelerated computing research"
+        "description": "NVIDIA Chief Scientist: accelerated computing research"
       },
       {
         "label": "Top 100 AI Contributors",
@@ -851,7 +851,7 @@
     "company": "NVIDIA",
     "category": "open-source",
     "date": "2026-03-16",
-    "summary": "NVIDIA announced the Nemotron Coalition — a first-of-its-kind collaboration with Mistral AI, Cursor, LangChain, Perplexity, and others to jointly develop Nemotron 4, the next-gen open frontier model, on NVIDIA DGX Cloud.",
+    "summary": "NVIDIA announced the Nemotron Coalition, a first-of-its-kind collaboration with Mistral AI, Cursor, LangChain, Perplexity, and others to jointly develop Nemotron 4, the next-gen open frontier model, on NVIDIA DGX Cloud.",
     "takeaways": [
       "First-of-its-kind global collaboration to jointly develop Nemotron 4 on NVIDIA DGX Cloud, then release for anyone to specialize.",
       "Coalition members: Mistral AI, Cursor, LangChain, Perplexity, Reflection AI, Sarvam, Thinking Machines Lab, Black Forest Labs.",
@@ -864,8 +864,8 @@
       "Why It Matters"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
-    "body": "<h3 id=\"coalition-members\">Coalition Members</h3>\n<p><strong>Mistral AI, Cursor, LangChain, Perplexity, Reflection AI, Sarvam, Thinking Machines Lab, and Black Forest Labs</strong> will jointly develop <strong>Nemotron 4</strong> on NVIDIA DGX Cloud, then release it for anyone to specialize.</p>\n\n<h3 id=\"current-models\">Current Model Family</h3>\n<ul>\n<li><strong>Nemotron 3</strong> — Omni-understanding models for AI agents. Jensen showed that Nemotron 3 in OpenClaw ranks among the top three models in the world. Already adopted by CodeRabbit, CrowdStrike, Cursor, Factory, Perplexity, and ServiceNow.</li>\n<li><strong>Nemotron Nano 3</strong> — Available on Amazon Bedrock, powering Salesforce Agentforce. Salesforce calls it the most cost-efficient model for summarization and generation on their Agentic Benchmark for CRM.</li>\n<li><strong>Cosmos 3</strong> — First world foundation model unifying synthetic world generation, vision reasoning, and action simulation. Built for robotics and autonomous systems.</li>\n</ul>\n\n<h3 id=\"why-it-matters\">Why It Matters</h3>\n<p>This signals NVIDIA's shift from pure hardware to actively shaping the model ecosystem. By partnering with companies that are actual users of these models (Cursor for coding, Perplexity for search, LangChain for agent frameworks), they're ensuring Nemotron models are optimized for real-world agentic workloads.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
+    "body": "<h3 id=\"coalition-members\">Coalition Members</h3>\n<p><strong>Mistral AI, Cursor, LangChain, Perplexity, Reflection AI, Sarvam, Thinking Machines Lab, and Black Forest Labs</strong> will jointly develop <strong>Nemotron 4</strong> on NVIDIA DGX Cloud, then release it for anyone to specialize.</p>\n\n<h3 id=\"current-models\">Current Model Family</h3>\n<ul>\n<li><strong>Nemotron 3</strong>: Omni-understanding models for AI agents. Jensen showed that Nemotron 3 in OpenClaw ranks among the top three models in the world. Already adopted by CodeRabbit, CrowdStrike, Cursor, Factory, Perplexity, and ServiceNow.</li>\n<li><strong>Nemotron Nano 3</strong>: Available on Amazon Bedrock, powering Salesforce Agentforce. Salesforce calls it the most cost-efficient model for summarization and generation on their Agentic Benchmark for CRM.</li>\n<li><strong>Cosmos 3</strong>: First world foundation model unifying synthetic world generation, vision reasoning, and action simulation. Built for robotics and autonomous systems.</li>\n</ul>\n\n<h3 id=\"why-it-matters\">Why It Matters</h3>\n<p>This signals NVIDIA's shift from pure hardware to actively shaping the model ecosystem. By partnering with companies that are actual users of these models (Cursor for coding, Perplexity for search, LangChain for agent frameworks), they're ensuring Nemotron models are optimized for real-world agentic workloads.</p>",
     "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-launches-nemotron-coalition-of-leading-global-ai-labs-to-advance-open-frontier-models",
     "tags": [
       "Open Source",
@@ -880,17 +880,17 @@
       {
         "label": "Jensen Huang",
         "to": "/ai-contributors/huang",
-        "description": "NVIDIA CEO — driving open frontier model strategy"
+        "description": "NVIDIA CEO, driving open frontier model strategy"
       },
       {
         "label": "Demis Hassabis",
         "to": "/ai-contributors/hassabis",
-        "description": "Google DeepMind CEO — competing frontier model developer"
+        "description": "Google DeepMind CEO, competing frontier model developer"
       },
       {
         "label": "AI Concepts Encyclopedia",
         "to": "/notebook/ai/encyclopedia",
-        "description": "187 AI concepts explained — foundation models, transformers, and more"
+        "description": "187 AI concepts explained: foundation models, transformers, and more"
       }
     ]
   },
@@ -904,7 +904,7 @@
     "summary": "Jensen Huang declared 'the ChatGPT moment for self-driving cars has arrived.' NVIDIA-powered robotaxis will launch with Uber across 28 cities on four continents by 2028, starting with LA and SF Bay Area in H1 2027.",
     "takeaways": [
       "NVIDIA-powered robotaxis launching with Uber across 28 cities on four continents by 2028, starting with LA and SF Bay Area in H1 2027.",
-      "BYD, Geely, Isuzu, and Nissan building Level 4 vehicles on NVIDIA DRIVE Hyperion — representing 18 million cars built per year.",
+      "BYD, Geely, Isuzu, and Nissan building Level 4 vehicles on NVIDIA DRIVE Hyperion, representing 18 million cars built per year.",
       "NVIDIA Halos OS: unified safety architecture built on ASIL D-certified DriveOS with NCAP five-star active safety stack.",
       "Bolt, Grab, and Lyft also scaling robotaxi development. Amazon advancing in-cabin AI with Alexa on NVIDIA DRIVE AGX."
     ],
@@ -914,7 +914,7 @@
       "Halos OS"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
     "body": "<h3 id=\"uber-partnership\">Uber Partnership</h3>\n<ul>\n<li>NVIDIA-powered robotaxis launching with Uber across <strong>28 cities on four continents</strong> by 2028</li>\n<li>Starting with Los Angeles and SF Bay Area in <strong>H1 2027</strong></li>\n<li>Running on NVIDIA's full-stack DRIVE AV software, Alpamayo open models, and Halos operating system</li>\n</ul>\n\n<h3 id=\"automotive-partners\">Automotive Partners</h3>\n<p><strong>BYD, Geely, Isuzu, and Nissan</strong> (with Nissan powered by Wayve software) are building Level 4-ready vehicles on NVIDIA DRIVE Hyperion. These four new partners represent <strong>18 million cars built per year</strong>, joining existing partners Mercedes, Toyota, and GM.</p>\n\n<h3 id=\"halos-os\">NVIDIA Halos OS</h3>\n<p>A unified safety architecture for AI-driven vehicles, built on ASIL D-certified DriveOS foundations with a three-layer architecture integrating safety middleware and an NCAP five-star active safety stack.</p>\n<p>Beyond Uber, <strong>Bolt, Grab, and Lyft</strong> are also scaling robotaxi development on NVIDIA's platform. Amazon is advancing Alexa Custom Assistant with multimodal edge AI on NVIDIA DRIVE AGX for in-cabin AI intelligence.</p>",
     "sourceUrl": "https://nvidianews.nvidia.com/news/drive-hyperion-level-4",
     "tags": [
@@ -929,12 +929,12 @@
       {
         "label": "Jensen Huang",
         "to": "/ai-contributors/huang",
-        "description": "NVIDIA CEO — driving autonomous vehicle strategy"
+        "description": "NVIDIA CEO, driving autonomous vehicle strategy"
       },
       {
         "label": "Sebastian Thrun",
         "to": "/ai-contributors/thrun",
-        "description": "Pioneer of autonomous vehicles — Stanford/Waymo"
+        "description": "Pioneer of autonomous vehicles: Stanford/Waymo"
       },
       {
         "label": "Pieter Abbeel",
