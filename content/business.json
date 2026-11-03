@@ -2,6 +2,675 @@
   "note": "Business Notebook content: earnings-call notes, companies and people. Goes live without a deploy: node scripts/cms/publish.mjs check business, then publish. Markup: ==green highlight==, [^n] citation, [[person:slug]] [[company:slug|label]] [[article:slug|label]] [[page:/path|label]] links.",
   "articles": [
     {
+      "slug": "anthropic-s1-ai-marketing-lessons",
+      "title": "Anthropic's S-1: what its IPO filing teaches marketing, SEO and AI search teams",
+      "seoTitle": "Anthropic S-1: Lessons for Marketing and AI Search",
+      "description": "What Anthropic's S-1 teaches marketers: $16.3B first-half revenue, partner fees driving sales spend, free use booked as marketing, citation-aware search.",
+      "summary": "[[company:anthropic|Anthropic]] filed its S-1 with the U.S. Securities and Exchange Commission on October 26, 2026, and has applied to list its Class A stock on Nasdaq as ANT.[^1][^2] The filing shows $16.3 billion of revenue in the first half of 2026 and more than 11,900 customers that each brought in $100,000 or more over 12 months.[^4][^8] ==y:Most of the first-half growth in its sales, marketing and partnerships spending came from fees paid to partners, not ads.==[^7] This note collects what the filing says that marketing, SEO and AI search teams can use, with screenshots of the key passages and links to every section.",
+      "date": "2026-10-26",
+      "eventDate": "2026-10-26",
+      "kind": "IPO filing (Form S-1)",
+      "company": "anthropic",
+      "people": [
+        "dario-amodei",
+        "daniela-amodei",
+        "krishna-rao"
+      ],
+      "peopleTitle": "Named in the filing",
+      "highlightKey": [
+        {
+          "color": "y",
+          "label": "Yellow: the key idea"
+        },
+        {
+          "color": "g",
+          "label": "Green: what to do"
+        },
+        {
+          "color": "b",
+          "label": "Blue: the evidence, from the filing"
+        }
+      ],
+      "legend": "Blue marks the key evidence. Every numbered line opens the section of the filing it comes from, and every screenshot opens the original.",
+      "image": {
+        "src": "/images/business/anthropic-s1/og-anthropic-s1.jpg",
+        "width": 1200,
+        "height": 630,
+        "alt": "The cover page of Anthropic's Form S-1, as filed with the SEC on October 26, 2026"
+      },
+      "stats": [
+        {
+          "value": "$16.3B",
+          "label": "Revenue in the first half of 2026, up 1,300% from $1.2B a year earlier",
+          "cite": 7,
+          "highlight": "b"
+        },
+        {
+          "value": "11,900+",
+          "label": "Customers with $100,000 or more of trailing 12-month revenue, up from 950+ a year earlier",
+          "cite": 8,
+          "highlight": "b"
+        },
+        {
+          "value": "$2.7B",
+          "label": "First-half 2026 rise in fees paid to channel partners, against $273M more for marketing and advertising",
+          "cite": 7,
+          "highlight": "b"
+        },
+        {
+          "value": "About 900%",
+          "label": "Net Revenue Retention at September 30, 2026",
+          "cite": 4,
+          "highlight": "b"
+        },
+        {
+          "value": "$4.6B",
+          "label": "2025 revenue, up 1,088% from $386M in 2024",
+          "cite": 7
+        },
+        {
+          "value": "10%",
+          "label": "First-half 2026 Adjusted Operating Margin, from minus 159% a year earlier",
+          "cite": 4
+        },
+        {
+          "value": "$693M",
+          "label": "First-half 2026 GAAP operating loss; operating margin of minus 4%",
+          "cite": 4
+        },
+        {
+          "value": "$80.7B",
+          "label": "First-half 2026 net loss, including a $72.4B change in the fair value of convertible notes and other instruments",
+          "cite": 4
+        },
+        {
+          "value": "$141.1B",
+          "label": "Capital raised in total, as of June 30, 2026",
+          "cite": 4
+        },
+        {
+          "value": "$112.4B",
+          "label": "Cash and cash equivalents at June 30, 2026, plus $19.3B of short-term investments",
+          "cite": 4
+        },
+        {
+          "value": "$6.6M+",
+          "label": "Trailing 12-month revenue per employee at September 30, 2026, up from $1.4M",
+          "cite": 4
+        },
+        {
+          "value": "5,300",
+          "label": "Approximate headcount at September 30, 2026",
+          "cite": 8
+        }
+      ],
+      "sections": [
+        {
+          "id": "why-read-an-s1",
+          "title": "Why should marketers read an S-1?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An S-1 is the SEC's general form for registering securities under the Securities Act of 1933.[^1] Anthropic filed one on October 26, 2026, for the initial public offering of its Class A stock, which has had no public market until now.[^1][^2]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-cover.webp",
+              "width": 1240,
+              "height": 475,
+              "alt": "Screenshot of the S-1 cover page on sec.gov: as filed with the Securities and Exchange Commission on October 26, 2026; Form S-1 Registration Statement under the Securities Act of 1933; Anthropic, PBC.",
+              "caption": "The cover of Anthropic's Form S-1, as filed with the SEC on October 26, 2026.[^2]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+            },
+            {
+              "type": "p",
+              "text": "Its annual financial statements are audited: by Grant Thornton for 2023 and 2024, and by Ernst & Young for 2025.[^10] ==y:That makes an S-1 one of the most reliable public accounts a company gives of itself, and it is free to read.=="
+            },
+            {
+              "type": "p",
+              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I ([[page:/about|Venkata Pagadala]]) talked about collecting data from sources most search teams never open. Earnings calls are one: on [[article:costco-q4-fy2026-ai-search|Costco's last call]], the CFO named Anthropic among the AI tools where sales now start. An IPO filing is another, and Anthropic has just filed one."
+            }
+          ]
+        },
+        {
+          "id": "originals",
+          "title": "Where can you read the originals?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Each cited line on this page links to its section of the filing. These are the three primary documents behind it."
+            },
+            {
+              "type": "docs",
+              "items": [
+                {
+                  "title": "Form S-1 registration statement",
+                  "publisher": "SEC EDGAR",
+                  "date": "2026-10-26",
+                  "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/s1-cover-card.webp",
+                    "width": 880,
+                    "height": 550,
+                    "alt": "The cover page of Anthropic's Form S-1"
+                  },
+                  "note": "The full prospectus: the business, the risk factors and the financial statements.[^2]"
+                },
+                {
+                  "title": "Filing index: all 87 documents",
+                  "publisher": "SEC EDGAR",
+                  "date": "2026-10-26",
+                  "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/edgar-index.webp",
+                    "width": 800,
+                    "height": 455,
+                    "alt": "The EDGAR filing detail page for accession number 0001628280-26-067168"
+                  },
+                  "note": "The prospectus, its exhibits and the interactive data files, with the filing and acceptance dates.[^1]"
+                },
+                {
+                  "title": "Anthropic's announcement of the filing",
+                  "publisher": "Anthropic",
+                  "date": "2026-10-26",
+                  "href": "https://www.anthropic.com/news/s1-sec",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/anthropic-news.webp",
+                    "width": 800,
+                    "height": 520,
+                    "alt": "Anthropic's newsroom post: Anthropic files S-1 with the SEC for proposed initial public offering"
+                  },
+                  "note": "The company's own notice: the Nasdaq listing plan under ANT, and where to get the preliminary prospectus.[^15]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "in-30-seconds",
+          "title": "The filing in 30 seconds",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:Revenue was $41 million in 2023, $386 million in 2024 and $4.6 billion in 2025. In the first half of 2026 it was $16.3 billion, against $1.2 billion a year earlier.==[^4]",
+                "==b:More than 11,900 customers each brought in $100,000 or more in the 12 months to September 30, 2026, up from more than 950 a year earlier.==[^8] More than 1,900 brought in $1 million or more, and about 250 brought in $10 million or more.[^4]",
+                "==b:Net Revenue Retention was about 900% at September 30, 2026.==[^4] By the filing's definition, customers who paid in the third quarter of 2025, leaving out Claude Pro and Max subscribers, brought in about nine times as much in the third quarter of 2026.[^3]",
+                "Adjusted Operating Margin went from minus 159% in the first half of 2025 to plus 10% in the first half of 2026. The GAAP operating loss for the first half of 2026 was $693 million.[^4]",
+                "==b:Sales, marketing, and partnerships expenses consist mainly of fees paid to channel partners and marketing and advertising costs. In the first half of 2026, fees paid to channel partners rose by $2.7 billion, while marketing and advertising rose by $273 million.==[^7]",
+                "Anthropic has applied to list its Class A stock on the Nasdaq Global Select Market under the symbol ANT. Goldman Sachs and Morgan Stanley are listed first among more than 20 underwriters.[^2]"
+              ],
+              "ordered": true
+            }
+          ]
+        },
+        {
+          "id": "marketing-spend",
+          "title": "Where does the sales and marketing money go?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic reports one line for sales, marketing, and partnerships. It consists mainly of fees paid to channel partners and marketing and advertising costs, including media and public relations spend.==[^7]"
+            },
+            {
+              "type": "list",
+              "items": [
+                "2024: the line rose by $41 million, and $39 million of that was more marketing and advertising.[^7]",
+                "2025: fees paid to channel partners rose by $341 million, and marketing and advertising by $170 million.[^7]",
+                "First half of 2026: the line reached $3.17 billion, up from $120 million a year earlier.[^4] ==b:Fees paid to channel partners rose by $2.7 billion, reflecting the growth of the business, and marketing and advertising rose by $273 million, reflecting higher media spend for product launches.==[^7]"
+              ]
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-operations-table.webp",
+              "width": 976,
+              "height": 526,
+              "alt": "Screenshot of the S-1 summary statement of operations, in millions of dollars, for 2023 to 2025 and the first halves of 2025 and 2026, with the revenue row and the sales, marketing, and partnerships row highlighted.",
+              "caption": "The summary statement of operations, in millions of dollars. Highlighted: revenue, and the sales, marketing, and partnerships line.[^4]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+            },
+            {
+              "type": "p",
+              "text": "==b:The notes also group expenses by function. On that basis, sales and marketing cost $3.8 billion in the first half of 2026, against $239 million a year earlier. It includes channel partner costs, marketing and advertising, staff costs, and the compute cost of providing free access to Anthropic's intelligence service.==[^12]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-free-access-cost.webp",
+              "width": 1290,
+              "height": 76,
+              "alt": "Screenshot of footnote 3 in the S-1's expenses-by-function table, with the words about compute and infrastructure costs for providing free access highlighted.",
+              "caption": "Footnote 3 to the expenses-by-function table in Note 8. Highlighted: the compute cost of free access, counted as sales and marketing.[^12]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1818"
+            },
+            {
+              "type": "p",
+              "text": "==b:Much of Claude's diffusion has been organic, and a large portion of growth to date has been self-service.==[^4][^7] As adoption moves further into enterprises and regulated industries, Anthropic is investing in direct go-to-market and Applied AI teams and in partnerships.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "Claude is available on all three major cloud platforms: AWS, Google Cloud Platform and Microsoft Azure. Anthropic keeps a direct contract with each customer and pays the cloud provider a fee.[^4] ==b:Sales through cloud marketplaces were about 11% of revenue in 2023, 32% in 2024, 47% in 2025 and 48% in the first half of 2026.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Customers can also adopt Claude through systems integrators such as Accenture, Deloitte, KPMG and PwC, and data platforms such as Salesforce and Snowflake. Anthropic recently launched Ode with Anthropic, an AI services company formed with leading private equity firms to bring Claude's capabilities to mid-sized companies.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "The growth plan lists the same levers: grow the direct go-to-market and Applied AI teams, deepen cloud distribution partnerships, invest in brand and marketing, and expand the international presence.[^4]"
+            }
+          ]
+        },
+        {
+          "id": "funnel-and-brand",
+          "title": "How does Anthropic describe its funnel and its brand?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Claude.ai, the flagship conversational product, is the broadest entry point to Claude. The filing says it delivers top-of-funnel demand generation for enterprise adoption.==[^8] In September 2026, Anthropic began merging Claude Cowork and Claude.ai into one application.[^8]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-top-of-funnel.webp",
+              "width": 1232,
+              "height": 245,
+              "alt": "Screenshot of the Claude.ai entry in the S-1 Business section, with the sentence about top-of-funnel demand generation for enterprise adoption highlighted.",
+              "caption": "The Claude.ai entry in the Business section. Highlighted: its role as top-of-funnel demand generation.[^8]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+            },
+            {
+              "type": "p",
+              "text": "A customer's journey often begins with a single use case, then expands across departments, applications and workflows.[^8] ==b:In the third quarter of 2026, Claude Enterprise users who did not use Claude Code spent less than $75 a month on average. The top 5% of Claude Enterprise users who used Claude Code spent about 20 times that.==[^8]"
+            },
+            {
+              "type": "p",
+              "text": "Claude Cowork, released as a research preview in January 2026, had by September 30, 2026 been adopted faster than Claude Code was at the same point after its own research preview in February 2025.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "Over 50% of the Fortune 500 and over 30% of the Global 2000 were customers with $100,000 or more of trailing 12-month revenue at September 30, 2026. For the publicly traded Fortune 500 customers, Anthropic's revenue averaged less than 0.1% of their total expenses in the third quarter.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "==b:The filing lists what promoting its brand depends on: reliable, high-quality and responsible products; sales and marketing, including industry events and key media coverage; customers' testimonials, use cases and word of mouth; security and reliability; the actions of management; and differentiation, including monetization strategies that differ from those of certain competitors.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "==b:It also names a cost of free users: if supporting them costs more than the value of their eventual conversion and of benefits such as network effects and word-of-mouth referrals, results could suffer.==[^5]"
+            }
+          ]
+        },
+        {
+          "id": "ai-search",
+          "title": "What does the filing say about AI search and the open web?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Web Search is a native tool that gives Claude real-time web information, enabling grounded, citation-aware responses in production applications. Claude.ai includes web search too.==[^8]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-web-search.webp",
+              "width": 1232,
+              "height": 95,
+              "alt": "Screenshot of the Web Search entry in the S-1 Business section: a native tool giving Claude access to real-time web information, enabling grounded, citation-aware responses.",
+              "caption": "The Web Search entry in the Business section.[^8]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+            },
+            {
+              "type": "p",
+              "text": "==b:The filing defines prompt injection as an adversarial technique in which malicious instructions are embedded in content an AI model is asked to process, such as websites, documents or tool outputs.==[^3] It lists prompt injection among the AI-specific threats to its systems.[^5]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-prompt-injection.webp",
+              "width": 1290,
+              "height": 118,
+              "alt": "Screenshot of the S-1's definition of prompt injection, with the words about malicious instructions embedded in websites, documents or tool outputs highlighted.",
+              "caption": "The filing's definition of prompt injection, in Select Defined Terms.[^3]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_179"
+            },
+            {
+              "type": "p",
+              "text": "It defines hallucinations as outputs in which a model generates factually incorrect or fabricated information with apparent confidence, and it discloses them as a risk.[^3][^5]"
+            },
+            {
+              "type": "p",
+              "text": "MCP, the Model Context Protocol, is an open standard Anthropic introduced in November 2024 and donated to the Linux Foundation's Agentic AI Foundation in December 2025. It defines a universal interface through which Claude and other AI tools can connect to enterprise data sources, tools and workflows.[^8]"
+            },
+            {
+              "type": "p",
+              "text": "==y:Web content is also in court.== ==b:The filing says its data collection has been the subject of litigation alleging that its scraping, web crawling and other techniques to collect data violate the law.==[^5] Reddit sued in June 2025, alleging that Anthropic improperly accessed posts on its platform, and in September 2026 the court narrowed the case to breach of contract, interference with contract and unfair competition.[^5][^11] ==b:In October 2026, a group of Canadian news publishers alleged that Anthropic copied content from their websites, breached the sites' terms of service and circumvented technological protection measures. Anthropic disputes the allegations in both cases.==[^11]"
+            }
+          ]
+        },
+        {
+          "id": "agent-vocabulary",
+          "title": "Which agent terms does the filing define?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==y:Buyers will learn these words from filings like this one.== ==g:Use the same definitions on your own pages, so people and assistants can match them.=="
+            },
+            {
+              "type": "list",
+              "items": [
+                "Agent loop: the cycle in which an AI agent receives a task, takes an action, observes the result and decides its next step, repeating until the task is complete.[^3]",
+                "Agentic AI: AI systems that, with varying degrees of autonomy, can plan, determine and sequence actions and execute them to accomplish defined objectives, including through interaction with external tools, services, datasets and environments on behalf of a user.[^3]",
+                "Context window: the maximum amount of text, code or other content, measured in tokens, that a model can process in one request, including instructions, prior conversation history, user input and the model's output.[^3]",
+                "Tokens: the numeric units into which a model converts the data it processes, including text, images, audio and video. They can correspond to words, subwords, characters or bytes.[^3]",
+                "Prosumers: individual users who subscribe to AI tools to perform knowledge work.[^3]",
+                "Closing the loop: a development cycle in which successive versions of an AI model assist in building the next, with the goal of compounding capability gains over time.[^3]",
+                "Virtual Collaborators: AI designed to be embedded where work gets done.[^4]",
+                "Agent Skills: a modular framework that lets organizations encode repeatable tasks, workflows and domain expertise into reusable packages, or skills, that Claude loads on demand.[^8]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "benchmarks-and-metrics",
+          "title": "What does the filing say about benchmarks and metrics?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The filing warns that the industry benchmarks commonly used to test AI models may not reflect real-world performance or utility, and that models scoring well may not meet customer expectations in production.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Certain success rates and similar performance metrics for Claude in the prospectus come from internal benchmarks built on tasks, data sets and evaluation criteria Anthropic selects. Others using different tasks, data, criteria or computing environments may not be able to replicate them.[^5]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Operating metrics such as Run-Rate Revenue, Net Revenue Retention and customer counts come from internal systems and have not been independently verified by third parties.==[^5] The Run-Rate Revenue figure itself is left blank in this version of the filing.[^8]"
+            }
+          ]
+        },
+        {
+          "id": "pricing",
+          "title": "What happened when the cost per task fell?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Most revenue is pay-for-intelligence: customers pay for usage, metered in tokens and priced by the model they choose. In the first half of 2026, consumption-based revenue was $13.1 billion, 80% of the total, and subscription revenue was $3.2 billion, 20%.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Opus 4.5 launched in November 2025 with more capability and a lower price and cost per task than Opus 4.1. Quarter-over-quarter revenue growth then rose from 48% in the fourth quarter of 2025 to 132% in the first quarter of 2026. The filing credits several factors: lower prices and better capability that unlocked new use cases, new products, and wider adoption.==[^8]"
+            },
+            {
+              "type": "p",
+              "text": "==b:With the release of Claude Fable 5.1 in September 2026, Anthropic cut the cost of typical workloads by about 25% against Fable 5, and by up to 45% for complex coding and highly agentic tasks. With Opus 5.5, released the same month, it cut customers' cost per task by about 40% against Opus 5. In each case the cut combined a lower price and improved efficiency.==[^8]"
+            },
+            {
+              "type": "video",
+              "youtubeId": "ROF2Nv_KjOM",
+              "title": "Introducing Claude Fable 5.1",
+              "publisher": "Anthropic",
+              "poster": "https://i.ytimg.com/vi/ROF2Nv_KjOM/maxresdefault.jpg",
+              "duration": 85,
+              "uploadDate": "2026-09-01",
+              "caption": "Anthropic's official launch video for the release that, per the filing, cut typical workload costs by about 25%.[^8][^13]"
+            },
+            {
+              "type": "p",
+              "text": "Revenue grew 1,368% year over year in the second quarter of 2026, while compute and infrastructure expenses grew 300%.[^4]"
+            }
+          ]
+        },
+        {
+          "id": "market-size",
+          "title": "How does Anthropic size its market?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic says the work that knowledge workers perform was worth more than $40 trillion globally in 2025.==[^4] That figure is its own estimate of global knowledge workers' wages, built from U.S. Bureau of Labor Statistics wage data, International Labor Organization data on labor income as a share of GDP, and 2025 global GDP.[^6]"
+            },
+            {
+              "type": "p",
+              "text": "It also cites IDC's estimate that investment in AI solutions and services will yield a cumulative global economic impact of $22.5 trillion by 2031.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "==y:Read the $40 trillion as the value of the work AI could help with, measured in wages. It is not a revenue forecast or a market size.=="
+            }
+          ]
+        },
+        {
+          "id": "my-read",
+          "title": "What should marketing, SEO and AI search teams take from this?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This part is my read, not Anthropic's words."
+            },
+            {
+              "type": "list",
+              "items": [
+                "==y:Distribution beat advertising.== In the first half of 2026, fees to channel partners rose about ten times as much as marketing and advertising did, and about 48% of revenue came through cloud marketplaces. ==g:For an AI product, treat the marketplace listing and the integrator network as a major channel.==",
+                "==y:Organic and self-service growth came first.== The filing says much of Claude's diffusion was organic, and it calls its own app demand generation for enterprise. ==g:Make the free and prosumer experience your campaign, and grow expansion from one use case.==",
+                "==y:Free use is a marketing cost.== The notes count the compute cost of free access as sales and marketing. ==g:Budget a free tier as acquisition, not as a giveaway.==",
+                "==y:The brand drivers the filing lists are also the sources AI answers lean on:== media coverage, events, testimonials, use cases and word of mouth. ==g:Publish named, dated use cases, and earn coverage before you buy reach.==",
+                "==y:To be cited, be fetchable.== Claude's web search is built for citation-aware answers, and an agent cannot cite a page it cannot fetch and read. ==g:Serve real HTML, keep facts current, and date them.==",
+                "==g:Never hide instructions for AI in your pages.== The filing defines that as prompt injection, an attack it defends against. ==y:It is not a GEO tactic.==",
+                "==y:Hallucinations are a disclosed risk.== ==g:Keep one clean, sourced page of facts about your company, and check what assistants say about you every month.==",
+                "==y:Benchmarks are not proof:== the company warns investors that benchmark scores may not reflect real-world results. ==g:Sell outcomes on the buyer's own tasks.==",
+                "==g:Re-cost agent work at every model release.== Anthropic's September 2026 releases cut customer costs by about 25% to 40%, and up to 45% on complex agentic work, through lower prices and better efficiency. ==y:A workflow that is too expensive today may pay next quarter.==",
+                "==g:Size the market by the work, not the software budget.== Anthropic frames its opportunity as the value of knowledge work, ==y:so the buyer compares it with payroll, not with other software.==",
+                "==y:Watch how AI companies collect web content.== The filing says its scraping and web crawling have drawn lawsuits, and the Canadian publishers allege breach of website terms and circumvention of technological protection measures. ==g:Make sure your own terms and access rules say what you mean.==",
+                "==g:Read filings.== ==y:An S-1's risk factors are a free map of what a market leader worries about,== written for regulators and investors."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance-numbers",
+          "title": "What sits behind the finance numbers?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:The $80.7 billion first-half net loss includes a $72.4 billion change in the fair value of convertible notes, derivative liabilities and SAFEs, driven mainly by a higher enterprise valuation.==[^4] Other expense of $8.8 billion came mainly from the initial recognition and later remeasurement, at fair value, of assets and liabilities under note purchase agreements.[^7]",
+                "Compute and infrastructure cost $8.9 billion in the first half of 2026. Personnel cost $3.2 billion, including $2.2 billion of stock-based compensation.[^4]",
+                "2025 expenses include $1.5 billion for the Bartz copyright settlement.[^4][^5]",
+                "Claude is trained and served on four chip families, AWS Trainium, Google TPUs, NVIDIA GPUs and AMD GPUs, through Anthropic's own orchestration layer.[^7]",
+                "No single customer was above 10% of revenue in the first nine months of 2026, and the top five were about 25%.[^5] Customers outside the top five went from about 64% of revenue in the first quarter of 2026 to about 79% in the third.[^7]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "governance",
+          "title": "Who controls Anthropic after the IPO?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Anthropic is a Delaware public benefit corporation. Its public benefit purpose is the responsible development and maintenance of advanced AI for the long-term benefit of humanity.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==b:A Long-Term Benefit Trust, intended to operate as an independent body of financially disinterested trustees, holds Class T stock. Through it, the trust generally has the authority to elect and remove the Class T directors, who will make up a majority of the board. Class T stock has no economic rights.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Just before the offering, a Founder LLC whose members are the seven co-founders will receive a single share of Class F stock. It carries 50.1% of the vote on matters put to stockholders generally, including electing the directors other than the Class T directors, and has no economic rights.==[^2][^4]"
+            },
+            {
+              "type": "p",
+              "text": "Anthropic contributed 846,840,960 Class N shares to the Anthropic Public Benefit Fund: 5% of its fully diluted shares as of June 30, 2026, assuming full conversion of the Amazon Notes. The board may, at its discretion, issue up to 2% more of the then-outstanding shares each time the share price rises 50% above the previous milestone, starting from the IPO price.[^4] Each co-founder has pledged to dedicate 80% of their personal equity in Anthropic to philanthropic causes.[^4] The filing describes these pledges as voluntary and revocable, not legally binding.[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Under Nasdaq's governance rules, Anthropic is considered a controlled company.[^2]"
+            }
+          ]
+        },
+        {
+          "id": "risks",
+          "title": "Which other risks should marketers know about?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:In April 2026, Anthropic released its Mythos model only as a gated research preview through Project Glasswing, for select organizations' cybersecurity work, because of its advanced ability to find software vulnerabilities.==[^5]",
+                "In June 2026, the U.S. Department of Commerce imposed worldwide export restrictions on the Fable 5 and Mythos 5 models. Anthropic disabled them for all customers until the restrictions were lifted, after it updated its safeguards.[^5]",
+                "In September 2025, Anthropic agreed to settle the Bartz copyright class action for $1.5 billion, and the court approved the settlement in July 2026. Music publishers have sued over song lyrics.[^5] La Presse, a Quebec news publisher, sued in July 2026.[^11]",
+                "Sales through cloud marketplaces made up 58% of net accounts receivable at June 30, 2026.[^5]"
+              ]
+            },
+            {
+              "type": "video",
+              "youtubeId": "INGOC6-LLv0",
+              "title": "An initiative to secure the world's software | Project Glasswing",
+              "publisher": "Anthropic",
+              "poster": "https://i.ytimg.com/vi/INGOC6-LLv0/maxresdefault.jpg",
+              "duration": 349,
+              "uploadDate": "2026-04-07",
+              "caption": "Anthropic's official video on Project Glasswing, the program through which, per the filing, Mythos was first released to select organizations.[^5][^14]"
+            }
+          ]
+        },
+        {
+          "id": "who-is-named",
+          "title": "Who is named in the filing?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "[[person:dario-amodei]] is Chief Executive Officer and a co-founder, and [[person:daniela-amodei]] is President, a co-founder and Chairperson. [[person:krishna-rao]] has been Chief Financial Officer since April 2024.[^9]"
+            },
+            {
+              "type": "p",
+              "text": "The non-employee directors are Reed Hastings, Christopher Liddell, Vas Narasimhan and Yasmin Razavi.[^9]"
+            },
+            {
+              "type": "p",
+              "text": "Goldman Sachs and Morgan Stanley are listed first among the underwriters, followed by J.P. Morgan, Citigroup, Barclays, Wells Fargo Securities, BofA Securities, Deutsche Bank Securities, RBC Capital Markets and UBS Investment Bank, among others.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "Grant Thornton audited the 2023 and 2024 financial statements, and Ernst & Young the 2025 statements.[^10]"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Form S-1 filing detail, accession no. 0001628280-26-067168",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+          "note": "Form type S-1, filed and accepted October 26, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+          "note": "Ticker, exchange, underwriters, public benefit purpose, share classes."
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Select Defined Terms",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_179",
+          "note": "The filing's own glossary."
+        },
+        {
+          "id": 4,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
+          "note": "Includes the summary financial data and non-GAAP measures."
+        },
+        {
+          "id": 5,
+          "title": "Anthropic, PBC Form S-1: Risk Factors",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2972"
+        },
+        {
+          "id": 6,
+          "title": "Anthropic, PBC Form S-1: Industry, Market, and Other Data",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_504",
+          "note": "How Anthropic estimates global knowledge workers' wages."
+        },
+        {
+          "id": 7,
+          "title": "Anthropic, PBC Form S-1: Management's Discussion and Analysis",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979"
+        },
+        {
+          "id": 8,
+          "title": "Anthropic, PBC Form S-1: Business",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+        },
+        {
+          "id": 9,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 10,
+          "title": "Anthropic, PBC Form S-1: Experts",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_229"
+        },
+        {
+          "id": 11,
+          "title": "Anthropic, PBC Form S-1: Note 13, Commitments and Contingencies",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1890",
+          "note": "In the notes to the consolidated financial statements."
+        },
+        {
+          "id": 12,
+          "title": "Anthropic, PBC Form S-1: Note 8, Supplemental Financial Information",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1818",
+          "note": "Operating expenses grouped by function."
+        },
+        {
+          "id": 13,
+          "title": "Introducing Claude Fable 5.1",
+          "publisher": "Anthropic on YouTube",
+          "date": "2026-09-01",
+          "url": "https://www.youtube.com/watch?v=ROF2Nv_KjOM",
+          "note": "Video, 1:25."
+        },
+        {
+          "id": 14,
+          "title": "An initiative to secure the world's software | Project Glasswing",
+          "publisher": "Anthropic on YouTube",
+          "date": "2026-04-07",
+          "url": "https://www.youtube.com/watch?v=INGOC6-LLv0",
+          "note": "Video, 5:49."
+        },
+        {
+          "id": 15,
+          "title": "Anthropic files S-1 with the SEC for proposed initial public offering",
+          "publisher": "Anthropic",
+          "date": "2026-10-26",
+          "url": "https://www.anthropic.com/news/s1-sec",
+          "note": "The company's announcement of the filing."
+        }
+      ]
+    },
+    {
       "slug": "costco-q4-fy2026-ai-search",
       "title": "Costco's Q4 FY2026 earnings call: what the CFO said about AI search",
       "seoTitle": "Costco Q4 FY2026 Earnings Call: What It Said About AI",
@@ -436,6 +1105,156 @@
         "alt": "Costco Wholesale logo",
         "credit": "Logo: Costco Wholesale, via Wikimedia Commons (public domain; a registered trademark)"
       }
+    },
+    {
+      "slug": "anthropic",
+      "name": "Anthropic",
+      "legalName": "Anthropic, PBC",
+      "seoTitle": "Anthropic: Company Profile, Leadership and S-1 Facts",
+      "description": "Anthropic, PBC, the company behind Claude: revenue, customers, leaders, governance and go-to-market, from its October 2026 S-1, with every fact sourced.",
+      "summary": "Anthropic, PBC develops the Claude family of AI models and the applications built on them.[^3] It is a Delaware public benefit corporation headquartered in San Francisco, founded by seven co-founders in January 2021.[^2][^4][^5] It filed to go public on October 26, 2026, and applied to list its Class A stock on the Nasdaq Global Select Market as ANT.[^1][^2]",
+      "website": "https://www.anthropic.com",
+      "sameAs": [
+        "https://www.anthropic.com"
+      ],
+      "facts": [
+        {
+          "label": "Legal name",
+          "value": "Anthropic, PBC",
+          "cite": 1
+        },
+        {
+          "label": "Structure",
+          "value": "Delaware public benefit corporation",
+          "cite": 2
+        },
+        {
+          "label": "Headquarters",
+          "value": "San Francisco, California",
+          "cite": 4
+        },
+        {
+          "label": "Founded",
+          "value": "January 2021",
+          "cite": 5
+        },
+        {
+          "label": "Co-founders",
+          "value": "Seven, including [[person:dario-amodei]] and [[person:daniela-amodei]]",
+          "cite": 3
+        },
+        {
+          "label": "Listing",
+          "value": "Applied to list Class A stock on the Nasdaq Global Select Market as ANT",
+          "cite": 2
+        },
+        {
+          "label": "Revenue",
+          "value": "$4.6 billion in 2025; $16.3 billion in the first half of 2026",
+          "cite": 3
+        },
+        {
+          "label": "Customers",
+          "value": "More than 11,900 with $100,000 or more of trailing 12-month revenue, at September 30, 2026",
+          "cite": 3
+        },
+        {
+          "label": "Employees",
+          "value": "About 5,300, at September 30, 2026",
+          "cite": 4
+        },
+        {
+          "label": "Chief Executive Officer",
+          "value": "[[person:dario-amodei]], since January 2021",
+          "cite": 5
+        },
+        {
+          "label": "President and Chairperson",
+          "value": "[[person:daniela-amodei]], President since January 2021",
+          "cite": 5
+        },
+        {
+          "label": "Chief Financial Officer",
+          "value": "[[person:krishna-rao]], since April 2024",
+          "cite": 5
+        }
+      ],
+      "sections": [
+        {
+          "id": "what-it-sells",
+          "title": "What does Anthropic sell?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic sells access to Claude mostly on a pay-for-intelligence basis: customers pay for usage, metered in tokens and priced by model. It also sells subscriptions to its applications to enterprises and prosumers.==[^6]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Its products include Claude.ai, Claude Code, Claude Cowork and the Claude Platform for developers. Customers can buy directly or through AWS, Google Cloud Platform and Microsoft Azure.==[^3][^4]"
+            }
+          ]
+        },
+        {
+          "id": "ai-search-and-marketing",
+          "title": "What has Anthropic said about AI search and marketing?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:In its S-1, Anthropic calls Claude.ai top-of-funnel demand generation for enterprise adoption, and describes its Web Search tool as enabling grounded, citation-aware responses.==[^4]"
+            },
+            {
+              "type": "p",
+              "text": "The full read: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Form S-1 filing detail, accession no. 0001628280-26-067168",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+          "note": "Form type S-1, filed and accepted October 26, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        },
+        {
+          "id": 4,
+          "title": "Anthropic, PBC Form S-1: Business",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+        },
+        {
+          "id": 5,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 6,
+          "title": "Anthropic, PBC Form S-1: Management's Discussion and Analysis",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979"
+        }
+      ]
     }
   ],
   "people": [
@@ -573,6 +1392,205 @@
           "publisher": "The Motley Fool",
           "date": "2026-09-24",
           "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/"
+        }
+      ]
+    },
+    {
+      "slug": "dario-amodei",
+      "name": "Dario Amodei",
+      "role": "Chief Executive Officer and co-founder, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Dario Amodei: Anthropic CEO and Co-Founder",
+      "description": "Dario Amodei has been CEO of Anthropic since co-founding it in January 2021. His background and his place in the company's 2026 S-1 filing, with sources.",
+      "summary": "Dario Amodei has been Chief Executive Officer of [[company:anthropic]] and a member of its board since co-founding it in January 2021.[^1] Before Anthropic, Dario Amodei was Vice President of Research, among other positions, at OpenAI from July 2016 to December 2020.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Chief Executive Officer, co-founder and director, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "CEO since",
+          "value": "January 2021, when Anthropic was founded",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "Vice President of Research, among other positions, at OpenAI, July 2016 to December 2020; Senior Research Scientist at Google Brain, October 2015 to June 2016",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "Ph.D. in Biophysics, Princeton University; B.S. in Physics, Stanford University; postdoctoral fellowship, Stanford University School of Medicine",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The registration statement names Dario Amodei as Chief Executive Officer and Co-Founder on its cover.==[^2] ==b:With the other six co-founders, Dario Amodei will be a member of the Founder LLC, whose single Class F share carries 50.1% of the vote on matters put to stockholders generally.==[^3]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        }
+      ]
+    },
+    {
+      "slug": "daniela-amodei",
+      "name": "Daniela Amodei",
+      "role": "President, co-founder and Chairperson, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Daniela Amodei: Anthropic President and Co-Founder",
+      "description": "Daniela Amodei has been President of Anthropic since co-founding it in January 2021 and chairs its board. Background and role in its 2026 S-1, sourced.",
+      "summary": "Daniela Amodei has been President of [[company:anthropic]] and a member of its board since co-founding it in January 2021, and is Chairperson of the board.[^1] Before Anthropic, Daniela Amodei held several positions at OpenAI from October 2018 to December 2020, including Vice President of Safety and Policy.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "President, co-founder, Chairperson and director, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "President since",
+          "value": "January 2021, when Anthropic was founded",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "At OpenAI, October 2018 to December 2020: Vice President of Safety and Policy, Vice President of People and Engineering Manager; at Stripe, May 2013 to July 2018: Risk Manager, among other positions",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "B.A. in English Literature, University of California, Santa Cruz",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The registration statement names Daniela Amodei as President and Co-Founder on its cover.==[^2] ==b:With the other six co-founders, Daniela Amodei will be a member of the Founder LLC, whose single Class F share carries 50.1% of the vote on matters put to stockholders generally.==[^3]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        }
+      ]
+    },
+    {
+      "slug": "krishna-rao",
+      "name": "Krishna Rao",
+      "role": "Chief Financial Officer, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Krishna Rao: Anthropic Chief Financial Officer",
+      "description": "Krishna Rao has been Chief Financial Officer of Anthropic since April 2024, after CFO roles at Fanatics Commerce and Cedar. Background and S-1 role, sourced.",
+      "summary": "Krishna Rao has been Chief Financial Officer of [[company:anthropic]] since April 2024.[^1] Before Anthropic, Krishna Rao was Chief Financial Officer of Fanatics Commerce and of Cedar, and held roles at Airbnb, Blackstone and Bain.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Chief Financial Officer, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "CFO since",
+          "value": "April 2024",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "Chief Financial Officer of Fanatics Commerce, May 2023 to April 2024, and of Cedar, July 2021 to May 2023; Airbnb, October 2015 to July 2021, including Global Head of Corporate and Business Development; Principal in Blackstone's Private Equity Group, September 2011 to September 2015; strategy consultant at Bain, September 2005 to July 2008",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "J.D., Yale Law School; A.B. in Economics, Harvard College",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The S-1 lists Krishna Rao as Chief Financial Officer in its table of executive officers and directors as of September 30, 2026.==[^1]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
         }
       ]
     }
