@@ -12,6 +12,7 @@ events.document (everything read about it).
 Public posts are shown as text with a link; their authors are never named.
 Run: python3 gen_events_ts.py [--check]
 """
+from pathlib import Path
 import collections, csv, datetime as dt, hashlib, html, io, json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from db import CONTAINER, DB, USER
@@ -340,7 +341,9 @@ def build(ev, docs):
     wrong = [x["id"] for x in sources if any(k["verdict"] in ("false", "misleading") for k in x["claims"])]
     if wrong:
         colls.insert(0, {"id": "wrong", "label": "Spreading something false or misleading", "verdict": "false", "ids": wrong})
-    return {"slug": ev["slug"], "title": ev["title"], "summary": ev.get("summary"), "updatedAt": ev["updated_at"][:19], "window": [ev["window_from"], ev["window_to"]],
+    cfg = Path(__file__).resolve().parent / "events" / f"{ev['slug']}.json"
+    published = json.loads(cfg.read_text()).get("published_at") if cfg.exists() else None
+    return {"slug": ev["slug"], "title": ev["title"], "summary": ev.get("summary"), "updatedAt": ev["updated_at"][:19], **({"publishedAt": published} if published else {}), "window": [ev["window_from"], ev["window_to"]],
             "groups": [{"id": g, "label": lab, "count": sum(1 for x in sources if x["group"] == g)} for g, lab in GROUPS if any(x["group"] == g for x in sources)],
             "featured": featured, "top10": top10, "collections": colls,
             "graph": event_graph(ev, seed, facts, claims, sources, money),
@@ -404,7 +407,7 @@ export interface EventSourceCard {
 }
 export interface EventSubject { id: string; path: string[]; role: "primary" | "secondary"; why: string; iptc: string | null }
 export interface EventFile {
-  slug: string; title: string; summary: string | null; updatedAt: string; window: [string, string];
+  slug: string; title: string; summary: string | null; updatedAt: string; publishedAt?: string; window: [string, string];
   groups: { id: SourceGroup; label: string; count: number }[]; sources: EventSourceCard[];
   featured: string | null; top10: string[]; collections: { id: string; label: string; verdict: Verdict; ids: string[] }[];
   graph: TopicGraphData;

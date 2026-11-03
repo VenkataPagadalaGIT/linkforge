@@ -59,6 +59,14 @@ export default function FeedsHub() {
           </section>
         )}
 
+        <section className="mt-10" aria-label="Learn">
+          <a href="/feeds/learn" className="block rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-[#ef4444]/60">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#25F4EE]">Learn</span>
+            <span className="mt-1 block font-display text-xl font-bold">The AI Roadmap as a feed</span>
+            <span className="mt-1 block text-sm text-white/75">Every video, course, book and repo on the roadmap, in learning order. Pick your level, format and topics.</span>
+          </a>
+        </section>
+
         <section className="mt-10" aria-label="All feeds">
           <h2 className="mb-3 font-display text-lg font-bold">Live feeds <span className="font-mono text-[10px] font-normal text-white/50">{feeds.length}</span></h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

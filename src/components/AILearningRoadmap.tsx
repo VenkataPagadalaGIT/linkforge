@@ -168,6 +168,10 @@ const TopicCard = ({ topic, freeOnly }: { topic: RoadmapTopic; freeOnly?: boolea
             </div>
           )}
 
+          <a href={`/feeds/learn?topic=${topic.id}`} className="mt-4 inline-flex items-center gap-1.5 border border-border px-3 py-1.5 font-mono text-[11px] text-foreground hover:bg-foreground/[0.06]">
+            Learn this topic as a feed
+          </a>
+
           <CrossLinks
             relatedConcepts={roadmapToEncyclopedia[topic.id]}
             relatedContributors={roadmapToContributors[topic.id]}

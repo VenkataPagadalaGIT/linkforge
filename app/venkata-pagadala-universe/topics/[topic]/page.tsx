@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LINKEDIN_MEDIA_MISSING } from "@/data/linkedinMediaMissing";
 import { notFound } from "next/navigation";
 import LinkedInTopicView from "@/views/LinkedInTopicView";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "@/lib/site";
@@ -59,14 +60,18 @@ async function baseMetadata({ params }: { params: Params }): Promise<Metadata> {
 
 const author = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
 
+const inStorage = (url: string) => !LINKEDIN_MEDIA_MISSING.has(url.split("/media/linkedin/")[1] ?? "");
+
 function itemLd(it: LiItem) {
+  // Nothing to show a crawler if the file itself is gone.
+  if (!inStorage(fullUrl(it))) return null;
   if (it.kind === "document") {
     return {
       "@type": "DigitalDocument",
       name: it.description,
       url: fullUrl(it),
       encodingFormat: it.docExt === "pptx" ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/pdf",
-      thumbnailUrl: thumbUrl(it),
+      ...(inStorage(thumbUrl(it)) ? { thumbnailUrl: thumbUrl(it) } : {}),
       datePublished: it.date,
       author,
     };
@@ -76,7 +81,7 @@ function itemLd(it: LiItem) {
       "@type": "VideoObject",
       name: it.description,
       description: it.description,
-      thumbnailUrl: posterUrl(it.idx),
+      ...(inStorage(posterUrl(it.idx)) ? { thumbnailUrl: posterUrl(it.idx) } : {}),
       contentUrl: fullUrl(it),
       uploadDate: it.date,
       duration: isoDuration(it.duration),
@@ -88,7 +93,7 @@ function itemLd(it: LiItem) {
     name: it.description,
     caption: it.description,
     contentUrl: fullUrl(it),
-    thumbnailUrl: thumbUrl(it),
+    ...(inStorage(thumbUrl(it)) ? { thumbnailUrl: thumbUrl(it) } : {}),
     uploadDate: it.date,
     creator: author,
   };
@@ -119,7 +124,7 @@ export default function Page({ params }: { params: Params }) {
           author,
           ...(linkedinUrl(p) ? { sameAs: linkedinUrl(p) } : {}),
         })),
-        ...items.map(itemLd),
+        ...items.map(itemLd).filter(Boolean),
       ],
     },
     breadcrumbJsonLd([

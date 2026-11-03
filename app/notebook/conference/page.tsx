@@ -1,6 +1,7 @@
 import { OG_IMAGE, SITE_NAME } from "@/lib/site";
 import type { Metadata } from "next";
 import ConferenceNotebook from "@/views/ConferenceNotebook";
+import { speakers } from "@/data/speakers";
 import { withSeoOverrides } from "@/lib/seo-overrides";
 
 const metadata: Metadata = {
@@ -18,5 +19,19 @@ const metadata: Metadata = {
 export const generateMetadata = withSeoOverrides("/notebook/conference", metadata);
 
 export default function Page() {
-  return <ConferenceNotebook />;
+  const all = [...speakers].sort((a, b) => a.name.localeCompare(b.name));
+  return (
+    <>
+      <ConferenceNotebook />
+      {/* Every speaker reachable from here, not only from the site map. Rendered on the server, so their bios stay out of the page's script. */}
+      <section id="speakers" aria-labelledby="speakers-h" className="mx-auto max-w-7xl border-t border-border px-6 py-12">
+        <h2 id="speakers-h" className="font-display text-xl font-bold text-foreground">Speakers</h2>
+        <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[12px]">
+          {all.map((s) => (
+            <li key={s.slug}><a href={`/notebook/conference/speakers/${s.slug}`} className="text-muted-foreground underline-offset-2 hover:text-foreground hover:underline">{s.name}</a></li>
+          ))}
+        </ul>
+      </section>
+    </>
+  );
 }

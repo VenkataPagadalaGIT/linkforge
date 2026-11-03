@@ -95,7 +95,8 @@ export interface SiteEntry {
   /** Not a row of its own (the site map's own pages; the filter bar links them). */
   hidden?: boolean;
   /** Present when this is a page of the site that belongs in sitemap.xml. */
-  xml?: { lastModified: Date; changeFrequency: ChangeFrequency; priority: number };
+  /** lastModified only when a real date is known: a request-time date tells Google nothing and costs trust in the rest. */
+  xml?: { lastModified?: Date; changeFrequency: ChangeFrequency; priority: number };
 }
 
 // title, section, hub; order within a section is the order below
@@ -149,7 +150,7 @@ export const NOT_INDEXED_ROUTES: { route: string; reason: string }[] = [
   { route: "/api/revalidate", reason: "signed refresh endpoint for no-deploy publishing (POST only)" },
   { route: "/brand", reason: "internal brand reference sheet" },
   { route: "/library", reason: "internal component showcase" },
-  { route: "/feeds/*", reason: "swipe view of an event file; its canonical points at /notebook/events/<slug>" },
+  { route: "/feeds/*", reason: "app views: a story feed canonicals to its event file; Learn and its search index defer to /notebook/ai/roadmap" },
   { route: "/api/ai/*", reason: "JSON and RSS data endpoints for the AI graph; robots.txt disallows /api/" },
 ];
 
@@ -175,14 +176,15 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   const data = await getSitemapData();
   const out: SiteEntry[] = [];
 
+  // A page that canonicals to another stays on the site map and llms files, but sitemap.xml lists canonical URLs only.
+  const CANONICAL_ELSEWHERE = new Set(["/ai-contributors"]);
   for (const [path, title, section, hub] of STATIC_ROUTES) {
     out.push({
       href: path || "/",
       title,
       section,
       hub,
-      xml: {
-        lastModified: now,
+      xml: CANONICAL_ELSEWHERE.has(path) ? undefined : {
         changeFrequency: path === "" ? "weekly" : "monthly",
         priority: path === "" ? 1.0 : path.startsWith("/insights") || path.startsWith("/ai-") ? 0.8 : 0.6,
       },
@@ -193,12 +195,12 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   for (const g of guides) {
     out.push({
       href: `/guides/${g.slug}`, title: g.title, section: "guides", note: g.readingTime,
-      xml: { lastModified: g.dateModified ? toDate(g.dateModified) : now, changeFrequency: "monthly", priority: 0.9 },
+      xml: { ...(g.dateModified ? { lastModified: toDate(g.dateModified) } : {}), changeFrequency: "monthly", priority: 0.9 },
     });
   }
   out.push({
     href: "/guides/topics", title: "Guide topics, A to Z", section: "topics", hub: true,
-    xml: { lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    xml: { changeFrequency: "weekly", priority: 0.6 },
   });
   for (const t of GUIDE_TOPICS) {
     out.push({
@@ -267,7 +269,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   for (const c of refConcepts) {
     out.push({
       href: `${REF_BASE}/${c.id}`, title: c.concept, section: "encyclopedia", group: c.category,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+      xml: { changeFrequency: "monthly", priority: 0.7 },
     });
   }
 
@@ -275,7 +277,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   for (const n of aiOntologyNodes) {
     out.push({
       href: entityPath(n.id), title: n.name, section: "map", group: LAYER_BY_ID.get(n.layer)?.label ?? "Other",
-      xml: { lastModified: now, changeFrequency: "monthly", priority: n.chokepoint ? 0.7 : 0.6 },
+      xml: { changeFrequency: "monthly", priority: n.chokepoint ? 0.7 : 0.6 },
     });
   }
   // The 360 company files: one page per section (people, investors, legal, hiring, birth to now) for each company that has one.
@@ -285,7 +287,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     for (const s of sections360For(id)) {
       out.push({
         href: sectionPath(id, s.id), title: `${n.name}: ${s.label}`, section: "map", group: `${n.name} 360`,
-        xml: { lastModified: now, changeFrequency: s.id === "hiring" ? "daily" : "weekly", priority: 0.7 },
+        xml: { changeFrequency: s.id === "hiring" ? "daily" : "weekly", priority: 0.7 },
       });
     }
   }
@@ -293,13 +295,13 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   // Venkata Pagadala - Universe: the hub, then LinkedIn (its articles, each in full, and its posts) and one page per node of the topic tree
   out.push({
     href: UNIVERSE_PATH, title: UNIVERSE_NAME, section: "universe", hub: true,
-    xml: { lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    xml: { changeFrequency: "weekly", priority: 0.7 },
   });
   if (LINKEDIN_ARTICLES.length) {
     out.push({
       href: LINKEDIN_ARTICLES_PATH, title: "LinkedIn articles", section: "universe", hub: true,
       note: `${LINKEDIN_ARTICLES.length} articles`,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+      xml: { changeFrequency: "monthly", priority: 0.6 },
     });
   }
   for (const a of LINKEDIN_ARTICLES) {
@@ -313,7 +315,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     out.push({
       href: LINKEDIN_POSTS_PATH, title: "LinkedIn posts", section: "universe", hub: true,
       note: `${LINKEDIN_SOCIAL_POSTS.length} posts`,
-      xml: { lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+      xml: { changeFrequency: "weekly", priority: 0.6 },
     });
   }
   for (const p of LINKEDIN_SOCIAL_POSTS) {
@@ -334,7 +336,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     out.push({
       href: topicPath(t.id), title: t.level === 3 ? `${t.label} (${topicTrail(t.id)[1]?.label ?? ""})` : t.label, section: "universe",
       group: `Topics: ${area?.label ?? "Other"}`, note: parts.join(", "),
-      xml: { lastModified: now, changeFrequency: "monthly", priority: t.level === 1 ? 0.6 : t.level === 2 ? 0.5 : 0.4 },
+      xml: { changeFrequency: "monthly", priority: t.level === 1 ? 0.6 : t.level === 2 ? 0.5 : 0.4 },
     });
   }
 
@@ -342,7 +344,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   for (const c of [...aiContributors].sort((a, b) => a.rank - b.rank)) {
     out.push({
       href: `/ai-contributors/${c.id}`, title: c.name, section: "contributors", note: `#${c.rank}`,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+      xml: { changeFrequency: "monthly", priority: 0.6 },
     });
   }
 
@@ -390,23 +392,24 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     });
   }
 
-  // Insights: the backend decides which exist (as sitemap.xml always has);
-  // titles come from the local module, falling back to the slug
-  if (data) {
+  // Insights: the backend decides which exist (as sitemap.xml always has); if it cannot be reached, the local module
+  // stands in, so a backend outage cannot empty the section out of sitemap.xml. Titles come from the local module.
+  {
+    const insights = data ?? { pillars: pillarPages.map((p) => ({ slug: p.slug })), posts: blogPosts.map((b) => ({ slug: b.slug, pillarSlug: b.pillarSlug, date: b.date })) };
     const pillarTitle = (slug: string) => pillarPages.find((p) => p.slug === slug)?.title ?? humanize(slug);
-    for (const p of data.pillars) {
+    for (const p of insights.pillars) {
       out.push({
         href: `/insights/${p.slug}`, title: `${pillarTitle(p.slug)}: overview`, section: "insights", group: pillarTitle(p.slug),
-        xml: { lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+        xml: { changeFrequency: "monthly", priority: 0.8 },
       });
     }
-    for (const p of data.posts) {
+    for (const p of insights.posts) {
       out.push({
         href: `/insights/${p.pillarSlug}/${p.slug}`,
         title: blogPosts.find((b) => b.slug === p.slug)?.title ?? humanize(p.slug),
         section: "insights",
         group: pillarTitle(p.pillarSlug),
-        xml: { lastModified: p.date ? toDate(p.date) : now, changeFrequency: "monthly", priority: 0.7 },
+        xml: { ...(p.date ? { lastModified: toDate(p.date) } : {}), changeFrequency: "monthly", priority: 0.7 },
       });
     }
   }
@@ -416,7 +419,7 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
     const conf = `${c.name} ${c.year}`;
     out.push({
       href: `/notebook/conference/${c.slug}`, title: conf, section: "sessions", hub: true,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+      xml: { changeFrequency: "monthly", priority: 0.6 },
     });
     for (const { session, urlSlug } of listConferenceSessions(c)) {
       // registration, breaks and meals are noindex pages: listed nowhere
@@ -427,21 +430,21 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
         section: "sessions",
         group: conf,
         note: session.speaker,
-        xml: { lastModified: now, changeFrequency: "yearly", priority: 0.4 },
+        xml: { changeFrequency: "yearly", priority: 0.4 },
       });
     }
   }
   for (const s of [...speakers].sort((a, b) => a.name.localeCompare(b.name))) {
     out.push({
       href: `/notebook/conference/speakers/${s.slug}`, title: s.name, section: "speakers", group: initial(s.name), note: s.company,
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+      xml: { changeFrequency: "monthly", priority: 0.5 },
     });
   }
 
   for (const [slug, title] of SOLUTIONS) {
     out.push({
       href: `/solutions/${slug}`, title, section: "solutions",
-      xml: { lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+      xml: { changeFrequency: "monthly", priority: 0.7 },
     });
   }
 
@@ -458,9 +461,9 @@ export async function getSiteIndex(): Promise<SiteEntry[]> {
   }
 
   // The site map's own pages: in sitemap.xml, reached through the filter bar
-  out.push({ href: "/sitemap", title: "Site map", section: "machines", hidden: true, xml: { lastModified: now, changeFrequency: "weekly", priority: 0.5 } });
+  out.push({ href: "/sitemap", title: "Site map", section: "machines", hidden: true, xml: { changeFrequency: "weekly", priority: 0.5 } });
   for (const s of SECTIONS) {
-    out.push({ href: `/sitemap/${s.id}`, title: `Site map: ${s.label}`, section: s.id, hidden: true, xml: { lastModified: now, changeFrequency: "weekly", priority: 0.3 } });
+    out.push({ href: `/sitemap/${s.id}`, title: `Site map: ${s.label}`, section: s.id, hidden: true, xml: { changeFrequency: "weekly", priority: 0.3 } });
   }
 
   return out;

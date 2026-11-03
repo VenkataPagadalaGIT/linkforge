@@ -58,7 +58,7 @@ export default function Page({ params }: { params: Params }) {
   const p = post(params.slug);
   if (!p) notFound();
   const url = `${SITE_URL}${postPath(p)}`;
-  const author = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
+  const author = { "@type": "Person", "@id": `${SITE_URL}/#person`, name: "Venkata Pagadala", url: SITE_URL, sameAs: [LINKEDIN_PROFILE] };
   const e = p.engagement;
   const counter = (type: string, n?: number) => (n == null ? [] : [{ "@type": "InteractionCounter", interactionType: `https://schema.org/${type}`, userInteractionCount: n }]);
   const jsonLd = [
@@ -67,6 +67,7 @@ export default function Page({ params }: { params: Params }) {
       "@type": "SocialMediaPosting",
       headline: p.title,
       description: p.excerpt,
+      text: p.excerpt,
       url,
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
       datePublished: p.date,

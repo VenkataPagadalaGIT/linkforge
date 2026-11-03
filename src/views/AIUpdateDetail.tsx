@@ -58,8 +58,8 @@ const AIUpdateDetail = ({ update: given, prev, next }: { update?: AIUpdate; prev
           description: update.summary,
           datePublished: update.date,
           dateModified: update.date,
-          author: { "@type": "Person", name: "Venkata Pagadala" },
-          publisher: { "@type": "Person", name: "Venkata Pagadala" },
+          author: { "@type": "Person", "@id": "https://venkatapagadala.com/#person", name: "Venkata Pagadala" },
+          publisher: { "@type": "Person", "@id": "https://venkatapagadala.com/#person", name: "Venkata Pagadala" },
           url: `https://venkatapagadala.com/ai-updates/${update.slug}`,
         }}
       />

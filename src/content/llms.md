@@ -1,9 +1,16 @@
-# Venkata Pagadala — Portfolio
+# Venkata Pagadala: Portfolio
 
-> AI Product Manager — Search (SEO, GEO) at AT&T
+> AI Product Manager: Search (SEO, GEO) at AT&T
 > Building & Enhancing Existing Systems using AI, Automation Workflows, Gen AI, Agentic AI Agents, LLMs, MCP, A2A, RAG, Enterprise SEO, Technical SEO & Growth
 
 {{discovery}}
+
+## Feeds and data
+
+- [Knowledge Graph Feeds](https://venkatapagadala.com/feeds): every story read from every platform and checked against its sources, as a feed tuned by angle and platform.
+- [The AI Intelligence Graph](https://venkatapagadala.com/notebook/ai/graph): the AI economy as one graph, with a sourced file for every entity.
+- [AI Roadmap](https://venkatapagadala.com/notebook/ai/roadmap): the learning path, phase by phase, with videos, courses, books and repos.
+- [Subject taxonomy (JSON)](https://venkatapagadala.com/taxonomy/subjects.json): every subject a story can be filed under.
 
 ## About
 
@@ -24,9 +31,9 @@ Venkata Pagadala is the Lead Technical Product Manager (Automation, AI & SEO) at
 
 ## Education
 
-- Disruptive Strategy — Harvard Business School
-- Cybersecurity — MIT
-- MSCS — New England College
+- Disruptive Strategy, Harvard Business School
+- Cybersecurity, MIT
+- MSCS, New England College
 
 ## Solutions
 
@@ -37,13 +44,13 @@ Venkata Pagadala is the Lead Technical Product Manager (Automation, AI & SEO) at
 - Editorial SEO: Topical Authority, Persona Mapping, User Intent Research, Content Briefs
 - Performance: Growth Forecasting, Custom Reporting, KPI Tracking, CRO Audits
 
-## AI Notebook — Curated Knowledge Hub
+## AI Notebook: Curated Knowledge Hub
 
 ### Top 100 AI Contributors 2026
 The authoritative directory of 100 AI pioneers shaping the field in 2026. Explore profiles, research timelines, glossary, and curated reading lists.
 - URL: https://venkatapagadala.com/notebook/ai
 
-### AI Learning Roadmap — Zero to Hero (2026)
+### AI Learning Roadmap: Zero to Hero (2026)
 An 18-week core plus seven elective depth tracks: 35 topics with 473 curated resources, 127 videos, 134 courses, 93 books and 119 repos. 440 of the 473 are free, which is 93%; the remainder are labelled freemium or paid on the card so nobody clicks through expecting free and hits a paywall. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
@@ -56,7 +63,7 @@ An 18-week core plus seven elective depth tracks: 35 topics with 473 curated res
 The state of AI agents in verified numbers: enterprise adoption (McKinsey, LangChain, KPMG surveys), funding and valuations, platform-company scale claims, capability benchmarks (SWE-bench, OSWorld, METR task horizons), and forecasts. Every figure was verified against its source, carries the date it refers to, and is labeled by kind: survey, forecast, company claim, benchmark, funding, or market estimate. First published August 2026; refreshed monthly with a changelog.
 - URL: https://venkatapagadala.com/notebook/ai/agents
 
-### The Complete Shelf — 19 Free AI Books in 3D (2026)
+### The Complete Shelf: 19 Free AI Books in 3D (2026)
 A browsable 3D walnut shelf of nineteen AI and machine learning books that are genuinely free to read at the publisher, ordered as a curriculum from a first Python program through mathematics, classical ML, deep learning, NLP, deploying models and reinforcement learning to AI safety. Author-hosted sites, university pages, open-access editions, publisher-released PDFs and the public domain only: no free trials, no sample chapters, nothing pirated. Books by a profiled author link to that contributor's page. All nineteen titles are also listed as plain links on the page for anyone without WebGL.
 - URL: https://venkatapagadala.com/notebook/ai/shelf
 

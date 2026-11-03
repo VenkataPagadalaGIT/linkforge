@@ -49,7 +49,6 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "What Is AI? · Simplilearn (Beginner-Friendly)", url: "https://www.youtube.com/watch?v=ad79nYk2keg" },
       { title: "What Is Artificial Intelligence? · Crash Course AI #1", url: "https://www.youtube.com/watch?v=a0_lo_GDcFw" },
       { title: "AI For Everyone · Andrew Ng (Full Course on Coursera)", url: "https://www.coursera.org/learn/ai-for-everyone", access: "freemium" },
-      { title: "Introduction to AI · Microsoft AI for Beginners", url: "https://www.youtube.com/watch?v=L0I_tGpBbxY" },
     ],
     bestCourses: [
       { title: "Elements of AI · Free Course by University of Helsinki", url: "https://www.elementsofai.com/" },
@@ -199,7 +198,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🟡 Phase 3: Machine Learning", phaseColor: "#eab308", difficulty: "intermediate", order: 4.5, week: 5,
     bestVideos: [
       { title: "SQL Full Course · freeCodeCamp", url: "https://www.youtube.com/watch?v=HXV3zeQKqGY" },
-      { title: "Data Engineering for Beginners · Seattle Data Guy", url: "https://www.youtube.com/watch?v=qWru-b6m030" },
+      { title: "How Data Engineering Works · AltexSoft", url: "https://www.youtube.com/watch?v=qWru-b6m030" },
       { title: "Feature Scaling & Encoding · Krish Naik", url: "https://www.youtube.com/watch?v=mnKm3YP56PY" },
       { title: "Kaggle Learn · Data Cleaning (Free Interactive)", url: "https://www.kaggle.com/learn/data-cleaning" },
     ],
@@ -317,7 +316,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🟡 Phase 3: Machine Learning", phaseColor: "#eab308", difficulty: "intermediate", order: 6.5, week: 7, isMilestone: true,
     bestVideos: [
       { title: "Data Science Project from Scratch · Part 4 (Ken Jee)", url: "https://www.youtube.com/watch?v=QWgg4w1SpJ8" },
-      { title: "Titanic Competition Full Walkthrough · Rob Mulla", url: "https://www.youtube.com/watch?v=I3FBJdiExcg" },
+      { title: "Titanic Competition Full Walkthrough · Ken Jee", url: "https://www.youtube.com/watch?v=I3FBJdiExcg" },
       { title: "Building ML Apps with Streamlit · Patrick Loeber", url: "https://www.youtube.com/watch?v=Klqn--Mu2pE" },
       { title: "Kaggle · Titanic Competition (Practice Here!)", url: "https://www.kaggle.com/c/titanic" },
     ],
@@ -407,7 +406,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Neural Networks Part 8: Image Classification with CNNs · StatQuest", url: "https://www.youtube.com/watch?v=HGwBXDKFk9I" },
       { title: "Stanford CS231n · CNNs for Visual Recognition (Full)", url: "https://www.youtube.com/playlist?list=PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv" },
       { title: "Transfer Learning · Andrew Ng (C3W2L07)", url: "https://www.youtube.com/watch?v=yofjFQddwHE" },
-      { title: "YOLO Object Detection · Computerphile", url: "https://www.youtube.com/watch?v=MPU2HistivI" },
+      { title: "YOLOv3 Object Detection · Joseph Redmon", url: "https://www.youtube.com/watch?v=MPU2HistivI" },
     ],
     bestCourses: [
       { title: "Stanford CS231n · Course Notes (Free)", url: "https://cs231n.github.io/" },
@@ -435,8 +434,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     bestVideos: [
       { title: "RNN & LSTM Explained · StatQuest", url: "https://www.youtube.com/watch?v=AsNTP8Kwu80" },
       { title: "Illustrated Guide to LSTM · Michael Phi", url: "https://www.youtube.com/watch?v=8HyCNIVRbSU" },
-      { title: "Stanford CS224n · RNNs Lecture", url: "https://www.youtube.com/watch?v=6niqTuYFZLQ" },
-      { title: "Sequence Models · Andrew Ng (Coursera)", url: "https://www.youtube.com/watch?v=S7oA5C43Rbc" },
+      { title: "Stanford CS231n · RNNs Lecture", url: "https://www.youtube.com/watch?v=6niqTuYFZLQ" },
     ],
     bestCourses: [
       { title: "Andrew Ng's Sequence Models · Coursera", url: "https://www.coursera.org/learn/nlp-sequence-models", access: "freemium" },
@@ -463,7 +461,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🟠 Phase 4: Deep Learning", phaseColor: "#f97316", difficulty: "advanced", order: 11, week: 11,
     bestVideos: [
       { title: "Attention is All You Need · Yannic Kilcher (Paper Walkthrough)", url: "https://www.youtube.com/watch?v=iDulhoQ2pro" },
-      { title: "Illustrated Transformer · 3Blue1Brown Style (Jay Alammar)", url: "https://www.youtube.com/watch?v=4Bdc55j80l8" },
+      { title: "Illustrated Guide to Transformers · The AI Hacker", url: "https://www.youtube.com/watch?v=4Bdc55j80l8" },
       { title: "Andrej Karpathy · Let's build GPT from scratch", url: "https://www.youtube.com/watch?v=kCc8FmEb1nY", authors: ["karpathy"] },
       { title: "Stanford CS25 · Transformers United (Full Seminar)", url: "https://www.youtube.com/playlist?list=PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM" },
     
@@ -494,7 +492,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     description: "BUILD before moving to NLP. Complete at least 2 deep learning projects: one in computer vision and one sequence/text task. Deploy at least one model as a live web app. This proves you can actually ship, not just watch tutorials.",
     phase: "🟠 Phase 4: Deep Learning", phaseColor: "#f97316", difficulty: "advanced", order: 11.5, week: 12, isMilestone: true,
     bestVideos: [
-      { title: "Deploy ML Models with FastAPI · Krish Naik", url: "https://www.youtube.com/watch?v=h5wLuVDr0oc" },
+      { title: "Deploy ML Models with FastAPI · AssemblyAI", url: "https://www.youtube.com/watch?v=h5wLuVDr0oc" },
       { title: "Build a Neural Network from Scratch · Samson Zhang", url: "https://www.youtube.com/watch?v=w8yWXqWQYmU" },
       { title: "Hugging Face Spaces · Deploy ML Demos for Free", url: "https://huggingface.co/spaces" },
       { title: "Gradio · Build ML Demos in Minutes", url: "https://www.gradio.app/" },
@@ -553,7 +551,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🔴 Phase 5: NLP & LLMs", phaseColor: "#ef4444", difficulty: "intermediate", order: 12.5, week: 13,
     bestVideos: [
       { title: "ChatGPT Prompt Engineering for Developers · DeepLearning.AI", url: "https://www.youtube.com/watch?v=H4YK_7MAckk" },
-      { title: "Master the Perfect ChatGPT Prompt Formula · Fireship", url: "https://www.youtube.com/watch?v=jC4v5AS4RIM" },
+      { title: "Master the Perfect ChatGPT Prompt Formula · Jeff Su", url: "https://www.youtube.com/watch?v=jC4v5AS4RIM" },
       { title: "This Will Make You Better than 99% ChatGPT Users", url: "https://www.youtube.com/watch?v=EYjG6i53-xk" },
       { title: "Anthropic · Prompt Engineering Guide (MUST READ)", url: "https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/overview" },
     ],
@@ -624,7 +622,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🔴 Phase 5: NLP & LLMs", phaseColor: "#ef4444", difficulty: "advanced", order: 14, week: 14,
     bestVideos: [
       { title: "RAG Explained in 5 Minutes · IBM", url: "https://www.youtube.com/watch?v=T-D1OfcDW1M" },
-      { title: "Fine-Tuning LLMs with LoRA · Sebastian Raschka", url: "https://www.youtube.com/watch?v=PXWYUTMt-AU" },
+      { title: "LoRA Explained Visually, with PyTorch Code · Umar Jamil", url: "https://www.youtube.com/watch?v=PXWYUTMt-AU" },
       { title: "Building RAG Applications · LangChain", url: "https://www.youtube.com/watch?v=tcqEUSNCn8I" },
       { title: "Vector Databases Explained · Fireship", url: "https://www.youtube.com/watch?v=klTvEwg3oJ4" },
     ],
@@ -656,7 +654,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🔴 Phase 5: NLP & LLMs", phaseColor: "#ef4444", difficulty: "advanced", order: 14.5, week: 15, isMilestone: true,
     bestVideos: [
       { title: "Build a RAG App from Scratch · LangChain", url: "https://www.youtube.com/watch?v=tcqEUSNCn8I" },
-      { title: "Full Stack AI App with Next.js · Vercel", url: "https://www.youtube.com/watch?v=mkJbEP5GeRA" },
+      { title: "Full Stack AI App with Next.js · Coding in Flow", url: "https://www.youtube.com/watch?v=mkJbEP5GeRA" },
       { title: "Hugging Face + LangChain in 5 Minutes", url: "https://www.youtube.com/watch?v=_j7JEDWuqLE" },
       { title: "End-to-End Gen AI Project · LangChain & OpenAI", url: "https://www.youtube.com/watch?v=MoqgmWV1fm8" },
     ],
@@ -667,7 +665,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
       { title: "Hugging Face Spaces · Free deployment", url: "https://huggingface.co/spaces" },
     ],
     books: [
-      { title: "Building LLM Apps · O'Reilly", url: "https://www.amazon.com/Building-LLM-Applications-Intelligent-Retrieval/dp/1098150961", access: "paid" },
+      { title: "Hands-On Large Language Models · Alammar & Grootendorst (O'Reilly)", url: "https://www.amazon.com/Building-LLM-Applications-Intelligent-Retrieval/dp/1098150961", access: "paid" },
       { title: "LangChain cookbook · practical patterns", url: "https://python.langchain.com/docs/tutorials/" },
       { title: "Anthropic's Building Effective Agents guide", url: "https://www.anthropic.com/engineering/building-effective-agents" },
     ],
@@ -716,7 +714,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🟣 Phase 6: Specialize & Build", phaseColor: "#a855f7", difficulty: "advanced", order: 15.5, week: 16,
     bestVideos: [
       { title: "Building AI Agents · LangChain (Full Tutorial)", url: "https://www.youtube.com/watch?v=DWUdGhRrv2c" },
-      { title: "ReAct Pattern Explained · ArXiv Papers", url: "https://www.youtube.com/watch?v=Eug2clsLtFs" },
+      { title: "ReAct Pattern Explained · Sam Witteveen", url: "https://www.youtube.com/watch?v=Eug2clsLtFs" },
       { title: "Anthropic · Building Effective Agents Guide", url: "https://www.anthropic.com/engineering/building-effective-agents" },
       { title: "DeepLearning.AI · AI Agents in LangGraph (Free Course)", url: "https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/", access: "freemium" },
     ],
@@ -753,7 +751,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     description: "Getting models from notebook to production. Learn model serving (FastAPI, Flask), containerization (Docker), model monitoring, CI/CD for ML, experiment tracking, and cloud deployment (AWS, GCP, Azure).",
     phase: "🟣 Phase 6: Specialize & Build", phaseColor: "#a855f7", difficulty: "advanced", order: 16, week: 16,
     bestVideos: [
-      { title: "Docker for Data Science · Rob Mulla", url: "https://www.youtube.com/watch?v=0qG_0CPQhpg" },
+      { title: "Docker for Data Scientists · Abhishek Thakur", url: "https://www.youtube.com/watch?v=0qG_0CPQhpg" },
       { title: "FastAPI + ML Model Deployment", url: "https://www.youtube.com/watch?v=h5wLuVDr0oc" },
       { title: "Made With ML · MLOps Course (Free)", url: "https://madewithml.com/" },
       { title: "Full Stack Deep Learning · MLOps Best Practices", url: "https://fullstackdeeplearning.com/" },
@@ -784,7 +782,7 @@ export const roadmapTopics: RoadmapTopic[] = ([
     phase: "🟣 Phase 6: Specialize & Build", phaseColor: "#a855f7", difficulty: "advanced", order: 16.5, week: 17,
     bestVideos: [
       { title: "David Silver's RL Course · DeepMind (LEGENDARY)", url: "https://www.youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ", authors: ["silver"] },
-      { title: "Deep RL · Pieter Abbeel (UC Berkeley)", url: "https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps", authors: ["abbeel"] },
+      { title: "CS 285: Deep RL · UC Berkeley RAIL", url: "https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps" },
       { title: "RLHF Explained · Hugging Face", url: "https://www.youtube.com/watch?v=2MBJOuVq380" },
       { title: "Hugging Face Deep RL Course (Free)", url: "https://huggingface.co/learn/deep-rl-course" },
     ],

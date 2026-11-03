@@ -84,7 +84,7 @@ export default function Page({ params }: Props) {
     name: s.title(n.name),
     description: s.description(n.name, f),
     url,
-    isPartOf: { "@type": "Dataset", name: GRAPHS.ai.name, url: `${SITE_URL}${hubPath()}` },
+    isPartOf: { "@type": "Dataset", "@id": `${SITE_URL}${hubPath()}#dataset`, name: GRAPHS.ai.name, url: `${SITE_URL}${hubPath()}` },
     about: { "@type": "Organization", name: n.name, url: n.website ?? undefined },
     license: `${SITE_URL}${hubPath()}#terms`,
     creator: { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL },

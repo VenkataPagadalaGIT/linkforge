@@ -50,14 +50,15 @@ async function baseMetadata({ params }: Props): Promise<Metadata> {
 // The generator stores UTC times as "YYYY-MM-DD HH:MM:SS"; schema.org and Open Graph need ISO 8601.
 const iso = (t: string) => (t.length === 19 ? t.replace(" ", "T") + "Z" : t);
 
-const AUTHOR = { "@type": "Person", name: "Venkata Pagadala", url: SITE_URL };
+const AUTHOR = { "@type": "Person", "@id": `${SITE_URL}/#person`, name: "Venkata Pagadala", url: SITE_URL };
+const oneLine = (s: string) => s.replace(/\s+/g, " ").trim().slice(0, 110);
 const RATING: Record<string, number> = { false: 1, misleading: 2, unconfirmed: 3, true: 5 };
 const RATING_LABEL: Record<string, string> = { false: "False", misleading: "Misleading", unconfirmed: "Unconfirmed", true: "True" };
 
 function sourceLd(s: EventSourceCard) {
   const base = {
     url: s.url,
-    name: s.title.slice(0, 200),
+    name: oneLine(s.title),
     ...(s.date ? { datePublished: iso(s.date) } : {}),
     ...(s.publisher ? { publisher: { "@type": "Organization", name: s.publisher } } : {}),
     ...(s.thumb ? { thumbnailUrl: `${SITE_URL}${s.thumb}`, image: `${SITE_URL}${s.thumb}` } : {}),
@@ -65,7 +66,11 @@ function sourceLd(s: EventSourceCard) {
   if (s.platform === "youtube" || s.platform === "tiktok")
     return { "@type": "VideoObject", ...base, ...(s.embed?.type === "youtube" ? { embedUrl: `https://www.youtube.com/embed/${s.embed.id}` } : {}), ...(s.views ? { interactionStatistic: { "@type": "InteractionCounter", interactionType: "https://schema.org/WatchAction", userInteractionCount: s.views } } : {}) };
   if (s.platform === "reddit" || s.platform === "hackernews") return { "@type": "DiscussionForumPosting", ...base, headline: base.name };
-  if (s.platform === "x" || s.platform === "instagram") return { "@type": "SocialMediaPosting", ...base, headline: base.name };
+  // A citation of someone else's post: who said it goes in the credit, because a name alone cannot say person or brand.
+  if (s.platform === "x" || s.platform === "instagram") {
+    const { publisher: _p, ...rest } = base as typeof base & { publisher?: unknown };
+    return { "@type": "CreativeWork", ...rest, ...(s.publisher ? { creditText: s.publisher } : {}), ...(s.excerpt ? { text: s.excerpt } : {}) };
+  }
   if (s.group === "investigators" || s.group === "official") return { "@type": "Report", ...base, headline: base.name };
   return { "@type": "NewsArticle", ...base, headline: base.name };
 }
@@ -84,7 +89,8 @@ function graph(e: EventFile) {
         url,
         headline: e.title,
         description: e.summary,
-        datePublished: start,
+        // The story began at coverageStartTime; this is when this page went up.
+        datePublished: e.publishedAt ?? start,
         dateModified: updated,
         coverageStartTime: start,
         coverageEndTime: `${e.window[1]}T23:59:59Z`,

@@ -14,6 +14,7 @@
  * without running them went stale: on 2026-09-25 llms.txt listed 5 of 14 AI
  * updates, llms-full.txt 1 of 7 guides, and the OKF guides index 5 of 7.
  */
+import { EVENTS } from "@/data/events";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildSections, getSiteIndex, type SiteEntry } from "@/lib/siteIndex";
@@ -77,16 +78,20 @@ function topicsSection(): string {
 
 function updatesSection(entries: SiteEntry[], news: AIUpdate[]): string {
   const L = [
-    "## AI Updates",
+    "## Tech & Business: News and Updates",
     "",
     "News with primary sources attached: court documents, official filings, and original announcements linked from every article.",
     `- URL: ${CANONICAL}/ai-updates`,
     "",
   ];
-  for (const e of entries.filter((x) => x.section === "updates" && !x.hub)) {
+  // Newest first, whichever kind it is. A row with no date (the feeds hub) has its own line under "Feeds and data".
+  const updates = entries.filter((x) => x.section === "updates" && !x.hub && x.note).sort((a, b) => (b.note ?? "").localeCompare(a.note ?? ""));
+  for (const e of updates) {
     const u = news.find((a) => `/ai-updates/${a.slug}` === e.href);
+    const ev = Object.values(EVENTS).find((x) => `/notebook/events/${x.slug}` === e.href);
     L.push(`### ${e.title}${e.note ? ` (${monthYear(e.note)})` : ""}`);
     if (u?.summary) L.push(u.summary);
+    else if (ev?.summary) L.push(ev.summary.split(/(?<=\.)\s/)[0]);
     L.push(`- URL: ${abs(e.href)}`, "");
   }
   return L.join("\n").trimEnd();

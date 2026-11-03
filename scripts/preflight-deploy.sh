@@ -131,6 +131,14 @@ else
   bad "markdown twin is stale; run: npx tsx scripts/gen-research-md.ts"
 fi
 
+# Learn catalog gate: the Learn feed and search read a generated file. If the roadmap changed and the file did not, the
+# feed would show something the roadmap no longer says.
+if python3 data/corpus/learn_catalog.py --check > /tmp/preflight-learn.log 2>&1; then
+  ok "learn catalog matches the AI Roadmap"
+else
+  bad "learn catalog is stale; see /tmp/preflight-learn.log"
+fi
+
 # Persona fan-out gate: selecting a different scenario must change every
 # question, for every preset and stage. Shipped once with a third of the
 # questions persona-invariant and nothing visibly wrong.

@@ -72,7 +72,7 @@ export default function Page({ params }: Props) {
     description: n.story || n.tagline,
     url,
     termCode: n.id,
-    inDefinedTermSet: { "@type": "DefinedTermSet", name: GRAPHS.ai.name, url: `${SITE_URL}${hubPath()}` },
+    inDefinedTermSet: { "@type": "DefinedTermSet", "@id": `${SITE_URL}${hubPath()}#terms`, name: GRAPHS.ai.name, url: `${SITE_URL}${hubPath()}` },
   };
   const sameAs = [n.website, n.github].filter(Boolean);
   if (sameAs.length) termLd.sameAs = sameAs;

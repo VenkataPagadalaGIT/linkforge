@@ -63,12 +63,38 @@ type PageProps = { params?: object; searchParams?: object };
 type Params = Record<string, string | string[] | undefined>;
 type OwnMetadata<P> = Metadata | ((props: P, parent: ResolvingMetadata) => Metadata | Promise<Metadata>);
 
+/** House rule: no em dash in a title or description, wherever the words came from (generated data, a talk's own title). */
+function noEmDash<T>(s: T): T {
+  if (typeof s !== "string" || !s.includes("\u2014")) return s;
+  let first = true;
+  return s.replace(/\s*\u2014\s*/g, () => {
+    if (first) {
+      first = false;
+      return ": ";
+    }
+    return ", ";
+  }) as T;
+}
+function cleanTitle(t: Metadata["title"]): Metadata["title"] {
+  if (t && typeof t === "object" && "absolute" in t) return { ...t, absolute: noEmDash(t.absolute) };
+  return noEmDash(t);
+}
+function clean(m: Metadata): Metadata {
+  return {
+    ...m,
+    title: cleanTitle(m.title),
+    description: noEmDash(m.description),
+    ...(m.openGraph ? { openGraph: { ...m.openGraph, title: cleanTitle(m.openGraph.title), description: noEmDash(m.openGraph.description) } as Metadata["openGraph"] } : {}),
+    ...(m.twitter ? { twitter: { ...m.twitter, title: cleanTitle(m.twitter.title), description: noEmDash(m.twitter.description) } as Metadata["twitter"] } : {}),
+  };
+}
+
 /** A page's generateMetadata: its own metadata (an object, or its old
  *  generateMetadata), with the published override for its path applied. */
 export function withSeoOverrides<P extends PageProps = PageProps>(route: string, own: OwnMetadata<P>) {
   return async function generateMetadata(props: P, parent: ResolvingMetadata): Promise<Metadata> {
     const base = typeof own === "function" ? await own(props, parent) : own;
     const pages = await getSeoOverrides();
-    return applySeoOverride(base, pages[fillRoute(route, props.params as Params | undefined)], SITE_ROBOTS.googleBot);
+    return clean(applySeoOverride(base, pages[fillRoute(route, props.params as Params | undefined)], SITE_ROBOTS.googleBot));
   };
 }

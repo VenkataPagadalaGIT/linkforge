@@ -271,9 +271,9 @@ function SegmentOverview({ scope, ids, onScope }: { scope: AiScope; ids: string[
               {leaders.map((id, k) => (
                 <li key={id} className="grid grid-cols-[1.25rem_minmax(0,1fr)_2.5rem_30%] items-center gap-2 font-mono text-[11px]">
                   <span className="text-right tabular-nums text-muted-foreground">{k + 1}</span>
-                  <button type="button" onClick={() => onScope({ layer: LAYER_OF.get(id)!, type: typeKey(getNode(id)!), entity: id, compare: null })} className="truncate text-left text-foreground hover:underline">
+                  <a href={entityPath(id)} onClick={(ev) => { ev.preventDefault(); onScope({ layer: LAYER_OF.get(id)!, type: typeKey(getNode(id)!), entity: id, compare: null }); }} className="truncate text-left text-foreground hover:underline">
                     {getNode(id)!.name}
-                  </button>
+                  </a>
                   <span className="text-right tabular-nums text-foreground/85">{DEGREE.get(id) ?? 0}</span>
                   <Bar value={DEGREE.get(id) ?? 0} max={maxDeg} />
                 </li>
@@ -286,12 +286,12 @@ function SegmentOverview({ scope, ids, onScope }: { scope: AiScope; ids: string[
               <ul className="space-y-1">
                 {chokes.map(({ id, n }) => (
                   <li key={id} className="flex items-baseline justify-between gap-2 font-mono text-[11px]">
-                    <button type="button" onClick={() => onScope({ layer: LAYER_OF.get(id)!, type: typeKey(getNode(id)!), entity: id, compare: null })} className="truncate text-left text-foreground hover:underline">
+                    <a href={entityPath(id)} onClick={(ev) => { ev.preventDefault(); onScope({ layer: LAYER_OF.get(id)!, type: typeKey(getNode(id)!), entity: id, compare: null }); }} className="truncate text-left text-foreground hover:underline">
                       <span className="text-amber-700 dark:text-amber-300" aria-hidden="true">
                         ⬦{" "}
                       </span>
                       {getNode(id)!.name}
-                    </button>
+                    </a>
                     <span className="tabular-nums text-foreground/85">{n}</span>
                   </li>
                 ))}
@@ -1045,30 +1045,6 @@ function Files360({ ids, onPick, only }: { ids: string[]; onPick: (id: string) =
   );
 }
 
-/** The note a section shows while its data is not collected for this company. Anthropic is the complete file (the MVP). */
-function ComingSoon({ node, label }: { node: AiNode; label: string }) {
-  const listedLater = label === "Earnings calls" && /proposed/i.test(node.ticker ?? "");
-  return (
-    <div className="border border-dashed border-border px-4 py-3 font-mono text-[11px] leading-relaxed text-muted-foreground" data-testid="ai-coming-soon">
-      <span className="font-bold uppercase tracking-[0.2em] text-foreground">Data coming soon</span>
-      <span className="block">
-        {listedLater
-          ? `${node.name} files earnings once it lists (${node.ticker}); calls are collected from the first one.`
-          : `${label} for ${node.name} is not collected yet.`}
-        {node.id !== "anthropic" && (
-          <>
-            {" "}Anthropic&apos;s file is the first complete one:{" "}
-            <Link to={entityPath("anthropic")} className="underline hover:text-foreground">
-              see what every company&apos;s file will hold
-            </Link>
-            .
-          </>
-        )}
-      </span>
-    </div>
-  );
-}
-
 function No360({ name }: { name: string }) {
   return (
     <NotCollected title={`${name}: 360 file not built yet`}>
@@ -1249,11 +1225,13 @@ function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiSco
   const intel = intelFor(id);
   const S = Object.fromEntries(secs.map((s) => [s.id, s])) as Partial<Record<FileSectionId, FileSectionMeta>>;
   const block = (k: FileSectionId, body: React.ReactNode) =>
-    S[k] ? (
+    // A section with nothing collected yet renders nothing: the one line above the file names them all.
+    S[k] && !S[k]!.empty ? (
       <FileBlock s={S[k]!} entity={id}>
-        {S[k]!.empty ? <ComingSoon node={node} label={S[k]!.label} /> : body}
+        {body}
       </FileBlock>
     ) : null;
+  const notCollected = secs.filter((s) => s.empty).map((s) => s.label);
   const f = AI_360[id];
   const complete = !!f && f.people.length > 0 && f.rounds.length > 0 && f.legal.length > 0;
   const rounds = (AI_360[id]?.rounds.length ?? 0) > 0;
@@ -1261,7 +1239,7 @@ function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiSco
   return (
     <>
       <nav aria-label="Sections of this file" className="sticky top-16 z-30 flex overflow-x-auto border-b border-border bg-background [scrollbar-width:none]" data-testid="ai-file-sections">
-        {secs.map((s) => (
+        {secs.filter((s) => !s.empty).map((s) => (
           <button
             key={s.id}
             type="button"
@@ -1279,6 +1257,7 @@ function EntityFile({ node, scope, onScope, pick }: { node: AiNode; scope: AiSco
       {!complete && (
         <p className="border-b border-border bg-foreground/[0.03] px-4 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground" data-testid="ai-file-coming-soon">
           <span className="font-bold uppercase tracking-[0.2em] text-foreground">Full file coming soon.</span> {node.name}&apos;s links, deals and figures below are what the graph holds today.
+          {notCollected.length > 0 && <>Not collected yet: {notCollected.join(", ")}. </>}
           Anthropic is the first complete company file (people, investors, legal, hiring, birth to now); other companies follow one at a time.{" "}
           <Link to={entityPath("anthropic")} className="underline hover:text-foreground">
             Open Anthropic&apos;s file

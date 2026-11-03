@@ -155,8 +155,7 @@ export default function Page({ params }: { params: { id: string } }) {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "AI Encyclopedia", item: `${SITE_URL}${REF_BASE}` },
-          { "@type": "ListItem", position: 2, name: c.category },
-          { "@type": "ListItem", position: 3, name: c.concept, item: `${SITE_URL}${REF_BASE}/${c.id}` },
+          { "@type": "ListItem", position: 2, name: c.concept, item: `${SITE_URL}${REF_BASE}/${c.id}` },
         ],
       },
     ],

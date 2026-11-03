@@ -14,17 +14,19 @@
  * Honest by construction: a count shows only where the platform published one, our own posts carry "Sourced"
  * instead of a verified tick, and the real posts in the feed are the platforms' own, linked.
  *
- * Tuned by the reader (owner, 2026-10-30): a topic dial (a radio tuner on phones, a car-style knob on desktop, with
- * detent clicks), platforms switched on or off, the topics For You includes, and a Feed or Swipe view, all saved and
- * applied at once. Rendered on the server (no portal), so the feed is the first paint, not the text page beneath it.
+ * Tuned by the reader (owner, 2026-10-30): one control per decision. Angles decide what the feed holds, platforms where
+ * it comes from, and the Focus dial narrows to one angle for now (a tuner strip on phones, a knob on desktop, with detent
+ * clicks). Feed or Swipe, all saved and applied at once. Rendered on the server (no portal), so the feed is the first paint, not the text page beneath it.
  */
 import * as React from "react";
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
-import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, ExternalLink, Heart, MessageCircle, Play, Plus, RotateCcw, Share2, SlidersHorizontal, Volume2, VolumeX, X as Close } from "lucide-react";
+import { ArrowLeft, Bookmark, Check, ChevronDown, ChevronUp, ExternalLink, Heart, MessageCircle, Play, Plus, RotateCcw, Search, Share2, SlidersHorizontal, Volume2, VolumeX, X as Close } from "lucide-react";
 import { EVENTS, type EventClaim, type EventFact, type EventFile, type EventSourceCard, type Verdict } from "@/data/events";
 import { TopicGraph } from "@/components/graph/TopicGraph";
 import { Ago, Embed, PlatformMark, who } from "@/components/events/EventSources";
 import { coverOf } from "@/components/feeds/cover";
+import { Chip, FocusDial, ModeTabs, PanelSection, SwipeTop, SwitchRow, ToggleRow, TopicTuner, ViewToggle, store, useClicks, useWide, type Station } from "@/components/feeds/controls";
+import { FeedSearch } from "@/components/feeds/FeedSearch";
 
 type Chapter = "happened" | "impact" | "details" | "graph" | "theories" | "next" | "sources";
 const CHAPTERS: { id: Chapter; label: string; anchor: string }[] = [
@@ -69,7 +71,7 @@ function handleOf(s: EventSourceCard): string {
   return s.domain || PLATFORM[s.platform] || s.platform;
 }
 
-/** Topics: what a post is about, so the whole feed can be tuned to one, or to the set someone keeps on (owner, 2026-10-30). */
+/** Angles: what a post is about inside one story, so the feed can hold the set someone keeps on, or focus on one (owner, 2026-10-30). Subjects, the story-level taxonomy, sit above these. */
 const TOPICS: { id: string; label: string }[] = [
   { id: "live", label: "Live updates" },
   { id: "money", label: "The money" },
@@ -80,7 +82,7 @@ const TOPICS: { id: string; label: string }[] = [
   { id: "theories", label: "Theories" },
   { id: "official", label: "Official word" },
   { id: "investigators", label: "Investigators" },
-  // Every post belongs to a topic the reader can switch off; nothing reaches the feed around their choices.
+  // Every post belongs to an angle the reader can switch off; nothing reaches the feed around their choices.
   { id: "more", label: "More coverage" },
 ];
 /** Words that put a post under a topic. Generic on purpose, so the next story's posts sort without new rules. */
@@ -275,35 +277,6 @@ function buildPosts(e: EventFile): Post[] {
   return list.map((p) => ({ ...p, topics: topicsFor(p, e) }));
 }
 
-const store = {
-  get(k: string): string[] {
-    try {
-      return JSON.parse(window.localStorage.getItem(k) || "[]");
-    } catch {
-      return [];
-    }
-  },
-  set(k: string, v: string[]) {
-    try {
-      window.localStorage.setItem(k, JSON.stringify(v));
-    } catch {
-      /* private mode: likes and saves last for this visit only */
-    }
-  },
-};
-
-function useWide() {
-  const [wide, setWide] = React.useState(false);
-  React.useEffect(() => {
-    const q = window.matchMedia("(min-width: 1024px)");
-    const on = () => setWide(q.matches);
-    on();
-    q.addEventListener("change", on);
-    return () => q.removeEventListener("change", on);
-  }, []);
-  return wide;
-}
-
 function Avatar({ a, size = 36 }: { a: Author; size?: number }) {
   if (a.ours) {
     return (
@@ -388,383 +361,6 @@ function ClaimStage({ c, answer, onAnswer, bare = false }: { c: EventClaim; answ
 }
 
 /**
- * Detent clicks for the dial and the tuner, made in the browser (Web Audio), like a car's volume knob: a short
- * filtered tick per step, a softer bell when a topic is picked, a dull stop at either end. A light buzz on phones that
- * vibrate. Off when sound is off; silent, never broken, where audio is unavailable.
- */
-function useClicks(on: boolean) {
-  const ctx = React.useRef<AudioContext | null>(null);
-  const buf = React.useRef<AudioBuffer | null>(null);
-  return React.useCallback(
-    (kind: "tick" | "pick" | "stop") => {
-      if (!on || typeof window === "undefined") return;
-      try {
-        const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (!AC) return;
-        const c = (ctx.current ??= new AC());
-        if (c.state === "suspended") void c.resume();
-        if (!buf.current) {
-          const b = c.createBuffer(1, Math.floor(c.sampleRate * 0.025), c.sampleRate);
-          const d = b.getChannelData(0);
-          for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 5);
-          buf.current = b;
-        }
-        const t = c.currentTime;
-        const src = c.createBufferSource();
-        src.buffer = buf.current;
-        const f = c.createBiquadFilter();
-        f.type = "bandpass";
-        f.frequency.value = kind === "stop" ? 700 : kind === "pick" ? 2200 : 3400;
-        f.Q.value = kind === "stop" ? 0.8 : 1.6;
-        const g = c.createGain();
-        g.gain.value = kind === "stop" ? 0.7 : 0.45;
-        src.connect(f);
-        f.connect(g);
-        g.connect(c.destination);
-        src.start(t);
-        if (kind === "pick") {
-          const o = c.createOscillator();
-          const og = c.createGain();
-          o.type = "sine";
-          o.frequency.setValueAtTime(660, t);
-          o.frequency.exponentialRampToValueAtTime(990, t + 0.07);
-          og.gain.setValueAtTime(0.0001, t);
-          og.gain.exponentialRampToValueAtTime(0.07, t + 0.01);
-          og.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
-          o.connect(og);
-          og.connect(c.destination);
-          o.start(t);
-          o.stop(t + 0.16);
-        }
-        navigator.vibrate?.(kind === "stop" ? 14 : 5);
-      } catch {
-        /* no audio here: the controls still work, silently */
-      }
-    },
-    [on]
-  );
-}
-
-type Station = { id: string; label: string; count: number; seen?: number };
-type Click = (k: "tick" | "pick" | "stop") => void;
-
-/** The phone's topic control: a radio tuner across the top. Drag it, it ticks past each topic; let go to tune. */
-function TopicTuner({ items, index, onPick, click, onEdit }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click; onEdit?: () => void }) {
-  const SP = 112;
-  const [pos, setPos] = React.useState<number | null>(null);
-  const drag = React.useRef<{ x: number; i: number; last: number; moved: boolean; id: number } | null>(null);
-  const shown = pos ?? index;
-  const clampI = (v: number) => Math.max(0, Math.min(items.length - 1, v));
-  return (
-    <div
-      className="relative h-11 touch-none select-none overflow-hidden"
-      data-no-tap
-      role="group"
-      aria-label="Topics: drag to tune the feed"
-      onPointerDown={(ev) => (drag.current = { x: ev.clientX, i: index, last: index, moved: false, id: ev.pointerId })}
-      onPointerMove={(ev) => {
-        const d = drag.current;
-        if (!d) return;
-        const dx = ev.clientX - d.x;
-        if (!d.moved && Math.abs(dx) > 6) {
-          d.moved = true;
-          // capture only once it is a drag, so a plain tap still reaches the topic under the finger
-          (ev.currentTarget as HTMLElement).setPointerCapture(d.id);
-        }
-        if (!d.moved) return;
-        const raw = d.i - dx / SP;
-        const f = clampI(raw);
-        setPos(f);
-        const r = Math.round(f);
-        if (r !== d.last) {
-          d.last = r;
-          click("tick");
-        }
-      }}
-      onPointerUp={() => {
-        const d = drag.current;
-        drag.current = null;
-        if (!d?.moved) return;
-        const r = Math.round(pos ?? index);
-        setPos(null);
-        if (r !== index) {
-          click("pick");
-          onPick(r);
-        } else click("stop");
-      }}
-      onPointerCancel={() => {
-        drag.current = null;
-        setPos(null);
-      }}
-    >
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2" style={{ backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0 1px, transparent 1px 14px)" }} aria-hidden="true" />
-      <div className={`absolute left-1/2 top-0 flex h-full ${pos === null ? "transition-transform duration-300 ease-out" : ""}`} style={{ transform: `translateX(${-(shown * SP + SP / 2)}px)` }}>
-        {items.map((t, i) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => {
-              if (i === index) return;
-              click("pick");
-              onPick(i);
-            }}
-            aria-pressed={i === index}
-            className={`flex h-full shrink-0 flex-col items-center justify-center px-1 text-[12px] font-bold uppercase tracking-wider transition-colors ${i === index ? "text-white" : "text-white/45"}`}
-            style={{ width: SP }}
-          >
-            <span className="max-w-full truncate">{t.label}</span>
-            <span className="text-[9px] font-semibold tracking-normal text-white/50">{t.seen ? `${t.seen}/${t.count} seen` : t.count}</span>
-          </button>
-        ))}
-        {onEdit && (
-          <button type="button" onClick={onEdit} className="flex h-full shrink-0 items-center justify-center px-1 text-[12px] font-bold uppercase tracking-wider text-[#ef4444]" style={{ width: SP }}>
-            + Topics
-          </button>
-        )}
-      </div>
-      <span className="pointer-events-none absolute bottom-0 left-1/2 h-3.5 w-0.5 -translate-x-1/2 rounded bg-[#ef4444] shadow-[0_0_8px_#ef4444]" aria-hidden="true" />
-      <span className="pointer-events-none absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#ef4444]" aria-hidden="true" />
-    </div>
-  );
-}
-
-/**
- * One row of the Topics or Platforms list: a checkbox, the name, how many posts (or how many seen), and "Only" to keep
- * just this one. Rows are 40px tall for fingers; "Only" is always visible on touch screens and below lg, on hover above.
- */
-function ToggleRow({ checked, label, icon, count, seen, focused, onToggle, onOnly }: { checked: boolean; label: string; icon?: React.ReactNode; count: number; seen?: number; focused?: boolean; onToggle: () => void; onOnly: () => void }) {
-  return (
-    <li className={`group flex items-center gap-1 rounded-lg pr-1 transition-colors hover:bg-white/[0.06] ${focused ? "bg-white/[0.08]" : ""}`}>
-      <button type="button" role="checkbox" aria-checked={checked} onClick={onToggle} className="flex min-h-[40px] min-w-0 flex-1 items-center gap-2.5 px-2 text-left">
-        <span className={`grid h-[18px] w-[18px] shrink-0 place-items-center rounded-[5px] border transition-colors ${checked ? "border-white bg-white text-black" : "border-white/35 text-transparent"}`} aria-hidden="true">
-          <Check size={12} strokeWidth={3.5} />
-        </span>
-        {icon}
-        <span className={`min-w-0 truncate text-[14px] ${checked ? "font-medium text-white" : "text-white/50"}`}>{label}</span>
-        {focused && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#ef4444]" role="img" aria-label="the dial is on this topic" />}
-      </button>
-      <button type="button" onClick={onOnly} aria-label={`Only ${label}`} className="shrink-0 rounded-md px-2 py-1.5 text-[11px] font-semibold text-white/55 transition hover:bg-white/10 hover:text-white lg:opacity-0 lg:focus:opacity-100 lg:group-hover:opacity-100 [@media(hover:none)]:opacity-100">
-        Only
-      </button>
-      <span className="w-[52px] shrink-0 text-right text-[12px] tabular-nums text-white/45">{seen ? `${seen}/${count}` : count}</span>
-    </li>
-  );
-}
-
-/**
- * A physical on/off switch for a platform, after the hardware toggles the owner pointed to: a recessed track that fills
- * with the site's red when on, and a brushed-metal thumb (a conic gradient catches the light like machined aluminium).
- */
-function Switch({ on }: { on: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="relative inline-flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-[background,box-shadow] duration-200"
-      style={{
-        background: on ? "linear-gradient(180deg, #f05252 0%, #c81e1e 100%)" : "linear-gradient(180deg, #0f0f12 0%, #1c1c21 100%)",
-        boxShadow: on ? "inset 0 1px 2px rgba(0,0,0,0.35), 0 0 0 1px rgba(239,68,68,0.45)" : "inset 0 2px 4px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08)",
-      }}
-    >
-      <span
-        className="h-5 w-5 rounded-full transition-transform duration-200 ease-out"
-        style={{
-          transform: on ? "translateX(20px)" : "translateX(0)",
-          background: "radial-gradient(circle at 35% 28%, rgba(255,255,255,0.95), rgba(255,255,255,0) 42%), conic-gradient(from 20deg, #c9cad1, #f7f7f9, #b4b5bd, #ededf0, #bfc0c8, #f4f4f6, #c9cad1)",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.55), inset 0 -1px 1px rgba(0,0,0,0.25)",
-        }}
-      />
-    </span>
-  );
-}
-
-/** A platform row: the whole row toggles, the switch is the control screen readers hear, "Only" keeps just this one. */
-function SwitchRow({ id, on, label, icon, count, onToggle, onOnly }: { id: string; on: boolean; label: string; icon: React.ReactNode; count: number; onToggle: () => void; onOnly: () => void }) {
-  return (
-    <li className="group flex items-center gap-1 rounded-lg pl-2 pr-0.5 transition-colors hover:bg-white/[0.06]">
-      <button type="button" tabIndex={-1} aria-hidden="true" onClick={onToggle} className="flex min-h-[44px] min-w-0 flex-1 items-center gap-2.5 text-left">
-        {icon}
-        <span id={id} className={`min-w-0 truncate text-[14px] ${on ? "font-medium text-white" : "text-white/50"}`}>{label}</span>
-      </button>
-      <button type="button" onClick={onOnly} aria-label={`Only ${label}`} className="shrink-0 rounded-md px-2 py-1.5 text-[11px] font-semibold text-white/55 transition hover:bg-white/10 hover:text-white lg:opacity-0 lg:focus:opacity-100 lg:group-hover:opacity-100 [@media(hover:none)]:opacity-100">
-        Only
-      </button>
-      <span className="w-9 shrink-0 text-right text-[12px] tabular-nums text-white/45">{count}</span>
-      <button type="button" role="switch" aria-checked={on} aria-labelledby={id} onClick={onToggle} className="grid min-h-[44px] shrink-0 place-items-center rounded-full px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
-        <Switch on={on} />
-      </button>
-    </li>
-  );
-}
-
-/**
- * The topic dial, after the matte thermostat knobs the owner pointed to on Dribbble: a dark knob with one indicator dot,
- * a dotted arc that fills to the setting, the setting in large type beneath, then a plain list. Turn it by dragging
- * (finger or mouse), the wheel or the arrow keys; a tap on the arc jumps there. Each step clicks.
- */
-function TopicDial({ items, index, onPick, click, onEdit }: { items: Station[]; index: number; onPick: (i: number) => void; click: Click; onEdit: () => void }) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const drag = React.useRef(false);
-  const wheel = React.useRef(0);
-  const n = items.length;
-  const step = n > 1 ? 270 / (n - 1) : 0;
-  const angle = n > 1 ? -135 + index * step : -135;
-  const pick = (i: number) => {
-    const c = Math.max(0, Math.min(n - 1, i));
-    if (c === index) {
-      if (i !== c) click("stop");
-      return;
-    }
-    click("tick");
-    onPick(c);
-  };
-  const latest = React.useRef(pick);
-  latest.current = pick;
-  const at = React.useRef(index);
-  at.current = index;
-  React.useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // a native listener, so the page does not scroll while the dial turns; one step per notch of the wheel
-    const w = (ev: WheelEvent) => {
-      ev.preventDefault();
-      wheel.current += ev.deltaY;
-      if (Math.abs(wheel.current) < 40) return;
-      latest.current(at.current + (wheel.current > 0 ? 1 : -1));
-      wheel.current = 0;
-    };
-    el.addEventListener("wheel", w, { passive: false });
-    return () => el.removeEventListener("wheel", w);
-  }, []);
-  const fromPointer = (x: number, y: number) => {
-    const r = ref.current!.getBoundingClientRect();
-    const deg = Math.max(-135, Math.min(135, (Math.atan2(x - (r.left + r.width / 2), -(y - (r.top + r.height / 2))) * 180) / Math.PI));
-    return step ? Math.round((deg + 135) / step) : 0;
-  };
-  const S = 224;
-  const C = S / 2;
-  const R = 100;
-  const DOTS = 41;
-  const gap = 270 / (DOTS - 1);
-  const cur = items[index];
-  return (
-    <div className="flex flex-col items-center">
-      <p className="flex items-center gap-1.5 text-[12px] font-semibold text-white/65">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#ef4444]" aria-hidden="true" /> Topic
-      </p>
-      <div
-        ref={ref}
-        role="slider"
-        tabIndex={0}
-        aria-label="Topic dial"
-        aria-valuemin={0}
-        aria-valuemax={n - 1}
-        aria-valuenow={index}
-        aria-valuetext={cur?.label}
-        onPointerDown={(ev) => {
-          ev.currentTarget.setPointerCapture(ev.pointerId);
-          drag.current = true;
-          pick(fromPointer(ev.clientX, ev.clientY));
-        }}
-        onPointerMove={(ev) => {
-          if (drag.current) pick(fromPointer(ev.clientX, ev.clientY));
-        }}
-        onPointerUp={() => (drag.current = false)}
-        onPointerCancel={() => (drag.current = false)}
-        onKeyDown={(ev) => {
-          const k = ev.key;
-          if (k === "ArrowRight" || k === "ArrowUp") pick(index + 1);
-          else if (k === "ArrowLeft" || k === "ArrowDown") pick(index - 1);
-          else if (k === "Home") pick(0);
-          else if (k === "End") pick(n - 1);
-          else return;
-          ev.preventDefault();
-          ev.stopPropagation();
-        }}
-        className="relative cursor-grab touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/30 active:cursor-grabbing"
-        style={{ width: S, height: S }}
-      >
-        <svg width={S} height={S} className="absolute inset-0" aria-hidden="true">
-          {Array.from({ length: DOTS }, (_, k) => {
-            const a = -135 + gap * k;
-            const rad = ((a - 90) * Math.PI) / 180;
-            const here = Math.abs(a - angle) <= gap / 2;
-            return <circle key={k} cx={Math.round((C + R * Math.cos(rad)) * 100) / 100} cy={Math.round((C + R * Math.sin(rad)) * 100) / 100} r={here ? 3.4 : 1.7} fill={here ? "#ef4444" : a < angle ? "rgba(255,255,255,0.82)" : "rgba(255,255,255,0.14)"} />;
-          })}
-        </svg>
-        <div
-          className="absolute rounded-full"
-          style={{
-            inset: 36,
-            background: "radial-gradient(circle at 50% 30%, #26262b 0%, #141417 55%, #0b0b0d 100%)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            boxShadow: "0 18px 34px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -10px 18px rgba(0,0,0,0.55)",
-          }}
-        >
-          <div className="absolute inset-0 rounded-full transition-transform duration-200 ease-out" style={{ transform: `rotate(${angle}deg)` }}>
-            <span className="absolute left-1/2 top-3 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.6)]" />
-          </div>
-        </div>
-      </div>
-      <p className="-mt-2 max-w-full truncate px-2 font-display text-[26px] font-bold leading-tight text-white" aria-live="polite">{cur?.label}</p>
-      <p className="mt-1 flex items-center gap-1.5 text-[12px] text-white/50">
-        <span className="h-1 w-1 rounded-full bg-white/45" aria-hidden="true" />
-        {cur?.count ?? 0} posts{cur?.seen ? ` · ${cur.seen} seen` : ""}
-      </p>
-      <button type="button" onClick={onEdit} className="mt-3 rounded-full bg-white/[0.08] px-4 py-1.5 text-[12px] font-semibold text-white/85 hover:bg-white/[0.14]">
-        Pick topics
-      </button>
-    </div>
-  );
-}
-
-/** Swipe view's top card: drag right to like, left to skip, as on a dating app; tap to read. */
-function SwipeTop({ children, canDrag, onSwipe, onTap, dir }: { children: React.ReactNode; canDrag: boolean; onSwipe: (d: 1 | -1) => void; onTap: () => void; dir: number }) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-320, 320], [-16, 16]);
-  const likeO = useTransform(x, [24, 140], [0, 1]);
-  const skipO = useTransform(x, [-140, -24], [1, 0]);
-  const down = React.useRef<{ x: number; y: number } | null>(null);
-  return (
-    <motion.div
-      custom={dir}
-      variants={{ exit: (d: number) => ({ x: d * 560, rotate: d * 20, opacity: 0, transition: { duration: 0.3 } }) }}
-      initial={{ scale: 0.96, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit="exit"
-      drag={canDrag ? "x" : false}
-      dragSnapToOrigin
-      onDragEnd={(_, info) => {
-        if (info.offset.x > 120 || info.velocity.x > 700) onSwipe(1);
-        else if (info.offset.x < -120 || info.velocity.x < -700) onSwipe(-1);
-      }}
-      onPointerDown={(ev) => {
-        down.current = (ev.target as HTMLElement).closest("button,a,iframe,[data-no-tap]") ? null : { x: ev.clientX, y: ev.clientY };
-      }}
-      onPointerUp={(ev) => {
-        const d = down.current;
-        down.current = null;
-        if (d && Math.abs(ev.clientX - d.x) < 8 && Math.abs(ev.clientY - d.y) < 8) onTap();
-      }}
-      style={{ x, rotate }}
-      className="absolute inset-0 cursor-grab touch-pan-y overflow-hidden rounded-[28px] bg-black shadow-2xl ring-1 ring-white/10 active:cursor-grabbing"
-    >
-      {children}
-      <motion.span style={{ opacity: likeO }} className="pointer-events-none absolute left-5 top-6 z-30 -rotate-12 rounded-lg border-4 border-[#22c55e] px-3 py-0.5 font-display text-3xl font-black text-[#22c55e]">LIKE</motion.span>
-      <motion.span style={{ opacity: skipO }} className="pointer-events-none absolute right-5 top-6 z-30 rotate-12 rounded-lg border-4 border-white/80 px-3 py-0.5 font-display text-3xl font-black text-white/90">SKIP</motion.span>
-    </motion.div>
-  );
-}
-
-function Chip({ on, onClick, children, count }: { on: boolean; onClick: () => void; children: React.ReactNode; count?: number }) {
-  return (
-    <button type="button" onClick={onClick} aria-pressed={on} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/10 text-white/80 hover:bg-white/15"}`}>
-      {children}
-      {count !== undefined && <span className={`text-[11px] ${on ? "text-black/55" : "text-white/45"}`}>{count}</span>}
-    </button>
-  );
-}
-
-/**
  * A platform's mark on a dark disc, so a white brand mark (X) still shows on a chip that is switched on (white). The
  * Hacker News file in public/events/platforms is empty (the icon set has no such slug), so it gets its orange "Y".
  */
@@ -791,6 +387,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const [playing, setPlaying] = React.useState<string | null>(null);
   const [read, setRead] = React.useState<string | null>(null);
   const [settings, setSettings] = React.useState(false);
+  const [searching, setSearching] = React.useState(false);
   const [toast, setToast] = React.useState<string | null>(null);
   const [announce, setAnnounce] = React.useState("");
   const [burst, setBurst] = React.useState<{ x: number; y: number; k: number } | null>(null);
@@ -832,8 +429,9 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const seenSet = new Set(seen);
   const seenIn = (test: (p: Post) => boolean) => body.filter((p) => seenSet.has(p.id) && test(p)).length;
   const stations: Station[] = [
-    { id: "all", label: "For You", count: body.filter((p) => platformOk(p) && inForYou(p)).length, seen: seenIn((p) => platformOk(p) && inForYou(p)) },
-    ...TOPICS.filter((t) => !prefs.off.includes(t.id) || t.id === prefs.topic)
+    { id: "all", label: "All angles", count: body.filter((p) => platformOk(p) && inForYou(p)).length, seen: seenIn((p) => platformOk(p) && inForYou(p)) },
+    // "More coverage" is a catch-all, not something to focus on: it stays in the list, off the dial.
+    ...TOPICS.filter((t) => (!prefs.off.includes(t.id) && t.id !== "more") || t.id === prefs.topic)
       .map((t) => ({ ...t, count: topicCount(t.id), seen: seenIn((p) => platformOk(p) && (p.topics ?? []).includes(t.id)) }))
       .filter((t) => t.count > 0 || t.id === prefs.topic),
   ];
@@ -904,7 +502,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     setDir(1);
     setPlaying(null);
     scroller.current?.scrollTo({ top: 0, behavior: "auto" });
-    setAnnounce(`${prefs.topic === "all" ? "For You" : TOPICS.find((t) => t.id === prefs.topic)?.label}: ${feed.length} posts`);
+    setAnnounce(`${prefs.topic === "all" ? "All angles" : TOPICS.find((t) => t.id === prefs.topic)?.label}: ${feed.length} posts`);
   }, [feedKey, ready, feed.length, prefs.topic]);
 
   // The address keeps the place and the tuning, so back from the full page lands here and a link can be shared.
@@ -1060,12 +658,12 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   const toggleTopic = (id: string) => {
     const off = prefs.off.includes(id) ? prefs.off.filter((x) => x !== id) : [...prefs.off, id];
     if (off.length === TOPICS.length) {
-      say("Keep at least one topic in For You");
+      say("Keep at least one angle on");
       click("stop");
       return;
     }
     click("tick");
-    setPrefs({ off, ...(off.includes(prefs.topic) ? { topic: "all" } : {}) });
+    setPrefs({ off, topic: "all" });
   };
 
   // Scrolling feed: tap to read, double-tap to like, swipe sideways to change chapter (a claim takes sideways itself).
@@ -1105,7 +703,12 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
   React.useEffect(() => {
     const k = (ev: KeyboardEvent) => {
       if ((ev.target as HTMLElement | null)?.closest?.("[role=slider],input,textarea")) return;
-      if (onboard) return;
+      if (onboard || searching) return;
+      if (ev.key === "/" && !read && !settings) {
+        ev.preventDefault();
+        setSearching(true);
+        return;
+      }
       if (read || settings) {
         if (ev.key === "Escape") {
           if (read) closeRead();
@@ -1340,11 +943,11 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         return (
           <div className="flex h-full w-full flex-col items-center justify-center px-6 pb-[var(--kgf-bottom)] pt-[var(--kgf-top)] text-center" style={{ background: DARK }}>
             <p className="font-display text-3xl font-black text-white">{prefs.topic === "all" ? "You're caught up" : `You've finished ${stations[station]?.label}`}</p>
-            <p className="mt-2 text-sm text-white/75">{prefs.topic === "all" ? `Every post you picked, ${feed.length} in all.` : `${feed.length} posts on this topic, every one with its sources.`}</p>
+            <p className="mt-2 text-sm text-white/75">{prefs.topic === "all" ? `Every post you picked, ${feed.length} in all.` : `${feed.length} posts on this angle, every one with its sources.`}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {stations[station + 1] && (
                 <button type="button" onClick={() => { click("pick"); tune(station + 1); }} className="rounded-full bg-[#ef4444] px-5 py-2.5 text-sm font-bold text-white">
-                  Next topic: {stations[station + 1].label}
+                  Next angle: {stations[station + 1].label}
                 </button>
               )}
               <a href={page} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black">Read the full page</a>
@@ -1640,37 +1243,21 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     </motion.aside>
   );
 
+  const changed = (prefs.off.length ? 1 : 0) + (prefs.platforms.length ? 1 : 0) + (prefs.topic !== "all" ? 1 : 0);
   const header = (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/85 via-black/55 to-transparent pb-5 pt-3">
-      <div className="pointer-events-auto flex items-center justify-between gap-2 px-3">
+      <div className="pointer-events-auto flex items-center justify-between gap-1.5 px-2.5">
         <a href={page} aria-label="Back to the full page" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><ArrowLeft size={20} /></a>
-        <div role="tablist" aria-label="View" className="flex rounded-full bg-white/10 p-0.5 text-[13px] font-bold backdrop-blur">
-          {(["scroll", "swipe"] as View[]).map((v) => (
-            <button
-              key={v}
-              type="button"
-              role="tab"
-              aria-selected={view === v}
-              onClick={() => {
-                if (v === view) return;
-                click("pick");
-                setPrefs({ view: v });
-              }}
-              className={`rounded-full px-4 py-1.5 transition ${view === v ? "bg-white text-black" : "text-white/75 hover:text-white"}`}
-            >
-              {v === "scroll" ? "Feed" : "Swipe"}
-            </button>
-          ))}
-        </div>
-        <div className="flex shrink-0 items-center gap-1.5">
-          {live && <span className="rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">Live</span>}
-          <button type="button" onClick={() => setSettings(true)} aria-label="Tune your feed: topics, platforms, view and sound" className="flex h-9 items-center gap-1.5 rounded-full bg-black/40 px-3 text-[13px] font-bold text-white">
-            <SlidersHorizontal size={16} /> Topics
-          </button>
-        </div>
+        <ModeTabs mode="news" />
+        <ViewToggle view={view} onChange={(v) => { click("pick"); setPrefs({ view: v }); }} />
+        <button type="button" onClick={() => setSearching(true)} aria-label="Search" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><Search size={18} /></button>
+        <button type="button" onClick={() => setSettings(true)} aria-label={`Tune your feed${changed ? `: ${changed} changed` : ""}`} className="flex h-9 shrink-0 items-center gap-1 rounded-full bg-black/40 px-2.5 text-[13px] font-bold text-white lg:hidden">
+          <SlidersHorizontal size={16} />
+          {changed > 0 && <span className="grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#ef4444] px-1 text-[11px] font-bold text-white">{changed}</span>}
+        </button>
       </div>
       <div className="pointer-events-auto mt-2">
-        <TopicTuner items={stations} index={station} onPick={tune} click={click} onEdit={() => setSettings(true)} />
+        <TopicTuner items={stations} index={station} onPick={tune} click={click} onEdit={() => setSettings(true)} editLabel="+ Angles" label="Angles in this story: drag to focus the feed" />
       </div>
       {filtered && (
         <button type="button" onClick={() => setSettings(true)} className="pointer-events-auto mx-3 mt-1.5 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-1.5 overflow-hidden rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold text-white">
@@ -1771,13 +1358,37 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       </span>
     </a>
   );
+  const focused = prefs.topic !== "all";
+  const focusStation = stations[station];
+  const summary = (
+    <div aria-live="polite" className="rounded-2xl border border-white/[0.07] bg-[#15151a] p-4">
+      <p className="flex items-baseline gap-2"><span className="font-display text-[40px] font-bold leading-none tracking-tight text-white">{matchCount}</span><span className="text-[14px] text-white/80">posts in your feed</span></p>
+      <div className="mt-2.5 flex flex-wrap gap-1.5 text-[12px] font-semibold text-white/90">
+        <span className="rounded-full bg-white/[0.08] px-2.5 py-1">{TOPICS.length - prefs.off.length} of {TOPICS.length} angles</span>
+        <span className="rounded-full bg-white/[0.08] px-2.5 py-1">{onPlatforms.length} of {PLATFORMS.length} platforms</span>
+      </div>
+      {focused && (
+        <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl border border-[#ef4444]/40 bg-[#ef4444]/10 py-1.5 pl-3 pr-1.5">
+          <span className="min-w-0 truncate text-[13px] text-white">Focus: <b>{focusStation?.label}</b></span>
+          <button type="button" onClick={() => { click("tick"); setPrefs({ topic: "all" }); }} className="min-h-[36px] shrink-0 rounded-full bg-white/[0.12] px-3 text-[12px] font-semibold text-white">Show all</button>
+        </div>
+      )}
+    </div>
+  );
+  const searchBox = (
+    <button type="button" onClick={() => setSearching(true)} className="flex min-h-[42px] w-full items-center gap-2 rounded-xl border border-white/[0.12] bg-[#15151a] px-3 text-left text-[14px] text-white/65 hover:bg-white/[0.07]">
+      <Search size={16} aria-hidden="true" /> Search topics, videos, books, news
+    </button>
+  );
+  const focusDial = (
+    <section aria-label="Focus on one angle" className="px-2">
+      <p className="mb-1.5 flex items-baseline justify-between text-[12px] font-semibold uppercase tracking-wider text-white/65">Focus <span className="text-[11px] font-normal normal-case tracking-normal text-white/55">Optional</span></p>
+      <FocusDial items={stations} index={station} onPick={tune} click={click} meta={focused ? `${focusStation?.count ?? 0} posts${focusStation?.seen ? ` · ${focusStation.seen} seen` : ""} · only this angle` : "Turn to focus on one angle. More coverage stays in the list."} />
+    </section>
+  );
   const lists = (k: string) => (
     <>
-      <section aria-labelledby={`${k}-topics-h`}>
-        <div className="mb-1 flex items-baseline justify-between px-2">
-          <h3 id={`${k}-topics-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Topics in this story</h3>
-          <span className="text-[11px] text-white/40">{TOPICS.length - prefs.off.length} of {TOPICS.length} on</span>
-        </div>
+      <PanelSection id={`${k}-topics`} title="Angles" hint="what you want to know" summary={`${TOPICS.length - prefs.off.length} of ${TOPICS.length} on`}>
         <ul>
           {TOPICS.map((t) => (
             <ToggleRow
@@ -1787,22 +1398,19 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
               count={topicCount(t.id)}
               seen={seenIn((p) => platformOk(p) && (p.topics ?? []).includes(t.id))}
               focused={prefs.topic === t.id}
+              dim={focused && prefs.topic !== t.id}
               onToggle={() => toggleTopic(t.id)}
               onOnly={() => { click("pick"); setPrefs({ off: TOPICS.map((x) => x.id).filter((id) => id !== t.id), topic: "all" }); }}
             />
           ))}
         </ul>
-      </section>
-      <section aria-labelledby={`${k}-platforms-h`}>
-        <div className="mb-1 flex items-baseline justify-between px-2">
-          <h3 id={`${k}-platforms-h`} className="text-[12px] font-semibold uppercase tracking-wider text-white/55">Platforms</h3>
-          <span className="text-[11px] text-white/40">{onPlatforms.length} of {PLATFORMS.length} on</span>
-        </div>
+      </PanelSection>
+      <PanelSection id={`${k}-platforms`} title="Platforms" hint="where it comes from" summary={`${onPlatforms.length} of ${PLATFORMS.length} on`}>
         <div className="mb-1.5 flex flex-wrap gap-1.5 px-2">
           {PRESETS.map((pr) => {
             const on = pr.ids.length ? pr.ids.length === onPlatforms.length && pr.ids.every((x) => onPlatforms.includes(x)) : !prefs.platforms.length;
             return (
-              <button key={pr.label} type="button" aria-pressed={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }} className={`rounded-full px-2.5 py-1 text-[12px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/[0.08] text-white/70 hover:bg-white/15"}`}>
+              <button key={pr.label} type="button" aria-pressed={on} onClick={() => { click("pick"); setPrefs({ platforms: pr.ids }); }} className={`rounded-full px-2.5 py-1.5 text-[12px] font-semibold transition ${on ? "bg-white text-black" : "bg-white/[0.08] text-white/80 hover:bg-white/15"}`}>
                 {pr.label}
               </button>
             );
@@ -1822,26 +1430,30 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
             />
           ))}
         </ul>
-      </section>
+      </PanelSection>
     </>
   );
 
   // Beside the feed from lg (landscape tablets up); while reading below xl the panel steps aside for the reader.
   const deck = (
-    <aside className={`h-full w-[300px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-white/[0.06] px-3 py-6 ${readPost ? "hidden xl:flex" : "hidden lg:flex"}`} aria-label="Tune your feed">
+    <aside className={`h-full w-[340px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-white/[0.06] px-3 py-5 ${readPost ? "hidden xl:flex" : "hidden lg:flex"}`} aria-label="Tune your feed">
       <div className="flex items-start justify-between gap-3 px-2">
         <div>
-          <h2 className="font-display text-lg font-bold text-white">Tune your feed</h2>
-          <p className="mt-0.5 text-[13px] text-white/55">{matchCount} posts match your picks</p>
+          <h2 className="font-display text-[22px] font-bold leading-tight text-white">Tune your feed</h2>
+          <p className="mt-0.5 text-[13px] text-white/70">Only what you pick reaches your feed.</p>
         </div>
-        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Clicks on" : "Clicks off"} title={prefs.sound ? "Clicks on" : "Clicks off"} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white/55 hover:bg-white/10 hover:text-white">
-          {prefs.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Dial clicks on" : "Dial clicks off"} className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/[0.12] text-white/80 hover:bg-white/10">
+          {prefs.sound ? <Volume2 size={18} /> : <VolumeX size={18} />}
         </button>
       </div>
-      <div className="px-2">{storyCard}</div>
-      <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("deck-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+      <div className="space-y-3 px-2">
+        {summary}
+        {searchBox}
+        {storyCard}
+      </div>
+      {focusDial}
       {lists("deck")}
-      <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="self-start px-2 text-[12px] font-semibold text-white/50 hover:text-white">
+      <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound, view }); }} className="self-start px-2 text-[13px] font-semibold text-white/70 hover:text-white">
         Reset to everything
       </button>
     </aside>
@@ -1851,29 +1463,18 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
     <AnimatePresence>
       {settings && (
         <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 32, stiffness: 320 }} className="absolute inset-0 z-50 flex flex-col bg-[#0d0f14]" role="dialog" aria-modal="true" aria-label="Tune your feed">
-          <div className="flex items-center justify-between px-4 pb-2 pt-4">
+          <div className="flex items-center justify-between gap-2 px-4 pb-2 pt-4">
             <p className="font-display text-xl font-black">Tune your feed</p>
-            <button type="button" onClick={() => setSettings(false)} className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black">Done</button>
+            <div className="flex items-center gap-1.5">
+              <button type="button" onClick={() => setPrefs({ sound: !prefs.sound })} aria-pressed={prefs.sound} aria-label={prefs.sound ? "Dial clicks on" : "Dial clicks off"} className="grid h-11 w-11 place-items-center rounded-full border border-white/[0.12] text-white/80">{prefs.sound ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
+              <button type="button" onClick={() => setSettings(false)} className="min-h-[44px] rounded-full bg-white px-4 text-sm font-bold text-black">Done</button>
+            </div>
           </div>
-          <p className="px-4 pb-3 text-[13px] text-white/60">{matchCount} posts match. The feed changes as you choose.</p>
-          <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8">
+          <div className="flex-1 space-y-5 overflow-y-auto px-4 pb-8">
+            {summary}
             {storyCard}
-            <TopicDial items={stations} index={station} onPick={tune} click={click} onEdit={() => document.getElementById("sheet-topics-h")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
-            <section>
-              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">View</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {(["scroll", "swipe"] as View[]).map((v) => (
-                  <Chip key={v} on={view === v} onClick={() => { click("pick"); setPrefs({ view: v }); }}>{v === "scroll" ? "Feed: scroll up" : "Swipe: cards"}</Chip>
-                ))}
-              </div>
-            </section>
-            <div className="-mx-2 space-y-5">{lists("sheet")}</div>
-            <section>
-              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Sound</h3>
-              <Chip on={prefs.sound} onClick={() => setPrefs({ sound: !prefs.sound })}>
-                {prefs.sound ? <><Volume2 size={14} /> Dial clicks on</> : <><VolumeX size={14} /> Dial clicks off</>}
-              </Chip>
-            </section>
+            <div className="-mx-2">{focusDial}</div>
+            <div className="-mx-2 space-y-4">{lists("sheet")}</div>
             <section>
               <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-white/55">Stories</h3>
               <ul className="space-y-3">
@@ -1906,7 +1507,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
               }}
               className="w-full rounded-full bg-white/10 py-3 text-sm font-bold text-white hover:bg-white/15"
             >
-              Pick topics and platforms again
+              Pick angles and platforms again
             </button>
             <div className="flex items-center justify-between pt-2">
               <button type="button" onClick={() => { click("stop"); setPrefs({ ...DEFAULT_PREFS, sound: prefs.sound }); }} className="text-sm font-semibold text-white/60 underline-offset-4 hover:underline">Reset to everything</button>
@@ -1938,7 +1539,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ef4444]">Knowledge Graph Feeds</p>
         <h2 className="mt-2 font-display text-3xl font-black leading-tight">What do you want to learn?</h2>
         <div className="mt-4">{storyCard}</div>
-        <p className="mt-4 text-sm text-white/70">Pick topics in this story. Your feed shows only these, never random posts.</p>
+        <p className="mt-4 text-sm text-white/70">Pick the angles you want on this story. Your feed shows only these, never random posts.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {TOPICS.map((t) => (
             <Chip key={t.id} on={pickTopics.includes(t.id)} count={topicCount(t.id)} onClick={() => { click("tick"); setPickTopics((x) => (x.includes(t.id) ? x.filter((y) => y !== t.id) : [...x, t.id])); }}>
@@ -1970,7 +1571,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
       </div>
       <div className="border-t border-white/10 p-4">
         <button type="button" disabled={!pickTopics.length || !pickedMatch} onClick={() => finishPicking(false)} className="w-full rounded-full bg-white py-3.5 text-[15px] font-black text-black disabled:opacity-40">
-          {!pickTopics.length ? "Pick at least one topic" : pickedMatch ? `Start learning: ${pickedMatch} posts` : "No posts match yet: add a topic or platform"}
+          {!pickTopics.length ? "Pick at least one angle" : pickedMatch ? `Start learning: ${pickedMatch} posts` : "No posts match yet: add an angle or platform"}
         </button>
         <button type="button" onClick={() => finishPicking(true)} className="mt-2 w-full py-2 text-sm font-semibold text-white/60 hover:text-white">Show me everything</button>
       </div>
@@ -2010,7 +1611,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
                 <motion.span animate={coach === "swipe" ? { x: [0, 36, 0, -36, 0] } : { y: [0, -24, 0] }} transition={{ repeat: Infinity, duration: 1.6 }} className="text-5xl" aria-hidden="true">☝</motion.span>
                 <p className="font-display text-2xl font-black">{coach === "swipe" ? "Swipe right to like, left to skip" : "Swipe up for the next post"}</p>
                 <p className="max-w-[280px] text-sm text-white/80">
-                  {coach === "swipe" ? "Tap a card to read it. On a claim, right means true and left means false." : "Tap a post to read it, double-tap to like. Drag the topic dial at the top to change what the feed shows."}
+                  {coach === "swipe" ? "Tap a card to read it. On a claim, right means true and left means false." : "Tap a post to read it, double-tap to like. Drag the strip at the top to focus on one angle."}
                 </p>
                 <span className="rounded-full bg-white px-5 py-2 text-sm font-bold text-black">Got it</span>
               </motion.div>
@@ -2037,7 +1638,8 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           <button type="button" onClick={() => go(current + 1)} disabled={current === feed.length - 1} aria-label="Next post" className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-30"><ChevronDown size={24} /></button>
         </div>
       )}
-      <ul className="absolute bottom-6 right-6 z-30 hidden space-y-0.5 text-right text-[11px] text-white/45 xl:block" aria-label="Keyboard shortcuts">
+      <FeedSearch open={searching} onClose={() => setSearching(false)} />
+      <ul className="absolute bottom-6 right-6 z-30 hidden space-y-0.5 text-right text-[11px] text-white/60 xl:block" aria-label="Keyboard shortcuts">
         {view === "scroll" ? (
           <>
             <li>↑ ↓ next post</li>
@@ -2050,6 +1652,7 @@ export function KnowledgeFeed({ slug }: { slug: string }) {
           </>
         )}
         <li>Enter read</li>
+        <li>/ search</li>
         <li>Esc close</li>
       </ul>
     </div>
