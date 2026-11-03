@@ -1,0 +1,20 @@
+{
+  "note": "Free public signals per company, read by collect_signals.py. Wikipedia 'since' trims days when the title meant something else; npm 'since' is where reading starts (leading zero days are dropped anyway).",
+  "anthropic": {
+    "wikipedia": [
+      {"title": "Anthropic", "since": "2023-02-06", "note": "Until 6 Feb 2023 this title was a disambiguation page, so earlier views are not about the company."},
+      {"title": "Claude_(language_model)"}
+    ],
+    "pypi": ["anthropic", "claude-agent-sdk"],
+    "npm": [
+      {"name": "@anthropic-ai/sdk", "since": "2023-01-01"},
+      {"name": "@anthropic-ai/claude-code", "since": "2025-02-01"},
+      {"name": "@anthropic-ai/claude-agent-sdk", "since": "2025-09-01"}
+    ],
+    "github_org": "anthropics",
+    "app_store": [{"id": 6473753684, "name": "Claude by Anthropic", "country": "us"}],
+    "statuspage": "https://status.claude.com",
+    "federal_register": "\"Anthropic\"",
+    "huggingface_author": "Anthropic"
+  }
+}

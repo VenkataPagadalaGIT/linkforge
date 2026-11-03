@@ -1,0 +1,114 @@
+edge	448	a16z	anthropic	invests_in	unverified	holds Anthropic exposure among model-layer bets
+edge	447	a16z	xai-capital	invests_in	unverified	backer of xAI
+edge	703	ai-safety-institutes	openai	restricts	unverified	Government evaluation access
+edge	429	amazon-investor	anthropic	invests_in	unverified	$8B invested; primary compute partner
+edge	640	amazon-investor	anthropic-cap-structure	invests_in	unverified	~$8B total; ties Claude to Trainium/AWS
+edge	1162	amazon-investor	openai	invests_in	verified	Amazon anchored OpenAI's $122B round that closed 31 Mar 2026 (OpenAI announcement)
+edge	36	amazon-nova	anthropic	invests_in	unverified	Amazon invested ~$8B in Anthropic; primary cloud partner
+edge	148	amd	openai	supplies	unverified	OpenAI committed to large AMD Instinct capacity in 2025
+edge	826	anthropic	scale-ai	depends_on	unverified	RLHF & evaluation data
+edge	586	anthropic-cap-structure	amazon-investor	depends_on	unverified	~$8B Amazon backing + Trainium commitments
+edge	642	anthropic-cap-structure	anthropic	invests_in	unverified	~$183B-round capital funds Claude training compute
+edge	1088	asml-mistral-stake	mistral	invests_in	unverified	~€1.3B lead into Mistral with board seat
+edge	64	aws	anthropic	invests_in	unverified	~$8B+ total strategic investment in Anthropic
+edge	72	azure	openai	invests_in	unverified	~$13B+ investment in OpenAI
+edge	578	azure	tsmc-adr-capex	invests_in	unverified	Azure capex is core of the super-cycle
+edge	568	cfius	saudi-pif	restricts	unverified	Screens Gulf sovereign stakes in US AI assets
+edge	915	china-policy	national-ic-fund	invests_in	unverified	
+edge	459	china-policy	smic	invests_in	unverified	Big Fund III (~$47.5B) backs SMIC domestic self-sufficiency
+edge	454	chips-act	intel	invests_in	unverified	~$8B+ award; 2025 converted partly to ~10% US equity stake
+edge	456	chips-act	samsung-foundry	invests_in	unverified	~$4.7B for Samsung Taylor, TX fab
+edge	455	chips-act	tsmc	invests_in	unverified	~$6.6B for TSMC Arizona leading-edge fabs
+edge	102	coreweave-capital	openai	hosts	unverified	Reported ~$12B+ multi-year capacity deal with OpenAI
+edge	475	coreweave-capital	openai	supplies	unverified	multibillion-dollar compute contracts with OpenAI
+edge	707	coreweave-capital	weights-biases	supplies	unverified	CoreWeave acquired W&B for MLOps telemetry
+edge	388	coreweave-facilities	nvidia	uses	unverified	Built around NVIDIA GB200/GB300 systems
+edge	392	coreweave-facilities	openai	supplies	unverified	Multi-billion-dollar compute contract with OpenAI
+edge	1082	eu-ai-continent-plan	ai-factories	invests_in	unverified	InvestAI funds AI Factories and Gigafactories
+edge	1083	eu-ai-continent-plan	eurohpc	invests_in	unverified	Channels compute funding through EuroHPC
+edge	1072	eu-chips-act	imec	invests_in	unverified	Funds NanoIC pilot line at imec
+edge	468	eu-chips-act	intel	invests_in	unverified	backed Magdeburg plan (paused/scaled back 2024-25)
+edge	467	eu-chips-act	tsmc	invests_in	unverified	subsidizes TSMC Dresden JV (ESMC)
+edge	83	google-cloud	anthropic	invests_in	unverified	Multiple equity investments in Anthropic
+edge	37	google-deepmind	anthropic	invests_in	unverified	Google invested ~$3B+ in Anthropic and provides TPUs
+edge	430	google-investor	anthropic	invests_in	stale	$3B+, ~14% stake, while competing via Gemini
+edge	641	google-investor	anthropic-cap-structure	invests_in	unverified	~$3B+; ties Claude to TPU
+edge	431	google-investor	google-deepmind	designs	unverified	runs its own frontier lab (Gemini) alongside Anthropic stake
+edge	156	google-tpu	anthropic	used_by	unverified	Anthropic committed to large TPU capacity
+edge	445	humain	amd	depends_on	unverified	~$10B AMD partnership for AI compute
+edge	720	insurance-capital	coreweave-capital	invests_in	unverified	GPU-backed debt finances neoclouds
+edge	721	insurance-capital	stargate	invests_in	unverified	Structured finance behind mega-datacenters
+edge	230	intel-foundry	nvidia	partners_with	unverified	2025 Nvidia $5B investment and x86/RTX collaboration
+edge	985	japan-policy	preferred-networks	invests_in	unverified	NEDO/METI support for domestic AI hardware
+edge	984	japan-policy	sakana-ai	invests_in	unverified	Government backing of national AI champion
+edge	469	japan-policy	tsmc	invests_in	unverified	subsidizes TSMC Kumamoto (JASM) fabs
+edge	108	lambda	azure	partners_with	unverified	Signed multi-billion capacity deal with Microsoft (2025)
+edge	690	licensed-data	openai	supplies	unverified	Publisher licensing deals for training/grounding
+edge	782	meta-ai	jensen-talent-market	depends_on	unverified	Meta $100M+ offers to poach elite researchers
+edge	599	meta-ai	scale-ai	invests_in	unverified	~49%/$14.3B stake + hired Alexandr Wang to lead Superintelligence Labs, 2025
+edge	1087	mgx	mistral-compute	invests_in	unverified	MGX among the financing backers
+edge	438	mgx	openai	invests_in	unverified	participated in OpenAI mega-rounds
+edge	437	mgx	stargate	invests_in	unverified	founding UAE sovereign funder
+edge	423	microsoft	openai	invests_in	unverified	~$13B+ committed; largest OpenAI backer, exclusivity loosened in 2025 PBC restructuring
+edge	35	microsoft-ai	openai	invests_in	unverified	Microsoft is OpenAI's largest investor (~$13B+) and cloud partner
+edge	557	mistral-compute-eu	mistral	invests_in	unverified	EU sovereign-AI capital backs Mistral
+edge	909	national-ic-fund	cxmt	invests_in	unverified	
+edge	911	national-ic-fund	naura	invests_in	unverified	
+edge	912	national-ic-fund	smee-euv	invests_in	unverified	
+edge	908	national-ic-fund	smic	invests_in	unverified	
+edge	910	national-ic-fund	ymtc	invests_in	unverified	
+edge	118	nebius	azure	partners_with	unverified	Multi-billion-dollar GPU capacity deal with Microsoft (2025)
+edge	572	neocloud-spv-financing	coreweave-capital	invests_in	unverified	GPU/contract-collateralized SPV debt
+edge	940	ntt-iown	rapidus	invests_in	unverified	NTT is a Rapidus consortium investor
+edge	426	nvidia	coreweave-capital	invests_in	unverified	equity stake plus capacity backstop in the GPU cloud
+edge	428	nvidia	intel	invests_in	unverified	~$5B stake (2025) + custom x86 CPU with NVLink integration
+edge	425	nvidia	openai	invests_in	stale	up to $100B committed in 2025 tied to gigawatts of Nvidia systems ('circular' financing)
+edge	1164	nvidia	openai	guarantees	verified	Nvidia guarantees, capped at $105B, credit support for OpenAI's 20-year leases of about 4.25 GW at SB Energy's PORTS campus, Pike County, Ohio (10-Q, quarter ended 26 Jul 2026)
+edge	427	nvidia	xai-capital	invests_in	unverified	participated in xAI raises funding Colossus GPU clusters
+edge	574	nvidia-openai-100b	openai	invests_in	unverified	Nvidia's up-to-$100B commitment to OpenAI
+edge	788	nvidia-openai-circular	coreweave-capital	invests_in	unverified	Nvidia backstops CoreWeave capacity
+edge	787	nvidia-openai-circular	openai	invests_in	unverified	Nvidia ~$100B commitment to OpenAI
+edge	41	nvidia-research	cohere	invests_in	unverified	Nvidia backs Cohere
+edge	40	nvidia-research	mistral	invests_in	unverified	Nvidia is a Mistral investor and compute partner
+edge	38	nvidia-research	openai	invests_in	unverified	Nvidia strategic investment / compute commitment to OpenAI
+edge	42	nvidia-research	reka	invests_in	unverified	Nvidia has backed Reka
+edge	39	nvidia-research	xai-capital	invests_in	unverified	Nvidia participated in xAI funding
+edge	764	nyt-copyright-litigation	anthropic	restricts	unverified	~$1.5B Anthropic books settlement (2025)
+edge	11	openai	coreweave-capital	depends_on	unverified	Multi-billion CoreWeave capacity contracts for GPU compute
+edge	494	openai	openai-cloud-compute	depends_on	unverified	multi-year take-or-pay compute commitments finance the buildout
+edge	635	openai	openai-io-hardware	invests_in	unverified	~$6.5B io acquisition for AI-native consumer device
+edge	10	openai	oracle-cloud	depends_on	unverified	Multi-year ~$300B Oracle compute deal anchoring Stargate
+edge	496	openai-cloud-compute	coreweave-capital	partners_with	unverified	OpenAI–CoreWeave multi-billion capacity deal
+edge	495	openai-cloud-compute	oracle-cloud	partners_with	unverified	OpenAI–Oracle Stargate compute commitment
+edge	590	openai-restructure	openai-investors-round	depends_on	unverified	Enables ~$500B fundraise
+edge	89	oracle-cloud	openai	hosts	unverified	Central compute partner for Stargate; reported ~$300B OpenAI compute deal
+edge	570	private-credit-ai	coreweave-facilities	invests_in	unverified	Asset-backed debt funds datacenter buildout
+edge	571	private-credit-ai	stargate	invests_in	unverified	Infrastructure debt behind mega-datacenter projects
+edge	534	reddit-data-licensing	google-deepmind	supplies	unverified	~$60M/yr conversation-data license
+edge	443	saudi-pif	humain	invests_in	unverified	PIF owns HUMAIN, the Saudi AI champion
+edge	526	scale-ai	meta-ai	partners_with	unverified	Meta took ~49% stake; Wang leads superintelligence effort
+edge	472	sk-hynix-investor	hbm-memory	invests_in	unverified	Korean capacity dominates scarce HBM3E/HBM4
+edge	471	sk-hynix-investor	sk-hynix	invests_in	unverified	state support + Yongin cluster behind HBM leadership
+edge	432	softbank	arm	invests_in	unverified	owns ~90% of Arm
+edge	1059	softbank	graphcore	invests_in	unverified	Acquired Graphcore in 2024
+edge	433	softbank	openai	invests_in	unverified	led 2025 round at ~$500B valuation
+edge	939	softbank	rapidus	invests_in	unverified	SoftBank among Rapidus consortium backers
+edge	434	softbank	stargate	invests_in	unverified	co-lead funder of the $500B program
+edge	980	softbank-arm-ai	ampere-computing	uses	unverified	SoftBank acquired Ampere for Arm-server compute
+edge	938	sony-image-sensor	rapidus	invests_in	unverified	Sony is a founding Rapidus investor
+edge	845	sovereign-ai	g42	invests_in	unverified	UAE sovereign AI
+edge	717	sovereign-ai	humain	invests_in	unverified	Saudi HUMAIN sovereign program
+edge	718	sovereign-ai	mistral	invests_in	unverified	EU/France sovereignty anchored on Mistral
+edge	784	ssi	jensen-talent-market	depends_on	unverified	SSI valuation driven by Sutskever-led talent
+edge	576	tsmc-adr-capex	nvidia-gpu	invests_in	unverified	Hyperscaler capex underwrites GPU demand
+edge	577	tsmc-adr-capex	tsmc	invests_in	unverified	Capex flows down to foundry capacity
+edge	1093	uk-aisi	anthropic	partners_with	unverified	Pre-deployment model evaluation access
+edge	1136	uk-aisi	claude-model	partners_with	unverified	Pre-deployment evaluations of frontier models
+edge	1094	uk-aisi	google-deepmind	partners_with	unverified	Pre-deployment model evaluation access
+edge	1092	uk-aisi	openai	partners_with	unverified	Pre-deployment model evaluation access
+edge	564	us-ai-safety-institute	anthropic	restricts	unverified	Pre-deployment evaluation of frontier models
+edge	697	vector-db	claude-model	used_by	unverified	RAG grounding for model apps
+edge	823	vertical-government	anthropic	uses	unverified	GSA OneGov $1 Claude access
+edge	818	vertical-legal	vector-db	depends_on	unverified	Citation-grounded retrieval to curb hallucination
+edge	1011	vis	nvidia-gpu	supplies	unverified	PMIC/analog around GPU boards
+edge	751	windsurf-codeium	google-deepmind	partners_with	unverified	2025 DeepMind talent+license deal (~$2.4B)

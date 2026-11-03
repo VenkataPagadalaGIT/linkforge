@@ -1,0 +1,701 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:07.000
+And he is going to be speaking about users, pain points, and intent.
+
+00:00:07.000 --> 00:00:12.000
+And he does AI search and SEO at AT&T.
+
+00:00:12.000 --> 00:00:14.000
+So I'm excited to hear what they're up to.
+
+00:00:14.000 --> 00:00:19.000
+[Applause]
+
+00:00:19.000 --> 00:00:22.000
+Thank you. Thank you, everyone.
+
+00:00:22.000 --> 00:00:28.000
+I will make sure this 20 minutes is valid.
+
+00:00:28.000 --> 00:00:32.000
+So, these are the things I'm going to talk today.
+
+00:00:32.000 --> 00:00:37.000
+I'm going to talk about volume and talk about users,
+
+00:00:37.000 --> 00:00:40.000
+pain points, and intent.
+
+00:00:40.000 --> 00:00:44.000
+Why it's ten times more important than blindly following volume.
+
+00:00:44.000 --> 00:00:48.000
+And of course, because my co-speakers did a great job explaining that,
+
+00:00:48.000 --> 00:00:52.000
+I'm going to share a little bit more on that.
+
+00:00:52.000 --> 00:00:55.733
+So user first, algorithm second.
+
+00:00:55.733 --> 00:01:00.433
+Again, I don't want to chase algorithms because no one really
+
+00:01:00.433 --> 00:01:01.667
+knows how [inaudible]
+
+00:01:04.667 --> 00:01:06.667
+No one knows how it works.
+
+00:01:06.667 --> 00:01:07.667
+[inaudible]
+
+00:01:07.667 --> 00:01:13.633
+OpenAI, Claude, whatever, and they launch every [inaudible]
+
+00:01:13.633 --> 00:01:16.867
+So the retrieval method is different.
+
+00:01:16.867 --> 00:01:20.567
+So do I want to chase algorithms or models or [inaudible],
+
+00:01:20.567 --> 00:01:25.567
+or, for example, [inaudible],
+
+00:01:25.567 --> 00:01:27.567
+so do I want to care about that?
+
+00:01:27.567 --> 00:01:30.567
+Or do I want to care about users?
+
+00:01:32.567 --> 00:01:36.567
+So simple, I think I'm going to talk about the thesis,
+
+00:01:36.567 --> 00:01:40.567
+two case studies I implemented with a great team,
+
+00:01:40.567 --> 00:01:43.567
+and these are real case studies,
+
+00:01:43.567 --> 00:01:46.567
+and third about how I bought a new car,
+
+00:01:46.567 --> 00:01:52.633
+and what was my journey from point A to purchasing.
+
+00:01:52.633 --> 00:01:56.733
+And let's talk about AI and the method.
+
+00:01:56.733 --> 00:02:01.067
+And the key important thing here is building something
+
+00:02:01.067 --> 00:02:03.100
+for myself is easy.
+
+00:02:03.100 --> 00:02:04.867
+When you're working for an enterprise,
+
+00:02:04.867 --> 00:02:08.367
+you need to build a system at scale that can
+
+00:02:08.367 --> 00:02:11.767
+be used by multiple users.
+
+00:02:11.767 --> 00:02:14.167
+Thank you.
+
+00:02:14.167 --> 00:02:15.167
+[inaudible]
+
+00:02:15.167 --> 00:02:20.833
+So, zero volume is not a zero demand.
+
+00:02:20.833 --> 00:02:22.900
+So, trust ahead of sales.
+
+00:02:22.900 --> 00:02:25.000
+So, this is a case study.
+
+00:02:25.000 --> 00:02:28.900
+This is an industry leader site, and we want to run an experiment
+
+00:02:28.900 --> 00:02:33.733
+on using, we ignored search volume.
+
+00:02:33.733 --> 00:02:38.133
+We found that users want information that is evergreen,
+
+00:02:38.133 --> 00:02:39.767
+that's going to stay long.
+
+00:02:39.767 --> 00:02:42.100
+So example, let's take an example of area codes.
+
+00:02:42.100 --> 00:02:45.900
+People search for which number is coming from this location.
+
+00:02:46.800 --> 00:02:49.033
+That doesn't have any commercial value.
+
+00:02:49.033 --> 00:02:50.600
+And we know that for a fact.
+
+00:02:50.600 --> 00:02:54.433
+But we want to be, we want to build a content
+
+00:02:54.433 --> 00:02:56.633
+that is relevant for industry
+
+00:02:56.633 --> 00:02:59.833
+at scale using programmatic SEO strategies,
+
+00:02:59.833 --> 00:03:03.600
+that is going to be staying forever and earn trust.
+
+00:03:03.600 --> 00:03:07.033
+And we did an experiment exactly [inaudible] years ago.
+
+00:03:07.033 --> 00:03:11.533
+And again, I can't use the first-party data sources to show,
+
+00:03:11.533 --> 00:03:15.100
+but this is an estimate of the impact.
+
+00:03:15.100 --> 00:03:18.500
+We almost drove about half a million impressions,
+
+00:03:18.500 --> 00:03:20.500
+clicks, I don't really care about that.
+
+00:03:20.500 --> 00:03:24.300
+But the key thing is, people genuinely love the source,
+
+00:03:24.300 --> 00:03:27.700
+and we didn't follow the SEO strategy or AI strategy.
+
+00:03:27.700 --> 00:03:31.867
+Every AI platform, every search platform
+
+00:03:31.867 --> 00:03:33.133
+are citing our sources.
+
+00:03:33.133 --> 00:03:36.033
+We never tried to do that, but it happened.
+
+00:03:36.033 --> 00:03:39.067
+That's the impact when you focus on users
+
+00:03:39.067 --> 00:03:41.100
+and create a meaningful content
+
+00:03:41.100 --> 00:03:44.633
+and the AI citations, search rankings will follow those.
+
+00:03:47.900 --> 00:03:55.900
+Let's talk about case study two and when I joined the company, they have a decent amount of
+pages.
+
+00:03:55.900 --> 00:04:01.900
+We analyzed the user behavior and the bounce rate was significantly bad.
+
+00:04:01.900 --> 00:04:10.900
+So, rather than searching volumes, keyword data, all these things, I decided to think like a user.
+
+00:04:10.900 --> 00:04:14.900
+Okay, so I'm reading this content, I hate this content.
+
+00:04:14.900 --> 00:04:19.900
+Why? I don't want to read 3,000 words of a guide.
+
+00:04:19.900 --> 00:04:25.900
+Okay, in my feedback, I asked a couple of my team members and did a small test.
+
+00:04:25.900 --> 00:04:27.900
+And everyone said the exact same thing.
+
+00:04:27.900 --> 00:04:30.900
+Who wants to read 3,000 words of a guide?
+
+00:04:30.900 --> 00:04:32.900
+They want the videos.
+
+00:04:32.900 --> 00:04:36.900
+So we created the videos and injected into these pages.
+
+00:04:36.900 --> 00:04:41.600
+You can see the video snippets went up to 18,000.
+
+00:04:41.600 --> 00:04:43.900
+Again, that's for the metrics.
+
+00:04:43.900 --> 00:04:44.667
+I am happy.
+
+00:04:44.667 --> 00:04:48.500
+The metric I am happy about is users are happy because we
+
+00:04:48.500 --> 00:04:51.333
+are producing what they need.
+
+00:04:51.333 --> 00:04:55.500
+So, I'm a new dad, so I was trying to upgrade my car,
+
+00:04:56.667 --> 00:04:59.733
+[inaudible]
+
+00:04:59.733 --> 00:05:03.733
+and then also my family and safety.
+
+00:05:03.733 --> 00:05:06.600
+I decided to buy a Toyota Grand Highlander Hybrid.
+
+00:05:07.633 --> 00:05:12.633
+I was reading pages, web pages, and I hated it.
+
+00:05:13.467 --> 00:05:15.633
+Everyone is like, oh, this is the best,
+
+00:05:15.633 --> 00:05:16.967
+this is the best, this is the best.
+
+00:05:16.967 --> 00:05:20.700
+No, I don't want to buy a $60,000 product
+
+00:05:20.700 --> 00:05:22.567
+based on sales page.
+
+00:05:22.567 --> 00:05:25.867
+I genuinely want the users who bought the product
+
+00:05:25.867 --> 00:05:27.133
+and share their reviews.
+
+00:05:27.133 --> 00:05:29.500
+Then I landed on a Facebook group dedicated
+
+00:05:29.500 --> 00:05:32.333
+to people who bought Grand Highlanders.
+
+00:05:32.333 --> 00:05:33.767
+And they're sharing the perspective
+
+00:05:33.767 --> 00:05:37.133
+of which model to buy, why they like specific things, which
+
+00:05:37.133 --> 00:05:39.167
+dealership is best to buy from.
+
+00:05:39.167 --> 00:05:43.333
+And these are the queries we need to answer to our users.
+
+00:05:43.333 --> 00:05:47.267
+It's not about search volume, it's not about anything else.
+
+00:05:47.267 --> 00:05:49.233
+you need to find the real queries
+
+00:05:49.233 --> 00:05:53.067
+that people are actually typing in different platforms
+
+00:05:53.067 --> 00:05:55.233
+based on their persona or whatever it may be
+
+00:05:55.233 --> 00:05:56.433
+and try to answer them.
+
+00:05:56.433 --> 00:05:58.800
+If you can answer this query,
+
+00:05:58.800 --> 00:06:01.267
+many people lost my purchase
+
+00:06:01.267 --> 00:06:04.000
+because they were not answering the specific questions.
+
+00:06:04.000 --> 00:06:06.833
+So, again, if I use traditional tools,
+
+00:06:06.833 --> 00:06:09.033
+I'm not saying traditional tools are bad,
+
+00:06:09.033 --> 00:06:11.267
+but they're only good for direction.
+
+00:06:11.267 --> 00:06:13.133
+The volume is not a strategy.
+
+00:06:14.033 --> 00:06:15.667
+You understand the users
+
+00:06:15.667 --> 00:06:17.767
+and trying to build a content around that.
+
+00:06:17.767 --> 00:06:19.833
+And content doesn't mean that textual content.
+
+00:06:19.833 --> 00:06:24.567
+It can be video, audio, podcast, newsletters, whatever it may be.
+
+00:06:24.567 --> 00:06:28.933
+That's where real success happens.
+
+00:06:28.933 --> 00:06:33.000
+Again, I mainly, I don't have all the answers
+
+00:06:33.000 --> 00:06:37.967
+which I'm asking here, because keywords tracking was great.
+
+00:06:37.967 --> 00:06:41.400
+And Google used to be not personalizing results.
+
+00:06:41.400 --> 00:06:45.400
+And also, very short, one or two keywords.
+
+00:06:45.400 --> 00:06:48.533
+But no one is trying to search, like, Grand Highlander.
+
+00:06:48.533 --> 00:06:53.600
+People are searching, like, I want SUV with highest mileage
+
+00:06:53.600 --> 00:06:56.167
+and most relevant brand.
+
+00:06:56.167 --> 00:07:01.133
+So keywords are transforming into conversations.
+
+00:07:01.133 --> 00:07:05.033
+So I was trying to search this query in different platforms
+
+00:07:05.033 --> 00:07:09.433
+to understand the reviewers.
+
+00:07:09.433 --> 00:07:14.633
+[inaudible] is trying to pull the data from Facebook, Facebook
+
+00:07:14.633 --> 00:07:21.233
+groups, and then [inaudible] is trying to pull from Reddit.
+
+00:07:21.233 --> 00:07:23.500
+And Gemini, similar.
+
+00:07:23.500 --> 00:07:26.633
+Google [inaudible] from multiple sources.
+
+00:07:26.633 --> 00:07:29.067
+So here I'm not talking about how
+
+00:07:29.067 --> 00:07:32.033
+Reddit is citing my [inaudible]
+
+00:07:32.033 --> 00:07:35.067
+Who cares if you have a meaningful content?
+
+00:07:35.067 --> 00:07:36.733
+It's not about Reddit.
+
+00:07:36.733 --> 00:07:37.733
+It's not about YouTube.
+
+00:07:37.733 --> 00:07:39.633
+It's a moving target.
+
+00:07:39.633 --> 00:07:43.900
+You need to find where your users are spending the most time.
+
+00:07:43.900 --> 00:07:48.200
+So the method, I'm going to share the method. Here is how I do it.
+
+00:07:48.200 --> 00:07:54.200
+So these four slides will be the most important slides in this entire presentation.
+
+00:07:54.200 --> 00:08:00.200
+So we heavily focus on search data, but Google My Business reviews.
+
+00:08:00.200 --> 00:08:09.200
+There is a roofing company in New York and how I use the reviews to understand the pain points.
+
+00:08:09.200 --> 00:08:12.200
+If you analyze all the roofers in New York,
+
+00:08:12.200 --> 00:08:16.200
+analyze, classify the reviews and response rates and variance,
+
+00:08:16.200 --> 00:08:19.200
+then you will understand the pain point of the roofers.
+
+00:08:19.200 --> 00:08:24.200
+It can be expensive pricing, they are doing a bad job, or they don't serve [inaudible].
+
+00:08:24.200 --> 00:08:28.200
+So if you can solve the pain point via content and SEO strategies,
+
+00:08:28.200 --> 00:08:32.200
+That's where the commercial traffic follows.
+
+00:08:32.200 --> 00:08:36.200
+Again, the biggest search engine of Google is probably YouTube.
+
+00:08:36.200 --> 00:08:40.200
+People talk, comment, respond, engage
+
+00:08:40.200 --> 00:08:44.200
+in YouTube, in YouTube platform. But are we pulling
+
+00:08:44.200 --> 00:08:48.200
+the content, classifying it to understand users,
+
+00:08:48.200 --> 00:08:52.200
+how they're behaving in YouTube. Again, Twitter
+
+00:08:52.200 --> 00:08:56.200
+competitors, Reddit. People know that TikTok
+
+00:08:56.200 --> 00:09:01.700
+specific age group of audience who love to spend more on TikTok.
+
+00:09:01.700 --> 00:09:03.833
+So they like short-form content.
+
+00:09:03.833 --> 00:09:05.133
+They want instant answers.
+
+00:09:05.133 --> 00:09:10.833
+Example, are we serving the product if the product is going to target them?
+
+00:09:10.833 --> 00:09:17.233
+Which is, we keep it as a classic example to understand what are the topics we need to cover.
+
+00:09:17.233 --> 00:09:19.067
+So, conference insights.
+
+00:09:19.067 --> 00:09:24.900
+I went to multiple conferences to understand missing topics.
+
+00:09:24.900 --> 00:09:27.133
+topics I don't know like this.
+
+00:09:27.133 --> 00:09:29.733
+I learned a lot from different speakers.
+
+00:09:29.733 --> 00:09:32.800
+So similarly, if you go to industry relevant conferences
+
+00:09:32.800 --> 00:09:35.833
+like [inaudible] or telecom or something like that,
+
+00:09:35.833 --> 00:09:39.100
+you'll know a lot from that.
+
+00:09:39.100 --> 00:09:43.400
+So this is pretty much public data influence in the podcast.
+
+00:09:43.400 --> 00:09:46.333
+The key thing is the earnings calls.
+
+00:09:46.333 --> 00:09:49.300
+I collect the data from earnings calls.
+
+00:09:49.300 --> 00:09:50.700
+Why?
+
+00:09:50.700 --> 00:09:51.267
+Am I mad?
+
+00:09:51.267 --> 00:09:52.733
+No.
+
+00:09:52.733 --> 00:09:55.533
+I know what's coming about my competitors.
+
+00:09:55.533 --> 00:09:58.700
+My competitor says, "We allocated this much on budget
+
+00:09:58.700 --> 00:10:00.667
+on X, Y, Z product."
+
+00:10:00.667 --> 00:10:04.400
+Then I know for a fact they're going to take our market share.
+
+00:10:04.400 --> 00:10:07.867
+Do I need to react or do I need to react
+
+00:10:07.867 --> 00:10:09.700
+after they took my market share?
+
+00:10:09.700 --> 00:10:13.100
+Or I create a patch and I tag them ahead.
+
+00:10:13.100 --> 00:10:15.400
+So that's where earnings calls come in.
+
+00:10:15.400 --> 00:10:17.267
+Job postings.
+
+00:10:17.267 --> 00:10:19.667
+If your competitor is hiring for example,
+
+00:10:19.667 --> 00:10:22.933
+like AEO, SEO, GEO, whatever it may be.
+
+00:10:22.933 --> 00:10:24.800
+Then, you know for a fact, they're
+
+00:10:24.800 --> 00:10:28.300
+investing money to take market share in AI space.
+
+00:10:28.300 --> 00:10:32.733
+So that's why you need to keep an eye on the job postings.
+
+00:10:32.733 --> 00:10:36.200
+Similarly, research papers and regulations.
+
+00:10:36.200 --> 00:10:38.733
+Research paper, why?
+
+00:10:38.733 --> 00:10:41.333
+People write research papers.
+
+00:10:41.333 --> 00:10:45.400
+They use a lot of data, certified data, actual data,
+
+00:10:45.400 --> 00:10:47.300
+in order to write papers.
+
+00:10:47.300 --> 00:10:54.300
+example. I built a tool, the open source tool. No email required, no subscription, no follow
+required.
+
+00:10:54.300 --> 00:11:00.300
+I'll make sure that anyone can access it. So, I used these datasets to build a personal tool.
+
+00:11:00.300 --> 00:11:03.267
+And there can be one product, different personas,
+
+00:11:03.267 --> 00:11:06.900
+different queries for the region.
+
+00:11:06.900 --> 00:11:23.467
+I analyzed 5.6 million queries, no one really cares if I say that, but if I classify that map with
+personas and build a product, then the returns would be, the returns in the graph speaks about
+
+00:11:23.467 --> 00:11:23.900
+that.
+
+00:11:23.900 --> 00:11:32.900
+And classification is the core thing. But I made myself classify the data because I know my
+industry better than [inaudible].
+
+00:11:32.900 --> 00:11:39.900
+So, rather than topics, keywords, clusters, I try to [inaudible] the whole industry.
+
+00:11:39.900 --> 00:11:46.900
+Starting from the company, there are social media platforms. Wherever a person is talking about
+that particular thing, I try to collect the data.
+
+00:11:46.900 --> 00:11:51.900
+And this has datasets of zero search volumes. I don’t care about volume.
+
+00:11:51.900 --> 00:11:58.900
+I care about, is there one user that is going to buy my product? I'm going to answer them.
+
+00:11:58.900 --> 00:12:06.900
+So I built the whole cluster. For the next, probably one or two years, I created a self-learning
+mechanism
+
+00:12:06.900 --> 00:12:10.900
+where it will automatically schedule the crawls, collect the data, and update itself.
+
+00:12:10.900 --> 00:12:15.900
+Okay, then you go to "person who writes checks".
+
+00:12:15.900 --> 00:12:19.900
+[inaudible] “Okay man, you have 5.6 million queries. Why should I write a check for you?”
+
+00:12:19.900 --> 00:12:26.900
+Easy hack is: do you want to do market share for your company?
+
+00:12:26.900 --> 00:12:29.900
+The one question that you write a check for.
+
+00:12:29.900 --> 00:12:33.900
+Hey, do you want to invest double money to recover?
+
+00:12:33.900 --> 00:12:36.900
+Or do you want to invest money? Be ahead of them.
+
+00:12:36.900 --> 00:12:39.900
+Okay, this is one of my favorite slides in the whole thing.
+
+00:12:40.867 --> 00:12:45.867
+I was curious and this research is not funded by any organization except myself.
+
+00:12:45.867 --> 00:12:52.867
+I was analyzing 100,000 reviews on all the local telecom stores in Texas.
+
+00:12:52.867 --> 00:12:57.867
+What I find, I don't know yet, but what I found was amazing.
+
+00:12:57.867 --> 00:13:02.867
+So the second pain point was, I'm sorry, long wait time.
+
+00:13:02.867 --> 00:13:07.867
+The pain point of the users when they walk into the stores is that they hate waiting.
+
+00:13:07.867 --> 00:13:15.867
+None of the traditional tools tell a problem or pain points, but analyzing and classifying data tells
+that.
+
+00:13:15.867 --> 00:13:19.867
+So, long wait time. What I have to do with the long wait time?
+
+00:13:19.867 --> 00:13:26.867
+You can build a product such as digital check-ins, or you can build an in-app virtual
+appointments.
+
+00:13:26.867 --> 00:13:32.867
+That can bring revenue, reduce pain points, and help [inaudible] as well.
+
+00:13:32.867 --> 00:13:41.867
+So that's the beauty of you, collecting the data from different sources, you classifying them and
+building the products based on pain points.
+
+00:13:42.900 --> 00:13:53.900
+So, it's good, I did it all myself, and I have a great mentor who I work with. His name is Gene. He
+challenges me every time.
+
+00:13:53.900 --> 00:13:59.900
+Okay, this is great. How can this be used by 10,000 people at the same time?
+
+00:13:59.900 --> 00:14:07.900
+So I created a multi-level AI agent orchestration, where agents can talk to each other.
+
+00:14:07.900 --> 00:14:18.900
+Is it great? No, I'm still learning and fixing it, but I was able to build a great agents that can 60 to
+70% do my job, and then I can verify that.
+
+00:14:21.033 --> 00:14:27.033
+So, I'm not going to talk about all these things because I want to use [inaudible] for the most
+important person in my life.
+
+00:14:27.033 --> 00:14:30.033
+It's my mom.
+
+00:14:30.033 --> 00:14:36.033
+So, she's the first person to believe in me.
+
+00:14:36.033 --> 00:14:42.033
+I came from India, a whole different country, did my masters.
+
+00:14:42.033 --> 00:14:46.033
+And I'm here, this is like a dream for me.
+
+00:14:46.033 --> 00:14:50.033
+But one person trusted me when I was zero, is my mom.
+
+00:14:50.033 --> 00:14:58.033
+is my mom. So, I would like to take this platform and give it to my mom. [inaudible] So, that's it.
+
+00:14:58.067 --> 00:15:00.000
+[Applause]
+

@@ -1,0 +1,318 @@
+{
+ "note": "Anthropic IPO file: the SEC filing trail from the first confidential draft to the public S-1, and the offering terms the S-1 states or still leaves blank. Every quote is an exact passage of the S-1 filed 2026-10-26, checked word for word in the sec.gov tab on 2026-10-29. The filing list was read from EDGAR's company page (CIK 2130357) on 2026-10-29; there is no amendment, price range or final prospectus yet.",
+ "entity": "anthropic",
+ "anchors": {
+  "cover": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+ },
+ "facts": [
+  {
+   "key": "ipo_listing",
+   "label": "Listing",
+   "value": "Nasdaq Global Select Market, ticker ANT (Class A common stock)",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "We have applied to list our Class A common stock on the Nasdaq Global Select Market under the symbol “ANT.”",
+     "locator": "Prospectus cover",
+     "anchor": "cover"
+    }
+   ],
+   "sort_order": 100
+  },
+  {
+   "key": "ipo_market",
+   "label": "Public market today",
+   "value": "None: the Class A stock has never traded",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Prior to this offering, there has been no public market for our Class A common stock.",
+     "locator": "Prospectus cover",
+     "anchor": "cover"
+    }
+   ],
+   "sort_order": 101
+  },
+  {
+   "key": "ipo_price_range",
+   "label": "Price range",
+   "value": "Not set yet: the S-1 leaves the range blank",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "It is currently estimated that the initial public offering price per share will be between $ and $ .",
+     "locator": "Prospectus cover",
+     "anchor": "cover"
+    }
+   ],
+   "sort_order": 102
+  },
+  {
+   "key": "ipo_shares",
+   "label": "Shares offered",
+   "value": "New shares from Anthropic and shares from selling stockholders; both counts are still blank",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "We are selling shares of Class A common stock and the selling stockholders identified in this prospectus are selling an additional shares of Class A common stock.",
+     "locator": "Prospectus cover",
+     "anchor": "cover"
+    }
+   ],
+   "sort_order": 103
+  },
+  {
+   "key": "ipo_delivery",
+   "label": "Delivery date",
+   "value": "Not set yet: the S-1 leaves the date blank",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "The underwriters expect to deliver the shares against payment in New York, New York, on or about .",
+     "locator": "Prospectus cover",
+     "anchor": "cover"
+    }
+   ],
+   "sort_order": 104
+  },
+  {
+   "key": "ipo_proceeds",
+   "label": "Use of proceeds",
+   "value": "General corporate purposes: working capital, operating costs, capital spending including compute and infrastructure, and hiring and keeping skilled staff",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "We intend to use the net proceeds from this offering for general corporate purposes, including working capital, operating expenses, and capital expenditures, including investments in compute and infrastructure, as well as hiring and retention of highly skilled personnel.",
+     "locator": null
+    }
+   ],
+   "sort_order": 105
+  },
+  {
+   "key": "ipo_dividends",
+   "label": "Dividends",
+   "value": "None planned",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "We do not anticipate paying cash dividends in the foreseeable future.",
+     "locator": null
+    }
+   ],
+   "sort_order": 106
+  },
+  {
+   "key": "ipo_class_a",
+   "label": "Class A (the shares sold)",
+   "value": "One vote per share",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Each share of Class A common stock is entitled to one vote per share and shares of Class N common stock have no voting rights, except as otherwise required by law.",
+     "locator": null
+    }
+   ],
+   "sort_order": 107
+  },
+  {
+   "key": "ipo_class_n",
+   "label": "Class N",
+   "value": "No vote; held mainly by strategic business partners; becomes Class A when sold to an unaffiliated party",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "The holders of our Class N common stock are primarily strategic business partners, and shares of Class N common stock will generally convert to Class A common stock upon a sale or transfer to an unaffiliated third party.",
+     "locator": null
+    }
+   ],
+   "sort_order": 108
+  },
+  {
+   "key": "ipo_class_f",
+   "label": "Class F (the founders)",
+   "value": "One share, held by the co-founders' LLC, carrying 50.1% of the votes on general matters, including electing every director other than the Class T directors",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Immediately prior to the completion of this offering, we will also issue a single share of Class F common stock, a special class of our common stock, to a limited liability company organized by our co-founders (the “Founder LLC”).",
+     "locator": null
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Our Class F common stock, which will be held by the Founder LLC, will be entitled to an aggregate number of votes that equals 50.1% of the total voting power of our outstanding shares of capital stock with respect to matters submitted to stockholders generally, including the election of our directors other than the Class T directors.",
+     "locator": null
+    }
+   ],
+   "sort_order": 109
+  },
+  {
+   "key": "ipo_class_t",
+   "label": "Class T (the Long-Term Benefit Trust)",
+   "value": "Elects and removes the Class T directors, a majority of the board; no other vote and no economic rights",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Through a special class of common stock, Class T common stock, the LTBT generally has the authority to elect and remove the Class T directors, who together will constitute a majority of the authorized members of our board of directors.",
+     "locator": null
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Our Class T common stock does not otherwise have voting rights with respect to matters submitted to stockholders generally and has no economic rights.",
+     "locator": null
+    }
+   ],
+   "sort_order": 110
+  },
+  {
+   "key": "ipo_class_e",
+   "label": "Class E",
+   "value": "Votes only on certain limited matters; no economic rights; none issued before the offering",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Our Class E common stock will be entitled to vote only on certain limited matters and will not have any economic rights.",
+     "locator": null
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "no issuance of shares of Class E common stock prior to the completion of this offering",
+     "locator": null
+    }
+   ],
+   "sort_order": 111
+  },
+  {
+   "key": "ipo_ltbt",
+   "label": "Long-Term Benefit Trust",
+   "value": "Governed by five trustees",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "The LTBT is governed by five Trustees.",
+     "locator": null
+    }
+   ],
+   "sort_order": 112
+  },
+  {
+   "key": "ipo_controlled",
+   "label": "Controlled company",
+   "value": "Yes, under Nasdaq's governance rules",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "We are considered a “controlled company” within the meaning of the Nasdaq Global Select Market corporate governance requirements.",
+     "locator": null
+    }
+   ],
+   "sort_order": 113
+  },
+  {
+   "key": "ipo_lockup",
+   "label": "Lock-up",
+   "value": "180 days after the prospectus date for directors, officers and holders of substantially all shares",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "Our directors, officers, and the holders of substantially all of our capital stock and securities convertible into or exercisable or exchangeable for our capital stock have entered into market standoff agreements with us under which they have agreed that, subject to certain exceptions, for a period of 180 days after the date of this prospectus, they will not, without our prior written consent, sell, make any short sale of, loan, grant any option for the purchase of, or otherwise dispose of any of our securities, including securities issued or issuable upon the conversion, exercise, exchange, reclassification, or replacement of such securities.",
+     "locator": "Lock-Up and Market Standoff Agreements"
+    }
+   ],
+   "sort_order": 114
+  },
+  {
+   "key": "ipo_split",
+   "label": "Stock split",
+   "value": "10-for-1 forward split of Class A and Class N stock on 17 Sep 2026",
+   "as_of": "2026-10-26",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "quote": "a 10-for-one forward split of our Class A common stock and Class N common stock effected on September 17, 2026",
+     "locator": null
+    }
+   ],
+   "sort_order": 115
+  }
+ ],
+ "filings": [
+  {
+   "form": "S-1",
+   "filed_on": "2026-10-26",
+   "accession": "0001628280-26-067168",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.htm",
+   "description": "Registration statement, filed publicly",
+   "size": "224 MB",
+   "sort_order": 0
+  },
+  {
+   "form": "DRS/A",
+   "filed_on": "2026-10-09",
+   "accession": "0002130357-26-000014",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000014/0002130357-26-000014-index.htm",
+   "description": "Confidential draft, amended",
+   "size": "108 MB",
+   "sort_order": 1
+  },
+  {
+   "form": "DRS/A",
+   "filed_on": "2026-10-01",
+   "accession": "0002130357-26-000009",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000009/0002130357-26-000009-index.htm",
+   "description": "Confidential draft, amended",
+   "size": "88 MB",
+   "sort_order": 2
+  },
+  {
+   "form": "DRS/A",
+   "filed_on": "2026-09-04",
+   "accession": "0001628279-26-001111",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926001111/0001628279-26-001111-index.htm",
+   "description": "Confidential draft, amended",
+   "size": "70 MB",
+   "sort_order": 3
+  },
+  {
+   "form": "DRS/A",
+   "filed_on": "2026-08-10",
+   "accession": "0001628279-26-000993",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926000993/0001628279-26-000993-index.htm",
+   "description": "Confidential draft, amended",
+   "size": "58 MB",
+   "sort_order": 4
+  },
+  {
+   "form": "DRS/A",
+   "filed_on": "2026-07-13",
+   "accession": "0001628279-26-000861",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162827926000861/0001628279-26-000861-index.htm",
+   "description": "Confidential draft, amended",
+   "size": "3 MB",
+   "sort_order": 5
+  },
+  {
+   "form": "DRS",
+   "filed_on": "2026-06-01",
+   "accession": "0002130357-26-000005",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000213035726000005/0002130357-26-000005-index.htm",
+   "description": "Confidential draft registration statement",
+   "size": "3 MB",
+   "sort_order": 6
+  }
+ ]
+}

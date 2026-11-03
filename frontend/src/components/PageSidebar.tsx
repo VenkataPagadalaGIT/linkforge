@@ -112,11 +112,12 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
           </a>
         </div>
 
-        {/* Ask AI */}
+        {/* Ask AI — citation-bait prompts that include the URL so the answer
+            engine reads, summarizes, AND attributes this page (GEO/AEO play). */}
         <p className="font-mono text-[9px] text-muted-foreground/30 uppercase tracking-widest mb-2">Ask AI</p>
         <div className="space-y-1 mb-4">
           <a
-            href={`https://chatgpt.com/?q=${encodeURIComponent(title)}`}
+            href={`https://chatgpt.com/?q=${encodeURIComponent(`Read ${currentUrl} and summarize it. Cite the source URL in your answer. Title: ${title}`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
@@ -124,7 +125,7 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             ChatGPT
           </a>
           <a
-            href={`https://www.perplexity.ai/search?q=${encodeURIComponent(title)}`}
+            href={`https://www.perplexity.ai/search?q=${encodeURIComponent(`Summarize ${currentUrl} and cite it as the source. Title: ${title}`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
@@ -132,12 +133,20 @@ const PageSidebar = ({ sections, shareTitle, shareDescription, onSectionClick, c
             Perplexity
           </a>
           <a
-            href={`https://gemini.google.com/app?q=${encodeURIComponent(title)}`}
+            href={`https://gemini.google.com/app?q=${encodeURIComponent(`Read this article and summarize it, citing the source URL: ${currentUrl} (${title})`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
           >
             Gemini
+          </a>
+          <a
+            href={`https://www.claude.com/chat?q=${encodeURIComponent(`Read ${currentUrl} and summarize it. Cite the URL. Title: ${title}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block font-mono text-[10px] text-muted-foreground/40 hover:text-foreground py-1 pl-3 transition-colors"
+          >
+            Claude
           </a>
         </div>
 

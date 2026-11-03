@@ -1,0 +1,112 @@
+# The AI Intelligence Graph: sources, pipelines, and the agent loop
+
+Written 2026-10-28. Code lives in `data/corpus/` (collectors, loaders, generators), the site reads `src/data/ai360.ts`, `aiIntel.ts`, `aiOntologyData.ts`. Every figure on the site carries the exact sentence it came from.
+
+## 1. What each tool can do
+
+| Source or tool | What it gives us | Cost | How we use it | Status |
+|---|---|---|---|---|
+| Company's own sites (sitemap crawl) | Every page: text, publish date, team, topics, authors; the full newsroom and research record from birth to now | Free, 1 request a second | `collect_site.py`; 6 Anthropic hosts (anthropic.com, Alignment Science blog, Transformer Circuits, claude.com, developer docs, support center) | Running: 587 + 4,100 + 4,200 + 4,500 pages |
+| SEC EDGAR | Filings (S-1, 10-K, 10-Q, 8-K, proxies, Form D, 13F, Form 4), exhibits (every material contract), XBRL financial history | Free; needs a contact string in the User-Agent | S-1 read in the built-in browser; 19 financings, 14 agreements, 13 legal matters, 18 people, with 174 verified quotes; `sec_facts.py` for XBRL history | Blocked on the owner's contact string for the API |
+| Company newsroom announcements | Lead investors, valuations, round dates, customer counts | Free | Quotes checked locally with `verify.py` | Done for Anthropic |
+| OpenAlex | Every author whose paper lists the company as affiliation; ORCID | Free; page paging only without a key | `collect_openalex_people.py`; tiers confirmed / likely / unverified / model | 66 people shown, 491 raw |
+| Wikidata | Founders, inception, LEI, OpenCorporates id, social handles, subreddit, YouTube channel id, LinkedIn company id | Free | Identity facts and cross-source ids (used `anthropicresearch` as the LinkedIn company id) | Pulled; to load as facts |
+| Public job boards (Greenhouse, Ashby, Lever) | Every open role, team, city, workplace; closed roles over time | Free | `collect_jobs.py`; 13 boards, 4,130 roles | Daily |
+| Hacker News (Algolia) | Stories naming the company by month; most discussed threads | Free | `collect_attention.py`; 8 companies | Daily |
+| GDELT | News tone by day, article volume | Free, 1 request per 5 s | `collect_tone.py` | Refused all day on 2026-10-28; retries nightly |
+| Wikimedia Commons | Free-licensed portraits with credit | Free | `fetch_people_photos.py` via curated Wikidata ids | 7 photos |
+| Yahoo Finance (yfinance) | Price, day change, market cap, 52-week range for listed companies | Free, unofficial | `collect_market.py`; 111 of 135 listed companies | Daily; licensed feed before anything public |
+| Bright Data Marketplace datasets | LinkedIn people profiles (115M, filter by `current_company_name` or company id), LinkedIn company pages, Crunchbase companies and people, Glassdoor reviews, G2 reviews, Indeed jobs, App Store and Play Store reviews, Trustpilot | $2.50 per 1,000 records; zero-match filters free; `records_limit` caps spend | `bd_pilot.py` (cap in code, lockfile, raw archive); LinkedIn = the "every employee" source | Pilot done 2026-10-28: 20 profiles for $0.05, all 20 name Anthropic as current employer; the sync search endpoint rejects `records_limit`, the async filter endpoint accepts it (snapshot builds in about 90 s) |
+| Bright Data Scraper API | Reddit posts and comments by keyword, subreddit or author; X posts and profiles; YouTube channels, videos, comments, subtitles; GitHub repos; LinkedIn posts | $1.50 per 1,000 records | Reddit by keyword (`bd_pilot.py --reddit`); X profiles from LinkedIn `bio_links`; YouTube comments for the user-first layer | Pilot done 2026-10-28: 21 posts for $0.03; keyword discovery also returns memes that only mention the word in comments, so posts are kept only when the title or body names Anthropic or Claude |
+| Bright Data SERP and Web Unlocker | Google results for any query; any blocked page as HTML or screenshot | $1.50 per 1,000 requests | Substack and X account discovery by search; pages that block plain requests | Zones active: `serp_origin_check`, `web_unlocker1`, `mcp_unlocker`, `mcp_browser` |
+| DataForSEO (MCP connected) | Keywords the company's domain ranks for, traffic estimate, backlinks and referring domains, tech stack, whois, Google Trends, brand mentions with sentiment (content analysis), LLM mentions (how ChatGPT and others cite the brand), business listings | Per call; cheapest: Google Ads volume $0.06 per 1,000 keywords, SERP $0.0006 per page, Trends $0.0027 per 5 terms; brand-mention and LLM-mention endpoints priced per request | Demand side of user-first intelligence: what people search for about the company and its products; share of AI answers | Needs approval per run (no paid SEO APIs without a yes) |
+| MCP scraper key (`~/Desktop/sec/mcpscraper.rtf`) | Unknown: the file holds one key and no label | Unknown | Nothing yet | Owner to say which service it is |
+| Claude (Anthropic API or OpenRouter) | Reads new pages and proposes dated facts, people changes, deals and legal events as drafts with verified quotes | Sonnet-class list price about $3 per million input tokens | `agent_update.py`; refuses without `AI_AGENT_APPROVED=1` and a key; cap in code | Dry run works; no key on disk |
+| CourtListener | Dockets and rulings for every case | Free with an account token | Legal timeline with filings | Owner creates the token |
+| Reddit API | Posts and comments by subreddit, keyword and user, with scores | Free tier with an app | Alternative to Bright Data for Reddit | Owner creates the app |
+
+## 2. The pipelines
+
+`data/corpus/ontology/pipelines.json` lists every pipeline with cadence, cost class and what it writes. `python3 run_pipelines.py` runs what is due and logs each run to `ontology.pipeline_run` (status, note), so freshness is a fact the site can show. Paid pipelines run only with `--approve-paid <id>` and a cap in the environment; the scripts enforce the cap in code, hold a lockfile, and archive raw responses under `data/corpus/raw/` (ignored by git). `python3 run_pipelines.py --status` prints the freshness table.
+
+Order: schema, loaders (groups, company files, deal batches, 360 files, market shares), collectors (SEC, GitHub, feeds, jobs, site, attention, tone, research people, market, photos, icons), paid (LinkedIn monthly, Reddit weekly), then generate and the brand gate.
+
+## 3. The agent loop (how AI agents feed and update the graph)
+
+1. Collectors bring in raw material on their cadence (pages, posts, filings, jobs, quotes). No judgement, no cost.
+2. `agent_update.py` takes what is new since the last run, asks Claude for dated facts, people changes, deals and legal events, and keeps only items whose quote appears word for word in the source text.
+3. Survivors land in `data/corpus/proposals/<entity>_<date>.json` as drafts. The owner approves; approved items are copied into the curated seed files, which the loaders own.
+4. The generators rebuild the site's data files; the brand gate and the determinism check run; the preview shows the change before any deploy.
+
+Nothing an agent writes reaches the site without a human approval, and every approved line still carries its quote.
+
+## 4. What is still missing for a Palantir and Bloomberg standard
+
+- One identity per company and person across sources (entity resolution): today name variants are merged by first and last name only.
+- Filings at scale (every 10-K, 10-Q, 8-K, proxy, Form D, 13F, Form 4) once the SEC contact string is set.
+- Change alerts (new officer, lawsuit, round, hiring spike) by email or Slack, on top of the RSS feeds that exist.
+- A screener and typed query layer across companies; the API and MCP server exist for one entity at a time.
+- Licensed market data before anything is public; Yahoo is for localhost.
+- Accounts, audit trail and a removal process for anyone listed, before LinkedIn-derived rows go beyond localhost.
+
+## 5. Pilot results (2026-10-28)
+
+| Run | Asked | Got | Cost | Quality |
+|---|---|---|---|---|
+| LinkedIn people filter, current company = Anthropic | 20 | 20 | $0.05 | 20 of 20 name Anthropic as current employer, 13 in the US and 3 in Ireland; none of the 20 carries a job title or an experience list (only name, location, company, education, about). For roles, the Scraper API's collect-by-URL on each profile ($1.50 per 1,000) is the follow-up, so a full run is about $4 per 1,000 people for discovery plus detail |
+| Reddit posts, keyword Anthropic, top, all time | 25 | 21 | $0.03 | 10 of 21 name Anthropic or Claude in the title or body; the rest matched the word in comments and were dropped |
+
+Full-run estimate from these rates: all LinkedIn profiles naming Anthropic (about 5,300 staff, allow 9,000 records) $22.50; Reddit, 2,000 posts $3.00; X profiles for people with an X link in their LinkedIn bio, 1,000 profiles $1.50. Hard cap in code: $30 for LinkedIn, $10 for Reddit.
+
+## 6. The three paid tools, side by side (checked 2026-10-28)
+
+| | Bright Data | MCP scraper (key `sk_...`, 51 chars: the Scrapeless format; confirm in that dashboard) | DataForSEO |
+|---|---|---|---|
+| What it is | Ready-made datasets plus scrapers for named sites, a SERP API and a page unblocker | A scraping toolkit exposed as MCP tools: Google search and Trends, cloud browser control, scrape a URL as HTML or Markdown, screenshots, site crawls, and an "AI Scraper" that captures answers from ChatGPT, Gemini, Perplexity, Copilot, Google AI Mode and Overview, Grok | Search-marketing data: keyword demand, rankings, backlinks, site tech, business listings, reviews, brand mentions with sentiment, and how LLMs mention a brand |
+| People (the employee ask) | LinkedIn people profiles filtered by current company (names, location, education, bio links; titles need a per-profile scrape), LinkedIn posts, X profiles and posts, Crunchbase people | Any public page a browser can reach, one URL at a time | None by design |
+| What people say (user-first layer) | Reddit posts and comments by keyword, subreddit or author; YouTube videos, comments and subtitles; G2, Trustpilot, App Store and Play Store reviews; Glassdoor reviews | Google search for a query, page text of any forum or review page | Content Analysis: web mentions of a brand with sentiment and trends; Google, Trustpilot and Tripadvisor reviews; Reddit and Pinterest via Business Data (not priced on the page) |
+| What people search (demand) | SERP API: Google results for any query | `google_search`, `google_trends` | Google Ads search volume, Google Trends, DataForSEO Trends, Labs: keywords a domain ranks for, traffic estimate, competitors |
+| AI answers (share of AI) | None | `ai_scraper`: what ChatGPT, Gemini, Perplexity and the rest answer for a prompt | LLM Mentions (which brands LLMs cite, aggregated), LLM Responses, LLM Scraper |
+| Company footprint | Crunchbase and LinkedIn company pages, GitHub repos, Indeed jobs | Crawl a whole site | Technologies a domain runs, whois, backlinks and referring domains, business listings |
+| Prices, as published | Marketplace datasets $2.50 per 1,000 records (zero-match filters free); Scraper API and SERP $1.50 per 1,000 records or requests, pay only for success; Web Unlocker $1.50 per 1,000 successful requests (verified 2026-09-25) | Billed in credit units per package; the public price page did not show unit prices, so a per-call figure needs the dashboard | Labs $0.012 per task + $0.00012 per item; Google Ads volume from $0.06 per task (1,000 keywords); Google Trends from $0.0027 per task; Content Analysis $0.024 per task + $0.000036 per row; Backlinks $0.024 per task + $0.000036 per row; Business Listings $0.012 per task + $0.00036 per item; Google Reviews $0.00075 per 10; LLM Mentions $0.10 per task + $0.001 per row; LLM Scraper $0.0012 per page; LLM Responses $0.0002 per task plus the model's cost |
+| Access today | REST works with the key in `~/Desktop/sec/brightdata.rtf` (the MCP token in `~/.claude.json` has expired; the key cannot read the balance) | Key on disk, no server configured in `~/.claude.json` yet | MCP server connected globally (`dataforseo`), many tools loaded on demand |
+| Rule | Pilot, cap in code, lockfile, raw archive, owner's yes per run | Same | Same; no paid SEO API without a yes |
+
+Every raw response is kept twice: gzipped under `data/corpus/raw/` (ignored by git) and whole in `ontology.raw_capture` in Postgres, so a database backup carries it. The LinkedIn snapshot in Bright Data's email (20 records, 330.72 KB, expires 11 Nov 2026) is the same 20 records already stored here.
+
+## 8. URL structure: one page per entity, built to scale industry by industry (2026-10-28, revised that night)
+
+The owner's rule: one page per entity, used everywhere, at a URL that extends to the next industry without a rethink. The registry is `src/lib/graph-urls.ts`; every link in the code goes through its helpers (`hubPath`, `entityPath`, `sectionPath`), so a new industry is a row in `GRAPHS`, not a search and replace.
+
+| URL | What it is | Today |
+|---|---|---|
+| `/notebook/<industry>/graph` | the hub: map, 2D, 3D and list views of one industry; `?layer=` and `?type=` scope it, `?view=` picks the rendering | `/notebook/ai/graph` |
+| `/notebook/<industry>/graph/<entity>` | the one page per entity: the graph focused on it, then its whole file (overview, 360, connections, money, financials, investors, market share, people and hiring, legal, news, earnings); `?compare=<entity>` opens a comparison | `/notebook/ai/graph/anthropic` |
+| `/notebook/<industry>/graph/<entity>/<section>` | one deep section of the file on its own page, server-rendered with title, description from the file's numbers, canonical, breadcrumb, Dataset JSON-LD (people: an ItemList of Person records for officers and directors only) | `/notebook/ai/graph/anthropic/people`, `/investors`, `/legal`, `/hiring`, `/timeline` |
+| `/notebook/<industry>/graph/layers/<layer>` | reserved: one layer of the stack | not built; `?layer=` on the hub today |
+| `/notebook/<industry>/graph/types/<type>` | reserved: one type of entity | not built; `?type=` on the hub today |
+| `/notebook/<industry>/map` | the 2D systems map of that industry (a view, kept at its old URL) | `/notebook/ai/map` |
+| `/api/<industry>/graph`, `/api/<industry>/entity/<id>` | the API mirrors the pages | `/api/ai/...` |
+
+Rules that make it scale:
+- Entity slugs are one global set: lower-case words joined by hyphens, never a bare number, never a reserved segment (`layers`, `types`, `sections`, `api`, `feed`, `search`). An entity that belongs to two industries has one slug and one canonical page in its home industry; the other industry's graph links to it. The universal graph (`/notebook/graph`, later) is a hub over all industries and links to those same pages: no entity ever gets a second page.
+- Sections exist only where the file has content (`src/lib/ai360-sections.ts` decides), and the same helper feeds the sitemap, the HTML sitemap, the file's section bar and the side panel's table of contents (`src/components/ai/entityFile.ts`), so a section is everywhere or nowhere.
+- Picking an entity in any view moves the URL to its page with `history.pushState` (the page stays mounted; back returns to the previous entity); loading that URL cold server-renders the entity's file, so crawlers and shared links get the same page people reach by clicking.
+- The side panel in the graph views does not repeat the file: it names the entity, lists the file's sections with what each holds (click scrolls there; ↗ opens the section's own page), and keeps the questions only the graph answers (who is exposed, what it depends on, how two entities connect).
+- Job listings per company are public JSON under `/ai/360/jobs/<id>.json` for the role search; the people roster stays local (section 7).
+
+Moves and redirects (308, in `next.config.mjs`): `/notebook/ai/map/<id>` and `/notebook/ai/map/<id>/<section>` (455 entity URLs are in the live sitemap) and `/notebook/ai/graph?focus=<id>` all go to the new pages. The frozen-slugs rule stands; this move is the owner's explicit request of 2026-10-28, and it should be named again in the deploy conversation because Search Console will show 455 moved URLs.
+
+Real 404s: both routes are built at build time (`force-static`, `dynamicParams = false`, `generateStaticParams`: 455 entity pages and the section pages), the encyclopedia's pattern. A page rendered on demand under the root layout's Suspense boundary streams a 200 even when it calls `notFound()`, from the page or from `generateMetadata`; that is why the live `/notebook/ai/map/<unknown>` answers 200 today. The revalidate trap on `dynamicParams = false` routes is covered by `next-cache-handler.cjs`.
+
+Open: the Anthropic entity page is about 1 MB of HTML (the 360 and people sections carry most of it), so `src/data/ai360.ts` should split per entity before the next company file lands.
+
+## 7. LinkedIn, what it can and cannot give (2026-10-28)
+
+- The company page record (one Marketplace row, $0.0025): 5,364,379 followers, 6,244 profiles list Anthropic as employer, size bucket "501-1,000 employees" (LinkedIn's own, stale against the filing's 5,300), affiliated pages "Claude" and "Claude for Business", 10 recent posts. The dataset keys pages by URL; its `company_id` is LinkedIn's number (74126343), not the slug.
+- People profiles filtered to current employer Anthropic: name, city, country, education, about, bio links, followers. No job title and no work history: LinkedIn hides those from the signed-out view, and the per-profile scrape ($1.50 per 1,000) returns the same, so it was dropped. One in five profiles is private or hidden.
+- So the talent view is by location, school, field of study and graduation decade; roles come from the company's own pages, papers and filings instead.
+- The full pull was approved by the owner on 2026-10-28 ("we need to have everything"): people filter by name or numeric id with `records_limit` 9,000 ($22.50 at most) and 2,000 Reddit posts ($3 at most), under a $40 cap in code.
+- Result: 5,072 profiles for $12.68 (5,057 name Anthropic exactly, 411 show a title, 3,001 list education, 702 carry a bio link); 114 titles name another employer and are flagged as probably stale. Reddit keyword discovery returned 49 posts for $0.07 (the scraper caps a keyword run near 50), 29 relevant; depth needs subreddit runs (r/Anthropic, r/ClaudeAI) and date windows. Total paid on 2026-10-28: $12.83.
+- Talent aggregates (profiles, not staff): United States 3,667, United Kingdom 283, India 242, Ireland 121; San Francisco 1,323, New York 426, Seattle 215, London 162; Stanford 119, Berkeley 90, MIT 74, Carnegie Mellon 69, Harvard 44; of the 411 titles, 61 product and engineering, 61 sales and customers, 37 finance, legal, people and ops, 30 research.
+- The roster itself (names, locations, links) lives only in `data/corpus/raw/people/anthropic-people.json` and `ontology.footprint`, both local; the site's data file carries aggregates and public-role people, and the page loads the roster from a local-only API route that answers 404 on a deployed build.

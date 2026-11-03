@@ -355,7 +355,7 @@ const TalkCard = ({
 
       <h3 className="font-display text-lg font-bold text-foreground leading-snug mb-2">
         <Link
-          to={`/notebook/conference/${talk.conferenceSlug}#${talk.sessionId}`}
+          to={`/notebook/conference/${talk.conferenceSlug}/sessions/${talk.urlSlug}`}
           className="hover:text-glow transition-all"
         >
           {talk.title}
@@ -364,6 +364,12 @@ const TalkCard = ({
 
       <p className="font-mono text-[10px] text-muted-foreground/70 mb-3">
         {talk.start} – {talk.end} · {talk.dayTheme || talk.dayDate}
+        <Link
+          to={`/notebook/conference/${talk.conferenceSlug}/sessions/${talk.urlSlug}`}
+          className="ml-3 text-foreground/70 hover:text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground/60 transition-colors"
+        >
+          Open full notes →
+        </Link>
       </p>
 
       {talk.description && (

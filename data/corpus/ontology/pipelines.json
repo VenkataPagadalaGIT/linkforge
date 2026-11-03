@@ -1,0 +1,200 @@
+{
+  "note": "Every pipeline that feeds the AI Intelligence Graph, with its cadence, cost class and what it writes. run_pipelines.py runs what is due, logs each run to ontology.pipeline_run, and never runs a paid pipeline unless the run is approved (--approve-paid with a cap). Cadence is hours.",
+  "pipelines": [
+    {
+      "id": "schema",
+      "cmd": "docker exec -i vp-research-db psql -U research -d research_corpus -v ON_ERROR_STOP=1 -q -f - < ontology_schema.sql",
+      "cadence_h": 0,
+      "cost": "free",
+      "writes": "schema",
+      "why": "tables and rules first"
+    },
+    {
+      "id": "groups",
+      "cmd": "python3 load_ontology_groups.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "entity.parent_slug, entity_alias",
+      "why": "corporate groups (Alphabet's units)"
+    },
+    {
+      "id": "company_files",
+      "cmd": "for f in ontology/*_20??-??-??.json; do case \"$f\" in *market_share_*|*_360_*|*/deals_*) ;; *) python3 load_ontology_company.py \"$f\";; esac; done",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "signal, deal, event, prediction, implication",
+      "why": "curated company files from filings"
+    },
+    {
+      "id": "deal_batches",
+      "cmd": "for f in ontology/deals_20??-??-??.json; do [ -e \"$f\" ] && python3 load_ontology_deals.py \"$f\"; done",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "deal, event",
+      "why": "deal batches from announcements"
+    },
+    {
+      "id": "files_360",
+      "cmd": "for f in ontology/*_360_20??-??-??.json; do [ -e \"$f\" ] && python3 load_ontology_360.py \"$f\"; done",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "person, affiliation, legal_case, engagement, funding_round, round_investor, fact, agreement",
+      "why": "the 360 company files"
+    },
+    {
+      "id": "market_shares",
+      "cmd": "for f in ontology/market_share_*.json; do python3 load_ontology_shares.py \"$f\"; done",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "signal (share_*), share_segment",
+      "why": "sourced market shares"
+    },
+    {
+      "id": "sec_facts",
+      "cmd": "if [ -n \"$SEC_USER_AGENT\" ]; then python3 sec_facts.py --map && python3 sec_facts.py --facts all; else echo 'skipped: SEC_USER_AGENT not set'; fi",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "entity.cik, signal (XBRL)",
+      "why": "financial history from EDGAR; needs the owner's contact string"
+    },
+    {
+      "id": "github_releases",
+      "cmd": "python3 collect_posts.py --github all --max-calls ${GH_MAX_CALLS:-50}",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "post (github)",
+      "why": "release notes from each company's GitHub"
+    },
+    {
+      "id": "feeds",
+      "cmd": "python3 collect_posts.py --feeds",
+      "cadence_h": 12,
+      "cost": "free",
+      "writes": "post (blog, substack, podcast)",
+      "why": "official channels by RSS"
+    },
+    {
+      "id": "jobs",
+      "cmd": "python3 collect_jobs.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "job_board, job_posting",
+      "why": "every open role on public job boards; closed roles need daily runs"
+    },
+    {
+      "id": "site",
+      "cmd": "python3 collect_site.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "site_page, footprint (company_site)",
+      "why": "every page of the company's own sites, with text, dates, teams, topics, authors"
+    },
+    {
+      "id": "attention",
+      "cmd": "python3 collect_attention.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "attention, post (hackernews)",
+      "why": "Hacker News stories naming the company, by month"
+    },
+    {
+      "id": "tone",
+      "cmd": "python3 collect_tone.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "tone",
+      "why": "GDELT news tone; stops when refused"
+    },
+    {
+      "id": "research_people",
+      "cmd": "python3 collect_openalex_people.py",
+      "cadence_h": 168,
+      "cost": "free",
+      "writes": "footprint (openalex)",
+      "why": "authors whose papers list the company"
+    },
+    {
+      "id": "market",
+      "cmd": "python3 collect_market.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "market_quote",
+      "why": "daily quotes for the 111 listed companies (Yahoo, unofficial)"
+    },
+    {
+      "id": "gov",
+      "cmd": "python3 collect_gov.py",
+      "cadence_h": 168,
+      "cost": "free",
+      "writes": "gov_award, lobbying_filing",
+      "why": "federal awards (USAspending) and lobbying disclosures (Senate LDA) where the company is the recipient or the client"
+    },
+    {
+      "id": "photos",
+      "cmd": "python3 fetch_people_photos.py",
+      "cadence_h": 168,
+      "cost": "free",
+      "writes": "person.image_*",
+      "why": "free-licensed photos from Wikimedia Commons"
+    },
+    {
+      "id": "icons",
+      "cmd": "python3 fetch_logos.py | head -1",
+      "cadence_h": 168,
+      "cost": "free",
+      "writes": "public/ai/logos, aiLogos.ts",
+      "why": "company icons"
+    },
+    {
+      "id": "linkedin",
+      "cmd": "python3 bd_pilot.py --entity anthropic --company Anthropic --company-id anthropicresearch --linkedin ${BD_LINKEDIN_MAX:-9000} --cap ${BD_CAP:-30}",
+      "cadence_h": 720,
+      "cost": "paid",
+      "rate": "$2.50 per 1,000 records (Bright Data Marketplace)",
+      "writes": "footprint (linkedin)",
+      "why": "profiles naming the company as current employer; monthly"
+    },
+    {
+      "id": "reddit",
+      "cmd": "python3 bd_pilot.py --entity anthropic --company Anthropic --reddit ${BD_REDDIT_MAX:-2000} --cap ${BD_CAP:-10}",
+      "cadence_h": 168,
+      "cost": "paid",
+      "rate": "$1.50 per 1,000 records (Bright Data Scraper API)",
+      "writes": "post (reddit)",
+      "why": "posts naming the company; weekly"
+    },
+    {
+      "id": "signals",
+      "cmd": "python3 collect_signals.py",
+      "cadence_h": 24,
+      "cost": "free",
+      "writes": "series_point, watch_item",
+      "why": "adoption (npm, PyPI, GitHub), attention (Wikipedia), status incidents, app rating, new repos and datasets, Federal Register documents"
+    },
+    {
+      "id": "paid_signals",
+      "cmd": "python3 paid_signals.py fetch --entity anthropic --cap ${PAID_CAP:-5} --credit-cap ${MCPS_CAP:-600} && python3 paid_signals.py parse --entity anthropic",
+      "cadence_h": 720,
+      "cost": "paid",
+      "rate": "DataForSEO about $0.91 and MCP Scraper about 190 credits a run (30 Oct 2026 pilot)",
+      "writes": "series_point, watch_item",
+      "why": "search demand, search traffic, AI answer share, news, ads and reviews; monthly, each run owner-approved"
+    },
+    {
+      "id": "generate",
+      "cmd": "python3 gen_ontology_ts.py | tail -1 && python3 gen_ontology_intel_ts.py | cut -c1-100 && python3 gen_ontology_360_ts.py | cut -c1-100 && python3 gen_ontology_ts.py --check && python3 gen_ontology_intel_ts.py --check && python3 gen_ontology_360_ts.py --check && python3 gen_signals_ts.py | tail -1 && python3 gen_signals_ts.py --check && python3 gen_freshness_ts.py | tail -1",
+      "cadence_h": 0,
+      "cost": "free",
+      "writes": "src/data/aiOntologyData.ts, aiIntel.ts, ai360.ts, aiSignals.ts",
+      "why": "the site reads these; always last"
+    },
+    {
+      "id": "brand_gate",
+      "cmd": "python3 ../../scripts/check-brand.py | tail -1",
+      "cadence_h": 0,
+      "cost": "free",
+      "writes": "nothing",
+      "why": "fails the run if the brand rules break"
+    }
+  ]
+}

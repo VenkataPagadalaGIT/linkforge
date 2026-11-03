@@ -1,0 +1,18 @@
+{
+ "note": "Each company's public job board (the API the board offers for embedding on careers pages). Probed 2026-10-28; boards that answered with roles are listed. Mistral's Lever board answered with no roles and is left out until it lists some.",
+ "boards": [
+  {"entity": "anthropic", "board": "greenhouse:anthropic", "careers_url": "https://www.anthropic.com/careers"},
+  {"entity": "openai", "board": "ashby:openai", "careers_url": "https://openai.com/careers"},
+  {"entity": "xai-capital", "board": "greenhouse:xai", "careers_url": "https://x.ai/careers"},
+  {"entity": "cohere", "board": "ashby:cohere", "careers_url": "https://cohere.com/careers"},
+  {"entity": "perplexity", "board": "ashby:perplexity", "careers_url": "https://www.perplexity.ai/hub/careers"},
+  {"entity": "thinking-machines", "board": "ashby:thinkingmachines", "careers_url": "https://thinkingmachines.ai"},
+  {"entity": "scale-ai", "board": "greenhouse:scaleai", "careers_url": "https://scale.com/careers"},
+  {"entity": "databricks", "board": "greenhouse:databricks", "careers_url": "https://www.databricks.com/company/careers"},
+  {"entity": "lambda", "board": "ashby:lambda", "careers_url": "https://lambda.ai/careers"},
+  {"entity": "coreweave-capital", "board": "greenhouse:coreweave", "careers_url": "https://www.coreweave.com/careers"},
+  {"entity": "sambanova", "board": "greenhouse:sambanovasystems", "careers_url": "https://sambanova.ai/careers"},
+  {"entity": "cursor-anysphere", "board": "ashby:cursor", "careers_url": "https://cursor.com/careers"},
+  {"entity": "harvey-ai", "board": "ashby:harvey", "careers_url": "https://www.harvey.ai/careers"}
+ ]
+}

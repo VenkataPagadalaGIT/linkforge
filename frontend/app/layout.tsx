@@ -11,7 +11,7 @@ import { SITE_URL, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, OG_IMAGE } from "@
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    default: `${SITE_NAME} · ${SITE_TAGLINE}`,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     canonical: "/",
     types: {
       "application/rss+xml": [
-        { url: "/rss.xml", title: "Venkata Pagadala — AI Updates RSS" },
+        { url: "/rss.xml", title: "Venkata Pagadala · AI Updates RSS" },
       ],
     },
   },
@@ -42,14 +42,14 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    title: `${SITE_NAME} · ${SITE_TAGLINE}`,
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
@@ -82,6 +82,15 @@ const organizationJsonLd = {
   description: SITE_DESCRIPTION,
   sameAs: [
     "https://github.com/VenkataPagadalaGIT",
+    "https://linkedin.com/in/venkatapagadala",
+  ],
+  affiliation: { "@type": "Organization", name: "AT&T" },
+  knowsAbout: [
+    "Enterprise SEO",
+    "Answer Engine Optimization",
+    "Knowledge graphs",
+    "AI agents",
+    "Technical SEO",
   ],
 };
 

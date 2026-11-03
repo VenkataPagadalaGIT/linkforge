@@ -1,0 +1,2970 @@
+{
+ "name": "Knowledge Graph Feeds subject taxonomy",
+ "version": "1.0",
+ "updated": "2026-10-31",
+ "levels": 4,
+ "note": "L1 follows the IPTC Media Topics top level (CC BY 4.0, https://iptc.org/standards/media-topics/); L2 and deeper are authored for this site.",
+ "subjects": [
+  {
+   "id": "technology",
+   "parent": null,
+   "level": 1,
+   "label": "Technology",
+   "description": "Computing, the internet, AI, cybersecurity and the companies that build them",
+   "iptc": "medtop:13000000",
+   "path": [
+    "Technology"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence",
+   "parent": "technology",
+   "level": 2,
+   "label": "Artificial Intelligence",
+   "description": "Models, agents, chips, and the people and rules shaping AI",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-models-labs",
+   "parent": "technology/artificial-intelligence",
+   "level": 3,
+   "label": "AI Models & Labs",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Models & Labs"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-models-labs/frontier-models",
+   "parent": "technology/artificial-intelligence/ai-models-labs",
+   "level": 4,
+   "label": "Frontier Models",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Models & Labs",
+    "Frontier Models"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-models-labs/open-weight-models",
+   "parent": "technology/artificial-intelligence/ai-models-labs",
+   "level": 4,
+   "label": "Open-Weight Models",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Models & Labs",
+    "Open-Weight Models"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-models-labs/model-releases-updates",
+   "parent": "technology/artificial-intelligence/ai-models-labs",
+   "level": 4,
+   "label": "Model Releases & Updates",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Models & Labs",
+    "Model Releases & Updates"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-models-labs/benchmarks-evaluations",
+   "parent": "technology/artificial-intelligence/ai-models-labs",
+   "level": 4,
+   "label": "Benchmarks & Evaluations",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Models & Labs",
+    "Benchmarks & Evaluations"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-agents-applications",
+   "parent": "technology/artificial-intelligence",
+   "level": 3,
+   "label": "AI Agents & Applications",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Agents & Applications"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-agents-applications/coding-agents",
+   "parent": "technology/artificial-intelligence/ai-agents-applications",
+   "level": 4,
+   "label": "Coding Agents",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Agents & Applications",
+    "Coding Agents"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-agents-applications/enterprise-ai",
+   "parent": "technology/artificial-intelligence/ai-agents-applications",
+   "level": 4,
+   "label": "Enterprise AI",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Agents & Applications",
+    "Enterprise AI"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-agents-applications/consumer-ai-apps",
+   "parent": "technology/artificial-intelligence/ai-agents-applications",
+   "level": 4,
+   "label": "Consumer AI Apps",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Agents & Applications",
+    "Consumer AI Apps"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-agents-applications/ai-search-assistants",
+   "parent": "technology/artificial-intelligence/ai-agents-applications",
+   "level": 4,
+   "label": "AI Search & Assistants",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Agents & Applications",
+    "AI Search & Assistants"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-infrastructure",
+   "parent": "technology/artificial-intelligence",
+   "level": 3,
+   "label": "AI Infrastructure",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Infrastructure"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-infrastructure/ai-chips-accelerators",
+   "parent": "technology/artificial-intelligence/ai-infrastructure",
+   "level": 4,
+   "label": "AI Chips & Accelerators",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Infrastructure",
+    "AI Chips & Accelerators"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-infrastructure/ai-data-centers-compute",
+   "parent": "technology/artificial-intelligence/ai-infrastructure",
+   "level": 4,
+   "label": "AI Data Centers & Compute",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Infrastructure",
+    "AI Data Centers & Compute"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-infrastructure/ai-cloud-platforms",
+   "parent": "technology/artificial-intelligence/ai-infrastructure",
+   "level": 4,
+   "label": "AI Cloud Platforms",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Infrastructure",
+    "AI Cloud Platforms"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-safety-alignment",
+   "parent": "technology/artificial-intelligence",
+   "level": 3,
+   "label": "AI Safety & Alignment",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Safety & Alignment"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-safety-alignment/alignment-research",
+   "parent": "technology/artificial-intelligence/ai-safety-alignment",
+   "level": 4,
+   "label": "Alignment Research",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Safety & Alignment",
+    "Alignment Research"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-safety-alignment/ai-risk-warnings",
+   "parent": "technology/artificial-intelligence/ai-safety-alignment",
+   "level": 4,
+   "label": "AI Risk Warnings",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Safety & Alignment",
+    "AI Risk Warnings"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-safety-alignment/bias-fairness",
+   "parent": "technology/artificial-intelligence/ai-safety-alignment",
+   "level": 4,
+   "label": "Bias & Fairness",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Safety & Alignment",
+    "Bias & Fairness"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-research-talent",
+   "parent": "technology/artificial-intelligence",
+   "level": 3,
+   "label": "AI Research & Talent",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Research & Talent"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-research-talent/research-breakthroughs",
+   "parent": "technology/artificial-intelligence/ai-research-talent",
+   "level": 4,
+   "label": "Research Breakthroughs",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Research & Talent",
+    "Research Breakthroughs"
+   ]
+  },
+  {
+   "id": "technology/artificial-intelligence/ai-research-talent/researcher-moves",
+   "parent": "technology/artificial-intelligence/ai-research-talent",
+   "level": 4,
+   "label": "Researcher Moves",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Artificial Intelligence",
+    "AI Research & Talent",
+    "Researcher Moves"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity",
+   "parent": "technology",
+   "level": 2,
+   "label": "Cybersecurity",
+   "description": "Hacks, who is behind them, how they work and how they are stopped",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/hacks-breaches",
+   "parent": "technology/cybersecurity",
+   "level": 3,
+   "label": "Hacks & Breaches",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/hacks-breaches/crypto-exchange-hacks",
+   "parent": "technology/cybersecurity/hacks-breaches",
+   "level": 4,
+   "label": "Crypto Exchange Hacks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches",
+    "Crypto Exchange Hacks"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/hacks-breaches/defi-bridge-exploits",
+   "parent": "technology/cybersecurity/hacks-breaches",
+   "level": 4,
+   "label": "DeFi & Bridge Exploits",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches",
+    "DeFi & Bridge Exploits"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/hacks-breaches/corporate-data-breaches",
+   "parent": "technology/cybersecurity/hacks-breaches",
+   "level": 4,
+   "label": "Corporate Data Breaches",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches",
+    "Corporate Data Breaches"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/hacks-breaches/supply-chain-attacks",
+   "parent": "technology/cybersecurity/hacks-breaches",
+   "level": 4,
+   "label": "Supply-Chain Attacks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Hacks & Breaches",
+    "Supply-Chain Attacks"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/threat-actors",
+   "parent": "technology/cybersecurity",
+   "level": 3,
+   "label": "Threat Actors",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Threat Actors"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/threat-actors/state-sponsored-hacking",
+   "parent": "technology/cybersecurity/threat-actors",
+   "level": 4,
+   "label": "State-Sponsored Hacking",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Threat Actors",
+    "State-Sponsored Hacking"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/threat-actors/ransomware-groups",
+   "parent": "technology/cybersecurity/threat-actors",
+   "level": 4,
+   "label": "Ransomware Groups",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Threat Actors",
+    "Ransomware Groups"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/threat-actors/insider-threats",
+   "parent": "technology/cybersecurity/threat-actors",
+   "level": 4,
+   "label": "Insider Threats",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Threat Actors",
+    "Insider Threats"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods",
+   "parent": "technology/cybersecurity",
+   "level": 3,
+   "label": "Attack Methods",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods/private-key-wallet-compromise",
+   "parent": "technology/cybersecurity/attack-methods",
+   "level": 4,
+   "label": "Private Key & Wallet Compromise",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods",
+    "Private Key & Wallet Compromise"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods/phishing-social-engineering",
+   "parent": "technology/cybersecurity/attack-methods",
+   "level": 4,
+   "label": "Phishing & Social Engineering",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods",
+    "Phishing & Social Engineering"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods/smart-contract-vulnerabilities",
+   "parent": "technology/cybersecurity/attack-methods",
+   "level": 4,
+   "label": "Smart-Contract Vulnerabilities",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods",
+    "Smart-Contract Vulnerabilities"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/attack-methods/zero-day-exploits",
+   "parent": "technology/cybersecurity/attack-methods",
+   "level": 4,
+   "label": "Zero-Day Exploits",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Attack Methods",
+    "Zero-Day Exploits"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/security-response",
+   "parent": "technology/cybersecurity",
+   "level": 3,
+   "label": "Security Response",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Security Response"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/security-response/incident-response",
+   "parent": "technology/cybersecurity/security-response",
+   "level": 4,
+   "label": "Incident Response",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Security Response",
+    "Incident Response"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/security-response/asset-freezes-recovery",
+   "parent": "technology/cybersecurity/security-response",
+   "level": 4,
+   "label": "Asset Freezes & Recovery",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Security Response",
+    "Asset Freezes & Recovery"
+   ]
+  },
+  {
+   "id": "technology/cybersecurity/security-response/security-audits-disclosure",
+   "parent": "technology/cybersecurity/security-response",
+   "level": 4,
+   "label": "Security Audits & Disclosure",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Cybersecurity",
+    "Security Response",
+    "Security Audits & Disclosure"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms",
+   "parent": "technology",
+   "level": 2,
+   "label": "Internet & Platforms",
+   "description": "Social networks, search engines, app stores and the creator economy",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms/social-media-platforms",
+   "parent": "technology/internet-platforms",
+   "level": 3,
+   "label": "Social Media Platforms",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms",
+    "Social Media Platforms"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms/search-engines-ai-search",
+   "parent": "technology/internet-platforms",
+   "level": 3,
+   "label": "Search Engines & AI Search",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms",
+    "Search Engines & AI Search"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms/app-stores",
+   "parent": "technology/internet-platforms",
+   "level": 3,
+   "label": "App Stores",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms",
+    "App Stores"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms/creator-economy",
+   "parent": "technology/internet-platforms",
+   "level": 3,
+   "label": "Creator Economy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms",
+    "Creator Economy"
+   ]
+  },
+  {
+   "id": "technology/internet-platforms/online-communities-forums",
+   "parent": "technology/internet-platforms",
+   "level": 3,
+   "label": "Online Communities & Forums",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Internet & Platforms",
+    "Online Communities & Forums"
+   ]
+  },
+  {
+   "id": "technology/semiconductors",
+   "parent": "technology",
+   "level": 2,
+   "label": "Semiconductors",
+   "description": "Chip design, manufacturing and the chip supply chain",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Semiconductors"
+   ]
+  },
+  {
+   "id": "technology/semiconductors/chip-design",
+   "parent": "technology/semiconductors",
+   "level": 3,
+   "label": "Chip Design",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Semiconductors",
+    "Chip Design"
+   ]
+  },
+  {
+   "id": "technology/semiconductors/foundries-manufacturing",
+   "parent": "technology/semiconductors",
+   "level": 3,
+   "label": "Foundries & Manufacturing",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Semiconductors",
+    "Foundries & Manufacturing"
+   ]
+  },
+  {
+   "id": "technology/semiconductors/chip-supply-chain",
+   "parent": "technology/semiconductors",
+   "level": 3,
+   "label": "Chip Supply Chain",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Semiconductors",
+    "Chip Supply Chain"
+   ]
+  },
+  {
+   "id": "technology/software-cloud",
+   "parent": "technology",
+   "level": 2,
+   "label": "Software & Cloud",
+   "description": "Enterprise software, open source, developer tools and cloud computing",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Software & Cloud"
+   ]
+  },
+  {
+   "id": "technology/software-cloud/enterprise-software",
+   "parent": "technology/software-cloud",
+   "level": 3,
+   "label": "Enterprise Software",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Software & Cloud",
+    "Enterprise Software"
+   ]
+  },
+  {
+   "id": "technology/software-cloud/open-source",
+   "parent": "technology/software-cloud",
+   "level": 3,
+   "label": "Open Source",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Software & Cloud",
+    "Open Source"
+   ]
+  },
+  {
+   "id": "technology/software-cloud/developer-tools",
+   "parent": "technology/software-cloud",
+   "level": 3,
+   "label": "Developer Tools",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Software & Cloud",
+    "Developer Tools"
+   ]
+  },
+  {
+   "id": "technology/software-cloud/cloud-computing",
+   "parent": "technology/software-cloud",
+   "level": 3,
+   "label": "Cloud Computing",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Software & Cloud",
+    "Cloud Computing"
+   ]
+  },
+  {
+   "id": "technology/consumer-technology",
+   "parent": "technology",
+   "level": 2,
+   "label": "Consumer Technology",
+   "description": "Phones, computers, wearables and gaming hardware",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Consumer Technology"
+   ]
+  },
+  {
+   "id": "technology/consumer-technology/smartphones",
+   "parent": "technology/consumer-technology",
+   "level": 3,
+   "label": "Smartphones",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Consumer Technology",
+    "Smartphones"
+   ]
+  },
+  {
+   "id": "technology/consumer-technology/computers-laptops",
+   "parent": "technology/consumer-technology",
+   "level": 3,
+   "label": "Computers & Laptops",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Consumer Technology",
+    "Computers & Laptops"
+   ]
+  },
+  {
+   "id": "technology/consumer-technology/wearables",
+   "parent": "technology/consumer-technology",
+   "level": 3,
+   "label": "Wearables",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Consumer Technology",
+    "Wearables"
+   ]
+  },
+  {
+   "id": "technology/consumer-technology/gaming-hardware",
+   "parent": "technology/consumer-technology",
+   "level": 3,
+   "label": "Gaming Hardware",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Consumer Technology",
+    "Gaming Hardware"
+   ]
+  },
+  {
+   "id": "technology/blockchain-web3",
+   "parent": "technology",
+   "level": 2,
+   "label": "Blockchain & Web3",
+   "description": "The technology of blockchains, apart from crypto markets",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Blockchain & Web3"
+   ]
+  },
+  {
+   "id": "technology/blockchain-web3/blockchains-protocols",
+   "parent": "technology/blockchain-web3",
+   "level": 3,
+   "label": "Blockchains & Protocols",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Blockchain & Web3",
+    "Blockchains & Protocols"
+   ]
+  },
+  {
+   "id": "technology/blockchain-web3/decentralized-finance",
+   "parent": "technology/blockchain-web3",
+   "level": 3,
+   "label": "Decentralized Finance",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Blockchain & Web3",
+    "Decentralized Finance"
+   ]
+  },
+  {
+   "id": "technology/blockchain-web3/tokenization-nfts",
+   "parent": "technology/blockchain-web3",
+   "level": 3,
+   "label": "Tokenization & NFTs",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Blockchain & Web3",
+    "Tokenization & NFTs"
+   ]
+  },
+  {
+   "id": "technology/robotics-autonomous-vehicles",
+   "parent": "technology",
+   "level": 2,
+   "label": "Robotics & Autonomous Vehicles",
+   "description": "Self-driving cars, robots and drones",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Robotics & Autonomous Vehicles"
+   ]
+  },
+  {
+   "id": "technology/robotics-autonomous-vehicles/robotaxis-self-driving",
+   "parent": "technology/robotics-autonomous-vehicles",
+   "level": 3,
+   "label": "Robotaxis & Self-Driving",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Robotics & Autonomous Vehicles",
+    "Robotaxis & Self-Driving"
+   ]
+  },
+  {
+   "id": "technology/robotics-autonomous-vehicles/industrial-humanoid-robots",
+   "parent": "technology/robotics-autonomous-vehicles",
+   "level": 3,
+   "label": "Industrial & Humanoid Robots",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Robotics & Autonomous Vehicles",
+    "Industrial & Humanoid Robots"
+   ]
+  },
+  {
+   "id": "technology/robotics-autonomous-vehicles/drones",
+   "parent": "technology/robotics-autonomous-vehicles",
+   "level": 3,
+   "label": "Drones",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Robotics & Autonomous Vehicles",
+    "Drones"
+   ]
+  },
+  {
+   "id": "technology/quantum-computing",
+   "parent": "technology",
+   "level": 2,
+   "label": "Quantum Computing",
+   "description": "Quantum hardware, algorithms and the race to useful machines",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Quantum Computing"
+   ]
+  },
+  {
+   "id": "technology/telecom-connectivity",
+   "parent": "technology",
+   "level": 2,
+   "label": "Telecom & Connectivity",
+   "description": "Mobile networks, broadband and satellite internet",
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Telecom & Connectivity"
+   ]
+  },
+  {
+   "id": "technology/telecom-connectivity/mobile-networks",
+   "parent": "technology/telecom-connectivity",
+   "level": 3,
+   "label": "Mobile Networks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Telecom & Connectivity",
+    "Mobile Networks"
+   ]
+  },
+  {
+   "id": "technology/telecom-connectivity/broadband-fiber",
+   "parent": "technology/telecom-connectivity",
+   "level": 3,
+   "label": "Broadband & Fiber",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Telecom & Connectivity",
+    "Broadband & Fiber"
+   ]
+  },
+  {
+   "id": "technology/telecom-connectivity/satellite-internet",
+   "parent": "technology/telecom-connectivity",
+   "level": 3,
+   "label": "Satellite Internet",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Technology",
+    "Telecom & Connectivity",
+    "Satellite Internet"
+   ]
+  },
+  {
+   "id": "science",
+   "parent": null,
+   "level": 1,
+   "label": "Science",
+   "description": "Research across space, physics, life sciences and the climate",
+   "iptc": "medtop:13000000",
+   "path": [
+    "Science"
+   ]
+  },
+  {
+   "id": "science/space-astronomy",
+   "parent": "science",
+   "level": 2,
+   "label": "Space & Astronomy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Science",
+    "Space & Astronomy"
+   ]
+  },
+  {
+   "id": "science/physics",
+   "parent": "science",
+   "level": 2,
+   "label": "Physics",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Science",
+    "Physics"
+   ]
+  },
+  {
+   "id": "science/biology-genetics",
+   "parent": "science",
+   "level": 2,
+   "label": "Biology & Genetics",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Science",
+    "Biology & Genetics"
+   ]
+  },
+  {
+   "id": "science/climate-science",
+   "parent": "science",
+   "level": 2,
+   "label": "Climate Science",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Science",
+    "Climate Science"
+   ]
+  },
+  {
+   "id": "science/research-academia",
+   "parent": "science",
+   "level": 2,
+   "label": "Research & Academia",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Science",
+    "Research & Academia"
+   ]
+  },
+  {
+   "id": "business-finance",
+   "parent": null,
+   "level": 1,
+   "label": "Business & Finance",
+   "description": "Companies, deals, markets, money and the economy",
+   "iptc": "medtop:04000000",
+   "path": [
+    "Business & Finance"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Crypto & Digital Assets",
+   "description": "Exchanges, stablecoins, coins and the companies around them",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-exchanges",
+   "parent": "business-finance/crypto-digital-assets",
+   "level": 3,
+   "label": "Crypto Exchanges",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Exchanges"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-exchanges/exchange-operations-outages",
+   "parent": "business-finance/crypto-digital-assets/crypto-exchanges",
+   "level": 4,
+   "label": "Exchange Operations & Outages",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Exchanges",
+    "Exchange Operations & Outages"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-exchanges/withdrawals-customer-funds",
+   "parent": "business-finance/crypto-digital-assets/crypto-exchanges",
+   "level": 4,
+   "label": "Withdrawals & Customer Funds",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Exchanges",
+    "Withdrawals & Customer Funds"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-exchanges/proof-of-reserves",
+   "parent": "business-finance/crypto-digital-assets/crypto-exchanges",
+   "level": 4,
+   "label": "Proof of Reserves",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Exchanges",
+    "Proof of Reserves"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/stablecoins",
+   "parent": "business-finance/crypto-digital-assets",
+   "level": 3,
+   "label": "Stablecoins",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Stablecoins"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/stablecoins/stablecoin-issuers",
+   "parent": "business-finance/crypto-digital-assets/stablecoins",
+   "level": 4,
+   "label": "Stablecoin Issuers",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Stablecoins",
+    "Stablecoin Issuers"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/stablecoins/stablecoin-freezes",
+   "parent": "business-finance/crypto-digital-assets/stablecoins",
+   "level": 4,
+   "label": "Stablecoin Freezes",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Stablecoins",
+    "Stablecoin Freezes"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-markets",
+   "parent": "business-finance/crypto-digital-assets",
+   "level": 3,
+   "label": "Crypto Markets",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Markets"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-markets/bitcoin",
+   "parent": "business-finance/crypto-digital-assets/crypto-markets",
+   "level": 4,
+   "label": "Bitcoin",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Markets",
+    "Bitcoin"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-markets/ethereum",
+   "parent": "business-finance/crypto-digital-assets/crypto-markets",
+   "level": 4,
+   "label": "Ethereum",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Markets",
+    "Ethereum"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-markets/exchange-tokens-altcoins",
+   "parent": "business-finance/crypto-digital-assets/crypto-markets",
+   "level": 4,
+   "label": "Exchange Tokens & Altcoins",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Markets",
+    "Exchange Tokens & Altcoins"
+   ]
+  },
+  {
+   "id": "business-finance/crypto-digital-assets/crypto-companies-funding",
+   "parent": "business-finance/crypto-digital-assets",
+   "level": 3,
+   "label": "Crypto Companies & Funding",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Crypto & Digital Assets",
+    "Crypto Companies & Funding"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Companies & Deals",
+   "description": "Who buys, funds, partners with or reports on whom",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/mergers-acquisitions",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "Mergers & Acquisitions",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "Mergers & Acquisitions"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/funding-rounds",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "Funding Rounds",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "Funding Rounds"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/strategic-investments-partnerships",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "Strategic Investments & Partnerships",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "Strategic Investments & Partnerships"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/ipos-filings",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "IPOs & Filings",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "IPOs & Filings"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/earnings-results",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "Earnings & Results",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "Earnings & Results"
+   ]
+  },
+  {
+   "id": "business-finance/companies-deals/leadership-changes",
+   "parent": "business-finance/companies-deals",
+   "level": 3,
+   "label": "Leadership Changes",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Companies & Deals",
+    "Leadership Changes"
+   ]
+  },
+  {
+   "id": "business-finance/markets-investing",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Markets & Investing",
+   "description": "Stocks, bonds, commodities and market swings",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Markets & Investing"
+   ]
+  },
+  {
+   "id": "business-finance/markets-investing/stock-markets",
+   "parent": "business-finance/markets-investing",
+   "level": 3,
+   "label": "Stock Markets",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Markets & Investing",
+    "Stock Markets"
+   ]
+  },
+  {
+   "id": "business-finance/markets-investing/bonds-interest-rates",
+   "parent": "business-finance/markets-investing",
+   "level": 3,
+   "label": "Bonds & Interest Rates",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Markets & Investing",
+    "Bonds & Interest Rates"
+   ]
+  },
+  {
+   "id": "business-finance/markets-investing/commodities",
+   "parent": "business-finance/markets-investing",
+   "level": 3,
+   "label": "Commodities",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Markets & Investing",
+    "Commodities"
+   ]
+  },
+  {
+   "id": "business-finance/markets-investing/market-volatility",
+   "parent": "business-finance/markets-investing",
+   "level": 3,
+   "label": "Market Volatility",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Markets & Investing",
+    "Market Volatility"
+   ]
+  },
+  {
+   "id": "business-finance/banking-payments",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Banking & Payments",
+   "description": "Banks, payments, fintech and central banks",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Banking & Payments"
+   ]
+  },
+  {
+   "id": "business-finance/banking-payments/banks",
+   "parent": "business-finance/banking-payments",
+   "level": 3,
+   "label": "Banks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Banking & Payments",
+    "Banks"
+   ]
+  },
+  {
+   "id": "business-finance/banking-payments/payments-fintech",
+   "parent": "business-finance/banking-payments",
+   "level": 3,
+   "label": "Payments & Fintech",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Banking & Payments",
+    "Payments & Fintech"
+   ]
+  },
+  {
+   "id": "business-finance/banking-payments/central-banks",
+   "parent": "business-finance/banking-payments",
+   "level": 3,
+   "label": "Central Banks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Banking & Payments",
+    "Central Banks"
+   ]
+  },
+  {
+   "id": "business-finance/economy",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Economy",
+   "description": "Prices, jobs, growth and trade",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Economy"
+   ]
+  },
+  {
+   "id": "business-finance/economy/inflation-prices",
+   "parent": "business-finance/economy",
+   "level": 3,
+   "label": "Inflation & Prices",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Economy",
+    "Inflation & Prices"
+   ]
+  },
+  {
+   "id": "business-finance/economy/jobs-growth",
+   "parent": "business-finance/economy",
+   "level": 3,
+   "label": "Jobs & Growth",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Economy",
+    "Jobs & Growth"
+   ]
+  },
+  {
+   "id": "business-finance/economy/trade-tariffs",
+   "parent": "business-finance/economy",
+   "level": 3,
+   "label": "Trade & Tariffs",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Economy",
+    "Trade & Tariffs"
+   ]
+  },
+  {
+   "id": "business-finance/marketing-advertising",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Marketing & Advertising",
+   "description": "Search, social and AI in how companies reach customers",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Marketing & Advertising"
+   ]
+  },
+  {
+   "id": "business-finance/marketing-advertising/search-marketing-seo",
+   "parent": "business-finance/marketing-advertising",
+   "level": 3,
+   "label": "Search Marketing & SEO",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Marketing & Advertising",
+    "Search Marketing & SEO"
+   ]
+  },
+  {
+   "id": "business-finance/marketing-advertising/ai-visibility-answer-engines",
+   "parent": "business-finance/marketing-advertising",
+   "level": 3,
+   "label": "AI Visibility & Answer Engines",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Marketing & Advertising",
+    "AI Visibility & Answer Engines"
+   ]
+  },
+  {
+   "id": "business-finance/marketing-advertising/social-media-marketing",
+   "parent": "business-finance/marketing-advertising",
+   "level": 3,
+   "label": "Social Media Marketing",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Marketing & Advertising",
+    "Social Media Marketing"
+   ]
+  },
+  {
+   "id": "business-finance/marketing-advertising/advertising-industry",
+   "parent": "business-finance/marketing-advertising",
+   "level": 3,
+   "label": "Advertising Industry",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Marketing & Advertising",
+    "Advertising Industry"
+   ]
+  },
+  {
+   "id": "business-finance/industries",
+   "parent": "business-finance",
+   "level": 2,
+   "label": "Industries",
+   "description": "Sector news outside technology and finance",
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries"
+   ]
+  },
+  {
+   "id": "business-finance/industries/retail-e-commerce",
+   "parent": "business-finance/industries",
+   "level": 3,
+   "label": "Retail & E-Commerce",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries",
+    "Retail & E-Commerce"
+   ]
+  },
+  {
+   "id": "business-finance/industries/automotive",
+   "parent": "business-finance/industries",
+   "level": 3,
+   "label": "Automotive",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries",
+    "Automotive"
+   ]
+  },
+  {
+   "id": "business-finance/industries/energy-companies",
+   "parent": "business-finance/industries",
+   "level": 3,
+   "label": "Energy Companies",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries",
+    "Energy Companies"
+   ]
+  },
+  {
+   "id": "business-finance/industries/media-entertainment-business",
+   "parent": "business-finance/industries",
+   "level": 3,
+   "label": "Media & Entertainment Business",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries",
+    "Media & Entertainment Business"
+   ]
+  },
+  {
+   "id": "business-finance/industries/healthcare-business",
+   "parent": "business-finance/industries",
+   "level": 3,
+   "label": "Healthcare Business",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Business & Finance",
+    "Industries",
+    "Healthcare Business"
+   ]
+  },
+  {
+   "id": "crime-law-justice",
+   "parent": null,
+   "level": 1,
+   "label": "Crime, Law & Justice",
+   "description": "Crimes, investigations, courts and the law",
+   "iptc": "medtop:02000000",
+   "path": [
+    "Crime, Law & Justice"
+   ]
+  },
+  {
+   "id": "crime-law-justice/cybercrime",
+   "parent": "crime-law-justice",
+   "level": 2,
+   "label": "Cybercrime",
+   "description": "Theft, fraud and laundering online",
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Cybercrime"
+   ]
+  },
+  {
+   "id": "crime-law-justice/cybercrime/crypto-theft",
+   "parent": "crime-law-justice/cybercrime",
+   "level": 3,
+   "label": "Crypto Theft",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Cybercrime",
+    "Crypto Theft"
+   ]
+  },
+  {
+   "id": "crime-law-justice/cybercrime/online-fraud-scams",
+   "parent": "crime-law-justice/cybercrime",
+   "level": 3,
+   "label": "Online Fraud & Scams",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Cybercrime",
+    "Online Fraud & Scams"
+   ]
+  },
+  {
+   "id": "crime-law-justice/cybercrime/money-laundering",
+   "parent": "crime-law-justice/cybercrime",
+   "level": 3,
+   "label": "Money Laundering",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Cybercrime",
+    "Money Laundering"
+   ]
+  },
+  {
+   "id": "crime-law-justice/investigations-enforcement",
+   "parent": "crime-law-justice",
+   "level": 2,
+   "label": "Investigations & Enforcement",
+   "description": "Regulators, police and prosecutors at work",
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Investigations & Enforcement"
+   ]
+  },
+  {
+   "id": "crime-law-justice/investigations-enforcement/regulator-investigations",
+   "parent": "crime-law-justice/investigations-enforcement",
+   "level": 3,
+   "label": "Regulator Investigations",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Investigations & Enforcement",
+    "Regulator Investigations"
+   ]
+  },
+  {
+   "id": "crime-law-justice/investigations-enforcement/arrests-indictments",
+   "parent": "crime-law-justice/investigations-enforcement",
+   "level": 3,
+   "label": "Arrests & Indictments",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Investigations & Enforcement",
+    "Arrests & Indictments"
+   ]
+  },
+  {
+   "id": "crime-law-justice/investigations-enforcement/asset-seizures",
+   "parent": "crime-law-justice/investigations-enforcement",
+   "level": 3,
+   "label": "Asset Seizures",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Investigations & Enforcement",
+    "Asset Seizures"
+   ]
+  },
+  {
+   "id": "crime-law-justice/lawsuits-courts",
+   "parent": "crime-law-justice",
+   "level": 2,
+   "label": "Lawsuits & Courts",
+   "description": "Cases, rulings and settlements",
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Lawsuits & Courts"
+   ]
+  },
+  {
+   "id": "crime-law-justice/lawsuits-courts/copyright-cases",
+   "parent": "crime-law-justice/lawsuits-courts",
+   "level": 3,
+   "label": "Copyright Cases",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Lawsuits & Courts",
+    "Copyright Cases"
+   ]
+  },
+  {
+   "id": "crime-law-justice/lawsuits-courts/antitrust-cases",
+   "parent": "crime-law-justice/lawsuits-courts",
+   "level": 3,
+   "label": "Antitrust Cases",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Lawsuits & Courts",
+    "Antitrust Cases"
+   ]
+  },
+  {
+   "id": "crime-law-justice/lawsuits-courts/class-actions",
+   "parent": "crime-law-justice/lawsuits-courts",
+   "level": 3,
+   "label": "Class Actions",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Lawsuits & Courts",
+    "Class Actions"
+   ]
+  },
+  {
+   "id": "crime-law-justice/lawsuits-courts/settlements-rulings",
+   "parent": "crime-law-justice/lawsuits-courts",
+   "level": 3,
+   "label": "Settlements & Rulings",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Lawsuits & Courts",
+    "Settlements & Rulings"
+   ]
+  },
+  {
+   "id": "crime-law-justice/financial-crime",
+   "parent": "crime-law-justice",
+   "level": 2,
+   "label": "Financial Crime",
+   "description": "Fraud and evasion in markets",
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Financial Crime"
+   ]
+  },
+  {
+   "id": "crime-law-justice/financial-crime/securities-fraud",
+   "parent": "crime-law-justice/financial-crime",
+   "level": 3,
+   "label": "Securities Fraud",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Financial Crime",
+    "Securities Fraud"
+   ]
+  },
+  {
+   "id": "crime-law-justice/financial-crime/sanctions-evasion",
+   "parent": "crime-law-justice/financial-crime",
+   "level": 3,
+   "label": "Sanctions Evasion",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Financial Crime",
+    "Sanctions Evasion"
+   ]
+  },
+  {
+   "id": "crime-law-justice/financial-crime/insider-trading",
+   "parent": "crime-law-justice/financial-crime",
+   "level": 3,
+   "label": "Insider Trading",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Crime, Law & Justice",
+    "Financial Crime",
+    "Insider Trading"
+   ]
+  },
+  {
+   "id": "politics-government",
+   "parent": null,
+   "level": 1,
+   "label": "Politics & Government",
+   "description": "Governments, regulation, sanctions and elections",
+   "iptc": "medtop:11000000",
+   "path": [
+    "Politics & Government"
+   ]
+  },
+  {
+   "id": "politics-government/regulation",
+   "parent": "politics-government",
+   "level": 2,
+   "label": "Regulation",
+   "description": "The rules for AI, crypto, data, platforms and finance",
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation"
+   ]
+  },
+  {
+   "id": "politics-government/regulation/ai-regulation",
+   "parent": "politics-government/regulation",
+   "level": 3,
+   "label": "AI Regulation",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation",
+    "AI Regulation"
+   ]
+  },
+  {
+   "id": "politics-government/regulation/crypto-regulation",
+   "parent": "politics-government/regulation",
+   "level": 3,
+   "label": "Crypto Regulation",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation",
+    "Crypto Regulation"
+   ]
+  },
+  {
+   "id": "politics-government/regulation/data-privacy-rules",
+   "parent": "politics-government/regulation",
+   "level": 3,
+   "label": "Data Privacy Rules",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation",
+    "Data Privacy Rules"
+   ]
+  },
+  {
+   "id": "politics-government/regulation/platform-antitrust-rules",
+   "parent": "politics-government/regulation",
+   "level": 3,
+   "label": "Platform & Antitrust Rules",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation",
+    "Platform & Antitrust Rules"
+   ]
+  },
+  {
+   "id": "politics-government/regulation/financial-rules",
+   "parent": "politics-government/regulation",
+   "level": 3,
+   "label": "Financial Rules",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Regulation",
+    "Financial Rules"
+   ]
+  },
+  {
+   "id": "politics-government/geopolitics-sanctions",
+   "parent": "politics-government",
+   "level": 2,
+   "label": "Geopolitics & Sanctions",
+   "description": "Sanctions, export controls and rivalry between states",
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Geopolitics & Sanctions"
+   ]
+  },
+  {
+   "id": "politics-government/geopolitics-sanctions/sanctions",
+   "parent": "politics-government/geopolitics-sanctions",
+   "level": 3,
+   "label": "Sanctions",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Geopolitics & Sanctions",
+    "Sanctions"
+   ]
+  },
+  {
+   "id": "politics-government/geopolitics-sanctions/export-controls",
+   "parent": "politics-government/geopolitics-sanctions",
+   "level": 3,
+   "label": "Export Controls",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Geopolitics & Sanctions",
+    "Export Controls"
+   ]
+  },
+  {
+   "id": "politics-government/geopolitics-sanctions/tech-rivalry",
+   "parent": "politics-government/geopolitics-sanctions",
+   "level": 3,
+   "label": "Tech Rivalry",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Geopolitics & Sanctions",
+    "Tech Rivalry"
+   ]
+  },
+  {
+   "id": "politics-government/geopolitics-sanctions/diplomacy",
+   "parent": "politics-government/geopolitics-sanctions",
+   "level": 3,
+   "label": "Diplomacy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Geopolitics & Sanctions",
+    "Diplomacy"
+   ]
+  },
+  {
+   "id": "politics-government/elections-campaigns",
+   "parent": "politics-government",
+   "level": 2,
+   "label": "Elections & Campaigns",
+   "description": "Votes, campaigns and election disinformation",
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Elections & Campaigns"
+   ]
+  },
+  {
+   "id": "politics-government/elections-campaigns/elections",
+   "parent": "politics-government/elections-campaigns",
+   "level": 3,
+   "label": "Elections",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Elections & Campaigns",
+    "Elections"
+   ]
+  },
+  {
+   "id": "politics-government/elections-campaigns/election-disinformation",
+   "parent": "politics-government/elections-campaigns",
+   "level": 3,
+   "label": "Election Disinformation",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Elections & Campaigns",
+    "Election Disinformation"
+   ]
+  },
+  {
+   "id": "politics-government/government-agencies",
+   "parent": "politics-government",
+   "level": 2,
+   "label": "Government & Agencies",
+   "description": "Agencies, spending and defence policy",
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Government & Agencies"
+   ]
+  },
+  {
+   "id": "politics-government/government-agencies/government-agencies",
+   "parent": "politics-government/government-agencies",
+   "level": 3,
+   "label": "Government Agencies",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Government & Agencies",
+    "Government Agencies"
+   ]
+  },
+  {
+   "id": "politics-government/government-agencies/public-spending",
+   "parent": "politics-government/government-agencies",
+   "level": 3,
+   "label": "Public Spending",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Government & Agencies",
+    "Public Spending"
+   ]
+  },
+  {
+   "id": "politics-government/government-agencies/defense-policy",
+   "parent": "politics-government/government-agencies",
+   "level": 3,
+   "label": "Defense Policy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Politics & Government",
+    "Government & Agencies",
+    "Defense Policy"
+   ]
+  },
+  {
+   "id": "conflict-security",
+   "parent": null,
+   "level": 1,
+   "label": "Conflict & Security",
+   "description": "War, terrorism, military technology and cyber warfare",
+   "iptc": "medtop:16000000",
+   "path": [
+    "Conflict & Security"
+   ]
+  },
+  {
+   "id": "conflict-security/war-armed-conflict",
+   "parent": "conflict-security",
+   "level": 2,
+   "label": "War & Armed Conflict",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Conflict & Security",
+    "War & Armed Conflict"
+   ]
+  },
+  {
+   "id": "conflict-security/terrorism",
+   "parent": "conflict-security",
+   "level": 2,
+   "label": "Terrorism",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Conflict & Security",
+    "Terrorism"
+   ]
+  },
+  {
+   "id": "conflict-security/military-technology",
+   "parent": "conflict-security",
+   "level": 2,
+   "label": "Military Technology",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Conflict & Security",
+    "Military Technology"
+   ]
+  },
+  {
+   "id": "conflict-security/cyber-warfare",
+   "parent": "conflict-security",
+   "level": 2,
+   "label": "Cyber Warfare",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Conflict & Security",
+    "Cyber Warfare"
+   ]
+  },
+  {
+   "id": "health",
+   "parent": null,
+   "level": 1,
+   "label": "Health",
+   "description": "Medicine, public health and health technology",
+   "iptc": "medtop:07000000",
+   "path": [
+    "Health"
+   ]
+  },
+  {
+   "id": "health/medicine-treatments",
+   "parent": "health",
+   "level": 2,
+   "label": "Medicine & Treatments",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Health",
+    "Medicine & Treatments"
+   ]
+  },
+  {
+   "id": "health/public-health",
+   "parent": "health",
+   "level": 2,
+   "label": "Public Health",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Health",
+    "Public Health"
+   ]
+  },
+  {
+   "id": "health/health-technology",
+   "parent": "health",
+   "level": 2,
+   "label": "Health Technology",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Health",
+    "Health Technology"
+   ]
+  },
+  {
+   "id": "health/mental-health",
+   "parent": "health",
+   "level": 2,
+   "label": "Mental Health",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Health",
+    "Mental Health"
+   ]
+  },
+  {
+   "id": "environment-energy",
+   "parent": null,
+   "level": 1,
+   "label": "Environment & Energy",
+   "description": "Climate, energy, power and the natural world",
+   "iptc": "medtop:06000000",
+   "path": [
+    "Environment & Energy"
+   ]
+  },
+  {
+   "id": "environment-energy/climate-change",
+   "parent": "environment-energy",
+   "level": 2,
+   "label": "Climate Change",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Climate Change"
+   ]
+  },
+  {
+   "id": "environment-energy/energy-power",
+   "parent": "environment-energy",
+   "level": 2,
+   "label": "Energy & Power",
+   "description": "Grids, data center demand, oil and gas",
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Energy & Power"
+   ]
+  },
+  {
+   "id": "environment-energy/energy-power/electricity-grids",
+   "parent": "environment-energy/energy-power",
+   "level": 3,
+   "label": "Electricity Grids",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Energy & Power",
+    "Electricity Grids"
+   ]
+  },
+  {
+   "id": "environment-energy/energy-power/data-center-power-demand",
+   "parent": "environment-energy/energy-power",
+   "level": 3,
+   "label": "Data Center Power Demand",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Energy & Power",
+    "Data Center Power Demand"
+   ]
+  },
+  {
+   "id": "environment-energy/energy-power/oil-gas",
+   "parent": "environment-energy/energy-power",
+   "level": 3,
+   "label": "Oil & Gas",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Energy & Power",
+    "Oil & Gas"
+   ]
+  },
+  {
+   "id": "environment-energy/renewable-energy",
+   "parent": "environment-energy",
+   "level": 2,
+   "label": "Renewable Energy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Renewable Energy"
+   ]
+  },
+  {
+   "id": "environment-energy/nuclear-energy",
+   "parent": "environment-energy",
+   "level": 2,
+   "label": "Nuclear Energy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Nuclear Energy"
+   ]
+  },
+  {
+   "id": "environment-energy/pollution-conservation",
+   "parent": "environment-energy",
+   "level": 2,
+   "label": "Pollution & Conservation",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Environment & Energy",
+    "Pollution & Conservation"
+   ]
+  },
+  {
+   "id": "society",
+   "parent": null,
+   "level": 1,
+   "label": "Society",
+   "description": "How technology and events change everyday life",
+   "iptc": "medtop:14000000",
+   "path": [
+    "Society"
+   ]
+  },
+  {
+   "id": "society/misinformation-fact-checks",
+   "parent": "society",
+   "level": 2,
+   "label": "Misinformation & Fact-Checks",
+   "description": "What spreads, and what checks out",
+   "iptc": null,
+   "path": [
+    "Society",
+    "Misinformation & Fact-Checks"
+   ]
+  },
+  {
+   "id": "society/misinformation-fact-checks/viral-claims",
+   "parent": "society/misinformation-fact-checks",
+   "level": 3,
+   "label": "Viral Claims",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Misinformation & Fact-Checks",
+    "Viral Claims"
+   ]
+  },
+  {
+   "id": "society/misinformation-fact-checks/fact-checks",
+   "parent": "society/misinformation-fact-checks",
+   "level": 3,
+   "label": "Fact-Checks",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Misinformation & Fact-Checks",
+    "Fact-Checks"
+   ]
+  },
+  {
+   "id": "society/online-safety",
+   "parent": "society",
+   "level": 2,
+   "label": "Online Safety",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Online Safety"
+   ]
+  },
+  {
+   "id": "society/digital-rights-privacy",
+   "parent": "society",
+   "level": 2,
+   "label": "Digital Rights & Privacy",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Digital Rights & Privacy"
+   ]
+  },
+  {
+   "id": "society/inequality",
+   "parent": "society",
+   "level": 2,
+   "label": "Inequality",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Inequality"
+   ]
+  },
+  {
+   "id": "society/demographics",
+   "parent": "society",
+   "level": 2,
+   "label": "Demographics",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Society",
+    "Demographics"
+   ]
+  },
+  {
+   "id": "media-arts-culture",
+   "parent": null,
+   "level": 1,
+   "label": "Media, Arts & Culture",
+   "description": "News media, film, music, books and online culture",
+   "iptc": "medtop:01000000",
+   "path": [
+    "Media, Arts & Culture"
+   ]
+  },
+  {
+   "id": "media-arts-culture/news-media-journalism",
+   "parent": "media-arts-culture",
+   "level": 2,
+   "label": "News Media & Journalism",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Media, Arts & Culture",
+    "News Media & Journalism"
+   ]
+  },
+  {
+   "id": "media-arts-culture/film-tv",
+   "parent": "media-arts-culture",
+   "level": 2,
+   "label": "Film & TV",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Media, Arts & Culture",
+    "Film & TV"
+   ]
+  },
+  {
+   "id": "media-arts-culture/music",
+   "parent": "media-arts-culture",
+   "level": 2,
+   "label": "Music",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Media, Arts & Culture",
+    "Music"
+   ]
+  },
+  {
+   "id": "media-arts-culture/books-publishing",
+   "parent": "media-arts-culture",
+   "level": 2,
+   "label": "Books & Publishing",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Media, Arts & Culture",
+    "Books & Publishing"
+   ]
+  },
+  {
+   "id": "media-arts-culture/online-culture-memes",
+   "parent": "media-arts-culture",
+   "level": 2,
+   "label": "Online Culture & Memes",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Media, Arts & Culture",
+    "Online Culture & Memes"
+   ]
+  },
+  {
+   "id": "education",
+   "parent": null,
+   "level": 1,
+   "label": "Education",
+   "description": "Schools, universities and learning online",
+   "iptc": "medtop:05000000",
+   "path": [
+    "Education"
+   ]
+  },
+  {
+   "id": "education/schools",
+   "parent": "education",
+   "level": 2,
+   "label": "Schools",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Education",
+    "Schools"
+   ]
+  },
+  {
+   "id": "education/higher-education",
+   "parent": "education",
+   "level": 2,
+   "label": "Higher Education",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Education",
+    "Higher Education"
+   ]
+  },
+  {
+   "id": "education/online-learning-edtech",
+   "parent": "education",
+   "level": 2,
+   "label": "Online Learning & EdTech",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Education",
+    "Online Learning & EdTech"
+   ]
+  },
+  {
+   "id": "education/ai-in-education",
+   "parent": "education",
+   "level": 2,
+   "label": "AI in Education",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Education",
+    "AI in Education"
+   ]
+  },
+  {
+   "id": "work-labour",
+   "parent": null,
+   "level": 1,
+   "label": "Work & Labour",
+   "description": "Jobs, layoffs, unions and how AI changes work",
+   "iptc": "medtop:09000000",
+   "path": [
+    "Work & Labour"
+   ]
+  },
+  {
+   "id": "work-labour/jobs-hiring",
+   "parent": "work-labour",
+   "level": 2,
+   "label": "Jobs & Hiring",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Work & Labour",
+    "Jobs & Hiring"
+   ]
+  },
+  {
+   "id": "work-labour/layoffs",
+   "parent": "work-labour",
+   "level": 2,
+   "label": "Layoffs",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Work & Labour",
+    "Layoffs"
+   ]
+  },
+  {
+   "id": "work-labour/future-of-work-ai",
+   "parent": "work-labour",
+   "level": 2,
+   "label": "Future of Work & AI",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Work & Labour",
+    "Future of Work & AI"
+   ]
+  },
+  {
+   "id": "work-labour/unions-strikes",
+   "parent": "work-labour",
+   "level": 2,
+   "label": "Unions & Strikes",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Work & Labour",
+    "Unions & Strikes"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure",
+   "parent": null,
+   "level": 1,
+   "label": "Lifestyle & Leisure",
+   "description": "Travel, food, fashion, home and games",
+   "iptc": "medtop:10000000",
+   "path": [
+    "Lifestyle & Leisure"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure/travel",
+   "parent": "lifestyle-leisure",
+   "level": 2,
+   "label": "Travel",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Lifestyle & Leisure",
+    "Travel"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure/food-drink",
+   "parent": "lifestyle-leisure",
+   "level": 2,
+   "label": "Food & Drink",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Lifestyle & Leisure",
+    "Food & Drink"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure/fashion-beauty",
+   "parent": "lifestyle-leisure",
+   "level": 2,
+   "label": "Fashion & Beauty",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Lifestyle & Leisure",
+    "Fashion & Beauty"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure/home-living",
+   "parent": "lifestyle-leisure",
+   "level": 2,
+   "label": "Home & Living",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Lifestyle & Leisure",
+    "Home & Living"
+   ]
+  },
+  {
+   "id": "lifestyle-leisure/video-games",
+   "parent": "lifestyle-leisure",
+   "level": 2,
+   "label": "Video Games",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Lifestyle & Leisure",
+    "Video Games"
+   ]
+  },
+  {
+   "id": "sport",
+   "parent": null,
+   "level": 1,
+   "label": "Sport",
+   "description": "Leagues, games and the business of sport",
+   "iptc": "medtop:15000000",
+   "path": [
+    "Sport"
+   ]
+  },
+  {
+   "id": "sport/football-soccer",
+   "parent": "sport",
+   "level": 2,
+   "label": "Football (Soccer)",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Football (Soccer)"
+   ]
+  },
+  {
+   "id": "sport/american-football",
+   "parent": "sport",
+   "level": 2,
+   "label": "American Football",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "American Football"
+   ]
+  },
+  {
+   "id": "sport/basketball",
+   "parent": "sport",
+   "level": 2,
+   "label": "Basketball",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Basketball"
+   ]
+  },
+  {
+   "id": "sport/cricket",
+   "parent": "sport",
+   "level": 2,
+   "label": "Cricket",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Cricket"
+   ]
+  },
+  {
+   "id": "sport/olympics",
+   "parent": "sport",
+   "level": 2,
+   "label": "Olympics",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Olympics"
+   ]
+  },
+  {
+   "id": "sport/esports",
+   "parent": "sport",
+   "level": 2,
+   "label": "Esports",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Esports"
+   ]
+  },
+  {
+   "id": "sport/sports-business",
+   "parent": "sport",
+   "level": 2,
+   "label": "Sports Business",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Sport",
+    "Sports Business"
+   ]
+  },
+  {
+   "id": "disasters-accidents",
+   "parent": null,
+   "level": 1,
+   "label": "Disasters & Accidents",
+   "description": "Natural disasters, accidents and emergency response",
+   "iptc": "medtop:03000000",
+   "path": [
+    "Disasters & Accidents"
+   ]
+  },
+  {
+   "id": "disasters-accidents/natural-disasters",
+   "parent": "disasters-accidents",
+   "level": 2,
+   "label": "Natural Disasters",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Disasters & Accidents",
+    "Natural Disasters"
+   ]
+  },
+  {
+   "id": "disasters-accidents/accidents",
+   "parent": "disasters-accidents",
+   "level": 2,
+   "label": "Accidents",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Disasters & Accidents",
+    "Accidents"
+   ]
+  },
+  {
+   "id": "disasters-accidents/emergency-response",
+   "parent": "disasters-accidents",
+   "level": 2,
+   "label": "Emergency Response",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Disasters & Accidents",
+    "Emergency Response"
+   ]
+  },
+  {
+   "id": "weather",
+   "parent": null,
+   "level": 1,
+   "label": "Weather",
+   "description": "Severe weather and forecasts",
+   "iptc": "medtop:17000000",
+   "path": [
+    "Weather"
+   ]
+  },
+  {
+   "id": "weather/severe-weather",
+   "parent": "weather",
+   "level": 2,
+   "label": "Severe Weather",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Weather",
+    "Severe Weather"
+   ]
+  },
+  {
+   "id": "weather/forecasts-seasons",
+   "parent": "weather",
+   "level": 2,
+   "label": "Forecasts & Seasons",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Weather",
+    "Forecasts & Seasons"
+   ]
+  },
+  {
+   "id": "religion",
+   "parent": null,
+   "level": 1,
+   "label": "Religion",
+   "description": "Faiths, institutions and religion in society",
+   "iptc": "medtop:12000000",
+   "path": [
+    "Religion"
+   ]
+  },
+  {
+   "id": "religion/faiths-institutions",
+   "parent": "religion",
+   "level": 2,
+   "label": "Faiths & Institutions",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Religion",
+    "Faiths & Institutions"
+   ]
+  },
+  {
+   "id": "religion/religion-society",
+   "parent": "religion",
+   "level": 2,
+   "label": "Religion & Society",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Religion",
+    "Religion & Society"
+   ]
+  },
+  {
+   "id": "human-interest",
+   "parent": null,
+   "level": 1,
+   "label": "Human Interest",
+   "description": "People, the unusual and records",
+   "iptc": "medtop:08000000",
+   "path": [
+    "Human Interest"
+   ]
+  },
+  {
+   "id": "human-interest/profiles",
+   "parent": "human-interest",
+   "level": 2,
+   "label": "Profiles",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Human Interest",
+    "Profiles"
+   ]
+  },
+  {
+   "id": "human-interest/unusual-stories",
+   "parent": "human-interest",
+   "level": 2,
+   "label": "Unusual Stories",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Human Interest",
+    "Unusual Stories"
+   ]
+  },
+  {
+   "id": "human-interest/records-milestones",
+   "parent": "human-interest",
+   "level": 2,
+   "label": "Records & Milestones",
+   "description": null,
+   "iptc": null,
+   "path": [
+    "Human Interest",
+    "Records & Milestones"
+   ]
+  }
+ ]
+}

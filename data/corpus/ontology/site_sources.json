@@ -1,0 +1,57 @@
+{
+ "note": "The company's own sites, read whole. 'sections' names the dated sections used for the birth-to-now timeline. content=all stores every page's text; content=titles stores titles only (docs, support, marketplaces). robots.txt checked per host with our own user agent on 2026-10-28. red.anthropic.com redirects into anthropic.com/research/team/frontier-red-team, so it is covered by the anthropic.com sitemap.",
+ "sites": [
+  {
+   "entity": "anthropic",
+   "host": "www.anthropic.com",
+   "sitemap": "https://www.anthropic.com/sitemap.xml",
+   "sections": [
+    "news",
+    "research"
+   ],
+   "content": "all",
+   "label": "anthropic.com"
+  },
+  {
+   "entity": "anthropic",
+   "host": "alignment.anthropic.com",
+   "index": "https://alignment.anthropic.com/",
+   "include": "^https://alignment\\.anthropic\\.com/(20\\d\\d/|$)",
+   "content": "all",
+   "label": "Alignment Science blog"
+  },
+  {
+   "entity": "anthropic",
+   "host": "transformer-circuits.pub",
+   "index": "https://transformer-circuits.pub/",
+   "include": "^https://transformer-circuits\\.pub/(20\\d\\d/|$)",
+   "content": "all",
+   "label": "Transformer Circuits"
+  },
+  {
+   "entity": "anthropic",
+   "host": "claude.com",
+   "sitemap": "https://claude.com/sitemap.xml",
+   "exclude": "^https://claude\\.com/(ko|ja|de|fr|es|it|pt|pt-br|zh|zh-cn|zh-tw|ru|nl|sv)(/|$)",
+   "titles_only": "^https://claude\\.com/marketplace/",
+   "content": "all",
+   "label": "claude.com"
+  },
+  {
+   "entity": "anthropic",
+   "host": "platform.claude.com",
+   "sitemap": "https://platform.claude.com/sitemap.xml",
+   "include": "^https://platform\\.claude\\.com/docs/en/",
+   "content": "titles",
+   "label": "Developer docs"
+  },
+  {
+   "entity": "anthropic",
+   "host": "support.claude.com",
+   "sitemap": "https://support.claude.com/sitemap.xml",
+   "include": "^https://support\\.claude\\.com/en/",
+   "content": "titles",
+   "label": "Support center"
+  }
+ ]
+}

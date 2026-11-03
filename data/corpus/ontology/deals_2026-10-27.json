@@ -1,0 +1,55 @@
+{
+  "note": "Verified on 2026-10-27 against primary documents read in the browser. Each item carries the exact quote and the URL. Amounts are as stated in the document; nothing estimated.",
+  "sources": [
+    {"slug": "openai-newsroom", "name": "OpenAI (company announcements)", "homepage": "https://openai.com", "kind": "vendor"},
+    {"slug": "sec-edgar", "name": "U.S. Securities and Exchange Commission, EDGAR", "homepage": "https://www.sec.gov", "kind": "government"},
+    {"slug": "cnbc", "name": "CNBC", "homepage": "https://www.cnbc.com", "kind": "aggregator"}
+  ],
+  "documents": [
+    {"slug": "openai-2026-03-31-funding-round", "source": "openai-newsroom", "title": "OpenAI raises $122 billion to accelerate the next phase of AI",
+     "url": "https://openai.com/index/accelerating-the-next-phase-ai/", "published_on": "2026-03-31",
+     "retrieval": "Opened in the built-in browser and read the page text", "retrieved_at": "2026-10-27"},
+    {"slug": "nvda-10q-2026-07-26", "source": "sec-edgar", "title": "NVIDIA Corporation, Form 10-Q for the quarter ended July 26, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000075/nvda-20260726.htm", "published_on": "2026-08-27",
+     "retrieval": "Opened on sec.gov in the built-in browser; searched the document text for OpenAI", "retrieved_at": "2026-10-27"},
+    {"slug": "anthropic-s1-2026-10-26", "source": "sec-edgar", "title": "Anthropic, PBC, Form S-1 registration statement",
+     "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm", "published_on": "2026-10-26",
+     "retrieval": "Fetched on the sec.gov origin in the built-in browser; whitespace-normalised text searched for Amazon Notes, $110.0 billion and Google invested", "retrieved_at": "2026-10-27"},
+    {"slug": "cnbc-2026-03-04-huang-openai", "source": "cnbc", "title": "Nvidia CEO Huang says $30 billion OpenAI investment 'might be the last'",
+     "url": "https://www.cnbc.com/2026/03/04/nvidia-huang-openai-investment.html", "published_on": "2026-03-04",
+     "retrieval": "Web search result summary; secondary source, to be replaced by the Nvidia filing that books the investment", "retrieved_at": "2026-10-27"}
+  ],
+  "events": [
+    {"slug": "openai-round-2026-03-31", "kind": "press_release", "occurred_on": "2026-03-31", "headline": "OpenAI closes $122B round at $852B post-money",
+     "document": "openai-2026-03-31-funding-round", "entities": ["openai", "amazon-investor", "nvidia", "softbank", "microsoft"]}
+  ],
+  "signals": [
+    {"entity": "openai", "metric": "funding_round_committed_capital_usd", "period": "2026-03", "value": 122000000000, "unit": "USD", "document": "openai-2026-03-31-funding-round"},
+    {"entity": "openai", "metric": "post_money_valuation_usd", "period": "2026-03", "value": 852000000000, "unit": "USD", "document": "openai-2026-03-31-funding-round"},
+    {"entity": "anthropic", "metric": "capital_raised_total_usd", "period": "2026-06", "value": 141100000000, "unit": "USD", "document": "anthropic-s1-2026-10-26"}
+  ],
+  "relations": [
+    {"from": "amazon-investor", "to": "openai", "relation": "invests_in", "note": "Amazon anchored OpenAI's $122B round that closed 31 Mar 2026 (OpenAI announcement)", "verification": "verified",
+     "deals": [{"instrument": "equity", "stage": "funded", "amount": null, "currency": "USD", "amount_basis": null, "announced_on": "2026-03-31", "money_direction": "from_to",
+                "summary": "Amazon is named as a strategic anchor of the $122B round; OpenAI's text does not state Amazon's amount.",
+                "evidence": [{"document": "openai-2026-03-31-funding-round", "quote": "The round was anchored by our strategic partners Amazon, NVIDIA, and SoftBank, with continued participation from our long-term partner, Microsoft.", "locator": "Section: Deep conviction across global capital"}]}]},
+    {"from": "nvidia", "to": "openai", "relation": "invests_in", "note": "up to $100B committed in 2025 tied to gigawatts of Nvidia systems ('circular' financing)", "verification": "stale",
+     "deals": [{"instrument": "equity", "stage": "funded", "amount": null, "currency": "USD", "amount_basis": null, "announced_on": "2026-03-31", "money_direction": "from_to",
+                "summary": "Nvidia is named as a strategic anchor of the $122B round (OpenAI). CNBC reports the Nvidia share as $30B; the $100B figure of September 2025 was a letter of intent that was not completed as announced.",
+                "evidence": [{"document": "openai-2026-03-31-funding-round", "quote": "The round was anchored by our strategic partners Amazon, NVIDIA, and SoftBank, with continued participation from our long-term partner, Microsoft.", "locator": "Section: Deep conviction across global capital"},
+                             {"document": "cnbc-2026-03-04-huang-openai", "quote": "Nvidia CEO Huang says $30 billion OpenAI investment 'might be the last'", "locator": "Headline"}]}]},
+    {"from": "nvidia", "to": "openai", "relation": "guarantees", "note": "Nvidia guarantees, capped at $105B, credit support for OpenAI's 20-year leases of about 4.25 GW at SB Energy's PORTS campus, Pike County, Ohio (10-Q, quarter ended 26 Jul 2026)", "verification": "verified",
+     "deals": [{"instrument": "guarantee", "stage": "definitive", "amount": 105000000000, "currency": "USD", "amount_basis": "cap", "capacity_gw": 4.25, "announced_on": "2026-08-27", "money_direction": "from_to",
+                "summary": "Guarantees capped at $105B in aggregate on land, power and shell buildout leased to OpenAI for 20 years; nine data centers placed in service from fiscal 2029; option on about 3.8 GW more; the campus exclusively hosts Nvidia compute.",
+                "evidence": [{"document": "nvda-10q-2026-07-26", "quote": "we entered into guarantees, capped at a total of $105 billion, to provide credit support on a land, power, and shell buildout with affiliates of SB Energy Corp. (SB Energy) on behalf of a customer, an affiliate of OpenAI Group PBC (OpenAI), related to leases for approximately 4.25 gigawatts of IT load in the aggregate at SB Energy’s PORTS Technology Campus in Pike County, Ohio.", "locator": "Commitments and contingencies; also Risk Factors"},
+                             {"document": "nvda-10q-2026-07-26", "quote": "The guarantees terminate upon certain events, including OpenAI achieving a satisfactory credit rating or after each respective lease term has completed.", "locator": "Commitments and contingencies"}]}]},
+    {"from": "anthropic", "to": "aws", "relation": "depends_on", "note": "AWS is Anthropic's primary cloud; trains on Trainium", "verification": "verified",
+     "deals": [{"instrument": "compute_commitment", "stage": "definitive", "amount": 110000000000, "currency": "USD", "amount_basis": "announced", "announced_on": "2026-04-30", "term_start": "2026-05-01", "term_end": "2036-04-30", "money_direction": "from_to",
+                "summary": "Anthropic committed to spend at least $110.0B with Amazon between May 2026 and April 2036 regardless of usage, with a true-up if actual spend falls short (S-1).",
+                "evidence": [{"document": "anthropic-s1-2026-10-26", "quote": "In April 2026, we entered into an agreement with Amazon, pursuant to which we committed to spend an aggregate of at least $110.0 billion between May 2026 and April 2036, regardless of actual usage. If our actual spend falls short, we must pay Amazon the difference as a true-up", "locator": "Contractual commitments, MD&A"}]}]},
+    {"from": "google-investor", "to": "anthropic", "relation": "invests_in", "note": "$3B+, ~14% stake, while competing via Gemini", "verification": "stale",
+     "deals": [{"instrument": "equity", "stage": "funded", "amount": 10000000000, "currency": "USD", "amount_basis": "funded", "announced_on": "2026-05-31", "money_direction": "from_to",
+                "summary": "Google invested $10.0B in Anthropic's Series H redeemable convertible preferred financing in May 2026 (S-1, unaudited).",
+                "evidence": [{"document": "anthropic-s1-2026-10-26", "quote": "In May 2026 (unaudited), Google invested $10.0 billion in the Company’s Series H redeemable convertible preferred stock financing", "locator": "Notes to the consolidated financial statements"}]}]}
+  ]
+}

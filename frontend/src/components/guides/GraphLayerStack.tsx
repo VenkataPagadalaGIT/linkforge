@@ -76,11 +76,12 @@ const GraphLayerStack = () => {
           {/* Parallel vector index rail */}
           <g>
             <rect x={BAND_X + BAND_W + 70} y={TOP} width={120} height={H - TOP - 24} rx={3} style={{ fill: CARD, stroke: MUTED }} strokeWidth="1.4" strokeDasharray="5 4" />
-            <text x={BAND_X + BAND_W + 130} y={TOP + 28} className="font-mono" fontSize="12" style={{ fill: FG }} textAnchor="middle">Vector</text>
-            <text x={BAND_X + BAND_W + 130} y={TOP + 44} className="font-mono" fontSize="12" style={{ fill: FG }} textAnchor="middle">Index</text>
-            <text x={BAND_X + BAND_W + 130} y={TOP + 72} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">parallel,</text>
-            <text x={BAND_X + BAND_W + 130} y={TOP + 86} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">fuzzy</text>
-            <text x={BAND_X + BAND_W + 130} y={TOP + 100} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">retrieval</text>
+            <text x={BAND_X + BAND_W + 130 - 50} y={TOP + 18} className="font-mono" fontSize="11" style={{ fill: MUTED }} textAnchor="start">06</text>
+            <text x={BAND_X + BAND_W + 130} y={TOP + 38} className="font-mono" fontSize="12" style={{ fill: FG }} textAnchor="middle">Vector</text>
+            <text x={BAND_X + BAND_W + 130} y={TOP + 54} className="font-mono" fontSize="12" style={{ fill: FG }} textAnchor="middle">Index</text>
+            <text x={BAND_X + BAND_W + 130} y={TOP + 82} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">parallel,</text>
+            <text x={BAND_X + BAND_W + 130} y={TOP + 96} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">fuzzy</text>
+            <text x={BAND_X + BAND_W + 130} y={TOP + 110} className="font-mono" fontSize="9.5" style={{ fill: MUTED }} textAnchor="middle">retrieval</text>
             <line x1={BAND_X + BAND_W + 4} y1={H / 2} x2={BAND_X + BAND_W + 70} y2={H / 2} style={{ stroke: BORDER }} strokeWidth="1.2" strokeDasharray="3 3" />
             <text x={BAND_X + BAND_W + 37} y={H / 2 - 6} className="font-mono" fontSize="9" style={{ fill: MUTED }} textAnchor="middle">recall</text>
           </g>

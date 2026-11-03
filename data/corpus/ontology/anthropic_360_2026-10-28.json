@@ -1,0 +1,3721 @@
+{
+ "note": "Anthropic 360 file: people in public roles with their other roles, legal matters, advisors, the full funding history and identity facts. Built from the Form S-1 (filed 2026-10-26) and Anthropic's own newsroom. Investor types are our own classification. Quotes are exact; check_360_quotes verifies them.",
+ "entity": "anthropic",
+ "anchors": {
+  "cover": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+  "part2": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+  "summary": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
+  "risk": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2972",
+  "business": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986",
+  "governance": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2993",
+  "mgmt": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+  "legal_counsel": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#i3d950dafcf4d44e1917d6bc4cf1dd813_1208",
+  "accountant": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#id107d9247df5415f9b38717209b6918d_2829",
+  "notes": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1623",
+  "signatures": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_3917",
+  "exhibits": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html"
+ },
+ "sources": [
+  {
+   "slug": "anthropic-newsroom",
+   "name": "Anthropic newsroom",
+   "homepage": "https://www.anthropic.com/news",
+   "kind": "vendor"
+  }
+ ],
+ "documents": [
+  {
+   "slug": "anthropic-news-2021-05-28-series-a",
+   "title": "Anthropic raises $124 million Series A",
+   "url": "https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems",
+   "published_on": "2021-05-28",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2022-04-29-series-b",
+   "title": "Anthropic raises Series B to build robust AI",
+   "url": "https://www.anthropic.com/news/anthropic-raises-series-b-to-build-safe-reliable-ai",
+   "published_on": "2022-04-29",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2023-05-16-zoom",
+   "title": "Zoom partnership and investment in Anthropic",
+   "url": "https://www.anthropic.com/news/zoom-partnership-and-investment",
+   "published_on": "2023-05-16",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2023-05-23-series-c",
+   "title": "Anthropic raises $450 million in Series C",
+   "url": "https://www.anthropic.com/news/anthropic-series-c",
+   "published_on": "2023-05-23",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2023-09-25-amazon",
+   "title": "Expanding access to safer AI with Amazon",
+   "url": "https://www.anthropic.com/news/anthropic-amazon",
+   "published_on": "2023-09-25",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2025-03-03-series-e",
+   "title": "Anthropic raises Series E at $61.5B post-money valuation",
+   "url": "https://www.anthropic.com/news/anthropic-raises-series-e-at-usd61-5b-post-money-valuation",
+   "published_on": "2025-03-03",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2025-09-02-series-f",
+   "title": "Anthropic raises $13B Series F at $183B post-money valuation",
+   "url": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation",
+   "published_on": "2025-09-02",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2025-11-18-microsoft-nvidia",
+   "title": "Microsoft, NVIDIA, and Anthropic announce strategic partnerships",
+   "url": "https://www.anthropic.com/news/microsoft-nvidia-anthropic-announce-strategic-partnerships",
+   "published_on": "2025-11-18",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2026-02-12-series-g",
+   "title": "Anthropic raises $30 billion in Series G funding at $380 billion post-money valuation",
+   "url": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation",
+   "published_on": "2026-02-12",
+   "source": "anthropic-newsroom"
+  },
+  {
+   "slug": "anthropic-news-2026-05-28-series-h",
+   "title": "Anthropic raises $65B in Series H funding at $965B post-money valuation",
+   "url": "https://www.anthropic.com/news/series-h",
+   "published_on": "2026-05-28",
+   "source": "anthropic-newsroom"
+  }
+ ],
+ "people": [
+  {
+   "slug": "dario-amodei",
+   "name": "Dario Amodei",
+   "group": "officer",
+   "wikidata": "Q103335665",
+   "site_path": "/notebook/business/people/dario-amodei",
+   "public_role": "Chief Executive Officer, co-founder and director since January 2021",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Dr. Amodei has served as our Chief Executive Officer and a member of our board of directors since co-founding Anthropic in January 2021.",
+     "locator": "Management"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "slug": "daniela-amodei",
+   "name": "Daniela Amodei",
+   "group": "officer",
+   "wikidata": "Q119721378",
+   "site_path": "/notebook/business/people/daniela-amodei",
+   "public_role": "President, co-founder and Chairperson of the board; chairs the nominating and governance committee",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Ms. Amodei has served as our President and a member of our board of directors since co-founding Anthropic in January 2021. Ms. Amodei also currently serves as the Chairperson of our board of directors.",
+     "locator": "Management"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our NGC consists of Ms. Amodei, Mr. Hastings, and Ms. Razavi, with Ms. Amodei serving as Chairperson.",
+     "locator": "Management, Committees"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "slug": "krishna-rao",
+   "name": "Krishna Rao",
+   "group": "officer",
+   "site_path": "/notebook/business/people/krishna-rao",
+   "public_role": "Chief Financial Officer since April 2024",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Rao has served as our Chief Financial Officer since April 2024.",
+     "locator": "Management"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "slug": "effendi-ng",
+   "name": "Effendi Ng",
+   "group": "officer",
+   "public_role": "Chief Accounting Officer (principal accounting officer)",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "signatures",
+     "quote": "/s/ Effendi Ng Chief Accounting Officer October 26, 2026 Effendi Ng (Principal Accounting Officer)",
+     "locator": "Signatures"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "slug": "reed-hastings",
+   "name": "Reed Hastings",
+   "group": "director",
+   "wikidata": "Q7306657",
+   "public_role": "Lead independent director; on the board since May 2025",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Hastings has served as a member of our board of directors since May 2025.",
+     "locator": "Management"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our board of directors has appointed Reed Hastings to serve as Lead Independent Director.",
+     "locator": "Management, Board Leadership"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "slug": "christopher-liddell",
+   "name": "Christopher Liddell",
+   "group": "director",
+   "wikidata": "Q5107236",
+   "public_role": "Director since February 2026; chairs the audit committee",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Liddell has served as a member of our board of directors since February 2026.",
+     "locator": "Management"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our audit committee consists of Mr. Liddell, Mr. Hastings and one vacancy, with Mr. Liddell serving as Chairperson.",
+     "locator": "Management, Committees"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "slug": "vas-narasimhan",
+   "name": "Vas Narasimhan",
+   "group": "director",
+   "wikidata": "Q38589106",
+   "public_role": "Director since April 2026; chairs the compensation committee and the safety and risk committee",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Dr. Narasimhan has served as a member of our board of directors since April 2026.",
+     "locator": "Management"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our compensation committee consists of Dr. Narasimhan and Ms. Razavi, with Dr. Narasimhan serving as Chairperson.",
+     "locator": "Management, Committees"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our safety and risk committee consists of two independent directors, currently Mr. Liddell and Dr. Narasimhan, with Dr. Narasimhan serving as Chairperson.",
+     "locator": "Management, Committees"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "slug": "yasmin-razavi",
+   "name": "Yasmin Razavi",
+   "group": "director",
+   "public_role": "Director since March 2023; joined the board with the Series C",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Ms. Razavi has served as a member of our board of directors since March 2023.",
+     "locator": "Management"
+    },
+    {
+     "doc": "anthropic-news-2023-05-23-series-c",
+     "quote": "In connection with the Series C round, Yasmin Razavi, a General Partner at Spark Capital focused on growth stage software investments, has joined Anthropic's Board of Directors.",
+     "locator": "Anthropic newsroom"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "slug": "jay-kreps",
+   "name": "Jay Kreps",
+   "group": "former_director",
+   "public_role": "Director until May 2026",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Kreps resigned from our board of directors in May 2026.",
+     "locator": "Management, Director Compensation"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "slug": "tom-brown",
+   "name": "Tom Brown",
+   "group": "founder",
+   "public_role": "Co-founder",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "slug": "jack-clark",
+   "name": "Jack Clark",
+   "group": "founder",
+   "wikidata": "Q135111322",
+   "public_role": "Co-founder",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "slug": "jared-kaplan",
+   "name": "Jared Kaplan",
+   "group": "founder",
+   "wikidata": "Q102649624",
+   "public_role": "Co-founder",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "slug": "sam-mccandlish",
+   "name": "Sam McCandlish",
+   "group": "founder",
+   "wikidata": "Q105285886",
+   "public_role": "Co-founder",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "slug": "christopher-olah",
+   "name": "Christopher Olah",
+   "group": "founder",
+   "wikidata": "Q50358648",
+   "public_role": "Co-founder",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 14
+  },
+  {
+   "slug": "neil-buddy-shah",
+   "name": "Neil “Buddy” Shah",
+   "group": "trustee",
+   "wikidata": "Q126287582",
+   "public_role": "Chair and Trustee of the Long-Term Benefit Trust since June 2023",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Neil “Buddy” Shah has served as a Trustee and Chair of the LTBT since June 2023.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ],
+   "sort_order": 15
+  },
+  {
+   "slug": "richard-fontaine",
+   "name": "Richard Fontaine",
+   "group": "trustee",
+   "wikidata": "Q115276065",
+   "public_role": "Trustee of the Long-Term Benefit Trust since April 2025",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Richard Fontaine has served as a Trustee since April 2025.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ],
+   "sort_order": 16
+  },
+  {
+   "slug": "ben-bernanke",
+   "name": "Ben S. Bernanke",
+   "group": "trustee",
+   "wikidata": "Q201795",
+   "public_role": "Trustee of the Long-Term Benefit Trust since June 2026",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Ben S. Bernanke has served as a Trustee since June 2026.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ],
+   "sort_order": 17
+  },
+  {
+   "slug": "christopher-stubbs",
+   "name": "Christopher Stubbs",
+   "group": "trustee",
+   "wikidata": "Q1086984",
+   "photo": false,
+   "photo_note": "The only free photo is a holiday snapshot in sunglasses; initials until a portrait is available.",
+   "public_role": "Trustee of the Long-Term Benefit Trust since October 2026",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Christopher Stubbs has served as a Trustee since October 2026.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ],
+   "sort_order": 18
+  }
+ ],
+ "affiliations": [
+  {
+   "person": "dario-amodei",
+   "org": "OpenAI",
+   "org_entity": "openai",
+   "title": "Vice President of Research, among other positions",
+   "kind": "employee",
+   "period": "Jul 2016 to Dec 2020",
+   "start_year": 2016,
+   "end_year": 2020,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to co-founding Anthropic, Dr. Amodei served as Vice President of Research, among other positions, at OpenAI, an AI research lab, from July 2016 to December 2020.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "dario-amodei",
+   "org": "Google Brain (Google)",
+   "org_entity": "google-investor",
+   "title": "Senior Research Scientist",
+   "kind": "employee",
+   "period": "Oct 2015 to Jun 2016",
+   "start_year": 2015,
+   "end_year": 2016,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Before joining OpenAI, Dr. Amodei served as a Senior Research Scientist at Google Brain, an AI research team at Google, from October 2015 to June 2016.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "daniela-amodei",
+   "org": "OpenAI",
+   "org_entity": "openai",
+   "title": "Vice President of Safety and Policy, Vice President of People, and Engineering Manager",
+   "kind": "employee",
+   "period": "Oct 2018 to Dec 2020",
+   "start_year": 2018,
+   "end_year": 2020,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to co-founding Anthropic, Ms. Amodei held several positions at OpenAI, an AI research lab, including Vice President of Safety and Policy, Vice President of People, and Engineering Manager, between October 2018 and December 2020.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "daniela-amodei",
+   "org": "Stripe",
+   "org_entity": null,
+   "title": "Risk Manager, among other positions",
+   "kind": "employee",
+   "period": "May 2013 to Jul 2018",
+   "start_year": 2013,
+   "end_year": 2018,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Before joining OpenAI, Ms. Amodei was a Risk Manager, among other positions, at Stripe, a financial technology and payment processing company, from May 2013 to July 2018.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "krishna-rao",
+   "org": "Fanatics Commerce",
+   "org_entity": null,
+   "title": "Chief Financial Officer",
+   "kind": "executive",
+   "period": "May 2023 to Apr 2024",
+   "start_year": 2023,
+   "end_year": 2024,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to joining Anthropic, Mr. Rao served as Chief Financial Officer at Fanatics Commerce, an online sports merchandise and retail platform, from May 2023 to April 2024.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "krishna-rao",
+   "org": "Cedar",
+   "org_entity": null,
+   "title": "Chief Financial Officer",
+   "kind": "executive",
+   "period": "Jul 2021 to May 2023",
+   "start_year": 2021,
+   "end_year": 2023,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Before that, he served as the Chief Financial Officer of Cedar, a healthcare technology company, from July 2021 to May 2023.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "krishna-rao",
+   "org": "Airbnb",
+   "org_entity": null,
+   "title": "Global Head of Corporate & Business Development; Director of Financial Planning & Analysis",
+   "kind": "employee",
+   "period": "Oct 2015 to Jul 2021",
+   "start_year": 2015,
+   "end_year": 2021,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "From October 2015 to July 2021, Mr. Rao held several key positions at Airbnb, a global vacation rental and hospitality platform, including Global Head of Corporate & Business Development and Director of Financial Planning & Analysis.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "krishna-rao",
+   "org": "Blackstone",
+   "org_entity": null,
+   "title": "Principal, Private Equity Group",
+   "kind": "investor",
+   "period": "Sep 2011 to Sep 2015",
+   "start_year": 2011,
+   "end_year": 2015,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "was a Principal in the Private Equity Group at Blackstone, a global investment firm, from September 2011 to September 2015.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "krishna-rao",
+   "org": "Bain",
+   "org_entity": null,
+   "title": "Strategy consultant",
+   "kind": "employee",
+   "period": "Sep 2005 to Jul 2008",
+   "start_year": 2005,
+   "end_year": 2008,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Rao began his career as a strategy consultant at Bain, a global management consulting firm, from September 2005 to July 2008.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "reed-hastings",
+   "org": "Netflix",
+   "org_entity": null,
+   "title": "Co-founder; CEO and President to Jan 2023; Executive Chairman to Apr 2025; Chairman to Jun 2026",
+   "kind": "founder",
+   "period": "1999 to Jun 2026",
+   "start_year": 1999,
+   "end_year": 2026,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Hastings co-founded Netflix, a global streaming service, and served as Netflix’s Chief Executive Officer and President from 1999 to January 2023, Executive Chairman from January 2023 to April 2025, and Chairman of the board from April 2025 to June 2026.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "reed-hastings",
+   "org": "Pure Software",
+   "org_entity": null,
+   "title": "Founder and Chief Executive Officer",
+   "kind": "founder",
+   "period": "1991 to 1997",
+   "start_year": 1991,
+   "end_year": 1997,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to Netflix, Mr. Hastings founded Pure Software, a software development tools company, in 1991 and served as its Chief Executive Officer until its acquisition by Rational Software in 1997.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "reed-hastings",
+   "org": "Bloomberg",
+   "org_entity": "bloomberg-gpt",
+   "title": "Board member",
+   "kind": "director",
+   "period": "current",
+   "start_year": null,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Hastings currently serves on the board of Bloomberg, a financial data and media company.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "Microsoft",
+   "org_entity": "microsoft",
+   "title": "Chief Financial Officer (former)",
+   "kind": "executive",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "In the private sector, Mr. Liddell has served as the Chief Financial Officer of several public companies, including Microsoft and International Paper, and served as Vice Chairman and Chief Financial Officer at General Motors.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "International Paper",
+   "org_entity": null,
+   "title": "Chief Financial Officer (former)",
+   "kind": "executive",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "In the private sector, Mr. Liddell has served as the Chief Financial Officer of several public companies, including Microsoft and International Paper, and served as Vice Chairman and Chief Financial Officer at General Motors.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "General Motors",
+   "org_entity": null,
+   "title": "Vice Chairman and Chief Financial Officer (former)",
+   "kind": "executive",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "In the private sector, Mr. Liddell has served as the Chief Financial Officer of several public companies, including Microsoft and International Paper, and served as Vice Chairman and Chief Financial Officer at General Motors.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "Commonwealth Fusion Systems",
+   "org_entity": null,
+   "title": "Director",
+   "kind": "director",
+   "period": "since Mar 2025",
+   "start_year": 2025,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Liddell has served as a Director of Commonwealth Fusion Systems, a fusion power company, since March 2025, and as a Director of the Council on Foreign Relations, a nonpartisan U.S. think tank focused on foreign policy and international affairs, since July 2025.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "Council on Foreign Relations",
+   "org_entity": null,
+   "title": "Director",
+   "kind": "director",
+   "period": "since Jul 2025",
+   "start_year": 2025,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Mr. Liddell has served as a Director of Commonwealth Fusion Systems, a fusion power company, since March 2025, and as a Director of the Council on Foreign Relations, a nonpartisan U.S. think tank focused on foreign policy and international affairs, since July 2025.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "christopher-liddell",
+   "org": "U.S. government (White House)",
+   "org_entity": null,
+   "title": "Deputy Chief of Staff; Director of Strategic Initiatives; American Technology Council",
+   "kind": "government",
+   "period": "Jan 2017 to Jan 2021",
+   "start_year": 2017,
+   "end_year": 2021,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "He has also held positions with the U.S. government from January 2017 to January 2021, including serving at the White House as the Deputy Chief of Staff, Director of Strategic Initiatives, and as a member of the American Technology Council.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "vas-narasimhan",
+   "org": "Novartis",
+   "org_entity": null,
+   "title": "Chief Executive Officer",
+   "kind": "executive",
+   "period": "since Feb 2018",
+   "start_year": 2018,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Dr. Narasimhan has served as the Chief Executive Officer of Novartis AG, a global medicine company, since February 2018.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "yasmin-razavi",
+   "org": "Spark Capital",
+   "org_entity": null,
+   "title": "General Partner (joined July 2017)",
+   "kind": "investor",
+   "period": "since Mar 2020",
+   "start_year": 2017,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Ms. Razavi joined Spark Capital, a venture capital firm, in July 2017 and has served as a General Partner since March 2020.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "yasmin-razavi",
+   "org": "Index Ventures",
+   "org_entity": null,
+   "title": "Investor",
+   "kind": "investor",
+   "period": "Aug 2014 to Aug 2015",
+   "start_year": 2014,
+   "end_year": 2015,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to joining Spark Capital, Ms. Razavi served as an investor at Index Ventures, a venture capital firm, from August 2014 to August 2015, and as a consultant at McKinsey & Company, a business management consulting firm, from August 2012 to August 2014.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "yasmin-razavi",
+   "org": "McKinsey & Company",
+   "org_entity": null,
+   "title": "Consultant",
+   "kind": "employee",
+   "period": "Aug 2012 to Aug 2014",
+   "start_year": 2012,
+   "end_year": 2014,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Prior to joining Spark Capital, Ms. Razavi served as an investor at Index Ventures, a venture capital firm, from August 2014 to August 2015, and as a consultant at McKinsey & Company, a business management consulting firm, from August 2012 to August 2014.",
+     "locator": "Management"
+    }
+   ]
+  },
+  {
+   "person": "neil-buddy-shah",
+   "org": "Clinton Health Access Initiative",
+   "org_entity": null,
+   "title": "Chief Executive Officer",
+   "kind": "nonprofit",
+   "period": "since Jun 2022",
+   "start_year": 2022,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Shah has served as Chief Executive Officer of the Clinton Health Access Initiative (“CHAI”), a global health organization focused on improving access to health services in low- and middle-income countries, since June 2022.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "neil-buddy-shah",
+   "org": "GiveWell",
+   "org_entity": null,
+   "title": "Managing Director (former)",
+   "kind": "nonprofit",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Prior to joining CHAI, Dr. Shah served as Managing Director of GiveWell, a nonprofit organization focused on directing charitable capital to cost-effective global health and development programs, and, before that, as co-founder and Chief Executive Officer of IDinsight, a global advisory, data analytics, and research organization.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "neil-buddy-shah",
+   "org": "IDinsight",
+   "org_entity": null,
+   "title": "Co-founder and Chief Executive Officer (former)",
+   "kind": "founder",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Prior to joining CHAI, Dr. Shah served as Managing Director of GiveWell, a nonprofit organization focused on directing charitable capital to cost-effective global health and development programs, and, before that, as co-founder and Chief Executive Officer of IDinsight, a global advisory, data analytics, and research organization.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "richard-fontaine",
+   "org": "Center for a New American Security",
+   "org_entity": null,
+   "title": "Chief Executive Officer; earlier President and Senior Fellow",
+   "kind": "nonprofit",
+   "period": "since Feb 2019",
+   "start_year": 2019,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Mr. Fontaine has served as Chief Executive Officer of the Center for a New American Security (“CNAS”), a bipartisan national security research institution, since February 2019, having previously served as President of CNAS from 2012 to 2019 and as Senior Fellow from 2009 to 2012.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "richard-fontaine",
+   "org": "Trilateral Commission (North America)",
+   "org_entity": null,
+   "title": "Executive Director",
+   "kind": "nonprofit",
+   "period": "since Jul 2019",
+   "start_year": 2019,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Mr. Fontaine serves concurrently as Executive Director of the Trilateral Commission’s North America group, a position he has held since July 2019.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "richard-fontaine",
+   "org": "U.S. Senate",
+   "org_entity": null,
+   "title": "Foreign policy advisor to Senator John McCain; Minority Deputy Staff Director, Senate Armed Services Committee",
+   "kind": "government",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Prior to joining CNAS and the Trilateral Commission, Mr. Fontaine served as foreign policy advisor to Senator John McCain, including as advisor to the McCain 2008 presidential campaign and subsequently as Minority Deputy Staff Director of the Senate Armed Services Committee.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "ben-bernanke",
+   "org": "Brookings Institution",
+   "org_entity": null,
+   "title": "Distinguished Fellow in Economic Studies",
+   "kind": "nonprofit",
+   "period": "since 2014",
+   "start_year": 2014,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Since 2014, Dr. Bernanke has been a Distinguished Fellow in Economic Studies at the Brookings Institution, a public policy research organization.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "ben-bernanke",
+   "org": "Federal Reserve System",
+   "org_entity": null,
+   "title": "Chairman of the Board of Governors",
+   "kind": "government",
+   "period": "Feb 2006 to Jan 2014",
+   "start_year": 2006,
+   "end_year": 2014,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Bernanke served as Chairman of the Board of Governors of the Federal Reserve System from February 2006 to January 2014, having been appointed to that position by Presidents George W. Bush and Barack Obama.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "ben-bernanke",
+   "org": "PIMCO (Pacific Investment Management Company)",
+   "org_entity": null,
+   "title": "Chair of the Global Advisory Board and senior advisor (former)",
+   "kind": "advisor",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Subsequent to his government service, Dr. Bernanke served as chair of the Global Advisory Board of and senior advisor to Pacific Investment Management Company, a global fixed income investment management firm.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "christopher-stubbs",
+   "org": "Harvard University",
+   "org_entity": null,
+   "title": "Samuel C. Moncher Professor of Physics and of Astronomy",
+   "kind": "academic",
+   "period": "since 2003",
+   "start_year": 2003,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Stubbs is the Samuel C. Moncher Professor of Physics and of Astronomy at Harvard University, where he has been a member of the faculty since 2003.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "christopher-stubbs",
+   "org": "JASON",
+   "org_entity": null,
+   "title": "Member",
+   "kind": "advisor",
+   "period": "current",
+   "start_year": null,
+   "end_year": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Dr. Stubbs is a member of JASON, an independent group of scientists that advises the U.S. government on matters of national security.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  },
+  {
+   "person": "christopher-stubbs",
+   "org": "Vera C. Rubin Observatory",
+   "org_entity": null,
+   "title": "Inaugural project scientist",
+   "kind": "academic",
+   "period": null,
+   "start_year": null,
+   "end_year": null,
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "He also served as the inaugural project scientist of the Vera C. Rubin Observatory.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ]
+  }
+ ],
+ "legal": [
+  {
+   "slug": "anthropic-dow-ndcal",
+   "name": "Anthropic PBC v. Department of War, et al.",
+   "court": "U.S. District Court, Northern District of California",
+   "role": "plaintiff",
+   "kind": "government",
+   "filed": "2026",
+   "filed_on": null,
+   "status": "Summary judgment largely for Anthropic on August 27, 2026; the defendants appealed the preliminary injunction",
+   "status_on": "2026-08-27",
+   "counterparties": [
+    "U.S. Department of War",
+    "other federal agencies"
+   ],
+   "amount": null,
+   "summary": "Anthropic sued after the federal government ordered agencies to stop using its technology and the Department of War labeled it a supply-chain risk. The court ruled the actions were retaliation for protected speech.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "We vigorously challenged the Challenged Actions in Anthropic PBC v. Department of War, et al. (N.D. Cal.) and Anthropic PBC v. Department of War, et al. (D.C. Cir.).",
+     "locator": "Business, Legal Proceedings"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "we subsequently, on August 27, 2026, obtained an order from the United States District Court for the Northern District of California that largely granted summary judgment in our favor.",
+     "locator": "Business, Legal Proceedings"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "The court ruled that the Challenged Actions were retaliatory acts meant to punish us for speech protected under the First Amendment to the United States Constitution and violated our rights under the Due Process Clause of the Fifth Amendment to the United States Constitution.",
+     "locator": "Business, Legal Proceedings"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "slug": "anthropic-dow-dccir",
+   "name": "Anthropic PBC v. Department of War, et al.",
+   "court": "U.S. Court of Appeals, D.C. Circuit",
+   "role": "petitioner",
+   "kind": "government",
+   "filed": "2026",
+   "filed_on": null,
+   "status": "Panel denied the petition 2-1 on September 25, 2026; Anthropic asked for rehearing by the full court",
+   "status_on": "2026-09-25",
+   "counterparties": [
+    "U.S. Department of War"
+   ],
+   "amount": null,
+   "summary": "Anthropic challenged the Section 4713 supply-chain risk designation. A divided panel upheld the designation.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "On September 25, 2026, in a 2-1 split decision, the D.C. Circuit Court of Appeals denied our petition for review, ruling that the Department of War’s Section 4713 supply-chain risk designation was proper, and that our rights under the First Amendment and Due Process Clause of the Fifth Amendment were not violated.",
+     "locator": "Business, Legal Proceedings"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "We filed a petition for rehearing en banc asking the full D.C. Circuit to review the panel’s decision.",
+     "locator": "Business, Legal Proceedings"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "slug": "bartz-v-anthropic",
+   "name": "Bartz, et al. v. Anthropic",
+   "court": "U.S. District Court, Northern District of California",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2024-08",
+   "filed_on": "2024-08-01",
+   "status": "Settled for $1.5 billion; the court approved the settlement in July 2026",
+   "status_on": "2026-07-01",
+   "counterparties": [
+    "Authors (class action)"
+   ],
+   "amount": 1500000000,
+   "summary": "Authors' class action over books used to train Claude. Anthropic disputes wrongdoing but settled.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In August 2024, various authors filed suit against the Company alleging infringement of copyrighted books in the case of Bartz, et al. v. Anthropic in the U.S. District Court for the Northern District of California (“Bartz”).",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "The Company reached a settlement in the amount of $1.5 billion and the interest earned thereon, which was approved by the district court in July 2026.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "slug": "bartz-opt-out-suits",
+   "name": "Bartz opt-out suits",
+   "court": "Various courts",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": null,
+   "filed_on": null,
+   "status": "In various stages",
+   "status_on": null,
+   "counterparties": [
+    "Authors and publishers"
+   ],
+   "amount": null,
+   "summary": "Authors and publishers who opted out of the Bartz settlement sued individually.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Various authors and publishers have opted out of the class action and settlement reached in Bartz and filed individual suits against the Company, generally alleging claims of direct copyright infringement, contributory copyright infringement, and removal of copyright management information related to the use of literary works used in the training of the Company’s large language models.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "slug": "concord-v-anthropic",
+   "name": "Concord Music Group et al. v. Anthropic (Concord I)",
+   "court": "Filed in the Middle District of Tennessee; moved to the Northern District of California",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2023-10",
+   "filed_on": "2023-10-01",
+   "status": "Both sides moved for summary judgment; hearing held October 21, 2026",
+   "status_on": "2026-10-21",
+   "counterparties": [
+    "Concord Music Group",
+    "music publishers"
+   ],
+   "amount": null,
+   "summary": "Music publishers say Claude copied and reproduced song lyrics.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In October 2023, Concord Music Group et al. filed a complaint against the Company in the U.S. District Court for the Middle District of Tennessee (“Concord I”).",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "The case was later transferred to the Northern District of California. Both parties filed motions for summary judgment and the court held a hearing on October 21, 2026.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "slug": "music-publisher-matters",
+   "name": "Music Publisher Matters",
+   "court": "U.S. District Court, Northern District of California",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2026",
+   "filed_on": null,
+   "status": "Preliminary stages; some complaints also name two Anthropic executives",
+   "status_on": null,
+   "counterparties": [
+    "Concord Music Group",
+    "Universal Music Publishing Group",
+    "ABKCO Music",
+    "BMG Rights Management (US) LLC",
+    "Round Hill Music LP",
+    "Sony Music Publishing (US) LLC",
+    "Warner Chappell Music, Inc."
+   ],
+   "amount": null,
+   "summary": "Several music publishers filed new complaints over lyrics and compositions in training data and outputs.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Between January and October 2026, several complaints were filed against the Company in the U.S. District Court for the Northern District of California by various music publishers and their affiliated entities, including Concord Music Group, Universal Music Publishing Group, ABKCO Music, BMG Rights Management (US) LLC, Round Hill Music LP, Sony Music Publishing (US) LLC, Warner Chappell Music, Inc., and others (collectively, the “Music Publisher Matters”).",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "These matters are in preliminary stages.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "slug": "reddit-v-anthropic",
+   "name": "Reddit, Inc. v. Anthropic",
+   "court": "California state court",
+   "role": "defendant",
+   "kind": "contract",
+   "filed": "2025-06",
+   "filed_on": "2025-06-01",
+   "status": "Narrowed in September 2026 to breach of contract, interference with contract and unfair competition",
+   "status_on": "2026-09-01",
+   "counterparties": [
+    "Reddit, Inc."
+   ],
+   "amount": null,
+   "summary": "Reddit alleges breach of contract and other claims over Anthropic's use of Reddit data to build and run its models.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In June 2025, Reddit, Inc. filed suit against the Company in California state court alleging various claims, including breach of contract and trespass to chattels, stemming from allegations about the Company’s use of Reddit data in building and operating its models.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In September 2026, the state court narrowed the case to Reddit’s breach of contract, interference with contract, and unfair competition claims.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "slug": "mackinnon-v-anthropic",
+   "name": "MacKinnon (Canadian authors class action)",
+   "court": "British Columbia, Canada",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2025",
+   "filed_on": null,
+   "status": "Putative class action pending",
+   "status_on": null,
+   "counterparties": [
+    "Canadian authors (putative class)"
+   ],
+   "amount": null,
+   "summary": "On behalf of all Canadian authors, over books used for training.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In May and July 2025, two putative class actions were filed on behalf of purported classes of Canadian authors - one in British Columbia (“MacKinnon”) on behalf of all Canadian authors, and one in Québec (“Grescoe”) on behalf of all Québec authors - each alleging violations of Canada’s Copyright Act based on the Company’s copying and use of copyrighted books to train its large language models.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "slug": "grescoe-v-anthropic",
+   "name": "Grescoe (Québec authors class action)",
+   "court": "Québec, Canada",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2025",
+   "filed_on": null,
+   "status": "Stayed until MacKinnon reaches final judgment",
+   "status_on": null,
+   "counterparties": [
+    "Québec authors (putative class)"
+   ],
+   "amount": null,
+   "summary": "On behalf of all Québec authors; paused while MacKinnon runs.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Grescoe has been stayed pending a final judgment in MacKinnon.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "slug": "la-presse-v-anthropic",
+   "name": "La Presse Inc. v. Anthropic",
+   "court": "Québec Superior Court",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2026-07",
+   "filed_on": "2026-07-01",
+   "status": "Pending",
+   "status_on": null,
+   "counterparties": [
+    "La Presse Inc."
+   ],
+   "amount": null,
+   "summary": "A Québec news publisher says its journalism was copied into training data.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In July 2026, La Presse Inc., a Québec news publisher, filed a copyright infringement action against the Company in the Québec Superior Court alleging that the Company reproduced its journalistic works in the data used to train the Company’s models.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "slug": "canadian-news-publishers-v-anthropic",
+   "name": "Canadian news publishers v. Anthropic",
+   "court": "Ontario Superior Court of Justice",
+   "role": "defendant",
+   "kind": "copyright",
+   "filed": "2026-10",
+   "filed_on": "2026-10-01",
+   "status": "Pending",
+   "status_on": null,
+   "counterparties": [
+    "Canadian news publishers"
+   ],
+   "amount": null,
+   "summary": "Publishers say their websites were copied in breach of terms and protections.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "In October 2026, a group of Canadian news publishers filed a claim against the Company in the Ontario Superior Court of Justice.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "The plaintiffs allege the Company copied their content from their websites to develop its Claude models. They further allege the Company breached the websites’ terms of service and circumvented technological protection measures.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "slug": "claude-subscription-class-actions",
+   "name": "Claude subscription advertising class actions",
+   "court": "Various courts",
+   "role": "defendant",
+   "kind": "consumer",
+   "filed": null,
+   "filed_on": null,
+   "status": "Early stages",
+   "status_on": null,
+   "counterparties": [
+    "Consumers (putative classes)"
+   ],
+   "amount": null,
+   "summary": "Putative class actions over how Claude subscription plans are advertised and sold.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "The Company is subject to several putative class action complaints alleging that it markets and sells subscription plans for Claude through false, misleading, and deceptive advertising practices.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "slug": "regulatory-inquiries",
+   "name": "Government inquiries (FTC, state attorneys general and others)",
+   "court": "Federal, state and foreign authorities",
+   "role": "subject",
+   "kind": "regulatory",
+   "filed": null,
+   "filed_on": null,
+   "status": "From time to time",
+   "status_on": null,
+   "counterparties": [
+    "U.S. Federal Trade Commission",
+    "State attorneys general"
+   ],
+   "amount": null,
+   "summary": "Inquiries, investigations and subpoenas on consumer protection, privacy and product safety.",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "From time to time, the Company is subject to inquiries, investigations, subpoenas and requests for information from federal, state, and foreign governmental authorities, including the U.S. Federal Trade Commission and state attorneys general, regarding, among other things, consumer protection, data protection and privacy, and the safety and security of the Company’s products.",
+     "locator": "Notes to Consolidated Financial Statements, Legal Matters"
+    }
+   ],
+   "sort_order": 13
+  }
+ ],
+ "advisors": [
+  {
+   "org": "Ernst & Young LLP",
+   "org_entity": null,
+   "role": "Independent auditor",
+   "since": "Oct 2025",
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "accountant",
+     "quote": "On October 30, 2025, we engaged Ernst & Young LLP as our independent registered public accounting firm to audit our consolidated financial statements as of and for the year ended December 31, 2025, and dismissed Grant Thornton LLP as our independent registered public accounting firm, in each case as ratified by our board of directors.",
+     "locator": "Change in Independent Accountant"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "org": "Grant Thornton LLP",
+   "org_entity": null,
+   "role": "Former independent auditor",
+   "since": null,
+   "until": "Oct 2025",
+   "current": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "accountant",
+     "quote": "On October 30, 2025, we engaged Ernst & Young LLP as our independent registered public accounting firm to audit our consolidated financial statements as of and for the year ended December 31, 2025, and dismissed Grant Thornton LLP as our independent registered public accounting firm, in each case as ratified by our board of directors.",
+     "locator": "Change in Independent Accountant"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "org": "Wilson Sonsini Goodrich & Rosati, P.C.",
+   "org_entity": null,
+   "role": "Company counsel for the IPO",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "legal_counsel",
+     "quote": "Wilson Sonsini Goodrich & Rosati, P.C., Palo Alto, California, which has acted as our counsel in connection with this offering, will pass upon the validity of the shares of our Class A common stock being offered by this prospectus.",
+     "locator": "Legal Matters"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "org": "Freshfields US LLP",
+   "org_entity": null,
+   "role": "Counsel to the underwriters",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "legal_counsel",
+     "quote": "Certain legal matters in connection with this offering will be passed upon for the underwriters by Freshfields US LLP, Redwood City, California.",
+     "locator": "Legal Matters"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "org": "Orrick, Herrington & Sutcliffe LLP",
+   "org_entity": null,
+   "role": "Counsel on executive compensation and equity",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "legal_counsel",
+     "quote": "Orrick, Herrington & Sutcliffe LLP acted as our counsel with respect to certain executive compensation and equity matters.",
+     "locator": "Legal Matters"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "org": "Cleary Gottlieb Steen & Hamilton LLP",
+   "org_entity": null,
+   "role": "Legal advisor to the Long-Term Benefit Trust",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "legal_counsel",
+     "quote": "The Long-Term Benefit Trust’s principal legal counsel, John Morley, and Cleary Gottlieb Steen & Hamilton LLP served as legal advisors to the LTBT in connection with certain governance matters set forth in this prospectus.",
+     "locator": "Legal Matters"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "org": "Cravath, Swaine & Moore LLP",
+   "org_entity": null,
+   "role": "Legal advisor to the co-founders",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "legal_counsel",
+     "quote": "Cravath, Swaine & Moore LLP served as legal advisor to the co-founders in connection with certain governance matters set forth in this prospectus.",
+     "locator": "Legal Matters"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "org": "Goldman Sachs & Co. LLC",
+   "org_entity": null,
+   "role": "Lead underwriter (lock-up agent for the underwriters)",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "risk",
+     "quote": "lock-up agreements with Goldman Sachs & Co. LLC and Morgan Stanley & Co. LLC, on behalf of the underwriters",
+     "locator": "Risk Factors"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "org": "Morgan Stanley",
+   "org_entity": null,
+   "role": "Lead underwriter (lock-up agent for the underwriters)",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "risk",
+     "quote": "lock-up agreements with Goldman Sachs & Co. LLC and Morgan Stanley & Co. LLC, on behalf of the underwriters",
+     "locator": "Risk Factors"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "org": "J.P. Morgan",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "org": "Citigroup",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "org": "Barclays",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "org": "Wells Fargo Securities",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "org": "BofA Securities",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 14
+  },
+  {
+   "org": "Deutsche Bank Securities",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 15
+  },
+  {
+   "org": "RBC Capital Markets",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 16
+  },
+  {
+   "org": "UBS Investment Bank",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 17
+  },
+  {
+   "org": "BMO Capital Markets",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 18
+  },
+  {
+   "org": "BNP PARIBAS",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 19
+  },
+  {
+   "org": "Credit Agricole CIB",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 20
+  },
+  {
+   "org": "Jefferies",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 21
+  },
+  {
+   "org": "Mizuho",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 22
+  },
+  {
+   "org": "MUFG",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 23
+  },
+  {
+   "org": "Societe Generale",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 24
+  },
+  {
+   "org": "TD Securities",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 25
+  },
+  {
+   "org": "BTIG",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 26
+  },
+  {
+   "org": "Cantor",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 27
+  },
+  {
+   "org": "Capital One Securities",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 28
+  },
+  {
+   "org": "Macquarie Capital",
+   "org_entity": null,
+   "role": "Underwriter",
+   "since": null,
+   "until": null,
+   "current": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "Goldman Sachs & Co. LLC Morgan Stanley J.P. Morgan Citigroup Barclays Wells Fargo Securities BofA Securities Deutsche Bank Securities RBC Capital Markets UBS Investment Bank BMO Capital Markets BNP PARIBAS Credit Agricole CIB Jefferies Mizuho MUFG Societe Generale TD Securities BTIG Cantor Capital One Securities Macquarie Capital",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 29
+  }
+ ],
+ "rounds": [
+  {
+   "slug": "anthropic-series-a",
+   "round": "Series A",
+   "tranche": "A",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2021-05",
+   "ended": "2021-05",
+   "announced_on": "2021-05-28",
+   "investors": null,
+   "price_per_share": 2.57,
+   "shares": 48574000,
+   "amount": 124000000,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "The first priced round, four months after incorporation; individual backers led.",
+   "who": [
+    {
+     "name": "Jaan Tallinn",
+     "kind": "individual",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "James McClave",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Dustin Moskovitz",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Center for Emerging Risk Research",
+     "kind": "nonprofit",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Eric Schmidt",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2021-05-28-series-a",
+     "quote": "Anthropic, an AI safety and research company, has raised $124 million in a Series A.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2021-05-28-series-a",
+     "quote": "The Series A round was led by Jaan Tallinn, technology investor and co-founder of Skype. The round included participation from James McClave, Dustin Moskovitz, the Center for Emerging Risk Research, Eric Schmidt, and others.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Series A 48,574 48,574 $2.57 $125 $125",
+     "locator": "Notes, Redeemable Convertible Preferred Stock"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "slug": "anthropic-series-b",
+   "round": "Series B",
+   "tranche": "B",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2022-04",
+   "ended": "2022-04",
+   "announced_on": "2022-04-29",
+   "investors": null,
+   "price_per_share": 11.23,
+   "shares": 87430000,
+   "amount": 580000000,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "Price per share rose more than fourfold from the Series A.",
+   "who": [
+    {
+     "name": "Sam Bankman-Fried",
+     "kind": "individual",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Caroline Ellison",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jim McClave",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Nishad Singh",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jaan Tallinn",
+     "kind": "individual",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Center for Emerging Risk Research",
+     "kind": "nonprofit",
+     "role": "participant",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2022-04-29-series-b",
+     "quote": "Anthropic, an AI safety and research company, has raised $580 million in a Series B.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2022-04-29-series-b",
+     "quote": "The Series B round was led by Sam Bankman-Fried, CEO of FTX. The round also included participation from Caroline Ellison, Jim McClave, Nishad Singh, Jaan Tallinn, and the Center for Emerging Risk Research (CERR).",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Series B 87,430 87,430 $11.23 982 982",
+     "locator": "Notes, Redeemable Convertible Preferred Stock"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "slug": "anthropic-zoom-2023",
+   "round": "Zoom Ventures investment",
+   "tranche": null,
+   "kind": "strategic_commitment",
+   "stage": "pre_public",
+   "started": "2023-05",
+   "ended": "2023-05",
+   "announced_on": "2023-05-16",
+   "investors": null,
+   "price_per_share": null,
+   "shares": null,
+   "amount": null,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "Zoom's venture arm invested alongside a product partnership.",
+   "who": [
+    {
+     "name": "Zoom Ventures",
+     "kind": "corporate",
+     "role": "lead",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2023-05-16-zoom",
+     "quote": "We are also pleased to announce that Zoom Ventures has made an investment in Anthropic.",
+     "locator": "Anthropic newsroom"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "slug": "anthropic-series-c",
+   "round": "Series C",
+   "tranche": "C-1, C-2",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2023-05",
+   "ended": "2023-05",
+   "announced_on": "2023-05-23",
+   "investors": null,
+   "price_per_share": 11.23,
+   "shares": 39759000,
+   "amount": 450000000,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "Google joined as an investor; flat price per share from the Series B.",
+   "who": [
+    {
+     "name": "Spark Capital",
+     "kind": "venture",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Google",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": "google-investor"
+    },
+    {
+     "name": "Salesforce Ventures",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Sound Ventures",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Zoom Ventures",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2023-05-23-series-c",
+     "quote": "We are pleased to announce that we have raised $450 million in Series C funding led by Spark Capital with participation from Google, Salesforce Ventures, Sound Ventures, Zoom Ventures, and others.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Series C-1 26,397 26,397 $11.23 296 296",
+     "locator": "Notes, Redeemable Convertible Preferred Stock"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "notes",
+     "quote": "Series C-2 13,362 13,362 $11.23 150 150",
+     "locator": "Notes, Redeemable Convertible Preferred Stock"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "slug": "anthropic-amazon-2023",
+   "round": "Amazon investment",
+   "tranche": null,
+   "kind": "strategic_commitment",
+   "stage": "pre_public",
+   "started": "2023-09",
+   "ended": "2023-09",
+   "announced_on": "2023-09-25",
+   "investors": null,
+   "price_per_share": null,
+   "shares": null,
+   "amount": 4000000000,
+   "amount_qualifier": "up to",
+   "post_money": null,
+   "voting": true,
+   "summary": "Amazon committed up to $4 billion and took a minority stake.",
+   "who": [
+    {
+     "name": "Amazon",
+     "kind": "corporate",
+     "role": "lead",
+     "entity": "amazon-investor"
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2023-09-25-amazon",
+     "quote": "Today, we’re announcing that Amazon will invest up to $4 billion in Anthropic.",
+     "locator": "Anthropic newsroom"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "slug": "anthropic-convertible-notes",
+   "round": "Convertible notes",
+   "tranche": null,
+   "kind": "convertible_note",
+   "stage": "pre_public",
+   "started": "2023-11",
+   "ended": null,
+   "announced_on": null,
+   "investors": 2,
+   "price_per_share": null,
+   "shares": null,
+   "amount": 10200000000,
+   "amount_qualifier": "principal",
+   "post_money": null,
+   "voting": true,
+   "summary": "Notes from two investors since November 2023, later converted into preferred stock.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From November 2023 through the filing date of this registration statement, we issued convertible promissory notes in an aggregate principal amount of $10.2 billion to two accredited investors.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "slug": "anthropic-series-d",
+   "round": "Series D",
+   "tranche": "D-1, D-3",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2024-01",
+   "ended": "2024-05",
+   "announced_on": null,
+   "investors": 54,
+   "price_per_share": 30.0045,
+   "shares": 39978675,
+   "amount": 1200000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": true,
+   "summary": "54 investors at $30.00 a share. No public announcement found.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2024 to May 2024, we sold an aggregate of 39,978,675 shares of our Series D-1 and D-3 redeemable convertible preferred stock to 54 accredited investors at a purchase price of $30.0045 per share, for an aggregate purchase price of approximately $1.2 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "slug": "anthropic-series-d-safes",
+   "round": "Series D",
+   "tranche": "D-1, D-2 (SAFE conversions)",
+   "kind": "safe_conversion",
+   "stage": "pre_public",
+   "started": "2024-01",
+   "ended": "2024-01",
+   "announced_on": null,
+   "investors": 3,
+   "price_per_share": null,
+   "shares": 4477097,
+   "amount": 121000000,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "Three SAFEs converted into Series D shares.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2024, we issued 33,328 shares of our Series D-1 redeemable convertible preferred stock to one accredited investor upon conversion of a simple agreement for future equity with a principal amount of $1,000,000 at a purchase price of $30.0045 per share.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2024, we issued 4,443,769 shares of our Series D-2 redeemable convertible preferred stock to two accredited investors upon conversion of simple agreements for future equity with an aggregate principal amount of $120 million at a purchase price of $27.0041 per share.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "slug": "anthropic-series-e",
+   "round": "Series E",
+   "tranche": "E-1",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2025-01",
+   "ended": "2025-03",
+   "announced_on": "2025-03-03",
+   "investors": 72,
+   "price_per_share": 56.0865,
+   "shares": 63610106,
+   "amount": 3500000000,
+   "amount_qualifier": null,
+   "post_money": 61500000000,
+   "voting": true,
+   "summary": "The first round Anthropic announced with a valuation; 72 investors.",
+   "who": [
+    {
+     "name": "Lightspeed Venture Partners",
+     "kind": "venture",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Bessemer Venture Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Cisco Investments",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": "cisco"
+    },
+    {
+     "name": "D1 Capital Partners",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Fidelity Management & Research Company",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "General Catalyst",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jane Street",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Menlo Ventures",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Salesforce Ventures",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2025-03-03-series-e",
+     "quote": "Anthropic has raised $3.5 billion at a $61.5 billion post-money valuation. The round was led by Lightspeed Venture Partners, with participation from Bessemer Venture Partners, Cisco Investments, D1 Capital Partners, Fidelity Management & Research Company, General Catalyst, Jane Street, Menlo Ventures and Salesforce Ventures, among other new and existing investors.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2025 to March 2025, we sold an aggregate of 63,610,106 shares of our Series E-1 redeemable convertible preferred stock to 72 accredited investors at a purchase price of $56.0865 per share, for an aggregate purchase price of approximately $3.6 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "slug": "anthropic-series-e-conversions",
+   "round": "Series E",
+   "tranche": "E-2 to E-5 (note conversions)",
+   "kind": "note_conversion",
+   "stage": "pre_public",
+   "started": "2025-01",
+   "ended": "2025-03",
+   "announced_on": null,
+   "investors": null,
+   "price_per_share": null,
+   "shares": 147533018,
+   "amount": 4642000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": false,
+   "summary": "Convertible notes from strategic investors turned into non-voting Series E shares.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2025 to March 2025, we issued 95,281,934 shares of our Series E-2 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of our convertible promissory notes at a purchase price of $20.9280 per share for an aggregate purchase price of approximately $2.0 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2025, we issued 12,664,555 shares of our Series E-3 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of a convertible promissory note at a purchase price of $44.8692 per share for an aggregate purchase price of approximately $568 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2025, we issued 15,342,945 shares of our Series E-4 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of a convertible promissory note at a purchase price of $50.4779 per share for an aggregate purchase price of approximately $774 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2025, we issued 24,243,584 shares of our Series E-5 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of a convertible promissory note at a purchase price of $53.2822 per share for an aggregate purchase price of approximately $1.3 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "slug": "anthropic-series-f",
+   "round": "Series F",
+   "tranche": "F-1",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2025-08",
+   "ended": "2025-09",
+   "announced_on": "2025-09-02",
+   "investors": 202,
+   "price_per_share": 140.9676,
+   "shares": 92219720,
+   "amount": 13000000000,
+   "amount_qualifier": null,
+   "post_money": 183000000000,
+   "voting": true,
+   "summary": "Valuation tripled in six months; 202 investors.",
+   "who": [
+    {
+     "name": "ICONIQ",
+     "kind": "growth",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Fidelity Management & Research Company",
+     "kind": "asset_manager",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "Lightspeed Venture Partners",
+     "kind": "venture",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "Altimeter",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Baillie Gifford",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "affiliated funds of BlackRock",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Blackstone",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Coatue",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "D1 Capital Partners",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "General Atlantic",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "General Catalyst",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "GIC",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Growth Equity at Goldman Sachs Alternatives",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Insight Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jane Street",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Ontario Teachers' Pension Plan",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Qatar Investment Authority",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "TPG",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "T. Rowe Price Associates, Inc.",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "T. Rowe Price Investment Management, Inc.",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "WCM Investment Management",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "XN",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2025-09-02-series-f",
+     "quote": "Anthropic has completed a Series F fundraising of $13 billion led by ICONIQ. This financing values Anthropic at $183 billion post-money. Along with ICONIQ, the round was co-led by Fidelity Management & Research Company and Lightspeed Venture Partners.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2025-09-02-series-f",
+     "quote": "Significant investors in this round include Altimeter, Baillie Gifford, affiliated funds of BlackRock, Blackstone, Coatue, D1 Capital Partners, General Atlantic, General Catalyst, GIC, Growth Equity at Goldman Sachs Alternatives, Insight Partners, Jane Street, Ontario Teachers' Pension Plan, Qatar Investment Authority, TPG, T. Rowe Price Associates, Inc., T. Rowe Price Investment Management, Inc., WCM Investment Management, and XN.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From August 2025 to September 2025, we sold an aggregate of (i) 92,219,720 shares of our Series F-1 redeemable convertible preferred stock to 202 accredited investors at a purchase price of $140.9676 per share, for an aggregate purchase price of approximately $13.0 billion and (ii) 20,739,866 shares of our Series F-2 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of our convertible promissory notes at a purchase price of $20.9280 per share for an aggregate purchase price of approximately $434 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "slug": "anthropic-series-f-conversion",
+   "round": "Series F",
+   "tranche": "F-2 (note conversion)",
+   "kind": "note_conversion",
+   "stage": "pre_public",
+   "started": "2025-08",
+   "ended": "2025-09",
+   "announced_on": null,
+   "investors": 1,
+   "price_per_share": 20.928,
+   "shares": 20739866,
+   "amount": 434000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": false,
+   "summary": "One investor's notes converted into non-voting Series F shares.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From August 2025 to September 2025, we sold an aggregate of (i) 92,219,720 shares of our Series F-1 redeemable convertible preferred stock to 202 accredited investors at a purchase price of $140.9676 per share, for an aggregate purchase price of approximately $13.0 billion and (ii) 20,739,866 shares of our Series F-2 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of our convertible promissory notes at a purchase price of $20.9280 per share for an aggregate purchase price of approximately $434 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "slug": "anthropic-series-b-resale",
+   "round": "Series B shares resold",
+   "tranche": null,
+   "kind": "secondary_resale",
+   "stage": "pre_public",
+   "started": "2025-10",
+   "ended": "2025-10",
+   "announced_on": null,
+   "investors": 9,
+   "price_per_share": 140.9676,
+   "shares": 4453900,
+   "amount": 627000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": true,
+   "summary": "Anthropic bought back Series B shares that former holders forfeited to the U.S. government, then resold them to nine investors at the Series F price. Anthropic kept no proceeds.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In October 2025, we repurchased 4,453,900 shares of our Series B redeemable convertible preferred stock from the U.S. government, to which such shares had been forfeited by former holders in legal proceedings to which we were not a party, at a purchase price of $140.9676 per share, and contemporaneously resold such shares to nine accredited investors at the same price per share, for aggregate consideration of approximately $627 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "slug": "anthropic-microsoft-nvidia-2025",
+   "round": "Microsoft and NVIDIA commitments",
+   "tranche": null,
+   "kind": "strategic_commitment",
+   "stage": "pre_public",
+   "started": "2025-11",
+   "ended": "2025-11",
+   "announced_on": "2025-11-18",
+   "investors": null,
+   "price_per_share": null,
+   "shares": null,
+   "amount": 15000000000,
+   "amount_qualifier": "up to",
+   "post_money": null,
+   "voting": true,
+   "summary": "NVIDIA committed up to $10 billion and Microsoft up to $5 billion alongside an Azure compute deal.",
+   "who": [
+    {
+     "name": "NVIDIA",
+     "kind": "corporate",
+     "role": "lead",
+     "entity": "nvidia"
+    },
+    {
+     "name": "Microsoft",
+     "kind": "corporate",
+     "role": "lead",
+     "entity": "microsoft"
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2025-11-18-microsoft-nvidia",
+     "quote": "As part of the partnership, NVIDIA and Microsoft are committing to invest up to $10 billion and up to $5 billion respectively in Anthropic.",
+     "locator": "Anthropic newsroom"
+    }
+   ],
+   "sort_order": 14
+  },
+  {
+   "slug": "anthropic-series-g",
+   "round": "Series G",
+   "tranche": "G-1",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2026-01",
+   "ended": "2026-02",
+   "announced_on": "2026-02-12",
+   "investors": 261,
+   "price_per_share": 259.1364,
+   "shares": 90510425,
+   "amount": 30000000000,
+   "amount_qualifier": null,
+   "post_money": 380000000000,
+   "voting": true,
+   "summary": "261 investors; the round also took in part of the Microsoft and NVIDIA commitments.",
+   "who": [
+    {
+     "name": "GIC",
+     "kind": "sovereign",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Coatue",
+     "kind": "growth",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "D. E. Shaw Ventures",
+     "kind": "hedge_fund",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "Dragoneer",
+     "kind": "venture",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "Founders Fund",
+     "kind": "venture",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "ICONIQ",
+     "kind": "growth",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "MGX",
+     "kind": "sovereign",
+     "role": "co_lead",
+     "entity": "mgx"
+    },
+    {
+     "name": "Accel",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Addition",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Alpha Wave Global",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Altimeter",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "AMP PBC",
+     "kind": "other",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Appaloosa LP",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Baillie Gifford",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Bessemer Venture Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "affiliated funds of BlackRock",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Blackstone",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "D1 Capital Partners",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Fidelity Management & Research Company",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "General Catalyst",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Greenoaks",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Growth Equity at Goldman Sachs Alternatives",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Insight Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jane Street",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "JPMorganChase",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Lightspeed Venture Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Menlo Ventures",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Morgan Stanley Investment Management",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "NX1 Capital",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Qatar Investment Authority",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Sands Capital",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Sequoia Capital",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Temasek",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "TowerBrook",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "TPG",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Whale Rock Capital",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "XN",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Microsoft",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": "microsoft"
+    },
+    {
+     "name": "NVIDIA",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": "nvidia"
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2026-02-12-series-g",
+     "quote": "We have raised $30 billion in Series G funding led by GIC and Coatue, valuing Anthropic at $380 billion post-money. The round was co-led by D. E. Shaw Ventures, Dragoneer, Founders Fund, ICONIQ, and MGX.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-02-12-series-g",
+     "quote": "Significant investors in this round include: Accel, Addition, Alpha Wave Global, Altimeter, AMP PBC, Appaloosa LP, Baillie Gifford, Bessemer Venture Partners, affiliated funds of BlackRock, Blackstone, D1 Capital Partners, Fidelity Management & Research Company, General Catalyst, Greenoaks, Growth Equity at Goldman Sachs Alternatives, Insight Partners, Jane Street, JPMorganChase through its Security and Resiliency Initiative and Growth Equity Partners, Lightspeed Venture Partners, Menlo Ventures, Morgan Stanley Investment Management, NX1 Capital, Qatar Investment Authority (QIA), Sands Capital, Sequoia Capital, Temasek, TowerBrook, TPG, Whale Rock Capital, and XN.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-02-12-series-g",
+     "quote": "This round also includes a portion of the previously announced investments from Microsoft and NVIDIA.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2026 to February 2026, we sold an aggregate of 90,510,425 shares of our Series G-1 redeemable convertible preferred stock to 261 accredited investors at a purchase price of $259.1364 per share, for an aggregate purchase price of approximately $23.5 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 15
+  },
+  {
+   "slug": "anthropic-series-g-nonvoting",
+   "round": "Series G",
+   "tranche": "G-2 (non-voting)",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2026-01",
+   "ended": "2026-05",
+   "announced_on": null,
+   "investors": 5,
+   "price_per_share": 259.1364,
+   "shares": 83928770,
+   "amount": 21700000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": false,
+   "summary": "Five investors bought non-voting Series G shares at the Series G price.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2026 to May 2026, we sold an aggregate of 83,928,770 shares of our Series G-2 non-voting redeemable convertible preferred stock to five accredited investors at a purchase price of $259.1364 per share, for an aggregate purchase price of approximately $21.7 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 16
+  },
+  {
+   "slug": "anthropic-series-g-conversions",
+   "round": "Series G",
+   "tranche": "G-3, G-4 (note conversions)",
+   "kind": "note_conversion",
+   "stage": "pre_public",
+   "started": "2026-01",
+   "ended": "2026-02",
+   "announced_on": null,
+   "investors": null,
+   "price_per_share": null,
+   "shares": 23884524,
+   "amount": 1204000000,
+   "amount_qualifier": "approximately",
+   "post_money": null,
+   "voting": false,
+   "summary": "Convertible notes turned into non-voting Series G shares.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From January 2026 to February 2026, we issued 20,562,886 shares of our Series G-3 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of our convertible promissory notes at a purchase price of $20.9280 per share, for an aggregate purchase price of approximately $430 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "In January 2026, we issued 3,321,638 shares of our Series G-4 non-voting redeemable convertible preferred stock to one accredited investor upon conversion of our convertible promissory notes at a purchase price of $233.2228 per share for an aggregate purchase price of approximately $774 million.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 17
+  },
+  {
+   "slug": "anthropic-series-h",
+   "round": "Series H",
+   "tranche": "H-1, H-2",
+   "kind": "priced_round",
+   "stage": "pre_public",
+   "started": "2026-05",
+   "ended": "2026-06",
+   "announced_on": "2026-05-28",
+   "investors": 305,
+   "price_per_share": 589.0095,
+   "shares": 110748169,
+   "amount": 65000000000,
+   "amount_qualifier": null,
+   "post_money": 965000000000,
+   "voting": true,
+   "summary": "The largest round: 305 investors bought voting H-1 shares and 11 bought non-voting H-2, including $15 billion committed earlier by hyperscalers.",
+   "who": [
+    {
+     "name": "Altimeter Capital",
+     "kind": "growth",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Dragoneer",
+     "kind": "venture",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Greenoaks",
+     "kind": "venture",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Sequoia Capital",
+     "kind": "venture",
+     "role": "lead",
+     "entity": null
+    },
+    {
+     "name": "Capital Group",
+     "kind": "asset_manager",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "Coatue",
+     "kind": "growth",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "D1 Capital Partners",
+     "kind": "growth",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "GIC",
+     "kind": "sovereign",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "ICONIQ",
+     "kind": "growth",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "XN",
+     "kind": "growth",
+     "role": "co_lead",
+     "entity": null
+    },
+    {
+     "name": "AMP PBC",
+     "kind": "other",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Baillie Gifford",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Blackstone",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Brookfield",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "D.E. Shaw Ventures",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "DST Global",
+     "kind": "growth",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Fidelity Management & Research Company",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "General Catalyst",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Insight Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Jane Street",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Lightspeed Venture Partners",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "MGX",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": "mgx"
+    },
+    {
+     "name": "NTTVC",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "NX1 Capital",
+     "kind": "venture",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Situational Awareness LP",
+     "kind": "hedge_fund",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "T. Rowe Price Associates, Inc.",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "T. Rowe Price Investment Management, Inc.",
+     "kind": "asset_manager",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Temasek",
+     "kind": "sovereign",
+     "role": "participant",
+     "entity": null
+    },
+    {
+     "name": "Amazon",
+     "kind": "corporate",
+     "role": "participant",
+     "entity": "amazon-investor"
+    }
+   ],
+   "evidence": [
+    {
+     "doc": "anthropic-news-2026-05-28-series-h",
+     "quote": "Anthropic has raised $65 billion in Series H funding led by Altimeter Capital, Dragoneer, Greenoaks, and Sequoia Capital, valuing the company at $965 billion post-money.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-05-28-series-h",
+     "quote": "The round was co-led by Capital Group, Coatue, D1 Capital Partners, GIC, ICONIQ, and XN.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-05-28-series-h",
+     "quote": "Significant investors in this round include AMP PBC, Baillie Gifford, Blackstone, Brookfield, D.E. Shaw Ventures, DST Global, Fidelity Management & Research Company, General Catalyst, Insight Partners, Jane Street, Lightspeed Venture Partners, MGX, NTTVC, NX1 Capital, Situational Awareness LP, T. Rowe Price Associates, Inc., T. Rowe Price Investment Management, Inc., and Temasek.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-05-28-series-h",
+     "quote": "It also includes $15 billion of previously committed investments from hyperscalers, including $5 billion from Amazon.",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "part2",
+     "quote": "From May 2026 to June 2026, we sold an aggregate of (i) 77,637,878 shares of our Series H-1 redeemable convertible preferred stock to 305 accredited investors at a purchase price of $589.0095 per share, for an aggregate purchase price of approximately $45.7 billion, and (ii) 33,110,291 shares of our Series H-2 non-voting redeemable convertible preferred stock to 11 accredited investors at a purchase price of $589.0095 per share, for an aggregate purchase price of approximately $19.5 billion.",
+     "locator": "Part II, Item 15. Recent Sales of Unregistered Securities"
+    }
+   ],
+   "sort_order": 18
+  },
+  {
+   "slug": "anthropic-ipo",
+   "round": "Initial public offering",
+   "tranche": null,
+   "kind": "ipo",
+   "stage": "ipo",
+   "started": "2026-10",
+   "ended": null,
+   "announced_on": null,
+   "investors": null,
+   "price_per_share": null,
+   "shares": null,
+   "amount": null,
+   "amount_qualifier": null,
+   "post_money": null,
+   "voting": true,
+   "summary": "Form S-1 filed on October 26, 2026 to list Class A shares on the Nasdaq Global Select Market as ANT; price range not yet set. The seven co-founders are selling stockholders; 22 banks underwrite, led by Goldman Sachs and Morgan Stanley.",
+   "who": [],
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "This is an initial public offering of shares of Class A common stock of Anthropic, PBC.",
+     "locator": "Prospectus cover"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "We have applied to list our Class A common stock on the Nasdaq Global Select Market under the symbol “ANT.”",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 19
+  }
+ ],
+ "facts": [
+  {
+   "key": "incorporated",
+   "label": "Incorporated",
+   "value": "January 2021, as a Delaware public benefit corporation",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "We were incorporated as a Delaware PBC in January 2021.",
+     "locator": "Prospectus Summary, Corporate Information"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "key": "cofounders",
+   "label": "Co-founders",
+   "value": "Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, Christopher Olah",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "our seven co-founders, Dario Amodei, Daniela Amodei, Tom Brown, Jack Clark, Jared Kaplan, Sam McCandlish, and Christopher Olah",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "key": "employees",
+   "label": "Employees",
+   "value": "About 5,300 (Sep 30, 2026), up from about 940 (Dec 31, 2024); most in research, engineering and product",
+   "as_of": "2026-09-30",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "business",
+     "quote": "As of September 30, 2026, we had approximately 5,300 employees worldwide, a majority of whom work in research, engineering, and product development functions.",
+     "locator": "Business, Our Talent"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "risk",
+     "quote": "the number of our employees increased from approximately 940 as of December 31, 2024 to approximately 5,300 as of September 30, 2026",
+     "locator": "Risk Factors"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "key": "board",
+   "label": "Board",
+   "value": "Six directors now; seven seats after the IPO, four of them elected by the Long-Term Benefit Trust",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "Our board of directors currently consists of six directors.",
+     "locator": "Management, Board of Directors"
+    },
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "mgmt",
+     "quote": "The holder of our Class T common stock, the LTBT, will generally have the authority to elect and remove the four Class T directors",
+     "locator": "Management, Board of Directors"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "key": "control",
+   "label": "Control",
+   "value": "After the IPO the co-founders' Founder LLC holds 50.1% of the vote",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "summary",
+     "quote": "Our Class F common stock, which will be held by the Founder LLC, will be entitled to an aggregate number of votes that equals 50.1% of the total voting power of our outstanding shares of capital stock",
+     "locator": "Prospectus Summary"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "key": "trust",
+   "label": "Long-Term Benefit Trust",
+   "value": "Five trustee seats, one vacant",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "governance",
+     "quote": "Of the five authorized seats for Trustees, one is currently vacant.",
+     "locator": "Our Governance Structure, Trustees of the LTBT"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "key": "listing",
+   "label": "Listing",
+   "value": "Applied to list Class A shares on the Nasdaq Global Select Market as ANT (S-1 filed Oct 26, 2026)",
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "cover",
+     "quote": "We have applied to list our Class A common stock on the Nasdaq Global Select Market under the symbol “ANT.”",
+     "locator": "Prospectus cover"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "key": "customers",
+   "label": "Customers",
+   "value": "Over 300,000 business customers (Sep 2025); over 500 spending $1 million a year and eight of the Fortune 10 (Feb 2026)",
+   "evidence": [
+    {
+     "doc": "anthropic-news-2025-09-02-series-f",
+     "quote": "Anthropic now serves over 300,000 business customers",
+     "locator": "Anthropic newsroom"
+    },
+    {
+     "doc": "anthropic-news-2026-02-12-series-g",
+     "quote": "Two years ago, a dozen customers spent over $1 million with us on an annualized basis. Today that number exceeds 500. Eight of the Fortune 10 are now Claude customers.",
+     "locator": "Anthropic newsroom"
+    }
+   ],
+   "sort_order": 8
+  }
+ ],
+ "agreements": [
+  {
+   "exhibit": "4.3",
+   "title": "2026 Stock Purchase and Convertible Note Facility Agreement",
+   "counterparty": "Amazon Web Services, Inc.",
+   "counterparty_entity": "aws",
+   "kind": "financing",
+   "dated_on": "2026-04-20",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit43-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "2026 Stock Purchase and Convertible Note Facility Agreement between the registrant and Amazon Web Services, Inc., dated as of April 20, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 1
+  },
+  {
+   "exhibit": "4.4",
+   "title": "Note Purchase Agreement",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "financing",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit44-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Note Purchase Agreement between the registrant and Broadcom Inc., dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 2
+  },
+  {
+   "exhibit": "4.5",
+   "title": "Note Purchase Agreement",
+   "counterparty": "Google LLC",
+   "counterparty_entity": "google-investor",
+   "kind": "financing",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit45-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Note Purchase Agreement between the registrant and Google LLC, dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 3
+  },
+  {
+   "exhibit": "4.6",
+   "title": "Registration Rights Agreement",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "financing",
+   "dated_on": "2026-06-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit46-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Registration Rights Agreement between the registrant and Broadcom Inc., dated as of June 8, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 4
+  },
+  {
+   "exhibit": "4.7",
+   "title": "Registration Rights Agreement",
+   "counterparty": "Google LLC",
+   "counterparty_entity": "google-investor",
+   "kind": "financing",
+   "dated_on": "2026-05-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit47-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Registration Rights Agreement between the registrant and Google LLC, dated as of May 4, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 5
+  },
+  {
+   "exhibit": "4.2",
+   "title": "Amended and Restated Investors' Rights Agreement",
+   "counterparty": "Holders of its capital stock",
+   "counterparty_entity": null,
+   "kind": "financing",
+   "dated_on": "2026-05-28",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit42-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Amended and Restated Investors’ Rights Agreement among the registrant and certain holders of its capital stock, dated as of May 28, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 6
+  },
+  {
+   "exhibit": "10.10",
+   "title": "Amended and Restated Credit Agreement",
+   "counterparty": "Morgan Stanley Senior Funding, Inc. and lenders",
+   "counterparty_entity": null,
+   "kind": "credit",
+   "dated_on": "2026-09-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1010-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Amended and Restated Credit Agreement between the registrant, the several lenders from time to time party thereto, and Morgan Stanley Senior Funding, Inc., dated as of September 4, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 7
+  },
+  {
+   "exhibit": "10.11",
+   "title": "Master Equipment Lease Agreement (via AI Infrastructure OpCo II, LLC)",
+   "counterparty": "Broadcom Inc.",
+   "counterparty_entity": "broadcom",
+   "kind": "equipment",
+   "dated_on": "2026-03-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1011-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Master Equipment Lease Agreement between AI Infrastructure OpCo II, LLC, a wholly owned subsidiary of the registrant, and Broadcom Inc., dated as of March 31, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 8
+  },
+  {
+   "exhibit": "10.8",
+   "title": "Sublease Agreement",
+   "counterparty": "Salesforce, Inc.",
+   "counterparty_entity": null,
+   "kind": "real_estate",
+   "dated_on": "2023-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit108-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Sublease Agreement between the registrant and Salesforce, Inc., dated as of September 22, 2023.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 9
+  },
+  {
+   "exhibit": "10.9",
+   "title": "Office Lease",
+   "counterparty": "300 Howard Owner, LLC",
+   "counterparty_entity": null,
+   "kind": "real_estate",
+   "dated_on": "2026-01-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit109-sx1.htm",
+   "redacted": true,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Office Lease between the registrant and 300 Howard Owner, LLC, dated as of January 29, 2026.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 10
+  },
+  {
+   "exhibit": "10.12",
+   "title": "Irrevocable Proxy Agreement",
+   "counterparty": "Daffy Charitable Fund",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": "2025-10-06",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1012-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Irrevocable Proxy Agreement between the registrant, Daffy Charitable Fund, and the registrant’s Chief Executive Officer, dated as of October 6, 2025.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 11
+  },
+  {
+   "exhibit": "10.13",
+   "title": "Irrevocable Proxy Agreement",
+   "counterparty": "Dechomai Asset Trust",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": "2024-12-20",
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit1013-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Irrevocable Proxy Agreement between the registrant, Dechomai Asset Trust, and the registrant’s Chief Executive Officer, dated as of December 20, 2024.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 12
+  },
+  {
+   "exhibit": "99.1",
+   "title": "Amended and Restated Trust Agreement (form)",
+   "counterparty": "Long-Term Benefit Trust",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": null,
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit991-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Form of Amended and Restated Trust Agreement.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 13
+  },
+  {
+   "exhibit": "99.2",
+   "title": "Limited Liability Company Agreement of Anthropic Founders, LLC (form)",
+   "counterparty": "Anthropic Founders, LLC",
+   "counterparty_entity": null,
+   "kind": "governance",
+   "dated_on": null,
+   "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/exhibit992-sx1.htm",
+   "redacted": false,
+   "evidence": [
+    {
+     "doc": "anthropic-s1-2026-10-26",
+     "anchor": "exhibits",
+     "quote": "Form of Limited Liability Company Agreement of Anthropic Founders, LLC.",
+     "locator": "Part II, Exhibit Index"
+    }
+   ],
+   "sort_order": 14
+  }
+ ]
+}

@@ -1,0 +1,5988 @@
+{
+"_note": "Topic assignments (L2 topics, main first; L3 subtopics) for every post, article and standalone media item, keyed post:<slug>, article:<slug>, media:<idx>. Classified 2026-10-19 against src/data/linkedinTaxonomy.json by eight parallel reviewers, then audited on a blind random sample. Edit by hand to correct a post.",
+"article:233-resources-110-concepts-100-experts-one-free-ai-learning-system": {
+"l2": [
+"build-in-public",
+"courses-certs",
+"ml-nlp"
+]
+},
+"article:brighton-seo-conference-2024": {
+"l2": [
+"brightonseo"
+]
+},
+"article:google-search-console-and-algorithm-update-september-2019": {
+"l2": [
+"search-console-analytics",
+"google-updates",
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"article:i-classified-5-3-million-keywords-in-under-a-second": {
+"l2": [
+"topical-engine",
+"keyword-research",
+"knowledge-graphs"
+],
+"l3": [
+"keyword-clustering",
+"ontology-taxonomy"
+]
+},
+"article:improving-seo-with-conceptual-models-mark-williams-cook": {
+"l2": [
+"other-conferences",
+"google-updates",
+"content-ai"
+]
+},
+"article:mastering-google-search-operators-comprehensive-guide": {
+"l2": [
+"serp-features"
+]
+},
+"article:python-nlp-seo-basic-guide": {
+"l2": [
+"python-automation",
+"ml-nlp"
+]
+},
+"article:simple-python-script-for-clustering-keywords": {
+"l2": [
+"keyword-research",
+"python-automation"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"media:0001": {
+"l2": [
+"paid-ecommerce",
+"search-console-analytics"
+]
+},
+"media:0002": {
+"l2": [
+"paid-ecommerce",
+"search-console-analytics"
+]
+},
+"media:0025": {
+"l2": [
+"links-authority"
+]
+},
+"media:0034": {
+"l2": [
+"digital-marketing"
+]
+},
+"media:0037": {
+"l2": [
+"other-conferences",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"media:0043": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0044": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0049": {
+"l2": [
+"seo-tools",
+"google-updates"
+]
+},
+"media:0057": {
+"l2": [
+"courses-certs"
+]
+},
+"media:0058": {
+"l2": [
+"motivation"
+]
+},
+"media:0062": {
+"l2": [
+"motivation"
+]
+},
+"media:0072": {
+"l2": []
+},
+"media:0110": {
+"l2": [
+"courses-certs"
+]
+},
+"media:0119": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"media:0122": {
+"l2": [
+"technical-seo",
+"awards"
+],
+"l3": [
+"structured-data"
+]
+},
+"media:0123": {
+"l2": [
+"technical-seo",
+"awards"
+],
+"l3": [
+"structured-data"
+]
+},
+"media:0157": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0176": {
+"l2": [
+"ml-nlp",
+"llm-assistants"
+]
+},
+"media:0223": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"media:0224": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"media:0225": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"media:0230": {
+"l2": [
+"llm-assistants",
+"keyword-research"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"media:0239": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0242": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0243": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0245": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0246": {
+"l2": [
+"other-conferences"
+]
+},
+"media:0256": {
+"l2": []
+},
+"media:0258": {
+"l2": [
+"content-strategy",
+"other-conferences"
+]
+},
+"media:0259": {
+"l2": [
+"content-strategy",
+"other-conferences"
+]
+},
+"media:0261": {
+"l2": [
+"other-conferences",
+"enterprise-seo"
+]
+},
+"media:0293": {
+"l2": [
+"courses-certs"
+]
+},
+"media:0295": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"media:0311": {
+"l2": [
+"geo-aeo",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"media:0323": {
+"l2": [
+"seo-week"
+]
+},
+"media:0330": {
+"l2": [
+"seo-tools"
+]
+},
+"media:0368": {
+"l2": [
+"google-company",
+"big-tech"
+]
+},
+"media:0416": {
+"l2": [
+"keyword-research",
+"python-automation"
+]
+},
+"media:0432": {
+"l2": [
+"build-in-public"
+]
+},
+"media:0481": {
+"l2": [
+"big-tech"
+]
+},
+"media:0488": {
+"l2": [
+"linkedin-social",
+"build-in-public"
+]
+},
+"media:0498": {
+"l2": [
+"keyword-research"
+],
+"l3": [
+"search-intent"
+]
+},
+"media:0504": {
+"l2": [
+"courses-certs",
+"build-in-public"
+]
+},
+"media:0505": {
+"l2": [
+"build-in-public",
+"ml-nlp"
+]
+},
+"media:0528": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-builds",
+"claude-anthropic"
+]
+},
+"media:0622": {
+"l2": []
+},
+"media:0623": {
+"l2": []
+},
+"media:0653": {
+"l2": [
+"brightonseo"
+]
+},
+"media:0657": {
+"l2": [
+"brightonseo",
+"talks-podcasts"
+]
+},
+"media:0658": {
+"l2": [
+"brightonseo",
+"talks-podcasts"
+]
+},
+"media:0670": {
+"l2": [
+"brightonseo",
+"talks-podcasts",
+"keyword-research"
+]
+},
+"media:0686": {
+"l2": [
+"linkedin-social",
+"build-in-public"
+]
+},
+"post:2016-02-26-when-floods-hit-the-kashmir-region-in-september": {
+"l2": [
+"community"
+]
+},
+"post:2016-03-02-internship-participate-as-a-junior-member-of-a": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2016-03-02-two-techie-brothers-india-s-youngest-ceo-sharvan": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-03-10-success-is-the-sum-of-small-efforts-repeated": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-03-28-mistakes-during-interviews": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2016-04-06-summer-2016-student-internships-california-florida-texas-michigan": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2016-05-31-innovation-and-understanding-do-not-happen-without-failure": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-06-09-a-police-officer-attends-the-graduation-ceremony-of": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-06-29-sprout-for-business-jr": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2016-07-04-post-photo-of-a-silver-robot-dog": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-07-16-need-tips-and-insights-to-improve-adwords-performance": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2016-07-16-which-is-the-right-cms-for-you-download": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2016-07-21-learn-how-sonus-sbc-swe-enables-service-providers": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-08-01-put-a-frog-in-a-vessel-of-water": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-08-15-listen-to-your-employees-not-just-your-customers": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-08-25-join-google-product-manager-belinda-langner-on-thursday": {
+"l2": [
+"digital-marketing",
+"other-conferences"
+]
+},
+"post:2016-08-29-10-things-that-require-zero-talent": {
+"l2": [
+"motivation"
+]
+},
+"post:2016-09-13-important-update-adwords-will-no-longer-support-campaign": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2016-10-15-october-is-breast-cancer-awareness-month-help-make": {
+"l2": [
+"community"
+]
+},
+"post:2016-10-18-relax-tuesday-humor": {
+"l2": [
+"personal"
+]
+},
+"post:2016-10-19-follow-these-incredible-tips-that-will-help-protect": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-10-23-awesome-first-day-at-uber": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2016-10-25-cyber-attacks": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-10-26-yes-social-media-isa-positive-impact": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2016-10-28-wow": {
+"l2": []
+},
+"post:2016-10-29-the-new-mac-book-pro": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-11-07-yes": {
+"l2": []
+},
+"post:2016-11-10-infects-devices-from-adsense": {
+"l2": [
+"google-company"
+]
+},
+"post:2016-11-18-7-leading-seo-opportunities-for-2017": {
+"l2": [
+"enterprise-seo",
+"google-updates"
+]
+},
+"post:2016-12-15-exclusive-free-slide-deck-from-henry-blodget-s": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2016-12-16-ios-update": {
+"l2": [
+"big-tech"
+]
+},
+"post:2016-12-22-3d": {
+"l2": []
+},
+"post:2016-12-22-wow": {
+"l2": []
+},
+"post:2016-12-24-really": {
+"l2": []
+},
+"post:2017-01-02-today-s-task-java-collections": {
+"l2": [
+"python-automation"
+]
+},
+"post:2017-01-18-and-the-data-keeps-growing": {
+"l2": [
+"data-engineering"
+]
+},
+"post:2017-01-19": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2017-01-25-facebook-has-fixed-a-serious-security-bug-that": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-02-02-customize-your-ads-using-if-functions-and-default": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2017-03-19-noticed-today-that-google-answer-boxes-are-starting": {
+"l2": [
+"serp-features"
+]
+},
+"post:2017-04-14": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-05-25-post-photo-of-a-terminator-style-robot-endoskeleton": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2017-05-31-digital-economy-compass-by": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2017-06-12-post-smiling-bearded-man-in-suit-and-tie": {
+"l2": []
+},
+"post:2017-06-26-keywords-vs-keyphrases-vs-long-tail-keywords-which": {
+"l2": [
+"keyword-research"
+]
+},
+"post:2017-06-26-things-to-consider-before-redesign-website": {
+"l2": [
+"technical-seo",
+"digital-marketing"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2017-07-04-lesson-learned-sometimes-it-is-not-the-number": {
+"l2": [
+"motivation"
+]
+},
+"post:2017-07-25-3-reasons-you-need-a-snapchat-for-business": {
+"l2": [
+"linkedin-social",
+"digital-marketing"
+]
+},
+"post:2017-08-17-facebook-redign-nixes": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-08-17-hbo-social-media-accounts-hacked-in-another-cyber": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-08-23-angular-vs-react-js-vs-vue-js-whats": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2017-08-23-workers-with-h-1b-visas-have-had-their": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2017-09-01-apple-s-iphone-8-event-is-happening-on": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-10-13-5-800-bitcoin-price-hits-new-record-high": {
+"l2": [
+"big-tech"
+]
+},
+"post:2017-11-03-google-ads-analytics-and-doubleclick-announcements-keynote": {
+"l2": [
+"paid-ecommerce",
+"other-conferences"
+]
+},
+"post:2018-01-16-sem-expert-virtual-remote-requirements": {
+"l2": [
+"roles-hiring",
+"paid-ecommerce"
+]
+},
+"post:2018-03-28-research-paper-on-search-and-ranking-with-selection": {
+"l2": [
+"ml-nlp",
+"research-papers"
+]
+},
+"post:2018-03-30-new-adwords-features-account-walk-throughs": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2018-05-21-adobe-systems-inc-said-on-monday-it-would": {
+"l2": [
+"big-tech",
+"paid-ecommerce"
+]
+},
+"post:2018-05-21-s-a-foundation-for-modern": {
+"l2": [
+"links-authority"
+]
+},
+"post:2018-05-30-to-limit-visas-ap": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-06-01-biggest-3ai-hits-jackpot": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-06-05-hack-halts-trading-on-bitfinex": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-06-05-is-removing-soon-to-make-way-for-future": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-06-05-thousands-report-hundreds-of-thousands-of-pre-orders": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-06-06-great-webinar-about-seo-today-6-6-2018": {
+"l2": [
+"other-conferences",
+"seo-tools"
+]
+},
+"post:2018-07-02-what-does-it-mean-to-write-for-in": {
+"l2": [
+"content-strategy"
+]
+},
+"post:2018-07-03-1-2-billion-plan-to-save": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-07-03-bill-gates-inspiring-quotes": {
+"l2": [
+"motivation"
+]
+},
+"post:2018-07-05-neil-patel-quotes-neil-patel": {
+"l2": [
+"motivation",
+"digital-marketing"
+]
+},
+"post:2018-07-09-mergers-reach-an-all-time-high": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-07-09-scoots-into-the-scooter-business": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-07-09-to-toss": {
+"l2": [
+"community"
+]
+},
+"post:2018-07-10": {
+"l2": [
+"other-conferences",
+"paid-ecommerce"
+]
+},
+"post:2018-07-13-a-beginner-s-guide-to-seo-in-a": {
+"l2": [
+"ml-nlp",
+"enterprise-seo"
+]
+},
+"post:2018-07-13-google-adds-people-also-search-for-box-to": {
+"l2": [
+"serp-features",
+"paid-ecommerce"
+]
+},
+"post:2018-07-13-google-ads-introduces-new-campaign-type-for-hotels": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2018-07-13-google-to-launch-head-to-head-testing-tool": {
+"l2": [
+"google-company",
+"digital-marketing"
+]
+},
+"post:2018-07-13-how-to-build-a-free-facebook-messenger-chatbot": {
+"l2": [
+"digital-marketing",
+"linkedin-social"
+]
+},
+"post:2018-07-13-instagram-has-1-billion-monthly-users-now-the": {
+"l2": [
+"linkedin-social",
+"big-tech"
+]
+},
+"post:2018-07-13-linkedin-teams-up-with-bing-maps-to-show": {
+"l2": [
+"linkedin-social",
+"big-tech"
+]
+},
+"post:2018-07-17-seo-fundamentals-certified-semrush": {
+"l2": [
+"courses-certs",
+"seo-tools"
+]
+},
+"post:2018-07-23-quotes": {
+"l2": [
+"motivation"
+]
+},
+"post:2018-07-27-papa-john-sues-papa-john-s": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-07-27-tech-s-free-lunch-under-attack": {
+"l2": [
+"big-tech"
+]
+},
+"post:2018-09-25": {
+"l2": [
+"motivation"
+]
+},
+"post:2018-10-01-google-my-business-changes-post-limit-to-1": {
+"l2": [
+"local-seo"
+]
+},
+"post:2018-10-18": {
+"l2": [
+"digital-marketing",
+"links-authority"
+]
+},
+"post:2018-10-19-google-news-digest-duplex-s-public-testing-goodbye": {
+"l2": [
+"google-company",
+"google-updates"
+]
+},
+"post:2018-10-24-thanks-for-everyone-who-stood-behind-me": {
+"l2": [
+"personal",
+"talks-podcasts"
+]
+},
+"post:2018-11-09-putting-machine-learning-into-the-hands-of-every": {
+"l2": [
+"paid-ecommerce",
+"ml-nlp"
+]
+},
+"post:2018-11-14-adoption-of-voice-search-in-financial-domain": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2018-11-15-great-info-kameron-jenkins": {
+"l2": [
+"enterprise-seo",
+"google-updates"
+]
+},
+"post:2018-11-29-thanks-bill-slawski-how-google-might-predict-query": {
+"l2": [
+"keyword-research"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2018-12-04": {
+"l2": [
+"motivation"
+]
+},
+"post:2018-12-06": {
+"l2": [
+"motivation",
+"digital-marketing"
+]
+},
+"post:2018-12-10-get-good-news-quickly-bringing-the-best-of": {
+"l2": [
+"google-company",
+"search-console-analytics"
+]
+},
+"post:2019-02-13-how-to-identify-and-tackle-keyword-cannibalization-in": {
+"l2": [
+"keyword-research",
+"content-strategy"
+]
+},
+"post:2019-02-15-what-is-edge-seo-why-you-should-adopt": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"site-migrations",
+"crawl-index"
+]
+},
+"post:2019-02-22-build-customized-experience-with-automation": {
+"l2": [
+"paid-ecommerce",
+"digital-marketing"
+]
+},
+"post:2019-02-22-the-10-essential-seo-ranking-factors-you-need": {
+"l2": [
+"links-authority",
+"technical-seo"
+]
+},
+"post:2019-02-22-three-basic-functions-for-every-marketing-operations-function": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-02-25-problems-are-greatest-opportunities-for-growth": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-02-27": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-02-27-google-news-digest-new-features-in-google-ads": {
+"l2": [
+"google-company"
+]
+},
+"post:2019-03-02": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-03-02-why-blending-analytical-and-creative-talent-delivers-better": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-03-04-you-will-fail-only-if-you-stop-trying": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-03-06-dynamic-seo-should-you-be-using-it": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-03-06-the-ultimate-guide-to-javascript-seo": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-03-11-when-is-javascript-relevant-for-seo": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-03-23-seos-frustrated-by-google-s-belated-pagination-announcement": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-03-24-super-interesting-we-ve-always-suspected-they-use": {
+"l2": [
+"links-authority"
+]
+},
+"post:2019-03-28-ahrefs-announces-plan-for-new-search-engine": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2019-04-23-starts-showing-more-images-in-the-web-search": {
+"l2": [
+"serp-features"
+]
+},
+"post:2019-04-28-the-seo-advantages-of-machine-readable-html5-semantic": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2019-05-01-google-may-decide-to-charge-for-google-my": {
+"l2": [
+"local-seo"
+]
+},
+"post:2019-05-01-google-search-ranking-algorithm-update-chatter-january-15th": {
+"l2": [
+"google-updates"
+]
+},
+"post:2019-05-02-top-7-ranking-signals-what-really-matters-in": {
+"l2": [
+"links-authority",
+"enterprise-seo"
+]
+},
+"post:2019-05-04-is-bringing-three-new-reports-to-search-console": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2019-05-04-myth-busting-by-google": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2019-05-08-google-search-will-offer-better-news-coverage-and": {
+"l2": [
+"serp-features",
+"google-company"
+]
+},
+"post:2019-05-09-google-now-supports-more-structured-data-and-adds": {
+"l2": [
+"technical-seo",
+"search-console-analytics"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2019-05-12-google-search-and-javascript-sites-google-i-o": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-05-12-part-1-vision-consciously-design-your-life-what": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-05-12-the-new-evergreen-googlebot-googlebot-now-runs-the": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-05-15-was-and-attackers-installed-spyware-on-people-s": {
+"l2": [
+"big-tech"
+]
+},
+"post:2019-05-30-interesting": {
+"l2": []
+},
+"post:2019-06-04": {
+"l2": [
+"google-updates"
+]
+},
+"post:2019-06-04-ar-is-now-part-of-search": {
+"l2": [
+"serp-features"
+]
+},
+"post:2019-06-20": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-06-21": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-06-21-google-my-businesses-updates": {
+"l2": [
+"local-seo"
+]
+},
+"post:2019-06-25-credits-found-in-my-gallery": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-06-29": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-07-17": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-08-12": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-08-16-what-is-amazon-s-a9-algorithm": {
+"l2": [
+"paid-ecommerce"
+]
+},
+"post:2019-08-29": {
+"l2": [
+"links-authority"
+]
+},
+"post:2019-08-29-marketing-agency-when-to-change": {
+"l2": [
+"digital-marketing",
+"enterprise-seo"
+]
+},
+"post:2019-08-30-do-internal-links-help-seo": {
+"l2": [
+"technical-seo",
+"links-authority"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2019-09-02": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-09-06-ui-and-ux": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2019-09-20-how-to-get-people-asked-questions-from-google": {
+"l2": [
+"serp-features",
+"python-automation"
+]
+},
+"post:2019-09-21": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2019-09-24-great-contents-vipul-patel-thanks-for-sharing": {
+"l2": []
+},
+"post:2019-09-25-i-love-linkedin-that-other-platforms-and-people": {
+"l2": [
+"linkedin-social",
+"search-console-analytics",
+"google-updates"
+]
+},
+"post:2019-09-26-google-core-algorithm-update-on-september-24-2019": {
+"l2": [
+"google-updates"
+]
+},
+"post:2019-09-27-google-celebrates-its-own-21st-birthday": {
+"l2": [
+"google-company"
+]
+},
+"post:2019-09-30-google-algorithm-sep-2019-core-update-vs-google": {
+"l2": [
+"google-updates"
+]
+},
+"post:2019-10-01-john-muelle-from-google-said-in-google-webmaster": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2019-10-01-top-3-things-from-google-on-oct-1": {
+"l2": [
+"google-company",
+"other-conferences"
+]
+},
+"post:2019-10-02-an-effort-to-increase-awareness-decrease-reduce-the": {
+"l2": [
+"community"
+]
+},
+"post:2019-10-02-google-search-console-new-interface-change-of-address": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2019-10-02-it-s-always-important-to-work-with-a": {
+"l2": [
+"awards",
+"personal"
+]
+},
+"post:2019-10-03-google-i-o-earlier-this-year-as-part": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2019-10-03-google-s-john-mueller-your-site-can-rank": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2019-10-04-no-more-mixed-messages-about-https-from-google": {
+"l2": [
+"technical-seo",
+"google-company"
+]
+},
+"post:2019-10-04-whats-the-best-book-you-ever-read": {
+"l2": [
+"books-reading"
+]
+},
+"post:2019-10-07-what-is-failure-how-we-see-failure": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-10-09-2019-this-is-one-of-my-best-day": {
+"l2": [
+"courses-certs",
+"personal"
+]
+},
+"post:2019-10-09-at-sd-rescue-mission-at-5-15am": {
+"l2": [
+"community"
+]
+},
+"post:2019-10-11-google-developers-site-vs-schema-google-webmasters": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2019-10-11-seo-tools-what-s-your-favorite-semrush-vs": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2019-10-11-what-is-the-best-tool-to-track-maps": {
+"l2": [
+"local-seo",
+"seo-tools"
+]
+},
+"post:2019-10-12-what-is-differences-between-manager-mentors": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-10-18-part-1-my-parents-are-not-rich-so": {
+"l2": [
+"motivation"
+]
+},
+"post:2019-10-19-attending-google-webmaster-conference-mountain-view-product-summit": {
+"l2": [
+"other-conferences",
+"technical-seo",
+"search-console-analytics"
+]
+},
+"post:2019-11-04-google-search-conference-2019": {
+"l2": [
+"other-conferences",
+"technical-seo"
+]
+},
+"post:2019-11-04-google-webmaster-2019": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2019-11-07-all-industry-average-fluctuations-to-the-local-pack": {
+"l2": [
+"local-seo",
+"google-updates"
+]
+},
+"post:2019-11-10-great-webmasters-conference-and-thanks-for-great-picture": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2019-11-14-walmart-launches-voice-shopping-for-grocery-on-apple": {
+"l2": [
+"paid-ecommerce",
+"big-tech"
+]
+},
+"post:2019-11-23-complex-search-results-pages-change-search-behavior-the": {
+"l2": [
+"serp-features",
+"keyword-research"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2019-11-24-interesting": {
+"l2": []
+},
+"post:2019-11-27-google-november-core-algorithm-updates-probably-not-just": {
+"l2": [
+"google-updates",
+"links-authority"
+]
+},
+"post:2019-11-27-why-brand-interdependence-is-important": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2020-01-07-conductor-searchlight-all-star-certification": {
+"l2": [
+"courses-certs",
+"seo-tools"
+]
+},
+"post:2020-01-13-january-2020-core-update": {
+"l2": [
+"google-updates"
+]
+},
+"post:2020-01-18": {
+"l2": [
+"big-tech"
+]
+},
+"post:2020-01-23-google-algorithm-update-google-now-drops-a-site": {
+"l2": [
+"serp-features",
+"google-updates"
+]
+},
+"post:2020-01-24-verizon-launches-privacy-focused-search-engine-called-onesearch": {
+"l2": [
+"big-tech"
+]
+},
+"post:2020-01-25-my-professor-clayton-christensen-guru-of-disruptive-innovation": {
+"l2": [
+"personal"
+]
+},
+"post:2020-01-30": {
+"l2": [
+"technical-seo",
+"seo-tools"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2020-01-31-thanks-for-education-assistance-american-addiction-centers": {
+"l2": [
+"courses-certs",
+"personal"
+]
+},
+"post:2020-02-08-vipul-patel-his-linked-profile-is-one-of": {
+"l2": [
+"python-automation",
+"ml-nlp"
+]
+},
+"post:2020-02-12-offering-30-days-of-free-addiction-treatment-to": {
+"l2": [
+"community"
+]
+},
+"post:2020-02-22-at-google-conference-on-2019-in-head-quarters": {
+"l2": [
+"local-seo",
+"other-conferences"
+]
+},
+"post:2020-02-23": {
+"l2": [
+"motivation"
+]
+},
+"post:2020-02-24-google-other-search-engines-found-indexing-links-to": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2020-02-26-text-preprocessing-for": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2020-02-27": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2020-02-29": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-03-01": {
+"l2": [
+"serp-features"
+]
+},
+"post:2020-03-02": {
+"l2": []
+},
+"post:2020-03-04-employee-in-seattle-office-tests-positive-for": {
+"l2": [
+"big-tech"
+]
+},
+"post:2020-03-06": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2020-03-09": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2020-03-15": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2020-03-18-we-re-here-to-support-you-during-these": {
+"l2": [
+"community"
+]
+},
+"post:2020-03-25-corona-to-how-google-s-corona-results-page": {
+"l2": [
+"serp-features",
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2020-03-31": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-04-04": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2020-04-13-thanks-for-sharing-lily-ray": {
+"l2": []
+},
+"post:2020-04-13-the-anatomy-of-a-large-scale-hypertextual-web": {
+"l2": [
+"links-authority",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2020-04-18-wonderful-article-from-lumar-formerly-deepcrawl-about-deeprank": {
+"l2": [
+"seo-tools",
+"technical-seo"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2020-04-22-hi-friends-i-know-this-is-very-tough": {
+"l2": [
+"community"
+]
+},
+"post:2020-04-26": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2020-05-17-google-core-update-may-2020": {
+"l2": [
+"google-updates",
+"local-seo"
+]
+},
+"post:2020-06-02": {
+"l2": [
+"motivation"
+]
+},
+"post:2020-06-02-backlinks-is-back-in-new-bing-webmaster-page": {
+"l2": [
+"links-authority",
+"search-console-analytics"
+]
+},
+"post:2020-06-10-great-innovation": {
+"l2": []
+},
+"post:2020-06-27": {
+"l2": [
+"community"
+]
+},
+"post:2020-06-29-company-american-addiction-centers-data-engineer": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-07-16-american-addiction-centers": {
+"l2": [
+"community"
+]
+},
+"post:2020-07-16-twitter-online-attack-targets-v-i-p-twitter": {
+"l2": [
+"big-tech"
+]
+},
+"post:2020-07-22-get-your-wordpress-content-indexed-immediately-using-bing": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2020-07-30-auto-generated-text-nice-one-chris-long": {
+"l2": [
+"content-ai",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2020-08-01-nice-article-mintzberg-s-5-ps-of-strategy": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2020-08-02-ex-google-ceo-eric-schmidt-is-working-to": {
+"l2": [
+"big-tech"
+]
+},
+"post:2020-08-04-google-web-stories-in-google-console": {
+"l2": [
+"search-console-analytics"
+]
+},
+"post:2020-08-06-another-successful-launch-today-congrats-to-the-team": {
+"l2": [
+"build-in-public"
+]
+},
+"post:2020-08-10-congratulations-deblina-sarkar": {
+"l2": [
+"personal"
+]
+},
+"post:2020-08-15-american-addiction-centers": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-08-24-this-is-so-important-please-spread-the-word": {
+"l2": [
+"community"
+]
+},
+"post:2020-08-31-join-us-tonight": {
+"l2": [
+"community"
+]
+},
+"post:2020-10-01-hiring": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-11-04": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2020-12-23-google-search-console-brings-back-request-indexing-tool": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2020-12-24-how-to-generate-quality-faqs-faqpage-schemas-automatically": {
+"l2": [
+"technical-seo",
+"python-automation"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2021-01-06-avaliam-trading-algorithm-study-forecasting-sequential-stock-market": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2021-01-06-we-are": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-01-19-entity-based-seo-the-guide-to-understanding": {
+"l2": [
+"knowledge-graphs"
+],
+"l3": [
+"entity-seo"
+]
+},
+"post:2021-01-28-in-memoriam-hamlet-batista-has-passed-away": {
+"l2": [
+"personal",
+"community"
+]
+},
+"post:2021-02-22": {
+"l2": []
+},
+"post:2021-02-24": {
+"l2": [
+"community"
+]
+},
+"post:2021-02-24-calling-all-seo-specialists-i-m-actively-looking": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-03-03": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-03-07-hiring-role-senior-seo": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-03-10": {
+"l2": []
+},
+"post:2021-03-20": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-03-22": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2021-04-09": {
+"l2": [
+"motivation"
+]
+},
+"post:2021-04-29": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-05-06": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-05-26": {
+"l2": [
+"community"
+]
+},
+"post:2021-05-28": {
+"l2": [
+"community"
+]
+},
+"post:2021-06-09": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2021-06-17-hi-martin-splitt-i-have-a-large-directory": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2021-06-17-seo-news-on-jun-17-2021-why-gsc": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2021-06-17-seo-readings-on-jun-16-2021-learn-more": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2021-06-24-seo-news-july-20-2021-google-search-releases": {
+"l2": [
+"google-updates",
+"search-console-analytics"
+]
+},
+"post:2021-07-01-awesome-to-watch": {
+"l2": []
+},
+"post:2021-08-04-completed-my-brightedge-professional-certification-great-tool-to": {
+"l2": [
+"courses-certs",
+"enterprise-seo",
+"seo-tools"
+]
+},
+"post:2021-08-19-faceted-search-funtinality": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2021-09-16-seo-tools": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2021-10-22": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2022-04-12-hiring-seo-specialist-at-american-addiction-centers": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2022-04-12-thanks-for-sharing-chris-long": {
+"l2": []
+},
+"post:2022-04-12-this-is-amazing-share-mark-williams-cook-cook": {
+"l2": []
+},
+"post:2022-04-29-learn-about-the-basics-of-python-with-seo": {
+"l2": [
+"python-automation",
+"ml-nlp"
+]
+},
+"post:2022-05-18-interesting": {
+"l2": []
+},
+"post:2022-06-03-thanks-for-sharing-chris-long": {
+"l2": []
+},
+"post:2022-08-05-new-in-structured-data-pros-and-cons": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2022-08-22-the-core-web-vitals-report-shows-how-your": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+]
+},
+"post:2022-08-23-how-to-automate-the-url-inspection-api-screaming": {
+"l2": [
+"seo-tools",
+"search-console-analytics"
+]
+},
+"post:2022-08-24-structured-data-no-longer-required-for-top-stories": {
+"l2": [
+"technical-seo",
+"serp-features"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2022-08-25-i-m-always-a-huge-fan-of-your": {
+"l2": []
+},
+"post:2022-08-25-jetoctopus-product-updates-gsc-metrics-dynamics-updates": {
+"l2": [
+"seo-tools",
+"search-console-analytics"
+]
+},
+"post:2022-08-25-new-schema-from-google-education-q-a": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2022-08-25-released-the-august-2022-helpful-content-update-the": {
+"l2": [
+"google-updates",
+"content-ai"
+]
+},
+"post:2022-08-26-back-by-popular-demand-google-cloud-products-in": {
+"l2": [
+"google-company"
+]
+},
+"post:2022-09-05-python-with-polyfuzz-pandas-is-super-helpful-for": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-09-07-thanks-for-sharing-chris-lever": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-09-09-that-s-the-reason-why-technical-seo-matters": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2022-09-11-ai-for-seo-i-am-huge-fan-of": {
+"l2": [
+"content-ai"
+]
+},
+"post:2022-09-12-released-the-september-2022-core-update-the-rollout": {
+"l2": [
+"google-updates"
+]
+},
+"post:2022-09-12-thanks-for-sharing-david-das-neves": {
+"l2": []
+},
+"post:2022-09-13-merchant-listings-report-new-search-console-reports-for": {
+"l2": [
+"search-console-analytics",
+"technical-seo",
+"paid-ecommerce"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2022-09-16-your-complete-guide-to-salesforce-devops-in-2022": {
+"l2": []
+},
+"post:2022-09-17-adobe-to-acquire-figma": {
+"l2": [
+"big-tech"
+]
+},
+"post:2022-09-18-python-cheatsheet": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-09-18-python-leetcode-content": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-09-20-how-to-benchmark-entity-opportunities-with-google-nlp": {
+"l2": [
+"knowledge-graphs",
+"ml-nlp"
+],
+"l3": [
+"entity-seo"
+]
+},
+"post:2022-10-05-amazing-that-for-sharing-orit-mutznik": {
+"l2": [
+"keyword-research",
+"seo-tools"
+]
+},
+"post:2022-10-07-congratulations-deblina-sarkar": {
+"l2": [
+"personal"
+]
+},
+"post:2022-10-13-valuable-content-semrush": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2022-10-20-new-keywords-in-sheets-has-launched-5-new": {
+"l2": [
+"seo-tools",
+"serp-features"
+]
+},
+"post:2022-10-20-thanks-for-sharing": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-10-21-american-addiction-centers-it-s-been-absolute-pleasure": {
+"l2": [
+"roles-hiring",
+"personal"
+]
+},
+"post:2022-10-21-awesome-content-andrew-charlton": {
+"l2": []
+},
+"post:2022-10-21-i-love-seo-and-python-community-thanks-for": {
+"l2": [
+"python-automation"
+]
+},
+"post:2022-10-21-this-is-good-integration-with-google-docs": {
+"l2": [
+"google-company"
+]
+},
+"post:2022-10-22-the-neuroscience-of-branding-key-takeaways": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2022-10-25-serp-similarity-is-good": {
+"l2": [
+"serp-features",
+"keyword-research"
+]
+},
+"post:2022-10-26-american-addiction-centers-is": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2022-10-27-google-search-study-25-6-of-desktop-17": {
+"l2": [
+"serp-features"
+]
+},
+"post:2022-11-03-absolutely-helpful": {
+"l2": []
+},
+"post:2022-11-07-interesting": {
+"l2": []
+},
+"post:2022-11-12-google-console-api-console-is-definitely-helpful-for": {
+"l2": [
+"search-console-analytics",
+"python-automation"
+]
+},
+"post:2022-12-01-biggest-challenges-facing-seo-in-2023": {
+"l2": [
+"enterprise-seo",
+"llm-assistants"
+]
+},
+"post:2022-12-05": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2022-12-05-crawl-budget-and-404-s": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2022-12-06-google-s-desktop-search-results-are-now-continuously": {
+"l2": [
+"serp-features"
+]
+},
+"post:2022-12-12-google-s-john-mueller-says-html-sitemaps-should": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2022-12-15-this-awesome-to-measure-internal-linking": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2022-12-28-pros-and-cons-of-chat-gtp3": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-01-01-chatgpt-for-seo-20-ways-to-leverage-chatgpt": {
+"l2": [
+"llm-assistants",
+"keyword-research"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-01-01-seo-learnings-in-2022-and-predictions-in-2023": {
+"l2": [
+"enterprise-seo",
+"keyword-research",
+"content-ai"
+]
+},
+"post:2023-01-09-screaming-frog-log-file-analyser-updates": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2023-01-10-5-self-study-resources-for-machine-learning-and": {
+"l2": [
+"ml-nlp",
+"courses-certs"
+]
+},
+"post:2023-01-10-content-spinners-vs-chatgpt-comments-below": {
+"l2": [
+"content-ai",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-01-11-apartments-com-s-latest-growth-report-reveals-that": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2023-01-14-my-batchmate-and-fellow-amazon-colleague-jayanth-pointed": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-01-14-thanks-for-sharing-dmitry-dee-kolpakov": {
+"l2": []
+},
+"post:2023-01-15-ai-content-with-fact-check-by-cnet": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-01-15-topic-clusters-are-an-important-way-to-do": {
+"l2": [
+"keyword-research",
+"content-strategy"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2023-01-16-ai-tools-split-up-by-industry": {
+"l2": [
+"llm-assistants"
+]
+},
+"post:2023-01-18-this-is-cool-michael-ginley": {
+"l2": []
+},
+"post:2023-01-20-amazing": {
+"l2": []
+},
+"post:2023-01-25-this-interesting-jonhenshaw": {
+"l2": []
+},
+"post:2023-01-27-this-is-cool-mihir-naik": {
+"l2": []
+},
+"post:2023-01-29-interesting": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-01-30-chatgpt-updated-on-jan-30-2023": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-01-30-lol": {
+"l2": []
+},
+"post:2023-02-01-chatgpt-plus-and-chatgpt-api-waitlist": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-02-01-semrush-updates-the-challenge": {
+"l2": [
+"seo-tools",
+"links-authority"
+]
+},
+"post:2023-02-02-automating-the-fact-checking-process-for-the-content": {
+"l2": [
+"content-ai",
+"ml-nlp",
+"knowledge-graphs"
+]
+},
+"post:2023-02-02-gpt-3-generative-pretrained-transformer-3-is-an": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-02-04-chatgpt-has-reached-100-million-monthly-active-users": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-02-04-claude-vs-chatgpt-google-has-invested-300-million": {
+"l2": [
+"llm-assistants",
+"big-tech"
+],
+"l3": [
+"claude-anthropic",
+"chatgpt-openai"
+]
+},
+"post:2023-02-06-google-introducing-bard-it-can-be-strong-competitors": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-02-06-recently-i-chatted-with-a-friend-who-blew": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-02-07-what-are-embeddings-openai-s-text-embeddings-measure": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2023-02-07-what-are-the-current-functions-of-notion-ai": {
+"l2": [
+"content-ai",
+"llm-assistants"
+]
+},
+"post:2023-02-09-search-query-should-i-throw-my-car-battery": {
+"l2": [
+"serp-features",
+"ai-search-engines"
+]
+},
+"post:2023-02-10-amazing": {
+"l2": []
+},
+"post:2023-02-12-date-lake": {
+"l2": [
+"data-engineering"
+]
+},
+"post:2023-02-12-this-cool-excel-and-ml-trick": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2023-02-13-ai-by-open-ai-chat-gpt": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai",
+"gemini-google-ai",
+"perplexity-others"
+]
+},
+"post:2023-02-13-interesting-ai-tools": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-02-16-chatgpt-is-probably-outputting-at-least-the-equivalent": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-02-16-just-finished-reading-an-intriguing-article-about-google": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-02-17-amazing-resources": {
+"l2": []
+},
+"post:2023-02-19-lamda": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-02-21-ai-powered-tools-are-transforming-the-way-businesses": {
+"l2": [
+"content-ai",
+"digital-marketing"
+]
+},
+"post:2023-02-25-apartments-com-s-latest-rent-growth-report-reveals": {
+"l2": []
+},
+"post:2023-02-28-so-cool-notion": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-03-02-introducing-chatgpt-and-whisper-apis": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-03-04": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2023-03-05-excel-tips": {
+"l2": [
+"python-automation"
+]
+},
+"post:2023-03-07-serp-keyword-clustering": {
+"l2": [
+"keyword-research"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2023-03-08-woo-featured-snippets-are-bigger-and-stronger": {
+"l2": [
+"serp-features"
+]
+},
+"post:2023-03-14-true": {
+"l2": []
+},
+"post:2023-03-15-chat-gpt-3-5-vs-chat-gpt-4": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-03-15-default-gpt-3-5-vs-default-gpt-3": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-03-15-helpful-seo-scripts-daniel-foley-carter": {
+"l2": [
+"python-automation"
+]
+},
+"post:2023-03-15-internal-links-with-schema-is-my-favourite-one": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"structured-data",
+"site-migrations"
+]
+},
+"post:2023-03-15-introducing-gpt-4-creativity-visual-input-advanced-reasoning": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-03-15-march-2023-google-core-algorithm-update-the-rollout": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-03-15-please-follow-for-kristin-tynski-for-python-ai": {
+"l2": [
+"python-automation",
+"content-ai"
+]
+},
+"post:2023-03-15-waze-is-adding-electric-vehicle-charging-stations-to": {
+"l2": [
+"google-company"
+]
+},
+"post:2023-03-16-google-generative-ai-use-policy-generative-ai-prohibited": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2023-03-16-simple-python-script-for-clustering-keywords-script-included": {
+"l2": [
+"keyword-research",
+"python-automation"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2023-03-21-adobe-introduces-firefly-a-suite-of-creative-generative": {
+"l2": [
+"content-ai",
+"big-tech"
+]
+},
+"post:2023-03-21-ready-to-try-google-bard-generative-ai": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-03-23-similar-to-notion-microsoft-launched-loop": {
+"l2": [
+"big-tech"
+]
+},
+"post:2023-03-25-cool": {
+"l2": []
+},
+"post:2023-03-28-huge-shoutout-to-daniel-waisberg-and-team-for": {
+"l2": [
+"search-console-analytics",
+"data-engineering"
+]
+},
+"post:2023-04-11-lack-of-seo-skills-strategy-leave-critical-gap": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-04-13-google-algorithm-update-on-12-april-2023-reviews": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-04-17-video-walkthrough-find-link-opportunities-across-your-entire": {
+"l2": [
+"technical-seo",
+"seo-tools"
+],
+"l3": [
+"site-migrations"
+]
+},
+"post:2023-04-26-april-2023-reviews-update-is-officially-over": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-04-26-this-is-cool-jean-christophe-chouinard": {
+"l2": []
+},
+"post:2023-04-27-thanks-for-sharing-simone-de-palma": {
+"l2": []
+},
+"post:2023-04-27-the-technology-of-mit-alumni-founded-making-property": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2023-04-29-brave-severs-ties-with-microsoft-s-bing-for": {
+"l2": [
+"big-tech"
+]
+},
+"post:2023-05-01-worries-of-dr-hinton-and-potential-dangers-of": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2023-05-02-seo-product-manager-vs-seo-manager-what-s": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-05-02-this-are-cool-seo-strategies": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-05-03-1-google-no-longer-recommends-the-use-of": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-05-03-5-3-23-seo-news-google-s-john": {
+"l2": [
+"technical-seo",
+"ai-policy"
+]
+},
+"post:2023-05-04-140m-investment-white-house-unveils-initiatives-to-reduce": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2023-05-04-5-4-23-seo-and-ai-news": {
+"l2": [
+"serp-features",
+"ai-search-engines",
+"ai-policy"
+]
+},
+"post:2023-05-04-thanks-for-sharing-cyrus-shepard": {
+"l2": [
+"technical-seo",
+"seo-tools"
+]
+},
+"post:2023-05-05-chrome-updates": {
+"l2": [
+"google-company"
+]
+},
+"post:2023-05-06-stunning-information-worth-reading-and-trying-it": {
+"l2": []
+},
+"post:2023-05-06-true-zain-kahn": {
+"l2": []
+},
+"post:2023-05-07-nice-extension-for-chatgpt": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-05-08-ai-and-humans": {
+"l2": []
+},
+"post:2023-05-08-this-is-super-helpful-ziggy-shtrosberg": {
+"l2": []
+},
+"post:2023-05-09-google-s-project-magi-a-revolution-in-the": {
+"l2": [
+"ai-overviews",
+"ai-search-engines"
+]
+},
+"post:2023-05-10-duet-ai-for-google-cloud-is-a-new": {
+"l2": [
+"llm-assistants",
+"ai-coding"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-05-10-finally-chat-gpt-cheatsheet-max-rascher": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-05-10-google-io-2023-highlights-part-1": {
+"l2": [
+"google-company",
+"llm-assistants",
+"other-conferences"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-05-12-chatgpt-vs-bard-vs-jasper": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"chatgpt-openai",
+"gemini-google-ai"
+]
+},
+"post:2023-05-12-introduction-the-internet-is-a-vast-ecosystem-of": {
+"l2": [
+"serp-features"
+]
+},
+"post:2023-05-12-what-is-your-favorite-seo-tool-for-keyword": {
+"l2": [
+"keyword-research",
+"seo-tools"
+]
+},
+"post:2023-05-14-this-absolutely-great-content-rewati-khare-wordlift": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-05-15-keyword-cluster-with-python-plotly-helps-building-amazing": {
+"l2": [
+"keyword-research",
+"python-automation"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2023-05-15-thanks-for-share-dr-lucy-muthoni": {
+"l2": [
+"content-ai"
+]
+},
+"post:2023-05-17-bard-vs-chatgpt": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai",
+"gemini-google-ai"
+]
+},
+"post:2023-05-23-understanding-news-topic-authority-google-news-topic-authority": {
+"l2": [
+"keyword-research",
+"links-authority"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2023-05-24-inspired-by-pedro-dias-and-michael-king-thanks": {
+"l2": [
+"courses-certs",
+"llm-assistants"
+]
+},
+"post:2023-05-24-seven-new-no-cost-generative-ai-training-courses": {
+"l2": [
+"courses-certs"
+]
+},
+"post:2023-05-25-absolutely-helpful-yogesh-haribhau-kulkarni": {
+"l2": []
+},
+"post:2023-05-25-thanks-for-sharing-andrey-chia": {
+"l2": []
+},
+"post:2023-06-01-answer-engine-optimization-answer-engine-optimization-aeo-is": {
+"l2": [
+"geo-aeo"
+]
+},
+"post:2023-06-05-google-rolling-out-multiple-featured-snippets-on-desktop": {
+"l2": [
+"serp-features"
+]
+},
+"post:2023-06-05-thanks-for-sharing-it-chris-donnell-this-will": {
+"l2": []
+},
+"post:2023-07-15-my-take-on-ai-and-bad-practices": {
+"l2": [
+"content-ai",
+"google-updates"
+]
+},
+"post:2023-07-17-screaming-frog-s-seo-spider-version-19-0": {
+"l2": [
+"seo-tools",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-08-01-how-a-bad-can-create-wonderful-things": {
+"l2": [
+"motivation"
+]
+},
+"post:2023-08-01-once-your-start-looking-seo-from-entrepreneur-lens": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-08-01-what-is-seo": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2023-08-04-i-can-t-vs-how-can-i-makes": {
+"l2": [
+"motivation"
+]
+},
+"post:2023-08-04-in-this-guide-we-walk-through-a-four": {
+"l2": [
+"technical-seo",
+"content-strategy"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-08-06-most-powerful-thing-apart-from-your-skills-is": {
+"l2": [
+"motivation"
+]
+},
+"post:2023-08-28-google-s-stance-on-ai-generated-content-key": {
+"l2": [
+"content-ai",
+"google-updates"
+]
+},
+"post:2023-09-02-asking-and-getting-rejected-is-not-bad": {
+"l2": [
+"motivation"
+]
+},
+"post:2023-09-09-biggest-thing-ai-can-solve-in-seo-and": {
+"l2": [
+"content-ai",
+"enterprise-seo"
+]
+},
+"post:2023-09-22-openai-unveils-dall-e-3-text-to-image": {
+"l2": [
+"content-ai",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-09-27-generative-ai-on-google-cloud-new-training-content": {
+"l2": [
+"courses-certs",
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-09-30-in-seo-product-management-the-cdr-approach-is": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-09-30-pentagon-urges-ai-companies-to-share-more-about": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2023-10-02-google-antitrust-trial-key-highlights": {
+"l2": [
+"google-company"
+]
+},
+"post:2023-10-04-gmail-s-big-move-to-reinforce-email-security": {
+"l2": [
+"google-company"
+]
+},
+"post:2023-10-04-google-algorithm-update-spam-update-alert-october-4": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-10-04-google-s-september-2023-helpful-content-update-what": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-10-05-google-s-october-2023-core-algorithm-update-is": {
+"l2": [
+"google-updates"
+]
+},
+"post:2023-10-05-why-the-impact-and-effort-matrix-is-a": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2023-10-06-delaying-the-indexing-issue-is-now-resolved": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-10-06-google-search-status-dashboard-there-s-an-ongoing": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-10-08-seo-enthusiasts-how-many-of-you-are-familiar": {
+"l2": [
+"links-authority"
+]
+},
+"post:2023-10-09-structure-and-understand-natural-language-analysis-for-page": {
+"l2": [
+"knowledge-graphs",
+"ml-nlp",
+"links-authority"
+],
+"l3": [
+"entity-seo"
+]
+},
+"post:2023-10-09-throwback-2019-google-s-webmaster-conference-mountain-view": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2023-10-10-amd-is-making-moves-to-catch-up-to": {
+"l2": [
+"big-tech"
+]
+},
+"post:2023-10-10-exciting-news-the-new-vertex-ai-feature-store": {
+"l2": [
+"ml-nlp",
+"rag-vectors"
+]
+},
+"post:2023-10-11-this-is-interesting-paolo-primi-thanks-for-sharing": {
+"l2": []
+},
+"post:2023-10-11-this-will-be-game-changer-for-enterprise-seos": {
+"l2": [
+"seo-tools",
+"enterprise-seo"
+]
+},
+"post:2023-10-12-the-us-space-force-has-suspended-the-use": {
+"l2": [
+"ai-policy",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-10-21-just-got-top-organic-search-voice": {
+"l2": [
+"awards",
+"linkedin-social"
+]
+},
+"post:2023-10-23-google-search-console-s-hostload-exceeded": {
+"l2": [
+"search-console-analytics",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2023-10-28-google-maps-is-rolling-out-ai-powered-features": {
+"l2": [
+"local-seo",
+"google-company"
+]
+},
+"post:2023-11-07-openai-turbocharges-gpt-4-and-makes-it-cheaper": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-11-17-shotgun-or-sniper-or-scoped-shotgun-a-hybrid": {
+"l2": [
+"links-authority"
+]
+},
+"post:2023-11-30-google-deepmind-ai-reveals-potential-for-thousands-of": {
+"l2": [
+"ml-nlp",
+"google-company"
+]
+},
+"post:2023-11-30-what-strategy-do-you-believe-tesla-used-for": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2023-12-01-4-tactics-for-high-quality-backlinks-that-move": {
+"l2": [
+"links-authority"
+]
+},
+"post:2023-12-06-duet-ai-in-google-cloud": {
+"l2": [
+"llm-assistants",
+"google-company"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-12-06-largest-and-most-capable-ai-model-gemini": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2023-12-17-prompt-engineering-six-strategies-for-getting-better-results": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2023-12-20-elevating-seo-a-dive-into-generative-engine-optimization": {
+"l2": [
+"geo-aeo"
+]
+},
+"post:2023-12-20-i-love-this-feature-sitechecker": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2023-12-20-it-s-honour-and-privilege-to-do-podcast": {
+"l2": [
+"talks-podcasts"
+]
+},
+"post:2023-12-20-lol": {
+"l2": []
+},
+"post:2023-12-20-some-really-interesting-podcasts-by-russ-macumber": {
+"l2": [
+"talks-podcasts"
+]
+},
+"post:2023-12-21-question-google-still-uses-pagerank-here-s-what": {
+"l2": [
+"links-authority"
+]
+},
+"post:2023-12-27-adding-markup-support-for-vacation-rentals": {
+"l2": [
+"technical-seo",
+"search-console-analytics"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2023-12-28-new-york-times-sues-microsoft-chatgpt-maker-openai": {
+"l2": [
+"ai-policy",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-01-03-core-skill-ai-quality": {
+"l2": [
+"content-ai",
+"motivation"
+]
+},
+"post:2024-01-04-linkedin-tips-for-new-seos": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2024-01-04-ranking-factors-semrush-study-released-on-jan-04": {
+"l2": [
+"seo-tools",
+"enterprise-seo"
+]
+},
+"post:2024-01-04-what-is-digital-pr-digital-public-relations-is": {
+"l2": [
+"links-authority"
+]
+},
+"post:2024-01-05-openai-has-announced-the-launch-of-its-online": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-01-05-search-startup-perplexity-ai-has-secured-73-6": {
+"l2": [
+"big-tech",
+"ai-search-engines"
+]
+},
+"post:2024-01-09-wow-let-s-go-screaming-frog": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2024-01-11-cool-content-lazarina-stoy": {
+"l2": []
+},
+"post:2024-01-11-exciting-news-from-openai-the-highly-anticipated-gpt": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-01-18-google-has-just-launched-a-new-ai-powered": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-01-27-it-s-absolutely-great-talking-with-you-russ": {
+"l2": [
+"talks-podcasts",
+"keyword-research"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2024-01-27-openai-drops-prices-and-fixes-lazy-gpt-4": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-01-28-google-s-lumiere-ai-video-tool-is-bringing": {
+"l2": [
+"content-ai",
+"google-company"
+]
+},
+"post:2024-02-01-competition-website-age-and-authority": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-02-08-google-has-recently-updated-the-title-tag-for": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2024-02-08-it-would-be-beneficial-if-linkedin-monitored-the": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2024-02-13-this-very-helpful-in-current-market-great-share": {
+"l2": []
+},
+"post:2024-03-03-nvidia-chat-with-rtx-our-personalized-ai-chatbot": {
+"l2": [
+"llm-assistants",
+"rag-vectors",
+"big-tech"
+]
+},
+"post:2024-03-05-congrats-gus-pelogia-thanks-for-sharing-valuable-content": {
+"l2": []
+},
+"post:2024-03-05-march-2024-core-update-and-new-spam-policies": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-03-06-sergey-brin-says-google-definitely-messed-up-gemini": {
+"l2": [
+"llm-assistants",
+"google-company"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2024-03-07-ai-need-to-needs-to-be-regulated": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2024-03-07-programmatic-seo-using-ai-quality-versus-quantity": {
+"l2": [
+"keyword-research",
+"content-ai"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2024-03-11-thanks-ivan-palii": {
+"l2": []
+},
+"post:2024-03-12-i-ve-seen-tons-of-posts-about-hundreds": {
+"l2": [
+"google-updates",
+"content-ai"
+]
+},
+"post:2024-03-12-inp-day-core-web-vitals": {
+"l2": [
+"technical-seo"
+]
+},
+"post:2024-03-12-my-view-on-ai-and-eeat-guidelines-google": {
+"l2": [
+"content-ai",
+"google-updates"
+]
+},
+"post:2024-03-12-worked-with-janie-mcmanimon-at-american-addiction-centers": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-03-13-big-thanks-to-peter-mangin-for-helping-to": {
+"l2": [
+"content-ai"
+]
+},
+"post:2024-03-13-the-future-of-tiktok-in-the-us-is": {
+"l2": [
+"big-tech"
+]
+},
+"post:2024-03-16-spammy-content-is-not-a-new-phenomenon-and": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2024-03-18-ai-become-my-new-xbox-ps5-comment-which": {
+"l2": [
+"content-ai"
+]
+},
+"post:2024-03-19-forecasting-search-volumes-by-ahrefs": {
+"l2": [
+"keyword-research",
+"seo-tools"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2024-03-19-hiring-content-writers-our-team-at-apartments-com": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-03-20-it-looks-like-linkedin-launched-a-visual-filter": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2024-03-22-focusing-on-google-concerns-arise-with-algorithm-updates": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-03-22-have-you-noticed-a-decline-in-the-output": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-03-23-lets-see-how-sge-going-to-impact-these": {
+"l2": [
+"ai-overviews",
+"serp-features"
+]
+},
+"post:2024-03-24-nearly-84-of-queries-on-google-search-powered": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2024-03-26-fine-tuning-pre-trained-llms": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2024-03-26-i-believe-comparing-ai-to-non-ai-isn": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2024-03-27-best-practices-for-building-llms": {
+"l2": [
+"ml-nlp",
+"llm-assistants"
+]
+},
+"post:2024-03-28-i-prefer-it-when-search-engines-like-google": {
+"l2": [
+"serp-features",
+"paid-ecommerce"
+]
+},
+"post:2024-03-28-i-see-seo-as-1-focus-on-users": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-03-28-sam-kenney-is-know-anyone-who-might-be": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-03-29-good-share-nilesh-aggarwal-cool-content-semrush": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2024-03-29-google-maps-has-just-announced-a-significant-update": {
+"l2": [
+"local-seo",
+"google-company"
+]
+},
+"post:2024-03-30-seo-s-need-to-think-like-entrepreneurs": {
+"l2": [
+"enterprise-seo",
+"motivation"
+]
+},
+"post:2024-03-30-summarized-from-my-real-experience": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-03-31-organic-reach-vs-revenue-focus-on-customer-data": {
+"l2": [
+"enterprise-seo",
+"content-strategy"
+]
+},
+"post:2024-03-31-wooo": {
+"l2": []
+},
+"post:2024-04-02-openai-major-outage": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-04-03-i-heard-many-business-owners-are-affected-by": {
+"l2": [
+"community"
+]
+},
+"post:2024-04-07-a-longitudinal-investigation-of-seo-spam-in-search": {
+"l2": [
+"research-papers",
+"links-authority"
+]
+},
+"post:2024-04-07-ai-is-not-going-take-your-job": {
+"l2": [
+"motivation",
+"content-ai"
+]
+},
+"post:2024-04-07-can-t-wait-for-ledetime-ai-kristin-tynski": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2024-04-07-chatgpt-4-vs-claude-3": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai",
+"claude-anthropic"
+]
+},
+"post:2024-04-07-is-this-mean-our-quality-of-output-depends": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-04-07-sometimes-chat-gpt4-behaves-like-gpt-3-5": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-04-07-what-is-llm-and-how-it-works": {
+"l2": [
+"ml-nlp",
+"llm-assistants"
+]
+},
+"post:2024-04-08-helpful-for-python-learners-thanks-for-sharing-plamen": {
+"l2": [
+"python-automation"
+]
+},
+"post:2024-04-09-how-do-virtual-assistants-like-siri-and-alexa": {
+"l2": [
+"rag-vectors",
+"llm-assistants"
+]
+},
+"post:2024-04-11-focusing-on-keywords-is-no-longer-the-way": {
+"l2": [
+"keyword-research",
+"content-strategy"
+]
+},
+"post:2024-04-11-ivette-monroy-is-know-anyone-who-might-be": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-04-11-watching-clearscope-the-state-of-seo-2024-webinar": {
+"l2": [
+"other-conferences",
+"ai-overviews"
+]
+},
+"post:2024-04-12-e-commerce-filters-in-google-sge-can-create": {
+"l2": [
+"ai-overviews",
+"paid-ecommerce"
+]
+},
+"post:2024-04-12-google-maps-just-got-even-smarter-with-the": {
+"l2": [
+"local-seo",
+"google-company"
+]
+},
+"post:2024-04-14-ai-can-be-a-powerful-tool-when-used": {
+"l2": [
+"ai-policy"
+]
+},
+"post:2024-04-15-perplexity-i-love-the-quality-output": {
+"l2": [
+"llm-assistants",
+"ai-search-engines"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"post:2024-04-20-seo-mind-map-step-1": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-04-26-google-march-2024-core-update-finished-april-19": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-04-27-gen-ai-in-google-maps": {
+"l2": [
+"local-seo",
+"google-company"
+]
+},
+"post:2024-05-02-google-paid-apple-a-whopping-20-billion-in": {
+"l2": [
+"google-company",
+"big-tech"
+]
+},
+"post:2024-05-02-linked-launched-games": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2024-05-03-storytelling-is-a-crucial-skill-for-anyone-looking": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-05-06-53-of-the-best-harvard-university-courses-you": {
+"l2": [
+"courses-certs"
+]
+},
+"post:2024-05-07-screaming-frog-openai-integration-20th-major-release-of": {
+"l2": [
+"seo-tools",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-07-stack-overflow-and-openai-partner-to-strengthen-the": {
+"l2": [
+"llm-assistants",
+"big-tech"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-08-programmatic-seo-is-not-producing-low-quality-content": {
+"l2": [
+"keyword-research",
+"content-strategy"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2024-05-09-everybody-is-a-genius-but-if-you-judge": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-05-10-best-topical-seo-tool-u-thinking-of-what": {
+"l2": [
+"keyword-research"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2024-05-14-chat-gpt-3-5-vs-4-0-vs": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-14-i-asked-openai-chat-gpt4o-about-recent-screaming": {
+"l2": [
+"llm-assistants",
+"seo-tools"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-14-new-chatgpt-version-gpt-4o-o-for-omni": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-14-project-astra-google-is-taking-artificial-intelligence-to": {
+"l2": [
+"llm-assistants",
+"ai-overviews"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2024-05-15-ai-review-summarization-use-case-tripadvisor-com": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2024-05-17-ai-review-summarization-use-case-target-com": {
+"l2": [
+"content-ai",
+"paid-ecommerce"
+]
+},
+"post:2024-05-18-harvard-innovation-labs-value-props-create-a-product": {
+"l2": [
+"courses-certs",
+"digital-marketing"
+]
+},
+"post:2024-05-21-associate-content-writer-apartments-com": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-05-22-connect-apps-connect-doc-s-or-spreedsheets-with": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-22-serp-volatility-for-the-last-30-days": {
+"l2": [
+"google-updates",
+"seo-tools"
+]
+},
+"post:2024-05-23-looks-like-google-is-increasing-real-state-for": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-05-25-new-semrush-feature-topical-seo-is-something-i": {
+"l2": [
+"seo-tools",
+"keyword-research"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2024-05-25-open-ai-launched-the-chatgpt-macos-app-and": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-05-26-seo-product-tip-6-what-s": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-05-27-this-is-absolutely-helpful-tim-soulo-and-ahrefs": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2024-05-28-10-key-takeaways-from-michael-king-rand-fishkin": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-06-06-career-tip-identify-your-passion-purpose-your-work": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-06-06-your-growth-must-be-defined-by-3-factors": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-06-24-hiring-sr-search-engine-optimization-seo-specialist-land": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-07-12-there-are-tough-long-and-unpredictable-days-but": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-07-15-google-my-business-now-showcases-reviews-from-third": {
+"l2": [
+"local-seo"
+]
+},
+"post:2024-07-16-apartments-com-rent-report-for-june-2024-rent": {
+"l2": [
+"dashboards"
+]
+},
+"post:2024-07-16-hiring-software-engineer-angular": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-07-23-thanks-for-sharing-devendra-saini": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-07-26-a-new-way-to-search-getting-answers-on": {
+"l2": [
+"ai-search-engines",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-08-05-judge-rules-that-google-is-a-monopolist-in": {
+"l2": [
+"google-company"
+]
+},
+"post:2024-08-13-starbucks-experienced-a-significant-boost-in-market-capitalization": {
+"l2": [
+"big-tech"
+]
+},
+"post:2024-08-14-antitrust-update-u-s-found-google-violated-antitrust": {
+"l2": [
+"google-company"
+]
+},
+"post:2024-08-15-the-august-2024-core-update-for-google-search": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-08-22-how-to-charge-thousands-for-seo-consulting": {
+"l2": [
+"enterprise-seo",
+"digital-marketing"
+]
+},
+"post:2024-08-22-programmatic-seo-pseo-ufo-user-first-optimization-rich": {
+"l2": [
+"enterprise-seo",
+"keyword-research"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2024-08-24-the-short-videos-filter-in-google-search-engine": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-08-26-amazing-seo-product-manager-course-by-adam-gent": {
+"l2": [
+"courses-certs",
+"enterprise-seo"
+]
+},
+"post:2024-08-29-had-a-pleasure-to-talk-with-an-amazing": {
+"l2": [
+"digital-marketing"
+]
+},
+"post:2024-09-09-how-google-s-new-serp-bubble-buttons-could": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-09-11-forums-are-booming-some-even-reporting-100-yoy": {
+"l2": [
+"serp-features",
+"google-updates"
+]
+},
+"post:2024-09-12-ai-generated-content-is-not-inherently-bad-the": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2024-09-12-openai-new-model-o1-o1-mini": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-09-12-search-engines-these-days-10-ai-overviews": {
+"l2": [
+"serp-features",
+"ai-overviews"
+]
+},
+"post:2024-09-17-find-your-passion-and-enjoy-every-hour": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-09-19-open-ai-chat-gpt-4o-vs-o1-o1": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-09-19-why-skip-tech-seo-connect-that-s-like": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"post:2024-09-23-google-core-algo-post-effects-seeing-big-reversals": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-10-02-cindy-krum-reveals-how-google-uses-chrome-data": {
+"l2": [
+"google-company",
+"technical-seo"
+]
+},
+"post:2024-10-03": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2024-10-08-acquisition-siteimprove-has-entered-a-definitive-agreement-to": {
+"l2": [
+"seo-tools",
+"big-tech"
+]
+},
+"post:2024-10-09-serp-updates-interested-to-see-verified-marks-this": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-10-16-level-up-with-previsible-play-learn-and-hone": {
+"l2": [
+"brightonseo"
+]
+},
+"post:2024-10-17-ai-has-surpassed-humans-at-a-number-of": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"post:2024-10-17-ai-overviews-are-displaying-table-view-and-links": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2024-10-17-excited-to-attend-tech-seo-connect": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"post:2024-10-18-excellent-presentation-on-data-gaps-with-gsc-serge": {
+"l2": [
+"tech-seo-connect",
+"search-console-analytics"
+]
+},
+"post:2024-10-18-excellent-presentation-on-data-gaps-with-gsc-serge-2": {
+"l2": [
+"tech-seo-connect",
+"search-console-analytics"
+]
+},
+"post:2024-10-18-google-ceo-sundar-pichai-announced-that-prabhakar-raghavan": {
+"l2": [
+"google-company"
+]
+},
+"post:2024-10-19-to-start-with-tech-seo-connect-is-amazing": {
+"l2": [
+"tech-seo-connect"
+]
+},
+"post:2024-10-21-in-austin-usa-for-the-botify-conference-ready": {
+"l2": [
+"other-conferences",
+"enterprise-seo"
+]
+},
+"post:2024-10-22-is-cosine-similarity-really-about-similarity": {
+"l2": [
+"rag-vectors",
+"ml-nlp"
+]
+},
+"post:2024-10-23-finally-enjoyed-gained-knowledge-and-met-some-great": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2024-10-23-had-a-great-conversation-with-ray-grieselhuber-from": {
+"l2": [
+"other-conferences",
+"serp-features"
+]
+},
+"post:2024-10-23-thanks-aleyda-sol-s-for-mentioning-in-seofomo": {
+"l2": [
+"tech-seo-connect",
+"awards"
+]
+},
+"post:2024-10-25-content-writer-intern-apartments-com-rising-seniors": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-10-28-i-m-writing-about-rag-and-actual-uses": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2024-10-31-new-chat-gpt-feature-search-in-web-using": {
+"l2": [
+"ai-search-engines",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-11-02-exploring-the-core-differences-chatgpt-vs-google-search": {
+"l2": [
+"ai-search-engines"
+]
+},
+"post:2024-11-03-opportunity-timing-in-search": {
+"l2": [
+"ai-search-engines"
+]
+},
+"post:2024-11-03-seo-prioritization-matrix-template-with-examples": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-11-06-big-thanks-tyson-stockton-whole-previsible-team": {
+"l2": [
+"brightonseo"
+]
+},
+"post:2024-11-06-excited-can-t-wait-meet-everyone-at": {
+"l2": [
+"brightonseo"
+]
+},
+"post:2024-11-07-tip-for-2025-seo-product-roadmap-planning": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2024-11-08-enhancing-ai-with-retrieval-augmented-generation-rag": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2024-11-08-what-is-retrieval-augmented-generation-rag": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2024-11-09-work-or-life-here-s-what-i-ve": {
+"l2": [
+"motivation"
+]
+},
+"post:2024-11-10-throwbacks-it-s-almost-been-6-years-for": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2024-11-14-next-videos-will-be-on-ai-are-as": {
+"l2": [
+"rag-vectors",
+"ai-agents"
+]
+},
+"post:2024-11-18-today-spirit-airlines-filed-for-chapter-11-bankruptcy": {
+"l2": [
+"big-tech"
+]
+},
+"post:2024-11-19-can-t-want-for-your-presentation-philip-mastroianni": {
+"l2": [
+"brightonseo",
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2024-11-19-lovely-meeting-you-in-person-eli-schwartz": {
+"l2": [
+"brightonseo",
+"books-reading"
+]
+},
+"post:2024-11-19-spotted-a-new-feature-from-google-in-the": {
+"l2": [
+"serp-features",
+"ai-overviews"
+]
+},
+"post:2024-11-20-awesome-presentation-on-serp-data-ray-grieselhuber-from": {
+"l2": [
+"brightonseo",
+"serp-features"
+]
+},
+"post:2024-11-20-demandsphere-serp-serp": {
+"l2": [
+"serp-features",
+"seo-tools",
+"brightonseo"
+]
+},
+"post:2024-11-20-rand-fishkin-huge-fan-of-his-true-and": {
+"l2": [
+"brightonseo"
+]
+},
+"post:2024-11-20-what-is-cosine-similarity-cosine-similarity-works-by": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2024-11-23-my-notes-brighton-seo-conference-2024-san-diego": {
+"l2": [
+"brightonseo"
+]
+},
+"post:2024-11-26-thanks-for-inviting-to-podcast-philip-mastroianni-and": {
+"l2": [
+"talks-podcasts",
+"brightonseo"
+]
+},
+"post:2024-11-27-google-my-business-gmb-generative-ai-summarization": {
+"l2": [
+"local-seo"
+]
+},
+"post:2024-11-30-agentic-applications-with-mongodb-webinar-at-dec-5": {
+"l2": [
+"rag-vectors",
+"ai-agents",
+"other-conferences"
+]
+},
+"post:2024-12-05-google-search-central-handling-dupes-same-same-or": {
+"l2": [
+"technical-seo"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2024-12-06-i-had-a-pleasure-talking-with-victor-pan": {
+"l2": [
+"enterprise-seo",
+"technical-seo",
+"talks-podcasts"
+]
+},
+"post:2024-12-10-google-indexing-issue-google-is-investigating-reports-about": {
+"l2": [
+"technical-seo",
+"google-updates"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2024-12-11-demandsphere-botify-launched-a-report-on-ai-overviews": {
+"l2": [
+"ai-overviews",
+"seo-tools"
+]
+},
+"post:2024-12-12-rolling-google-dec-2024-core-algorithm": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-12-12-you-are-right-open-ai-aka-chat-gpt": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-12-14-by-text-to-video-model": {
+"l2": [
+"content-ai",
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2024-12-14-the-future-of-ai-and-its-impact-on": {
+"l2": [
+"ai-agents",
+"ai-policy"
+]
+},
+"post:2024-12-16-here-are-three-key-points-about-meta-ai": {
+"l2": [
+"ml-nlp",
+"llm-assistants"
+]
+},
+"post:2024-12-17-here-are-the-top-8-important-points-from": {
+"l2": [
+"other-conferences",
+"google-updates",
+"content-ai"
+]
+},
+"post:2024-12-19-it-s-better-if-google-search-central-can": {
+"l2": [
+"google-updates"
+]
+},
+"post:2024-12-19-most-underrated-things-in-seo-are": {
+"l2": [
+"links-authority"
+]
+},
+"post:2024-12-20-glitch-in-google-s-paa-generation-google-dynamically": {
+"l2": [
+"serp-features"
+]
+},
+"post:2024-12-20-omnieval-is-a-new-benchmark-for-evaluating-retrieval": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2024-12-22-homes-com-product-team-is-for-senior-data": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2024-12-22-serp-findings-sponsored-ads-in-the-middle-of": {
+"l2": [
+"serp-features",
+"paid-ecommerce"
+]
+},
+"post:2024-12-25-chat-gpt-voice-feature-updates": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-01-01-2025-agentic-ai-2024-gen-ai": {
+"l2": [
+"ai-agents"
+]
+},
+"post:2025-01-15-twitter-x-tik-tok": {
+"l2": [
+"big-tech"
+]
+},
+"post:2025-01-16-exciting-career-opportunities-at-apartments-com-costar-group": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-01-18-the-game-is-between-ai-user-vs-non": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-01-22-postman-just-launched-its-ai-agent-builder": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-01-23-openai-launches-operator": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-tools",
+"chatgpt-openai"
+]
+},
+"post:2025-01-26-absolutely-agree-with-zach-chahalis-was-thinking-of": {
+"l2": [
+"google-updates",
+"enterprise-seo"
+]
+},
+"post:2025-01-28-training-data-is-up-to-october-2023": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"post:2025-01-29-deepseek-r1-ai-reasoning-gets-an-upgrade": {
+"l2": [
+"llm-assistants",
+"ml-nlp"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"post:2025-02-01-new-models-fast-at-advance-reasoning": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-02-05-cache-augmented-generation-vs-retrieval-augmented-generation": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2025-02-05-rag-demonstration-practically-with-example": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2025-02-09-1-people-resisted-cars-calculators-and-the-internet": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-02-09-source-demandsphere-seo-platform-for-enterprises-agencies": {
+"l2": [
+"serp-features",
+"seo-tools"
+]
+},
+"post:2025-02-18-mvp-ready-autonomous-ai-seo-agent": {
+"l2": [
+"ai-agents",
+"seo-tools"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2025-02-19-my-ai-journey-no-affiliates": {
+"l2": [
+"courses-certs"
+]
+},
+"post:2025-02-20-i-had-a-privilege-opportunity-to-attended-in": {
+"l2": [
+"other-conferences",
+"ai-agents"
+]
+},
+"post:2025-02-21-autonomous-integration-with-screaming-frog-mvp": {
+"l2": [
+"ai-agents",
+"seo-tools"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2025-02-22-thank-you-for-your-amazing-support-via-linkedin": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2025-02-28-excited-for-by-google-in-nyc-looking-forward": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2025-02-28-in-japan-by-demandsphere-ray-grieselhuber": {
+"l2": [
+"other-conferences"
+]
+},
+"post:2025-03-01-how-custom-gpts-can-help-in-house-seos": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-03-02-enterprise-seo-crawl-dept-internal-linking-page-rank": {
+"l2": [
+"technical-seo",
+"links-authority",
+"enterprise-seo"
+],
+"l3": [
+"crawl-index",
+"site-migrations"
+]
+},
+"post:2025-03-03-schbang-is-hiring-group-head-of-seo-in": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-03-06-hate-it-or-love-it-but-learn-it": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2025-03-08-i-love-the-concept-of-rag-retrieval-augmented": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2025-03-08-manus-ai-autonomous-task-execution": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-03-09-manus-ai-a-general-ai-agent-quick-test": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-03-11-autonomous-ai-agent-crawl-site-with-autonomous-ai": {
+"l2": [
+"ai-agents",
+"technical-seo"
+],
+"l3": [
+"agent-tools",
+"crawl-index"
+]
+},
+"post:2025-03-11-chat-gpt-4-5-released-research-preview": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-03-13-my-prediction-google-march-2025-core-update": {
+"l2": [
+"google-updates"
+]
+},
+"post:2025-03-15-ai-agent-cua-computer-use-agents-by-browserbase": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-03-18-personally-i-know-nitin-manchanda-and-seo-team": {
+"l2": [
+"roles-hiring",
+"seo-tools"
+]
+},
+"post:2025-03-28-excited-to-announce-my-new-role-as-lead": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-03-28-i-m-incredibly-grateful-for-the-opportunity-to": {
+"l2": [
+"roles-hiring",
+"enterprise-seo"
+]
+},
+"post:2025-03-30-build-a-json-schema-with-manus-ai-98": {
+"l2": [
+"ai-agents",
+"technical-seo"
+],
+"l3": [
+"agent-tools",
+"structured-data"
+]
+},
+"post:2025-04-02-thanks-manus-ai-team-for-building-cool-product": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-04-05-build-tools-to-automate-borning-stuff-coming-soon": {
+"l2": [
+"build-in-public",
+"keyword-research",
+"rag-vectors"
+]
+},
+"post:2025-04-07-vectors-cosine-similarity-using-3d-visualization": {
+"l2": [
+"rag-vectors",
+"ml-nlp"
+]
+},
+"post:2025-04-09-big-thanks-for-all-the-support-from-linkedin": {
+"l2": [
+"linkedin-social",
+"ai-agents"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2025-04-10-using-studio-firebase-by-google": {
+"l2": [
+"ai-coding"
+]
+},
+"post:2025-04-13-google-maps-new-feature-now-you-can-simply": {
+"l2": [
+"local-seo"
+]
+},
+"post:2025-04-20-ufo-user-first-focused-optimization-is-my-strategy": {
+"l2": [
+"enterprise-seo",
+"content-strategy"
+]
+},
+"post:2025-04-23-topic-clustering-with-vector-embedding": {
+"l2": [
+"topical-engine",
+"keyword-research",
+"rag-vectors"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2025-04-24-no-secret-y-combinator-produce-one-of-the": {
+"l2": [
+"python-automation",
+"seo-tools"
+]
+},
+"post:2025-04-26-topical-cluster-with-vectors-mvp-10-000-keywords": {
+"l2": [
+"topical-engine",
+"keyword-research",
+"rag-vectors"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2025-05-05-subject-know-reinvent-yourself": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-05-06-what-is": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"mcp-a2a"
+]
+},
+"post:2025-05-08-all-the-best-shri-vidhya": {
+"l2": []
+},
+"post:2025-05-08-mcp-vs-acp-vs-a2a-great-visualization-by": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"mcp-a2a"
+]
+},
+"post:2025-05-13-leaked-google-engineer-confirms-seo-still-runs-on": {
+"l2": [
+"google-updates",
+"links-authority"
+]
+},
+"post:2025-05-15-redesign-looks-amazing-team-jetoctopus-com": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2025-05-20-serp-update-interactive-diagrams": {
+"l2": [
+"serp-features",
+"ai-overviews"
+]
+},
+"post:2025-05-20-thank-you-manus-ai-team-it-s-pleasure": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-05-21-at-t-just-announced-a-strategic-deal-to": {
+"l2": [
+"big-tech"
+]
+},
+"post:2025-05-21-google-i-o-2025-ai-that-means-business": {
+"l2": [
+"llm-assistants",
+"ai-overviews",
+"other-conferences"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2025-05-21-lot-of-companies-are-trying-to-build-ai": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2025-05-23-next-video-new-ai-tools-from-google": {
+"l2": [
+"llm-assistants",
+"content-ai",
+"other-conferences"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2025-05-25-ai-mode-vs-ai-overview-vs-ai-overview": {
+"l2": [
+"ai-overviews",
+"rag-vectors"
+]
+},
+"post:2025-05-26-i-ve-been-using-manus-ai-for-the": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-06-01-heard-great-things-about-and-newfold-digital-from": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-06-02-i-m-proud-of-you-mate-kunjal-chawhan": {
+"l2": []
+},
+"post:2025-06-03-manus-ai-launched-prompt-to-video-today": {
+"l2": [
+"ai-agents",
+"content-ai"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-06-08-0-by-google-harvard-mit-stanford-microsoft-ibm": {
+"l2": [
+"courses-certs",
+"ml-nlp"
+]
+},
+"post:2025-06-09-reading-about-vectors-and-mp4-files-found-ai": {
+"l2": [
+"ai-overviews",
+"rag-vectors"
+]
+},
+"post:2025-06-10-i-love-the-screaming-frog-22-0-vectors": {
+"l2": [
+"seo-tools",
+"rag-vectors"
+]
+},
+"post:2025-06-11-google-s-new-ai-overviews-and-ai-mode": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2025-06-12-ai-agent-clay-competitors-feature-launched-by-firecrawl": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2025-06-12-alert-google-outage-june-12-2025": {
+"l2": [
+"google-company"
+]
+},
+"post:2025-06-13-up-next-video-using-screaming-frog-22-0": {
+"l2": [
+"seo-tools",
+"rag-vectors"
+]
+},
+"post:2025-06-17-when-i-mentioned-about-ai-cosine-similarity-vectors": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2025-06-27-amazing-post-by-brother-metehan-ye-ilyurt": {
+"l2": [
+"seo-tools",
+"geo-aeo"
+]
+},
+"post:2025-06-28-results-above-the-ai-overview-in-google": {
+"l2": [
+"ai-overviews",
+"serp-features"
+]
+},
+"post:2025-06-30-incident-effect-ranking-june-30-2025-google-algo": {
+"l2": [
+"google-updates"
+]
+},
+"post:2025-06-30-new-google-search-console-feature-new-insights-report": {
+"l2": [
+"search-console-analytics"
+]
+},
+"post:2025-07-02-in-the-context-of-seo": {
+"l2": []
+},
+"post:2025-07-02-new-ai-overview-features": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2025-07-02-rag-is-dead-long-live-agentic-retrieval": {
+"l2": [
+"rag-vectors",
+"ai-agents"
+]
+},
+"post:2025-07-03-language-models-ranked-and-analyzed-by-usage-across": {
+"l2": [
+"llm-assistants"
+]
+},
+"post:2025-07-05-screaming-frog-22-2-added-new-features-and": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2025-07-14-level-0-level-1-level-2": {
+"l2": [
+"keyword-research",
+"topical-engine"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2025-07-15-prompt-engineering-is-dead-now-s-it-s": {
+"l2": [
+"llm-assistants"
+]
+},
+"post:2025-07-16-anthropic-s-chatbot-now-offers-a-seamless-integration": {
+"l2": [
+"llm-assistants",
+"content-ai"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2025-07-16-maybe-a-new-feature-in": {
+"l2": [
+"serp-features"
+]
+},
+"post:2025-07-18-weekend-motto-test-ai-break-things-learn-fast": {
+"l2": [
+"ml-nlp",
+"ai-coding",
+"ai-agents"
+]
+},
+"post:2025-07-18-welcome-to-at-t-daewon-kwon-from-the": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-07-20-visual-no-code-ai-builder-drag-and-drop": {
+"l2": [
+"ai-agents",
+"ai-coding"
+]
+},
+"post:2025-07-21-one-prompt-5-llms-5-outputs": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"post:2025-07-22-new-logo-from-google-search-console": {
+"l2": [
+"search-console-analytics"
+]
+},
+"post:2025-07-24-game-is-on": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-tools",
+"chatgpt-openai"
+]
+},
+"post:2025-07-24-google-s-new-gemini-embedding-model-is-live": {
+"l2": [
+"rag-vectors",
+"llm-assistants"
+],
+"l3": [
+"gemini-google-ai"
+]
+},
+"post:2025-07-24-google-trends-api-alpha-test-with-regions-and": {
+"l2": [
+"keyword-research",
+"python-automation"
+]
+},
+"post:2025-07-25-google-labs-opal-drag-and-drop": {
+"l2": [
+"ai-coding",
+"google-company"
+]
+},
+"post:2025-07-27-google-analytics-mcp-server-google-analytics-data-directly": {
+"l2": [
+"ai-agents",
+"search-console-analytics"
+],
+"l3": [
+"mcp-a2a"
+]
+},
+"post:2025-07-27-google-serp-images-in-google": {
+"l2": [
+"serp-features",
+"ai-overviews"
+]
+},
+"post:2025-07-27-tested": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-tools",
+"chatgpt-openai"
+]
+},
+"post:2025-07-30-200-000-anonymized-conversations-understanding-ai-s-impact": {
+"l2": [
+"ai-policy",
+"llm-assistants"
+]
+},
+"post:2025-08-09-it-s-time-for-claude-code-cursor": {
+"l2": [
+"ai-coding",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2025-08-09-scaling-metadata-with-precision-and-relevance": {
+"l2": [
+"enterprise-seo",
+"content-ai",
+"build-in-public"
+]
+},
+"post:2025-08-13-exciting-opportunity-at-at-t-in-atlanta-for": {
+"l2": [
+"roles-hiring"
+]
+},
+"post:2025-08-16-when-it-comes-to-disruptive-growth-asking-the": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-08-19-firecrawl-2-updates-finance": {
+"l2": [
+"big-tech",
+"python-automation"
+]
+},
+"post:2025-08-24-don-t-lose-yourself-in-professional-race-remember": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-08-26-at-t-is-acquiring-23b-in-wireless-spectrum": {
+"l2": [
+"big-tech"
+]
+},
+"post:2025-08-26-google-spam-update-google-s-august-25-2025": {
+"l2": [
+"google-updates",
+"content-ai"
+]
+},
+"post:2025-08-28-great-write-metehan-ye-ilyurt-please-read": {
+"l2": [
+"geo-aeo"
+]
+},
+"post:2025-09-03-large-language-models-llms-and-how-ai-predicts": {
+"l2": [
+"ml-nlp",
+"llm-assistants"
+]
+},
+"post:2025-09-05-fm-intent-smarter-recommendations-at-netflix-intent-and": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2025-09-07-ai-automations-looks-like-semrush-is-making-some": {
+"l2": [
+"seo-tools",
+"python-automation"
+]
+},
+"post:2025-09-08-serp-updates-ai-overviews-in-paa-people-also": {
+"l2": [
+"ai-overviews",
+"serp-features"
+]
+},
+"post:2025-09-10-iphone-17-by-at-t": {
+"l2": [
+"big-tech"
+]
+},
+"post:2025-09-15-google-hit-with-first-major-ai-lawsuit-from": {
+"l2": [
+"ai-overviews",
+"ai-policy",
+"google-company"
+]
+},
+"post:2025-09-20-seo-is-needed-even-for": {
+"l2": [
+"enterprise-seo"
+]
+},
+"post:2025-09-23-ai-feature-in-youtube-ask-video-to-text": {
+"l2": [
+"google-company"
+]
+},
+"post:2025-10-07-one-tool-i-m-enjoying-right-now-from": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2025-10-13-love-learning-ai-anthropic-ai-dataforseo": {
+"l2": [
+"ai-agents",
+"seo-tools",
+"llm-assistants"
+],
+"l3": [
+"mcp-a2a",
+"claude-anthropic"
+]
+},
+"post:2025-10-17-claudia-haiku-4-5-model-for-quick-answers": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2025-10-19-structured-data-llms-first-party-surfaces-is-a": {
+"l2": [
+"knowledge-graphs",
+"google-company"
+],
+"l3": [
+"entity-seo"
+]
+},
+"post:2025-10-20-massive-oct-20-2025": {
+"l2": [
+"big-tech"
+]
+},
+"post:2025-10-21-excited-to-share-that-i-was-recently-featured": {
+"l2": [
+"talks-podcasts",
+"python-automation",
+"geo-aeo"
+]
+},
+"post:2025-10-21-new-web-browser-by-openai-chatgpt-atlas": {
+"l2": [
+"llm-assistants",
+"ai-agents"
+],
+"l3": [
+"chatgpt-openai",
+"agent-tools"
+]
+},
+"post:2025-10-26-new-serp-feature-3d-interactive-view": {
+"l2": [
+"serp-features"
+]
+},
+"post:2025-10-30-grateful-for-the-journey-and-the-support-received": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2025-10-31-tip-use-common-intelligence-first-before-artificial-intelligence": {
+"l2": [
+"motivation"
+]
+},
+"post:2025-11-06-very-happy-to-see": {
+"l2": [
+"geo-aeo",
+"roles-hiring"
+]
+},
+"post:2025-11-17-claude-anthropic-in-vscode-windsurf-cursor": {
+"l2": [
+"ai-coding",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2025-11-19-adobe-will-acquire-semrush-1-9-billion-usd": {
+"l2": [
+"seo-tools",
+"big-tech",
+"geo-aeo"
+]
+},
+"post:2025-11-20-thank-you-for-the-surprise-the-warm-greetings": {
+"l2": [
+"personal"
+]
+},
+"post:2025-11-25-new-mode-released-by-chatgpt-shopping-research": {
+"l2": [
+"llm-assistants",
+"paid-ecommerce"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-12-11-2025-dec-11-2025-my-prediction-impact-of": {
+"l2": [
+"google-updates",
+"ai-overviews"
+]
+},
+"post:2025-12-11-new-feature-in-chat-gpt-set-up-company": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2025-12-20-google-lawsuit-1-serpapi-scraped-1-petabyte-of": {
+"l2": [
+"google-company",
+"seo-tools"
+]
+},
+"post:2025-12-25-the-online-marketplaces-receiving-ai-traffic": {
+"l2": [
+"paid-ecommerce",
+"ai-search-engines"
+]
+},
+"post:2025-12-29-massive-ai-news-manus-ai-is-joining-meta": {
+"l2": [
+"ai-agents",
+"big-tech"
+],
+"l3": [
+"agent-tools"
+]
+},
+"post:2026-01-07-building-json-based-topical-classification-with-feedback-mechanism": {
+"l2": [
+"topical-engine",
+"keyword-research"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2026-01-12-model-context-protocol-mcp-in-ai-and-the": {
+"l2": [
+"ai-agents",
+"paid-ecommerce"
+],
+"l3": [
+"mcp-a2a"
+]
+},
+"post:2026-01-19-video-coming-soon-1-industry-4-million-keywords": {
+"l2": [
+"topical-engine",
+"keyword-research"
+]
+},
+"post:2026-01-20-industrial-research-tool-video-01-1-industry-4": {
+"l2": [
+"topical-engine",
+"dashboards"
+]
+},
+"post:2026-01-21-new-feature-from-anthropic-cowork-pro-and-max": {
+"l2": [
+"llm-assistants",
+"ai-agents"
+],
+"l3": [
+"claude-anthropic",
+"agent-tools"
+]
+},
+"post:2026-01-23-absolutely-good-share-from-jean-christophe-chouinard": {
+"l2": [
+"python-automation"
+]
+},
+"post:2026-01-24-tested-one-of-my-current-favorites-tool-is": {
+"l2": [
+"ai-coding"
+]
+},
+"post:2026-01-25-the-ai-frameworks-that-are-actually-being-used": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2026-01-26-knowledge-graph-1-industry-5-million-queries": {
+"l2": [
+"topical-engine",
+"knowledge-graphs"
+],
+"l3": [
+"kg-builds",
+"ontology-taxonomy"
+]
+},
+"post:2026-01-28-building-a-self-learning-feedback-loop-for-our": {
+"l2": [
+"topical-engine",
+"ml-nlp"
+]
+},
+"post:2026-01-29-agenda-for-2026-intensify-speed-learn-scale": {
+"l2": [
+"topical-engine",
+"dashboards",
+"knowledge-graphs"
+],
+"l3": [
+"kg-builds"
+]
+},
+"post:2026-02-02-curiosity-experimentation-makes-me-happier-than-outcome-growth": {
+"l2": [
+"keyword-research",
+"content-ai"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2026-02-03-shoutout-to-noah-learner-for-his-time-transparent": {
+"l2": [
+"community",
+"other-conferences"
+]
+},
+"post:2026-02-05-anthropic-just-dropped-claude-opus-4-6-their": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-02-05-human-vs-ai-vs-human-ai": {
+"l2": [
+"motivation",
+"llm-assistants"
+]
+},
+"post:2026-02-05-rich-content-format-relavance-vs-topical-relevance": {
+"l2": [
+"google-updates"
+]
+},
+"post:2026-02-06-shoutout-to-jordan-choo-time-ideas-brainstorming": {
+"l2": [
+"local-seo",
+"dashboards"
+]
+},
+"post:2026-02-07-great-talking-with-kevin-chandra-founder-of-the": {
+"l2": [
+"geo-aeo"
+]
+},
+"post:2026-02-08-from-an-industrial-level-topical-view-to-zip": {
+"l2": [
+"dashboards",
+"local-seo"
+]
+},
+"post:2026-02-08-this-man-suganthan-mohanadasan-always-starts-cooking-for": {
+"l2": [
+"keyword-research",
+"topical-engine"
+],
+"l3": [
+"keyword-clustering"
+]
+},
+"post:2026-02-09-added-serp-screenshots-in-local-keywords-tracker": {
+"l2": [
+"local-seo",
+"build-in-public"
+]
+},
+"post:2026-02-10-claude-tips-document-all-issues-failed-deployments-and": {
+"l2": [
+"llm-assistants",
+"ai-coding"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-02-10-i-believe-impact-money-it-makes-me-genuinely": {
+"l2": [
+"motivation",
+"linkedin-social"
+]
+},
+"post:2026-02-12-ad-s-in-open-ai": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2026-02-13-market-intelligence-at-scale-dominate-the-market-with": {
+"l2": [
+"dashboards",
+"digital-marketing"
+]
+},
+"post:2026-02-13-this-is-how-real-ecosystems-grow-i-recently": {
+"l2": [
+"dashboards",
+"seo-tools"
+]
+},
+"post:2026-02-16-new-feature-added-track-brand-mentions-in-chatgpt": {
+"l2": [
+"geo-aeo",
+"ai-search-engines",
+"omniscite"
+]
+},
+"post:2026-02-21-kgs-cgs-at-scale": {
+"l2": [
+"knowledge-graphs",
+"omniscite"
+],
+"l3": [
+"kg-builds"
+]
+},
+"post:2026-02-22-today-i-started-building-the-physical-layer-of": {
+"l2": [
+"build-in-public",
+"dashboards"
+]
+},
+"post:2026-02-23-i-m-learning-quant-finance-by-building-here": {
+"l2": [
+"ml-nlp",
+"build-in-public",
+"python-automation"
+]
+},
+"post:2026-02-25-correlation-or-causation-more-testing-and-time-tell": {
+"l2": [
+"build-in-public",
+"dashboards"
+]
+},
+"post:2026-02-25-introducing-a-new-feature-in-claude-code-remote": {
+"l2": [
+"llm-assistants",
+"ai-coding",
+"ai-agents"
+],
+"l3": [
+"claude-anthropic",
+"agent-tools"
+]
+},
+"post:2026-02-25-learning-quant-finance-by-building": {
+"l2": [
+"build-in-public",
+"dashboards"
+]
+},
+"post:2026-02-26-100-ai-agents-each-equipped-with-expertise-levels": {
+"l2": [
+"ai-agents",
+"omniscite"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-02-26-amazing-call-with-metehan-ye-ilyurt": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-02-26-looks-like-claude-vs-openclaw": {
+"l2": [
+"llm-assistants",
+"ai-agents"
+],
+"l3": [
+"claude-anthropic",
+"agent-tools"
+]
+},
+"post:2026-02-27-100-ai-agents-neural-graph-team-directory-org": {
+"l2": [
+"ai-agents",
+"omniscite"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-02-28-ai-agents-tip-knowing-when-not-to-use": {
+"l2": [
+"ai-agents"
+]
+},
+"post:2026-03-02-launched-my-newsletter-new-site-venkatapagadala-com": {
+"l2": [
+"build-in-public",
+"linkedin-social"
+]
+},
+"post:2026-03-02-launched-thanks-for-suggestion-metehan-ye-ilyurt": {
+"l2": [
+"build-in-public"
+]
+},
+"post:2026-03-04-building-crawler-for-injecting-page-content-into-system": {
+"l2": [
+"omniscite",
+"technical-seo",
+"ai-agents"
+],
+"l3": [
+"crawl-index"
+]
+},
+"post:2026-03-05-ai-agents-simple-workflow-test": {
+"l2": [
+"ai-agents",
+"omniscite"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-03-05-very-happy-for-you-karimjon-umarov": {
+"l2": []
+},
+"post:2026-03-06-my-value-my-users-are-most-valuable-asset": {
+"l2": [
+"personal",
+"motivation"
+]
+},
+"post:2026-03-07-100-ai-agents-ai-agents-swarm-multi-agent": {
+"l2": [
+"ai-agents",
+"omniscite"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-03-10-ai-overviews-internal-linking-to-other-ai-overviews": {
+"l2": [
+"ai-overviews"
+]
+},
+"post:2026-03-11-telecom-quality-55-91-5": {
+"l2": [
+"topical-engine",
+"knowledge-graphs",
+"keyword-research"
+],
+"l3": [
+"ontology-taxonomy",
+"keyword-clustering"
+]
+},
+"post:2026-03-12-claude-new-feature-think-it-through-with-claude": {
+"l2": [
+"llm-assistants",
+"local-seo"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-03-12-when-your-experiment-starts-to-explode-topical-authority": {
+"l2": [
+"keyword-research",
+"enterprise-seo"
+],
+"l3": [
+"topical-authority"
+]
+},
+"post:2026-03-13-learning-must-be-fun-like-playing-on-ps5": {
+"l2": [
+"build-in-public"
+]
+},
+"post:2026-03-15-build-right-knowledge-base-is-most-important-agents": {
+"l2": [
+"knowledge-graphs",
+"ai-agents"
+],
+"l3": [
+"ontology-taxonomy"
+]
+},
+"post:2026-03-15-free-ai-learning-i-organized-the-chaos-of": {
+"l2": [
+"build-in-public",
+"courses-certs",
+"ml-nlp"
+]
+},
+"post:2026-03-16-launching-soon-beta-version": {
+"l2": [
+"llm-assistants",
+"ai-coding"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-03-20-added-a-new-feature-for-local-opportunities-and": {
+"l2": [
+"omniscite",
+"local-seo",
+"serp-features"
+]
+},
+"post:2026-03-20-had-a-great-1-1-conversation-mitul-gandhi": {
+"l2": [
+"seo-tools",
+"enterprise-seo"
+]
+},
+"post:2026-03-20-looks-like-perplexity-ai-is-cooking-something-for": {
+"l2": [
+"llm-assistants",
+"seo-tools"
+],
+"l3": [
+"perplexity-others"
+]
+},
+"post:2026-03-20-new-features-i-like-remote-control-features-from": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-03-21-i-started-creating-my-100-ai-agents-i": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-03-21-perplexity-ai-siteaudit-keyword-tracker-competitors-analysis-and": {
+"l2": [
+"ai-agents",
+"llm-assistants",
+"seo-tools"
+],
+"l3": [
+"agent-tools",
+"perplexity-others"
+]
+},
+"post:2026-03-24-soon-will-share-detail-insights-of-perplexity-computer": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-tools",
+"perplexity-others"
+]
+},
+"post:2026-03-25-2-million-labeled-queries-visualization": {
+"l2": [
+"topical-engine",
+"keyword-research",
+"knowledge-graphs"
+],
+"l3": [
+"keyword-clustering",
+"ontology-taxonomy"
+]
+},
+"post:2026-03-25-claude-llms-txt": {
+"l2": [
+"geo-aeo",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-04-04-changes-in-claude-and-openclaw-integration": {
+"l2": [
+"llm-assistants",
+"ai-agents"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-04-08-chatgpt-ad-s": {
+"l2": [
+"llm-assistants",
+"paid-ecommerce"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2026-04-11-testing-claude-managed-agents": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"agent-tools",
+"claude-anthropic"
+]
+},
+"post:2026-04-15-claude-major-outage": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-04-16-opus-4-7-claude-new-model": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-04-18-my-latest-research-paper-is-now-published-on": {
+"l2": [
+"research-papers",
+"geo-aeo"
+]
+},
+"post:2026-04-22-environment-and-right-people-will-support-for-right": {
+"l2": [
+"motivation",
+"personal"
+]
+},
+"post:2026-04-23-i-love-screaming-frog-always-drops-the-most": {
+"l2": [
+"seo-tools"
+]
+},
+"post:2026-04-27-excited-for-newyork": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-04-27-notes-my-view-great-action-content-on-how": {
+"l2": [
+"seo-week",
+"ai-search-engines"
+]
+},
+"post:2026-04-27-notes-my-view-one-of-the-top-talents": {
+"l2": [
+"seo-week",
+"ml-nlp"
+]
+},
+"post:2026-04-27-notes-speaker-michael-king": {
+"l2": [
+"seo-week",
+"geo-aeo"
+]
+},
+"post:2026-04-27-notes-speaker-noah-learner": {
+"l2": [
+"seo-week",
+"ai-coding"
+]
+},
+"post:2026-04-28-notes-english": {
+"l2": [
+"seo-week",
+"geo-aeo",
+"rag-vectors"
+]
+},
+"post:2026-04-28-notes-speaker-annie-cushing": {
+"l2": [
+"seo-week",
+"ai-coding"
+]
+},
+"post:2026-04-28-notes-speaker-jori-ford": {
+"l2": [
+"seo-week",
+"geo-aeo"
+]
+},
+"post:2026-04-28-notes-speaker-wil-reynolds": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-04-29-accessibility-fix-shipped-thanks-to-my-guide-jean": {
+"l2": [
+"build-in-public"
+]
+},
+"post:2026-04-29-notes-my-favorite-garrett-sussman-sharpest-mind-happiest": {
+"l2": [
+"seo-week",
+"geo-aeo"
+]
+},
+"post:2026-04-29-notes-speaker-bianca-aka-binks-a": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-04-29-notes-speaker-john-shehata": {
+"l2": [
+"seo-week",
+"google-updates"
+]
+},
+"post:2026-04-29-notes-speaker-ross-simmonds": {
+"l2": [
+"seo-week",
+"geo-aeo"
+]
+},
+"post:2026-04-30-i-support-garrett-sussman-jori-ford": {
+"l2": [
+"community"
+]
+},
+"post:2026-04-30-notes-speaker-crystal-carter": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-04-30-notes-speaker-james-cadwallader": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-04-30-notes-speaker-zach-chahalis-my-view-zach-loves": {
+"l2": [
+"seo-week",
+"geo-aeo"
+]
+},
+"post:2026-04-30-seoweek-notes-speaker-christian-j-ward": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-05-01-i-put-my-money-where-my-word-is": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-05-02-things-i-started-to-belive-this-from-couple": {
+"l2": [
+"motivation"
+]
+},
+"post:2026-05-10-good-friday-saturday-fun-with-content-agents": {
+"l2": [
+"ai-agents",
+"content-ai"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-05-11-starting-may-7-2026-faq-rich-results-will": {
+"l2": [
+"technical-seo",
+"serp-features"
+],
+"l3": [
+"structured-data"
+]
+},
+"post:2026-05-13-local-search-shipped-new-feature-in-ominscite": {
+"l2": [
+"omniscite",
+"local-seo"
+]
+},
+"post:2026-05-20-big-fan-of-andrej-karpathy-work-happy-to": {
+"l2": [
+"big-tech",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-05-21-may-2026-core-update": {
+"l2": [
+"google-updates"
+]
+},
+"post:2026-05-23-most-vector-indexes-faiss-pq-scann-require-a": {
+"l2": [
+"rag-vectors"
+]
+},
+"post:2026-05-28-claude-opus-4-8-has-officially-launched-maintaining": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-06-01-in-this-ai-era-content-on-own-site": {
+"l2": [
+"geo-aeo",
+"links-authority"
+]
+},
+"post:2026-06-01-we-had-an-amazing-session-with-botpresso-with": {
+"l2": [
+"talks-podcasts",
+"other-conferences",
+"ai-coding"
+]
+},
+"post:2026-06-06-finished-migrating-18-79-million-rows-across-88": {
+"l2": [
+"data-engineering",
+"omniscite"
+]
+},
+"post:2026-06-08-researching-and-testing-grouping-prompts-based-topics-location": {
+"l2": [
+"omniscite",
+"geo-aeo",
+"build-in-public"
+]
+},
+"post:2026-06-09-i-have-successfully-rendered-my-entire-production-codebase": {
+"l2": [
+"knowledge-graphs",
+"ai-coding"
+],
+"l3": [
+"kg-builds"
+]
+},
+"post:2026-06-09-reflecting-on-my-journey-i-want-to-express": {
+"l2": [
+"linkedin-social"
+]
+},
+"post:2026-06-13-the-us-government-has-ordered-anthropic-to-suspend": {
+"l2": [
+"llm-assistants",
+"ai-policy"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-06-16-believe-in-yourself-stay-consistent-ignore-the-noise": {
+"l2": [
+"motivation"
+]
+},
+"post:2026-06-18-my-take-on-ard-agentic-resource-discovery-specification": {
+"l2": [
+"ai-agents",
+"geo-aeo"
+],
+"l3": [
+"mcp-a2a"
+]
+},
+"post:2026-06-25-massive-update-coming-soon-on-omniscite": {
+"l2": [
+"omniscite"
+]
+},
+"post:2026-06-27-every-function-every-api-every-classifier-every-keyword": {
+"l2": [
+"knowledge-graphs"
+],
+"l3": [
+"kg-builds"
+]
+},
+"post:2026-06-28-claude-fable-5-in-cloudflare": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-07-01-10-million-links-70-000-page-vectors": {
+"l2": [
+"omniscite",
+"dashboards",
+"geo-aeo"
+]
+},
+"post:2026-07-01-sonnet-5-is-available-now-fable-5-and": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-07-07-10-p-m-ac-dead-house-climbing-past": {
+"l2": [
+"build-in-public",
+"ai-coding"
+]
+},
+"post:2026-07-13-as-mentioned-to-angela-skane-samantha-torres-christian": {
+"l2": [
+"seo-week"
+]
+},
+"post:2026-07-13-multi-agent-orchestration-for-research-using-claude-fan": {
+"l2": [
+"ai-agents"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-07-17-3d-edu-how-llms-work-in-3d": {
+"l2": [
+"ml-nlp",
+"build-in-public"
+]
+},
+"post:2026-07-18-anthropic-s-moat-is-the-model-but-the": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-07-21-a-significant-development-in-ai-policy-and-safety": {
+"l2": [
+"ai-policy",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-07-30-free-ai-roadmap-2026-last-reviewed-july-29": {
+"l2": [
+"build-in-public",
+"courses-certs"
+]
+},
+"post:2026-08-08-weekend-project-2040-3d-game-with-humiod-fsd": {
+"l2": [
+"build-in-public",
+"ai-coding"
+]
+},
+"post:2026-08-11-under-20-days-impact-on-ai-search-aeo": {
+"l2": [
+"geo-aeo",
+"enterprise-seo"
+]
+},
+"post:2026-08-15-3d-how-neural-networks-work": {
+"l2": [
+"ml-nlp"
+]
+},
+"post:2026-08-17-stripe-agrees-to-buy-ai-model-router-openrouter": {
+"l2": [
+"big-tech"
+]
+},
+"post:2026-08-19-outcome-5-million-impressions-under-25-days": {
+"l2": [
+"enterprise-seo",
+"digital-marketing"
+]
+},
+"post:2026-08-20-published-research-paper-in-springer-nature-discover-artificial": {
+"l2": [
+"research-papers",
+"ai-policy",
+"ai-agents"
+]
+},
+"post:2026-08-27-6-key-things-try-to-understand-the-users": {
+"l2": [
+"enterprise-seo",
+"digital-marketing"
+]
+},
+"post:2026-08-30-happy-to-announce-speaking-at-brightonseo-san-diego": {
+"l2": [
+"brightonseo",
+"talks-podcasts",
+"topical-engine"
+]
+},
+"post:2026-09-01-fable-5-1-and-mythos-5-1-just": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-09-02-when-you-max-the-claude-max-with-agents": {
+"l2": [
+"ai-agents",
+"llm-assistants"
+],
+"l3": [
+"claude-anthropic"
+]
+},
+"post:2026-09-03-chatgpt-is-down": {
+"l2": [
+"llm-assistants"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2026-09-03-new-serp-feature-cited-sources": {
+"l2": [
+"serp-features"
+]
+},
+"post:2026-09-03-nvidia-to-acquire-hugging-face-for-12-93": {
+"l2": [
+"big-tech"
+]
+},
+"post:2026-09-10-search-volume-is-a-direction-not-a-strategy": {
+"l2": [
+"keyword-research",
+"digital-marketing",
+"brightonseo"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2026-09-15-today-is-special-day-it-s-beyond-what": {
+"l2": [
+"brightonseo",
+"personal"
+]
+},
+"post:2026-09-17-brightonseo-2026-san-diego-usa": {
+"l2": [
+"brightonseo",
+"keyword-research",
+"talks-podcasts"
+],
+"l3": [
+"search-intent"
+]
+},
+"post:2026-09-22-next-talk-the-free-coalition-formerly-the-fcdc": {
+"l2": [
+"talks-podcasts",
+"other-conferences",
+"ai-agents"
+],
+"l3": [
+"agent-builds"
+]
+},
+"post:2026-09-23-thanks-for-mention-ansvisor-cihan-geyik": {
+"l2": [
+"awards"
+]
+},
+"post:2026-09-28-one-of-my-next-research-on-serp-s": {
+"l2": [
+"serp-features",
+"ai-overviews"
+]
+},
+"post:2026-09-28-thank-you-to-each-and-every-one-who": {
+"l2": [
+"brightonseo",
+"talks-podcasts"
+]
+},
+"post:2026-09-29-one-linkedin-milestone-20-000-thank-you-everyone": {
+"l2": [
+"linkedin-social",
+"awards",
+"books-reading"
+]
+},
+"post:2026-10-01-return-of-investment-from-ai-extremely-happy-to": {
+"l2": [
+"ai-search-engines",
+"paid-ecommerce"
+]
+},
+"post:2026-10-05-october-2026-reading-answer-engine-optimization-by-rodrigo": {
+"l2": [
+"books-reading",
+"geo-aeo",
+"knowledge-graphs"
+],
+"l3": [
+"ontology-taxonomy"
+]
+},
+"post:2026-10-09-chatgpt-6-vs-chatgpt-5-6-retrieval-difference": {
+"l2": [
+"ai-search-engines",
+"llm-assistants",
+"geo-aeo"
+],
+"l3": [
+"chatgpt-openai"
+]
+},
+"post:2026-10-13-junk-ai-or-human-1-page-or-10": {
+"l2": [
+"content-ai",
+"content-strategy"
+]
+},
+"post:2026-10-15-updates-oct-14-2026-podcasts-webinars": {
+"l2": [
+"talks-podcasts",
+"tech-seo-connect",
+"ai-search-engines"
+]
+}
+}

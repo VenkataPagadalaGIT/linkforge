@@ -1,0 +1,6 @@
+{
+ "note": "Companies as OpenAlex institutions, matched by exact id and ROR (checked 2026-10-28). Name search is unsafe: 'Anthropic' also returns an Italian marine institute (I4387153651).",
+ "institutions": [
+  {"entity": "anthropic", "openalex": "https://openalex.org/I4387930290", "ror": "https://ror.org/056y0v115"}
+ ]
+}

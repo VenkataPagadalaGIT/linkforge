@@ -1,0 +1,1598 @@
+{
+  "note": "Business Notebook content: earnings-call notes, companies and people. Goes live without a deploy: node scripts/cms/publish.mjs check business, then publish. Markup: ==green highlight==, [^n] citation, [[person:slug]] [[company:slug|label]] [[article:slug|label]] [[page:/path|label]] links.",
+  "articles": [
+    {
+      "slug": "anthropic-s1-ai-marketing-lessons",
+      "title": "Anthropic's S-1: what its IPO filing teaches marketing, SEO and AI search teams",
+      "seoTitle": "Anthropic S-1: Lessons for Marketing and AI Search",
+      "description": "What Anthropic's S-1 teaches marketers: $16.3B first-half revenue, partner fees driving sales spend, free use booked as marketing, citation-aware search.",
+      "summary": "[[company:anthropic|Anthropic]] filed its S-1 with the U.S. Securities and Exchange Commission on October 26, 2026, and has applied to list its Class A stock on Nasdaq as ANT.[^1][^2] The filing shows $16.3 billion of revenue in the first half of 2026 and more than 11,900 customers that each brought in $100,000 or more over 12 months.[^4][^8] ==y:Most of the first-half growth in its sales, marketing and partnerships spending came from fees paid to partners, not ads.==[^7] This note collects what the filing says that marketing, SEO and AI search teams can use, with screenshots of the key passages and links to every section.",
+      "date": "2026-10-26",
+      "eventDate": "2026-10-26",
+      "kind": "IPO filing (Form S-1)",
+      "company": "anthropic",
+      "people": [
+        "dario-amodei",
+        "daniela-amodei",
+        "krishna-rao"
+      ],
+      "peopleTitle": "Named in the filing",
+      "highlightKey": [
+        {
+          "color": "y",
+          "label": "Yellow: the key idea"
+        },
+        {
+          "color": "g",
+          "label": "Green: what to do"
+        },
+        {
+          "color": "b",
+          "label": "Blue: the evidence, from the filing"
+        }
+      ],
+      "legend": "Blue marks the key evidence. Every numbered line opens the section of the filing it comes from, and every screenshot opens the original.",
+      "image": {
+        "src": "/images/business/anthropic-s1/og-anthropic-s1.jpg",
+        "width": 1200,
+        "height": 630,
+        "alt": "The cover page of Anthropic's Form S-1, as filed with the SEC on October 26, 2026"
+      },
+      "stats": [
+        {
+          "value": "$16.3B",
+          "label": "Revenue in the first half of 2026, up 1,300% from $1.2B a year earlier",
+          "cite": 7,
+          "highlight": "b"
+        },
+        {
+          "value": "11,900+",
+          "label": "Customers with $100,000 or more of trailing 12-month revenue, up from 950+ a year earlier",
+          "cite": 8,
+          "highlight": "b"
+        },
+        {
+          "value": "$2.7B",
+          "label": "First-half 2026 rise in fees paid to channel partners, against $273M more for marketing and advertising",
+          "cite": 7,
+          "highlight": "b"
+        },
+        {
+          "value": "About 900%",
+          "label": "Net Revenue Retention at September 30, 2026",
+          "cite": 4,
+          "highlight": "b"
+        },
+        {
+          "value": "$4.6B",
+          "label": "2025 revenue, up 1,088% from $386M in 2024",
+          "cite": 7
+        },
+        {
+          "value": "10%",
+          "label": "First-half 2026 Adjusted Operating Margin, from minus 159% a year earlier",
+          "cite": 4
+        },
+        {
+          "value": "$693M",
+          "label": "First-half 2026 GAAP operating loss; operating margin of minus 4%",
+          "cite": 4
+        },
+        {
+          "value": "$80.7B",
+          "label": "First-half 2026 net loss, including a $72.4B change in the fair value of convertible notes and other instruments",
+          "cite": 4
+        },
+        {
+          "value": "$141.1B",
+          "label": "Capital raised in total, as of June 30, 2026",
+          "cite": 4
+        },
+        {
+          "value": "$112.4B",
+          "label": "Cash and cash equivalents at June 30, 2026, plus $19.3B of short-term investments",
+          "cite": 4
+        },
+        {
+          "value": "$6.6M+",
+          "label": "Trailing 12-month revenue per employee at September 30, 2026, up from $1.4M",
+          "cite": 4
+        },
+        {
+          "value": "5,300",
+          "label": "Approximate headcount at September 30, 2026",
+          "cite": 8
+        }
+      ],
+      "sections": [
+        {
+          "id": "why-read-an-s1",
+          "title": "Why should marketers read an S-1?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An S-1 is the SEC's general form for registering securities under the Securities Act of 1933.[^1] Anthropic filed one on October 26, 2026, for the initial public offering of its Class A stock, which has had no public market until now.[^1][^2]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-cover.webp",
+              "width": 1240,
+              "height": 475,
+              "alt": "Screenshot of the S-1 cover page on sec.gov: as filed with the Securities and Exchange Commission on October 26, 2026; Form S-1 Registration Statement under the Securities Act of 1933; Anthropic, PBC.",
+              "caption": "The cover of Anthropic's Form S-1, as filed with the SEC on October 26, 2026.[^2]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+            },
+            {
+              "type": "p",
+              "text": "Its annual financial statements are audited: by Grant Thornton for 2023 and 2024, and by Ernst & Young for 2025.[^10] ==y:That makes an S-1 one of the most reliable public accounts a company gives of itself, and it is free to read.=="
+            },
+            {
+              "type": "p",
+              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I ([[page:/about|Venkata Pagadala]]) talked about collecting data from sources most search teams never open. Earnings calls are one: on [[article:costco-q4-fy2026-ai-search|Costco's last call]], the CFO named Anthropic among the AI tools where sales now start. An IPO filing is another, and Anthropic has just filed one."
+            }
+          ]
+        },
+        {
+          "id": "originals",
+          "title": "Where can you read the originals?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Each cited line on this page links to its section of the filing. These are the three primary documents behind it."
+            },
+            {
+              "type": "docs",
+              "items": [
+                {
+                  "title": "Form S-1 registration statement",
+                  "publisher": "SEC EDGAR",
+                  "date": "2026-10-26",
+                  "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/s1-cover-card.webp",
+                    "width": 880,
+                    "height": 550,
+                    "alt": "The cover page of Anthropic's Form S-1"
+                  },
+                  "note": "The full prospectus: the business, the risk factors and the financial statements.[^2]"
+                },
+                {
+                  "title": "Filing index: all 87 documents",
+                  "publisher": "SEC EDGAR",
+                  "date": "2026-10-26",
+                  "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/edgar-index.webp",
+                    "width": 800,
+                    "height": 455,
+                    "alt": "The EDGAR filing detail page for accession number 0001628280-26-067168"
+                  },
+                  "note": "The prospectus, its exhibits and the interactive data files, with the filing and acceptance dates.[^1]"
+                },
+                {
+                  "title": "Anthropic's announcement of the filing",
+                  "publisher": "Anthropic",
+                  "date": "2026-10-26",
+                  "href": "https://www.anthropic.com/news/s1-sec",
+                  "image": {
+                    "src": "/images/business/anthropic-s1/anthropic-news.webp",
+                    "width": 800,
+                    "height": 520,
+                    "alt": "Anthropic's newsroom post: Anthropic files S-1 with the SEC for proposed initial public offering"
+                  },
+                  "note": "The company's own notice: the Nasdaq listing plan under ANT, and where to get the preliminary prospectus.[^15]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "in-30-seconds",
+          "title": "The filing in 30 seconds",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:Revenue was $41 million in 2023, $386 million in 2024 and $4.6 billion in 2025. In the first half of 2026 it was $16.3 billion, against $1.2 billion a year earlier.==[^4]",
+                "==b:More than 11,900 customers each brought in $100,000 or more in the 12 months to September 30, 2026, up from more than 950 a year earlier.==[^8] More than 1,900 brought in $1 million or more, and about 250 brought in $10 million or more.[^4]",
+                "==b:Net Revenue Retention was about 900% at September 30, 2026.==[^4] By the filing's definition, customers who paid in the third quarter of 2025, leaving out Claude Pro and Max subscribers, brought in about nine times as much in the third quarter of 2026.[^3]",
+                "Adjusted Operating Margin went from minus 159% in the first half of 2025 to plus 10% in the first half of 2026. The GAAP operating loss for the first half of 2026 was $693 million.[^4]",
+                "==b:Sales, marketing, and partnerships expenses consist mainly of fees paid to channel partners and marketing and advertising costs. In the first half of 2026, fees paid to channel partners rose by $2.7 billion, while marketing and advertising rose by $273 million.==[^7]",
+                "Anthropic has applied to list its Class A stock on the Nasdaq Global Select Market under the symbol ANT. Goldman Sachs and Morgan Stanley are listed first among more than 20 underwriters.[^2]"
+              ],
+              "ordered": true
+            }
+          ]
+        },
+        {
+          "id": "marketing-spend",
+          "title": "Where does the sales and marketing money go?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic reports one line for sales, marketing, and partnerships. It consists mainly of fees paid to channel partners and marketing and advertising costs, including media and public relations spend.==[^7]"
+            },
+            {
+              "type": "list",
+              "items": [
+                "2024: the line rose by $41 million, and $39 million of that was more marketing and advertising.[^7]",
+                "2025: fees paid to channel partners rose by $341 million, and marketing and advertising by $170 million.[^7]",
+                "First half of 2026: the line reached $3.17 billion, up from $120 million a year earlier.[^4] ==b:Fees paid to channel partners rose by $2.7 billion, reflecting the growth of the business, and marketing and advertising rose by $273 million, reflecting higher media spend for product launches.==[^7]"
+              ]
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-operations-table.webp",
+              "width": 976,
+              "height": 526,
+              "alt": "Screenshot of the S-1 summary statement of operations, in millions of dollars, for 2023 to 2025 and the first halves of 2025 and 2026, with the revenue row and the sales, marketing, and partnerships row highlighted.",
+              "caption": "The summary statement of operations, in millions of dollars. Highlighted: revenue, and the sales, marketing, and partnerships line.[^4]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+            },
+            {
+              "type": "p",
+              "text": "==b:The notes also group expenses by function. On that basis, sales and marketing cost $3.8 billion in the first half of 2026, against $239 million a year earlier. It includes channel partner costs, marketing and advertising, staff costs, and the compute cost of providing free access to Anthropic's intelligence service.==[^12]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-free-access-cost.webp",
+              "width": 1290,
+              "height": 76,
+              "alt": "Screenshot of footnote 3 in the S-1's expenses-by-function table, with the words about compute and infrastructure costs for providing free access highlighted.",
+              "caption": "Footnote 3 to the expenses-by-function table in Note 8. Highlighted: the compute cost of free access, counted as sales and marketing.[^12]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1818"
+            },
+            {
+              "type": "p",
+              "text": "==b:Much of Claude's diffusion has been organic, and a large portion of growth to date has been self-service.==[^4][^7] As adoption moves further into enterprises and regulated industries, Anthropic is investing in direct go-to-market and Applied AI teams and in partnerships.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "Claude is available on all three major cloud platforms: AWS, Google Cloud Platform and Microsoft Azure. Anthropic keeps a direct contract with each customer and pays the cloud provider a fee.[^4] ==b:Sales through cloud marketplaces were about 11% of revenue in 2023, 32% in 2024, 47% in 2025 and 48% in the first half of 2026.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Customers can also adopt Claude through systems integrators such as Accenture, Deloitte, KPMG and PwC, and data platforms such as Salesforce and Snowflake. Anthropic recently launched Ode with Anthropic, an AI services company formed with leading private equity firms to bring Claude's capabilities to mid-sized companies.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "The growth plan lists the same levers: grow the direct go-to-market and Applied AI teams, deepen cloud distribution partnerships, invest in brand and marketing, and expand the international presence.[^4]"
+            }
+          ]
+        },
+        {
+          "id": "funnel-and-brand",
+          "title": "How does Anthropic describe its funnel and its brand?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Claude.ai, the flagship conversational product, is the broadest entry point to Claude. The filing says it delivers top-of-funnel demand generation for enterprise adoption.==[^8] In September 2026, Anthropic began merging Claude Cowork and Claude.ai into one application.[^8]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-top-of-funnel.webp",
+              "width": 1232,
+              "height": 245,
+              "alt": "Screenshot of the Claude.ai entry in the S-1 Business section, with the sentence about top-of-funnel demand generation for enterprise adoption highlighted.",
+              "caption": "The Claude.ai entry in the Business section. Highlighted: its role as top-of-funnel demand generation.[^8]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+            },
+            {
+              "type": "p",
+              "text": "A customer's journey often begins with a single use case, then expands across departments, applications and workflows.[^8] ==b:In the third quarter of 2026, Claude Enterprise users who did not use Claude Code spent less than $75 a month on average. The top 5% of Claude Enterprise users who used Claude Code spent about 20 times that.==[^8]"
+            },
+            {
+              "type": "p",
+              "text": "Claude Cowork, released as a research preview in January 2026, had by September 30, 2026 been adopted faster than Claude Code was at the same point after its own research preview in February 2025.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "Over 50% of the Fortune 500 and over 30% of the Global 2000 were customers with $100,000 or more of trailing 12-month revenue at September 30, 2026. For the publicly traded Fortune 500 customers, Anthropic's revenue averaged less than 0.1% of their total expenses in the third quarter.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "==b:The filing lists what promoting its brand depends on: reliable, high-quality and responsible products; sales and marketing, including industry events and key media coverage; customers' testimonials, use cases and word of mouth; security and reliability; the actions of management; and differentiation, including monetization strategies that differ from those of certain competitors.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "==b:It also names a cost of free users: if supporting them costs more than the value of their eventual conversion and of benefits such as network effects and word-of-mouth referrals, results could suffer.==[^5]"
+            }
+          ]
+        },
+        {
+          "id": "ai-search",
+          "title": "What does the filing say about AI search and the open web?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Web Search is a native tool that gives Claude real-time web information, enabling grounded, citation-aware responses in production applications. Claude.ai includes web search too.==[^8]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-web-search.webp",
+              "width": 1232,
+              "height": 95,
+              "alt": "Screenshot of the Web Search entry in the S-1 Business section: a native tool giving Claude access to real-time web information, enabling grounded, citation-aware responses.",
+              "caption": "The Web Search entry in the Business section.[^8]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+            },
+            {
+              "type": "p",
+              "text": "==b:The filing defines prompt injection as an adversarial technique in which malicious instructions are embedded in content an AI model is asked to process, such as websites, documents or tool outputs.==[^3] It lists prompt injection among the AI-specific threats to its systems.[^5]"
+            },
+            {
+              "type": "figure",
+              "src": "/images/business/anthropic-s1/s1-prompt-injection.webp",
+              "width": 1290,
+              "height": 118,
+              "alt": "Screenshot of the S-1's definition of prompt injection, with the words about malicious instructions embedded in websites, documents or tool outputs highlighted.",
+              "caption": "The filing's definition of prompt injection, in Select Defined Terms.[^3]",
+              "href": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_179"
+            },
+            {
+              "type": "p",
+              "text": "It defines hallucinations as outputs in which a model generates factually incorrect or fabricated information with apparent confidence, and it discloses them as a risk.[^3][^5]"
+            },
+            {
+              "type": "p",
+              "text": "MCP, the Model Context Protocol, is an open standard Anthropic introduced in November 2024 and donated to the Linux Foundation's Agentic AI Foundation in December 2025. It defines a universal interface through which Claude and other AI tools can connect to enterprise data sources, tools and workflows.[^8]"
+            },
+            {
+              "type": "p",
+              "text": "==y:Web content is also in court.== ==b:The filing says its data collection has been the subject of litigation alleging that its scraping, web crawling and other techniques to collect data violate the law.==[^5] Reddit sued in June 2025, alleging that Anthropic improperly accessed posts on its platform, and in September 2026 the court narrowed the case to breach of contract, interference with contract and unfair competition.[^5][^11] ==b:In October 2026, a group of Canadian news publishers alleged that Anthropic copied content from their websites, breached the sites' terms of service and circumvented technological protection measures. Anthropic disputes the allegations in both cases.==[^11]"
+            }
+          ]
+        },
+        {
+          "id": "agent-vocabulary",
+          "title": "Which agent terms does the filing define?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==y:Buyers will learn these words from filings like this one.== ==g:Use the same definitions on your own pages, so people and assistants can match them.=="
+            },
+            {
+              "type": "list",
+              "items": [
+                "Agent loop: the cycle in which an AI agent receives a task, takes an action, observes the result and decides its next step, repeating until the task is complete.[^3]",
+                "Agentic AI: AI systems that, with varying degrees of autonomy, can plan, determine and sequence actions and execute them to accomplish defined objectives, including through interaction with external tools, services, datasets and environments on behalf of a user.[^3]",
+                "Context window: the maximum amount of text, code or other content, measured in tokens, that a model can process in one request, including instructions, prior conversation history, user input and the model's output.[^3]",
+                "Tokens: the numeric units into which a model converts the data it processes, including text, images, audio and video. They can correspond to words, subwords, characters or bytes.[^3]",
+                "Prosumers: individual users who subscribe to AI tools to perform knowledge work.[^3]",
+                "Closing the loop: a development cycle in which successive versions of an AI model assist in building the next, with the goal of compounding capability gains over time.[^3]",
+                "Virtual Collaborators: AI designed to be embedded where work gets done.[^4]",
+                "Agent Skills: a modular framework that lets organizations encode repeatable tasks, workflows and domain expertise into reusable packages, or skills, that Claude loads on demand.[^8]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "benchmarks-and-metrics",
+          "title": "What does the filing say about benchmarks and metrics?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The filing warns that the industry benchmarks commonly used to test AI models may not reflect real-world performance or utility, and that models scoring well may not meet customer expectations in production.==[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Certain success rates and similar performance metrics for Claude in the prospectus come from internal benchmarks built on tasks, data sets and evaluation criteria Anthropic selects. Others using different tasks, data, criteria or computing environments may not be able to replicate them.[^5]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Operating metrics such as Run-Rate Revenue, Net Revenue Retention and customer counts come from internal systems and have not been independently verified by third parties.==[^5] The Run-Rate Revenue figure itself is left blank in this version of the filing.[^8]"
+            }
+          ]
+        },
+        {
+          "id": "pricing",
+          "title": "What happened when the cost per task fell?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Most revenue is pay-for-intelligence: customers pay for usage, metered in tokens and priced by the model they choose. In the first half of 2026, consumption-based revenue was $13.1 billion, 80% of the total, and subscription revenue was $3.2 billion, 20%.[^7]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Opus 4.5 launched in November 2025 with more capability and a lower price and cost per task than Opus 4.1. Quarter-over-quarter revenue growth then rose from 48% in the fourth quarter of 2025 to 132% in the first quarter of 2026. The filing credits several factors: lower prices and better capability that unlocked new use cases, new products, and wider adoption.==[^8]"
+            },
+            {
+              "type": "p",
+              "text": "==b:With the release of Claude Fable 5.1 in September 2026, Anthropic cut the cost of typical workloads by about 25% against Fable 5, and by up to 45% for complex coding and highly agentic tasks. With Opus 5.5, released the same month, it cut customers' cost per task by about 40% against Opus 5. In each case the cut combined a lower price and improved efficiency.==[^8]"
+            },
+            {
+              "type": "video",
+              "youtubeId": "ROF2Nv_KjOM",
+              "title": "Introducing Claude Fable 5.1",
+              "publisher": "Anthropic",
+              "poster": "https://i.ytimg.com/vi/ROF2Nv_KjOM/maxresdefault.jpg",
+              "duration": 85,
+              "uploadDate": "2026-09-01",
+              "caption": "Anthropic's official launch video for the release that, per the filing, cut typical workload costs by about 25%.[^8][^13]"
+            },
+            {
+              "type": "p",
+              "text": "Revenue grew 1,368% year over year in the second quarter of 2026, while compute and infrastructure expenses grew 300%.[^4]"
+            }
+          ]
+        },
+        {
+          "id": "market-size",
+          "title": "How does Anthropic size its market?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic says the work that knowledge workers perform was worth more than $40 trillion globally in 2025.==[^4] That figure is its own estimate of global knowledge workers' wages, built from U.S. Bureau of Labor Statistics wage data, International Labor Organization data on labor income as a share of GDP, and 2025 global GDP.[^6]"
+            },
+            {
+              "type": "p",
+              "text": "It also cites IDC's estimate that investment in AI solutions and services will yield a cumulative global economic impact of $22.5 trillion by 2031.[^4]"
+            },
+            {
+              "type": "p",
+              "text": "==y:Read the $40 trillion as the value of the work AI could help with, measured in wages. It is not a revenue forecast or a market size.=="
+            }
+          ]
+        },
+        {
+          "id": "my-read",
+          "title": "What should marketing, SEO and AI search teams take from this?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This part is my read, not Anthropic's words."
+            },
+            {
+              "type": "list",
+              "items": [
+                "==y:Distribution beat advertising.== In the first half of 2026, fees to channel partners rose about ten times as much as marketing and advertising did, and about 48% of revenue came through cloud marketplaces. ==g:For an AI product, treat the marketplace listing and the integrator network as a major channel.==",
+                "==y:Organic and self-service growth came first.== The filing says much of Claude's diffusion was organic, and it calls its own app demand generation for enterprise. ==g:Make the free and prosumer experience your campaign, and grow expansion from one use case.==",
+                "==y:Free use is a marketing cost.== The notes count the compute cost of free access as sales and marketing. ==g:Budget a free tier as acquisition, not as a giveaway.==",
+                "==y:The brand drivers the filing lists are also the sources AI answers lean on:== media coverage, events, testimonials, use cases and word of mouth. ==g:Publish named, dated use cases, and earn coverage before you buy reach.==",
+                "==y:To be cited, be fetchable.== Claude's web search is built for citation-aware answers, and an agent cannot cite a page it cannot fetch and read. ==g:Serve real HTML, keep facts current, and date them.==",
+                "==g:Never hide instructions for AI in your pages.== The filing defines that as prompt injection, an attack it defends against. ==y:It is not a GEO tactic.==",
+                "==y:Hallucinations are a disclosed risk.== ==g:Keep one clean, sourced page of facts about your company, and check what assistants say about you every month.==",
+                "==y:Benchmarks are not proof:== the company warns investors that benchmark scores may not reflect real-world results. ==g:Sell outcomes on the buyer's own tasks.==",
+                "==g:Re-cost agent work at every model release.== Anthropic's September 2026 releases cut customer costs by about 25% to 40%, and up to 45% on complex agentic work, through lower prices and better efficiency. ==y:A workflow that is too expensive today may pay next quarter.==",
+                "==g:Size the market by the work, not the software budget.== Anthropic frames its opportunity as the value of knowledge work, ==y:so the buyer compares it with payroll, not with other software.==",
+                "==y:Watch how AI companies collect web content.== The filing says its scraping and web crawling have drawn lawsuits, and the Canadian publishers allege breach of website terms and circumvention of technological protection measures. ==g:Make sure your own terms and access rules say what you mean.==",
+                "==g:Read filings.== ==y:An S-1's risk factors are a free map of what a market leader worries about,== written for regulators and investors."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance-numbers",
+          "title": "What sits behind the finance numbers?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:The $80.7 billion first-half net loss includes a $72.4 billion change in the fair value of convertible notes, derivative liabilities and SAFEs, driven mainly by a higher enterprise valuation.==[^4] Other expense of $8.8 billion came mainly from the initial recognition and later remeasurement, at fair value, of assets and liabilities under note purchase agreements.[^7]",
+                "Compute and infrastructure cost $8.9 billion in the first half of 2026. Personnel cost $3.2 billion, including $2.2 billion of stock-based compensation.[^4]",
+                "2025 expenses include $1.5 billion for the Bartz copyright settlement.[^4][^5]",
+                "Claude is trained and served on four chip families, AWS Trainium, Google TPUs, NVIDIA GPUs and AMD GPUs, through Anthropic's own orchestration layer.[^7]",
+                "No single customer was above 10% of revenue in the first nine months of 2026, and the top five were about 25%.[^5] Customers outside the top five went from about 64% of revenue in the first quarter of 2026 to about 79% in the third.[^7]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "governance",
+          "title": "Who controls Anthropic after the IPO?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Anthropic is a Delaware public benefit corporation. Its public benefit purpose is the responsible development and maintenance of advanced AI for the long-term benefit of humanity.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==b:A Long-Term Benefit Trust, intended to operate as an independent body of financially disinterested trustees, holds Class T stock. Through it, the trust generally has the authority to elect and remove the Class T directors, who will make up a majority of the board. Class T stock has no economic rights.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Just before the offering, a Founder LLC whose members are the seven co-founders will receive a single share of Class F stock. It carries 50.1% of the vote on matters put to stockholders generally, including electing the directors other than the Class T directors, and has no economic rights.==[^2][^4]"
+            },
+            {
+              "type": "p",
+              "text": "Anthropic contributed 846,840,960 Class N shares to the Anthropic Public Benefit Fund: 5% of its fully diluted shares as of June 30, 2026, assuming full conversion of the Amazon Notes. The board may, at its discretion, issue up to 2% more of the then-outstanding shares each time the share price rises 50% above the previous milestone, starting from the IPO price.[^4] Each co-founder has pledged to dedicate 80% of their personal equity in Anthropic to philanthropic causes.[^4] The filing describes these pledges as voluntary and revocable, not legally binding.[^5]"
+            },
+            {
+              "type": "p",
+              "text": "Under Nasdaq's governance rules, Anthropic is considered a controlled company.[^2]"
+            }
+          ]
+        },
+        {
+          "id": "risks",
+          "title": "Which other risks should marketers know about?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==b:In April 2026, Anthropic released its Mythos model only as a gated research preview through Project Glasswing, for select organizations' cybersecurity work, because of its advanced ability to find software vulnerabilities.==[^5]",
+                "In June 2026, the U.S. Department of Commerce imposed worldwide export restrictions on the Fable 5 and Mythos 5 models. Anthropic disabled them for all customers until the restrictions were lifted, after it updated its safeguards.[^5]",
+                "In September 2025, Anthropic agreed to settle the Bartz copyright class action for $1.5 billion, and the court approved the settlement in July 2026. Music publishers have sued over song lyrics.[^5] La Presse, a Quebec news publisher, sued in July 2026.[^11]",
+                "Sales through cloud marketplaces made up 58% of net accounts receivable at June 30, 2026.[^5]"
+              ]
+            },
+            {
+              "type": "video",
+              "youtubeId": "INGOC6-LLv0",
+              "title": "An initiative to secure the world's software | Project Glasswing",
+              "publisher": "Anthropic",
+              "poster": "https://i.ytimg.com/vi/INGOC6-LLv0/maxresdefault.jpg",
+              "duration": 349,
+              "uploadDate": "2026-04-07",
+              "caption": "Anthropic's official video on Project Glasswing, the program through which, per the filing, Mythos was first released to select organizations.[^5][^14]"
+            }
+          ]
+        },
+        {
+          "id": "who-is-named",
+          "title": "Who is named in the filing?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "[[person:dario-amodei]] is Chief Executive Officer and a co-founder, and [[person:daniela-amodei]] is President, a co-founder and Chairperson. [[person:krishna-rao]] has been Chief Financial Officer since April 2024.[^9]"
+            },
+            {
+              "type": "p",
+              "text": "The non-employee directors are Reed Hastings, Christopher Liddell, Vas Narasimhan and Yasmin Razavi.[^9]"
+            },
+            {
+              "type": "p",
+              "text": "Goldman Sachs and Morgan Stanley are listed first among the underwriters, followed by J.P. Morgan, Citigroup, Barclays, Wells Fargo Securities, BofA Securities, Deutsche Bank Securities, RBC Capital Markets and UBS Investment Bank, among others.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "Grant Thornton audited the 2023 and 2024 financial statements, and Ernst & Young the 2025 statements.[^10]"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Form S-1 filing detail, accession no. 0001628280-26-067168",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+          "note": "Form type S-1, filed and accepted October 26, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm",
+          "note": "Ticker, exchange, underwriters, public benefit purpose, share classes."
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Select Defined Terms",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_179",
+          "note": "The filing's own glossary."
+        },
+        {
+          "id": 4,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965",
+          "note": "Includes the summary financial data and non-GAAP measures."
+        },
+        {
+          "id": 5,
+          "title": "Anthropic, PBC Form S-1: Risk Factors",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2972"
+        },
+        {
+          "id": 6,
+          "title": "Anthropic, PBC Form S-1: Industry, Market, and Other Data",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_504",
+          "note": "How Anthropic estimates global knowledge workers' wages."
+        },
+        {
+          "id": 7,
+          "title": "Anthropic, PBC Form S-1: Management's Discussion and Analysis",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979"
+        },
+        {
+          "id": 8,
+          "title": "Anthropic, PBC Form S-1: Business",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+        },
+        {
+          "id": 9,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 10,
+          "title": "Anthropic, PBC Form S-1: Experts",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_229"
+        },
+        {
+          "id": 11,
+          "title": "Anthropic, PBC Form S-1: Note 13, Commitments and Contingencies",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1890",
+          "note": "In the notes to the consolidated financial statements."
+        },
+        {
+          "id": 12,
+          "title": "Anthropic, PBC Form S-1: Note 8, Supplemental Financial Information",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_1818",
+          "note": "Operating expenses grouped by function."
+        },
+        {
+          "id": 13,
+          "title": "Introducing Claude Fable 5.1",
+          "publisher": "Anthropic on YouTube",
+          "date": "2026-09-01",
+          "url": "https://www.youtube.com/watch?v=ROF2Nv_KjOM",
+          "note": "Video, 1:25."
+        },
+        {
+          "id": 14,
+          "title": "An initiative to secure the world's software | Project Glasswing",
+          "publisher": "Anthropic on YouTube",
+          "date": "2026-04-07",
+          "url": "https://www.youtube.com/watch?v=INGOC6-LLv0",
+          "note": "Video, 5:49."
+        },
+        {
+          "id": 15,
+          "title": "Anthropic files S-1 with the SEC for proposed initial public offering",
+          "publisher": "Anthropic",
+          "date": "2026-10-26",
+          "url": "https://www.anthropic.com/news/s1-sec",
+          "note": "The company's announcement of the filing."
+        }
+      ]
+    },
+    {
+      "slug": "costco-q4-fy2026-ai-search",
+      "title": "Costco's Q4 FY2026 earnings call: what the CFO said about AI search",
+      "seoTitle": "Costco Q4 FY2026 Earnings Call: What It Said About AI",
+      "description": "Costco's CFO said AI search traffic grew triple digits for a second quarter and converts best of any source. Every AI statement from the call, with sources.",
+      "summary": "Costco reported its fourth quarter of fiscal 2026 on September 24, 2026. On the call, CFO [[person:gary-millerchip]] said traffic from AI search grew triple digits for the second quarter in a row and converts better than any other traffic to costco.com. This note collects every AI and digital statement from the call, highlighted in green, each with its source.",
+      "date": "2026-10-01",
+      "eventDate": "2026-09-24",
+      "kind": "Earnings call",
+      "company": "costco",
+      "people": [
+        "ron-vachris",
+        "gary-millerchip"
+      ],
+      "legend": "Green marks what Costco said about AI and digital. Every line carries a numbered source.",
+      "stats": [
+        {
+          "value": "Triple digits",
+          "label": "Growth in AI search traffic, second quarter in a row",
+          "cite": 2,
+          "highlight": true
+        },
+        {
+          "value": "Highest",
+          "label": "Conversion rate of any traffic to costco.com: AI search",
+          "cite": 2,
+          "highlight": true
+        },
+        {
+          "value": "19.5%",
+          "label": "Q4 digitally enabled comparable sales growth",
+          "cite": 1,
+          "highlight": true
+        },
+        {
+          "value": "30%",
+          "label": "Growth in total site and app traffic",
+          "cite": 2,
+          "highlight": true
+        }
+      ],
+      "video": {
+        "src": "/videos/costco-earnings-call-ai-search.mp4",
+        "poster": "/videos/costco-earnings-call-ai-search-poster.jpg",
+        "captions": "/videos/costco-earnings-call-ai-search.vtt",
+        "title": "Costco earnings calls and AI search: a walkthrough by Venkata Pagadala",
+        "duration": 356,
+        "uploadDate": "2026-10-01",
+        "transcript": "Hey everyone, this is Venkata Pagadala. Today is October 1st, 12.55 AM. So today I want to talk about Costco earnings calls and the elements of AI search.\nAnd in brightonSEO 2026 in San Diego, I was talking about the importance of collecting data from different demand sources. Again, this is like 20 demand sources, but I'm expanding those sources and I'm going to show,\nsurely share more details on that. But for now, I was mentioning earnings calls here, as you can see in a deck. And earnings calls,\nI extended a topic in a previous article that's saying that earnings calls connect customers' needs to business profits, where you can talk about investments, customer experiences, and compare those to priority.\nSo pretty much explaining of importance of earnings calls. So I am extremely happy today to see that Costco CFO, subject to correction, CFO is mentioning about the traffic to Costco from AI search grew triple digits.\nIt's like AI search triple digits for second quarter in a row, and it converts better than other sources of traffic. Again, whoever is working on organic traffic, SEO, AEO, GEO, whatever call, this tells that users are using AI, not only for research, but actually making conversions.\nAnd this is cited by Costco, which is like, which produced 93.9 billion of net sales, which is up 11.2%. Again, this is like numbers are subjected to little correction there.\nSo CFO, as you guys know, like it's Gary, so you can read a couple of stats from here, what Gary spoke about. And then sales, that stat in AI tools also grow triple digits.\nSo this is also really, really great points that we and organic marketers or researchers or AIs, SEO, GEOs need to take this to our leaderships and explain that the importance of AI in the relevance of not only traffic in the relevance of conversions.\nSo Costco does not pay for digital advertisement. So the CFO sees AI as a neutral place where its value can show up on its own merits.\nAnd digital enabled comparable sales rose like 19.5%. Again, this is like a comparison, like digital, digital enabled comparable sales were up 19.5%. So what did Costco say about AI search?\nAnd I'm not going to read everything, guys. So this is pretty much what they said. And I wrote something about it in the commerce as well. And then I want to specifically talk about one thing here, like, yeah, what did, like, you guys can have like financial numbers, everything here.\nWhat did Costco cover on this call? Like warehouse, it's open 12, it opened 12 in Q4. Again, this is good. But if you see, they're planning to, to open Q4, 10 of them in new buildings, 28 of new stores in 2026.\nSo they mentioned all these things. So again, this is going to affect local other warehouses.\nSo it's always good to know what's coming, what's planning, and also they are including four in Europe as well. It's not everything in US. But this is always good to know what's coming ahead.\nSo it would be great. If you see Costco plans 33 openings in fiscal 2027. Okay, this is where I want to emphasize like, where we needed data intelligence layers is to tell us what's coming.\nFor example, if 33 are opening, if you see, there will be a market share split in these locations, it can impact directly or indirectly the possible real estate as well. It can impact the gas stations as well.\nTalking about the gas stations and pharmacy. If you see a gas, a record year, the share, the share of US member household buying gas reached an all-time high. Costco estimated it saved $3.2 billion.\nSo, again, it's going to impact the gas stations pharmaceuticals travels and like merchandise like the Costco sales and number of things, and it can impact the local businesses around that as well.\nSo this is the reason why we need to read and study about earnings calls in the relevance of what we're doing as an AI researchers, or SEO, GEO, SEO, AEO, whatever we call, basically, it's always good to analyze the different data sources in order to understand what's coming and be prepared.\nAnd we need to be well knowledge regarding the business because ultimately our job is to impact the business growth, either in the levels of revenue or traffic or visibility whatever it is, but you need to understand what's coming, what's impacting directly and indirectly.\nSo, to wrap it up I'm going to share these links and everything on LinkedIn. So, once again, I'm so happy to see in the statements coming from directly a CFO of a Costco so thank you guys."
+      },
+      "sections": [
+        {
+          "id": "why-earnings-calls",
+          "title": "Why read an earnings call?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "At [[page:/research-and-talks/brightonseo-san-diego-2026|brightonSEO San Diego]] I ([[page:/about|Venkata Pagadala]]) talked about collecting data from sources most search teams never open, and earnings calls were one of them. A call is dated, on the record, and every statement has a name attached: here, Costco's CEO [[person:ron-vachris]] and CFO [[person:gary-millerchip]]. That makes it primary evidence of how AI is changing shopping, from the company that sees the numbers."
+            },
+            {
+              "type": "list",
+              "items": [
+                "The slides: [[url:https://speakerdeck.com/venkatapagadala1/industrial-context-graphs?slide=22|Industrial context graphs]] on Speaker Deck, opening at slide 22.",
+                "The write-up: [[url:https://previsible.com/brightonseo/demand-research-beyond-keywords/|User First, Algorithm Second: Researching Demand Beyond Search Volume]] on Previsible.",
+                "The talk on this site: [[page:/research-and-talks#brightonseo-san-diego-2026|Research and Talks]]."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "in-30-seconds",
+          "title": "The call in 30 seconds",
+          "blocks": [
+            {
+              "type": "list",
+              "ordered": true,
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row, and it converts better than any other source of traffic.==[^2]",
+                "==Sales that start in AI tools also grew triple digits, from a low base. The CFO named Gemini, Anthropic and OpenAI.==[^2]",
+                "==Costco does no paid digital advertising, so the CFO sees AI as a neutral place where its value can show up on its own merits.==[^2]",
+                "==The work behind it is data: Costco's teams are cleaning up product data and product pages for the AI models.==[^2]",
+                "==Digitally enabled comparable sales rose 19.5% in the quarter==, on net sales of $93.9 billion, up 11.2%.[^1]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ai-search",
+          "title": "What did Costco say about AI search?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==Traffic to Costco's site from AI search grew at a triple-digit rate for the second consecutive quarter, and it still has the highest conversion rate of all traffic to the site.==[^2] ==The channel is young: the CFO said it is growing from a low base compared with Costco's other channels, while AI keeps gaining influence on how members search for products.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Sales that start in AI search are led by appliances and consumer electronics, the same categories that lead Costco's e-commerce overall.==[^2] ==The Costco membership itself is among the top items that AI searches lead to, which the CFO read as a sign of how members value it.==[^2]"
+            }
+          ]
+        },
+        {
+          "id": "agentic-commerce",
+          "title": "Is this agentic commerce yet?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Rupesh Parikh of Oppenheimer asked how Costco is positioned for agentic commerce.[^2] ==The CFO's answer: not agentic commerce at the moment. What Costco sees is members using AI as a tool to search for products as they plan what to buy.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Sales that originate from searches on the large language models are growing at triple-digit rates. He named the tools: Gemini, Anthropic and OpenAI.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==Costco does no paid digital advertising. The CFO described AI as a neutral environment where Costco's value and quality can show up transparently, helped by a curated range of items its buyers vet personally.==[^2]"
+            },
+            {
+              "type": "p",
+              "text": "==The work behind it: Costco's teams are working with the large language models on how to clean up and update its product data and product pages, so its value keeps showing up accurately.==[^2]"
+            }
+          ]
+        },
+        {
+          "id": "digital",
+          "title": "What else moved in digital?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Digitally enabled comparable sales grew 19.5% in the quarter (19.8% excluding currency) and 20.9% for the full year.==[^1]",
+                "==Digitally enabled sales, including third-party delivery, exceeded $33 billion for the year, up more than 20%.==[^2]",
+                "==Total site and app traffic was up 30%.==[^2]",
+                "==Personalization, through product placements and emails, grew sales at a triple-digit rate, and 10% of costco.com orders now include a personalized item.==[^2]",
+                "==Costco is discontinuing Costco Next, its extended marketplace, and moving its most popular items and brands into the main app and website.==[^2]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "my-read",
+          "title": "What should search and AI teams take from this?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This part is my read, not Costco's words."
+            },
+            {
+              "type": "list",
+              "items": [
+                "AI answers are now a sales channel that a retailer of Costco's size measures: it tracks the traffic, the conversion rate and the products sold.",
+                "The lever Costco named is product data and product pages. That is work search teams already own.",
+                "A brand with no paid digital ads can still win in AI answers, if its value is visible in its own data.",
+                "Earnings calls are free, dated and attributable. Read them for every company in your market, and log what they say about AI each quarter."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance-numbers",
+          "title": "What were the finance numbers?",
+          "blocks": [
+            {
+              "type": "stats",
+              "items": [
+                {
+                  "value": "$93.9B",
+                  "label": "Q4 net sales, up 11.2%",
+                  "cite": 1
+                },
+                {
+                  "value": "9.4%",
+                  "label": "Q4 comparable sales; 6.7% excluding gas and currency",
+                  "cite": 1
+                },
+                {
+                  "value": "$2.998B",
+                  "label": "Q4 net income",
+                  "cite": 1
+                },
+                {
+                  "value": "$6.75",
+                  "label": "Q4 earnings per diluted share, including a one-time $0.15 from tariff refunds",
+                  "cite": 1
+                },
+                {
+                  "value": "$1.849B",
+                  "label": "Q4 membership fee income, up 7.3%",
+                  "cite": 2
+                },
+                {
+                  "value": "84.1M",
+                  "label": "Paid members, up 3.8%; 42.3M executive members",
+                  "cite": 2
+                },
+                {
+                  "value": "92.3%",
+                  "label": "Renewal rate in the US and Canada; 89.8% worldwide",
+                  "cite": 2
+                },
+                {
+                  "value": "$297.2B",
+                  "label": "Fiscal 2026 net sales, up 10.1%",
+                  "cite": 1
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "items": [
+                "Excluding the one-time tariff benefit, net income grew 12.3% and earnings per share 12.4%.[^2]",
+                "Fiscal 2026 net income was $9.226 billion, $20.76 per diluted share.[^1]",
+                "Gross margin was 11.02%, down 11 basis points, or up 20 basis points excluding gas. The LIFO charge was $152 million, against $43 million a year earlier.[^2]",
+                "SG&A was 8.94% of sales, 27 basis points better than a year ago. The tax rate was 25.2%.[^2]",
+                "Capital spending was $2.21 billion in Q4 and $6.4 billion for fiscal 2026, with about $7.5 billion planned for fiscal 2027.[^2]",
+                "Q4 was the last quarter to benefit from the membership fee increase.[^2]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rest-of-the-call",
+          "title": "What else did Costco cover on the call?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "Warehouses: 12 opened in Q4, 10 of them new US buildings, and 28 in fiscal 2026, three of them relocations, for 939 in total.[^1][^2] Costco plans 33 openings in fiscal 2027, five of them relocations, including 4 in Europe, 5 in Canada and 1 in Mexico, and new US markets such as Buffalo, New York and Lawrence, Kansas.[^2]",
+                "Gas: a record year. The share of US member households buying gas reached an all-time high, and Costco estimates it saved members over $3.2 billion.[^2]",
+                "Pharmacy: sales grew nearly 20%, helped by GLP-1 and fertility programs, and Costco has a new partnership with SCAN to develop Medicare Advantage benefits.[^2]",
+                "Travel: Costco sent over 750,000 members on cruises, up 16%.[^2]",
+                "Members: the member base under 40 has grown nearly 60% since COVID and is now more than a quarter of all members.[^2]",
+                "Tariff refunds: Costco received $184 million in Q4, $174 million in refunds plus $10 million in interest, a little more than a third of what it expects.[^2] Part of the refunds was reinvested in increased member value.[^1]",
+                "Merchandise: non-foods comparable sales grew mid- to high-single digits, led by gold and jewelry and home furnishings. Fresh grew mid-single digits, led by bakery and meat, with in-house pastries up over 100%.[^2]",
+                "Kirkland Signature price cuts: walnuts from $13.79 to $9.99, and Colombian whole bean coffee from $21.99 to $19.99.[^2]",
+                "Ancillary businesses: comparable sales up in the high 20s, with gas up in the mid-30s. Inflation stayed in the low single digits.[^2]",
+                "Next update: September sales results on October 7, 2026.[^2]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "who-was-on-the-call",
+          "title": "Who was on the call?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "[[person:ron-vachris]], President and CEO, and [[person:gary-millerchip]], Executive Vice President and CFO, spoke for [[company:costco]]. The CEO led the business review: warehouses, sales, digital and membership. The CFO presented the financial results.[^2]"
+            },
+            {
+              "type": "p",
+              "text": "Analysts who asked questions, in order:[^2]"
+            },
+            {
+              "type": "list",
+              "ordered": true,
+              "items": [
+                "Michael Lasser, UBS",
+                "Simeon Gutman, Morgan Stanley",
+                "Chuck Grom, Gordon Haskett",
+                "Scot Ciccarelli, Truist",
+                "John Heinbockel, Guggenheim",
+                "Rupesh Parikh, Oppenheimer (asked about agentic commerce)",
+                "Corey Tarlowe, Jefferies",
+                "Kelly Bania, BMO Capital Markets",
+                "Greg Melich, Evercore ISI",
+                "Gabriella Garr for Oliver Chen, TD Cowen",
+                "Kate McShane, Goldman Sachs",
+                "Chris Horvers, JPMorgan",
+                "David Bellinger, Mizuho",
+                "Christopher Nardone, Bank of America"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Reports Fourth Quarter and Fiscal Year 2026 Operating Results",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2026-09-24",
+          "url": "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-Fourth-Quarter-and-Fiscal-Year-2026-Operating-Results/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/",
+          "note": "Call held September 24, 2026, 2:00 p.m. PT."
+        }
+      ]
+    }
+  ],
+  "companies": [
+    {
+      "slug": "costco",
+      "name": "Costco",
+      "legalName": "Costco Wholesale Corporation",
+      "seoTitle": "Costco: Company Profile, Leadership and AI Notes",
+      "description": "Costco Wholesale Corporation: 939 membership warehouses, its leadership, and what it says about AI search on earnings calls, with every fact sourced.",
+      "summary": "Costco Wholesale Corporation runs membership warehouses: 939 of them as of September 2026, with e-commerce sites in nine countries.[^1] It began operations in 1983 in Seattle, and its executive offices are in Issaquah, Washington.[^5] It trades on Nasdaq as COST.[^1]",
+      "website": "https://www.costco.com",
+      "sameAs": [
+        "https://www.costco.com",
+        "https://investor.costco.com",
+        "https://en.wikipedia.org/wiki/Costco"
+      ],
+      "facts": [
+        {
+          "label": "Legal name",
+          "value": "Costco Wholesale Corporation",
+          "cite": 1
+        },
+        {
+          "label": "Ticker",
+          "value": "Nasdaq: COST",
+          "cite": 1
+        },
+        {
+          "label": "Headquarters",
+          "value": "Issaquah, Washington",
+          "cite": 5
+        },
+        {
+          "label": "Began operations",
+          "value": "1983, in Seattle, Washington",
+          "cite": 5
+        },
+        {
+          "label": "Warehouses",
+          "value": "939, as of September 24, 2026",
+          "cite": 1
+        },
+        {
+          "label": "Fiscal 2026 net sales",
+          "value": "$297.2 billion, up 10.1%",
+          "cite": 1
+        },
+        {
+          "label": "Paid members",
+          "value": "84.1 million, with 150.4 million cardholders",
+          "cite": 2
+        },
+        {
+          "label": "Employees",
+          "value": "About 355,000, per the CEO on the Q4 FY2026 call",
+          "cite": 2
+        },
+        {
+          "label": "President and CEO",
+          "value": "[[person:ron-vachris]], since January 1, 2024",
+          "cite": 3
+        },
+        {
+          "label": "Executive Vice President and CFO",
+          "value": "[[person:gary-millerchip]], since March 15, 2024",
+          "cite": 4
+        }
+      ],
+      "sections": [
+        {
+          "id": "ai",
+          "title": "What has Costco said about AI?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row and has the highest conversion rate of any traffic source.==[^2]",
+                "==Sales that start in AI tools grew triple digits from a low base. The CFO named Gemini, Anthropic and OpenAI.==[^2]",
+                "==Costco does no paid digital advertising, and the CFO sees AI as a neutral environment where its value can show up transparently.==[^2]",
+                "==Its teams are cleaning up product data and product pages for the large language models.==[^2]",
+                "==Personalization sales grew at a triple-digit rate, and 10% of costco.com orders include a personalized item.==[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        },
+        {
+          "id": "where-it-operates",
+          "title": "Where does Costco operate?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Of the 939 warehouses: 647 in the United States and Puerto Rico, 115 in Canada, 43 in Mexico, 37 in Japan, 29 in the United Kingdom, 20 in Korea, 15 in Australia, 14 in Taiwan, 7 in China, 5 in Spain, 3 in France, 2 in Sweden, and 1 each in Iceland and New Zealand.[^1] Costco also runs e-commerce sites in the US, Canada, the UK, Mexico, Korea, Taiwan, Japan, Australia and China.[^1]"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Reports Fourth Quarter and Fiscal Year 2026 Operating Results",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2026-09-24",
+          "url": "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-Fourth-Quarter-and-Fiscal-Year-2026-Operating-Results/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/",
+          "note": "Call held September 24, 2026."
+        },
+        {
+          "id": 3,
+          "title": "Costco Wholesale Corporation Announces Craig Jelinek Will Step Down as CEO, Ron Vachris Elected as New CEO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2023-10-18",
+          "url": "https://investor.costco.com/news/news-details/2023/Costco-Wholesale-Corporation-Announces-Craig-Jelinek-Will-Step-Down-as-CEO-Ron-Vachris-Elected-as-New-CEO-And-Quarterly-Cash-Dividend-Declared/default.aspx"
+        },
+        {
+          "id": 4,
+          "title": "Costco Wholesale Corporation Announces Richard Galanti Will Step Down as CFO, Names Gary Millerchip New CFO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2024-02-06",
+          "url": "https://investor.costco.com/news/news-details/2024/Costco-Wholesale-Corporation-Announces-Richard-Galanti-Will-Step-Down-as-CFO-Names-Gary-Millerchip-New-CFO/default.aspx"
+        },
+        {
+          "id": 5,
+          "title": "Costco Wholesale Corporation Form 10-K for the fiscal year ended August 31, 2025",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2025-10-07",
+          "url": "https://www.sec.gov/Archives/edgar/data/909832/000090983225000101/cost-20250831.htm"
+        }
+      ],
+      "logo": {
+        "url": "/logos/costco.svg",
+        "alt": "Costco Wholesale logo",
+        "credit": "Logo: Costco Wholesale, via Wikimedia Commons (public domain; a registered trademark)"
+      }
+    },
+    {
+      "slug": "anthropic",
+      "name": "Anthropic",
+      "legalName": "Anthropic, PBC",
+      "seoTitle": "Anthropic: Company Profile, Leadership and S-1 Facts",
+      "description": "Anthropic, PBC, the company behind Claude: revenue, customers, leaders, governance and go-to-market, from its October 2026 S-1, with every fact sourced.",
+      "summary": "Anthropic, PBC develops the Claude family of AI models and the applications built on them.[^3] It is a Delaware public benefit corporation headquartered in San Francisco, founded by seven co-founders in January 2021.[^2][^4][^5] It filed to go public on October 26, 2026, and applied to list its Class A stock on the Nasdaq Global Select Market as ANT.[^1][^2]",
+      "website": "https://www.anthropic.com",
+      "sameAs": [
+        "https://www.anthropic.com"
+      ],
+      "facts": [
+        {
+          "label": "Legal name",
+          "value": "Anthropic, PBC",
+          "cite": 1
+        },
+        {
+          "label": "Structure",
+          "value": "Delaware public benefit corporation",
+          "cite": 2
+        },
+        {
+          "label": "Headquarters",
+          "value": "San Francisco, California",
+          "cite": 4
+        },
+        {
+          "label": "Founded",
+          "value": "January 2021",
+          "cite": 5
+        },
+        {
+          "label": "Co-founders",
+          "value": "Seven, including [[person:dario-amodei]] and [[person:daniela-amodei]]",
+          "cite": 3
+        },
+        {
+          "label": "Listing",
+          "value": "Applied to list Class A stock on the Nasdaq Global Select Market as ANT",
+          "cite": 2
+        },
+        {
+          "label": "Revenue",
+          "value": "$4.6 billion in 2025; $16.3 billion in the first half of 2026",
+          "cite": 3
+        },
+        {
+          "label": "Customers",
+          "value": "More than 11,900 with $100,000 or more of trailing 12-month revenue, at September 30, 2026",
+          "cite": 3
+        },
+        {
+          "label": "Employees",
+          "value": "About 5,300, at September 30, 2026",
+          "cite": 4
+        },
+        {
+          "label": "Chief Executive Officer",
+          "value": "[[person:dario-amodei]], since January 2021",
+          "cite": 5
+        },
+        {
+          "label": "President and Chairperson",
+          "value": "[[person:daniela-amodei]], President since January 2021",
+          "cite": 5
+        },
+        {
+          "label": "Chief Financial Officer",
+          "value": "[[person:krishna-rao]], since April 2024",
+          "cite": 5
+        }
+      ],
+      "sections": [
+        {
+          "id": "what-it-sells",
+          "title": "What does Anthropic sell?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:Anthropic sells access to Claude mostly on a pay-for-intelligence basis: customers pay for usage, metered in tokens and priced by model. It also sells subscriptions to its applications to enterprises and prosumers.==[^6]"
+            },
+            {
+              "type": "p",
+              "text": "==b:Its products include Claude.ai, Claude Code, Claude Cowork and the Claude Platform for developers. Customers can buy directly or through AWS, Google Cloud Platform and Microsoft Azure.==[^3][^4]"
+            }
+          ]
+        },
+        {
+          "id": "ai-search-and-marketing",
+          "title": "What has Anthropic said about AI search and marketing?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:In its S-1, Anthropic calls Claude.ai top-of-funnel demand generation for enterprise adoption, and describes its Web Search tool as enabling grounded, citation-aware responses.==[^4]"
+            },
+            {
+              "type": "p",
+              "text": "The full read: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Form S-1 filing detail, accession no. 0001628280-26-067168",
+          "publisher": "U.S. Securities and Exchange Commission (EDGAR)",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/0001628280-26-067168-index.html",
+          "note": "Form type S-1, filed and accepted October 26, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        },
+        {
+          "id": 4,
+          "title": "Anthropic, PBC Form S-1: Business",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2986"
+        },
+        {
+          "id": 5,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 6,
+          "title": "Anthropic, PBC Form S-1: Management's Discussion and Analysis",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2979"
+        }
+      ]
+    }
+  ],
+  "people": [
+    {
+      "slug": "ron-vachris",
+      "name": "Ron Vachris",
+      "role": "President and Chief Executive Officer, Costco",
+      "company": "costco",
+      "seoTitle": "Ron Vachris: Costco President and CEO",
+      "description": "Ron Vachris has led Costco as President and CEO since January 2024, after more than forty years at the company. His role and what he said on earnings calls.",
+      "summary": "Ron Vachris has been President and CEO of [[company:costco]] since January 1, 2024. He has more than forty years of service at Costco, starting as a forklift driver, and was President and Chief Operating Officer from February 2022.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "President and Chief Executive Officer, [[company:costco]]",
+          "cite": 1
+        },
+        {
+          "label": "CEO since",
+          "value": "January 1, 2024, succeeding Craig Jelinek",
+          "cite": 1
+        },
+        {
+          "label": "Previous role",
+          "value": "President and Chief Operating Officer, from February 2022",
+          "cite": 1
+        },
+        {
+          "label": "At Costco",
+          "value": "More than forty years, starting as a forklift driver",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "q4-fy2026-call",
+          "title": "On the Q4 FY2026 earnings call",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "Led the business review in Costco's prepared remarks on September 24, 2026: warehouses, sales, gas, pharmacy, travel, digital, membership and tariff refunds.[^2]",
+                "Reported 28 warehouse openings in fiscal 2026, three of them relocations, for 939 in total, and 33 planned for fiscal 2027, five of them relocations.[^2]",
+                "Thanked Costco's 355,000 employees worldwide.[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Announces Craig Jelinek Will Step Down as CEO, Ron Vachris Elected as New CEO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2023-10-18",
+          "url": "https://investor.costco.com/news/news-details/2023/Costco-Wholesale-Corporation-Announces-Craig-Jelinek-Will-Step-Down-as-CEO-Ron-Vachris-Elected-as-New-CEO-And-Quarterly-Cash-Dividend-Declared/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/"
+        }
+      ]
+    },
+    {
+      "slug": "gary-millerchip",
+      "name": "Gary Millerchip",
+      "role": "Executive Vice President and Chief Financial Officer, Costco",
+      "company": "costco",
+      "seoTitle": "Gary Millerchip: Costco EVP and CFO",
+      "description": "Gary Millerchip is Costco's CFO, formerly CFO of Kroger. What he said about AI search, conversion and product data on Costco's Q4 FY2026 earnings call.",
+      "summary": "Gary Millerchip has been Executive Vice President and CFO of [[company:costco]] since March 15, 2024, succeeding Richard Galanti. Before Costco he was Senior Vice President and CFO of The Kroger Co., from April 2019 to February 2024.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Executive Vice President and Chief Financial Officer, [[company:costco]]",
+          "cite": 1
+        },
+        {
+          "label": "Executive Vice President since",
+          "value": "February 29, 2024",
+          "cite": 1
+        },
+        {
+          "label": "CFO since",
+          "value": "March 15, 2024, succeeding Richard Galanti",
+          "cite": 1
+        },
+        {
+          "label": "Before Costco",
+          "value": "Senior Vice President and CFO, The Kroger Co., April 2019 to February 2024",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "ai-q4-fy2026",
+          "title": "What did he say about AI on the Q4 FY2026 call?",
+          "blocks": [
+            {
+              "type": "list",
+              "items": [
+                "==Traffic to costco.com from AI search grew triple digits for the second quarter in a row and has the highest conversion rate of all site traffic.==[^2]",
+                "==Sales that originate from searches on the large language models are growing at triple-digit rates, from a low base. He named Gemini, Anthropic and OpenAI.==[^2]",
+                "==It is AI search more than agentic commerce for now: members use AI as a tool to search for products.==[^2]",
+                "==Costco does no paid digital advertising, so AI is a neutral environment where its value and quality can show up transparently.==[^2]",
+                "==Costco's teams are working with the large language models to clean up and update product data and product pages.==[^2]",
+                "==Personalization grew sales at a triple-digit rate, and 10% of costco.com orders include a personalized item.==[^2]"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Full notes: [[article:costco-q4-fy2026-ai-search|Costco's Q4 FY2026 earnings call and AI search]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Costco Wholesale Corporation Announces Richard Galanti Will Step Down as CFO, Names Gary Millerchip New CFO",
+          "publisher": "Costco Wholesale Corporation",
+          "date": "2024-02-06",
+          "url": "https://investor.costco.com/news/news-details/2024/Costco-Wholesale-Corporation-Announces-Richard-Galanti-Will-Step-Down-as-CFO-Names-Gary-Millerchip-New-CFO/default.aspx"
+        },
+        {
+          "id": 2,
+          "title": "Costco (COST) Q4 2026 Earnings Call Transcript",
+          "publisher": "The Motley Fool",
+          "date": "2026-09-24",
+          "url": "https://www.fool.com/earnings/call-transcripts/2026/09/29/costco-cost-q4-2026-earnings-call-transcript/"
+        }
+      ]
+    },
+    {
+      "slug": "dario-amodei",
+      "name": "Dario Amodei",
+      "role": "Chief Executive Officer and co-founder, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Dario Amodei: Anthropic CEO and Co-Founder",
+      "description": "Dario Amodei has been CEO of Anthropic since co-founding it in January 2021. His background and his place in the company's 2026 S-1 filing, with sources.",
+      "summary": "Dario Amodei has been Chief Executive Officer of [[company:anthropic]] and a member of its board since co-founding it in January 2021.[^1] Before Anthropic, Dario Amodei was Vice President of Research, among other positions, at OpenAI from July 2016 to December 2020.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Chief Executive Officer, co-founder and director, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "CEO since",
+          "value": "January 2021, when Anthropic was founded",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "Vice President of Research, among other positions, at OpenAI, July 2016 to December 2020; Senior Research Scientist at Google Brain, October 2015 to June 2016",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "Ph.D. in Biophysics, Princeton University; B.S. in Physics, Stanford University; postdoctoral fellowship, Stanford University School of Medicine",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The registration statement names Dario Amodei as Chief Executive Officer and Co-Founder on its cover.==[^2] ==b:With the other six co-founders, Dario Amodei will be a member of the Founder LLC, whose single Class F share carries 50.1% of the vote on matters put to stockholders generally.==[^3]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        }
+      ]
+    },
+    {
+      "slug": "daniela-amodei",
+      "name": "Daniela Amodei",
+      "role": "President, co-founder and Chairperson, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Daniela Amodei: Anthropic President and Co-Founder",
+      "description": "Daniela Amodei has been President of Anthropic since co-founding it in January 2021 and chairs its board. Background and role in its 2026 S-1, sourced.",
+      "summary": "Daniela Amodei has been President of [[company:anthropic]] and a member of its board since co-founding it in January 2021, and is Chairperson of the board.[^1] Before Anthropic, Daniela Amodei held several positions at OpenAI from October 2018 to December 2020, including Vice President of Safety and Policy.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "President, co-founder, Chairperson and director, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "President since",
+          "value": "January 2021, when Anthropic was founded",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "At OpenAI, October 2018 to December 2020: Vice President of Safety and Policy, Vice President of People and Engineering Manager; at Stripe, May 2013 to July 2018: Risk Manager, among other positions",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "B.A. in English Literature, University of California, Santa Cruz",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The registration statement names Daniela Amodei as President and Co-Founder on its cover.==[^2] ==b:With the other six co-founders, Daniela Amodei will be a member of the Founder LLC, whose single Class F share carries 50.1% of the vote on matters put to stockholders generally.==[^3]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        },
+        {
+          "id": 2,
+          "title": "Anthropic, PBC Form S-1: cover pages",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm"
+        },
+        {
+          "id": 3,
+          "title": "Anthropic, PBC Form S-1: Prospectus Summary",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#ica694c859b8e458dbf6a73f56dde9d42_2965"
+        }
+      ]
+    },
+    {
+      "slug": "krishna-rao",
+      "name": "Krishna Rao",
+      "role": "Chief Financial Officer, Anthropic",
+      "company": "anthropic",
+      "seoTitle": "Krishna Rao: Anthropic Chief Financial Officer",
+      "description": "Krishna Rao has been Chief Financial Officer of Anthropic since April 2024, after CFO roles at Fanatics Commerce and Cedar. Background and S-1 role, sourced.",
+      "summary": "Krishna Rao has been Chief Financial Officer of [[company:anthropic]] since April 2024.[^1] Before Anthropic, Krishna Rao was Chief Financial Officer of Fanatics Commerce and of Cedar, and held roles at Airbnb, Blackstone and Bain.[^1]",
+      "facts": [
+        {
+          "label": "Role",
+          "value": "Chief Financial Officer, [[company:anthropic]]",
+          "cite": 1
+        },
+        {
+          "label": "CFO since",
+          "value": "April 2024",
+          "cite": 1
+        },
+        {
+          "label": "Previous roles",
+          "value": "Chief Financial Officer of Fanatics Commerce, May 2023 to April 2024, and of Cedar, July 2021 to May 2023; Airbnb, October 2015 to July 2021, including Global Head of Corporate and Business Development; Principal in Blackstone's Private Equity Group, September 2011 to September 2015; strategy consultant at Bain, September 2005 to July 2008",
+          "cite": 1
+        },
+        {
+          "label": "Education",
+          "value": "J.D., Yale Law School; A.B. in Economics, Harvard College",
+          "cite": 1
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1-filing",
+          "title": "In the October 2026 S-1",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "==b:The S-1 lists Krishna Rao as Chief Financial Officer in its table of executive officers and directors as of September 30, 2026.==[^1]"
+            },
+            {
+              "type": "p",
+              "text": "Read the note: [[article:anthropic-s1-ai-marketing-lessons|what Anthropic's S-1 teaches marketing, SEO and AI search teams]]."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": 1,
+          "title": "Anthropic, PBC Form S-1: Management",
+          "publisher": "Anthropic, PBC, filed with the SEC",
+          "date": "2026-10-26",
+          "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026067168/anthropicpbc-sx1.htm#iea584ded429d4dddbd21ae8824d06baf_45340",
+          "note": "Executive officers and directors as of September 30, 2026."
+        }
+      ]
+    }
+  ]
+}

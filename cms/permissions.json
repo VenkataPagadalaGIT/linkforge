@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "note": "What Venkata Claude may do, per group of page types. A proposal for the owner to change. Modes: 'Live on your OK' (Claude prepares it and publishes when the owner says so), 'Draft for review' (the owner reads the change first), 'Blocked' (only the owner, never an agent). Deny by default: anything not listed is Blocked.",
+  "agent": "Venkata Claude",
+  "columns": ["Create", "Edit content", "Edit SEO fields", "Remove"],
+  "rows": [
+    {"what": "AI updates (news)", "types": ["ai-update"], "modes": ["Live on your OK", "Live on your OK", "Live on your OK", "Draft for review"], "note": "14 pages"},
+    {"what": "Insight posts", "types": ["insight-post"], "modes": ["Live on your OK", "Live on your OK", "Live on your OK", "Draft for review"], "note": "22 pages"},
+    {"what": "Insight pillars and contributor profiles", "types": ["insight-pillar", "ai-contributor"], "modes": ["Draft for review", "Live on your OK", "Live on your OK", "Draft for review"], "note": "106 pages"},
+    {"what": "Guides, personas, encyclopedia, AI map, conference, solutions", "types": ["guide", "persona", "encyclopedia-concept", "ai-map-node", "conference", "conference-session", "conference-speaker", "solution"], "modes": ["Draft for review", "Draft for review", "Live on your OK", "Draft for review"], "note": "SEO fields from step 2; content moves to the no-deploy flow type by type"},
+    {"what": "Standalone pages (home, about, hubs, tools)", "types": ["standalone"], "modes": ["Draft for review", "Draft for review", "Live on your OK", "Blocked"], "note": "SEO fields from step 2"},
+    {"what": "Site-wide SEO: title template, default robots, robots.txt", "types": [], "modes": ["Blocked", "Blocked", "Blocked", "Blocked"], "note": "Only you"},
+    {"what": "Admin, logins, keys, settings", "types": [], "modes": ["Blocked", "Blocked", "Blocked", "Blocked"], "note": "Never, for any agent"},
+    {"what": "Code and design", "types": [], "modes": ["Draft for review", "Draft for review", "Draft for review", "Draft for review"], "note": "Needs a deploy"}
+  ]
+}

@@ -35,6 +35,7 @@ function resolveContext(slug: string, sessionParam: string): SessionDetailContex
     conference: c,
     session: found.session,
     sessionId: found.sessionId,
+    urlSlug: found.urlSlug,
     dayDate: found.dayDate,
     dayIndex: found.dayIndex,
     dayTheme: c.days[found.dayIndex]?.theme,
@@ -82,10 +83,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const speakerInfo = ctx.session.speaker
     ? `${ctx.session.speaker}${ctx.session.affiliation ? ` · ${ctx.session.affiliation}` : ""}`
     : "";
-  const title = `${ctx.session.title}${speakerInfo ? " — " + ctx.session.speaker : ""} · ${conf.name} ${conf.edition || conf.year}`;
+  const title = `${ctx.session.title}${speakerInfo ? " · " + ctx.session.speaker : ""} · ${conf.name} ${conf.edition || conf.year}`;
   const desc =
     ctx.session.description ||
-    `${ctx.session.title}${speakerInfo ? " — talk by " + speakerInfo : ""}. Field notes from ${conf.name} ${conf.edition || conf.year}.`;
+    `${ctx.session.title}${speakerInfo ? ", talk by " + speakerInfo : ""}. Field notes from ${conf.name} ${conf.edition || conf.year}.`;
   const urlSlug = findSessionByUrlSlug(conf, params.sessionId)?.urlSlug || params.sessionId;
   const url = `/notebook/conference/${conf.slug}/sessions/${urlSlug}`;
   const profile = ctx.session.speaker ? getSpeakerByName(ctx.session.speaker) : undefined;
@@ -108,7 +109,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description: desc,
       images: ogImage ? [ogImage] : undefined,
-      siteName: "Venkata Pagadala — Mono Mind",
+      siteName: "Venkata Pagadala · Mono Mind",
     },
     twitter: {
       card: "summary_large_image",

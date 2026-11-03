@@ -6,6 +6,7 @@
  * rich, crawlable information for each URL.
  */
 import { BACKEND_URL, SITE_URL } from "./site";
+import { aiUpdates as staticUpdates } from "@/data/aiUpdates";
 
 async function fetchJSON<T = unknown>(path: string): Promise<T | null> {
   const url = `${BACKEND_URL}/api${path}`;
@@ -47,6 +48,8 @@ export type AIUpdate = {
   date: string;
   summary: string;
   takeaways?: string[];
+  /** Contributor ids named in the story. */
+  contributors?: string[];
 };
 
 export type BlogPost = {
@@ -77,17 +80,50 @@ export type Sitemap = {
 };
 
 // ----- Fetch helpers -----
-export const getContributor = (id: string) =>
-  fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
+// STATIC FIRST, backend second: the opposite precedence from getUpdate, and
+// deliberately so. The contributors dataset is maintained in the TS module
+// (the client explorer and profile view both render from it), while the Mongo
+// copy is a seed that goes stale the moment the file is edited. If the
+// backend won here, a refreshed bio would ship in the page body while the
+// title, description and JSON-LD kept serving the old Mongo text.
+export const getContributor = async (id: string): Promise<Contributor | null> => {
+  const { aiContributors } = await import("@/data/aiContributors");
+  const local = aiContributors.find((c) => c.id === id);
+  if (local) return local as unknown as Contributor;
+  return fetchJSON<Contributor>(`/content/contributors/${encodeURIComponent(id)}`);
+};
 
-export const getUpdate = (slug: string) =>
-  fetchJSON<AIUpdate>(`/content/updates/${encodeURIComponent(slug)}`);
+// Backend first, static module second. The updates index and the client
+// detail view both read the static module directly, so an article that only
+// exists in the file was listed, rendered, and then 404ed by this server
+// gate. The fallback keeps the three readers agreeing, and it means an
+// article still serves when the backend is down, the same guarantee the
+// guides already make.
+export const getUpdate = async (slug: string): Promise<AIUpdate | null> => {
+  const fromApi = await fetchJSON<AIUpdate>(`/content/updates/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const local = staticUpdates.find((u) => u.slug === slug);
+  return local ? (local as unknown as AIUpdate) : null;
+};
 
-export const getPost = (slug: string) =>
-  fetchJSON<BlogPost>(`/content/posts/${encodeURIComponent(slug)}`);
+// Backend first, static module second, matching getUpdate. Insights content is
+// authored in both places: the CMS writes to Mongo, and src/data/insights.ts
+// ships with the build. Whichever holds a slug, the page must resolve.
+export const getPost = async (slug: string): Promise<BlogPost | null> => {
+  const fromApi = await fetchJSON<BlogPost>(`/content/posts/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const { getBlogBySlug } = await import("@/data/insights");
+  const local = getBlogBySlug(slug);
+  return local ? (local as unknown as BlogPost) : null;
+};
 
-export const getPillar = (slug: string) =>
-  fetchJSON<Pillar>(`/content/pillars/${encodeURIComponent(slug)}`);
+export const getPillar = async (slug: string): Promise<Pillar | null> => {
+  const fromApi = await fetchJSON<Pillar>(`/content/pillars/${encodeURIComponent(slug)}`);
+  if (fromApi) return fromApi;
+  const { getPillarBySlug } = await import("@/data/insights");
+  const local = getPillarBySlug(slug);
+  return local ? (local as unknown as Pillar) : null;
+};
 
 export const getSitemapData = () => fetchJSON<Sitemap>("/content/sitemap");
 
@@ -103,6 +139,8 @@ export function articleJsonLd(opts: {
   authorName?: string;
   schemaType?: string;
   image?: string;
+  /** Contributor ids named in the story, emitted as schema.org mentions. */
+  mentions?: { id: string; name: string; affiliation?: string; photoUrl?: string }[];
 }) {
   return {
     "@context": "https://schema.org",
@@ -125,6 +163,18 @@ export function articleJsonLd(opts: {
       name: "Venkata Pagadala",
       url: SITE_URL,
     },
+    ...(opts.mentions && opts.mentions.length
+      ? {
+          mentions: opts.mentions.map((m) => ({
+            "@type": "Person",
+            "@id": `${SITE_URL}/ai-contributors/${m.id}#person`,
+            name: m.name,
+            url: `${SITE_URL}/ai-contributors/${m.id}`,
+            ...(m.affiliation ? { affiliation: { "@type": "Organization", name: m.affiliation } } : {}),
+            ...(m.photoUrl ? { image: `${SITE_URL}${m.photoUrl}` } : {}),
+          })),
+        }
+      : {}),
     mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
   };
 }

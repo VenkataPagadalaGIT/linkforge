@@ -3,7 +3,7 @@ import AIContributors from "@/views/AIContributors";
 
 export const metadata: Metadata = {
   title: "AI Encyclopedia",
-  description: "Comprehensive AI concepts encyclopedia — curated by Venkata Pagadala.",
+  description: "Comprehensive AI concepts encyclopedia, curated by Venkata Pagadala.",
   alternates: { canonical: "/notebook/ai/encyclopedia" },
   openGraph: { url: "/notebook/ai/encyclopedia", title: "AI Encyclopedia" },
 };

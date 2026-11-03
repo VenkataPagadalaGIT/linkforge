@@ -1,0 +1,520 @@
+#!/usr/bin/env python3
+"""
+Generate src/data/ai360.ts: the 360 layer of each company file.
+
+  people    public-role people with their group, photo credit, quotes and
+            other roles (the links between companies that run through people)
+  rounds    every financing from the first round to the IPO, with investors
+  legal     lawsuits and government actions as the company discloses them
+  advisors  auditors, counsel and underwriters named in filings
+  facts     identity facts with their sentences
+  hiring    open roles from the company's public job board: teams, cities,
+            themes from role titles, newest roles
+
+Run: python3 gen_ontology_360_ts.py [--check]
+"""
+import collections, datetime as dt, json, os, re, subprocess, sys
+sys.path.insert(0, os.path.dirname(__file__))
+from db import CONTAINER, DB, USER
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DEST = os.path.join(HERE, "..", "..", "src", "data", "ai360.ts")
+
+
+def rows(q):
+    p = subprocess.run(["docker", "exec", "-i", CONTAINER, "psql", "-U", USER, "-d", DB, "-t", "-A", "-c",
+                        "SELECT COALESCE(jsonb_agg(t), '[]'::jsonb)::text FROM (" + q + ") t"], capture_output=True, text=True)
+    if p.returncode != 0:
+        raise SystemExit("QUERY FAILED:\n" + p.stderr[-2000:])
+    return json.loads(p.stdout.strip() or "[]")
+
+
+ev = rows("""
+  SELECT e.target_kind, e.target_id, e.quote, e.url, e.locator, d.title, d.published_on, s.kind AS source_kind, s.name AS publisher
+  FROM ontology.evidence e LEFT JOIN document d ON d.id = e.document_id LEFT JOIN source s ON s.id = d.source_id
+  WHERE e.target_kind IN ('person','affiliation','legal_case','engagement','funding_round','fact','agreement') ORDER BY e.id""")
+by = collections.defaultdict(list)
+for e in ev:
+    by[(e["target_kind"], e["target_id"])].append({"quote": e["quote"], "url": e["url"], "locator": e["locator"], "source": e["title"] or "",
+                                                   "publisher": e["publisher"], "publishedOn": e["published_on"], "secondary": e["source_kind"] == "aggregator"})
+
+out = collections.defaultdict(lambda: {"people": [], "rounds": [], "legal": [], "advisors": [], "facts": [], "hiring": None, "site": None, "attention": None, "tone": None, "footprint": None, "agreements": [], "market": None, "talent": None, "reddit": None, "ipo": None, "customers": None, "gov": None})
+
+aff = collections.defaultdict(list)
+for a in rows("""SELECT a.id, a.person_id, a.org_name, o.slug AS org_entity, a.title, a.kind, a.period, a.start_year, a.end_year, a.current
+                 FROM ontology.affiliation a LEFT JOIN ontology.entity o ON o.id = a.org_entity_id ORDER BY a.person_id, a.sort_order, a.id"""):
+    aff[a["person_id"]].append({"org": a["org_name"], "entity": a["org_entity"], "title": a["title"], "kind": a["kind"], "period": a["period"],
+                                "startYear": a["start_year"], "endYear": a["end_year"], "current": a["current"], "evidence": by[("affiliation", a["id"])]})
+
+GROUP_ORDER = {"officer": 0, "director": 1, "founder": 2, "trustee": 3, "former_director": 4, None: 5}
+for p in rows("""SELECT p.id, p.slug, p.name, p.public_role, p.grp, p.site_path, p.wikidata, p.image_path, p.image_credit, p.image_license, p.image_license_url,
+                        p.image_page, p.sort_order, e.slug AS entity
+                 FROM ontology.person p JOIN ontology.entity e ON e.id = p.entity_id WHERE p.verification = 'verified'
+                 ORDER BY e.slug, p.sort_order NULLS LAST, p.name"""):
+    photo = {"src": p["image_path"], "credit": p["image_credit"], "license": p["image_license"], "licenseUrl": p["image_license_url"], "page": p["image_page"]} if p["image_path"] else None
+    out[p["entity"]]["people"].append({"slug": p["slug"], "name": p["name"], "role": p["public_role"], "group": p["grp"] or "leader", "sitePath": p["site_path"],
+                                       "wikidata": p["wikidata"], "photo": photo, "evidence": by[("person", p["id"])], "affiliations": aff[p["id"]]})
+for k in out:
+    out[k]["people"].sort(key=lambda x: GROUP_ORDER.get(x["group"], 5))
+
+inv = collections.defaultdict(list)
+for i in rows("""SELECT ri.round_id, ri.investor_name, o.slug AS entity, ri.investor_kind, ri.role FROM ontology.round_investor ri
+                 LEFT JOIN ontology.entity o ON o.id = ri.investor_entity_id ORDER BY ri.round_id, ri.role, ri.id"""):
+    inv[i["round_id"]].append({"name": i["investor_name"], "entity": i["entity"], "kind": i["investor_kind"], "role": i["role"]})
+ROLE_ORDER = {"lead": 0, "co_lead": 1, "participant": 2}
+for r in rows("""SELECT r.*, e.slug AS entity FROM ontology.funding_round r JOIN ontology.entity e ON e.id = r.entity_id ORDER BY e.slug, r.sort_order"""):
+    out[r["entity"]]["rounds"].append({
+        "slug": r["slug"], "round": r["round"], "tranche": r["tranche"], "kind": r["kind"], "stage": r["stage"], "started": r["started"], "ended": r["ended"],
+        "announcedOn": r["announced_on"], "investors": r["investors"], "pricePerShare": float(r["price_per_share"]) if r["price_per_share"] is not None else None,
+        "shares": r["shares"], "amount": float(r["amount"]) if r["amount"] is not None else None, "qualifier": r["amount_qualifier"],
+        "postMoney": float(r["post_money"]) if r["post_money"] is not None else None, "voting": r["voting"], "summary": r["summary"],
+        "who": sorted(inv[r["id"]], key=lambda x: ROLE_ORDER[x["role"]]), "evidence": by[("funding_round", r["id"])]})
+
+for c in rows("""SELECT c.*, e.slug AS entity FROM ontology.legal_case c JOIN ontology.entity e ON e.id = c.entity_id ORDER BY e.slug, c.sort_order"""):
+    out[c["entity"]]["legal"].append({"slug": c["slug"], "name": c["name"], "court": c["court"], "role": c["role"], "kind": c["kind"], "filed": c["filed"],
+                                      "status": c["status"], "statusOn": c["status_on"], "counterparties": c["counterparties"] or [],
+                                      "amount": float(c["amount"]) if c["amount"] is not None else None, "summary": c["summary"], "docketUrl": c["docket_url"],
+                                      "evidence": by[("legal_case", c["id"])]})
+
+for g in rows("""SELECT g.*, e.slug AS entity, o.slug AS org_entity FROM ontology.engagement g JOIN ontology.entity e ON e.id = g.entity_id
+                 LEFT JOIN ontology.entity o ON o.id = g.org_entity_id ORDER BY e.slug, g.sort_order"""):
+    out[g["entity"]]["advisors"].append({"org": g["org_name"], "entity": g["org_entity"], "role": g["role"], "since": g["since"], "until": g["until"],
+                                         "current": g["current"], "evidence": by[("engagement", g["id"])]})
+
+for g in rows("""SELECT g.*, e.slug AS entity, o.slug AS counterparty_entity FROM ontology.agreement g JOIN ontology.entity e ON e.id = g.entity_id
+                 LEFT JOIN ontology.entity o ON o.id = g.counterparty_entity_id ORDER BY e.slug, g.sort_order"""):
+    out[g["entity"]]["agreements"].append({"exhibit": g["exhibit"], "title": g["title"], "counterparty": g["counterparty"], "entity": g["counterparty_entity"], "kind": g["kind"],
+                                           "datedOn": g["dated_on"], "url": g["url"], "redacted": g["redacted"], "evidence": by[("agreement", g["id"])]})
+
+for f in rows("""SELECT f.*, e.slug AS entity FROM ontology.fact f JOIN ontology.entity e ON e.id = f.entity_id ORDER BY e.slug, f.sort_order"""):
+    item = {"key": f["key"], "label": f["label"], "value": f["value"], "asOf": f["as_of"], "evidence": by[("fact", f["id"])]}
+    if f["key"].startswith("ipo_"):
+        # Offering terms belong to the IPO section, not the identity facts.
+        out[f["entity"]]["ipo"] = out[f["entity"]]["ipo"] or {"filings": [], "terms": [], "readOn": None}
+        out[f["entity"]]["ipo"]["terms"].append(item)
+    else:
+        out[f["entity"]]["facts"].append(item)
+
+# ---- Customers named in the company's own case studies (its site's /customers/<name> pages) ----
+CUST_RE = re.compile(r"^(.*?) (Claude.*?) case study$")
+
+
+def customer(title, url):
+    t = (title or "").strip()
+    m = CUST_RE.match(t)
+    if m:
+        return m.group(1).strip(" |:"), m.group(2)
+    for sep in (" | ", ": "):
+        if sep in t:
+            head, tail = t.split(sep, 1)[0], t.rsplit(sep, 1)[1].strip()
+            return re.sub(r" Q&A$", "", head).strip(), (tail if sep == " | " and tail.startswith("Claude") else None)
+    if t.endswith(" Q&A"):
+        return t[:-4].strip(), None
+    slug = url.rstrip("/").rsplit("/", 1)[1]
+    return (slug.upper() if len(slug) <= 4 else slug.replace("-", " ").title()), None
+
+
+cust = collections.defaultdict(list)
+for r in rows("""SELECT e.slug AS entity, sp.url, sp.title FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id
+                 WHERE sp.url ~ '/customers/[^/]+/?$' AND (sp.http_status IS NULL OR sp.http_status = 200) ORDER BY e.slug, sp.url"""):
+    name, product = customer(r["title"], r["url"])
+    cust[r["entity"]].append({"name": name, "product": product, "url": r["url"]})
+for ent, items in cust.items():
+    items.sort(key=lambda x: (x["name"].lower(), x["url"]))
+    counts = collections.Counter(x["product"] or "Not stated" for x in items)
+    out[ent]["customers"] = {"total": len(items), "products": sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])), "items": items}
+
+# ---- Government: federal awards (USAspending) and lobbying disclosures (Senate LDA) ----
+def quarter(year, period):
+    m = re.match(r"(\d)(?:st|nd|rd|th) Quarter", period or "")
+    return f"{year} Q{m.group(1)}" if m and year else None
+
+
+gov = collections.defaultdict(lambda: {"awards": [], "lobby": []})
+for a in rows("""SELECT e.slug AS entity, g.award_id, g.agency, g.sub_agency, g.amount, g.start_date, g.end_date, g.award_type, g.description, g.url, g.retrieved_at
+                 FROM ontology.gov_award g JOIN ontology.entity e ON e.id = g.entity_id ORDER BY e.slug, g.amount DESC NULLS LAST, g.award_id"""):
+    gov[a["entity"]]["awards"].append(a)
+for l in rows("""SELECT e.slug AS entity, l.filing_uuid, l.filing_year, l.filing_period, l.filing_type, l.registrant, l.client, l.income, l.expenses, l.posted_at,
+                        l.issues, l.lobbyists, l.entities, l.url, l.retrieved_at
+                 FROM ontology.lobbying_filing l JOIN ontology.entity e ON e.id = l.entity_id ORDER BY e.slug, l.posted_at"""):
+    gov[l["entity"]]["lobby"].append(l)
+for ent, g in gov.items():
+    aw = g["awards"]
+    # An amendment restates a report: per registrant and quarter, the latest posted filing counts, once.
+    latest = {}
+    for l in g["lobby"]:
+        q = quarter(l["filing_year"], l["filing_period"])
+        if q:
+            latest[(l["registrant"], q)] = l
+    inhouse = lambda l: bool(re.match(r"^ANTHROPIC\b", (l["registrant"] or "").upper()))
+    qs = collections.defaultdict(lambda: {"inHouse": 0.0, "outside": 0.0, "firms": set()})
+    firms = collections.defaultdict(lambda: {"total": 0.0, "quarters": set(), "filings": 0})
+    for (reg, q), l in latest.items():
+        if inhouse(l):
+            qs[q]["inHouse"] += float(l["expenses"] or 0)
+        else:
+            qs[q]["outside"] += float(l["income"] or 0)
+            qs[q]["firms"].add(reg)
+            firms[reg]["total"] += float(l["income"] or 0)
+            firms[reg]["quarters"].add(q)
+            firms[reg]["filings"] += 1
+    issues = collections.Counter(i for l in latest.values() for i in (l["issues"] or []))
+    entities = collections.Counter(x for l in latest.values() for x in (l["entities"] or []))
+    lobbyists = {x for l in g["lobby"] for x in (l["lobbyists"] or [])}
+    quarters = [{"q": q, "inHouse": v["inHouse"], "outside": v["outside"], "firms": len(v["firms"])} for q, v in sorted(qs.items())]
+    out[ent]["gov"] = {
+        "awards": [{"id": a["award_id"], "agency": a["agency"], "subAgency": a["sub_agency"], "amount": float(a["amount"]) if a["amount"] is not None else None, "start": a["start_date"],
+                    "end": a["end_date"], "type": a["award_type"], "description": a["description"], "url": a["url"]} for a in aw],
+        "awardTotal": sum(float(a["amount"] or 0) for a in aw),
+        "agencies": [[k, v] for k, v in sorted(collections.Counter(a["agency"] for a in aw if a["agency"]).items(), key=lambda kv: (-kv[1], kv[0]))],
+        "lobbying": {
+            "filings": len(g["lobby"]), "counted": len(latest), "quarters": quarters,
+            "firms": sorted(({"name": k, "total": v["total"], "first": min(v["quarters"]), "last": max(v["quarters"]), "filings": v["filings"]} for k, v in firms.items()), key=lambda f: (-f["total"], f["name"])),
+            "issues": issues.most_common(12), "entities": entities.most_common(12), "lobbyists": len(lobbyists),
+            "inHouseTotal": sum(q["inHouse"] for q in quarters), "outsideTotal": sum(q["outside"] for q in quarters),
+            "latestPosted": max((l["posted_at"] for l in g["lobby"] if l["posted_at"]), default=None),
+        } if g["lobby"] else None,
+        "readOn": max(filter(None, [x["retrieved_at"] for x in aw + g["lobby"]]), default=None),
+    }
+
+# ---- IPO: the SEC filing trail, newest first, read from EDGAR's company filing index ----
+for g in rows("""SELECT g.form, g.filed_on, g.accession, g.url, g.description, g.size, g.retrieved_at, e.slug AS entity
+                 FROM ontology.filing g JOIN ontology.entity e ON e.id = g.entity_id ORDER BY e.slug, g.filed_on DESC, g.accession"""):
+    ipo = out[g["entity"]]["ipo"] = out[g["entity"]]["ipo"] or {"filings": [], "terms": [], "readOn": None}
+    ipo["filings"].append({"form": g["form"], "filedOn": g["filed_on"], "accession": g["accession"], "url": g["url"], "description": g["description"], "size": g["size"]})
+    ipo["readOn"] = max(filter(None, [ipo["readOn"], g["retrieved_at"]]), default=None)
+
+# ---- Hiring: open roles on each company's public job board ----
+# Themes come from words in role titles, first match wins; they are approximate on purpose.
+THEMES = [
+    ("chips", "Chips and hardware", r"silicon|asic|\bchips?\b|hardware|\brtl\b|physical design|\bsoc\b|\bgpu\b|\btpu\b|accelerator|kernel|cuda|firmware|photonic|packaging|systems? architect"),
+    ("datacenters", "Data centers and compute", r"data ?cent(er|re)|datacenter|\bcompute\b|capacity|\bpower\b|energy|electrical|mechanical|construction|site selection|facilit|cluster|\bhpc\b|network|technician"),
+    ("research", "Research", r"research|scientist|pre-?training|post-?training|reinforcement|interpretab|alignment|model behavior|\bevals?\b|fellow"),
+    ("safety", "Safety, security, policy", r"safety|trust|security|policy|governance|privacy|\brisk\b|integrity|compliance|threat|abuse|red team|safeguard|enforcement|harms?\b|cyber|affairs|tabletop"),
+    ("inference", "Inference and performance", r"inference|performance|\bperf\b|latency|serving|optimi[sz]ation|benchmark"),
+    ("data", "Training data and tutors", r"tutor|annotat|human data|label(l)?ing|\brater\b|data specialist"),
+    ("corporate", "Finance, legal, people, ops", r"finance|financial|accountant|accounting|legal|counsel|paralegal|\bpeople\b|recruit|talent|\bhr\b|\btax\b|treasury|payroll|procurement|workplace|chief of staff|executive assistant|real estate|corporate development|investor relations|\bsox\b|\baudit\b|expense|vendor|contracts?\b|\bm&a\b|transaction|\bit\b"),
+    ("gtm", "Sales and customers", r"sales|account (executive|manager|director)|solutions? (architect|engineer|consultant)|customer|partner|marketing|growth|business development|forward deployed|success|revenue|go-to-market|\bgtm\b|field|pre-?sales|channel|alliances|demand gen|communications|events|deal desk|strategist|applied ai|deployment|engagement|enablement|\bcx\b|\bfde\b|support|commercial|enterprise|public sector|startups|brand|podcast|media|editor|escalations|social"),
+    ("product", "Product and engineering", r"engineer|developer|product|design|frontend|backend|full.?stack|platform|software|mobile|devops|\bsre\b|\bdata\b|infrastructure|\binfra\b|technical program"),
+]
+THEME_RE = [(k, l, re.compile(p, re.I)) for k, l, p in THEMES]
+ALIAS = {"NYC": "New York City", "New York": "New York City", "SF": "San Francisco", "San Francisco Bay Area": "San Francisco", "US - Remote": "Remote (US)",
+         "Remote - US": "Remote (US)", "Remote-Friendly": "Remote-friendly", "Remote, US": "Remote (US)"}
+
+
+def theme(title):
+    for k, l, rx in THEME_RE:
+        if rx.search(title or ""):
+            return k
+    return "other"
+
+
+def city(name):
+    n = (name or "").strip()
+    if re.match(r"remote[- ]friendly", n, re.I):
+        return "Remote-friendly"
+    if re.match(r"remote", n, re.I) or re.search(r"\bremote\b", n, re.I):
+        return "Remote" if "US" not in n and "United States" not in n else "Remote (US)"
+    head = n.split(",")[0].strip()
+    return ALIAS.get(head, head)
+
+
+boards = {b["entity"]: b for b in rows("SELECT e.slug AS entity, b.board, b.careers_url FROM ontology.job_board b JOIN ontology.entity e ON e.id = b.entity_id")}
+# LinkedIn's numeric company ids, for "search this role on LinkedIn" links (from the company page record where we have it).
+LINKEDIN_IDS = {}
+for r in rows("""SELECT e.slug AS entity, f.value FROM ontology.fact f JOIN ontology.entity e ON e.id = f.entity_id WHERE f.key = 'linkedin_page'"""):
+    try:
+        LINKEDIN_IDS[r["entity"]] = json.loads(r["value"]).get("company_id")
+    except ValueError:
+        pass
+posts = rows("""SELECT e.slug AS entity, p.title, p.team, p.location, p.locations, p.workplace, p.url, p.published_on, p.first_seen, p.last_seen, p.closed_on
+                FROM ontology.job_posting p JOIN ontology.entity e ON e.id = p.entity_id
+                ORDER BY e.slug, p.published_on DESC NULLS LAST, p.title, p.url""")
+by_ent = collections.defaultdict(list)
+for p in posts:
+    by_ent[p["entity"]].append(p)
+LABEL = {k: l for k, l, _ in THEMES} | {"other": "Other"}
+for ent, ps in by_ent.items():
+    open_ = [p for p in ps if not p["closed_on"]]
+    if not open_:
+        continue
+    as_of = max(p["last_seen"] for p in ps)
+    cutoff = (dt.date.fromisoformat(as_of) - dt.timedelta(days=30)).isoformat()
+    teams = collections.Counter((p["team"] or "Unlisted").strip() for p in open_)
+    cities = collections.Counter(c for p in open_ for c in sorted({city(x) for x in (p["locations"] or [p["location"]]) if x}))
+    th = collections.defaultdict(list)
+    for p in open_:
+        th[theme(p["title"])].append(p["title"])
+    themes = sorted(({"key": k, "label": LABEL[k], "count": len(v), "examples": sorted(set(v), key=lambda t: (len(t), t))[:3]} for k, v in th.items()),
+                    key=lambda x: (-x["count"], x["key"]))
+    wp = collections.Counter(sorted(p["workplace"] or "Not stated" for p in open_))
+    # Newest roles, one line per title (a role posted in two cities is still one role to read).
+    latest, seen_titles = [], set()
+    for p in sorted((p for p in open_ if p["published_on"]), key=lambda p: (p["published_on"], p["title"], p["url"]), reverse=True):
+        if p["title"] not in seen_titles:
+            seen_titles.add(p["title"])
+            latest.append(p)
+        if len(latest) == 8:
+            break
+    closed30 = [p for p in ps if p["closed_on"] and p["closed_on"] >= cutoff]
+    first_run = min(p["first_seen"] for p in ps)
+    out[ent]["hiring"] = {
+        "board": boards.get(ent, {}).get("board"), "careersUrl": boards.get(ent, {}).get("careers_url"), "asOf": as_of, "trackedSince": first_run,
+        "open": len(open_), "new30": sum(1 for p in open_ if p["published_on"] and p["published_on"] >= cutoff),
+        "closed30": len(closed30) if first_run < cutoff else None,
+        "workplace": dict(wp.most_common()), "teams": [{"name": n, "count": c} for n, c in teams.most_common(8)], "teamCount": len(teams),
+        "cities": [{"name": n, "count": c} for n, c in cities.most_common(8)], "themes": themes,
+        "latest": [{"title": p["title"], "team": p["team"], "location": p["location"], "url": p["url"], "published": p["published_on"]} for p in latest],
+    }
+
+# ---- Birth to now: the company's own dated pages, public attention by month, news tone ----
+SITES = {x["entity"]: x for x in json.load(open(os.path.join(HERE, "ontology", "site_sources.json"), encoding="utf8"))["sites"]}
+pages = collections.defaultdict(list)
+for sp in rows("""SELECT e.slug AS entity, sp.url, sp.host, sp.section, sp.title, sp.published_on FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id
+                  WHERE sp.http_status = 200 OR sp.http_status IS NULL ORDER BY e.slug, sp.published_on DESC NULLS LAST, sp.url"""):
+    pages[sp["entity"]].append(sp)
+HOSTS = collections.defaultdict(list)
+for x in json.load(open(os.path.join(HERE, "ontology", "site_sources.json"), encoding="utf8"))["sites"]:
+    HOSTS[x["entity"]].append(x)
+cov = collections.defaultdict(dict)
+for r in rows("""SELECT e.slug AS entity, sp.host, count(*) AS pages, count(*) FILTER (WHERE sp.content IS NOT NULL) AS with_text, count(sp.published_on) AS dated,
+                        count(*) FILTER (WHERE jsonb_array_length(sp.authors) > 0) AS with_authors, COALESCE(sum(sp.word_count), 0) AS words,
+                        count(*) FILTER (WHERE sp.http_status IS NOT NULL AND sp.http_status <> 200) AS failed, max(sp.retrieved_at) AS read_on
+                 FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id GROUP BY 1, 2"""):
+    cov[r["entity"]][r["host"]] = r
+teams_by = collections.defaultdict(collections.Counter)
+topics_by = collections.defaultdict(collections.Counter)
+for r in rows("""SELECT e.slug AS entity, sp.team, sp.topics FROM ontology.site_page sp JOIN ontology.entity e ON e.id = sp.entity_id WHERE sp.team IS NOT NULL OR sp.topics IS NOT NULL"""):
+    if r["team"]:
+        teams_by[r["entity"]][r["team"]] += 1
+    for t in r["topics"] or []:
+        topics_by[r["entity"]][t] += 1
+for ent, ps in pages.items():
+    main_site = next((x for x in HOSTS.get(ent, []) if x.get("sections")), {})
+    timeline_hosts = {main_site.get("host")} if main_site else set()
+    dated = [p for p in ps if p["published_on"] and (not timeline_hosts or p.get("host") in timeline_hosts) and p["section"] in set(main_site.get("sections", []))]
+    hosts = []
+    for x in HOSTS.get(ent, []):
+        c = cov[ent].get(x["host"], {})
+        hosts.append({"host": x["host"], "label": x.get("label", x["host"]), "mode": "titles" if x.get("content") == "titles" else "text", "pages": c.get("pages", 0),
+                      "withText": c.get("with_text", 0), "dated": c.get("dated", 0), "withAuthors": c.get("with_authors", 0), "words": int(c.get("words", 0)), "failed": c.get("failed", 0), "readOn": c.get("read_on")})
+    out[ent]["site"] = {
+        "sitemap": main_site.get("sitemap"), "sections": main_site.get("sections", []), "total": len(ps), "dated": len(dated),
+        "first": min(p["published_on"] for p in dated) if dated else None, "latest": max(p["published_on"] for p in dated) if dated else None,
+        "items": [{"date": p["published_on"], "section": p["section"], "title": p["title"] or p["url"], "url": p["url"]} for p in dated],
+        "hosts": hosts, "words": sum(h["words"] for h in hosts), "pagesWithText": sum(h["withText"] for h in hosts),
+        "teams": [{"name": k, "count": v} for k, v in teams_by[ent].most_common(12)], "topics": [{"name": k, "count": v} for k, v in topics_by[ent].most_common(16)],
+    }
+for q in rows("""SELECT DISTINCT ON (e.slug) e.slug AS entity, q.symbol, q.day, q.price, q.currency, q.market_cap, q.change_1d_pct, q.year_high, q.year_low, q.source
+                 FROM ontology.market_quote q JOIN ontology.entity e ON e.id = q.entity_id ORDER BY e.slug, q.day DESC"""):
+    out[q["entity"]]["market"] = {"symbol": q["symbol"], "day": q["day"], "price": float(q["price"]) if q["price"] is not None else None, "currency": q["currency"],
+                                  "marketCap": float(q["market_cap"]) if q["market_cap"] is not None else None, "change1d": float(q["change_1d_pct"]) if q["change_1d_pct"] is not None else None,
+                                  "yearHigh": float(q["year_high"]) if q["year_high"] is not None else None, "yearLow": float(q["year_low"]) if q["year_low"] is not None else None, "source": q["source"]}
+QUERIES = {x["entity"]: x for x in json.load(open(os.path.join(HERE, "ontology", "attention_queries.json"), encoding="utf8"))["queries"]}
+att = collections.defaultdict(list)
+for a in rows("""SELECT e.slug AS entity, to_char(a.month, 'YYYY-MM') AS m, a.items, a.retrieved_at FROM ontology.attention a JOIN ontology.entity e ON e.id = a.entity_id
+                 WHERE a.source = 'hackernews' ORDER BY e.slug, a.month"""):
+    att[a["entity"]].append(a)
+threads = collections.defaultdict(list)
+for t in rows("""SELECT e.slug AS entity, p.url, p.title, p.published_on, p.summary FROM ontology.post p JOIN ontology.entity e ON e.id = p.entity_id
+                 WHERE p.platform = 'hackernews' ORDER BY e.slug, p.published_on DESC NULLS LAST, p.url"""):
+    threads[t["entity"]].append({"title": t["title"], "url": t["url"], "date": t["published_on"], "summary": t["summary"]})
+for ent, ms in att.items():
+    out[ent]["attention"] = {"source": "Hacker News", "query": QUERIES.get(ent, {}).get("query"), "asOf": max(m["retrieved_at"] for m in ms),
+                             "months": [[m["m"], m["items"]] for m in ms], "total": sum(m["items"] for m in ms), "top": threads.get(ent, [])}
+reddit = collections.defaultdict(list)
+for r in rows("""SELECT e.slug AS entity, p.url, p.title, p.published_on, p.summary FROM ontology.post p JOIN ontology.entity e ON e.id = p.entity_id
+                 WHERE p.platform = 'reddit' ORDER BY e.slug, p.published_on DESC NULLS LAST, p.url"""):
+    reddit[r["entity"]].append({"title": r["title"], "url": r["url"], "date": r["published_on"], "summary": r["summary"]})
+for ent, ps in reddit.items():
+    out[ent]["reddit"] = {"posts": len(ps), "top": ps[:12]}
+tone = collections.defaultdict(list)
+for t in rows("""SELECT e.slug AS entity, t.day, t.tone, t.volume, t.query FROM ontology.tone t JOIN ontology.entity e ON e.id = t.entity_id
+                 WHERE t.source = 'gdelt' ORDER BY e.slug, t.day"""):
+    tone[t["entity"]].append(t)
+for ent, ds in tone.items():
+    out[ent]["tone"] = {"source": "GDELT", "query": ds[0]["query"], "days": [[d["day"], d["tone"], d["volume"]] for d in ds]}
+
+# ---- Public footprint: people linked to the company in a public source (papers now; LinkedIn, X, Substack after approval) ----
+def person_key(name):
+    # "Jack W. Lindsey" and "Jack Lindsey", "Jared Kaplan A" and "Jared Kaplan": first and last name only.
+    parts = [p for p in re.split(r"\s+", re.sub(r"[^\w\s'-]", " ", name or "").strip()) if len(p.rstrip(".")) > 1]
+    return f"{parts[0]} {parts[-1]}".lower() if len(parts) >= 2 else (name or "").lower()
+SHOWN_TIERS = {"confirmed", "likely"}
+fp = collections.defaultdict(dict)
+for r in rows("""SELECT e.slug AS entity, f.source, f.source_id, f.name, f.headline, f.location, f.profile_url, f.evidence_url, f.first_seen, f.last_seen, f.detail
+                 FROM ontology.footprint f JOIN ontology.entity e ON e.id = f.entity_id ORDER BY e.slug, f.source, f.name, f.source_id"""):
+    d = r["detail"] or {}
+    if r["source"] == "openalex" and d.get("tier") not in SHOWN_TIERS:
+        continue
+    k = (r["source"], person_key(r["name"]))
+    cur = fp[r["entity"]].get(k)
+    clean = re.sub(r"(\s+[A-Z]\.?)+$", "", (r["name"] or "").strip())  # "Jared Kaplan A" -> "Jared Kaplan"
+    if r["source"] == "linkedin" and not r["headline"]:
+        edu = (d.get("education") or [{}])
+        r["headline"] = ", ".join(x for x in [r["location"], (edu[0].get("school") or edu[0].get("title")) if edu else None] if x) or "Profile names the company as current employer"
+    # A title that names a different employer ("Engineer at Amazon") on a profile filed under this company is probably stale.
+    m = re.search(r"\bat ([A-Z][\w&.' -]{1,40})$", (r["headline"] or "").strip())
+    flag = "title names another employer" if (r["source"] == "linkedin" and m and r["entity"] not in re.sub(r"[^a-z]", "", m.group(1).lower())) else None
+    item = {"source": r["source"], "name": clean, "headline": r["headline"], "hasTitle": bool(d.get("position")), "flag": flag, "url": r["profile_url"], "evidence": r["evidence_url"],
+            "first": r["first_seen"], "last": r["last_seen"], "tier": d.get("tier"), "works": d.get("works"), "matched": (d.get("matched") or [])[:2],
+            "recent": [w.get("title") for w in (d.get("recent") or [])[:2]]}
+    if cur:  # merge two records of one person: keep the stronger tier, add the papers, widen the years
+        cur["works"] = (cur["works"] or 0) + (item["works"] or 0)
+        cur["tier"] = "confirmed" if "confirmed" in (cur["tier"], item["tier"]) else cur["tier"]
+        cur["matched"] = (cur["matched"] + item["matched"])[:2]
+        cur["first"] = min(x for x in (cur["first"], item["first"]) if x) if (cur["first"] or item["first"]) else None
+        cur["last"] = max(x for x in (cur["last"], item["last"]) if x) if (cur["last"] or item["last"]) else None
+    else:
+        fp[r["entity"]][k] = item
+counts = collections.defaultdict(lambda: collections.Counter())
+for r in rows("""SELECT e.slug AS entity, f.source, COALESCE(f.detail->>'tier', 'shown') AS tier, count(*) AS n FROM ontology.footprint f
+                 JOIN ontology.entity e ON e.id = f.entity_id GROUP BY 1, 2, 3"""):
+    counts[r["entity"]][f'{r["source"]}:{r["tier"]}'] = r["n"]
+# ---- Talent analytics from the LinkedIn rows: where people are, where they studied, what they studied, when they graduated ----
+COUNTRY = {"US": "United States", "GB": "United Kingdom", "IE": "Ireland", "CA": "Canada", "CH": "Switzerland", "DE": "Germany", "FR": "France", "IN": "India", "JP": "Japan", "KR": "South Korea",
+           "AU": "Australia", "SG": "Singapore", "NL": "Netherlands", "IT": "Italy", "ES": "Spain", "PK": "Pakistan", "BR": "Brazil", "IL": "Israel", "SE": "Sweden", "PL": "Poland"}
+talent = collections.defaultdict(list)
+for r in rows("""SELECT e.slug AS entity, f.detail FROM ontology.footprint f JOIN ontology.entity e ON e.id = f.entity_id WHERE f.source = 'linkedin'"""):
+    talent[r["entity"]].append(r["detail"] or {})
+def top(counter, n):
+    return [{"name": k, "count": v} for k, v in counter.most_common(n)]
+for ent, ds in talent.items():
+    countries = collections.Counter(COUNTRY.get(d.get("country") or "", d.get("country") or "Unknown") for d in ds)
+    def city_of(d):
+        c = (d.get("city") or "").split(",")[0].strip()
+        c = re.sub(r"^Greater ", "", c)
+        c = re.sub(r" (Bay|Metropolitan|Metro) Area$| Area$", "", c)
+        if not c or c in COUNTRY.values() or c in ("United States", "United Kingdom", "Unknown"):
+            return None
+        return c
+    cities = collections.Counter(c for c in (city_of(d) for d in ds) if c)
+    schools, fields, grad = collections.Counter(), collections.Counter(), collections.Counter()
+    for d in ds:
+        seen_s = set()
+        for e in d.get("education") or []:
+            sc = (e.get("school") or e.get("title") or "").strip()
+            if sc and sc not in seen_s:
+                seen_s.add(sc); schools[sc] += 1
+            fl = (e.get("field") or "").strip()
+            if fl:
+                fields[fl] += 1
+            y = str(e.get("end") or e.get("end_year") or "")[:4]
+            if y.isdigit():
+                grad[y[:3] + "0s"] += 1
+    titles = [d.get("position") for d in ds if d.get("position")]
+    functions = collections.Counter(LABEL[theme(t)] for t in titles)
+    SENIOR = [("Founder or chief", r"founder|\bceo\b|\bcto\b|\bcfo\b|\bcoo\b|chief"), ("VP or head", r"\bvp\b|vice president|\bhead\b|president"), ("Director", r"director"),
+              ("Manager or lead", r"manager|\blead\b|principal|staff"), ("Senior", r"senior|\bsr\.?\b"), ("Intern or fellow", r"intern|fellow|resident|student"), ("Individual contributor", r".")]
+    seniority = collections.Counter(next(lbl for lbl, rx in SENIOR if re.search(rx, t, re.I)) for t in titles)
+    out[ent]["talent"] = {"people": len(ds), "withTitle": len(titles), "countries": top(countries, 12), "cities": top(cities, 12), "schools": top(schools, 15),
+                          "fields": top(fields, 12), "graduation": sorted(({"name": k, "count": v} for k, v in grad.items()), key=lambda x: x["name"]),
+                          "functions": top(functions, 10), "seniority": [{"name": k, "count": v} for k, v in seniority.most_common()],
+                          "withEducation": sum(1 for d in ds if d.get("education")), "withBioLinks": sum(1 for d in ds if d.get("bio_links"))}
+
+# The site's data file carries only people from public-role sources (papers, the company's own pages). Rows from licensed
+# datasets (LinkedIn) stay out of the repo and out of anything served: the full roster is written under data/corpus/raw/
+# (ignored by git) and a local-only API route serves it on request.
+ROSTER_DIR = os.path.join(HERE, "raw", "people")
+os.makedirs(ROSTER_DIR, exist_ok=True)
+for ent, people in fp.items():
+    def rank(x):
+        src = {"company_site": 0, "openalex": 1, "x": 2, "substack": 2, "linkedin": 3}.get(x["source"], 4)
+        return (src, {"confirmed": 0, "likely": 1}.get(x["tier"], 2), 0 if x.get("hasTitle") else 1, -(x["works"] or 0), x["name"])
+    ppl = sorted(people.values(), key=rank)
+    json.dump({"entity": ent, "people": ppl}, open(os.path.join(ROSTER_DIR, f"{ent}-people.json"), "w", encoding="utf8"), ensure_ascii=False, separators=(",", ":"))
+    public = [p for p in ppl if p["source"] in ("company_site", "openalex")]
+    out[ent]["footprint"] = {"people": public, "total": len(ppl), "rosterUrl": f"/api/ai/entity/{ent}/people", "counts": dict(counts[ent])}
+
+for v in out.values():
+    v.setdefault("reddit", None)
+    v.setdefault("talent", None)
+    v.setdefault("agreements", [])
+    v.setdefault("market", None)
+    v.setdefault("footprint", None)
+    v.setdefault("site", None)
+    v.setdefault("attention", None)
+    v.setdefault("tone", None)
+JOBS_DIR = os.path.join(HERE, "..", "..", "public", "ai", "360", "jobs")
+os.makedirs(JOBS_DIR, exist_ok=True)
+for ent, ps in by_ent.items():
+    open_ = [p for p in ps if not p["closed_on"]]
+    rows_out = [{"t": p["title"], "team": p["team"], "loc": p["location"], "url": p["url"], "pub": p["published_on"], "wp": p["workplace"]} for p in sorted(open_, key=lambda p: (p["published_on"] or "", p["title"]), reverse=True)]
+    json.dump({"entity": ent, "asOf": max(p["last_seen"] for p in ps), "roles": rows_out}, open(os.path.join(JOBS_DIR, f"{ent}.json"), "w", encoding="utf8"), ensure_ascii=False, separators=(",", ":"))
+    if out[ent]["hiring"]:
+        out[ent]["hiring"]["rolesUrl"] = f"/ai/360/jobs/{ent}.json"
+        out[ent]["hiring"]["companyId"] = LINKEDIN_IDS.get(ent)
+json.dump({"entities": sorted(by_ent.keys())}, open(os.path.join(JOBS_DIR, "index.json"), "w", encoding="utf8"))
+
+data = {k: v for k, v in sorted(out.items()) if v["people"] or v["rounds"] or v["legal"] or v["facts"] or v["hiring"] or v["site"] or v["attention"] or v["tone"] or v["footprint"] or v["agreements"] or v["market"] or v["ipo"] or v["customers"] or v["gov"]}
+HEADER = """// AUTO-GENERATED by data/corpus/gen_ontology_360_ts.py from the ontology schema in research_corpus.
+// The 360 layer of each company file: people and their other roles, funding rounds and investors,
+// legal matters, advisors, identity facts and hiring. Do not edit by hand.
+import type { IntelEvidence } from "./aiIntel";
+
+export type PersonGroup = "officer" | "director" | "founder" | "trustee" | "former_director" | "leader";
+export interface Photo { src: string; credit: string | null; license: string | null; licenseUrl: string | null; page: string | null }
+export interface Affiliation { org: string; entity: string | null; title: string; kind: string; period: string | null; startYear: number | null; endYear: number | null; current: boolean; evidence: IntelEvidence[] }
+export interface Person360 { slug: string; name: string; role: string; group: PersonGroup; sitePath: string | null; wikidata: string | null; photo: Photo | null; evidence: IntelEvidence[]; affiliations: Affiliation[] }
+export type InvestorKind = "individual" | "nonprofit" | "venture" | "growth" | "asset_manager" | "hedge_fund" | "corporate" | "sovereign" | "other";
+export interface RoundInvestor { name: string; entity: string | null; kind: InvestorKind; role: "lead" | "co_lead" | "participant" }
+export interface FundingRound {
+  slug: string; round: string; tranche: string | null; kind: "priced_round" | "note_conversion" | "safe_conversion" | "secondary_resale" | "convertible_note" | "strategic_commitment" | "ipo";
+  stage: "pre_public" | "ipo" | "post_public"; started: string | null; ended: string | null; announcedOn: string | null; investors: number | null;
+  pricePerShare: number | null; shares: number | null; amount: number | null; qualifier: string | null; postMoney: number | null; voting: boolean;
+  summary: string; who: RoundInvestor[]; evidence: IntelEvidence[];
+}
+export interface LegalCase { slug: string; name: string; court: string | null; role: string; kind: string; filed: string | null; status: string; statusOn: string | null; counterparties: string[]; amount: number | null; summary: string; docketUrl: string | null; evidence: IntelEvidence[] }
+export interface Advisor { org: string; entity: string | null; role: string; since: string | null; until: string | null; current: boolean; evidence: IntelEvidence[] }
+export interface Fact { key: string; label: string; value: string; asOf: string | null; evidence: IntelEvidence[] }
+export interface Hiring {
+  board: string | null; careersUrl: string | null; asOf: string; trackedSince: string; open: number; new30: number; closed30: number | null;
+  rolesUrl?: string; companyId?: string | null;
+  workplace: Record<string, number>; teams: { name: string; count: number }[]; teamCount: number; cities: { name: string; count: number }[];
+  themes: { key: string; label: string; count: number; examples: string[] }[];
+  latest: { title: string; team: string | null; location: string | null; url: string; published: string | null }[];
+}
+export interface SiteHost { host: string; label: string; mode: "text" | "titles"; pages: number; withText: number; dated: number; withAuthors: number; words: number; failed: number; readOn: string | null }
+export interface SitePages { sitemap: string | null; sections: string[]; total: number; dated: number; first: string | null; latest: string | null; items: { date: string; section: string; title: string; url: string }[]; hosts: SiteHost[]; words: number; pagesWithText: number; teams: { name: string; count: number }[]; topics: { name: string; count: number }[] }
+export interface Agreement { exhibit: string | null; title: string; counterparty: string | null; entity: string | null; kind: string; datedOn: string | null; url: string | null; redacted: boolean; evidence: IntelEvidence[] }
+export interface MarketQuote { symbol: string; day: string; price: number | null; currency: string | null; marketCap: number | null; change1d: number | null; yearHigh: number | null; yearLow: number | null; source: string }
+export interface Attention { source: string; query: string | null; asOf: string; months: [string, number][]; total: number; top: { title: string; url: string; date: string | null; summary: string }[] }
+export interface Tone { source: string; query: string; days: [string, number | null, number | null][] }
+export interface FootprintPerson { source: string; name: string; headline: string | null; hasTitle: boolean; flag: string | null; url: string | null; evidence: string | null; first: string | null; last: string | null; tier: string | null; works: number | null; matched: string[]; recent: (string | null)[] }
+/** people: public-role sources only; the full roster (licensed sources included) is served locally from rosterUrl. */
+export interface Footprint { people: FootprintPerson[]; total: number; rosterUrl: string; counts: Record<string, number> }
+export interface Talent { people: number; withTitle: number; withEducation: number; withBioLinks: number; countries: { name: string; count: number }[]; cities: { name: string; count: number }[]; schools: { name: string; count: number }[]; fields: { name: string; count: number }[]; graduation: { name: string; count: number }[]; functions: { name: string; count: number }[]; seniority: { name: string; count: number }[] }
+export interface Entity360 {
+  people: Person360[]; rounds: FundingRound[]; legal: LegalCase[]; advisors: Advisor[]; facts: Fact[]; hiring: Hiring | null;
+  site: SitePages | null; attention: Attention | null; tone: Tone | null; footprint: Footprint | null; agreements: Agreement[]; market: MarketQuote | null; talent: Talent | null;
+  reddit: { posts: number; top: { title: string; url: string; date: string | null; summary: string }[] } | null;
+  ipo: Ipo | null;
+  customers: Customers | null;
+  gov: Gov | null;
+}
+/** Customers named in the company's own case studies, with the product each story is about. */
+export interface Customers { total: number; products: [string, number][]; items: { name: string; product: string | null; url: string }[] }
+export interface GovAward { id: string; agency: string | null; subAgency: string | null; amount: number | null; start: string | null; end: string | null; type: string; description: string | null; url: string | null }
+export interface Lobbying {
+  filings: number; counted: number; quarters: { q: string; inHouse: number; outside: number; firms: number }[];
+  firms: { name: string; total: number; first: string; last: string; filings: number }[]; issues: [string, number][]; entities: [string, number][];
+  lobbyists: number; inHouseTotal: number; outsideTotal: number; latestPosted: string | null;
+}
+/** Federal awards (USAspending.gov) and lobbying disclosures (Senate LDA). */
+export interface Gov { awards: GovAward[]; awardTotal: number; agencies: [string, number][]; lobbying: Lobbying | null; readOn: string | null }
+export interface Filing { form: string; filedOn: string; accession: string; url: string; description: string | null; size: string | null }
+/** The listing: SEC filings newest first, and the offering terms the registration statement states or leaves blank. */
+export interface Ipo { filings: Filing[]; terms: Fact[]; readOn: string | null }
+
+"""
+body = ("export const AI_360: Record<string, Entity360> = " + json.dumps(data, ensure_ascii=False, indent=1) + ";\n\n"
+        "export const file360 = (id: string): Entity360 | undefined => AI_360[id];\n\n"
+        "/** How role titles are sorted into hiring themes (first match wins). */\n"
+        "export const HIRING_THEMES: { key: string; label: string }[] = " + json.dumps([{"key": k, "label": l} for k, l, _ in THEMES] + [{"key": "other", "label": "Other"}]) + ";\n")
+text = HEADER + body
+if "--check" in sys.argv:
+    cur = open(DEST, encoding="utf8").read() if os.path.exists(DEST) else ""
+    print("360 entities", len(data), "up-to-date" if cur == text else "STALE")
+    sys.exit(0 if cur == text else 1)
+open(DEST, "w", encoding="utf8").write(text)
+print(f"wrote {DEST}: " + ", ".join(f"{k}({len(v['people'])}p,{len(v['rounds'])}r,{len(v['legal'])}l,{'h' + str(v['hiring']['open']) if v['hiring'] else '-'})" for k, v in data.items()))

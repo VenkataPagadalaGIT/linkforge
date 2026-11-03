@@ -1,0 +1,260 @@
+# Knowledge Graph Feeds subject taxonomy, v1 (2026-10-31).
+# What a story is about. One line per subject, two spaces per level. A story is filed under one primary
+# subject and any number of secondary ones; the angles inside a story (The money, Who did it...) are a separate,
+# cross-story dimension kept in the feed code.
+#   Label [iptc CODE] :: one-line description
+# L1 follows the IPTC Media Topics top level (the news industry's standard, CC BY 4.0) with reader labels;
+# Technology and Science split IPTC's "science and technology". L2 to L4 are authored where this site's stories
+# concentrate: AI, cybersecurity, crypto, companies, markets, policy, and search and marketing.
+
+Technology [iptc 13000000] :: Computing, the internet, AI, cybersecurity and the companies that build them
+  Artificial Intelligence :: Models, agents, chips, and the people and rules shaping AI
+    AI Models & Labs
+      Frontier Models
+      Open-Weight Models
+      Model Releases & Updates
+      Benchmarks & Evaluations
+    AI Agents & Applications
+      Coding Agents
+      Enterprise AI
+      Consumer AI Apps
+      AI Search & Assistants
+    AI Infrastructure
+      AI Chips & Accelerators
+      AI Data Centers & Compute
+      AI Cloud Platforms
+    AI Safety & Alignment
+      Alignment Research
+      AI Risk Warnings
+      Bias & Fairness
+    AI Research & Talent
+      Research Breakthroughs
+      Researcher Moves
+  Cybersecurity :: Hacks, who is behind them, how they work and how they are stopped
+    Hacks & Breaches
+      Crypto Exchange Hacks
+      DeFi & Bridge Exploits
+      Corporate Data Breaches
+      Supply-Chain Attacks
+    Threat Actors
+      State-Sponsored Hacking
+      Ransomware Groups
+      Insider Threats
+    Attack Methods
+      Private Key & Wallet Compromise
+      Phishing & Social Engineering
+      Smart-Contract Vulnerabilities
+      Zero-Day Exploits
+    Security Response
+      Incident Response
+      Asset Freezes & Recovery
+      Security Audits & Disclosure
+  Internet & Platforms :: Social networks, search engines, app stores and the creator economy
+    Social Media Platforms
+    Search Engines & AI Search
+    App Stores
+    Creator Economy
+    Online Communities & Forums
+  Semiconductors :: Chip design, manufacturing and the chip supply chain
+    Chip Design
+    Foundries & Manufacturing
+    Chip Supply Chain
+  Software & Cloud :: Enterprise software, open source, developer tools and cloud computing
+    Enterprise Software
+    Open Source
+    Developer Tools
+    Cloud Computing
+  Consumer Technology :: Phones, computers, wearables and gaming hardware
+    Smartphones
+    Computers & Laptops
+    Wearables
+    Gaming Hardware
+  Blockchain & Web3 :: The technology of blockchains, apart from crypto markets
+    Blockchains & Protocols
+    Decentralized Finance
+    Tokenization & NFTs
+  Robotics & Autonomous Vehicles :: Self-driving cars, robots and drones
+    Robotaxis & Self-Driving
+    Industrial & Humanoid Robots
+    Drones
+  Quantum Computing :: Quantum hardware, algorithms and the race to useful machines
+  Telecom & Connectivity :: Mobile networks, broadband and satellite internet
+    Mobile Networks
+    Broadband & Fiber
+    Satellite Internet
+
+Science [iptc 13000000] :: Research across space, physics, life sciences and the climate
+  Space & Astronomy
+  Physics
+  Biology & Genetics
+  Climate Science
+  Research & Academia
+
+Business & Finance [iptc 04000000] :: Companies, deals, markets, money and the economy
+  Crypto & Digital Assets :: Exchanges, stablecoins, coins and the companies around them
+    Crypto Exchanges
+      Exchange Operations & Outages
+      Withdrawals & Customer Funds
+      Proof of Reserves
+    Stablecoins
+      Stablecoin Issuers
+      Stablecoin Freezes
+    Crypto Markets
+      Bitcoin
+      Ethereum
+      Exchange Tokens & Altcoins
+    Crypto Companies & Funding
+  Companies & Deals :: Who buys, funds, partners with or reports on whom
+    Mergers & Acquisitions
+    Funding Rounds
+    Strategic Investments & Partnerships
+    IPOs & Filings
+    Earnings & Results
+    Leadership Changes
+  Markets & Investing :: Stocks, bonds, commodities and market swings
+    Stock Markets
+    Bonds & Interest Rates
+    Commodities
+    Market Volatility
+  Banking & Payments :: Banks, payments, fintech and central banks
+    Banks
+    Payments & Fintech
+    Central Banks
+  Economy :: Prices, jobs, growth and trade
+    Inflation & Prices
+    Jobs & Growth
+    Trade & Tariffs
+  Marketing & Advertising :: Search, social and AI in how companies reach customers
+    Search Marketing & SEO
+    AI Visibility & Answer Engines
+    Social Media Marketing
+    Advertising Industry
+  Industries :: Sector news outside technology and finance
+    Retail & E-Commerce
+    Automotive
+    Energy Companies
+    Media & Entertainment Business
+    Healthcare Business
+
+Crime, Law & Justice [iptc 02000000] :: Crimes, investigations, courts and the law
+  Cybercrime :: Theft, fraud and laundering online
+    Crypto Theft
+    Online Fraud & Scams
+    Money Laundering
+  Investigations & Enforcement :: Regulators, police and prosecutors at work
+    Regulator Investigations
+    Arrests & Indictments
+    Asset Seizures
+  Lawsuits & Courts :: Cases, rulings and settlements
+    Copyright Cases
+    Antitrust Cases
+    Class Actions
+    Settlements & Rulings
+  Financial Crime :: Fraud and evasion in markets
+    Securities Fraud
+    Sanctions Evasion
+    Insider Trading
+
+Politics & Government [iptc 11000000] :: Governments, regulation, sanctions and elections
+  Regulation :: The rules for AI, crypto, data, platforms and finance
+    AI Regulation
+    Crypto Regulation
+    Data Privacy Rules
+    Platform & Antitrust Rules
+    Financial Rules
+  Geopolitics & Sanctions :: Sanctions, export controls and rivalry between states
+    Sanctions
+    Export Controls
+    Tech Rivalry
+    Diplomacy
+  Elections & Campaigns :: Votes, campaigns and election disinformation
+    Elections
+    Election Disinformation
+  Government & Agencies :: Agencies, spending and defence policy
+    Government Agencies
+    Public Spending
+    Defense Policy
+
+Conflict & Security [iptc 16000000] :: War, terrorism, military technology and cyber warfare
+  War & Armed Conflict
+  Terrorism
+  Military Technology
+  Cyber Warfare
+
+Health [iptc 07000000] :: Medicine, public health and health technology
+  Medicine & Treatments
+  Public Health
+  Health Technology
+  Mental Health
+
+Environment & Energy [iptc 06000000] :: Climate, energy, power and the natural world
+  Climate Change
+  Energy & Power :: Grids, data center demand, oil and gas
+    Electricity Grids
+    Data Center Power Demand
+    Oil & Gas
+  Renewable Energy
+  Nuclear Energy
+  Pollution & Conservation
+
+Society [iptc 14000000] :: How technology and events change everyday life
+  Misinformation & Fact-Checks :: What spreads, and what checks out
+    Viral Claims
+    Fact-Checks
+  Online Safety
+  Digital Rights & Privacy
+  Inequality
+  Demographics
+
+Media, Arts & Culture [iptc 01000000] :: News media, film, music, books and online culture
+  News Media & Journalism
+  Film & TV
+  Music
+  Books & Publishing
+  Online Culture & Memes
+
+Education [iptc 05000000] :: Schools, universities and learning online
+  Schools
+  Higher Education
+  Online Learning & EdTech
+  AI in Education
+
+Work & Labour [iptc 09000000] :: Jobs, layoffs, unions and how AI changes work
+  Jobs & Hiring
+  Layoffs
+  Future of Work & AI
+  Unions & Strikes
+
+Lifestyle & Leisure [iptc 10000000] :: Travel, food, fashion, home and games
+  Travel
+  Food & Drink
+  Fashion & Beauty
+  Home & Living
+  Video Games
+
+Sport [iptc 15000000] :: Leagues, games and the business of sport
+  Football (Soccer)
+  American Football
+  Basketball
+  Cricket
+  Olympics
+  Esports
+  Sports Business
+
+Disasters & Accidents [iptc 03000000] :: Natural disasters, accidents and emergency response
+  Natural Disasters
+  Accidents
+  Emergency Response
+
+Weather [iptc 17000000] :: Severe weather and forecasts
+  Severe Weather
+  Forecasts & Seasons
+
+Religion [iptc 12000000] :: Faiths, institutions and religion in society
+  Faiths & Institutions
+  Religion & Society
+
+Human Interest [iptc 08000000] :: People, the unusual and records
+  Profiles
+  Unusual Stories
+  Records & Milestones

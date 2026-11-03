@@ -1,0 +1,6 @@
+{
+  "note": "Government records per company. usaspending: recipient search text, then only recipients whose name matches recipient_match (the search is a substring match: 'Anthropic' also finds 'Philanthropic'). lda: the client name on Senate lobbying disclosures, then only clients matching client_match.",
+  "companies": {
+    "anthropic": {"usaspending": "Anthropic", "recipient_match": "^ANTHROPIC\\b", "lda": "Anthropic", "client_match": "^ANTHROPIC\\b"}
+  }
+}

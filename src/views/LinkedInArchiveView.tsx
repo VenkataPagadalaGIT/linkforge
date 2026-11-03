@@ -1,0 +1,104 @@
+import * as React from "react";
+import ScrollReveal from "@/components/ScrollReveal";
+import LinkedInExplorer from "@/components/linkedin/LinkedInExplorer";
+import ArticleCard from "@/components/linkedin/ArticleCard";
+import { LINKEDIN_ARTICLES_PATH, LINKEDIN_POSTS_PATH, LINKEDIN_PROFILE, UNIVERSE_NAME, mostEngaging } from "@/data/linkedinArchive";
+import { LINKEDIN_ARTICLES, LINKEDIN_COUNTS, LINKEDIN_SOCIAL_POSTS } from "@/data/linkedinArchiveServer";
+
+const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div className="border border-border p-5">
+    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-2">{label}</p>
+    <p className="font-display text-3xl font-bold text-foreground text-glow">{value}</p>
+  </div>
+);
+
+export default function LinkedInArchiveView() {
+  const c = LINKEDIN_COUNTS;
+  return (
+    <div className="min-h-screen bg-background pt-24 pb-20">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
+        <ScrollReveal>
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground/70 mb-3">
+            Every source, one graph · LinkedIn first · {c.firstYear} to {c.lastYear}
+          </p>
+          <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground text-glow mb-4">
+            {UNIVERSE_NAME}
+          </h1>
+          <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-3xl mb-3">
+            Everything I share, mapped as one knowledge graph: {c.areas} areas, {c.topics} topics and {c.subtopics} subtopics, plus
+            the names that recur (conferences, companies, products and people). LinkedIn is the first source:{" "}
+            {c.posts > 0 && (
+              <>
+                <a href={LINKEDIN_POSTS_PATH} className="underline hover:text-foreground">{c.posts} posts</a> with their engagement,{" "}
+              </>
+            )}
+            {c.articles > 0 && (
+              <>
+                <a href={LINKEDIN_ARTICLES_PATH} className="underline hover:text-foreground">{c.articles} articles</a> in full, and{" "}
+              </>
+            )}
+            {c.items} images, videos and documents from posts, articles and comments. My website, Substack, YouTube and more join
+            next. Search it, browse the topics in the sidebar, or follow one to its page.
+          </p>
+          <p className="font-mono text-xs text-muted-foreground/70 leading-relaxed max-w-3xl mb-8">
+            Follow along on{" "}
+            <a href={LINKEDIN_PROFILE} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              LinkedIn
+            </a>
+            . Private messages and anything with personal details are not part of the Universe.
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
+            <Stat label="Posts" value={c.posts} />
+            <Stat label="Articles" value={c.articles} />
+            <Stat label="Videos" value={<span className="text-rose-700 dark:text-rose-300">{c.videos}</span>} />
+            <Stat label="Topics" value={c.topics} />
+          </div>
+        </ScrollReveal>
+
+        <LinkedInExplorer />
+
+        {LINKEDIN_SOCIAL_POSTS.length > 0 && (
+          <section className="mt-16" aria-labelledby="li-posts-h">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+              <h2 id="li-posts-h" className="font-display text-xl font-bold text-foreground">
+                Most engaging LinkedIn posts
+              </h2>
+              <a href={LINKEDIN_POSTS_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+                All {LINKEDIN_SOCIAL_POSTS.length} posts
+              </a>
+            </div>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {mostEngaging(LINKEDIN_SOCIAL_POSTS, 8).map((p) => (
+                <li key={p.id}>
+                  <ArticleCard post={p} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {LINKEDIN_ARTICLES.length > 0 && (
+          <section className="mt-16" aria-labelledby="li-articles-h">
+            <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4">
+              <h2 id="li-articles-h" className="font-display text-xl font-bold text-foreground">
+                LinkedIn articles, in full
+              </h2>
+              <a href={LINKEDIN_ARTICLES_PATH} className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground underline">
+                All {LINKEDIN_ARTICLES.length} articles
+              </a>
+            </div>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {LINKEDIN_ARTICLES.slice(0, 4).map((a) => (
+                <li key={a.id}>
+                  <ArticleCard post={a} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+      </div>
+    </div>
+  );
+}

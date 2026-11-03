@@ -9,7 +9,7 @@ const servicePillars = [
     label: "AI-Native Systems",
     tagline: "We build intelligent systems that compound.",
     description:
-      "Enterprise AI consulting, automation pipelines, and production-grade agent systems — from idea to deployed infrastructure.",
+      "Enterprise AI consulting, automation pipelines, and production-grade agent systems, from idea to deployed infrastructure.",
     link: "/solutions/ai-product",
     cta: "Explore AI Solutions",
     items: [
@@ -25,7 +25,7 @@ const servicePillars = [
     label: "SEO & Growth",
     tagline: "Search engines are AI now. We optimize for both.",
     description:
-      "Full-stack SEO consulting from pre-launch to enterprise scale — technical infrastructure, content strategy, and operational SEO that drives pipeline.",
+      "Full-stack SEO consulting from pre-launch to enterprise scale: technical infrastructure, content strategy, and operational SEO that drives pipeline.",
     link: "/solutions",
     cta: "Explore SEO Solutions",
     items: [
@@ -41,7 +41,7 @@ const servicePillars = [
     label: "AI Search Optimization",
     tagline: "Win where AI answers for your buyers.",
     description:
-      "Optimize your brand's visibility across ChatGPT, Perplexity, Gemini, and every AI search surface — the new organic channel.",
+      "Optimize your brand's visibility across ChatGPT, Perplexity, Gemini, and every AI search surface, the new organic channel.",
     link: "/solutions/aeo",
     cta: "Explore AEO",
     items: [
@@ -65,7 +65,7 @@ const ServicesShowcase = () => {
             Growth Engines via<br />AI & Search.
           </h2>
           <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            We combine expert strategy with AI to make your brand the definitive answer — wherever buyers search, and wherever AI answers for them.
+            We combine expert strategy with AI to make your brand the definitive answer wherever buyers search, and wherever AI answers for them.
           </p>
         </div>
       </ScrollReveal>

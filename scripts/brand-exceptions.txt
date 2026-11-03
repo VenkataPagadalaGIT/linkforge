@@ -1,0 +1,11 @@
+# Internal-only surfaces, always rendered dark, noindex, never public-facing.
+# /brand is the color-token reference; /admin is the CMS shell.
+app/brand/BrandClient.tsx:text-emerald-300          # dark-only internal token catalog
+app/brand/BrandClient.tsx:text-emerald-300/90       # dark-only internal token catalog
+app/brand/BrandClient.tsx:text-emerald-300/95       # dark-only internal token catalog
+app/admin/cms/posts/PostsListClient.tsx:text-emerald-300/90   # dark-only CMS
+app/admin/cms/posts/PostsListClient.tsx:text-amber-300/90     # dark-only CMS
+app/admin/cms/posts/PostsListClient.tsx:text-sky-300/90       # dark-only CMS
+app/admin/cms/posts/PostsListClient.tsx:text-rose-300/90      # dark-only CMS
+app/admin/cms/posts/PostsListClient.tsx:text-rose-300/80      # dark-only CMS
+app/admin/cms/posts/[slug]/PostEditorClient.tsx:text-rose-300/90  # dark-only CMS
