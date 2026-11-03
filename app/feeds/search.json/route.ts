@@ -17,10 +17,11 @@ async function docs(): Promise<SearchDoc[]> {
   const out: SearchDoc[] = [];
   const phase = new Map(LEARN_PHASES.map((p) => [p.id, p]));
   const firstTopic = new Map<string, (typeof LEARN_TOPICS)[number]>();
+  const resource = new Map(LEARN_RESOURCES.map((r) => [r.id, r]));
   for (const t of LEARN_TOPICS) {
     const p = phase.get(t.phase);
     const where = t.path === "roadmap" ? `AI Roadmap · Phase ${p?.n}: ${p?.label}` : `AI Encyclopedia · ${p?.label}`;
-    out.push({ id: `topic-${t.id}`, kind: "topic", title: t.topic, sub: `${where} · ${t.difficulty} · ${t.resources.length} sources`, text: [t.description, ...(t.keyTerms ?? [])].join(" "), href: `/feeds/learn?topic=${t.id}`, level: t.difficulty, free: true, boost: t.path === "roadmap" ? 3 : 2 });
+    out.push({ id: `topic-${t.id}`, kind: "topic", title: t.topic, sub: `${where} · ${t.difficulty} · ${t.resources.length} sources`, text: [t.description, ...(t.keyTerms ?? [])].join(" "), href: `/feeds/learn?topic=${t.id}`, level: t.difficulty, free: true, boost: t.path === "roadmap" ? 3 : 2, emoji: t.emoji, images: t.resources.map((r) => resource.get(r)?.image).filter((x): x is string => Boolean(x)).slice(0, 6) });
     for (const r of t.resources) if (!firstTopic.has(r)) firstTopic.set(r, t);
   }
   for (const r of LEARN_RESOURCES) {
@@ -29,7 +30,7 @@ async function docs(): Promise<SearchDoc[]> {
     out.push({ id: r.id, kind: r.format, title: r.title, sub: [r.creator, t?.topic].filter(Boolean).join(" · "), text: t?.description, href: `/feeds/learn?p=${r.id}`, thumb: r.image, platform: r.platform, level: t?.difficulty, free: !r.access, url: r.url, youtube: r.youtube, noEmbed: r.noEmbed });
   }
   for (const s of await getStoryCards()) {
-    out.push({ id: s.id, kind: "news", title: s.title, sub: [s.kicker, ...s.why].filter(Boolean).join(" · "), text: [s.summary, ...s.subjects].join(" "), href: s.feedHref ?? s.href, thumb: s.image, platform: "News", free: true, boost: Math.round(s.score * 6) + 2, date: s.date });
+    out.push({ id: s.id, kind: "news", title: s.title, sub: [s.kicker, ...s.why].filter(Boolean).join(" · "), text: [s.summary, ...s.subjects, ...s.tags].join(" "), href: s.feedHref ?? s.href, thumb: s.image ?? s.logo, logo: s.logo, platform: "News", free: true, boost: Math.round(s.score * 6) + 2, date: s.date });
   }
   for (const g of guides) {
     out.push({ id: `guide-${g.slug}`, kind: "guide", title: g.title, sub: "Guide on this site", text: g.metaDescription, href: `/guides/${g.slug}`, platform: "This site", free: true, boost: 2 });

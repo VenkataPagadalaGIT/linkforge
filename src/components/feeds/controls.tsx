@@ -37,7 +37,7 @@ export function useWide() {
 }
 
 /** News or Learn: two feeds, never mixed in one stream, because a course between breaking posts is the randomness this exists to avoid. */
-export function ModeTabs({ mode }: { mode: "news" | "learn" }) {
+export function ModeTabs({ mode }: { mode: "news" | "learn" | "search" }) {
   const cls = (on: boolean) => `rounded-full px-3 py-1.5 transition ${on ? "bg-white text-black" : "text-white/80 hover:text-white"}`;
   return (
     <nav aria-label="Feeds" className="flex shrink-0 rounded-full bg-white/10 p-0.5 text-[13px] font-bold backdrop-blur">

@@ -12,6 +12,7 @@ import { getBusiness } from "@/lib/business-source";
 import { buildFront, type FrontStory } from "@/lib/news-front";
 import { rankReasons, rankScore, rankStories } from "@/lib/news-rank";
 import { coverOf } from "@/components/feeds/cover";
+import { orgLogo } from "@/data/aiOrgLogos";
 import type { AIUpdate } from "@/data/aiUpdates";
 
 export interface StoryCard {
@@ -30,6 +31,8 @@ export interface StoryCard {
   logo?: string;
   stat?: { value: string; label: string };
   subjects: string[];
+  /** Searched, not shown. */
+  tags: string[];
   sources: number;
   documents: number;
   claims: number;
@@ -57,13 +60,14 @@ export async function getStoryCards(today = new Date().toISOString().slice(0, 10
   const events = Object.values(EVENTS);
   const front = buildFront({ updates, business, events, today });
   const bySlug = new Map(updates.map((u) => [`update:${u.slug}`, u]));
+  const notes = new Map(business.articles.map((a) => [`note:${a.slug}`, a]));
   const cards: StoryCard[] = front.latest.map((s) => {
     const u = bySlug.get(s.id);
     const ev = s.kind === "event" ? EVENTS[s.id.replace("event:", "")] : undefined;
     const vid = youtubeId(u?.videoUrl);
     const signals = {
       date: s.date,
-      sources: ev ? ev.sources.length : 0,
+      sources: ev ? ev.sources.length : notes.get(s.id)?.sources?.length ?? 0,
       documents: u?.documents?.length ?? 0,
       claims: ev ? ev.claims.length : 0,
       live: ev ? today >= ev.window[0] && today <= ev.window[1] : false,
@@ -79,7 +83,8 @@ export async function getStoryCards(today = new Date().toISOString().slice(0, 10
       image: ev ? coverOf(ev) ?? undefined : s.image?.src ?? (vid ? `https://i.ytimg.com/vi/${vid}/hqdefault.jpg` : undefined),
       ...(vid ? { video: { id: vid } } : {}),
       logos: s.logos,
-      logo: s.logo?.src,
+      logo: s.logo?.src ?? (u ? orgLogo(u.company) ?? undefined : undefined),
+      tags: u?.tags ?? [],
       stat: s.stat ? { value: s.stat.stat, label: s.stat.label } : ev ? (() => { const f = ev.facts.find((x) => x.key === "impact"); return f ? { value: f.value, label: f.label } : undefined; })() : undefined,
       subjects: ev ? Array.from(new Set((ev.subjects ?? []).map((t) => t.path[1] ?? t.path[0]))) : u ? subjectsOf(u) : ["Companies & Deals"],
       ...signals,

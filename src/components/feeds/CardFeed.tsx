@@ -51,6 +51,7 @@ interface Card {
   meta?: string[];
   stat?: { value: string; label: string };
   logos?: StoryCard["logos"];
+  logo?: string;
   checked?: boolean;
 }
 
@@ -116,6 +117,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
   const [finished, setFinished] = React.useState<string[]>([]);
   const [party, setParty] = React.useState<{ title: string; sub: string } | null>(null);
   const [burst, setBurst] = React.useState<{ x: number; y: number; k: number } | null>(null);
+  const [broken, setBroken] = React.useState<string[]>([]);
   const [onboard, setOnboard] = React.useState(false);
   const scroller = React.useRef<HTMLDivElement>(null);
   const column = React.useRef<HTMLDivElement>(null);
@@ -242,21 +244,22 @@ export function CardFeed({ mode }: { mode: Mode }) {
     }
     if (mode === "news") {
       const out: Card[] = storyList.map((s) => ({
-        id: s.id, kind: "story", title: s.title, kicker: s.kicker, body: s.summary, image: s.image, youtube: s.video, stat: s.stat, logos: s.logos, meta: s.why, href: s.feedHref ?? s.href,
+        id: s.id, kind: "story", title: s.title, kicker: s.kicker, body: s.summary, image: s.image, stat: s.stat, logos: s.logos, logo: s.logo, meta: s.why, href: s.feedHref ?? s.href,
         cta: s.feedHref ? `See all ${s.sources} sources` : "Read the story", creator: s.kicker, platform: s.subjects[0],
       }));
       return out.length ? [...out, { id: "end", kind: "end", title: "" }] : out;
     }
     const out: Card[] = searchShown.map((d) => {
-      if (d.kind === "topic") return { id: d.id, kind: "intro", title: d.title, kicker: d.sub, body: d.text, href: d.href, cta: "Open every source on this", color: "#ef4444", level: d.level };
-      if (d.kind === "news" || d.kind === "person" || d.kind === "company") return { id: d.id, kind: "story", title: d.title, kicker: KIND_LABELS[d.kind].one, body: d.text?.slice(0, 280), image: d.thumb, href: d.href, cta: d.kind === "news" ? "Read the story" : "Open", meta: d.sub ? [d.sub] : [], creator: d.sub };
+      if (d.kind === "topic") return { id: d.id, kind: "intro", title: d.title, kicker: d.sub, body: d.text, href: d.href, cta: "Open every source on this", color: "#ef4444", images: d.images, emoji: d.emoji };
+      if (d.kind === "news" || d.kind === "person" || d.kind === "company") return { id: d.id, kind: "story", title: d.title, kicker: KIND_LABELS[d.kind].one, body: d.text?.slice(0, 280), image: d.kind === "news" ? d.thumb : undefined, logo: d.kind === "news" ? d.logo : d.thumb, href: d.href, cta: d.kind === "news" ? "Read the story" : "Open", meta: d.sub ? [d.sub] : [], creator: d.sub };
       if (d.kind === "post") return { id: d.id, kind: "resource", title: d.title, creator: d.sub, platform: NICE[d.platform ?? ""] ?? d.platform, format: "post", image: d.thumb, url: d.url, href: d.href, body: d.text };
       return { id: d.id, kind: "resource", title: d.title, creator: d.sub?.split(" · ")[0], platform: d.platform, format: d.kind, image: d.thumb, youtube: d.youtube, noEmbed: d.noEmbed, url: external(d.url) ? d.url : undefined, href: d.href, access: d.free ? "free" : "paid" };
     });
     return out.length ? [...out, { id: "end", kind: "end", title: "" }] : out;
   }, [mode, learnPosts, phaseOf, storyList, searchShown]);
 
-  const items = cards.filter((c) => c.kind !== "end" && c.kind !== "intro").length;
+  const items = mode === "search" ? searchShown.length : cards.filter((c) => c.kind !== "end" && c.kind !== "intro").length;
+  const total = cards.filter((c) => c.kind !== "end").length;
   const loaded = !failed && (mode === "learn" ? Boolean(learn) : mode === "news" ? Boolean(stories) : Boolean(docs));
   const post = cards[current] ?? cards[0];
 
@@ -555,16 +558,16 @@ export function CardFeed({ mode }: { mode: Mode }) {
       return (
         <div className="relative h-full w-full overflow-hidden bg-black">
           {c.images && c.images.length > 0 ? (
-            <div className={`absolute inset-0 grid opacity-55 ${c.images.length > 3 ? "grid-cols-2 grid-rows-3" : "grid-cols-1"}`} aria-hidden="true">
+            <div className={`absolute inset-0 grid opacity-60 ${c.images.length > 3 ? "grid-cols-2 grid-rows-3" : "grid-cols-1"}`} aria-hidden="true">
               {c.images.slice(0, c.images.length > 3 ? 6 : 3).map((src, k) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img key={k} src={src} alt="" className="h-full w-full object-cover" />
               ))}
             </div>
           ) : (
-            <span className="absolute -right-6 top-[18%] select-none text-[170px] leading-none opacity-30" aria-hidden="true">{c.emoji || "✦"}</span>
+            <span className="absolute -right-6 top-[18%] select-none text-[170px] leading-none opacity-30" aria-hidden="true">{c.emoji || c.title.slice(0, 1)}</span>
           )}
-          <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,0.45) 0%, ${c.color ?? "#ef4444"}55 45%, rgba(0,0,0,0.92) 100%)` }} aria-hidden="true" />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.62) 30%, rgba(0,0,0,0.78) 62%, rgba(0,0,0,0.95) 100%), linear-gradient(0deg, ${c.color ?? "#ef4444"}33, ${c.color ?? "#ef4444"}33)` }} aria-hidden="true" />
           <div className="relative flex h-full flex-col justify-center pb-[var(--kgf-bottom)] pl-6 pr-[var(--kgf-rail)] pt-[var(--kgf-top)]">
             <p className="text-[12px] font-bold uppercase tracking-wider text-white/90">{c.kicker}</p>
             <h2 className="mt-2 font-display text-[34px] font-black leading-[1.05] text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]">{c.emoji ? `${c.emoji} ` : ""}{c.title}</h2>
@@ -603,6 +606,12 @@ export function CardFeed({ mode }: { mode: Mode }) {
                 ))}
               </div>
             )}
+            {!c.image && c.logo && !c.logos && (
+              <span className="mb-3 grid h-16 w-16 place-items-center rounded-2xl bg-white p-2 shadow-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={c.logo} alt="" className="max-h-full max-w-full object-contain" />
+              </span>
+            )}
             {!c.image && c.stat && (
               <div className="mb-3">
                 <p className="font-display text-[52px] font-black leading-none text-white">{c.stat.value}</p>
@@ -619,18 +628,19 @@ export function CardFeed({ mode }: { mode: Mode }) {
       );
     }
     const embed = playing?.id === c.id && i === current ? youtubeEmbed(c.youtube, playing.muted, playing.start) : null;
+    const picture = c.image && !broken.includes(c.image) ? c.image : null;
     return (
       <div className="relative h-full w-full overflow-hidden bg-black">
-        {c.image ? (
+        {picture ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={c.image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-2xl" />
+            <img src={picture} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-2xl" />
             <div className={`absolute inset-0 flex items-center justify-center ${c.format === "book" ? "px-16" : ""}`}>
               {embed ? (
                 <iframe key={`${c.id}-${playing?.muted}`} title={c.title} src={embed} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="aspect-video w-full border-0" data-no-tap />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={c.image} alt={c.title} className={c.format === "book" ? "max-h-[55%] rounded-md object-contain shadow-2xl" : "w-full object-contain"} onError={(ev) => ((ev.currentTarget.style.display = "none"))} />
+                <img src={picture} alt={c.title} className={c.format === "book" ? "max-h-[55%] rounded-md object-contain shadow-2xl" : "w-full object-contain"} onError={() => setBroken((b) => [...b, picture])} />
               )}
             </div>
           </>
@@ -701,7 +711,7 @@ export function CardFeed({ mode }: { mode: Mode }) {
     const isSaved = saved.includes(c.id);
     const isDone = done.includes(c.id);
     return (
-      <div className="absolute bottom-28 right-2 z-20 flex flex-col items-center gap-4 [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.9))]" data-no-tap>
+      <div className="absolute bottom-28 right-1.5 z-20 flex flex-col items-center gap-4 rounded-full bg-black/35 px-1.5 py-3 backdrop-blur-sm [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.9))]" data-no-tap>
         <button type="button" onClick={() => like(c)} aria-pressed={isLiked} aria-label="Like" className="flex flex-col items-center text-white">
           <motion.span whileTap={{ scale: 0.8 }}><Heart size={32} className={isLiked ? "text-[#ef4444]" : "text-white"} fill={isLiked ? "#ef4444" : "rgba(0,0,0,0.25)"} strokeWidth={isLiked ? 0 : 2} /></motion.span>
           <span className="text-[12px] font-semibold">Like</span>
@@ -961,12 +971,13 @@ export function CardFeed({ mode }: { mode: Mode }) {
 
   // --- The top of the screen -----------------------------------------------------------------------------------------
   const topicCards = post?.topic ? cards.map((c, i) => ({ c, i })).filter((x) => x.c.topic?.id === post.topic?.id) : [];
-  const line = mode === "learn" && post?.topic ? `${post.topic.topic.split(" · ")[0]} · ${current + 1} of ${cards.length}` : cards.length ? `${current + 1} of ${cards.length}` : "";
+  const place = `${Math.min(current + 1, total)} of ${total}`;
+  const line = mode === "learn" && post?.topic ? `${post.topic.topic.split(" · ")[0]} · ${place}` : total ? place : "";
   const header = (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 bg-gradient-to-b from-black/90 via-black/60 to-transparent pb-5 pt-3">
       <div className="pointer-events-auto flex items-center justify-between gap-1.5 px-2.5">
         <a href={mode === "learn" ? "/notebook/ai/roadmap" : mode === "news" ? "/ai-updates" : "/feeds"} aria-label="Back" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white max-[349px]:hidden"><ArrowLeft size={20} /></a>
-        <ModeTabs mode={mode === "learn" ? "learn" : "news"} />
+        <ModeTabs mode={mode} />
         <ViewToggle view={view} onChange={(v) => { click("pick"); setShared({ view: v }); }} />
         <button type="button" onClick={() => setSearching(true)} aria-label="Search" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-black/40 text-white"><Search size={18} /></button>
         <button type="button" onClick={() => setSettings(true)} aria-label={`Tune your feed${changed ? `: ${changed} changed` : ""}`} className="flex h-9 shrink-0 items-center gap-1 rounded-full bg-black/40 px-2.5 text-[13px] font-bold text-white lg:hidden">

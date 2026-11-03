@@ -35,6 +35,11 @@ export interface SearchDoc {
   youtube?: { id?: string; list?: string };
   noEmbed?: boolean;
   date?: string;
+  /** A topic's wall of its sources. */
+  images?: string[];
+  emoji?: string;
+  /** A company's mark, for a story with no picture. */
+  logo?: string;
 }
 
 export interface SearchHit {
