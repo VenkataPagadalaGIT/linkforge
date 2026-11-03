@@ -51,7 +51,7 @@ The authoritative directory of 100 AI pioneers shaping the field in 2026. Explor
 - URL: https://venkatapagadala.com/notebook/ai
 
 ### AI Learning Roadmap: Zero to Hero (2026)
-An 18-week core plus seven elective depth tracks: 35 topics with 473 curated resources, 127 videos, 134 courses, 93 books and 119 repos. 440 of the 473 are free, which is 93%; the remainder are labelled freemium or paid on the card so nobody clicks through expecting free and hits a paywall. Reviewed July 2026, extended August 2026.
+An 18-week core plus seven elective depth tracks: 35 topics with 471 curated resources, 125 videos, 134 courses, 93 books and 119 repos. 438 of the 471 are free, which is 93%; the remainder are labelled freemium or paid on the card so nobody clicks through expecting free and hits a paywall. Reviewed July 2026, extended August 2026.
 - URL: https://venkatapagadala.com/notebook/ai/roadmap
 
 ### AI Concepts Encyclopedia (2026)

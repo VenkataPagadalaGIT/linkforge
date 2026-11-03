@@ -1,7 +1,7 @@
 ---
 type: Dataset
 title: AI Learning Roadmap
-description: An 18-week zero-to-hero core plus seven elective depth tracks, 35 topics, 473 curated resources, 440 of them free (93%), every link opened and checked by hand.
+description: An 18-week zero-to-hero core plus seven elective depth tracks, 35 topics, 471 curated resources, 438 of them free (93%), every link checked, most recently on 3 November 2026.
 resource: https://venkatapagadala.com/notebook/ai/roadmap
 tags: [education, free, curriculum]
 generated: { by: claude-code/fable-5, at: 2026-08-08T09:00:00Z }
@@ -25,7 +25,7 @@ sources:
 
 # Counts (audited July 2026, extended August 2026)
 
-473 resources: 127 videos, 134 courses, 93 books, 119 repos. 440 free (93%),
+471 resources: 125 videos, 134 courses, 93 books, 119 repos. 438 free (93%),
 14 freemium, 19 paid.[^roadmap-module] Paid entries exist only where genuinely outstanding and
 are always badged.
 

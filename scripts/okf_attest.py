@@ -132,6 +132,9 @@ def main():
                 for line in text.splitlines():
                     if needle not in line:
                         continue
+                    # 471 is also the roadmap's current resource count; only the old entity count is stale.
+                    if needle == "471" and "471 resources" in line:
+                        continue
                     # An old number is fine when the prose is explicitly
                     # about the past: "1,245 candidate edges, 84 were cut".
                     if re.search(r"candidate|was |were |previously|before|superseded|historic",

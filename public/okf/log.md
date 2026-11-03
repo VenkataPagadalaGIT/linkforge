@@ -2,6 +2,7 @@
 
 ## 2026-09-25
 
+* **Update**: Roadmap link check, 3 November 2026: 2 dead videos removed (473 resources to 471), 12 video credits and 1 book title corrected to what the source says. The roadmap is now also a feed at /feeds/learn.
 * **Update**: Added a Site index concept ([site-index.md](site-index.md)): every page on the site, by section, rendered from the same registry as sitemap.xml, the HTML site map and llms.txt, so the four cannot disagree. It is rebuilt on every deploy and refreshed hourly.
 * **Update**: The guides index is now generated from the guide data instead of edited by hand. It had fallen behind, listing 5 of 7 guides; it now lists all 7 and cannot drift again. Guides with an OKF concept link it; the others link their markdown edition.
 
