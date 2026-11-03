@@ -952,10 +952,10 @@
     "date": "2026-03-16",
     "summary": "NVIDIA calls DLSS 5 their most significant graphics breakthrough since real-time ray tracing in 2018. It fuses controllable 3D graphics with generative AI to produce photoreal lighting and materials in real-time 16ms frames.",
     "takeaways": [
-      "Fuses controllable 3D graphics (structured, predictive) with generative AI (probabilistic, photoreal) — Jensen called it 'the GPT moment for graphics.'",
+      "Fuses controllable 3D graphics (structured, predictive) with generative AI (probabilistic, photoreal). Jensen called it 'the GPT moment for graphics.'",
       "Produces photoreal lighting and materials in real-time 16-millisecond frames. 375,000x compute increase since original GeForce.",
       "Publishers signed on: Bethesda, CAPCOM, NetEase, Tencent, Ubisoft, Warner Bros. Games. Arriving fall 2026.",
-      "Jensen predicts this pattern — fusing structured data with generative AI — will repeat in industry after industry."
+      "Jensen predicts this pattern, fusing structured data with generative AI, will repeat in industry after industry."
     ],
     "tocSections": [
       "Technical Approach",
@@ -963,8 +963,8 @@
       "Publishers"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang",
-    "body": "<h3 id=\"technical-approach\">Technical Approach</h3>\n<p>Jensen described DLSS 5 as fusing two fundamentally different approaches: <strong>controllable 3D graphics</strong> (structured, completely predictive) with <strong>generative AI</strong> (probabilistic yet highly realistic). DLSS 5 infuses pixels with AI-generated photoreal lighting and materials in real-time 16-millisecond frames.</p>\n<p>Jensen noted this concept of fusing structured information with generative AI will repeat in industry after industry. Structured data is the foundation of trustworthy AI.</p>\n\n<h3 id=\"historical-context\">Historical Context</h3>\n<p>Since the original GeForce, NVIDIA has delivered a 375,000x increase in compute: programmable shaders (GeForce 3, 2001) → CUDA (GeForce 8800 GTX, 2006) → real-time ray tracing (RTX 2080 Ti, 2018) → path tracing and neural shaders (RTX 5090, 2025) → DLSS 5.</p>\n\n<h3 id=\"publishers\">Publishers Signed On</h3>\n<p>Bethesda, CAPCOM, Hotta Studio, NetEase, NCSOFT, S-GAME, Tencent, Ubisoft, and Warner Bros. Games. Arriving fall 2026.</p>\n<p><strong>The caveat:</strong> This kind of predictive rendering can create visual \"hallucinations\" — artifacts when the AI prediction gets it wrong. This has been a sore point for gamers historically, but the breadth of publisher commitment suggests the industry believes it's solvable.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang",
+    "body": "<h3 id=\"technical-approach\">Technical Approach</h3>\n<p>Jensen described DLSS 5 as fusing two fundamentally different approaches: <strong>controllable 3D graphics</strong> (structured, completely predictive) with <strong>generative AI</strong> (probabilistic yet highly realistic). DLSS 5 infuses pixels with AI-generated photoreal lighting and materials in real-time 16-millisecond frames.</p>\n<p>Jensen noted this concept of fusing structured information with generative AI will repeat in industry after industry. Structured data is the foundation of trustworthy AI.</p>\n\n<h3 id=\"historical-context\">Historical Context</h3>\n<p>Since the original GeForce, NVIDIA has delivered a 375,000x increase in compute: programmable shaders (GeForce 3, 2001) → CUDA (GeForce 8800 GTX, 2006) → real-time ray tracing (RTX 2080 Ti, 2018) → path tracing and neural shaders (RTX 5090, 2025) → DLSS 5.</p>\n\n<h3 id=\"publishers\">Publishers Signed On</h3>\n<p>Bethesda, CAPCOM, Hotta Studio, NetEase, NCSOFT, S-GAME, Tencent, Ubisoft, and Warner Bros. Games. Arriving fall 2026.</p>\n<p><strong>The caveat:</strong> This kind of predictive rendering can create visual \"hallucinations\": artifacts when the AI prediction gets it wrong. This has been a sore point for gamers historically, but the breadth of publisher commitment suggests the industry believes it's solvable.</p>",
     "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-dlss-5-delivers-ai-powered-breakthrough-in-visual-fidelity-for-games",
     "tags": [
       "NVIDIA",
@@ -983,7 +983,7 @@
       {
         "label": "Ian Goodfellow",
         "to": "/ai-contributors/goodfellow",
-        "description": "Inventor of GANs — foundational to generative AI"
+        "description": "Inventor of GANs: foundational to generative AI"
       }
     ]
   },
@@ -996,9 +996,9 @@
     "date": "2026-03-16",
     "summary": "Jensen Huang's 2-hour GTC 2026 keynote laid out paradigm shifts: $1 trillion in AI infrastructure demand through 2027, computing demand up 1 million times in 2 years, 'every SaaS company will become an AaaS company,' and 'tokens per watt' as the new CEO metric.",
     "takeaways": [
-      "$1 trillion in AI infrastructure demand through 2027 (up from $500B one year ago). $150 billion in AI startup investment — largest VC wave in history.",
+      "$1 trillion in AI infrastructure demand through 2027 (up from $500B one year ago). $150 billion in AI startup investment, the largest VC wave in history.",
       "Computing demand up 1 million times in 2 years. 40 million times more compute in 10 years from DGX-1 to Vera Rubin.",
-      "Every SaaS company will become an AaaS company — 'agentic as a service,' manufacturing tokens instead of storing files.",
+      "Every SaaS company will become an AaaS company: 'agentic as a service,' manufacturing tokens instead of storing files.",
       "'Tokens per watt' is the new CEO metric. Jensen predicts annual token budgets will become a standard recruiting tool."
     ],
     "tocSections": [
@@ -1007,8 +1007,8 @@
       "Notable Moments"
     ],
     "videoUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
-    "videoLabel": "NVIDIA GTC 2026 Full Keynote — Jensen Huang (2h 20min)",
-    "body": "<h3 id=\"big-numbers\">The Big Numbers</h3>\n<ul>\n<li><strong>$1 trillion in demand through 2027</strong> — up from $500B just one year ago. Jensen said he's \"certain computing demand will be much higher than that\"</li>\n<li><strong>Computing demand up 1 million times in 2 years</strong> — 10,000x increase in per-task compute × ~100x more usage</li>\n<li><strong>$150 billion in AI startup investment</strong> — the largest venture investment wave in human history, with individual rounds hitting billions</li>\n<li><strong>40 million times more compute in 10 years</strong> — from DGX-1 to Vera Rubin</li>\n<li><strong>Token generation: 2M → 700M per second</strong> — 350x increase in a one-gigawatt factory over two years</li>\n</ul>\n\n<h3 id=\"paradigm-shifts\">The Paradigm Shifts</h3>\n<ul>\n<li><strong>\"The inference inflection has arrived\"</strong> — AI now has to think, reason, and do; inference is the dominant workload</li>\n<li><strong>Computing shifted from retrieval to generation</strong> — this single shift changes how computers are architected</li>\n<li><strong>\"Moore's law has run out of steam\"</strong> — accelerated computing with continuous algorithmic optimization is the only path forward</li>\n<li><strong>Every SaaS company will become an AaaS company</strong> — \"agentic as a service,\" manufacturing and consuming tokens instead of just storing files</li>\n<li><strong>\"Tokens per watt\" is the new CEO metric</strong> — every data center is power-constrained</li>\n<li><strong>Token budgets as employee compensation</strong> — Jensen predicts annual token budgets will become a standard recruiting tool, amplifying engineers 10x</li>\n</ul>\n\n<h3 id=\"notable-moments\">Notable Moments</h3>\n<p>A Disney Research Olaf robot walked onstage, trained using NVIDIA's Newton physics simulator and Isaac Lab on a Jetson compute module. Jensen teased future Disneyland AI characters. 110 robots were on display at the GTC show floor.</p>\n<p>30,000 attendees from 190 countries. 17 press releases and three major blog posts dropped in a single day.</p>",
+    "videoLabel": "NVIDIA GTC 2026 Full Keynote: Jensen Huang (2h 20min)",
+    "body": "<h3 id=\"big-numbers\">The Big Numbers</h3>\n<ul>\n<li><strong>$1 trillion in demand through 2027</strong>: up from $500B just one year ago. Jensen said he's \"certain computing demand will be much higher than that\"</li>\n<li><strong>Computing demand up 1 million times in 2 years</strong>: 10,000x increase in per-task compute × ~100x more usage</li>\n<li><strong>$150 billion in AI startup investment</strong>: the largest venture investment wave in human history, with individual rounds hitting billions</li>\n<li><strong>40 million times more compute in 10 years</strong>: from DGX-1 to Vera Rubin</li>\n<li><strong>Token generation: 2M → 700M per second</strong>: 350x increase in a one-gigawatt factory over two years</li>\n</ul>\n\n<h3 id=\"paradigm-shifts\">The Paradigm Shifts</h3>\n<ul>\n<li><strong>\"The inference inflection has arrived\"</strong>: AI now has to think, reason, and do; inference is the dominant workload</li>\n<li><strong>Computing shifted from retrieval to generation</strong>: this single shift changes how computers are architected</li>\n<li><strong>\"Moore's law has run out of steam\"</strong>: accelerated computing with continuous algorithmic optimization is the only path forward</li>\n<li><strong>Every SaaS company will become an AaaS company</strong>: \"agentic as a service,\" manufacturing and consuming tokens instead of just storing files</li>\n<li><strong>\"Tokens per watt\" is the new CEO metric</strong>: every data center is power-constrained</li>\n<li><strong>Token budgets as employee compensation</strong>: Jensen predicts annual token budgets will become a standard recruiting tool, amplifying engineers 10x</li>\n</ul>\n\n<h3 id=\"notable-moments\">Notable Moments</h3>\n<p>A Disney Research Olaf robot walked onstage, trained using NVIDIA's Newton physics simulator and Isaac Lab on a Jetson compute module. Jensen teased future Disneyland AI characters. 110 robots were on display at the GTC show floor.</p>\n<p>30,000 attendees from 190 countries. 17 press releases and three major blog posts dropped in a single day.</p>",
     "sourceUrl": "https://www.youtube.com/live/jw_o0xr8MWU",
     "tags": [
       "NVIDIA",
@@ -1022,22 +1022,22 @@
       {
         "label": "Jensen Huang",
         "to": "/ai-contributors/huang",
-        "description": "NVIDIA CEO — delivered this keynote"
+        "description": "NVIDIA CEO: delivered this keynote"
       },
       {
         "label": "Satya Nadella",
         "to": "/ai-contributors/nadella",
-        "description": "Microsoft CEO — confirmed Vera Rubin running at Azure"
+        "description": "Microsoft CEO: confirmed Vera Rubin running at Azure"
       },
       {
         "label": "Dario Amodei",
         "to": "/ai-contributors/dario-amodei",
-        "description": "Anthropic CEO — endorsed Vera Rubin in press release"
+        "description": "Anthropic CEO: endorsed Vera Rubin in press release"
       },
       {
         "label": "Sam Altman",
         "to": "/ai-contributors/altman",
-        "description": "OpenAI CEO — endorsed NVIDIA infrastructure"
+        "description": "OpenAI CEO: endorsed NVIDIA infrastructure"
       }
     ]
   }
